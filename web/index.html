@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#192420">
+  <title>Crosswalk Lab · Drive monitor</title>
+  <link rel="stylesheet" href="console.css">
+  <script type="module" src="console.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="mast-inner">
+      <div class="brand"><i class="brand-mark" aria-hidden="true"></i>Crosswalk<span>Lab</span></div>
+      <span class="mast-rule" aria-hidden="true"></span>
+      <span class="mast-type">Autonomous driving research</span>
+      <span class="connection" id="source-state" role="status">Connecting</span>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="intro" aria-label="Monitor settings">
+      <div>
+        <div class="eyebrow"><i class="small-rule"></i> Simulator console</div>
+        <h1>Drive monitor</h1>
+      </div>
+      <div class="source-picker">
+        <label for="source">Data source</label>
+        <select id="source"><option value="auto">Automatic</option><option value="replay">Recorded drive</option></select>
+      </div>
+    </section>
+    <div class="workspace">
+      <section class="panel camera-panel" aria-labelledby="camera-heading">
+        <header class="panel-head">
+          <h2 id="camera-heading">Camera feed</h2>
+          <div class="camera-controls" aria-label="Camera angle" role="group">
+            <button data-camera="chase" aria-pressed="true" disabled>Chase</button>
+            <button data-camera="front" aria-pressed="false" disabled>Front</button>
+            <button data-camera="infrared" aria-pressed="false" disabled>Thermal</button>
+          </div>
+        </header>
+        <div class="viewport" id="viewport">
+          <video id="film" muted playsinline preload="auto" aria-label="Recorded drive" hidden></video>
+          <img id="stream" alt="Live simulation camera" hidden>
+          <div class="detections" id="detections" aria-hidden="true" hidden></div>
+          <div class="empty" id="camera-empty"><span class="lens-mark" aria-hidden="true"></span><p role="status">Connecting to the drive…</p></div>
+          <div class="view-label" id="view-label" hidden>Chase camera</div>
+          <div class="frame-label" id="frame-label" hidden>FRAME <span id="frame">—</span></div>
+        </div>
+        <div class="playback" id="playback">
+          <button id="play" disabled aria-label="Play replay" title="Play replay"><i class="play-icon" aria-hidden="true"></i></button>
+          <span id="clock">0:00</span>
+          <input id="seek" type="range" min="0" max="1" step="0.01" value="0" aria-label="Replay position" disabled>
+          <span id="end-clock">–:––</span>
+        </div>
+        <div class="live-strip" id="live-strip" hidden>Simulation elapsed <span id="live-clock">0:00</span></div>
+        <p class="ir-note" id="ir-note" hidden>Simulated long-wave infrared. Material temperatures are assumed.</p>
+        <p class="ir-note" id="front-note" hidden>Object detections from the front RGB camera.</p>
+      </section>
+      <section class="panel sensor-panel" aria-labelledby="sensor-heading">
+        <header class="panel-head">
+          <h2 id="sensor-heading">Sensor view</h2>
+          <span class="unit-tag">Top down</span>
+        </header>
+        <div class="sensor-stage">
+          <canvas id="sensor" role="img" aria-label="Top-down lidar returns and radar detections around the vehicle"></canvas>
+          <span class="plot-scale">10 m rings</span>
+          <span id="radar-reading" class="radar-reading" hidden></span>
+        </div>
+        <div class="legend">
+          <span><i class="dot lidar-dot"></i>Lidar <b id="lidar-count">—</b></span>
+          <span><i class="dot radar-dot"></i>Radar <b id="radar-count">—</b></span>
+        </div>
+      </section>
+    </div>
+    <section class="data-panel" aria-labelledby="data-heading">
+      <header class="data-head"><h2 id="data-heading">Drive telemetry</h2><span id="map">CARLA</span></header>
+      <dl class="readouts">
+        <div><dt>Speed</dt><dd><span id="speed">—</span><small>km/h</small></dd></div>
+        <div><dt>Target speed</dt><dd><span id="target">—</span><small>km/h</small></dd></div>
+        <div><dt>Route progress</dt><dd><span id="progress">—</span><small id="route-total">m</small></dd></div>
+        <div><dt>Lateral error</dt><dd><span id="lateral">—</span><small>m</small></dd></div>
+        <div><dt>Collisions</dt><dd id="collisions">—</dd></div>
+      </dl>
+      <dl class="metadata">
+        <div><dt>Scenario</dt><dd id="scenario">—</dd></div>
+        <div><dt>Controller</dt><dd id="policy">—</dd></div>
+        <div><dt>Seed</dt><dd id="seed">—</dd></div>
+        <div><dt>Phase</dt><dd id="phase">—</dd></div>
+        <div><dt>Weather</dt><dd id="weather">—</dd></div>
+      </dl>
+    </section>
+    <footer>
+      <span>Simulation imagery by CARLA and its contributors</span>
+      <nav aria-label="Project links">
+        <a href="./benchmarks.html">Benchmark results</a>
+        <a href="https://github.com/yafi-s/crosswalk-lab/blob/main/docs/research.md">Research &amp; credits</a>
+        <a href="https://github.com/yafi-s/crosswalk-lab">Source code</a>
+      </nav>
+    </footer>
+  </main>
+</body>
+</html>
