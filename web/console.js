@@ -1,18 +1,25 @@
 import {SensorView} from './sensor.js';
 
 const ids = [
-  'source', 'source-state', 'viewport', 'film', 'stream', 'detections', 'camera-empty', 'view-label', 'frame-label',
+  'source', 'source-state', 'encounter-picker', 'encounter', 'viewport', 'film', 'stream',
+  'detections', 'camera-empty', 'view-label', 'frame-label',
   'playback', 'play', 'clock', 'seek', 'end-clock', 'live-strip', 'live-clock', 'ir-note', 'front-note',
-  'sensor', 'radar-reading', 'lidar-count', 'radar-count', 'map', 'frame', 'speed', 'target',
+  'sensor', 'radar-reading', 'lidar-count', 'radar-count', 'map', 'frame', 'speed',
+  'steer', 'steer-direction', 'throttle', 'brake',
   'progress', 'route-total', 'lateral', 'collisions', 'scenario', 'policy', 'seed', 'phase', 'weather'
 ];
 const ui = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 const cameraButtons = [...document.querySelectorAll('[data-camera]')];
 const cameraLabels = {chase: 'Chase camera', front: 'Front camera', infrared: 'Thermal proxy'};
+const policyLabels = {fusion: 'Learned multisensor', camera: 'Learned vision'};
+const replayDirectories = {pedestrian: 'media', turn: 'media/turn', braking: 'media/braking'};
+const recordings = new Map();
 const sensor = new SensorView(ui.sensor, ui['radar-reading']);
 const integer = new Intl.NumberFormat(undefined, {maximumFractionDigits: 0});
 const decimal = new Intl.NumberFormat(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1});
 const precision = new Intl.NumberFormat(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const percent = new Intl.NumberFormat(undefined, {style: 'percent'});
+const signedPercent = new Intl.NumberFormat(undefined, {style: 'percent', signDisplay: 'exceptZero'});
 
 let sourceControl;
 let mode = '';
@@ -34,6 +41,7 @@ function setMode(nextMode, label) {
   mode = nextMode;
   ui['source-state'].dataset.mode = mode;
   setText('source-state', label);
+  ui['encounter-picker'].hidden = mode !== 'replay';
   ui.playback.hidden = mode === 'live';
   ui['live-strip'].hidden = mode !== 'live';
 }
@@ -74,6 +82,12 @@ function timeLabel(value) {
   if (!Number.isFinite(value)) return '–:––';
   const seconds = Math.floor(Math.max(0, value));
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+}
+
+function steeringDirection(steer) {
+  if (!Number.isFinite(steer)) return '';
+  if (Math.abs(steer) < 0.005) return 'Center';
+  return steer > 0 ? 'Right' : 'Left';
 }
 
 function renderDetections() {
@@ -124,14 +138,17 @@ function renderTelemetry(frame) {
   setText('map', frame?.map?.split('/').pop() || 'CARLA');
   setText('frame', numeric(frame?.frame));
   setText('speed', numeric(frame?.speed_mps * 3.6, decimal));
-  setText('target', numeric(frame?.target_mps * 3.6, decimal));
+  setText('steer', numeric(frame?.steer, signedPercent));
+  setText('steer-direction', steeringDirection(frame?.steer));
+  setText('throttle', numeric(frame?.throttle, percent));
+  setText('brake', numeric(frame?.brake, percent));
   setText('progress', numeric(frame?.progress_m, decimal));
   const length = frame?.route_length_m;
   setText('route-total', Number.isFinite(length) ? `/ ${numeric(length)} m` : 'm');
   setText('lateral', numeric(frame?.lat_error_m, precision));
   setText('collisions', numeric(frame?.collision_count));
   setText('scenario', words(frame?.scenario));
-  setText('policy', words(frame?.policy));
+  setText('policy', policyLabels[frame?.policy] ?? words(frame?.policy));
   setText('seed', Number.isFinite(frame?.seed) ? String(frame.seed) : '—');
   setText('phase', words(frame?.phase));
   setText('weather', words(frame?.weather));
@@ -267,51 +284,66 @@ function loadCamera(position, resume) {
   updateControls();
   showMessage('Loading ' + cameraLabels[selectedCamera].toLowerCase() + '…');
   ui.film.hidden = true;
-  ui.film.src = `media/${selectedCamera}.mp4`;
+  ui.film.setAttribute('aria-label', `${ui.encounter.selectedOptions[0].textContent} · ${cameraLabels[selectedCamera]}`);
+  ui.film.src = `${replay.directory}/${selectedCamera}.mp4`;
 }
 
 async function openReplay(signal) {
+  const directory = replayDirectories[ui.encounter.value];
   ui.stream.hidden = true;
   ui.stream.removeAttribute('src');
-  setMode('', 'Loading replay');
+  setMode('replay', 'Loading replay');
+  replay = undefined;
+  resetPlayback();
   setCameras([]);
   renderTelemetry();
   showMessage('Loading recorded drive…');
   try {
-    if (!replay) {
-      replay = parseReplay(await readJson('media/replay.json', signal, 15000));
-    }
+    const recording = recordings.get(directory) ??
+      parseReplay(await readJson(`${directory}/replay.json`, signal, 15000));
+    if (signal.aborted) return;
+    recordings.set(directory, recording);
+    replay = {...recording, directory};
   } catch {
     if (signal.aborted) return;
-    setMode('', 'Drive unavailable');
-    showMessage('No live simulation or recorded drive is available.');
+    setMode('replay', 'Replay unavailable');
+    showMessage('Recorded telemetry for this encounter is unavailable.');
     return;
   }
-  if (signal.aborted) return;
   setMode('replay', 'Recorded drive');
   setCameras(Object.keys(cameraLabels));
   loadCamera(0, false);
 }
 
-function connect() {
+function connectionSignal() {
   sourceControl?.abort();
   sourceControl = new AbortController();
-  const {signal} = sourceControl;
-  mode = '';
+  return sourceControl.signal;
+}
+
+function resetPlayback() {
   mediaReady = false;
+  pendingPosition = 0;
+  pendingPlay = false;
   ui.film.pause();
   ui.film.hidden = true;
   ui.film.removeAttribute('src');
   ui.film.load();
-  ui.stream.hidden = true;
-  ui.stream.removeAttribute('src');
   setText('clock', timeLabel(0));
   ui.seek.value = 0;
+  ui.seek.setAttribute('aria-valuetext', timeLabel(0));
   updateControls();
+}
+
+function connect() {
+  const signal = connectionSignal();
   if (ui.source.value === 'replay') {
     openReplay(signal);
   } else {
     setMode('', 'Connecting');
+    resetPlayback();
+    ui.stream.hidden = true;
+    ui.stream.removeAttribute('src');
     setCameras([]);
     renderTelemetry();
     showMessage('Connecting to the drive…');
@@ -334,14 +366,15 @@ for (const button of cameraButtons) {
 }
 
 ui.source.addEventListener('change', connect);
+ui.encounter.addEventListener('change', () => openReplay(connectionSignal()));
 ui.stream.addEventListener('load', renderDetections);
 new ResizeObserver(renderDetections).observe(ui.viewport);
 ui.film.addEventListener('loadedmetadata', () => {
-  if (mode !== 'replay') return;
+  if (mode !== 'replay' || !replay || !ui.film.hasAttribute('src')) return;
   ui.film.currentTime = Math.min(pendingPosition, ui.film.duration);
 });
 ui.film.addEventListener('canplay', () => {
-  if (mode !== 'replay' || mediaReady) return;
+  if (mode !== 'replay' || !replay || mediaReady || !ui.film.hasAttribute('src')) return;
   mediaReady = true;
   ui.film.hidden = false;
   showMessage('');
@@ -350,7 +383,7 @@ ui.film.addEventListener('canplay', () => {
   if (pendingPlay) ui.film.play().catch(updateControls);
 });
 ui.film.addEventListener('error', () => {
-  if (mode !== 'replay') return;
+  if (mode !== 'replay' || !replay || !ui.film.hasAttribute('src')) return;
   const position = mediaReady ? ui.film.currentTime : pendingPosition;
   const resume = mediaReady ? !ui.film.paused && !ui.film.ended : pendingPlay;
   setCameras(availableCameras.filter(camera => camera !== selectedCamera));
@@ -358,10 +391,9 @@ ui.film.addEventListener('error', () => {
     loadCamera(position, resume);
     return;
   }
-  mediaReady = false;
-  ui.film.hidden = true;
-  updateControls();
-  setMode('', 'Replay unavailable');
+  resetPlayback();
+  renderTelemetry();
+  setMode('replay', 'Replay unavailable');
   showMessage('The recorded camera files could not be played.');
 });
 for (const event of ['play', 'pause', 'ended', 'durationchange']) {

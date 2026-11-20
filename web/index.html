@@ -23,9 +23,19 @@
         <div class="eyebrow"><i class="small-rule"></i> Simulator console</div>
         <h1>Drive monitor</h1>
       </div>
-      <div class="source-picker">
-        <label for="source">Data source</label>
-        <select id="source"><option value="auto">Automatic</option><option value="replay">Recorded drive</option></select>
+      <div class="monitor-settings">
+        <div class="source-picker">
+          <label for="source">Data source</label>
+          <select id="source"><option value="auto">Automatic</option><option value="replay">Recorded drive</option></select>
+        </div>
+        <div class="source-picker" id="encounter-picker" hidden>
+          <label for="encounter">Encounter</label>
+          <select id="encounter">
+            <option value="pedestrian">Pedestrian crossing</option>
+            <option value="turn">Intersection turn</option>
+            <option value="braking">Braking vehicle</option>
+          </select>
+        </div>
       </div>
     </section>
     <div class="workspace">
@@ -76,7 +86,9 @@
       <header class="data-head"><h2 id="data-heading">Drive telemetry</h2><span id="map">CARLA</span></header>
       <dl class="readouts">
         <div><dt>Speed</dt><dd><span id="speed">—</span><small>km/h</small></dd></div>
-        <div><dt>Target speed</dt><dd><span id="target">—</span><small>km/h</small></dd></div>
+        <div><dt>Steering</dt><dd><span id="steer">—</span><small id="steer-direction"></small></dd></div>
+        <div><dt>Throttle</dt><dd id="throttle">—</dd></div>
+        <div><dt>Brake</dt><dd id="brake">—</dd></div>
         <div><dt>Route progress</dt><dd><span id="progress">—</span><small id="route-total">m</small></dd></div>
         <div><dt>Lateral error</dt><dd><span id="lateral">—</span><small>m</small></dd></div>
         <div><dt>Collisions</dt><dd id="collisions">—</dd></div>

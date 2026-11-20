@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#192420">
+  <title>Crosswalk Lab · Evaluation results</title>
+  <link rel="stylesheet" href="console.css">
+  <link rel="stylesheet" href="benchmarks.css">
+  <script type="module" src="benchmarks.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="mast-inner">
+      <div class="brand"><i class="brand-mark" aria-hidden="true"></i>Crosswalk<span>Lab</span></div>
+      <span class="mast-rule" aria-hidden="true"></span>
+      <span class="mast-type">Autonomous driving research</span>
+      <a class="monitor-link" href="./"><span aria-hidden="true">←</span> Drive monitor</a>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="intro results-intro" aria-labelledby="results-title">
+      <div>
+        <div class="eyebrow"><i class="small-rule" aria-hidden="true"></i> Held-out evaluation</div>
+        <h1 id="results-title">Evaluation results</h1>
+        <p>Two policies learn steering, throttle and braking from demonstrations on short routes in stock CARLA Town01. Both receive the same navigation inputs.</p>
+      </div>
+    </section>
+    <p class="result-state" id="result-state" role="status">Loading recorded episodes…</p>
+    <div class="results" id="results" hidden>
+      <section class="panel" aria-labelledby="totals-title">
+        <header class="panel-head result-head">
+          <h2 id="totals-title">Policy totals</h2>
+          <span class="unit-tag" id="coverage"></span>
+        </header>
+        <div class="table-wrap" role="region" aria-labelledby="totals-title" tabindex="0">
+          <table aria-labelledby="totals-title">
+            <thead><tr>
+              <th scope="col">Policy</th><th scope="col">Episodes</th><th scope="col">Clean finishes</th>
+              <th scope="col">Collisions</th><th scope="col">Timeouts</th><th scope="col">Lane departures</th>
+            </tr></thead>
+            <tbody id="policy-totals"></tbody>
+          </table>
+        </div>
+        <p class="result-note">Counts are by episode. A clean finish reached the route end without a collision or lane departure.</p>
+      </section>
+      <section class="panel" aria-labelledby="compare-title">
+        <header class="panel-head result-head comparison-head">
+          <div><h2 id="compare-title">Paired drives</h2><p id="comparison-context" class="comparison-context" aria-live="polite"></p></div>
+          <div class="compare-controls">
+            <div class="source-picker"><label for="encounter">Encounter</label><select id="encounter"></select></div>
+            <div class="source-picker"><label for="seed">Seed</label><select id="seed"></select></div>
+          </div>
+        </header>
+        <div class="comparison-grid" id="comparison"></div>
+        <div class="table-wrap encounter-table" role="region" aria-labelledby="encounter-heading" tabindex="0">
+          <table>
+            <caption id="encounter-heading">Outcomes by seed</caption>
+            <thead><tr id="encounter-policies"><th scope="col">Seed</th></tr></thead>
+            <tbody id="encounter-outcomes"></tbody>
+          </table>
+        </div>
+        <p class="result-note">Each row groups policies by encounter and seed, including the same starting pose offset. The evaluation used held-out seeds and a braking encounter held out during training.</p>
+      </section>
+    </div>
+    <footer>
+      <span>Simulation by CARLA and its contributors</span>
+      <nav aria-label="Project links">
+        <a href="https://github.com/yafi-s/crosswalk-lab/blob/main/docs/results.md">Results &amp; methodology</a>
+        <a href="https://github.com/yafi-s/crosswalk-lab/blob/main/docs/research.md">Research &amp; credits</a>
+      </nav>
+    </footer>
+  </main>
+</body>
+</html>
