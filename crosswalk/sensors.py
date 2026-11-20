@@ -8,6 +8,8 @@ import time
 import carla
 import numpy as np
 
+from .thermal import thermal_rgb
+
 
 def pose(x=0, y=0, z=0, pitch=0):
     return carla.Transform(carla.Location(x=x, y=y, z=z), carla.Rotation(pitch=pitch))
@@ -18,17 +20,12 @@ def rgb_image(image):
     return bgra[:, :, 2::-1].copy()
 
 
-def infrared_proxy(image):
-    """Class-based white-hot illustration; a semantic render has no radiometry."""
-    tags = np.frombuffer(image.raw_data, np.uint8).reshape(image.height, image.width, 4)[:, :, 2]
-    intensity = np.full(256, 75, dtype=np.uint8)
-    for name, level in {
-        "Sky": 20, "Roads": 95, "Sidewalks": 105, "Vegetation": 55, "Buildings": 88,
-        "Pedestrians": 245, "Rider": 235, "Car": 170, "Truck": 175, "Bus": 175,
-        "Bicycle": 130, "Motorcycle": 145, "RoadLines": 100,
-    }.items():
-        intensity[int(getattr(carla.CityObjectLabel, name))] = level
-    return np.repeat(intensity[tags][:, :, None], 3, axis=2)
+def depth_image(image):
+    bgra = np.frombuffer(image.raw_data, np.uint8).reshape(image.height, image.width, 4)
+    depth = bgra[:, :, 0].astype(np.float32) * 65536.0
+    depth += bgra[:, :, 1].astype(np.float32) * 256.0
+    depth += bgra[:, :, 2]
+    return depth * (1000.0 / 16777215.0)
 
 
 class Rig:
@@ -62,7 +59,8 @@ class Rig:
             attach("collision", "sensor.other.collision", pose(), {})
             if visuals:
                 attach("chase", "sensor.camera.rgb", pose(-7.5, z=4.1, pitch=-15), camera)
-                attach("infrared", "sensor.camera.semantic_segmentation", pose(1.3, z=1.65), camera)
+                attach("tags", "sensor.camera.semantic_segmentation", pose(1.3, z=1.65), camera)
+                attach("depth", "sensor.camera.depth", pose(1.3, z=1.65), camera)
         except BaseException:
             self.close()
             raise
@@ -90,8 +88,15 @@ class Rig:
                 raise RuntimeError(f"Expected {name} frame {frame}, received {item.frame}")
             if name in ("radar", "lidar"):
                 result[name] = np.frombuffer(item.raw_data, np.float32).reshape(-1, 4).copy()
+            elif name == "depth":
+                result[name] = depth_image(item)
+            elif name == "tags":
+                bgra = np.frombuffer(item.raw_data, np.uint8).reshape(item.height, item.width, 4)
+                result[name] = bgra[:, :, 2].copy()
             else:
-                result[name] = infrared_proxy(item) if name == "infrared" else rgb_image(item)
+                result[name] = rgb_image(item)
+        if "tags" in result:
+            result["infrared"] = thermal_rgb(result.pop("tags"), result.pop("depth"), seed=frame)
         return result
 
     def close(self):

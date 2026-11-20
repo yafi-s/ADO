@@ -8,6 +8,8 @@ from pathlib import Path
 
 import numpy as np
 
+from .vision import VISION_NAMES, summarize
+
 
 CRUISE_SPEED = 6.0
 MAX_RANGE = 60.0
@@ -16,7 +18,7 @@ LIDAR_Z = 2.3
 RADAR_X = 2.0
 RADAR_Z = 0.9
 CORRIDOR_HALF_WIDTH = 1.35
-MODEL_VERSION = 2
+MODEL_VERSION = 3
 FEATURE_NAMES = (
     "corridor_gap_m", "lidar_gap_m", "radar_gap_m", "left_lidar_gap_m",
     "right_lidar_gap_m", "radar_velocity_mps", "lidar_hits_log", "radar_hits_log",
@@ -26,7 +28,7 @@ FEATURE_NAMES = (
     for row in ("horizon", "near")
     for column in ("left", "center", "right")
     for measure in ("r", "g", "b", "gray_std")
-)
+) + VISION_NAMES
 
 
 def _returns(data):
@@ -58,7 +60,7 @@ def _camera_features(image):
     return values
 
 
-def features(rgb, lidar, radar, speed):
+def features(rgb, lidar, radar, speed, detections=()):
     """Encode a synchronized RGB image, lidar sweep, Doppler scan and ego speed.
 
     Lidar is mounted at (0, 0, 2.3) and radar at (2, 0, 0.9), both level.
@@ -89,7 +91,7 @@ def features(rgb, lidar, radar, speed):
         _gap(x[right] - BUMPER_X), radial_velocity, np.log1p(center.sum()),
         np.log1p(hits.sum()), speed,
     ]
-    return np.asarray(geometry + _camera_features(rgb), dtype=np.float32)
+    return np.asarray(geometry + _camera_features(rgb) + summarize(detections), dtype=np.float32)
 
 
 def expert_speed(gap):
@@ -141,11 +143,12 @@ class Model:
     def load(cls, path):
         with np.load(path, allow_pickle=False) as data:
             version = int(data["version"])
-            if (version not in (1, MODEL_VERSION)
-                    or tuple(data["feature_names"].tolist()) != FEATURE_NAMES):
+            names = tuple(data["feature_names"].tolist())
+            if (version not in (1, 2, MODEL_VERSION) or not names
+                    or names != FEATURE_NAMES[:len(names)]):
                 raise ValueError("policy is incompatible with this feature extractor")
             inputs = str(data["inputs"].item()) if version >= 2 else "fusion"
-            if version >= 2 and not np.array_equal(data["input_mask"], input_mask(inputs)):
+            if version >= 2 and not np.array_equal(data["input_mask"], input_mask(inputs)[:len(names)]):
                 raise ValueError("invalid model input mask")
             return cls(data["bias"], data["splits"], data["thresholds"], data["values"], inputs)
 
