@@ -12,16 +12,15 @@ import cv2
 import numpy as np
 
 from .drive import episode
-from .policy import Model
+from .policy import ACTION_NAMES, FEATURE_NAMES, Model
 from .runtime import simulator
 from .train import train
 
-TRAIN = (11, 12, 13, 14)
-AGGREGATE = (21, 22)
+TRAIN = (11, 12, 13, 14, 15, 16, 17, 18)
 HELD_OUT = (101, 102, 103, 104)
-TRAIN_KINDS = ("pedestrian", "lead", "clear")
+TRAIN_KINDS = ("pedestrian", "lead", "clear", "turn")
 EVAL_KINDS = TRAIN_KINDS + ("braking",)
-POLICIES = ("fusion", "camera", "rules")
+POLICIES = ("fusion", "camera")
 
 
 def write_json(path, value):
@@ -31,38 +30,40 @@ def write_json(path, value):
     tmp.replace(path)
 
 
-def collect(world, directory, seeds, policy, model=None):
+def collect(world, teacher, directory, seeds):
     files = []
     for seed in seeds:
         for kind in TRAIN_KINDS:
-            path = directory / f"{policy}-{seed}-{kind}.npz"
+            path = directory / f"town01-{seed}-{kind}.npz"
             files.append(path)
             if path.exists():
                 continue
-            summary, _, x, y = episode(world, kind, seed, policy, model, labels=True)
+            summary, _, x, y = episode(world, kind, seed, "demonstrator", teacher=teacher)
             print("Collection", seed, kind, summary["outcome"], len(y), flush=True)
             write_json(path.with_suffix(".json"), summary)
             temp = path.with_suffix(".partial.npz")
-            np.savez_compressed(temp, X=x, y=y, episode=np.repeat(path.stem, len(y)))
+            np.savez_compressed(temp, X=x, y=y, episode=np.repeat(path.stem, len(y)),
+                                seed=np.full(len(y), seed, dtype=np.int32))
             temp.replace(path)
     return files
 
 
 def bundle(files, path):
-    arrays = {key: [] for key in ("X", "y", "episode")}
+    arrays = {key: [] for key in ("X", "y", "episode", "seed")}
     for file in files:
         with np.load(file, allow_pickle=False) as sample:
             for key, rows in arrays.items():
                 rows.append(sample[key])
     path.parent.mkdir(parents=True, exist_ok=True)
-    np.savez_compressed(path, **{key: np.concatenate(rows) for key, rows in arrays.items()})
+    np.savez_compressed(path, feature_names=FEATURE_NAMES, action_names=ACTION_NAMES,
+                        **{key: np.concatenate(rows) for key, rows in arrays.items()})
 
 
 def fingerprint(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def study(world, root):
+def study(world, tm, root):
     work = root / "out"
     models = root / "models"
     results = root / "results"
@@ -76,22 +77,18 @@ def study(world, root):
     work = work / experiment_id
     demos = work / "collection"
     demos.mkdir(parents=True, exist_ok=True)
-    teacher = collect(world, demos, TRAIN, "expert")
-    initial_data, initial_model = work / "teacher.npz", work / "initial.npz"
-    bundle(teacher, initial_data)
-    train(initial_data, initial_model)
-    extra = collect(world, demos, AGGREGATE, "initial-fusion", Model.load(initial_model))
+    demonstrations = collect(world, tm, demos, TRAIN)
     combined = data / "training.npz"
-    bundle(teacher + extra, combined)
-    write_json(results / "collection.json", [json.loads(p.with_suffix(".json").read_text()) for p in teacher + extra])
-    for policy in POLICIES[:2]:
+    bundle(demonstrations, combined)
+    write_json(results / "collection.json", [json.loads(p.with_suffix(".json").read_text()) for p in demonstrations])
+    for policy in POLICIES:
         train(combined, models / f"{policy}.npz", results / f"fit-{policy}.json", inputs=policy)
-    eval_models = {p: Model.load(models / f"{p}.npz") for p in POLICIES[:2]}
+    eval_models = {p: Model.load(models / f"{p}.npz") for p in POLICIES}
     hashes = {p: fingerprint(models / f"{p}.npz") for p in eval_models}
     write_json(results / "manifest.json", dict(
         simulator="CARLA 0.9.16", map="Town01", dt_seconds=0.1, tick_limit=340, code_id=experiment_id,
         python_version=platform.python_version(), numpy_version=np.__version__, opencv_version=cv2.__version__,
-        expert_seeds=TRAIN, aggregation_seeds=AGGREGATE, test_seeds=HELD_OUT,
+        demonstration_seeds=TRAIN, test_seeds=HELD_OUT,
         training_encounters=TRAIN_KINDS, held_out_encounter_family="braking",
         test_encounters=EVAL_KINDS, policies=POLICIES, model_sha256=hashes,
         training_data_sha256=fingerprint(combined)))
@@ -101,15 +98,16 @@ def study(world, root):
             for policy in POLICIES:
                 name = f"{seed}-{kind}-{policy}"
                 path = work / "evaluation" / f"{name}.json"
-                digest = hashes.get(policy, "range-rule-v1")
+                digest = hashes[policy]
                 if path.exists() and (saved := json.loads(path.read_text()))["policy_version"] == digest:
                     summary = saved
                 else:
-                    # The first prespecified fusion pedestrian run supplies the public replay.
-                    replay = seed == HELD_OUT[0] and kind == "pedestrian" and policy == "fusion"
+                    # Record fixed, prespecified trials, including any failure in those trials.
+                    replay = seed == HELD_OUT[0] and kind in ("pedestrian", "braking", "turn") and policy == "fusion"
                     if replay:
                         from .viewio import Recording
-                    recording = Recording(root / "web" / "media") if replay else nullcontext()
+                    folder = root / "web" / "media"
+                    recording = Recording(folder if kind == "pedestrian" else folder / kind) if replay else nullcontext()
                     with recording as rec:
                         summary, trace, _, _ = episode(world, kind, seed, policy, eval_models.get(policy),
                                                        recording=rec)
@@ -135,8 +133,8 @@ def main():
     parser.add_argument("--attach", action="store_true")
     parser.add_argument("--output", type=Path, default=Path("."), help="Experiment root. Reuse to resume the same code version.")
     args = parser.parse_args()
-    with simulator(args.port, args.attach) as world:
-        study(world, args.output)
+    with simulator(args.port, args.attach, with_manager=True) as (world, tm):
+        study(world, tm, args.output)
 
 
 if __name__ == "__main__":

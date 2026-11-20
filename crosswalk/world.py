@@ -1,8 +1,4 @@
-"""Seeded encounters on uninterrupted two-way streets in CARLA Town01.
-
-Scenario state is available for ground-truth labels and scoring. The learned
-driver and the sensor-only rules baseline must not call expert_gap().
-"""
+"""Seeded Town01 routes and non-ego encounters. Actor state is for scoring."""
 
 import math
 import random
@@ -10,7 +6,7 @@ import random
 import carla
 
 
-KINDS = ("clear", "pedestrian", "lead", "braking")
+KINDS = ("clear", "pedestrian", "lead", "braking", "turn")
 ROUTE_METERS = 64
 _EXTENSION = 18  # let the departing lead keep driving past the ego's finish
 
@@ -70,10 +66,49 @@ def _routes(road_map, seed):
             yield points, near, far
 
 
+def _turn_routes(road_map, seed, direction):
+    """Follow one OpenDRIVE intersection connector, then its outbound lane."""
+    candidates = []
+    for entry, exit_wp in road_map.get_topology():
+        if entry.is_junction:
+            change = _angle(exit_wp.transform.rotation.yaw - entry.transform.rotation.yaw)
+            # CARLA's positive yaw turns toward the right.
+            if 60 <= (change if direction == "right" else -change) <= 120:
+                candidates.append(entry)
+    candidates.sort(key=lambda w: (w.road_id, w.lane_id, w.s))
+    rng = random.Random(seed)
+    rng.shuffle(candidates)
+    approach = rng.randint(21, 27)
+    for entry in candidates:
+        previous = entry.previous(float(approach))
+        if len(previous) != 1 or previous[0].is_junction:
+            continue
+        points = [previous[0]]
+        for _ in range(ROUTE_METERS):
+            choices = points[-1].next(1.0)
+            if len(choices) > 1:
+                choices = [w for w in choices if (w.road_id, w.lane_id) == (entry.road_id, entry.lane_id)]
+            if len(choices) != 1:
+                break
+            nxt = choices[0]
+            if nxt.is_junction and nxt.junction_id != entry.junction_id:
+                break
+            points.append(nxt)
+        if len(points) != ROUTE_METERS + 1 or points[-1].is_junction:
+            continue
+        if not any(p.road_id == entry.road_id and p.lane_id == entry.lane_id for p in points):
+            continue
+        # The opposing car starts on the inbound straight, facing away from the junction.
+        near = _opposite_lane(road_map, points[2])
+        far = _opposite_lane(road_map, points[approach - 6])
+        if near and far:
+            yield points, near, far
+
+
 class Scenario:
     """Spawn a scene in a synchronous world. The caller owns all world ticks."""
 
-    def __init__(self, world, kind, seed):
+    def __init__(self, world, kind, seed, perturb=False):
         kind = {"crossing": "pedestrian", "stopped_lead": "lead"}.get(kind, kind)
         if kind not in KINDS:
             raise ValueError(f"Unknown encounter {kind!r}, choose from {KINDS}")
@@ -84,6 +119,14 @@ class Scenario:
         self.ego = self.hazard = self.traffic = None
         self._previous_weather = world.get_weather()
         self._closed = False
+        self._signal_states = []
+        self._signals_were_frozen = None
+        self.turn_direction = ("right" if self.seed % 2 else "left") if kind == "turn" else None
+        self.spawn_lateral_m = self.spawn_yaw_deg = 0.0
+        if perturb:
+            pose_rng = random.Random(self.seed ^ 0x7A23)
+            self.spawn_lateral_m = pose_rng.choice((-1, 1)) * pose_rng.uniform(0.15, 0.45)
+            self.spawn_yaw_deg = pose_rng.choice((-1, 1)) * pose_rng.uniform(2.0, 5.0)
         dt = world.get_settings().fixed_delta_seconds
         if dt is None or dt <= 0:
             raise ValueError("Set synchronous mode and a fixed timestep before spawning a scenario")
@@ -93,7 +136,7 @@ class Scenario:
         self._event_start = None
         self.phase = {
             "clear": "clear road", "pedestrian": "waiting at curb",
-            "lead": "lead stopped", "braking": "lead cruising",
+            "lead": "lead stopped", "braking": "lead cruising", "turn": f"{self.turn_direction} turn",
         }[kind]
         rng = random.Random(self.seed ^ 0x2AF1)
         self._hazard_index = rng.randint(29, 39)
@@ -105,12 +148,24 @@ class Scenario:
             self._hazard_index = rng.randint(18, 24)
         try:
             road_map = world.get_map()
-            for points, near, far in _routes(road_map, self.seed):
+            routes = (_turn_routes(road_map, self.seed, self.turn_direction) if kind == "turn"
+                      else _routes(road_map, self.seed))
+            for points, near, far in routes:
                 if self._populate(points, near, far):
                     break
                 self._destroy_actors()
             else:
-                raise RuntimeError(f"No unobstructed two-way street long enough for this scenario in {road_map.name}")
+                raise RuntimeError(f"No unobstructed {kind} route available in {road_map.name}")
+            if kind == "turn":
+                # This isolated experiment has one approach and no cross traffic.
+                # Include signal actors associated with adjacent approach roads.
+                signals = world.get_actors().filter("traffic.traffic_light")
+                if signals:
+                    self._signal_states = [(signal, signal.get_state()) for signal in signals]
+                    self._signals_were_frozen = signals[0].is_frozen()
+                    world.freeze_all_traffic_lights(True)
+                    for signal in signals:
+                        signal.set_state(carla.TrafficLightState.Green)
             self.world.set_weather(getattr(carla.WeatherParameters, self.weather))
         except BaseException:
             self.close()
@@ -128,7 +183,11 @@ class Scenario:
         ego_bp.set_attribute("role_name", "hero")
         if ego_bp.has_attribute("color"):
             ego_bp.set_attribute("color", "225,225,225")
-        self.ego = self._spawn(ego_bp, _raised(points[0].transform, 0.35))
+        start = _raised(points[0].transform, 0.35)
+        right = start.get_right_vector()
+        spawn = carla.Transform(start.location + right * self.spawn_lateral_m, carla.Rotation(
+            pitch=start.rotation.pitch, yaw=start.rotation.yaw + self.spawn_yaw_deg, roll=start.rotation.roll))
+        self.ego = self._spawn(ego_bp, spawn)
         if self.ego is None:
             return False
         traffic_bp = library.find("vehicle.audi.a2")
@@ -137,14 +196,9 @@ class Scenario:
         if self.traffic is None:
             return False
         self._traffic_target = near.transform.location
-        self.route = [w.transform.location for w in points[: ROUTE_METERS + 1]]
-        self.route_start = self.route[0]
+        self._set_route([w.transform.location for w in points[: ROUTE_METERS + 1]])
         self.road_id, self.lane_id = points[0].road_id, points[0].lane_id
         self._lead_target = points[-1].transform.location
-        first, last = self.route[0], self.route[-1]
-        self.length = math.hypot(last.x - first.x, last.y - first.y)
-        self._fx = (last.x - first.x) / self.length
-        self._fy = (last.y - first.y) / self.length
         hazard_transform = points[self._hazard_index].transform
         if self.kind == "pedestrian":
             people = sorted(library.filter("walker.pedestrian.*"), key=lambda bp: bp.id)
@@ -162,11 +216,42 @@ class Scenario:
             lead_bp = library.find("vehicle.tesla.model3")
             lead_bp.set_attribute("role_name", self.kind)
             self.hazard = self._spawn(lead_bp, _raised(hazard_transform, 0.35))
-        return self.kind == "clear" or self.hazard is not None
+        return self.kind in ("clear", "turn") or self.hazard is not None
+
+    def _set_route(self, locations):
+        self.route = locations
+        self.route_start = locations[0]
+        self._segments = []
+        self.length = 0.0
+        for start, end in zip(locations, locations[1:]):
+            dx, dy = end.x - start.x, end.y - start.y
+            length = math.hypot(dx, dy)
+            if length > 1e-6:
+                self._segments.append((start.x, start.y, dx / length, dy / length, length, self.length))
+                self.length += length
+        if not self._segments:
+            raise ValueError("Scenario route has zero length")
+        self._fx, self._fy = self._segments[0][2:4]
 
     def _coordinates(self, location):
-        x, y = location.x - self.route[0].x, location.y - self.route[0].y
-        return x * self._fx + y * self._fy, y * self._fx - x * self._fy
+        """Nearest point on the route polyline, in metres along and right of it."""
+        nearest = math.inf
+        px, py = location.x, location.y
+        for sx, sy, ux, uy, length, start_s in self._segments:
+            x, y = px - sx, py - sy
+            tangent = x * ux + y * uy
+            along = _clip(tangent, 0.0, length)
+            distance_sq = (x - along * ux) ** 2 + (y - along * uy) ** 2
+            if distance_sq < nearest:
+                nearest = distance_sq
+                progress = start_s + along
+                side = y * ux - x * uy
+                extension = tangent - along
+        # Actors can sit behind the start or drive into the runout. Extend the
+        # end tangents for their clearance; metrics() caps route completion.
+        if progress == 0.0 or progress == self.length:
+            return progress + extension, side
+        return progress, math.copysign(math.sqrt(nearest), side)
 
     def _drive_to(self, actor, destination, speed):
         pose = actor.get_transform()
@@ -236,7 +321,7 @@ class Scenario:
         self._drive_to(self.traffic, self._traffic_target, oncoming_speed)
 
     def expert_gap(self):
-        """For imitation labels only. Longitudinal bumper clearance, capped at 60 m."""
+        """Ground truth for scenario triggers and scoring. Bumper clearance caps at 60 m."""
         if self.hazard is None:
             return 60.0
         hazard_s, hazard_l = self._coordinates(self.hazard.get_location())
@@ -245,7 +330,7 @@ class Scenario:
         if hazard_s < ego_s - ego_box.extent.x:
             return 60.0
         if self.kind == "pedestrian":
-            # Allow the teacher a small lateral buffer for the moving walker.
+            # Include a small lateral buffer for the moving walker.
             if abs(hazard_l - ego_l) > ego_box.extent.y + 0.60:
                 return 60.0
             tail = max(hazard_box.extent.x, hazard_box.extent.y)
@@ -267,6 +352,9 @@ class Scenario:
             "hazard_gap_m": gap,
             "hazard_in_path": gap < 60.0,
             "event_start_s": self._event_start,
+            "turn_direction": self.turn_direction,
+            "spawn_lateral_m": self.spawn_lateral_m,
+            "spawn_yaw_deg": self.spawn_yaw_deg,
         }
 
     def _destroy_actors(self):
@@ -281,5 +369,11 @@ class Scenario:
             try:
                 self._destroy_actors()
             finally:
-                self.world.set_weather(self._previous_weather)
-                self._closed = True
+                try:
+                    for signal, state in self._signal_states:
+                        signal.set_state(state)
+                finally:
+                    if self._signals_were_frozen is not None:
+                        self.world.freeze_all_traffic_lights(self._signals_were_frozen)
+                    self.world.set_weather(self._previous_weather)
+                    self._closed = True

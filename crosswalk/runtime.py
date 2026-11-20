@@ -20,12 +20,12 @@ def _server_executable():
 
 
 @contextmanager
-def simulator(port=2468, attach=False, quality="Low"):
+def simulator(port=2468, attach=False, quality="Epic", with_manager=False):
     process = None
     old_settings = None
     world = None
     log = None
-    client = carla.Client("127.0.0.1", port, worker_threads=2)
+    tm = None
     try:
         if not attach:
             for n in (port, port + 1, port + 2):
@@ -34,23 +34,31 @@ def simulator(port=2468, attach=False, quality="Low"):
             exe = _server_executable()
             Path(".local").mkdir(exist_ok=True)
             log = open(".local/carla-server.log", "ab")
-            args = [str(exe), "/Game/Carla/Maps/Town01", "-RenderOffScreen", "-nosound",
+            args = [str(exe), "CarlaUE4", "/Game/Carla/Maps/Town01",
+                    "-ini:Engine:[/Script/EngineSettings.GameMapsSettings]:GameDefaultMap=/Game/Carla/Maps/Town01",
+                    "-ini:Engine:[/Script/EngineSettings.GameMapsSettings]:ServerDefaultMap=/Game/Carla/Maps/Town01",
+                    "-RenderOffScreen", "-nosound",
                     "-unattended", "-nosplash", "-carla-rpc-port=" + str(port),
                     "-quality-level=" + quality, "-ResX=640", "-ResY=360",
                     "-USEALLAVAILABLECORES", "-corelimit=4", "-stdout"]
             flags = (subprocess.CREATE_NO_WINDOW | subprocess.BELOW_NORMAL_PRIORITY_CLASS) if os.name == "nt" else 0
             process = subprocess.Popen(args, cwd=exe.parent, stdout=log, stderr=log, creationflags=flags)
 
-        deadline = time.monotonic() + 90
-        client.set_timeout(2.0)
+        deadline = time.monotonic() + 120
         while time.monotonic() < deadline:
             if process and process.poll() is not None:
                 raise RuntimeError(f"CARLA exited with status {process.returncode}. See .local/carla-server.log.")
             try:
+                # A client constructed before Unreal binds its RPC socket can retain
+                # the failed connection. Create a fresh client on each readiness try.
+                with socket.create_connection(("127.0.0.1", port), timeout=1):
+                    pass
+                client = carla.Client("127.0.0.1", port, worker_threads=2)
+                client.set_timeout(4.)
                 version = client.get_server_version()
                 break
-            except RuntimeError:
-                time.sleep(0.4)
+            except (OSError, RuntimeError):
+                time.sleep(0.5)
         else:
             raise TimeoutError(f"CARLA did not answer on port {port}")
         if not version.startswith("0.9.16"):
@@ -70,9 +78,16 @@ def simulator(port=2468, attach=False, quality="Low"):
         settings.max_substep_delta_time = 0.01
         settings.max_substeps = 10
         world.apply_settings(settings)
-        yield world
+        if with_manager:
+            tm = client.get_trafficmanager(port + 20)
+            tm.set_synchronous_mode(True)
+            yield world, tm
+        else:
+            yield world
     finally:
         try:
+            if tm is not None:
+                tm.set_synchronous_mode(False)
             if world is not None and old_settings is not None:
                 world.apply_settings(old_settings)
         finally:

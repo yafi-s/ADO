@@ -1,7 +1,7 @@
-"""Shared pure-pursuit steering and low-level speed tracking in CARLA."""
+"""Vehicle speed and map-relative navigation inputs for the learned policy."""
 import math
 
-import carla
+import numpy as np
 
 
 def vehicle_speed(ego):
@@ -9,22 +9,30 @@ def vehicle_speed(ego):
     return math.sqrt(v.x**2 + v.y**2 + v.z**2)
 
 
-def command(ego, route, speed, target):
-    transform = ego.get_transform()
-    pos = transform.location
-    yaw = math.radians(transform.rotation.yaw)
-    # The sedan's reference point is near its center; pure pursuit uses the rear axle.
-    rear_x, rear_y = pos.x - 1.4 * math.cos(yaw), pos.y - 1.4 * math.sin(yaw)
-    nearest = min(range(len(route)), key=lambda i: (route[i].x - rear_x)**2 + (route[i].y - rear_y)**2)
-    lookahead = 4.0 + speed * 0.45
-    goal = next((p for p in route[nearest:] if math.hypot(p.x - rear_x, p.y - rear_y) >= lookahead), route[-1])
-    dx, dy = goal.x - rear_x, goal.y - rear_y
-    lateral = -dx * math.sin(yaw) + dy * math.cos(yaw)
-    curvature = 2 * lateral / max(1., dx*dx + dy*dy)
-    steer = max(-1., min(1., math.atan(2.8 * curvature) / math.radians(55)))
-    error = target - speed
-    throttle = min(0.70, max(0.0, 0.10 + 0.32 * error)) if target > 0.12 else 0.
-    brake = min(1., max(0., -0.35 * error))
-    if target <= 0.12 and speed < 0.35:
-        brake = 1.
-    return carla.VehicleControl(throttle=throttle if brake == 0 else 0., brake=brake, steer=steer)
+class Navigation:
+    """Sample map points at fixed arc lengths in the ego frame, in metres."""
+    def __init__(self, route):
+        self.points = np.array([(p.x, p.y) for p in route], dtype=float)
+        self.delta = np.diff(self.points, axis=0)
+        lengths = np.linalg.norm(self.delta, axis=1)
+        self.lengths = np.maximum(lengths, 1e-7)
+        self.arc = np.r_[0., np.cumsum(lengths)]
+
+    def read(self, ego):
+        t = ego.get_transform()
+        pos = np.array((t.location.x, t.location.y))
+        yaw = math.radians(t.rotation.yaw)
+        offset = pos - self.points[:-1]
+        fraction = np.clip((offset * self.delta).sum(axis=1) / self.lengths**2, 0, 1)
+        residual = offset - self.delta * fraction[:, None]
+        idx = int(np.argmin((residual**2).sum(axis=1)))
+        progress = self.arc[idx] + fraction[idx] * self.lengths[idx]
+        distances = progress + np.array((3., 7., 13.))
+        # Extend the last route tangent beyond the measured finish so navigation
+        # inputs don't collapse in the final metres of an otherwise straight lane.
+        extra = np.maximum(0., distances - self.arc[-1])
+        goals = np.column_stack([np.interp(distances, self.arc, p) for p in self.points.T])
+        goals += extra[:, None] * self.delta[-1] / self.lengths[-1]
+        dx, dy = (goals - pos).T
+        c, s = math.cos(yaw), math.sin(yaw)
+        return np.column_stack([dx*c + dy*s, -dx*s + dy*c]).ravel()

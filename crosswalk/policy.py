@@ -1,8 +1,4 @@
-"""Sensor features and two longitudinal policies for short, near-level urban routes.
-
-Geometry uses CARLA's vehicle coordinate convention (x forward, y right, z up).
-Only the training harness is allowed to supply an actor-derived expert label.
-"""
+"""Sensor and navigation features for a learned CARLA actuator policy."""
 
 from pathlib import Path
 
@@ -11,14 +7,15 @@ import numpy as np
 from .vision import VISION_NAMES, summarize
 
 
-CRUISE_SPEED = 6.0
+ACTION_NAMES = ("steer", "throttle", "brake")
 MAX_RANGE = 60.0
 BUMPER_X = 2.25
 LIDAR_Z = 2.3
 RADAR_X = 2.0
 RADAR_Z = 0.9
 CORRIDOR_HALF_WIDTH = 1.35
-MODEL_VERSION = 3
+MODEL_VERSION = 4
+NAV_NAMES = tuple(f"route_{distance}m_{axis}_m" for distance in (3, 7, 13) for axis in ("x", "y"))
 FEATURE_NAMES = (
     "corridor_gap_m", "lidar_gap_m", "radar_gap_m", "left_lidar_gap_m",
     "right_lidar_gap_m", "radar_velocity_mps", "lidar_hits_log", "radar_hits_log",
@@ -28,7 +25,7 @@ FEATURE_NAMES = (
     for row in ("horizon", "near")
     for column in ("left", "center", "right")
     for measure in ("r", "g", "b", "gray_std")
-) + VISION_NAMES
+) + VISION_NAMES + NAV_NAMES
 
 
 def _returns(data):
@@ -60,7 +57,7 @@ def _camera_features(image):
     return values
 
 
-def features(rgb, lidar, radar, speed, detections=()):
+def features(rgb, lidar, radar, speed, detections=(), navigation=None):
     """Encode a synchronized RGB image, lidar sweep, Doppler scan and ego speed.
 
     Lidar is mounted at (0, 0, 2.3) and radar at (2, 0, 0.9), both level.
@@ -91,88 +88,94 @@ def features(rgb, lidar, radar, speed, detections=()):
         _gap(x[right] - BUMPER_X), radial_velocity, np.log1p(center.sum()),
         np.log1p(hits.sum()), speed,
     ]
-    return np.asarray(geometry + _camera_features(rgb) + summarize(detections), dtype=np.float32)
-
-
-def expert_speed(gap):
-    """Preview braking with 3 m of standstill clearance and 1.65 m/s² deceleration."""
-    return min(CRUISE_SPEED, float(np.sqrt(2 * 1.65 * max(0.0, float(gap) - 3.0))))
-
-
-def rule_speed(x):
-    """Apply the explicit braking law to measured in-lane clearance."""
-    return expert_speed(x[0])
+    nav = np.asarray(navigation, dtype=np.float32)
+    if nav.shape != (6,) or not np.isfinite(nav).all():
+        raise ValueError("expected three ego-local route points [x3,y3,x7,y7,x13,y13]")
+    return np.asarray(geometry + _camera_features(rgb) + summarize(detections) + nav.tolist(),
+                      dtype=np.float32)
 
 
 def input_mask(inputs):
-    """Columns available to a model. Both configurations receive the ego speed."""
-    if inputs == "fusion":
-        return np.ones(len(FEATURE_NAMES), dtype=bool)
-    if inputs == "camera":
-        return np.asarray([name == "ego_speed_mps" or name.startswith("rgb_")
-                           for name in FEATURE_NAMES])
-    raise ValueError(f"unknown model inputs: {inputs}")
+    if inputs not in ("fusion", "camera"):
+        raise ValueError(f"unknown model inputs: {inputs}")
+    return np.asarray([inputs == "fusion" or name.startswith(("rgb_", "route_"))
+                       or name == "ego_speed_mps" for name in FEATURE_NAMES])
+
+
+def head_columns(inputs):
+    nav = np.asarray([name in NAV_NAMES for name in FEATURE_NAMES])
+    speed = np.asarray([name == "ego_speed_mps" for name in FEATURE_NAMES])
+    return np.flatnonzero(nav | speed), np.flatnonzero(input_mask(inputs) & ~nav)
+
+
+def linear(x, w):
+    # Direct einsum runs these small contractions on one CPU thread.
+    return np.einsum("bi,ij->bj", x, w, optimize=False)
+
+
+def forward(x, weights):
+    w1, b1, w2, b2 = weights
+    hidden = np.tanh(linear(x, w1) + b1)
+    return hidden, linear(hidden, w2) + b2
 
 
 class Model:
-    """Small boosted CART ensemble. All split thresholds and leaf speeds are fitted."""
+    """Independent neural steering and longitudinal heads trained on demonstrated controls."""
 
-    def __init__(self, bias, splits, thresholds, values, inputs="fusion"):
-        self.bias = float(bias)
+    def __init__(self, inputs, mean, scale, heads):
         self.inputs = inputs
         self.mask = input_mask(inputs)
-        self.splits = np.asarray(splits, dtype=np.int32)
-        self.thresholds = np.asarray(thresholds, dtype=np.float64)
-        self.values = np.asarray(values, dtype=np.float64)
-        if (
-            self.splits.ndim != 2 or self.splits.shape != self.thresholds.shape
-            or self.splits.shape != self.values.shape or not self.splits.size
-            or not (-1 <= self.splits).all() or not (self.splits < len(FEATURE_NAMES)).all()
-            or not np.isfinite(self.values).all() or not np.isfinite(self.thresholds).all()
-            or not np.isfinite(self.bias)
-        ):
-            raise ValueError("invalid policy arrays")
-        if not self.mask[self.splits[self.splits >= 0]].all():
-            raise ValueError("model splits use unavailable sensor inputs")
-        # All actual children must be inside the fixed heap of each tree.
-        occupied = np.where(self.splits >= 0)[1]
-        if (2 * occupied + 2 >= self.splits.shape[1]).any():
-            raise ValueError("invalid tree depth")
+        self.columns = head_columns(inputs)
+        self.mean = np.asarray(mean, dtype=np.float32)
+        self.scale = np.asarray(scale, dtype=np.float32)
+        self.heads = heads
+        if (self.mean.shape != self.mask.shape or self.scale.shape != self.mask.shape
+                or not np.isfinite(self.mean).all() or not np.isfinite(self.scale).all()
+                or not (self.scale > 0).all()):
+            raise ValueError("invalid model normalization")
+        if len(heads) != 2:
+            raise ValueError("expected two control heads")
+        for columns, (w1, b1, w2, b2) in zip(self.columns, heads):
+            if (b1.ndim != 1 or not b1.size or w1.shape != (len(columns), b1.size)
+                    or w2.shape != (b1.size, 1) or b2.shape != (1,)
+                    or not all(np.isfinite(p).all() for p in (w1, b1, w2, b2))):
+                raise ValueError("invalid neural policy parameters")
 
-    @classmethod
-    def load(cls, path):
-        with np.load(path, allow_pickle=False) as data:
-            version = int(data["version"])
-            names = tuple(data["feature_names"].tolist())
-            if (version not in (1, 2, MODEL_VERSION) or not names
-                    or names != FEATURE_NAMES[:len(names)]):
-                raise ValueError("policy is incompatible with this feature extractor")
-            inputs = str(data["inputs"].item()) if version >= 2 else "fusion"
-            if version >= 2 and not np.array_equal(data["input_mask"], input_mask(inputs)[:len(names)]):
-                raise ValueError("invalid model input mask")
-            return cls(data["bias"], data["splits"], data["thresholds"], data["values"], inputs)
+    def predict_batch(self, X):
+        X = np.asarray(X, dtype=np.float32)
+        if X.ndim != 2 or X.shape[1] != len(FEATURE_NAMES) or not np.isfinite(X[:, self.mask]).all():
+            raise ValueError("invalid neural policy inputs")
+        outputs = []
+        for columns, weights in zip(self.columns, self.heads):
+            z = np.clip((X[:, columns] - self.mean[columns]) / self.scale[columns], -8, 8)
+            _, output = forward(z, weights)
+            outputs.append(np.clip(output[:, 0], -1, 1))
+        steer, drive = outputs
+        return np.column_stack((steer, np.maximum(drive, 0), np.maximum(-drive, 0)))
+
+    def predict(self, x):
+        steer, throttle, brake = self.predict_batch(np.asarray(x)[None, :])[0]
+        return float(steer), float(throttle), float(brake)
 
     def save(self, path):
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
+        params = {f"{head}_{i}": param for head, weights in zip(("steer", "drive"), self.heads)
+                  for i, param in enumerate(weights)}
         with path.open("wb") as output:
-            np.savez_compressed(
-                output, version=MODEL_VERSION, feature_names=FEATURE_NAMES, bias=self.bias,
-                inputs=self.inputs, input_mask=self.mask,
-                splits=self.splits, thresholds=self.thresholds, values=self.values,
-            )
+            np.savez_compressed(output, version=MODEL_VERSION, feature_names=FEATURE_NAMES,
+                                action_names=ACTION_NAMES, inputs=self.inputs, input_mask=self.mask,
+                                mean=self.mean, scale=self.scale, **params)
 
-    def predict(self, x):
-        x = np.asarray(x, dtype=np.float32)
-        if x.shape != (len(FEATURE_NAMES),) or not np.isfinite(x[self.mask]).all():
-            raise ValueError("invalid policy input")
-        trees = np.arange(len(self.splits))
-        nodes = np.zeros(len(trees), dtype=np.int32)
-        while True:
-            columns = self.splits[trees, nodes]
-            active = columns >= 0
-            if not active.any():
-                break
-            right = x[columns[active]] > self.thresholds[trees[active], nodes[active]]
-            nodes[active] = 2 * nodes[active] + 1 + right
-        return float(np.clip(self.bias + self.values[trees, nodes].sum(), 0, CRUISE_SPEED))
+    @classmethod
+    def load(cls, path):
+        with np.load(path, allow_pickle=False) as data:
+            if (int(data["version"]) != MODEL_VERSION
+                    or tuple(data["feature_names"].tolist()) != FEATURE_NAMES
+                    or tuple(data["action_names"].tolist()) != ACTION_NAMES):
+                raise ValueError("incompatible policy; train an actuator model from demonstrations")
+            inputs = str(data["inputs"].item())
+            if not np.array_equal(data["input_mask"], input_mask(inputs)):
+                raise ValueError("invalid policy input mask")
+            heads = [[data[f"{head}_{i}"] for i in range(4)] for head in ("steer", "drive")]
+            return cls(inputs, data["mean"], data["scale"], heads)

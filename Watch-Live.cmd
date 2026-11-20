@@ -14,7 +14,7 @@ if not exist "models\fusion.npz" (
 )
 
 echo Starting the live console. Press Ctrl+C to stop the run.
-".venv\Scripts\python.exe" -m crosswalk.drive --serve --loop --open-browser
+".venv\Scripts\python.exe" -m crosswalk.drive --serve --loop --tour --open-browser
 set "result=%errorlevel%"
 popd
 exit /b %result%
