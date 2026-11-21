@@ -58,12 +58,33 @@ def scorecard():
         f'{blocked["longest_stop_s"]:.1f} seconds at the blocked lane.',
         ("Synchronized before and after", "./media/roadworks-pace/roadside-comparison.mp4"),
         ("Conditions and limits", TAG + "results/roadworks-pace/README.md"))
+    sections = read("results/roadworks-pace/matched-route-intervals.json")
+    old_speed = sections["v04_high"]["shared_boulevard"]["speed_kmh"]
+    new_speed = sections["clearance_high"]["shared_boulevard"]["speed_kmh"]
+    add("Remaining slowdown",
+        f'On the original route, median speed on a different boulevard segment fell from {old_speed:.1f} '
+        f'to {new_speed:.1f} km/h. At 434 m the front detector reported a person. The three-camera test '
+        'retained its input features and controls but has no image to verify that classification.',
+        ("Frame-level measurements", TAG + "results/roadworks-pace/optical-slowdown-434m.json"),
+        ("Other route sections", TAG + "results/roadworks-pace/matched-route-intervals.json"))
     add("Cone identification",
         f'On the original film, {cones["matched"]} fresh camera-and-lidar readings matched the six drums. '
         f'{len(cones["unmatched"])} were unmatched. Fresh readings covered '
         f'{cones["matched_within_20m"]}/{cones["within_20m_reference_actor_frames"]} nearby drum-frames.',
         ("Inspect the original exposure", f"./inspect.html?run=urban-pace&frame={old_frame}&camera=front"),
         ("Held-out checks", TAG + "results/cone-perception/README.md"))
+    prior = read("results/distant-awareness/high-before.json")
+    updated = read("results/distant-awareness/high-after.json")
+    lead_old, = (e for e in prior["encounters"] if e["role"] == "lead")
+    lead_new, = (e for e in updated["encounters"] if e["id"] == lead_old["id"])
+    before = lead_old["first"]["display"]
+    after = lead_new["first"]["display"]
+    add("First ranged vehicle",
+        f'On the same Urban Pace sensor tape, the lead car first appeared as a correctly placed 3D body at '
+        f'{after["range_m"]:.1f} m, versus {before["range_m"]:.1f} m with the older display. The front '
+        'camera can also show a bearing before the sensors have enough range evidence for a 3D body.',
+        ("Inspect the lead car", f'./inspect.html?run=urban-pace&frame={after["frame"]}&camera=front'),
+        ("By class and distance", TAG + "results/distant-awareness/README.md"))
     return {"checks": checks, "scope": "The site replays closed-loop simulated drives. "
             "Population counts include occluded traffic. A 3D symbol needs measured range. "
             "First-sighting distances depend on the individual road user, view and occlusion."}

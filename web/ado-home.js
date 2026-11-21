@@ -18,7 +18,8 @@ const CAMERA_ORDER = Object.keys(CAMERA_LABELS);
 const LOCAL_CONSOLE = ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname);
 const POLICY_LABELS = {
   fusion: 'Learned multisensor', camera: 'Learned vision',
-  'ado-city-pace-v1': 'ADO urban pace', 'ado-city-cruise-v1': 'ADO urban cruise', 'ado-city-policy-v1': 'ADO city driver', 'ado-behavior-v2': 'ADO behavior v2',
+  'ado-city-clearance-v1': 'ADO city clearance', 'ado-city-pace-v1': 'ADO urban pace',
+  'ado-city-cruise-v1': 'ADO urban cruise', 'ado-city-policy-v1': 'ADO city driver', 'ado-behavior-v2': 'ADO behavior v2',
   demonstrator: 'Training instructor', teacher: 'Training instructor'
 };
 const OUTCOME_LABELS = {complete: 'Route complete', red_light: 'Red-light violation'};
