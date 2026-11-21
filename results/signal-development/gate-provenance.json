@@ -1,0 +1,38 @@
+{
+  "gate_sha256": "59683cd2f611ba51372adb948233dc746d8de703fbe2edafd3555d4952d30d0e",
+  "gate": {
+    "median_frames": 5,
+    "version": 1,
+    "weights": [
+      10.549028340078598,
+      -4.860734130902846
+    ]
+  },
+  "learner_source": "crosswalk/lamp_study.py",
+  "learner_sha256": "bc6efefbde62d2a2dea5e40a9c5b3245cb4adf96ad9d9bae21e0533ee7fcda6f",
+  "runtime_source": "crosswalk/lamp.py",
+  "runtime_sha256": "90a551a1e7587d8df46b8b99603ac6c3a670d9673c326e14cb1da7e7c26e934e",
+  "lamp_sha256": "5d8479b212c386af7fa5df8128f468727b4a55abb1f8abd7c68fd40ac5d09d33",
+  "lesson_archive_sha256": "26ee3acea4bd1177aea7738b19f0bc79e1b82b90ea5fe07bb6892a8e27d14a25",
+  "model_sha256": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+  "training_seeds": [
+    11,
+    12,
+    13,
+    14
+  ],
+  "drives": 8,
+  "frames": 486,
+  "single_feature": "Peak of trailing five-frame median RGB red probability during currently visible approach",
+  "fit_label": "Training drive had red-to-green cycle (1) or remained green (0)",
+  "history_reset": "At new episode or absent mapped, in-view signal projection",
+  "state_at_inference": "Three RGB views, planned route, static geometry, own pose and speed",
+  "selection": "Compared on development seeds 31 and 32. No final evaluation routes used for selection.",
+  "integrated_vs_tested_prototype_exact_training_rows": 486,
+  "training_pole_leave_one_out_frame_class_accuracy": {
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0
+  }
+}

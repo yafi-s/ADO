@@ -10,7 +10,7 @@ from time import perf_counter
 import cv2
 import numpy as np
 
-from .lamp import CAMERAS, LampClassifier, LampExpert, RouteLamps, calibrate, color_features, head_vertices, select_crop
+from .lamp import APPROACH_GATE_SHA256, CAMERAS, LampClassifier, LampExpert, RouteLamps, calibrate, color_features, head_vertices, select_crop
 
 
 FIT_SEEDS = (11, 12, 13, 14)
@@ -276,13 +276,14 @@ def fit_expert(study, lessons, output):
     print(json.dumps({k: v for k, v in report.items() if k not in ("validation", "lessons")}, indent=2))
 
 
-def _validate_drive(world, kind, seed, start_green, model, expert):
+def _validate_drive(world, kind, seed, start_green, model, expert, mixture="full"):
     """Use the ordinary episode loop; wrap its public sensor/actuator boundary only."""
     import carla
     from unittest.mock import patch
     from . import drive
     from .control import vehicle_speed
     observations = []
+    controller = expert.for_episode() if mixture == "history" else expert
     class TestScene(drive.Scenario):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
@@ -302,15 +303,20 @@ def _validate_drive(world, kind, seed, start_green, model, expert):
     class ActuatorTrace:
         def predict(self, x):
             base = model.predict(x)
-            selected = expert.apply(self.observation, vehicle_speed(self.ego), base)
             obs = self.observation
+            selected = controller.apply(obs, vehicle_speed(self.ego), base)
+            if mixture == "instantaneous" and obs is not None:
+                p = expert.red_probability(obs[1])
+                pedal = p*(selected[1]-selected[2]) + (1.-p)*(base[1]-base[2])
+                selected = base[0], max(0., pedal), max(0., -pedal)
             observations.append(dict(gap_m=obs[0] if obs else None,
                                      p_red=expert.red_probability(obs[1]) if obs else None,
                                      base=list(base), selected=list(selected)))
             return selected
     gate = ActuatorTrace()
     with patch.object(drive, "Scenario", TestScene), patch.object(drive, "Rig", TestRig):
-        summary, trace, *_ = drive.episode(world, kind, seed, "fusion", gate, district="train")
+        destination = ("market" if seed == 31 else "station") if kind == "trip" else None
+        summary, trace, *_ = drive.episode(world, kind, seed, "fusion", gate, district="train", destination=destination)
     if len(trace) != len(observations):
         raise RuntimeError("Sensor and actuator verification streams have different lengths.")
     for row, obs in zip(trace, observations):
@@ -322,6 +328,7 @@ def _validate_drive(world, kind, seed, start_green, model, expert):
                    engaged_frames=sum(r["gap_m"] is not None for r in observations),
                    modified_frames=sum(r["base"] != r["selected"] for r in observations),
                    red_stopped_frames=len(stopped),
+                   green_stop_frames_after_first_metre=sum(r["speed_mps"] <= .35 and r["progress_m"] > 1. for r in green),
                    smallest_red_gap_m=min((r["expert"]["gap_m"] for r in red
                                             if r["expert"]["gap_m"] is not None), default=None),
                    final_red_speed_mps=red[-1]["speed_mps"] if red else None,
@@ -340,6 +347,7 @@ def main():
     parser.add_argument("--lessons", type=Path, help="Additional lesson input for offline fitting")
     parser.add_argument("--expert", type=Path, help="Learned signal model for closed-loop validation")
     parser.add_argument("--base", type=Path, default=Path("models/fusion.npz"))
+    parser.add_argument("--mixture", choices=("full","instantaneous","history"), default="full")
     args = parser.parse_args()
     if args.mode == "validate":
         import gzip
@@ -354,11 +362,14 @@ def main():
         expert = LampExpert.load(args.expert)
         base = Model.load(args.base)
         hashes = {k: hashlib.sha256(p.read_bytes()).hexdigest() for k, p in (("expert",args.expert),("base",args.base))}
+        if args.mixture == "history":
+            hashes["approach_gate"] = APPROACH_GATE_SHA256
         summaries = []
         cases = [("signal", seed, green) for seed in VALIDATION_SEEDS for green in (False, True)]
+        controls = [("clear", 31, False)] if args.mixture == "full" else [("trip", seed, False) for seed in VALIDATION_SEEDS]
         with simulator(args.port, args.attach) as world:
-            for kind, seed, green in cases + [("clear", 31, False)]:
-                result, trace = _validate_drive(world, kind, seed, green, base, expert)
+            for kind, seed, green in cases + controls:
+                result, trace = _validate_drive(world, kind, seed, green, base, expert, args.mixture)
                 name = f"{kind}-{seed}-{'green' if green else 'cycle'}"
                 with gzip.open(args.output / f"{name}.jsonl.gz", "wt", encoding="utf-8") as f:
                     for row in trace:

@@ -32,7 +32,7 @@ class LiveTests(unittest.TestCase):
     def test_latest_frame_and_idle(self):
         with Live(0) as live:
             with urlopen(live.url, timeout=5) as response:
-                self.assertIn(b"Drive monitor", response.read())
+                self.assertIn(b"Autonomous Driver Omniverse", response.read())
             endpoint = live.url + "api/frame"
             with self.assertRaises(HTTPError) as idle:
                 urlopen(endpoint, timeout=5)

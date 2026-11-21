@@ -244,7 +244,53 @@ def traction_section(lines, result):
     ])
 
 
-def training_section(lines, collection, fits):
+def development_section(lines, results):
+    baseline_path = results / "development-baseline" / "episodes.json"
+    candidate_path = results / "dev" / "episodes.json"
+    if not baseline_path.is_file() or not candidate_path.is_file():
+        return
+
+    baseline, candidate = (read_json(path) for path in (baseline_path, candidate_path))
+    before = {(*trial_key(trial), trial["policy"]): trial for trial in baseline}
+    after = {(*trial_key(trial), trial["policy"]): trial for trial in candidate}
+    pair_fields = ("district", "crossing_delay_s", "producer", "render_profile")
+    pairs = [
+        (before[key], after[key]) for key in sorted(before.keys() & after.keys())
+        if matching_setup(before[key], after[key])
+        and all(before[key][field] == after[key][field] for field in pair_fields)
+    ]
+    if not pairs:
+        return
+    seeds = {initial["seed"] for initial, _ in pairs}
+    lines.extend([
+        "", "## Development comparison", "",
+        f"The initial and updated checkpoints matched on {len(pairs)} drives by seed, exact case ID, policy "
+        f"and recorded setup. Development used seed(s) {ids(seeds)} in the training district for iteration "
+        "ahead of the held-out evaluation.",
+        "", "| Policy | Paired drives | Clean finishes before → after | Timeouts before → after | Contact trials before → after |",
+        "| --- | ---: | ---: | ---: | ---: |",
+    ])
+    for policy in ("fusion", "camera"):
+        group = [(initial, updated) for initial, updated in pairs if initial["policy"] == policy]
+        before_rows, after_rows = zip(*group) if group else ((), ())
+        stats = [
+            (sum(map(clean, rows)), sum(row["outcome"] == "timeout" for row in rows),
+             sum(row["collision_events"] > 0 for row in rows))
+            for rows in (before_rows, after_rows)
+        ]
+        comparison = " | ".join(f"{a} → {b}" for a, b in zip(*stats))
+        lines.append(f"| {policy.title()} | {len(group)} | {comparison} |")
+    if len(pairs) != len(baseline) or len(pairs) != len(candidate):
+        lines.extend(["", f"The table covers {len(pairs)}/{len(baseline)} baseline records and "
+                      f"{len(pairs)}/{len(candidate)} updated records that matched the paired setup."])
+    lines.extend([
+        "", "[Initial development drives](../results/development-baseline/episodes.json) "
+        "· [Updated development drives](../results/dev/episodes.json) "
+        "· [Updated development protocol and model hashes](../results/dev/manifest.json)",
+    ])
+
+
+def training_section(lines, collection, fits, manifest):
     lines.extend([
         "", "## Demonstrations and offline checks", "",
         f"{len(collection)} Traffic Manager demonstration drives covered {len({r['seed'] for r in collection})} seeds. "
@@ -264,6 +310,20 @@ def training_section(lines, collection, fits):
             f"- **{policy.title()}** trained on {fit['final_model_fit_frames']:,} synchronized demonstration rows"
             f" with {fit['features']} input features.{diagnostic} [Fit log](../results/fit-{policy}.json)"
         )
+    if all(fit.get("pedal_training") == "local_cues" for fit in fits.values()):
+        pedal_inputs = {policy: len(fit["head_features"]["drive"]) for policy, fit in fits.items()}
+        lines.extend([
+            "", f"The compact pedal heads used {pedal_inputs['fusion']} fusion inputs and "
+            f"{pedal_inputs['camera']} camera inputs.",
+        ])
+    specialist = manifest.get("signal_specialist")
+    if specialist:
+        lines.extend([
+            "", f"Both policies use the same mapped-RGB signal specialist. Static map geometry locates the lamps "
+            f"and the RGB image supplies their color. The manifest records {specialist['lessons']} driving lessons, "
+            f"{specialist['demonstrated_controls']} demonstrated controls and {specialist['static_pairs']} static color pairs "
+            f"for the specialist. [Signal lessons and model](../data/signals/README.md)",
+        ])
     lines.extend([
         "", "[Demonstration outcomes](../results/collection.json) · [Training features and labels](../data/training.npz) "
         "· [Methods and paper references](research.md)",
@@ -276,11 +336,16 @@ def rendering_section(lines, results, manifest, primary):
     percentage = profile["rgb_screen_percentage"]
     cameras = [camera for trial in primary for camera in trial["camera_rendering"]["cameras"].values()
                if camera["requested_attributes"]["enable_dlss"] == "true"]
-    lines.extend([
-        "", "## Camera rendering", "",
-        f"The primary suite requested {mode.upper()} RGB rendering with screen percentage {percentage:g}%. "
-        f"The ground-truth camera profile was `{profile['ground_truth']}`.",
-    ])
+    if mode == "mixed":
+        description = (
+            f"The benchmark used a native-resolution front RGB view and requested DLSS at {percentage:g}% "
+            "screen percentage on auxiliary RGB views. Recorded benchmark episodes have five synchronized "
+            "views: front, left, right, chase and modeled infrared."
+        )
+    else:
+        description = f"The benchmark requested {mode} RGB rendering at {percentage:g}% screen percentage."
+    lines.extend(["", "## Camera rendering", "", description,
+                  f"The depth and semantic cameras used a `{profile['ground_truth']}` profile."])
     if cameras:
         matches = sum(camera["attributes_match_request"] for camera in cameras)
         confirmed = sum(camera["dlss_gpu_active"] is True for camera in cameras)
@@ -298,13 +363,25 @@ def rendering_section(lines, results, manifest, primary):
         "· [CARLA 1.0 RGB camera reference](https://github.com/carla-simulator/carla/blob/1.0/Docs/ref_sensors.md#rgb-camera)",
     ])
     path = results / "rendering.json"
-    if not path.is_file():
-        return
-    rendering = read_json(path)
-    lines.extend([
-        "", f"A separate local timing profile selected `{rendering['selected_mode']}` RGB rendering.",
-        "", "[Hardware, timings and rendering profile](../results/rendering.json)",
-    ])
+    if path.is_file():
+        rendering = read_json(path)
+        lines.extend([
+            "", f"A separate local timing profile selected `{rendering['selected_mode']}` RGB rendering.",
+            "", "[Hardware, timings and rendering profile](../results/rendering.json)",
+        ])
+    root = results.parent
+    showcases = sorted((root / "web/media/showcase").glob("*/manifest.json"))
+    for path in showcases:
+        record = read_json(path)
+        if record["benchmark_member"]:
+            continue
+        video, front = record["video"], record["front_video"]
+        lines.extend([
+            "", f"Showcase `{record['trial_id']}` is a separate closed-loop drive. Its chase recording is "
+            f"{video['width']}×{video['height']} with requested `{record['quality_requested']}` quality. The "
+            f"policy's front camera video is {front['width']}×{front['height']}. "
+            f"[Showcase capture manifest](../{path.relative_to(root).as_posix()})",
+        ])
 
 
 def build_report(root):
@@ -397,7 +474,8 @@ def build_report(root):
             "enabled recording and asynchronous collision draining after the final scored frame."
         )
     rendering_section(lines, results, manifest, primary)
-    training_section(lines, collection, fits)
+    development_section(lines, results)
+    training_section(lines, collection, fits, manifest)
     traction_section(lines, read_json(results / "traction.json"))
     lines.extend([
         "", "## Résumé bullet", "",
