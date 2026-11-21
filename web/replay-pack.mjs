@@ -1,4 +1,5 @@
-import {applyBarrierReview,loadBarrierReview} from './barrier-review.mjs';
+import {applyBarrierReview,loadBarrierReview,loadSensorReview} from './barrier-review.mjs';
+import {applyConeReview} from './cone-observations.mjs';
 
 export function unpackReplay(pack) {
   const replay = pack?.replay;
@@ -27,7 +28,7 @@ export function unpackReplay(pack) {
   return replay;
 }
 
-async function fetchPacked(url, signal) {
+async function fetchCompressedReplay(url, signal) {
   if (typeof url !== 'string' || typeof DecompressionStream !== 'function' || signal?.aborted) return null;
   const parsed = new URL(url, location.href);
   if (parsed.origin !== location.origin || !['https:', 'http:'].includes(parsed.protocol)) return null;
@@ -39,7 +40,7 @@ async function fetchPacked(url, signal) {
     const response = await fetch(parsed, {cache: 'no-cache', signal: controller.signal, redirect: 'error'});
     if (!response.ok || !response.body) return null;
     const stream = response.body.pipeThrough(new DecompressionStream('gzip'), {signal: controller.signal});
-    return unpackReplay(await new Response(stream).json());
+    return await new Response(stream).json();
   } finally {
     clearTimeout(timer);
     signal?.removeEventListener('abort', cancel);
@@ -48,15 +49,19 @@ async function fetchPacked(url, signal) {
 
 export async function loadReplay(packUrl, signal, parse, raw, entry) {
   if (signal?.aborted) return null;
-  const review=await loadBarrierReview(entry,signal);
-  const parseReviewed=replay=>parse(applyBarrierReview(replay,review));
+  const [review,cones]=await Promise.all([loadBarrierReview(entry,signal),
+    loadSensorReview(entry?.cone_review_url,entry?.cone_review_sha256,'cone review',signal)]);
+  const parseReviewed=replay=>parse(applyConeReview(applyBarrierReview(replay,review),cones,entry));
   try {
-    const replay=await fetchPacked(packUrl,signal);
-    if(replay!=null&&!signal?.aborted)return parseReviewed(replay);
+    const packed = await fetchCompressedReplay(packUrl, signal);
+    if (packed != null && !signal?.aborted) return parseReviewed(unpackReplay(packed));
   } catch {
     // Use the original replay if the optional pack cannot be fetched or read.
   }
   if (signal?.aborted) return null;
-  const replay = await raw();
+  const originalUrl = entry?.replay_url;
+  const replay = typeof originalUrl === 'string' && originalUrl.endsWith('/replay.json.gz')
+    ? await fetchCompressedReplay(originalUrl, signal) : await raw();
+  if (replay == null && !signal?.aborted) throw new Error('The original replay could not be read.');
   return signal?.aborted ? null : parseReviewed(replay);
 }

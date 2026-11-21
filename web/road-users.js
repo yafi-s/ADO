@@ -10,7 +10,7 @@ const UP = V(0, 1, 0);
 
 export const TRACK_TONE = {
   car: 'vehicle', bus: 'vehicle', truck: 'vehicle', motorcycle: 'rider', bicycle: 'rider', person: 'person',
-  barrier: 'barrier', chain_barrier: 'barrier', unknown: 'unknown'
+  barrier: 'barrier', chain_barrier: 'barrier', traffic_cone:'cone', unknown: 'unknown'
 };
 
 // The range of sizes, in metres, over which each symbol still looks like its class: [min, max] for
@@ -350,7 +350,26 @@ function chainBarrier(b) {
   return b.finish(1.68, .70, .24);
 }
 
-const SHAPES = {car, truck, bus, person, bicycle, motorcycle, barrier, chain_barrier:chainBarrier, unknown};
+// The recorded channelizer has a broad flat crown, two reflective sleeves and
+// a heavy flared rubber base. Each stripe is part of the tapered shell.
+function trafficCone(b) {
+  const {body, tyre, lamp} = b.paints;
+  const sections = [
+    [0, .055, .395, .405, tyre], [.055, .095, .405, .315, tyre],
+    [.095, .15, .292, .285, body], [.15, .33, .285, .271, body],
+    [.33, .47, .271, .258, lamp], [.47, .62, .258, .246, body],
+    [.62, .76, .246, .234, lamp], [.76, .91, .234, .222, body],
+    [.91, .95, .222, .194, body], [.95, .975, .194, .10, body]
+  ];
+  for (const [bottom, top, r0, r1, material] of sections) {
+    b.part(shared('channelizer:'+bottom, () => new T.CylinderGeometry(r1,r0,top-bottom,32)),
+      material,0,(bottom+top)/2,0);
+  }
+  b.box(.15,.025,.064,.009,body,0,.9875,0);
+  return b.finish(.81,1,.81);
+}
+
+const SHAPES = {car, truck, bus, person, bicycle, motorcycle, barrier, chain_barrier:chainBarrier, traffic_cone:trafficCone, unknown};
 
 // Returns {group, materials}. The materials belong to this instance: fade and dispose them with it.
 export function buildRoadUser(label, look) {

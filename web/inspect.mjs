@@ -105,6 +105,21 @@ function movieMessage(message) {
   if (movie) movie.style.visibility = message ? 'hidden' : 'visible';
   $('movie-status').textContent = message;
   $('movie-status').hidden = !message;
+  const overlay=$('cone-overlay');
+  overlay.replaceChildren();
+  overlay.setAttribute('hidden','');
+  if(message || !movie?.videoWidth || !session) return;
+  const {videoWidth:w,videoHeight:h}=movie;
+  overlay.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  for(const b of session.frames[index].cone_boxes??[]){
+    if(b.view!==$('camera').value)continue;
+    const [x0,y0,x1,y1]=b.box;
+    const rect=svg('rect',{x:x0*w,y:y0*h,width:(x1-x0)*w,height:(y1-y0)*h});
+    if(b.range_supported)rect.dataset.trackId=b.track_id;
+    else rect.dataset.bearing='';
+    overlay.append(rect);
+  }
+  overlay.toggleAttribute('hidden',!overlay.childElementCount);
 }
 
 function exposureTime(i) {
@@ -173,13 +188,16 @@ function local(x,y,ctx) {
 
 function observations(frame, ctx, objects) {
   const riders = bicycleAssociations(session.frames,index);
-  const drawn = objects.map(o => ({id:o.key, name:`Display ${o.key} · ${o.label==='person' && riders.has(o.sourceId) ? 'bicycle rider' : barrierName(o)??o.label}`, xy:local(o.x,o.z,ctx),
-    length:o.length, width:o.width, angle:o.heading-ctx.degrees, opacity:o.opacity, source:o.sourceId}));
+  const drawn = objects.map(o => ({id:o.key, name:`Display ${o.key} · ${o.label==='person' && riders.has(o.sourceId) ? 'bicycle rider' : barrierName(o)??o.label.replaceAll('_',' ')}`, xy:local(o.x,o.z,ctx),
+    length:o.length, width:o.width, angle:o.heading-ctx.degrees, opacity:o.opacity, source:o.sourceId,
+    remembered:o.label==='traffic_cone'&&o.held}));
   const measured = (frame.tracks || []).filter(t => !t.coasting && finite(t.x) && finite(t.y) &&
     t.sources?.some(s => s === 'lidar' || s === 'radar')).map(t => ({
       id:t.id, name:`Track ${t.id} · ${barrierName(t)??t.label}`, xy:[t.x,t.y]
     }));
   const observer = [], map = frame.observer_map;
+  for(const cone of frame.cone_tracks??[])if(!cone.coasting)measured.push({id:cone.id,name:`Traffic cone ${cone.id} · ${cone.lidar_hits} LiDAR hits`+
+    (cone.range_source==='footprint'?` · RGB last seen ${cone.age_s.toFixed(1)} s ago`:''),xy:[cone.x,cone.y]});
   if (ctx.located && map) {
     for (const actor of map.others || []) {
       if (!finite(actor.x) || !finite(actor.y)) continue;
@@ -271,13 +289,23 @@ function renderPositions(ctx,layers) {
     for(const row of layers[key]) {
       const item=document.createElement('li');
       const source = row.source != null ? ` · track ${row.source}` : '';
-      item.textContent=`${row.name}${source} · (${row.xy.map(v => v.toFixed(2)).join(', ')})`;
+      item.textContent=`${row.name}${source}${row.remembered?' · last seen':''} · (${row.xy.map(v => v.toFixed(2)).join(', ')})`;
       list.append(item);
     }
     if (!list.children.length) list.textContent='None recorded for this frame.';
     div.append(h,list); return div;
   }));
   const review=ctx.frame.barrier_review;
+  if(ctx.frame.cone_conflicts?.length){
+    const detail=document.createElement('details'),title=document.createElement('summary'),list=document.createElement('ul');
+    title.textContent='Competing car classifications';
+    for(const {track,cone_id} of ctx.frame.cone_conflicts){
+      const item=document.createElement('li');
+      item.textContent=`Raw car track ${track.id} · ${track.coasting?'coasted from returns on':'surface belongs to'} traffic cone #${cone_id}`;
+      list.append(item);
+    }
+    detail.append(title,list);$('objects').append(detail);
+  }
   if(review?.tracks){
     const detail=document.createElement('details'),title=document.createElement('summary'),list=document.createElement('ul');
     title.textContent='Raw barrier candidates and sensor review';
@@ -315,6 +343,15 @@ function show(value) {
   index=Math.max(0,Math.min(session.frames.length-1,value));
   const frame=session.frames[index], {ctx,objects}=session.memory.at(session.frames,index,()=>0);
   const layers=observations(frame,ctx,objects);
+  const evidence=$('cone-evidence'), camera=$('camera').value;
+  evidence.replaceChildren(...(frame.cone_boxes??[]).filter(b=>b.view===camera).map(box=>{
+    const row=document.createElement('li'),track=frame.cone_tracks?.find(t=>t.id===box.track_id);
+    const source=track?.range_source==='ground_gated_xy'?'ground-gated LiDAR':'projected LiDAR';
+    row.textContent=track?`Traffic cone #${track.id} · ${Math.hypot(track.x,track.y).toFixed(1)} m · ${track.lidar_hits} ${source} ${track.lidar_hits===1?'hit':'hits'}`:
+      'Traffic cone · RGB bearing only';
+    return row;
+  }));
+  evidence.hidden=!evidence.childElementCount;
   session.comparison={ctx,layers};
   renderMap(ctx,layers);
   if ($('objects').parentElement.open) renderPositions(ctx,layers);

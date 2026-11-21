@@ -25,6 +25,16 @@ export function inspectionCamera(track, available, current) {
 
 export const MAX_CAMERA_HOLD_S = .15;
 
+// A small optical target can be just a few pixels wide in the rider's inset.
+// Label one registered bearing there until range is measured, without creating a world position.
+export function frontBearingCue(items) {
+  const eligible=items.filter(item=>item.view==='front' && item.key && validBox(item)
+    && ['person','car','bus','truck'].includes(item.label)
+    && item.box[2]-item.box[0]<=.12 && item.box[3]-item.box[1]<=.12);
+  const centrality=item=>Math.abs((item.box[0]+item.box[2])/2-.5);
+  return eligible.sort((a,b)=>(b.label==='person')-(a.label==='person') || centrality(a)-centrality(b))[0]??null;
+}
+
 function viewDetections(frame, view) {
   return frame?.camera_detections ? frame.camera_detections[view] : view === 'front' ? frame?.detections : null;
 }
@@ -46,7 +56,10 @@ function isSkippedView(frame, previous, view) {
 
 export function bearingObservations(frame, previous, views) {
   if (!frame) return [];
-  return views.flatMap(view => {
+  const cones = (frame.cone_boxes??[]).filter(b=>!b.range_supported && views.includes(b.view)).map((b,i)=>({
+    key:JSON.stringify(['cone',b.view,frame.frame,i]),view:b.view,label:b.label,box:b.box,age_s:0
+  }));
+  return cones.concat(views.flatMap(view => {
     const held = isSkippedView(frame, previous, view);
     const measured = held ? previous : frame;
     const detections = viewDetections(measured, view);
@@ -58,13 +71,14 @@ export function bearingObservations(frame, previous, views) {
       const key = JSON.stringify(imageId == null ? [view, measured.frame, index] : [view, imageId]);
       return [{key, view, label:item.label, box:item.box, age_s:held ? frame.camera_inference_age_s[view] : 0}];
     });
-  });
+  }));
 }
 
 // Normalized image bounds retain registration when the selected feed is resized or letterboxed.
 export function cameraBoxes(frame, view) {
   const detections = viewDetections(frame, view);
   const boxes = Array.isArray(detections) ? [...detections] : [];
+  boxes.push(...(frame?.cone_boxes??[]).filter(b=>b.view===view));
   // Track-local bounds are recorded by camera/lidar association on this frame.
   // A retained class or coast has no fresh camera rectangle.
   for (const track of frame?.tracks??[]) {

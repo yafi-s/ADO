@@ -10,7 +10,8 @@ export async function loadTrafficStudy() {
   const scrub = byId('traffic-time');
   const stamp = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
   for (const drive of drives) selector.add(new Option(drive.label, drive.trial));
-  const left = 30, right = 689, top = 10, bottom = 125;
+  const left = 32, top = 10, bottom = 128;
+  let right;
   const make = (tag, attrs) => {
     const item = document.createElementNS('http://www.w3.org/2000/svg', tag);
     for (const [k, v] of Object.entries(attrs)) item.setAttribute(k, v);
@@ -35,9 +36,12 @@ export async function loadTrafficStudy() {
     byId('traffic-watch').href = `./?run=${encodeURIComponent(run.trial)}&at=${t}`;
     byId('traffic-frame').href = `./inspect.html?run=${encodeURIComponent(run.trial)}&frame=${frame}&camera=front`;
   }
-  function draw() {
+  function draw(reset = true) {
     run = drives[selector.selectedIndex];
     end = run.samples.at(-1)[0];
+    const width = Math.max(260, Math.round(svg.getBoundingClientRect().width));
+    right = width - 12;
+    svg.setAttribute('viewBox', `0 0 ${width} 154`);
     const max = Math.max(10, 10 * Math.ceil(Math.max(...run.samples.map(s => Math.max(s[3], s[4] ?? 0))) / 10));
     svg.replaceChildren();
     const y = v => bottom - (bottom - top) * v / max;
@@ -45,6 +49,11 @@ export async function loadTrafficStudy() {
       make('line', {x1:left, y1:y(value), x2:right, y2:y(value), class:'traffic-grid'});
       make('text', {x:left-6, y:y(value)+4, 'text-anchor':'end', class:'traffic-axis'}).textContent = value;
     }
+    const interval = Math.max(30, Math.ceil(end / (width < 440 ? 3 : 6) / 30) * 30);
+    for (let t = 0; t < end - interval * .4; t += interval) {
+      make('text', {x:left + t / end * (right-left), y:148, class:'traffic-axis'}).textContent = stamp(t);
+    }
+    make('text', {x:right, y:148, 'text-anchor':'end', class:'traffic-axis'}).textContent = stamp(end);
     for (const [column, name] of [[4, 'traffic-request'], [3, 'traffic-speed']]) {
       let move = true, path = '';
       for (const row of run.samples) {
@@ -57,7 +66,7 @@ export async function loadTrafficStudy() {
     }
     marker = make('line', {y1:top, y2:bottom, class:'traffic-marker'});
     scrub.max = run.samples.length - 1;
-    scrub.value = 0;
+    if (reset) scrub.value = 0;
     byId('traffic-cones').hidden = run.cones_at_s == null;
     byId('traffic-mixed').hidden = run.mixed_at_s == null;
     const d = run.nearby;
@@ -79,7 +88,8 @@ export async function loadTrafficStudy() {
   byId('traffic-cones').addEventListener('click', () => seek(run.cones_at_s));
   byId('traffic-mixed').addEventListener('click', () => seek(run.mixed_at_s));
   scrub.addEventListener('input', showTick);
-  selector.addEventListener('change', draw);
-  draw();
+  selector.addEventListener('change', () => draw());
   byId('traffic-study').hidden = false;
+  draw();
+  new ResizeObserver(() => draw(false)).observe(svg.parentElement);
 }
