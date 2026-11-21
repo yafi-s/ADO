@@ -54,6 +54,7 @@ export class SensorView {
     this.lidar = lidar;
     this.radar = radar;
     this.signals = measuredHeads(frame);
+    this.cones = (frame?.cone_tracks??[]).filter(track=>!track.coasting);
     this.surround = frame?.perception_version === 'surround-v1';
     this.egoPose = map?.ego;
     this.route = observerRoute(map);
@@ -148,6 +149,11 @@ export class SensorView {
     }
     ctx.fill();
 
+    for(const cone of this.cones??[]){
+      const px=x0+cone.y*scale, py=y0-cone.x*scale, radius=Math.max(3,cone.width*scale*.66);
+      ctx.beginPath();ctx.arc(px,py,radius,0,Math.PI*2);
+      ctx.strokeStyle='#fb9542';ctx.lineWidth=2;ctx.stroke();
+    }
     const egoW = Math.max(scale * 1.85, 8);
     const egoH = Math.max(scale * 4.3, 17);
     ctx.fillStyle = color.ego;

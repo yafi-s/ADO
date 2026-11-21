@@ -8,6 +8,7 @@ import threading
 import time
 
 import carla
+import cv2
 import numpy as np
 
 from .thermal import thermal_rgb
@@ -66,6 +67,7 @@ class Rig:
         self.lock = threading.Lock()
         self._calibration_ego = ego if surround else None
         self._calibration_mounts = {}
+        self._front_hd = surround and os.environ.get("CROSSWALK_FRONT_HD", "1") != "0"
         blueprints = world.get_blueprint_library()
 
         def attach(name, blueprint, mount, attributes):
@@ -121,6 +123,8 @@ class Rig:
                 for name in (CAMERAS if surround else ("front", "left", "right")):
                     cam = CAMERAS[name]
                     attrs = dict(image_size_x=cam.width, image_size_y=cam.height, fov=int(cam.hfov))
+                    if name == "front" and self._front_hd:
+                        attrs.update(image_size_x=2*cam.width, image_size_y=2*cam.height)
                     if name != "front":
                         attrs["sensor_tick"] = 0
                     attach(name, "sensor.camera.rgb", pose(cam.x, cam.y, cam.z, yaw=cam.yaw), attrs)
@@ -129,7 +133,7 @@ class Rig:
                         if any(float(readback[k]) != v for k, v in attrs.items()):
                             raise RuntimeError(f"CARLA {name} geometry differs from the tracker calibration")
             attach("lidar", "sensor.lidar.ray_cast", pose(z=2.3), dict(
-                channels=32, range=60, points_per_second=160000, rotation_frequency=10,
+                channels=32, range=100 if surround else 60, points_per_second=160000, rotation_frequency=10,
                 upper_fov=10, lower_fov=-28, noise_stddev=0.015, noise_seed=31,
                 **({"horizontal_fov": 360} if surround else {})))
             if surround:
@@ -137,6 +141,8 @@ class Rig:
                 self.rendering["surround"] = {
                     "coordinates": "ego metres, +x forward, +y right, +z up; level mounts, yaw in degrees",
                     "camera_mounts": {name: asdict(cam) for name, cam in CAMERAS.items()},
+                    "front_acquisition_px": [1280, 720] if self._front_hd else [640, 360],
+                    "front_control_and_video_px": [640, 360],
                     "lidar_mount_xyz": [0., 0., 2.3], "lidar_horizontal_fov_deg": float(lidar["horizontal_fov"]),
                     "lidar_rotation_hz": float(lidar["rotation_frequency"]), "lidar_range_m": float(lidar["range"]),
                     "radar_horizontal_fov_deg": 36, "radar_facing": "front",
@@ -200,6 +206,10 @@ class Rig:
                 result[name] = bgra[:, :, 2].copy()
             else:
                 result[name] = rgb_image(item)
+                if name == "front" and self._front_hd:
+                    result["front_optical"] = result[name]
+                    result[name] = cv2.resize(result[name], (CAMERAS[name].width, CAMERAS[name].height),
+                                              interpolation=cv2.INTER_AREA)
         if self._calibration_ego is not None and len(measured_poses) == len(self._calibration_mounts):
             # SensorData.transform is the world pose of this exposure, independent of
             # the requested relative attach transform. Verify the actual rigid chain.

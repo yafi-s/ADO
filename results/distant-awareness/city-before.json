@@ -1,0 +1,4836 @@
+{
+  "schema": 1,
+  "frames": 3320,
+  "first_frame": 64,
+  "last_frame": 3383,
+  "front_acquisitions": 1660,
+  "journal_sha256": "a82b1aad425a8f299aca427c2db5e62d64863923a4dd5548bb319ff6eee9b6f5",
+  "registered_parked_sha256": "453adee19ae15adc10c45f47db97177bd2cf4e8296bdb5ad9173ad7dc3eff77c",
+  "memory_sha256_lf": "602884d383e8c56f0991356ef731b5875f9f968711e3b7ed07ce705bcf69a8ff",
+  "paired_optics_sha256": null,
+  "method": "Front camera sector, reference center within 100 m and projected body in image; geometric opportunities include occluded actors. Optical requires exact class and one-to-one projected-box IoU >= 0.25. Unmatched optical boxes have no assigned distance. 3D requires exact class, >=0.5 opacity and a unique center within 3 m. Distances are horizontal ego-to-reference-center range.",
+  "projection": {
+    "sha256": "7c863d32209cdf151232806076021ffafb9a015f418883087fab06c428261a6d",
+    "telemetry_sha256": "477458dfe62392e3111bb3a96f2db5a431d395617ca3ad69bc6663fbd76dfbb7",
+    "body_sources": {
+      "native_actor_box": 11996,
+      "parked_map_box": 2104
+    }
+  },
+  "bands": {
+    "native_optical": {
+      "0–30 m": {
+        "opportunities": 1002,
+        "matched": 794
+      },
+      "50–100 m": {
+        "opportunities": 4537,
+        "matched": 167
+      },
+      "30–50 m": {
+        "opportunities": 1235,
+        "matched": 455
+      }
+    },
+    "native_full_only": {
+      "0–30 m": {
+        "opportunities": 1002,
+        "matched": 794
+      },
+      "50–100 m": {
+        "opportunities": 4537,
+        "matched": 167
+      },
+      "30–50 m": {
+        "opportunities": 1235,
+        "matched": 455
+      }
+    },
+    "display": {
+      "0–30 m": {
+        "opportunities": 2002,
+        "matched": 1394
+      },
+      "50–100 m": {
+        "opportunities": 9070,
+        "matched": 59
+      },
+      "30–50 m": {
+        "opportunities": 2472,
+        "matched": 558
+      }
+    }
+  },
+  "class_bands": {
+    "native_optical": {
+      "person": {
+        "0–30 m": {
+          "opportunities": 508,
+          "matched": 365
+        },
+        "50–100 m": {
+          "opportunities": 2212,
+          "matched": 0
+        },
+        "30–50 m": {
+          "opportunities": 622,
+          "matched": 58
+        }
+      },
+      "car": {
+        "0–30 m": {
+          "opportunities": 463,
+          "matched": 398
+        },
+        "30–50 m": {
+          "opportunities": 599,
+          "matched": 384
+        },
+        "50–100 m": {
+          "opportunities": 2193,
+          "matched": 166
+        }
+      },
+      "bus": {
+        "50–100 m": {
+          "opportunities": 59,
+          "matched": 1
+        },
+        "30–50 m": {
+          "opportunities": 14,
+          "matched": 13
+        },
+        "0–30 m": {
+          "opportunities": 31,
+          "matched": 31
+        }
+      },
+      "truck": {
+        "50–100 m": {
+          "opportunities": 73,
+          "matched": 0
+        }
+      }
+    },
+    "native_full_only": {
+      "person": {
+        "0–30 m": {
+          "opportunities": 508,
+          "matched": 365
+        },
+        "50–100 m": {
+          "opportunities": 2212,
+          "matched": 0
+        },
+        "30–50 m": {
+          "opportunities": 622,
+          "matched": 58
+        }
+      },
+      "car": {
+        "0–30 m": {
+          "opportunities": 463,
+          "matched": 398
+        },
+        "30–50 m": {
+          "opportunities": 599,
+          "matched": 384
+        },
+        "50–100 m": {
+          "opportunities": 2193,
+          "matched": 166
+        }
+      },
+      "bus": {
+        "50–100 m": {
+          "opportunities": 59,
+          "matched": 1
+        },
+        "30–50 m": {
+          "opportunities": 14,
+          "matched": 13
+        },
+        "0–30 m": {
+          "opportunities": 31,
+          "matched": 31
+        }
+      },
+      "truck": {
+        "50–100 m": {
+          "opportunities": 73,
+          "matched": 0
+        }
+      }
+    },
+    "display": {
+      "person": {
+        "0–30 m": {
+          "opportunities": 1014,
+          "matched": 531
+        },
+        "50–100 m": {
+          "opportunities": 4419,
+          "matched": 0
+        },
+        "30–50 m": {
+          "opportunities": 1246,
+          "matched": 0
+        }
+      },
+      "car": {
+        "0–30 m": {
+          "opportunities": 927,
+          "matched": 802
+        },
+        "30–50 m": {
+          "opportunities": 1198,
+          "matched": 535
+        },
+        "50–100 m": {
+          "opportunities": 4387,
+          "matched": 59
+        }
+      },
+      "bus": {
+        "50–100 m": {
+          "opportunities": 118,
+          "matched": 0
+        },
+        "30–50 m": {
+          "opportunities": 28,
+          "matched": 23
+        },
+        "0–30 m": {
+          "opportunities": 61,
+          "matched": 61
+        }
+      },
+      "truck": {
+        "50–100 m": {
+          "opportunities": 146,
+          "matched": 0
+        }
+      }
+    }
+  },
+  "unmatched": {
+    "native_optical": {
+      "total": 322,
+      "by_class": {
+        "person": 115,
+        "car": 122,
+        "bus": 48,
+        "truck": 37
+      }
+    },
+    "native_full_only": {
+      "total": 322,
+      "by_class": {
+        "person": 115,
+        "car": 122,
+        "bus": 48,
+        "truck": 37
+      }
+    },
+    "display": {
+      "total": 435,
+      "by_class": {
+        "car": 338,
+        "bus": 41,
+        "person": 56
+      }
+    }
+  },
+  "encounters": [
+    {
+      "id": 112,
+      "role": "pedestrian",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 106,
+          "time_s": 4.2,
+          "range_m": 20.15,
+          "iou": 0.605,
+          "box": [
+            0.5465,
+            0.515,
+            0.561,
+            0.57
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 106,
+          "time_s": 4.2,
+          "range_m": 20.15,
+          "iou": 0.605,
+          "box": [
+            0.5465,
+            0.515,
+            0.561,
+            0.57
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 122,
+          "time_s": 5.8,
+          "range_m": 14.33,
+          "error_m": 0.137,
+          "source": 13
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            106,
+            170
+          ]
+        ],
+        "native_full_only": [
+          [
+            106,
+            170
+          ]
+        ],
+        "display": [
+          [
+            122,
+            170
+          ]
+        ]
+      },
+      "first_reference_m": 29.71,
+      "minimum_m": 6.23
+    },
+    {
+      "id": 129,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 18.18,
+          "iou": 0.864,
+          "box": [
+            0.3142,
+            0.4923,
+            0.406,
+            0.5963
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 18.18,
+          "iou": 0.864,
+          "box": [
+            0.3142,
+            0.4923,
+            0.406,
+            0.5963
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 65,
+          "time_s": 0.1,
+          "range_m": 18.17,
+          "error_m": 0.457,
+          "source": 1
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            64,
+            88
+          ],
+          [
+            1834,
+            1834
+          ]
+        ],
+        "native_full_only": [
+          [
+            64,
+            88
+          ],
+          [
+            1834,
+            1834
+          ]
+        ],
+        "display": [
+          [
+            65,
+            89
+          ]
+        ]
+      },
+      "first_reference_m": 18.18,
+      "minimum_m": 6.16
+    },
+    {
+      "id": 151,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.62,
+          "iou": 0.632,
+          "box": [
+            0.8116,
+            0.4659,
+            0.8379,
+            0.6335
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.62,
+          "iou": 0.632,
+          "box": [
+            0.8116,
+            0.4659,
+            0.8379,
+            0.6335
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.62,
+          "error_m": 0.029,
+          "source": 3
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            64,
+            74
+          ]
+        ],
+        "native_full_only": [
+          [
+            64,
+            74
+          ]
+        ],
+        "display": [
+          [
+            64,
+            74
+          ]
+        ]
+      },
+      "first_reference_m": 12.62,
+      "minimum_m": 10.69
+    },
+    {
+      "id": 152,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.36,
+          "iou": 0.634,
+          "box": [
+            0.8969,
+            0.458,
+            0.9372,
+            0.6521
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.36,
+          "iou": 0.634,
+          "box": [
+            0.8969,
+            0.458,
+            0.9372,
+            0.6521
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.36,
+          "error_m": 0.205,
+          "source": 2
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            64,
+            68
+          ]
+        ],
+        "native_full_only": [
+          [
+            64,
+            68
+          ]
+        ],
+        "display": [
+          [
+            64,
+            69
+          ]
+        ]
+      },
+      "first_reference_m": 12.36,
+      "minimum_m": 11.66
+    },
+    {
+      "id": 154,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 200,
+          "time_s": 13.6,
+          "range_m": 43.43,
+          "iou": 0.858,
+          "box": [
+            0.1173,
+            0.4848,
+            0.1334,
+            0.5351
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 200,
+          "time_s": 13.6,
+          "range_m": 43.43,
+          "iou": 0.858,
+          "box": [
+            0.1173,
+            0.4848,
+            0.1334,
+            0.5351
+          ],
+          "source": "single",
+          "range_supported": false
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            200,
+            228
+          ]
+        ],
+        "native_full_only": [
+          [
+            200,
+            228
+          ]
+        ]
+      },
+      "first_reference_m": 80.53,
+      "minimum_m": 33.18
+    },
+    {
+      "id": "level-12166413250794706622",
+      "role": "parked-map-vehicle",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 66,
+          "time_s": 0.2,
+          "range_m": 44.1,
+          "iou": 0.457,
+          "box": [
+            0.706,
+            0.4939,
+            0.7403,
+            0.535
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 66,
+          "time_s": 0.2,
+          "range_m": 44.1,
+          "iou": 0.457,
+          "box": [
+            0.706,
+            0.4939,
+            0.7403,
+            0.535
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 79,
+          "time_s": 1.5,
+          "range_m": 41.98,
+          "error_m": 1.156,
+          "source": 7
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            66,
+            66
+          ],
+          [
+            72,
+            72
+          ],
+          [
+            78,
+            128
+          ],
+          [
+            1534,
+            1534
+          ]
+        ],
+        "native_full_only": [
+          [
+            66,
+            66
+          ],
+          [
+            72,
+            72
+          ],
+          [
+            78,
+            128
+          ],
+          [
+            1534,
+            1534
+          ]
+        ],
+        "display": [
+          [
+            79,
+            128
+          ]
+        ]
+      },
+      "first_reference_m": 44.14,
+      "minimum_m": 29.8
+    },
+    {
+      "id": "level-4955879825875038965",
+      "role": "parked-map-vehicle",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 276,
+          "time_s": 21.2,
+          "range_m": 34.05,
+          "iou": 0.454,
+          "box": [
+            0.0376,
+            0.4902,
+            0.0869,
+            0.5435
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 276,
+          "time_s": 21.2,
+          "range_m": 34.05,
+          "iou": 0.454,
+          "box": [
+            0.0376,
+            0.4902,
+            0.0869,
+            0.5435
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 278,
+          "time_s": 21.4,
+          "range_m": 33.48,
+          "error_m": 2.038,
+          "source": 17
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            276,
+            276
+          ]
+        ],
+        "native_full_only": [
+          [
+            276,
+            276
+          ]
+        ],
+        "display": [
+          [
+            278,
+            282
+          ]
+        ]
+      },
+      "first_reference_m": 93.18,
+      "minimum_m": 30.17
+    },
+    {
+      "id": "level-6183424760014961521",
+      "role": "parked-map-vehicle",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 90,
+          "time_s": 2.6,
+          "range_m": 34.71,
+          "iou": 0.295,
+          "box": [
+            0.8601,
+            0.4914,
+            0.8985,
+            0.5463
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 90,
+          "time_s": 2.6,
+          "range_m": 34.71,
+          "iou": 0.295,
+          "box": [
+            0.8601,
+            0.4914,
+            0.8985,
+            0.5463
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 96,
+          "time_s": 3.2,
+          "range_m": 33.78,
+          "error_m": 2.99,
+          "source": 9
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            90,
+            94
+          ],
+          [
+            102,
+            112
+          ]
+        ],
+        "native_full_only": [
+          [
+            90,
+            94
+          ],
+          [
+            102,
+            112
+          ]
+        ],
+        "display": [
+          [
+            96,
+            106
+          ],
+          [
+            108,
+            113
+          ]
+        ]
+      },
+      "first_reference_m": 39.44,
+      "minimum_m": 30.81
+    },
+    {
+      "id": 156,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 280,
+          "time_s": 21.6,
+          "range_m": 34.2,
+          "iou": 0.7,
+          "box": [
+            0.3071,
+            0.4893,
+            0.3235,
+            0.5387
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 280,
+          "time_s": 21.6,
+          "range_m": 34.2,
+          "iou": 0.7,
+          "box": [
+            0.3071,
+            0.4893,
+            0.3235,
+            0.5387
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 335,
+          "time_s": 27.1,
+          "range_m": 21.18,
+          "error_m": 1.657,
+          "source": 21
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            280,
+            280
+          ],
+          [
+            314,
+            348
+          ]
+        ],
+        "native_full_only": [
+          [
+            280,
+            280
+          ],
+          [
+            314,
+            348
+          ]
+        ],
+        "display": [
+          [
+            335,
+            348
+          ]
+        ]
+      },
+      "first_reference_m": 99.85,
+      "minimum_m": 16.31
+    },
+    {
+      "id": 155,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 314,
+          "time_s": 25,
+          "range_m": 25.73,
+          "iou": 0.723,
+          "box": [
+            0.2693,
+            0.4869,
+            0.287,
+            0.554
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 314,
+          "time_s": 25,
+          "range_m": 25.73,
+          "iou": 0.723,
+          "box": [
+            0.2693,
+            0.4869,
+            0.287,
+            0.554
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 317,
+          "time_s": 25.3,
+          "range_m": 25.05,
+          "error_m": 0.291,
+          "source": 19
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            314,
+            324
+          ],
+          [
+            328,
+            348
+          ]
+        ],
+        "native_full_only": [
+          [
+            314,
+            324
+          ],
+          [
+            328,
+            348
+          ]
+        ],
+        "display": [
+          [
+            317,
+            349
+          ]
+        ]
+      },
+      "first_reference_m": 99.97,
+      "minimum_m": 15.26
+    },
+    {
+      "id": 167,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 1444,
+          "time_s": 138,
+          "range_m": 32.57,
+          "iou": 0.478,
+          "box": [
+            0.5826,
+            0.4611,
+            0.5978,
+            0.5438
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1444,
+          "time_s": 138,
+          "range_m": 32.57,
+          "iou": 0.478,
+          "box": [
+            0.5826,
+            0.4611,
+            0.5978,
+            0.5438
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1474,
+          "time_s": 141,
+          "range_m": 13.68,
+          "error_m": 1.142,
+          "source": 182
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1444,
+            1460
+          ],
+          [
+            1466,
+            1466
+          ],
+          [
+            1472,
+            1482
+          ]
+        ],
+        "native_full_only": [
+          [
+            1444,
+            1460
+          ],
+          [
+            1466,
+            1466
+          ],
+          [
+            1472,
+            1482
+          ]
+        ],
+        "display": [
+          [
+            1474,
+            1483
+          ]
+        ]
+      },
+      "first_reference_m": 99.77,
+      "minimum_m": 8.61
+    },
+    {
+      "id": 168,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 1440,
+          "time_s": 137.6,
+          "range_m": 33.97,
+          "iou": 0.608,
+          "box": [
+            0.59,
+            0.4667,
+            0.6053,
+            0.5373
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1440,
+          "time_s": 137.6,
+          "range_m": 33.97,
+          "iou": 0.608,
+          "box": [
+            0.59,
+            0.4667,
+            0.6053,
+            0.5373
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1454,
+          "time_s": 139,
+          "range_m": 25.07,
+          "error_m": 0.612,
+          "source": 179
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1440,
+            1440
+          ],
+          [
+            1444,
+            1478
+          ]
+        ],
+        "native_full_only": [
+          [
+            1440,
+            1440
+          ],
+          [
+            1444,
+            1478
+          ]
+        ],
+        "display": [
+          [
+            1454,
+            1479
+          ]
+        ]
+      },
+      "first_reference_m": 99.83,
+      "minimum_m": 10.18
+    },
+    {
+      "id": 132,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 252,
+          "time_s": 18.8,
+          "range_m": 74.29,
+          "iou": 0.589,
+          "box": [
+            0.4541,
+            0.4888,
+            0.4754,
+            0.5172
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 252,
+          "time_s": 18.8,
+          "range_m": 74.29,
+          "iou": 0.589,
+          "box": [
+            0.4541,
+            0.4888,
+            0.4754,
+            0.5172
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 303,
+          "time_s": 23.9,
+          "range_m": 55.79,
+          "error_m": 0.333,
+          "source": 18
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            252,
+            254
+          ],
+          [
+            258,
+            364
+          ]
+        ],
+        "native_full_only": [
+          [
+            252,
+            254
+          ],
+          [
+            258,
+            364
+          ]
+        ],
+        "display": [
+          [
+            303,
+            325
+          ],
+          [
+            335,
+            365
+          ]
+        ]
+      },
+      "first_reference_m": 99.61,
+      "minimum_m": 6.21
+    },
+    {
+      "id": 133,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 342,
+          "time_s": 27.8,
+          "range_m": 44.26,
+          "iou": 0.52,
+          "box": [
+            0.4525,
+            0.4942,
+            0.4723,
+            0.5279
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 342,
+          "time_s": 27.8,
+          "range_m": 44.26,
+          "iou": 0.52,
+          "box": [
+            0.4525,
+            0.4942,
+            0.4723,
+            0.5279
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 355,
+          "time_s": 29.1,
+          "range_m": 29.58,
+          "error_m": 1.122,
+          "source": 27
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            342,
+            382
+          ]
+        ],
+        "native_full_only": [
+          [
+            342,
+            382
+          ]
+        ],
+        "display": [
+          [
+            355,
+            383
+          ]
+        ]
+      },
+      "first_reference_m": 99.95,
+      "minimum_m": 6.21
+    },
+    {
+      "id": 116,
+      "role": "occluder",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 276,
+          "time_s": 21.2,
+          "range_m": 78.48,
+          "iou": 0.645,
+          "box": [
+            0.5025,
+            0.4835,
+            0.5227,
+            0.5129
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 276,
+          "time_s": 21.2,
+          "range_m": 78.48,
+          "iou": 0.645,
+          "box": [
+            0.5025,
+            0.4835,
+            0.5227,
+            0.5129
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 331,
+          "time_s": 26.7,
+          "range_m": 58.42,
+          "error_m": 0.72,
+          "source": 22
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            276,
+            286
+          ],
+          [
+            290,
+            366
+          ],
+          [
+            370,
+            370
+          ],
+          [
+            384,
+            384
+          ],
+          [
+            396,
+            396
+          ],
+          [
+            400,
+            412
+          ],
+          [
+            428,
+            432
+          ]
+        ],
+        "native_full_only": [
+          [
+            276,
+            286
+          ],
+          [
+            290,
+            366
+          ],
+          [
+            370,
+            370
+          ],
+          [
+            384,
+            384
+          ],
+          [
+            396,
+            396
+          ],
+          [
+            400,
+            412
+          ],
+          [
+            428,
+            432
+          ]
+        ],
+        "display": [
+          [
+            331,
+            395
+          ]
+        ]
+      },
+      "first_reference_m": 99.76,
+      "minimum_m": 6.24
+    },
+    {
+      "id": 117,
+      "role": "occluded",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 424,
+          "time_s": 36,
+          "range_m": 15.17,
+          "iou": 0.675,
+          "box": [
+            0.5882,
+            0.488,
+            0.6144,
+            0.5982
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 424,
+          "time_s": 36,
+          "range_m": 15.17,
+          "iou": 0.675,
+          "box": [
+            0.5882,
+            0.488,
+            0.6144,
+            0.5982
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 428,
+          "time_s": 36.4,
+          "range_m": 12.79,
+          "error_m": 0.455,
+          "source": 39
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            424,
+            496
+          ]
+        ],
+        "native_full_only": [
+          [
+            424,
+            496
+          ]
+        ],
+        "display": [
+          [
+            428,
+            496
+          ]
+        ]
+      },
+      "first_reference_m": 99.7,
+      "minimum_m": 6.51
+    },
+    {
+      "id": 114,
+      "role": "lead",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 1216,
+          "time_s": 115.2,
+          "range_m": 56.45,
+          "iou": 0.904,
+          "box": [
+            0.4908,
+            0.4966,
+            0.509,
+            0.5207
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1216,
+          "time_s": 115.2,
+          "range_m": 56.45,
+          "iou": 0.904,
+          "box": [
+            0.4908,
+            0.4966,
+            0.509,
+            0.5207
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1237,
+          "time_s": 117.3,
+          "range_m": 45.42,
+          "error_m": 0.122,
+          "source": 155
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1216,
+            1310
+          ],
+          [
+            1320,
+            1320
+          ],
+          [
+            1324,
+            1384
+          ],
+          [
+            1394,
+            1406
+          ],
+          [
+            1410,
+            1416
+          ],
+          [
+            1422,
+            1450
+          ],
+          [
+            1454,
+            1458
+          ],
+          [
+            1464,
+            1466
+          ],
+          [
+            1470,
+            1474
+          ],
+          [
+            1478,
+            1480
+          ],
+          [
+            1488,
+            1532
+          ]
+        ],
+        "native_full_only": [
+          [
+            1216,
+            1310
+          ],
+          [
+            1320,
+            1320
+          ],
+          [
+            1324,
+            1384
+          ],
+          [
+            1394,
+            1406
+          ],
+          [
+            1410,
+            1416
+          ],
+          [
+            1422,
+            1450
+          ],
+          [
+            1454,
+            1458
+          ],
+          [
+            1464,
+            1466
+          ],
+          [
+            1470,
+            1474
+          ],
+          [
+            1478,
+            1480
+          ],
+          [
+            1488,
+            1532
+          ]
+        ],
+        "display": [
+          [
+            1237,
+            1533
+          ]
+        ]
+      },
+      "first_reference_m": 99.8,
+      "minimum_m": 8.49
+    },
+    {
+      "id": 157,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 544,
+          "time_s": 48,
+          "range_m": 17.13,
+          "iou": 0.649,
+          "box": [
+            0.7249,
+            0.4779,
+            0.7479,
+            0.5917
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 544,
+          "time_s": 48,
+          "range_m": 17.13,
+          "iou": 0.649,
+          "box": [
+            0.7249,
+            0.4779,
+            0.7479,
+            0.5917
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 546,
+          "time_s": 48.2,
+          "range_m": 15.84,
+          "error_m": 0.077,
+          "source": 58
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            544,
+            554
+          ]
+        ],
+        "native_full_only": [
+          [
+            544,
+            554
+          ]
+        ],
+        "display": [
+          [
+            546,
+            554
+          ]
+        ]
+      },
+      "first_reference_m": 99.34,
+      "minimum_m": 10.97
+    },
+    {
+      "id": "level-15868581652540848558",
+      "role": "parked-map-vehicle",
+      "label": "car",
+      "first": {},
+      "match_runs": {},
+      "first_reference_m": 99.9,
+      "minimum_m": 76.3
+    },
+    {
+      "id": 158,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 566,
+          "time_s": 50.2,
+          "range_m": 27.71,
+          "iou": 0.604,
+          "box": [
+            0.1239,
+            0.4893,
+            0.1428,
+            0.5705
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 566,
+          "time_s": 50.2,
+          "range_m": 27.71,
+          "iou": 0.604,
+          "box": [
+            0.1239,
+            0.4893,
+            0.1428,
+            0.5705
+          ],
+          "source": "single",
+          "range_supported": true
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            566,
+            572
+          ]
+        ],
+        "native_full_only": [
+          [
+            566,
+            572
+          ]
+        ]
+      },
+      "first_reference_m": 99.98,
+      "minimum_m": 23.9
+    },
+    {
+      "id": "level-6664586185198452187",
+      "role": "parked-map-vehicle",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 426,
+          "time_s": 36.2,
+          "range_m": 76.88,
+          "iou": 0.361,
+          "box": [
+            0.6053,
+            0.4816,
+            0.6373,
+            0.5261
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 426,
+          "time_s": 36.2,
+          "range_m": 76.88,
+          "iou": 0.361,
+          "box": [
+            0.6053,
+            0.4816,
+            0.6373,
+            0.5261
+          ],
+          "source": "single",
+          "range_supported": false
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            426,
+            436
+          ],
+          [
+            442,
+            442
+          ],
+          [
+            450,
+            450
+          ],
+          [
+            520,
+            520
+          ],
+          [
+            530,
+            530
+          ],
+          [
+            536,
+            540
+          ],
+          [
+            546,
+            546
+          ],
+          [
+            556,
+            556
+          ]
+        ],
+        "native_full_only": [
+          [
+            426,
+            436
+          ],
+          [
+            442,
+            442
+          ],
+          [
+            450,
+            450
+          ],
+          [
+            520,
+            520
+          ],
+          [
+            530,
+            530
+          ],
+          [
+            536,
+            540
+          ],
+          [
+            546,
+            546
+          ],
+          [
+            556,
+            556
+          ]
+        ]
+      },
+      "first_reference_m": 99.88,
+      "minimum_m": 25.95
+    },
+    {
+      "id": 134,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 550,
+          "time_s": 48.6,
+          "range_m": 48.42,
+          "iou": 0.778,
+          "box": [
+            0.3028,
+            0.4999,
+            0.3454,
+            0.5339
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 550,
+          "time_s": 48.6,
+          "range_m": 48.42,
+          "iou": 0.778,
+          "box": [
+            0.3028,
+            0.4999,
+            0.3454,
+            0.5339
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 553,
+          "time_s": 48.9,
+          "range_m": 45.15,
+          "error_m": 2.082,
+          "source": 63
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            550,
+            584
+          ]
+        ],
+        "native_full_only": [
+          [
+            550,
+            584
+          ]
+        ],
+        "display": [
+          [
+            553,
+            555
+          ],
+          [
+            584,
+            585
+          ]
+        ]
+      },
+      "first_reference_m": 99.82,
+      "minimum_m": 7.76
+    },
+    {
+      "id": 135,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 570,
+          "time_s": 50.6,
+          "range_m": 44.7,
+          "iou": 0.859,
+          "box": [
+            0.0868,
+            0.496,
+            0.1582,
+            0.5491
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 570,
+          "time_s": 50.6,
+          "range_m": 44.7,
+          "iou": 0.859,
+          "box": [
+            0.0868,
+            0.496,
+            0.1582,
+            0.5491
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 580,
+          "time_s": 51.6,
+          "range_m": 33.98,
+          "error_m": 0.683,
+          "source": 77
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            570,
+            578
+          ],
+          [
+            586,
+            602
+          ]
+        ],
+        "native_full_only": [
+          [
+            570,
+            578
+          ],
+          [
+            586,
+            602
+          ]
+        ],
+        "display": [
+          [
+            580,
+            585
+          ],
+          [
+            590,
+            602
+          ]
+        ]
+      },
+      "first_reference_m": 99.57,
+      "minimum_m": 8.21
+    },
+    {
+      "id": 165,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 1188,
+          "time_s": 112.4,
+          "range_m": 24.98,
+          "iou": 0.605,
+          "box": [
+            0.6967,
+            0.4945,
+            0.7119,
+            0.5756
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 1188,
+          "time_s": 112.4,
+          "range_m": 24.98,
+          "iou": 0.605,
+          "box": [
+            0.6967,
+            0.4945,
+            0.7119,
+            0.5756
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 1192,
+          "time_s": 112.8,
+          "range_m": 20.57,
+          "error_m": 0.135,
+          "source": 149
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1188,
+            1202
+          ]
+        ],
+        "native_full_only": [
+          [
+            1188,
+            1202
+          ]
+        ],
+        "display": [
+          [
+            1192,
+            1202
+          ]
+        ]
+      },
+      "first_reference_m": 99.81,
+      "minimum_m": 10.45
+    },
+    {
+      "id": "level-4507162520621995511",
+      "role": "parked-map-vehicle",
+      "label": "car",
+      "first": {},
+      "match_runs": {},
+      "first_reference_m": 99.46,
+      "minimum_m": 23.01
+    },
+    {
+      "id": "level-11906624848723412420",
+      "role": "parked-map-vehicle",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 578,
+          "time_s": 51.4,
+          "range_m": 74.98,
+          "iou": 0.53,
+          "box": [
+            0.068,
+            0.5074,
+            0.1017,
+            0.5388
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 578,
+          "time_s": 51.4,
+          "range_m": 74.98,
+          "iou": 0.53,
+          "box": [
+            0.068,
+            0.5074,
+            0.1017,
+            0.5388
+          ],
+          "source": "single",
+          "range_supported": false
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            578,
+            578
+          ],
+          [
+            588,
+            588
+          ]
+        ],
+        "native_full_only": [
+          [
+            578,
+            578
+          ],
+          [
+            588,
+            588
+          ]
+        ]
+      },
+      "first_reference_m": 99.88,
+      "minimum_m": 24.08
+    },
+    {
+      "id": 162,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 1070,
+          "time_s": 100.6,
+          "range_m": 26.14,
+          "iou": 0.801,
+          "box": [
+            0.6349,
+            0.4825,
+            0.6494,
+            0.5464
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1070,
+          "time_s": 100.6,
+          "range_m": 26.14,
+          "iou": 0.801,
+          "box": [
+            0.6349,
+            0.4825,
+            0.6494,
+            0.5464
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1079,
+          "time_s": 101.5,
+          "range_m": 22.63,
+          "error_m": 0.497,
+          "source": 144
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1070,
+            1070
+          ],
+          [
+            1076,
+            1088
+          ],
+          [
+            1092,
+            1100
+          ]
+        ],
+        "native_full_only": [
+          [
+            1070,
+            1070
+          ],
+          [
+            1076,
+            1088
+          ],
+          [
+            1092,
+            1100
+          ]
+        ],
+        "display": [
+          [
+            1079,
+            1101
+          ]
+        ]
+      },
+      "first_reference_m": 99.91,
+      "minimum_m": 9.72
+    },
+    {
+      "id": 138,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 920,
+          "time_s": 85.6,
+          "range_m": 89.04,
+          "iou": 0.644,
+          "box": [
+            0.9122,
+            0.4817,
+            0.9409,
+            0.5088
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 920,
+          "time_s": 85.6,
+          "range_m": 89.04,
+          "iou": 0.644,
+          "box": [
+            0.9122,
+            0.4817,
+            0.9409,
+            0.5088
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1007,
+          "time_s": 94.3,
+          "range_m": 55.47,
+          "error_m": 0.779,
+          "source": 132
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            920,
+            920
+          ],
+          [
+            990,
+            1140
+          ]
+        ],
+        "native_full_only": [
+          [
+            920,
+            920
+          ],
+          [
+            990,
+            1140
+          ]
+        ],
+        "display": [
+          [
+            1007,
+            1141
+          ]
+        ]
+      },
+      "first_reference_m": 99.49,
+      "minimum_m": 5.86
+    },
+    {
+      "id": 136,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 968,
+          "time_s": 90.4,
+          "range_m": 67.08,
+          "iou": 0.739,
+          "box": [
+            0.4131,
+            0.4861,
+            0.4387,
+            0.5152
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 968,
+          "time_s": 90.4,
+          "range_m": 67.08,
+          "iou": 0.739,
+          "box": [
+            0.4131,
+            0.4861,
+            0.4387,
+            0.5152
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 993,
+          "time_s": 92.9,
+          "range_m": 41.98,
+          "error_m": 2.153,
+          "source": 128
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            968,
+            1022
+          ]
+        ],
+        "native_full_only": [
+          [
+            968,
+            1022
+          ]
+        ],
+        "display": [
+          [
+            993,
+            994
+          ],
+          [
+            997,
+            1023
+          ]
+        ]
+      },
+      "first_reference_m": 99.41,
+      "minimum_m": 16.15
+    },
+    {
+      "id": 137,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 980,
+          "time_s": 91.6,
+          "range_m": 75.27,
+          "iou": 0.592,
+          "box": [
+            0.4296,
+            0.4861,
+            0.4515,
+            0.5101
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 980,
+          "time_s": 91.6,
+          "range_m": 75.27,
+          "iou": 0.592,
+          "box": [
+            0.4296,
+            0.4861,
+            0.4515,
+            0.5101
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1007,
+          "time_s": 94.3,
+          "range_m": 50.21,
+          "error_m": 1.668,
+          "source": 134
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            980,
+            1042
+          ]
+        ],
+        "native_full_only": [
+          [
+            980,
+            1042
+          ]
+        ],
+        "display": [
+          [
+            1007,
+            1009
+          ],
+          [
+            1019,
+            1021
+          ],
+          [
+            1031,
+            1042
+          ]
+        ]
+      },
+      "first_reference_m": 99.92,
+      "minimum_m": 20.78
+    },
+    {
+      "id": 111,
+      "role": "signal_queue",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 746,
+          "time_s": 68.2,
+          "range_m": 22.76,
+          "iou": 0.829,
+          "box": [
+            0.4729,
+            0.5019,
+            0.5203,
+            0.5716
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 746,
+          "time_s": 68.2,
+          "range_m": 22.76,
+          "iou": 0.829,
+          "box": [
+            0.4729,
+            0.5019,
+            0.5203,
+            0.5716
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 748,
+          "time_s": 68.4,
+          "range_m": 22.02,
+          "error_m": 0.209,
+          "source": 104
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            746,
+            746
+          ],
+          [
+            768,
+            768
+          ],
+          [
+            772,
+            834
+          ],
+          [
+            846,
+            850
+          ],
+          [
+            860,
+            888
+          ]
+        ],
+        "native_full_only": [
+          [
+            746,
+            746
+          ],
+          [
+            768,
+            768
+          ],
+          [
+            772,
+            834
+          ],
+          [
+            846,
+            850
+          ],
+          [
+            860,
+            888
+          ]
+        ],
+        "display": [
+          [
+            748,
+            889
+          ]
+        ]
+      },
+      "first_reference_m": 99.98,
+      "minimum_m": 8.52
+    },
+    {
+      "id": 159,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 706,
+          "time_s": 64.2,
+          "range_m": 31.63,
+          "iou": 0.697,
+          "box": [
+            0.9485,
+            0.4882,
+            0.9652,
+            0.5617
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 706,
+          "time_s": 64.2,
+          "range_m": 31.63,
+          "iou": 0.697,
+          "box": [
+            0.9485,
+            0.4882,
+            0.9652,
+            0.5617
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 719,
+          "time_s": 65.5,
+          "range_m": 25.73,
+          "error_m": 2.043,
+          "source": 94
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            706,
+            712
+          ],
+          [
+            722,
+            742
+          ]
+        ],
+        "native_full_only": [
+          [
+            706,
+            712
+          ],
+          [
+            722,
+            742
+          ]
+        ],
+        "display": [
+          [
+            719,
+            743
+          ]
+        ]
+      },
+      "first_reference_m": 99.86,
+      "minimum_m": 15.28
+    },
+    {
+      "id": 160,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 702,
+          "time_s": 63.8,
+          "range_m": 31.59,
+          "iou": 0.745,
+          "box": [
+            0.9851,
+            0.4837,
+            0.9994,
+            0.5581
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 702,
+          "time_s": 63.8,
+          "range_m": 31.59,
+          "iou": 0.745,
+          "box": [
+            0.9851,
+            0.4837,
+            0.9994,
+            0.5581
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 717,
+          "time_s": 65.3,
+          "range_m": 24.92,
+          "error_m": 2.042,
+          "source": 93
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            702,
+            718
+          ],
+          [
+            722,
+            738
+          ]
+        ],
+        "native_full_only": [
+          [
+            702,
+            718
+          ],
+          [
+            722,
+            738
+          ]
+        ],
+        "display": [
+          [
+            717,
+            738
+          ]
+        ]
+      },
+      "first_reference_m": 99.76,
+      "minimum_m": 15.87
+    },
+    {
+      "id": 161,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 942,
+          "time_s": 87.8,
+          "range_m": 37.26,
+          "iou": 0.647,
+          "box": [
+            0.1818,
+            0.4558,
+            0.1992,
+            0.5301
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 942,
+          "time_s": 87.8,
+          "range_m": 37.26,
+          "iou": 0.647,
+          "box": [
+            0.1818,
+            0.4558,
+            0.1992,
+            0.5301
+          ],
+          "source": "single",
+          "range_supported": false
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            942,
+            944
+          ],
+          [
+            950,
+            964
+          ]
+        ],
+        "native_full_only": [
+          [
+            942,
+            944
+          ],
+          [
+            950,
+            964
+          ]
+        ]
+      },
+      "first_reference_m": 99.86,
+      "minimum_m": 29.31
+    },
+    {
+      "id": 163,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 1146,
+          "time_s": 108.2,
+          "range_m": 25.12,
+          "iou": 0.672,
+          "box": [
+            0.0146,
+            0.5042,
+            0.0298,
+            0.5707
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1146,
+          "time_s": 108.2,
+          "range_m": 25.12,
+          "iou": 0.672,
+          "box": [
+            0.0146,
+            0.5042,
+            0.0298,
+            0.5707
+          ],
+          "source": "single",
+          "range_supported": false
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1146,
+            1146
+          ]
+        ],
+        "native_full_only": [
+          [
+            1146,
+            1146
+          ]
+        ]
+      },
+      "first_reference_m": 99.63,
+      "minimum_m": 25.12
+    },
+    {
+      "id": 164,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 1142,
+          "time_s": 107.8,
+          "range_m": 29.08,
+          "iou": 0.827,
+          "box": [
+            0.154,
+            0.4842,
+            0.1707,
+            0.5515
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1142,
+          "time_s": 107.8,
+          "range_m": 29.08,
+          "iou": 0.827,
+          "box": [
+            0.154,
+            0.4842,
+            0.1707,
+            0.5515
+          ],
+          "source": "single",
+          "range_supported": false
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1142,
+            1146
+          ]
+        ],
+        "native_full_only": [
+          [
+            1142,
+            1146
+          ]
+        ]
+      },
+      "first_reference_m": 99.91,
+      "minimum_m": 26
+    },
+    {
+      "id": 166,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 1340,
+          "time_s": 127.6,
+          "range_m": 37.55,
+          "iou": 0.818,
+          "box": [
+            0.1672,
+            0.4781,
+            0.1809,
+            0.5408
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1340,
+          "time_s": 127.6,
+          "range_m": 37.55,
+          "iou": 0.818,
+          "box": [
+            0.1672,
+            0.4781,
+            0.1809,
+            0.5408
+          ],
+          "source": "single",
+          "range_supported": false
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1340,
+            1340
+          ],
+          [
+            1344,
+            1362
+          ]
+        ],
+        "native_full_only": [
+          [
+            1340,
+            1340
+          ],
+          [
+            1344,
+            1362
+          ]
+        ]
+      },
+      "first_reference_m": 99.18,
+      "minimum_m": 29.08
+    },
+    {
+      "id": 140,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 1218,
+          "time_s": 115.4,
+          "range_m": 59.31,
+          "iou": 0.859,
+          "box": [
+            0.3621,
+            0.4896,
+            0.3895,
+            0.5217
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1218,
+          "time_s": 115.4,
+          "range_m": 59.31,
+          "iou": 0.859,
+          "box": [
+            0.3621,
+            0.4896,
+            0.3895,
+            0.5217
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1227,
+          "time_s": 116.3,
+          "range_m": 49.47,
+          "error_m": 0.816,
+          "source": 154
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1218,
+            1218
+          ],
+          [
+            1222,
+            1268
+          ]
+        ],
+        "native_full_only": [
+          [
+            1218,
+            1218
+          ],
+          [
+            1222,
+            1268
+          ]
+        ],
+        "display": [
+          [
+            1227,
+            1231
+          ],
+          [
+            1247,
+            1268
+          ]
+        ]
+      },
+      "first_reference_m": 99.05,
+      "minimum_m": 20.97
+    },
+    {
+      "id": 139,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 1226,
+          "time_s": 116.2,
+          "range_m": 68.46,
+          "iou": 0.907,
+          "box": [
+            0.4098,
+            0.4939,
+            0.4307,
+            0.5163
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1226,
+          "time_s": 116.2,
+          "range_m": 68.46,
+          "iou": 0.907,
+          "box": [
+            0.4098,
+            0.4939,
+            0.4307,
+            0.5163
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1273,
+          "time_s": 120.9,
+          "range_m": 32.71,
+          "error_m": 1.493,
+          "source": 161
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1226,
+            1300
+          ]
+        ],
+        "native_full_only": [
+          [
+            1226,
+            1300
+          ]
+        ],
+        "display": [
+          [
+            1273,
+            1300
+          ]
+        ]
+      },
+      "first_reference_m": 99.2,
+      "minimum_m": 15.83
+    },
+    {
+      "id": 169,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 1750,
+          "time_s": 168.6,
+          "range_m": 32.22,
+          "iou": 0.585,
+          "box": [
+            0.9665,
+            0.4825,
+            0.9798,
+            0.5625
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1750,
+          "time_s": 168.6,
+          "range_m": 32.22,
+          "iou": 0.585,
+          "box": [
+            0.9665,
+            0.4825,
+            0.9798,
+            0.5625
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1772,
+          "time_s": 170.8,
+          "range_m": 24.83,
+          "error_m": 0.143,
+          "source": 195
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1750,
+            1802
+          ]
+        ],
+        "native_full_only": [
+          [
+            1750,
+            1802
+          ]
+        ],
+        "display": [
+          [
+            1772,
+            1802
+          ]
+        ]
+      },
+      "first_reference_m": 99.59,
+      "minimum_m": 11.59
+    },
+    {
+      "id": 153,
+      "role": "background",
+      "label": "person",
+      "first": {},
+      "match_runs": {},
+      "first_reference_m": 99.96,
+      "minimum_m": 39.47
+    },
+    {
+      "id": 141,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 1718,
+          "time_s": 165.4,
+          "range_m": 55.83,
+          "iou": 0.796,
+          "box": [
+            0.8997,
+            0.5019,
+            0.9636,
+            0.5323
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1718,
+          "time_s": 165.4,
+          "range_m": 55.83,
+          "iou": 0.796,
+          "box": [
+            0.8997,
+            0.5019,
+            0.9636,
+            0.5323
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1729,
+          "time_s": 166.5,
+          "range_m": 48.38,
+          "error_m": 1.586,
+          "source": 190
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1718,
+            1718
+          ],
+          [
+            1722,
+            1722
+          ],
+          [
+            1726,
+            1730
+          ],
+          [
+            1734,
+            1778
+          ]
+        ],
+        "native_full_only": [
+          [
+            1718,
+            1718
+          ],
+          [
+            1722,
+            1722
+          ],
+          [
+            1726,
+            1730
+          ],
+          [
+            1734,
+            1778
+          ]
+        ],
+        "display": [
+          [
+            1729,
+            1731
+          ],
+          [
+            1745,
+            1745
+          ],
+          [
+            1752,
+            1778
+          ]
+        ]
+      },
+      "first_reference_m": 99.99,
+      "minimum_m": 13.92
+    },
+    {
+      "id": 142,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 1718,
+          "time_s": 165.4,
+          "range_m": 55.08,
+          "iou": 0.789,
+          "box": [
+            0.8158,
+            0.5015,
+            0.8723,
+            0.5295
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1718,
+          "time_s": 165.4,
+          "range_m": 55.08,
+          "iou": 0.789,
+          "box": [
+            0.8158,
+            0.5015,
+            0.8723,
+            0.5295
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1731,
+          "time_s": 166.7,
+          "range_m": 46.37,
+          "error_m": 2.027,
+          "source": 191
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1718,
+            1718
+          ],
+          [
+            1722,
+            1722
+          ],
+          [
+            1728,
+            1772
+          ]
+        ],
+        "native_full_only": [
+          [
+            1718,
+            1718
+          ],
+          [
+            1722,
+            1722
+          ],
+          [
+            1728,
+            1772
+          ]
+        ],
+        "display": [
+          [
+            1731,
+            1732
+          ],
+          [
+            1739,
+            1773
+          ]
+        ]
+      },
+      "first_reference_m": 99.91,
+      "minimum_m": 17.96
+    },
+    {
+      "id": 150,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 1804,
+          "time_s": 174,
+          "range_m": 58.38,
+          "iou": 0.734,
+          "box": [
+            0.3748,
+            0.4974,
+            0.4135,
+            0.5267
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 1804,
+          "time_s": 174,
+          "range_m": 58.38,
+          "iou": 0.734,
+          "box": [
+            0.3748,
+            0.4974,
+            0.4135,
+            0.5267
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 1823,
+          "time_s": 175.9,
+          "range_m": 45.77,
+          "error_m": 0.307,
+          "source": 199
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1804,
+            1806
+          ],
+          [
+            1818,
+            1824
+          ],
+          [
+            3202,
+            3202
+          ],
+          [
+            3232,
+            3232
+          ],
+          [
+            3306,
+            3330
+          ]
+        ],
+        "native_full_only": [
+          [
+            1804,
+            1806
+          ],
+          [
+            1818,
+            1824
+          ],
+          [
+            3202,
+            3202
+          ],
+          [
+            3232,
+            3232
+          ],
+          [
+            3306,
+            3330
+          ]
+        ],
+        "display": [
+          [
+            1823,
+            1825
+          ],
+          [
+            3308,
+            3330
+          ]
+        ]
+      },
+      "first_reference_m": 99.85,
+      "minimum_m": 8.15
+    },
+    {
+      "id": 180,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 3264,
+          "time_s": 320,
+          "range_m": 30.16,
+          "iou": 0.566,
+          "box": [
+            0.4918,
+            0.481,
+            0.5117,
+            0.5414
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 3264,
+          "time_s": 320,
+          "range_m": 30.16,
+          "iou": 0.566,
+          "box": [
+            0.4918,
+            0.481,
+            0.5117,
+            0.5414
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 3282,
+          "time_s": 321.8,
+          "range_m": 21.97,
+          "error_m": 0.481,
+          "source": 314
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            3264,
+            3264
+          ],
+          [
+            3274,
+            3274
+          ],
+          [
+            3278,
+            3282
+          ],
+          [
+            3286,
+            3296
+          ],
+          [
+            3300,
+            3302
+          ],
+          [
+            3306,
+            3308
+          ]
+        ],
+        "native_full_only": [
+          [
+            3264,
+            3264
+          ],
+          [
+            3274,
+            3274
+          ],
+          [
+            3278,
+            3282
+          ],
+          [
+            3286,
+            3296
+          ],
+          [
+            3300,
+            3302
+          ],
+          [
+            3306,
+            3308
+          ]
+        ],
+        "display": [
+          [
+            3282,
+            3309
+          ]
+        ]
+      },
+      "first_reference_m": 99.79,
+      "minimum_m": 10.68
+    },
+    {
+      "id": 179,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 3252,
+          "time_s": 318.8,
+          "range_m": 32.75,
+          "iou": 0.57,
+          "box": [
+            0.4951,
+            0.4789,
+            0.5137,
+            0.5383
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 3252,
+          "time_s": 318.8,
+          "range_m": 32.75,
+          "iou": 0.57,
+          "box": [
+            0.4951,
+            0.4789,
+            0.5137,
+            0.5383
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 3298,
+          "time_s": 323.4,
+          "range_m": 19.99,
+          "error_m": 0.34,
+          "source": 316
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            3252,
+            3254
+          ],
+          [
+            3280,
+            3282
+          ],
+          [
+            3286,
+            3290
+          ],
+          [
+            3294,
+            3298
+          ],
+          [
+            3302,
+            3328
+          ]
+        ],
+        "native_full_only": [
+          [
+            3252,
+            3254
+          ],
+          [
+            3280,
+            3282
+          ],
+          [
+            3286,
+            3290
+          ],
+          [
+            3294,
+            3298
+          ],
+          [
+            3302,
+            3328
+          ]
+        ],
+        "display": [
+          [
+            3298,
+            3329
+          ]
+        ]
+      },
+      "first_reference_m": 99.95,
+      "minimum_m": 9.47
+    },
+    {
+      "id": 170,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 1942,
+          "time_s": 187.8,
+          "range_m": 20.77,
+          "iou": 0.786,
+          "box": [
+            0.6514,
+            0.5082,
+            0.6642,
+            0.5684
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1942,
+          "time_s": 187.8,
+          "range_m": 20.77,
+          "iou": 0.786,
+          "box": [
+            0.6514,
+            0.5082,
+            0.6642,
+            0.5684
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1953,
+          "time_s": 188.9,
+          "range_m": 15.45,
+          "error_m": 0.636,
+          "source": 209
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1942,
+            1942
+          ],
+          [
+            1946,
+            1958
+          ]
+        ],
+        "native_full_only": [
+          [
+            1942,
+            1942
+          ],
+          [
+            1946,
+            1958
+          ]
+        ],
+        "display": [
+          [
+            1953,
+            1959
+          ]
+        ]
+      },
+      "first_reference_m": 95.2,
+      "minimum_m": 12.5
+    },
+    {
+      "id": 126,
+      "role": "stopped_bus",
+      "label": "bus",
+      "first": {
+        "native_optical": {
+          "frame": 1948,
+          "time_s": 188.4,
+          "range_m": 58.35,
+          "iou": 0.864,
+          "box": [
+            0.4863,
+            0.4747,
+            0.5149,
+            0.53
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 1948,
+          "time_s": 188.4,
+          "range_m": 58.35,
+          "iou": 0.864,
+          "box": [
+            0.4863,
+            0.4747,
+            0.5149,
+            0.53
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 1965,
+          "time_s": 190.1,
+          "range_m": 46.36,
+          "error_m": 0.722,
+          "source": 212
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1948,
+            1948
+          ],
+          [
+            1962,
+            2048
+          ]
+        ],
+        "native_full_only": [
+          [
+            1948,
+            1948
+          ],
+          [
+            1962,
+            2048
+          ]
+        ],
+        "display": [
+          [
+            1965,
+            2048
+          ]
+        ]
+      },
+      "first_reference_m": 99.85,
+      "minimum_m": 7.43
+    },
+    {
+      "id": 144,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 1964,
+          "time_s": 190,
+          "range_m": 50.76,
+          "iou": 0.721,
+          "box": [
+            0.476,
+            0.5144,
+            0.5023,
+            0.5414
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1964,
+          "time_s": 190,
+          "range_m": 50.76,
+          "iou": 0.721,
+          "box": [
+            0.476,
+            0.5144,
+            0.5023,
+            0.5414
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1984,
+          "time_s": 192,
+          "range_m": 26.13,
+          "error_m": 0.919,
+          "source": 217
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1964,
+            1964
+          ],
+          [
+            1978,
+            1994
+          ],
+          [
+            3364,
+            3364
+          ]
+        ],
+        "native_full_only": [
+          [
+            1964,
+            1964
+          ],
+          [
+            1978,
+            1994
+          ],
+          [
+            3364,
+            3364
+          ]
+        ],
+        "display": [
+          [
+            1984,
+            1994
+          ]
+        ]
+      },
+      "first_reference_m": 99.85,
+      "minimum_m": 16.53
+    },
+    {
+      "id": 143,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 1972,
+          "time_s": 190.8,
+          "range_m": 46.27,
+          "iou": 0.819,
+          "box": [
+            0.5122,
+            0.5149,
+            0.5382,
+            0.5478
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 1972,
+          "time_s": 190.8,
+          "range_m": 46.27,
+          "iou": 0.819,
+          "box": [
+            0.5122,
+            0.5149,
+            0.5382,
+            0.5478
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 1979,
+          "time_s": 191.5,
+          "range_m": 37.14,
+          "error_m": 2.064,
+          "source": 215
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            1972,
+            2004
+          ]
+        ],
+        "native_full_only": [
+          [
+            1972,
+            2004
+          ]
+        ],
+        "display": [
+          [
+            1979,
+            2004
+          ]
+        ]
+      },
+      "first_reference_m": 99.98,
+      "minimum_m": 11.14
+    },
+    {
+      "id": 178,
+      "role": "background",
+      "label": "person",
+      "first": {},
+      "match_runs": {},
+      "first_reference_m": 99.96,
+      "minimum_m": 35.92
+    },
+    {
+      "id": 149,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 2128,
+          "time_s": 206.4,
+          "range_m": 47.29,
+          "iou": 0.837,
+          "box": [
+            0.1826,
+            0.4758,
+            0.2472,
+            0.5197
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 2128,
+          "time_s": 206.4,
+          "range_m": 47.29,
+          "iou": 0.837,
+          "box": [
+            0.1826,
+            0.4758,
+            0.2472,
+            0.5197
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 2131,
+          "time_s": 206.7,
+          "range_m": 45.95,
+          "error_m": 0.731,
+          "source": 230
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            2128,
+            2154
+          ],
+          [
+            2158,
+            2170
+          ]
+        ],
+        "native_full_only": [
+          [
+            2128,
+            2154
+          ],
+          [
+            2158,
+            2170
+          ]
+        ],
+        "display": [
+          [
+            2131,
+            2170
+          ]
+        ]
+      },
+      "first_reference_m": 99.99,
+      "minimum_m": 33.31
+    },
+    {
+      "id": 113,
+      "role": "pedestrian-delayed",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 2970,
+          "time_s": 290.6,
+          "range_m": 29.02,
+          "iou": 0.57,
+          "box": [
+            0.5933,
+            0.4684,
+            0.6068,
+            0.5487
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 2970,
+          "time_s": 290.6,
+          "range_m": 29.02,
+          "iou": 0.57,
+          "box": [
+            0.5933,
+            0.4684,
+            0.6068,
+            0.5487
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 2982,
+          "time_s": 291.8,
+          "range_m": 24.51,
+          "error_m": 0.06,
+          "source": 296
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            2970,
+            2974
+          ],
+          [
+            2978,
+            2998
+          ],
+          [
+            3002,
+            3062
+          ]
+        ],
+        "native_full_only": [
+          [
+            2970,
+            2974
+          ],
+          [
+            2978,
+            2998
+          ],
+          [
+            3002,
+            3062
+          ]
+        ],
+        "display": [
+          [
+            2982,
+            3063
+          ]
+        ]
+      },
+      "first_reference_m": 99.81,
+      "minimum_m": 6.33
+    },
+    {
+      "id": 173,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 2256,
+          "time_s": 219.2,
+          "range_m": 23.19,
+          "iou": 0.685,
+          "box": [
+            0.7266,
+            0.4764,
+            0.7464,
+            0.5646
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 2256,
+          "time_s": 219.2,
+          "range_m": 23.19,
+          "iou": 0.685,
+          "box": [
+            0.7266,
+            0.4764,
+            0.7464,
+            0.5646
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 2259,
+          "time_s": 219.5,
+          "range_m": 22.52,
+          "error_m": 0.373,
+          "source": 234
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            2256,
+            2284
+          ]
+        ],
+        "native_full_only": [
+          [
+            2256,
+            2284
+          ]
+        ],
+        "display": [
+          [
+            2259,
+            2284
+          ]
+        ]
+      },
+      "first_reference_m": 99.44,
+      "minimum_m": 14.41
+    },
+    {
+      "id": 115,
+      "role": "braking",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 2290,
+          "time_s": 222.6,
+          "range_m": 29.91,
+          "iou": 0.815,
+          "box": [
+            0.4832,
+            0.4993,
+            0.5187,
+            0.5494
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 2290,
+          "time_s": 222.6,
+          "range_m": 29.91,
+          "iou": 0.815,
+          "box": [
+            0.4832,
+            0.4993,
+            0.5187,
+            0.5494
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 2293,
+          "time_s": 222.9,
+          "range_m": 28.98,
+          "error_m": 0.42,
+          "source": 239
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            2290,
+            2438
+          ],
+          [
+            2444,
+            2480
+          ],
+          [
+            2490,
+            2490
+          ],
+          [
+            2500,
+            2500
+          ],
+          [
+            2510,
+            2510
+          ],
+          [
+            2576,
+            2578
+          ]
+        ],
+        "native_full_only": [
+          [
+            2290,
+            2438
+          ],
+          [
+            2444,
+            2480
+          ],
+          [
+            2490,
+            2490
+          ],
+          [
+            2500,
+            2500
+          ],
+          [
+            2510,
+            2510
+          ],
+          [
+            2576,
+            2578
+          ]
+        ],
+        "display": [
+          [
+            2293,
+            2441
+          ],
+          [
+            2447,
+            2461
+          ],
+          [
+            2479,
+            2489
+          ]
+        ]
+      },
+      "first_reference_m": 99.92,
+      "minimum_m": 9.15
+    },
+    {
+      "id": 148,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 2680,
+          "time_s": 261.6,
+          "range_m": 58.88,
+          "iou": 0.646,
+          "box": [
+            0.0297,
+            0.5235,
+            0.0672,
+            0.5631
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 2680,
+          "time_s": 261.6,
+          "range_m": 58.88,
+          "iou": 0.646,
+          "box": [
+            0.0297,
+            0.5235,
+            0.0672,
+            0.5631
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 2711,
+          "time_s": 264.7,
+          "range_m": 26.24,
+          "error_m": 2.486,
+          "source": 266
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            2680,
+            2680
+          ],
+          [
+            2688,
+            2698
+          ],
+          [
+            2704,
+            2734
+          ]
+        ],
+        "native_full_only": [
+          [
+            2680,
+            2680
+          ],
+          [
+            2688,
+            2698
+          ],
+          [
+            2704,
+            2734
+          ]
+        ],
+        "display": [
+          [
+            2711,
+            2735
+          ]
+        ]
+      },
+      "first_reference_m": 99.79,
+      "minimum_m": 7.2
+    },
+    {
+      "id": "level-12109274621266969479",
+      "role": "parked-map-vehicle",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 2336,
+          "time_s": 227.2,
+          "range_m": 50.3,
+          "iou": 0.544,
+          "box": [
+            0.1637,
+            0.4782,
+            0.1969,
+            0.5112
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 2336,
+          "time_s": 227.2,
+          "range_m": 50.3,
+          "iou": 0.544,
+          "box": [
+            0.1637,
+            0.4782,
+            0.1969,
+            0.5112
+          ],
+          "source": "single",
+          "range_supported": false
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            2336,
+            2336
+          ],
+          [
+            2340,
+            2340
+          ],
+          [
+            2344,
+            2346
+          ],
+          [
+            2360,
+            2360
+          ],
+          [
+            2372,
+            2372
+          ],
+          [
+            2376,
+            2382
+          ]
+        ],
+        "native_full_only": [
+          [
+            2336,
+            2336
+          ],
+          [
+            2340,
+            2340
+          ],
+          [
+            2344,
+            2346
+          ],
+          [
+            2360,
+            2360
+          ],
+          [
+            2372,
+            2372
+          ],
+          [
+            2376,
+            2382
+          ]
+        ]
+      },
+      "first_reference_m": 99.87,
+      "minimum_m": 37.81
+    },
+    {
+      "id": 145,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 2282,
+          "time_s": 221.8,
+          "range_m": 46.67,
+          "iou": 0.828,
+          "box": [
+            0.364,
+            0.4986,
+            0.3946,
+            0.5301
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 2282,
+          "time_s": 221.8,
+          "range_m": 46.67,
+          "iou": 0.828,
+          "box": [
+            0.364,
+            0.4986,
+            0.3946,
+            0.5301
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 2295,
+          "time_s": 223.1,
+          "range_m": 33.04,
+          "error_m": 2.078,
+          "source": 238
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            2282,
+            2312
+          ]
+        ],
+        "native_full_only": [
+          [
+            2282,
+            2312
+          ]
+        ],
+        "display": [
+          [
+            2295,
+            2298
+          ],
+          [
+            2306,
+            2313
+          ]
+        ]
+      },
+      "first_reference_m": 99.44,
+      "minimum_m": 15.89
+    },
+    {
+      "id": 172,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 2356,
+          "time_s": 229.2,
+          "range_m": 34.68,
+          "iou": 0.779,
+          "box": [
+            0.2012,
+            0.478,
+            0.2151,
+            0.5327
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 2356,
+          "time_s": 229.2,
+          "range_m": 34.68,
+          "iou": 0.779,
+          "box": [
+            0.2012,
+            0.478,
+            0.2151,
+            0.5327
+          ],
+          "source": "single",
+          "range_supported": false
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            2356,
+            2356
+          ],
+          [
+            2360,
+            2370
+          ],
+          [
+            2374,
+            2378
+          ]
+        ],
+        "native_full_only": [
+          [
+            2356,
+            2356
+          ],
+          [
+            2360,
+            2370
+          ],
+          [
+            2374,
+            2378
+          ]
+        ]
+      },
+      "first_reference_m": 99.72,
+      "minimum_m": 24.97
+    },
+    {
+      "id": 171,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 2392,
+          "time_s": 232.8,
+          "range_m": 32.7,
+          "iou": 0.842,
+          "box": [
+            0.2083,
+            0.4709,
+            0.2216,
+            0.5317
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 2392,
+          "time_s": 232.8,
+          "range_m": 32.7,
+          "iou": 0.842,
+          "box": [
+            0.2083,
+            0.4709,
+            0.2216,
+            0.5317
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 2414,
+          "time_s": 235,
+          "range_m": 23.54,
+          "error_m": 0.07,
+          "source": 246
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            2392,
+            2414
+          ]
+        ],
+        "native_full_only": [
+          [
+            2392,
+            2414
+          ]
+        ],
+        "display": [
+          [
+            2414,
+            2415
+          ]
+        ]
+      },
+      "first_reference_m": 99.94,
+      "minimum_m": 23.17
+    },
+    {
+      "id": "level-9076146201990380525",
+      "role": "parked-map-vehicle",
+      "label": "car",
+      "first": {},
+      "match_runs": {},
+      "first_reference_m": 99.79,
+      "minimum_m": 49.15
+    },
+    {
+      "id": "level-327314708892034233",
+      "role": "parked-map-vehicle",
+      "label": "car",
+      "first": {},
+      "match_runs": {},
+      "first_reference_m": 99.85,
+      "minimum_m": 62.61
+    },
+    {
+      "id": 147,
+      "role": "background",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 2668,
+          "time_s": 260.4,
+          "range_m": 48.65,
+          "iou": 0.706,
+          "box": [
+            0.081,
+            0.5244,
+            0.132,
+            0.5622
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 2668,
+          "time_s": 260.4,
+          "range_m": 48.65,
+          "iou": 0.706,
+          "box": [
+            0.081,
+            0.5244,
+            0.132,
+            0.5622
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 2683,
+          "time_s": 261.9,
+          "range_m": 32.5,
+          "error_m": 1.381,
+          "source": 261
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            2668,
+            2674
+          ],
+          [
+            2678,
+            2704
+          ]
+        ],
+        "native_full_only": [
+          [
+            2668,
+            2674
+          ],
+          [
+            2678,
+            2704
+          ]
+        ],
+        "display": [
+          [
+            2683,
+            2705
+          ]
+        ]
+      },
+      "first_reference_m": 99.93,
+      "minimum_m": 7.23
+    },
+    {
+      "id": 175,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 2672,
+          "time_s": 260.8,
+          "range_m": 28.28,
+          "iou": 0.542,
+          "box": [
+            0.0353,
+            0.4976,
+            0.0521,
+            0.58
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 2672,
+          "time_s": 260.8,
+          "range_m": 28.28,
+          "iou": 0.542,
+          "box": [
+            0.0353,
+            0.4976,
+            0.0521,
+            0.58
+          ],
+          "source": "single",
+          "range_supported": false
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            2672,
+            2680
+          ]
+        ],
+        "native_full_only": [
+          [
+            2672,
+            2680
+          ]
+        ]
+      },
+      "first_reference_m": 99.64,
+      "minimum_m": 22.47
+    },
+    {
+      "id": 176,
+      "role": "background",
+      "label": "person",
+      "first": {},
+      "match_runs": {},
+      "first_reference_m": 99.82,
+      "minimum_m": 27.44
+    },
+    {
+      "id": 174,
+      "role": "background",
+      "label": "person",
+      "first": {},
+      "match_runs": {},
+      "first_reference_m": 99.74,
+      "minimum_m": 62.61
+    },
+    {
+      "id": 146,
+      "role": "background",
+      "label": "car",
+      "first": {},
+      "match_runs": {},
+      "first_reference_m": 99.88,
+      "minimum_m": 87.35
+    },
+    {
+      "id": 118,
+      "role": "oncoming",
+      "label": "car",
+      "first": {
+        "native_optical": {
+          "frame": 2468,
+          "time_s": 240.4,
+          "range_m": 51.47,
+          "iou": 0.737,
+          "box": [
+            0.4253,
+            0.5136,
+            0.4517,
+            0.542
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 2468,
+          "time_s": 240.4,
+          "range_m": 51.47,
+          "iou": 0.737,
+          "box": [
+            0.4253,
+            0.5136,
+            0.4517,
+            0.542
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "display": {
+          "frame": 2479,
+          "time_s": 241.5,
+          "range_m": 40.65,
+          "error_m": 1.762,
+          "source": 252
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            2468,
+            2528
+          ]
+        ],
+        "native_full_only": [
+          [
+            2468,
+            2528
+          ]
+        ],
+        "display": [
+          [
+            2479,
+            2482
+          ],
+          [
+            2488,
+            2528
+          ]
+        ]
+      },
+      "first_reference_m": 99.73,
+      "minimum_m": 10.61
+    },
+    {
+      "id": 177,
+      "role": "background",
+      "label": "person",
+      "first": {
+        "native_optical": {
+          "frame": 2752,
+          "time_s": 268.8,
+          "range_m": 25.79,
+          "iou": 0.781,
+          "box": [
+            0.5759,
+            0.4805,
+            0.5915,
+            0.5539
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "native_full_only": {
+          "frame": 2752,
+          "time_s": 268.8,
+          "range_m": 25.79,
+          "iou": 0.781,
+          "box": [
+            0.5759,
+            0.4805,
+            0.5915,
+            0.5539
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "display": {
+          "frame": 2755,
+          "time_s": 269.1,
+          "range_m": 23.18,
+          "error_m": 0.251,
+          "source": 272
+        }
+      },
+      "match_runs": {
+        "native_optical": [
+          [
+            2752,
+            2760
+          ],
+          [
+            2764,
+            2768
+          ]
+        ],
+        "native_full_only": [
+          [
+            2752,
+            2760
+          ],
+          [
+            2764,
+            2768
+          ]
+        ],
+        "display": [
+          [
+            2755,
+            2769
+          ]
+        ]
+      },
+      "first_reference_m": 83.02,
+      "minimum_m": 11.56
+    },
+    {
+      "id": "level-7657102941645856090",
+      "role": "parked-map-vehicle",
+      "label": "car",
+      "first": {},
+      "match_runs": {},
+      "first_reference_m": 99.71,
+      "minimum_m": 57.42
+    },
+    {
+      "id": "level-16725571583500344474",
+      "role": "parked-map-vehicle",
+      "label": "truck",
+      "first": {},
+      "match_runs": {},
+      "first_reference_m": 99.77,
+      "minimum_m": 65.24
+    },
+    {
+      "id": "level-4272565134478960206",
+      "role": "parked-map-vehicle",
+      "label": "car",
+      "first": {},
+      "match_runs": {},
+      "first_reference_m": 99.78,
+      "minimum_m": 57.61
+    },
+    {
+      "id": 131,
+      "role": "background",
+      "label": "car",
+      "first": {},
+      "match_runs": {},
+      "first_reference_m": 99.83,
+      "minimum_m": 98.22
+    }
+  ]
+}

@@ -54,14 +54,35 @@
   .episode-card + .episode-card { border-left: 0; border-top: 1px solid var(--line); }
 }
 
-#city-review tbody th { min-width: 8rem; }
-#city-review td { white-space: normal; line-height: 1.5; }
-#city-review td:last-child { min-width: 7rem; }
-#city-review .result-note { padding: 0 2px; }
+.drive-review tbody th { min-width: 8rem; }
+.drive-review td { white-space: normal; line-height: 1.5; }
+.drive-review td:last-child { min-width: 7rem; }
+.drive-review .result-note { padding: 0 2px; }
+.traffic-heading, .traffic-key, .traffic-reading, .traffic-links, .traffic-scrub { display: flex; gap: 9px 18px; align-items: baseline; flex-wrap: wrap; }
+.traffic-heading { justify-content: space-between; }
+.traffic-panel { padding: 18px clamp(12px, 3vw, 24px); }
+.traffic-key { font-size: 13px; color: var(--ink-2); }
+.traffic-key strong { color: var(--ink); }
+.traffic-key span::before { content: ''; display: inline-block; width: 20px; height: 0; border-top: 2px solid var(--accent); margin-right: 6px; vertical-align: middle; }
+.traffic-key span:last-child::before { border-top: 2px dashed var(--ink-2); }
+#traffic-plot { display: block; width: 100%; height: auto; margin: 10px 0; touch-action: pan-y; cursor: crosshair; }
+.traffic-grid { stroke: var(--line); }
+.traffic-axis { fill: var(--ink-2); font: 12px var(--font); }
+.traffic-speed, .traffic-request { fill: none; vector-effect: non-scaling-stroke; stroke-width: 2; }
+.traffic-speed { stroke: var(--accent); }
+.traffic-request { stroke: var(--ink-2); stroke-dasharray: 5 4; stroke-width: 1.3; }
+.traffic-marker { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 2 3; }
+.traffic-scrub { align-items: center; flex-wrap: nowrap; font-size: 13px; }
+.traffic-scrub input { flex: 1; min-width: 0; accent-color: var(--accent); }
+.traffic-scrub output { min-width: 4em; font-variant-numeric: tabular-nums; text-align: right; }
+.traffic-reading { margin-top: 12px; font: 600 15px/1.4 var(--font); }
+.traffic-links { margin-top: 14px; font: 600 13px/1.4 var(--font); align-items: center; }
+.traffic-links a { text-underline-offset: 3px; }
+.traffic-links button { font: inherit; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 12px; padding: 5px 10px; cursor: pointer; }
 @media (max-width: 570px) {
-  #city-review table, #city-review tbody, #city-review tr { display: block; }
-  #city-review thead { display: none; }
-  #city-review tbody tr { padding: 12px 14px; border-top: 1px solid var(--line); }
-  #city-review tbody tr:first-child { border-top: 0; }
-  #city-review tbody th, #city-review tbody td { display: block; padding: 2px 0; border: 0; }
+  .drive-review table, .drive-review tbody, .drive-review tr { display: block; }
+  .drive-review thead { display: none; }
+  .drive-review tbody tr { padding: 12px 14px; border-top: 1px solid var(--line); }
+  .drive-review tbody tr:first-child { border-top: 0; }
+  .drive-review tbody th, .drive-review tbody td { display: block; padding: 2px 0; border: 0; }
 }

@@ -1,0 +1,6381 @@
+{
+  "schema": "ado-city-interaction-display-v1",
+  "capture": "long-city-drive-dc3q_29s",
+  "trial": "city-life",
+  "frames": 3320,
+  "counts": {
+    "vehicle_and_pedestrian": 41,
+    "two_vehicles_and_pedestrian": 4,
+    "two_of_each": 2
+  },
+  "representatives": [
+    {
+      "frame": 342,
+      "time_s": 27.8,
+      "progress_m": 89.167,
+      "ego_speed_mps": 5.882,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=342&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=342&camera=chase",
+      "ego_pose": {
+        "x": 30.334421157836914,
+        "y": 134.15940856933594,
+        "z": 0.005550828296691179,
+        "pitch": -0.13078391551971436,
+        "yaw": -0.8126249313354492,
+        "roll": -0.017785297706723213
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 132,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 30.4804,
+          "local_xy_m": [
+            30.278705780206167,
+            -3.500923312753905
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.3604,
+          "box": [
+            0.41544551849365235,
+            0.5000514136420355,
+            0.459684944152832,
+            0.5514268239339193
+          ],
+          "score": 0.8433933854103088,
+          "image_id": 77,
+          "track_id": 26,
+          "class_label": "car",
+          "lidar_hits": 7,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.025,
+          "projected_box_iou": 0.8383,
+          "screen_id": 22,
+          "screen_center_error_m": 0.016,
+          "screen_opacity": 1,
+          "raw_range_rank": 3,
+          "local_motion_and_id": {
+            "frame_interval": [
+              337,
+              347
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 8,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 11,
+            "observed_screen_source_ids": [
+              26
+            ],
+            "matched_same_display_id_steps": 10,
+            "max_0_1s_translation_residual_m": 0.0959,
+            "worst_step_ending_frame": 341
+          }
+        },
+        {
+          "actor_id": 116,
+          "actor_type": "van",
+          "role": "occluder",
+          "blueprint": "vehicle.sprinter.mercedes",
+          "center_range_m": 52.9247,
+          "local_xy_m": [
+            52.80857945816614,
+            3.5038438241927223
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0,
+          "box": [
+            0.5243049144744873,
+            0.4802793714735243,
+            0.5472692012786865,
+            0.5248743693033854
+          ],
+          "score": 0.5299491882324219,
+          "image_id": 80,
+          "track_id": 20,
+          "class_label": "car",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar"
+          ],
+          "range_error_m": 0.7368,
+          "projected_box_iou": 0.8146,
+          "screen_id": 21,
+          "screen_center_error_m": 0.7105,
+          "screen_opacity": 1,
+          "raw_range_rank": 4,
+          "local_motion_and_id": {
+            "frame_interval": [
+              337,
+              347
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 3,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 9,
+            "observed_screen_source_ids": [
+              20
+            ],
+            "matched_same_display_id_steps": 7,
+            "max_0_1s_translation_residual_m": 0.039,
+            "worst_step_ending_frame": 344
+          }
+        },
+        {
+          "actor_id": 155,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0016",
+          "center_range_m": 18.2013,
+          "local_xy_m": [
+            15.279574780328499,
+            -9.890444400107176
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2002,
+          "box": [
+            0.13443692922592163,
+            0.4737002478705512,
+            0.15599786043167113,
+            0.5899639129638672
+          ],
+          "score": 0.8451476097106934,
+          "image_id": 82,
+          "track_id": 27,
+          "class_label": "person",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.0856,
+          "projected_box_iou": 0.5212,
+          "screen_id": 23,
+          "screen_center_error_m": 0.2635,
+          "screen_opacity": 1,
+          "raw_range_rank": 1,
+          "local_motion_and_id": {
+            "frame_interval": [
+              337,
+              347
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 4,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 10,
+            "observed_screen_source_ids": [
+              27
+            ],
+            "matched_same_display_id_steps": 8,
+            "max_0_1s_translation_residual_m": 0.19,
+            "worst_step_ending_frame": 344
+          }
+        },
+        {
+          "actor_id": 156,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0023",
+          "center_range_m": 18.7631,
+          "local_xy_m": [
+            15.293190643992785,
+            -10.870633721701187
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1802,
+          "box": [
+            0.09443384408950806,
+            0.4729914347330729,
+            0.12316745519638062,
+            0.588710445827908
+          ],
+          "score": 0.8508332371711731,
+          "image_id": 85,
+          "track_id": 23,
+          "class_label": "person",
+          "lidar_hits": 6,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.1229,
+          "projected_box_iou": 0.4787,
+          "screen_id": 15,
+          "screen_center_error_m": 0.6904,
+          "screen_opacity": 1,
+          "raw_range_rank": 2,
+          "local_motion_and_id": {
+            "frame_interval": [
+              337,
+              347
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 5,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 6,
+            "observed_screen_source_ids": [
+              23
+            ],
+            "matched_same_display_id_steps": 5,
+            "max_0_1s_translation_residual_m": 0.2983,
+            "worst_step_ending_frame": 344
+          }
+        }
+      ],
+      "vehicles": 2,
+      "pedestrians": 2,
+      "moving": 3,
+      "eligible_default_rows": 3,
+      "nearest_m": 18.2013,
+      "furthest_m": 52.9247
+    },
+    {
+      "frame": 1772,
+      "time_s": 170.8,
+      "progress_m": 729.702,
+      "ego_speed_mps": 2.849,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=1772&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1772&camera=chase",
+      "ego_pose": {
+        "x": -61.288307189941406,
+        "y": 186.54478454589844,
+        "z": 0.005674639716744423,
+        "pitch": -0.2629908323287964,
+        "yaw": -142.85757446289062,
+        "roll": -0.05553480610251427
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 142,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 18.4491,
+          "local_xy_m": [
+            14.60944728416241,
+            -11.266474488052976
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.9608,
+          "box": [
+            0,
+            0.5053037431504991,
+            0.17372902631759643,
+            0.6264761606852214
+          ],
+          "score": 0.919449508190155,
+          "image_id": 634,
+          "track_id": 201,
+          "class_label": "car",
+          "lidar_hits": 24,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.368,
+          "projected_box_iou": 0.8785,
+          "screen_id": 159,
+          "screen_center_error_m": 0.5385,
+          "screen_opacity": 1,
+          "raw_range_rank": 2,
+          "local_motion_and_id": {
+            "frame_interval": [
+              1767,
+              1777
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 10,
+            "exact_raw_track_id_measured_frames": 7,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 11,
+            "observed_screen_source_ids": [
+              203,
+              201,
+              206
+            ],
+            "matched_same_display_id_steps": 10,
+            "max_0_1s_translation_residual_m": 0.1524,
+            "worst_step_ending_frame": 1771
+          }
+        },
+        {
+          "actor_id": 141,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 17.2264,
+          "local_xy_m": [
+            15.680251248004451,
+            -7.132843696309298
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.4354,
+          "box": [
+            0.1573458194732666,
+            0.5037646823459201,
+            0.32695784568786623,
+            0.6167287190755208
+          ],
+          "score": 0.918871283531189,
+          "image_id": 638,
+          "track_id": 202,
+          "class_label": "car",
+          "lidar_hits": 37,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.7121,
+          "projected_box_iou": 0.8327,
+          "screen_id": 160,
+          "screen_center_error_m": 0.3035,
+          "screen_opacity": 1,
+          "raw_range_rank": 1,
+          "local_motion_and_id": {
+            "frame_interval": [
+              1767,
+              1777
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 11,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 11,
+            "observed_screen_source_ids": [
+              202
+            ],
+            "matched_same_display_id_steps": 10,
+            "max_0_1s_translation_residual_m": 0.112,
+            "worst_step_ending_frame": 1773
+          }
+        },
+        {
+          "actor_id": 169,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0043",
+          "center_range_m": 24.8506,
+          "local_xy_m": [
+            19.955978994008394,
+            14.80922499535541
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.0325,
+          "box": [
+            0.8851883888244629,
+            0.48026707967122395,
+            0.9046740531921387,
+            0.5699752807617188
+          ],
+          "score": 0.8170931935310364,
+          "image_id": 640,
+          "track_id": 204,
+          "class_label": "person",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0692,
+          "projected_box_iou": 0.8048,
+          "screen_id": 163,
+          "screen_center_error_m": 0.1198,
+          "screen_opacity": 1,
+          "raw_range_rank": 4,
+          "local_motion_and_id": {
+            "frame_interval": [
+              1767,
+              1777
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 8,
+            "exact_raw_track_id_measured_frames": 3,
+            "exact_display_id_frames": 6,
+            "position_qualified_current_display_frames": 5,
+            "observed_screen_source_ids": [
+              204
+            ],
+            "matched_same_display_id_steps": 3,
+            "max_0_1s_translation_residual_m": 0.102,
+            "worst_step_ending_frame": 1777
+          }
+        }
+      ],
+      "vehicles": 2,
+      "pedestrians": 1,
+      "moving": 3,
+      "eligible_default_rows": 2,
+      "nearest_m": 17.2264,
+      "furthest_m": 24.8506
+    },
+    {
+      "frame": 3306,
+      "time_s": 324.2,
+      "progress_m": 1361.419,
+      "ego_speed_mps": 3.641,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=3306&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=3306&camera=chase",
+      "ego_pose": {
+        "x": -147.90707397460938,
+        "y": 115.68577575683594,
+        "z": 0.0056391870602965355,
+        "pitch": -0.25870418548583984,
+        "yaw": 77.4410400390625,
+        "roll": 0.10637646913528442
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 150,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 30.5727,
+          "local_xy_m": [
+            22.437916293816144,
+            -20.76613951165949
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.383,
+          "box": [
+            0,
+            0.4950022379557292,
+            0.06874849200248719,
+            0.5700057135687934
+          ],
+          "score": 0.7305052280426025,
+          "image_id": 1005,
+          "track_id": 327,
+          "class_label": "car",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.9308,
+          "projected_box_iou": 0.8427,
+          "screen_id": 263,
+          "screen_center_error_m": 0.9308,
+          "screen_opacity": 1,
+          "raw_range_rank": 4,
+          "local_motion_and_id": {
+            "frame_interval": [
+              3301,
+              3311
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 6,
+            "exact_raw_track_id_measured_frames": 5,
+            "exact_display_id_frames": 6,
+            "position_qualified_current_display_frames": 6,
+            "observed_screen_source_ids": [
+              327
+            ],
+            "matched_same_display_id_steps": 5,
+            "max_0_1s_translation_residual_m": 0.1099,
+            "worst_step_ending_frame": 3307
+          }
+        },
+        {
+          "actor_id": 179,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0045",
+          "center_range_m": 17.7884,
+          "local_xy_m": [
+            17.68599695960164,
+            1.9059619023245697
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.0898,
+          "box": [
+            0.5484879016876221,
+            0.47669241163465714,
+            0.5664071559906005,
+            0.5765461815728081
+          ],
+          "score": 0.7366246581077576,
+          "image_id": 991,
+          "track_id": 319,
+          "class_label": "person",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.1201,
+          "projected_box_iou": 0.7093,
+          "screen_id": 259,
+          "screen_center_error_m": 0.1224,
+          "screen_opacity": 1,
+          "raw_range_rank": 3,
+          "local_motion_and_id": {
+            "frame_interval": [
+              3301,
+              3311
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 6,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 11,
+            "observed_screen_source_ids": [
+              319
+            ],
+            "matched_same_display_id_steps": 10,
+            "max_0_1s_translation_residual_m": 0.0922,
+            "worst_step_ending_frame": 3311
+          }
+        },
+        {
+          "actor_id": 180,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0018",
+          "center_range_m": 11.7725,
+          "local_xy_m": [
+            9.93927341491672,
+            6.308982388947978
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1015,
+          "box": [
+            0.8480594635009766,
+            0.4585139380560981,
+            0.8832992553710938,
+            0.6527229732937283
+          ],
+          "score": 0.7452070713043213,
+          "image_id": 980,
+          "track_id": 316,
+          "class_label": "person",
+          "lidar_hits": 12,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0314,
+          "projected_box_iou": 0.6309,
+          "screen_id": 255,
+          "screen_center_error_m": 0.07,
+          "screen_opacity": 1,
+          "raw_range_rank": 1,
+          "local_motion_and_id": {
+            "frame_interval": [
+              3301,
+              3311
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 8,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 10,
+            "observed_screen_source_ids": [
+              316
+            ],
+            "matched_same_display_id_steps": 8,
+            "max_0_1s_translation_residual_m": 0.1142,
+            "worst_step_ending_frame": 3305
+          }
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 2,
+      "moving": 3,
+      "eligible_default_rows": 2,
+      "nearest_m": 11.7725,
+      "furthest_m": 30.5727
+    },
+    {
+      "frame": 70,
+      "time_s": 0.6,
+      "progress_m": 0.394,
+      "ego_speed_mps": 1.316,
+      "active_event": "pedestrian",
+      "inspector": "./inspect.html?run=city-life&frame=70&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=70&camera=chase",
+      "ego_pose": {
+        "x": -58.41870880126953,
+        "y": 135.46420288085938,
+        "z": 0.005908442661166191,
+        "pitch": -0.08604900538921356,
+        "yaw": 0.16377630829811096,
+        "roll": 0.01543728169053793
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 129,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 17.5267,
+          "local_xy_m": [
+            17.039486159652995,
+            -4.103817009004883
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0.6203,
+          "box": [
+            0.31560683250427246,
+            0.4924478742811415,
+            0.4134575366973877,
+            0.6026337093777127
+          ],
+          "score": 0.8739902377128601,
+          "image_id": 1,
+          "track_id": 1,
+          "class_label": "car",
+          "lidar_hits": 32,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.4462,
+          "projected_box_iou": 0.8904,
+          "screen_id": 1,
+          "screen_center_error_m": 0.3404,
+          "screen_opacity": 1,
+          "raw_range_rank": 3,
+          "local_motion_and_id": {
+            "frame_interval": [
+              65,
+              75
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 11,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 11,
+            "observed_screen_source_ids": [
+              1
+            ],
+            "matched_same_display_id_steps": 10,
+            "max_0_1s_translation_residual_m": 0.0902,
+            "worst_step_ending_frame": 69
+          }
+        },
+        {
+          "actor_id": 151,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 11.6976,
+          "local_xy_m": [
+            9.724639819037272,
+            6.501183422867019
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2802,
+          "box": [
+            0.8610996246337891,
+            0.46895412868923614,
+            0.9038597106933594,
+            0.6612589518229167
+          ],
+          "score": 0.8483332991600037,
+          "image_id": 3,
+          "track_id": 3,
+          "class_label": "person",
+          "lidar_hits": 11,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0755,
+          "projected_box_iou": 0.6587,
+          "screen_id": 3,
+          "screen_center_error_m": 0.1142,
+          "screen_opacity": 1,
+          "raw_range_rank": 2,
+          "local_motion_and_id": {
+            "frame_interval": [
+              65,
+              75
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 10,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 11,
+            "observed_screen_source_ids": [
+              3
+            ],
+            "matched_same_display_id_steps": 10,
+            "max_0_1s_translation_residual_m": 0.2369,
+            "worst_step_ending_frame": 68
+          }
+        },
+        {
+          "actor_id": 152,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0048",
+          "center_range_m": 11.4815,
+          "local_xy_m": [
+            8.722967563940289,
+            7.465599961201894
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2802,
+          "box": [
+            0.9750424385070801,
+            0.47744763692220055,
+            0.9995827674865723,
+            0.6532942454020182
+          ],
+          "score": 0.5308741927146912,
+          "image_id": 2,
+          "track_id": 5,
+          "class_label": "person",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.2249,
+          "projected_box_iou": 0.3998,
+          "screen_id": 2,
+          "screen_center_error_m": 0.488,
+          "screen_opacity": 1,
+          "raw_range_rank": 1,
+          "local_motion_and_id": {
+            "frame_interval": [
+              65,
+              75
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 7,
+            "exact_raw_track_id_measured_frames": 5,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 9,
+            "observed_screen_source_ids": [
+              2,
+              5
+            ],
+            "matched_same_display_id_steps": 7,
+            "max_0_1s_translation_residual_m": 0.3985,
+            "worst_step_ending_frame": 73
+          }
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 2,
+      "moving": 2,
+      "eligible_default_rows": 3,
+      "nearest_m": 11.4815,
+      "furthest_m": 17.5267
+    },
+    {
+      "frame": 1100,
+      "time_s": 103.6,
+      "progress_m": 407.498,
+      "ego_speed_mps": 6.803,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=1100&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1100&camera=chase",
+      "ego_pose": {
+        "x": 228.32179260253906,
+        "y": 135.47679138183594,
+        "z": 1.0304609537124634,
+        "pitch": 1.0478160381317139,
+        "yaw": 91.42710876464844,
+        "roll": -0.0031913004349917173
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 138,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 23.7826,
+          "local_xy_m": [
+            23.771249049098795,
+            0.7344822771369708
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.4514,
+          "box": [
+            0.48248753547668455,
+            0.5060253567165799,
+            0.546837854385376,
+            0.5653372022840711
+          ],
+          "score": 0.8402053117752075,
+          "image_id": 455,
+          "track_id": 142,
+          "class_label": "car",
+          "lidar_hits": 13,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0896,
+          "projected_box_iou": 0.7157,
+          "screen_id": 109,
+          "screen_center_error_m": 0.5765,
+          "screen_opacity": 1,
+          "raw_range_rank": 2,
+          "local_motion_and_id": {
+            "frame_interval": [
+              1095,
+              1105
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 11,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 11,
+            "observed_screen_source_ids": [
+              142
+            ],
+            "matched_same_display_id_steps": 10,
+            "max_0_1s_translation_residual_m": 0.0984,
+            "worst_step_ending_frame": 1099
+          }
+        },
+        {
+          "actor_id": 162,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 10.4227,
+          "local_xy_m": [
+            8.374946551061788,
+            6.204277758783468
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.253,
+          "box": [
+            0.9153939247131347,
+            0.452837880452474,
+            0.9652470588684082,
+            0.6861300150553385
+          ],
+          "score": 0.8782093524932861,
+          "image_id": 474,
+          "track_id": 154,
+          "class_label": "person",
+          "lidar_hits": 10,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0529,
+          "projected_box_iou": 0.5995,
+          "screen_id": 116,
+          "screen_center_error_m": 0.0846,
+          "screen_opacity": 1,
+          "raw_range_rank": 1,
+          "local_motion_and_id": {
+            "frame_interval": [
+              1095,
+              1105
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 11,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 11,
+            "observed_screen_source_ids": [
+              154
+            ],
+            "matched_same_display_id_steps": 10,
+            "max_0_1s_translation_residual_m": 0.0728,
+            "worst_step_ending_frame": 1096
+          }
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 10.4227,
+      "furthest_m": 23.7826
+    },
+    {
+      "frame": 1454,
+      "time_s": 139,
+      "progress_m": 601.262,
+      "ego_speed_mps": 5.326,
+      "active_event": "lead",
+      "inspector": "./inspect.html?run=city-life&frame=1454&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1454&camera=chase",
+      "ego_pose": {
+        "x": 65.45756530761719,
+        "y": 193.3678436279297,
+        "z": 0.5398420095443726,
+        "pitch": -1.5496450662612915,
+        "yaw": 179.8520965576172,
+        "roll": 0.003218223573639989
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 114,
+          "actor_type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 39.961,
+          "local_xy_m": [
+            39.960954170470146,
+            0.002180240245330506
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 8.34,
+          "box": [
+            0.4882349967956543,
+            0.49586346944173176,
+            0.5127189636230469,
+            0.5295101165771484
+          ],
+          "score": 0.3846381604671478,
+          "image_id": 578,
+          "track_id": 162,
+          "class_label": "car",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.2156,
+          "projected_box_iou": 0.7253,
+          "screen_id": 127,
+          "screen_center_error_m": 0.2481,
+          "screen_opacity": 1,
+          "raw_range_rank": 2,
+          "local_motion_and_id": {
+            "frame_interval": [
+              1449,
+              1459
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 3,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 8,
+            "observed_screen_source_ids": [
+              162
+            ],
+            "matched_same_display_id_steps": 7,
+            "max_0_1s_translation_residual_m": 0.1159,
+            "worst_step_ending_frame": 1450
+          }
+        },
+        {
+          "actor_id": 168,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0029",
+          "center_range_m": 25.0755,
+          "local_xy_m": [
+            24.250200044012384,
+            6.380442311865416
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2,
+          "box": [
+            0.6291812896728516,
+            0.4608801947699653,
+            0.6462058067321778,
+            0.5511419508192275
+          ],
+          "score": 0.6121484637260437,
+          "image_id": 586,
+          "track_id": 189,
+          "class_label": "person",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.106,
+          "projected_box_iou": 0.6894,
+          "screen_id": 148,
+          "screen_center_error_m": 0.606,
+          "screen_opacity": 1,
+          "raw_range_rank": 1,
+          "local_motion_and_id": {
+            "frame_interval": [
+              1449,
+              1459
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 9,
+            "exact_raw_track_id_measured_frames": 3,
+            "exact_display_id_frames": 6,
+            "position_qualified_current_display_frames": 6,
+            "observed_screen_source_ids": [
+              189
+            ],
+            "matched_same_display_id_steps": 5,
+            "max_0_1s_translation_residual_m": 0.3584,
+            "worst_step_ending_frame": 1456
+          }
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 25.0755,
+      "furthest_m": 39.961
+    },
+    {
+      "frame": 2414,
+      "time_s": 235,
+      "progress_m": 1003.449,
+      "ego_speed_mps": 5.08,
+      "active_event": "braking",
+      "inspector": "./inspect.html?run=city-life&frame=2414&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=2414&camera=chase",
+      "ego_pose": {
+        "x": -78.0912857055664,
+        "y": -83.00337982177734,
+        "z": -0.8235155940055847,
+        "pitch": 0.27341288328170776,
+        "yaw": -90.15694427490234,
+        "roll": 0.004265600815415382
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 115,
+          "actor_type": "car",
+          "role": "braking",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 32.9765,
+          "local_xy_m": [
+            32.976543187847255,
+            0.0018247122278265693
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 7.98,
+          "box": [
+            0.48446102142333985,
+            0.4918595208062066,
+            0.5162128448486328,
+            0.5365389506022136
+          ],
+          "score": 0.7579842805862427,
+          "image_id": 767,
+          "track_id": 245,
+          "class_label": "car",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0841,
+          "projected_box_iou": 0.8805,
+          "screen_id": 189,
+          "screen_center_error_m": 0.0384,
+          "screen_opacity": 1,
+          "raw_range_rank": 2,
+          "local_motion_and_id": {
+            "frame_interval": [
+              2409,
+              2419
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 5,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 10,
+            "observed_screen_source_ids": [
+              245
+            ],
+            "matched_same_display_id_steps": 8,
+            "max_0_1s_translation_residual_m": 0.0715,
+            "worst_step_ending_frame": 2410
+          }
+        },
+        {
+          "actor_id": 171,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0026",
+          "center_range_m": 23.5211,
+          "local_xy_m": [
+            17.541510119272186,
+            -15.669594778656554
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 0,
+          "box": [
+            0.008883501589298248,
+            0.46917504204644095,
+            0.027526307106018066,
+            0.5704572041829427
+          ],
+          "score": 0.7944127917289734,
+          "image_id": 824,
+          "track_id": 252,
+          "class_label": "person",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.0457,
+          "projected_box_iou": 0.7116,
+          "screen_id": 196,
+          "screen_center_error_m": 0.0457,
+          "screen_opacity": 1,
+          "raw_range_rank": 1,
+          "local_motion_and_id": {
+            "frame_interval": [
+              2409,
+              2419
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 4,
+            "exact_raw_track_id_measured_frames": 1,
+            "exact_display_id_frames": 6,
+            "position_qualified_current_display_frames": 3,
+            "observed_screen_source_ids": [
+              252
+            ],
+            "matched_same_display_id_steps": 2,
+            "max_0_1s_translation_residual_m": 0,
+            "worst_step_ending_frame": 2415
+          }
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 1,
+      "eligible_default_rows": 2,
+      "nearest_m": 23.5211,
+      "furthest_m": 32.9765
+    },
+    {
+      "frame": 1956,
+      "time_s": 189.2,
+      "progress_m": 816.181,
+      "ego_speed_mps": 7.255,
+      "active_event": "bus",
+      "inspector": "./inspect.html?run=city-life&frame=1956&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1956&camera=chase",
+      "ego_pose": {
+        "x": -74.36295318603516,
+        "y": 104.00900268554688,
+        "z": 0.2988954186439514,
+        "pitch": 0.7403006553649902,
+        "yaw": -95.07048034667969,
+        "roll": 0.2826157510280609
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 126,
+          "actor_type": "bus",
+          "role": "stopped_bus",
+          "blueprint": "vehicle.fuso.mitsubishi",
+          "center_range_m": 52.2176,
+          "local_xy_m": [
+            52.00786709863085,
+            4.675189430583415
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0,
+          "box": [
+            0.5312202930450439,
+            0.47020479838053386,
+            0.5612731456756592,
+            0.5351202223036025
+          ],
+          "score": 0.8355460166931152,
+          "image_id": 682,
+          "track_id": 214,
+          "class_label": "bus",
+          "lidar_hits": 6,
+          "radar_sensors": [
+            "radar"
+          ],
+          "range_error_m": 1.3319,
+          "projected_box_iou": 0.873,
+          "screen_id": 169,
+          "screen_center_error_m": 1.2907,
+          "screen_opacity": 1,
+          "raw_range_rank": 3,
+          "local_motion_and_id": {
+            "frame_interval": [
+              1951,
+              1961
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 4,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 8,
+            "observed_screen_source_ids": [
+              214
+            ],
+            "matched_same_display_id_steps": 7,
+            "max_0_1s_translation_residual_m": 0.0235,
+            "worst_step_ending_frame": 1956
+          }
+        },
+        {
+          "actor_id": 170,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0049",
+          "center_range_m": 13.8965,
+          "local_xy_m": [
+            11.875667114439512,
+            7.216756555862759
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.26,
+          "box": [
+            0.8287678718566894,
+            0.524506590101454,
+            0.8502421379089355,
+            0.6172833336724175
+          ],
+          "score": 0.7801893353462219,
+          "image_id": 697,
+          "track_id": 215,
+          "class_label": "person",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.2199,
+          "projected_box_iou": 0.6159,
+          "screen_id": 170,
+          "screen_center_error_m": 0.7151,
+          "screen_opacity": 1,
+          "raw_range_rank": 1,
+          "local_motion_and_id": {
+            "frame_interval": [
+              1951,
+              1961
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 3,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 4,
+            "observed_screen_source_ids": [
+              215
+            ],
+            "matched_same_display_id_steps": 2,
+            "max_0_1s_translation_residual_m": 0.13,
+            "worst_step_ending_frame": 1958
+          }
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 1,
+      "eligible_default_rows": 2,
+      "nearest_m": 13.8965,
+      "furthest_m": 52.2176
+    }
+  ],
+  "all_verified_exposures": [
+    {
+      "frame": 342,
+      "time_s": 27.8,
+      "progress_m": 89.167,
+      "ego_speed_mps": 5.882,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=342&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=342&camera=chase",
+      "ego_pose": {
+        "x": 30.334421157836914,
+        "y": 134.15940856933594,
+        "z": 0.005550828296691179,
+        "pitch": -0.13078391551971436,
+        "yaw": -0.8126249313354492,
+        "roll": -0.017785297706723213
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 132,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 30.4804,
+          "local_xy_m": [
+            30.278705780206167,
+            -3.500923312753905
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.3604,
+          "box": [
+            0.41544551849365235,
+            0.5000514136420355,
+            0.459684944152832,
+            0.5514268239339193
+          ],
+          "score": 0.8433933854103088,
+          "image_id": 77,
+          "track_id": 26,
+          "class_label": "car",
+          "lidar_hits": 7,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.025,
+          "projected_box_iou": 0.8383,
+          "screen_id": 22,
+          "screen_center_error_m": 0.016,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 116,
+          "actor_type": "van",
+          "role": "occluder",
+          "blueprint": "vehicle.sprinter.mercedes",
+          "center_range_m": 52.9247,
+          "local_xy_m": [
+            52.80857945816614,
+            3.5038438241927223
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0,
+          "box": [
+            0.5243049144744873,
+            0.4802793714735243,
+            0.5472692012786865,
+            0.5248743693033854
+          ],
+          "score": 0.5299491882324219,
+          "image_id": 80,
+          "track_id": 20,
+          "class_label": "car",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar"
+          ],
+          "range_error_m": 0.7368,
+          "projected_box_iou": 0.8146,
+          "screen_id": 21,
+          "screen_center_error_m": 0.7105,
+          "screen_opacity": 1,
+          "raw_range_rank": 4
+        },
+        {
+          "actor_id": 155,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0016",
+          "center_range_m": 18.2013,
+          "local_xy_m": [
+            15.279574780328499,
+            -9.890444400107176
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2002,
+          "box": [
+            0.13443692922592163,
+            0.4737002478705512,
+            0.15599786043167113,
+            0.5899639129638672
+          ],
+          "score": 0.8451476097106934,
+          "image_id": 82,
+          "track_id": 27,
+          "class_label": "person",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.0856,
+          "projected_box_iou": 0.5212,
+          "screen_id": 23,
+          "screen_center_error_m": 0.2635,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        },
+        {
+          "actor_id": 156,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0023",
+          "center_range_m": 18.7631,
+          "local_xy_m": [
+            15.293190643992785,
+            -10.870633721701187
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1802,
+          "box": [
+            0.09443384408950806,
+            0.4729914347330729,
+            0.12316745519638062,
+            0.588710445827908
+          ],
+          "score": 0.8508332371711731,
+          "image_id": 85,
+          "track_id": 23,
+          "class_label": "person",
+          "lidar_hits": 6,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.1229,
+          "projected_box_iou": 0.4787,
+          "screen_id": 15,
+          "screen_center_error_m": 0.6904,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 2,
+      "pedestrians": 2,
+      "moving": 3,
+      "eligible_default_rows": 3,
+      "nearest_m": 18.2013,
+      "furthest_m": 52.9247
+    },
+    {
+      "frame": 344,
+      "time_s": 28,
+      "progress_m": 90.377,
+      "ego_speed_mps": 6.201,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=344&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=344&camera=chase",
+      "ego_pose": {
+        "x": 31.544124603271484,
+        "y": 134.14219665527344,
+        "z": 0.005532348062843084,
+        "pitch": -0.13199454545974731,
+        "yaw": -0.812309205532074,
+        "roll": -0.017630184069275856
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 132,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 28.4057,
+          "local_xy_m": [
+            28.188807271824977,
+            -3.5035066986347894
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.3804,
+          "box": [
+            0.40983285903930666,
+            0.4993490007188585,
+            0.4570590019226074,
+            0.5551529354519315
+          ],
+          "score": 0.8159635066986084,
+          "image_id": 77,
+          "track_id": 26,
+          "class_label": "car",
+          "lidar_hits": 7,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.1329,
+          "projected_box_iou": 0.8171,
+          "screen_id": 22,
+          "screen_center_error_m": 0.0254,
+          "screen_opacity": 1,
+          "raw_range_rank": 5
+        },
+        {
+          "actor_id": 116,
+          "actor_type": "van",
+          "role": "occluder",
+          "blueprint": "vehicle.sprinter.mercedes",
+          "center_range_m": 51.7176,
+          "local_xy_m": [
+            51.598772880038645,
+            3.5036130491514363
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0,
+          "box": [
+            0.5255250930786133,
+            0.4804715898301866,
+            0.5487125396728516,
+            0.525426779852973
+          ],
+          "score": 0.5332828164100647,
+          "image_id": 80,
+          "track_id": 20,
+          "class_label": "car",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar"
+          ],
+          "range_error_m": 0.8184,
+          "projected_box_iou": 0.7714,
+          "screen_id": 21,
+          "screen_center_error_m": 0.7074,
+          "screen_opacity": 1,
+          "raw_range_rank": 6
+        },
+        {
+          "actor_id": 155,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0016",
+          "center_range_m": 17.3908,
+          "local_xy_m": [
+            14.299813049414492,
+            -9.897206659169669
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1802,
+          "box": [
+            0.10512750148773194,
+            0.4735006120469835,
+            0.13558666706085204,
+            0.5958476172553169
+          ],
+          "score": 0.8295117020606995,
+          "image_id": 82,
+          "track_id": 27,
+          "class_label": "person",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.148,
+          "projected_box_iou": 0.6708,
+          "screen_id": 23,
+          "screen_center_error_m": 0.0575,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 156,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0023",
+          "center_range_m": 17.9854,
+          "local_xy_m": [
+            14.323422506803151,
+            -10.877254285826012
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2002,
+          "box": [
+            0.06475794315338135,
+            0.4731334686279297,
+            0.09456642866134643,
+            0.5965843624538846
+          ],
+          "score": 0.8285422325134277,
+          "image_id": 85,
+          "track_id": 23,
+          "class_label": "person",
+          "lidar_hits": 7,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.096,
+          "projected_box_iou": 0.4471,
+          "screen_id": 15,
+          "screen_center_error_m": 0.2906,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        }
+      ],
+      "vehicles": 2,
+      "pedestrians": 2,
+      "moving": 3,
+      "eligible_default_rows": 2,
+      "nearest_m": 17.3908,
+      "furthest_m": 51.7176
+    },
+    {
+      "frame": 1772,
+      "time_s": 170.8,
+      "progress_m": 729.702,
+      "ego_speed_mps": 2.849,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=1772&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1772&camera=chase",
+      "ego_pose": {
+        "x": -61.288307189941406,
+        "y": 186.54478454589844,
+        "z": 0.005674639716744423,
+        "pitch": -0.2629908323287964,
+        "yaw": -142.85757446289062,
+        "roll": -0.05553480610251427
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 142,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 18.4491,
+          "local_xy_m": [
+            14.60944728416241,
+            -11.266474488052976
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.9608,
+          "box": [
+            0,
+            0.5053037431504991,
+            0.17372902631759643,
+            0.6264761606852214
+          ],
+          "score": 0.919449508190155,
+          "image_id": 634,
+          "track_id": 201,
+          "class_label": "car",
+          "lidar_hits": 24,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.368,
+          "projected_box_iou": 0.8785,
+          "screen_id": 159,
+          "screen_center_error_m": 0.5385,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 141,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 17.2264,
+          "local_xy_m": [
+            15.680251248004451,
+            -7.132843696309298
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.4354,
+          "box": [
+            0.1573458194732666,
+            0.5037646823459201,
+            0.32695784568786623,
+            0.6167287190755208
+          ],
+          "score": 0.918871283531189,
+          "image_id": 638,
+          "track_id": 202,
+          "class_label": "car",
+          "lidar_hits": 37,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.7121,
+          "projected_box_iou": 0.8327,
+          "screen_id": 160,
+          "screen_center_error_m": 0.3035,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        },
+        {
+          "actor_id": 169,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0043",
+          "center_range_m": 24.8506,
+          "local_xy_m": [
+            19.955978994008394,
+            14.80922499535541
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.0325,
+          "box": [
+            0.8851883888244629,
+            0.48026707967122395,
+            0.9046740531921387,
+            0.5699752807617188
+          ],
+          "score": 0.8170931935310364,
+          "image_id": 640,
+          "track_id": 204,
+          "class_label": "person",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0692,
+          "projected_box_iou": 0.8048,
+          "screen_id": 163,
+          "screen_center_error_m": 0.1198,
+          "screen_opacity": 1,
+          "raw_range_rank": 4
+        }
+      ],
+      "vehicles": 2,
+      "pedestrians": 1,
+      "moving": 3,
+      "eligible_default_rows": 2,
+      "nearest_m": 17.2264,
+      "furthest_m": 24.8506
+    },
+    {
+      "frame": 346,
+      "time_s": 28.2,
+      "progress_m": 91.653,
+      "ego_speed_mps": 6.536,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=346&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=346&camera=chase",
+      "ego_pose": {
+        "x": 32.81917953491211,
+        "y": 134.12405395507812,
+        "z": 0.005511485040187836,
+        "pitch": -0.12576211988925934,
+        "yaw": -0.8121325969696045,
+        "roll": -0.01766502484679222
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 132,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 26.259,
+          "local_xy_m": [
+            26.02387015289193,
+            -3.5061410578308436
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.4204,
+          "box": [
+            0.3999575138092041,
+            0.49830428229437934,
+            0.45183873176574707,
+            0.5609450022379557
+          ],
+          "score": 0.8298009634017944,
+          "image_id": 77,
+          "track_id": 26,
+          "class_label": "car",
+          "lidar_hits": 6,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.3379,
+          "projected_box_iou": 0.8278,
+          "screen_id": 22,
+          "screen_center_error_m": 0.0852,
+          "screen_opacity": 1,
+          "raw_range_rank": 5
+        },
+        {
+          "actor_id": 155,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0016",
+          "center_range_m": 16.548,
+          "local_xy_m": [
+            13.26457443388442,
+            -9.893780637912103
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1802,
+          "box": [
+            0.07321745157241821,
+            0.47635591295030383,
+            0.10141922235488891,
+            0.6034420437282986
+          ],
+          "score": 0.849332332611084,
+          "image_id": 82,
+          "track_id": 27,
+          "class_label": "person",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.1095,
+          "projected_box_iou": 0.5486,
+          "screen_id": 23,
+          "screen_center_error_m": 0.0547,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 156,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0023",
+          "center_range_m": 17.1702,
+          "local_xy_m": [
+            13.28818087037328,
+            -10.873828337337603
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2002,
+          "box": [
+            0.029493707418441772,
+            0.48314556545681425,
+            0.06394615769386292,
+            0.6050353156195747
+          ],
+          "score": 0.8178579211235046,
+          "image_id": 85,
+          "track_id": 23,
+          "class_label": "person",
+          "lidar_hits": 7,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.1153,
+          "projected_box_iou": 0.415,
+          "screen_id": 15,
+          "screen_center_error_m": 0.0579,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 2,
+      "moving": 3,
+      "eligible_default_rows": 2,
+      "nearest_m": 16.548,
+      "furthest_m": 26.259
+    },
+    {
+      "frame": 3306,
+      "time_s": 324.2,
+      "progress_m": 1361.419,
+      "ego_speed_mps": 3.641,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=3306&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=3306&camera=chase",
+      "ego_pose": {
+        "x": -147.90707397460938,
+        "y": 115.68577575683594,
+        "z": 0.0056391870602965355,
+        "pitch": -0.25870418548583984,
+        "yaw": 77.4410400390625,
+        "roll": 0.10637646913528442
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 150,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 30.5727,
+          "local_xy_m": [
+            22.437916293816144,
+            -20.76613951165949
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.383,
+          "box": [
+            0,
+            0.4950022379557292,
+            0.06874849200248719,
+            0.5700057135687934
+          ],
+          "score": 0.7305052280426025,
+          "image_id": 1005,
+          "track_id": 327,
+          "class_label": "car",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.9308,
+          "projected_box_iou": 0.8427,
+          "screen_id": 263,
+          "screen_center_error_m": 0.9308,
+          "screen_opacity": 1,
+          "raw_range_rank": 4
+        },
+        {
+          "actor_id": 179,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0045",
+          "center_range_m": 17.7884,
+          "local_xy_m": [
+            17.68599695960164,
+            1.9059619023245697
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.0898,
+          "box": [
+            0.5484879016876221,
+            0.47669241163465714,
+            0.5664071559906005,
+            0.5765461815728081
+          ],
+          "score": 0.7366246581077576,
+          "image_id": 991,
+          "track_id": 319,
+          "class_label": "person",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.1201,
+          "projected_box_iou": 0.7093,
+          "screen_id": 259,
+          "screen_center_error_m": 0.1224,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 180,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0018",
+          "center_range_m": 11.7725,
+          "local_xy_m": [
+            9.93927341491672,
+            6.308982388947978
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1015,
+          "box": [
+            0.8480594635009766,
+            0.4585139380560981,
+            0.8832992553710938,
+            0.6527229732937283
+          ],
+          "score": 0.7452070713043213,
+          "image_id": 980,
+          "track_id": 316,
+          "class_label": "person",
+          "lidar_hits": 12,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0314,
+          "projected_box_iou": 0.6309,
+          "screen_id": 255,
+          "screen_center_error_m": 0.07,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 2,
+      "moving": 3,
+      "eligible_default_rows": 2,
+      "nearest_m": 11.7725,
+      "furthest_m": 30.5727
+    },
+    {
+      "frame": 70,
+      "time_s": 0.6,
+      "progress_m": 0.394,
+      "ego_speed_mps": 1.316,
+      "active_event": "pedestrian",
+      "inspector": "./inspect.html?run=city-life&frame=70&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=70&camera=chase",
+      "ego_pose": {
+        "x": -58.41870880126953,
+        "y": 135.46420288085938,
+        "z": 0.005908442661166191,
+        "pitch": -0.08604900538921356,
+        "yaw": 0.16377630829811096,
+        "roll": 0.01543728169053793
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 129,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 17.5267,
+          "local_xy_m": [
+            17.039486159652995,
+            -4.103817009004883
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0.6203,
+          "box": [
+            0.31560683250427246,
+            0.4924478742811415,
+            0.4134575366973877,
+            0.6026337093777127
+          ],
+          "score": 0.8739902377128601,
+          "image_id": 1,
+          "track_id": 1,
+          "class_label": "car",
+          "lidar_hits": 32,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.4462,
+          "projected_box_iou": 0.8904,
+          "screen_id": 1,
+          "screen_center_error_m": 0.3404,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 151,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 11.6976,
+          "local_xy_m": [
+            9.724639819037272,
+            6.501183422867019
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2802,
+          "box": [
+            0.8610996246337891,
+            0.46895412868923614,
+            0.9038597106933594,
+            0.6612589518229167
+          ],
+          "score": 0.8483332991600037,
+          "image_id": 3,
+          "track_id": 3,
+          "class_label": "person",
+          "lidar_hits": 11,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0755,
+          "projected_box_iou": 0.6587,
+          "screen_id": 3,
+          "screen_center_error_m": 0.1142,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 152,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0048",
+          "center_range_m": 11.4815,
+          "local_xy_m": [
+            8.722967563940289,
+            7.465599961201894
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2802,
+          "box": [
+            0.9750424385070801,
+            0.47744763692220055,
+            0.9995827674865723,
+            0.6532942454020182
+          ],
+          "score": 0.5308741927146912,
+          "image_id": 2,
+          "track_id": 5,
+          "class_label": "person",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.2249,
+          "projected_box_iou": 0.3998,
+          "screen_id": 2,
+          "screen_center_error_m": 0.488,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 2,
+      "moving": 2,
+      "eligible_default_rows": 3,
+      "nearest_m": 11.4815,
+      "furthest_m": 17.5267
+    },
+    {
+      "frame": 336,
+      "time_s": 27.2,
+      "progress_m": 85.927,
+      "ego_speed_mps": 4.897,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=336&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=336&camera=chase",
+      "ego_pose": {
+        "x": 27.094501495361328,
+        "y": 134.20556640625,
+        "z": 0.005597828887403011,
+        "pitch": -0.13025499880313873,
+        "yaw": -0.816356897354126,
+        "roll": -0.017762353643774986
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 132,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 36.2989,
+          "local_xy_m": [
+            36.12964220844047,
+            -3.501747349254594
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.2004,
+          "box": [
+            0.43062601089477537,
+            0.5024856567382813,
+            0.46929521560668946,
+            0.5422481960720487
+          ],
+          "score": 0.6772040724754333,
+          "image_id": 77,
+          "track_id": 26,
+          "class_label": "car",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.2346,
+          "projected_box_iou": 0.7705,
+          "screen_id": 22,
+          "screen_center_error_m": 0.1585,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 116,
+          "actor_type": "van",
+          "role": "occluder",
+          "blueprint": "vehicle.sprinter.mercedes",
+          "center_range_m": 56.1582,
+          "local_xy_m": [
+            56.04859956483031,
+            3.5072915452224005
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0,
+          "box": [
+            0.522826099395752,
+            0.4807753668891059,
+            0.5453766822814942,
+            0.5215785556369358
+          ],
+          "score": 0.5441156625747681,
+          "image_id": 80,
+          "track_id": 20,
+          "class_label": "car",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar"
+          ],
+          "range_error_m": 0.7237,
+          "projected_box_iou": 0.7698,
+          "screen_id": 21,
+          "screen_center_error_m": 0.7095,
+          "screen_opacity": 1,
+          "raw_range_rank": 4
+        },
+        {
+          "actor_id": 155,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0016",
+          "center_range_m": 20.3632,
+          "local_xy_m": [
+            17.800398010428296,
+            -9.889700417189436
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1802,
+          "box": [
+            0.18857892751693725,
+            0.47879265679253474,
+            0.21170444488525392,
+            0.5771346198187934
+          ],
+          "score": 0.8131230473518372,
+          "image_id": 82,
+          "track_id": 27,
+          "class_label": "person",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.1536,
+          "projected_box_iou": 0.6953,
+          "screen_id": 23,
+          "screen_center_error_m": 0.2955,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 2,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 20.3632,
+      "furthest_m": 56.1582
+    },
+    {
+      "frame": 3328,
+      "time_s": 326.4,
+      "progress_m": 1371.967,
+      "ego_speed_mps": 6.46,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=3328&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=3328&camera=chase",
+      "ego_pose": {
+        "x": -143.55059814453125,
+        "y": 125.21461486816406,
+        "z": 0.005538523197174072,
+        "pitch": -0.13402199745178223,
+        "yaw": 58.201480865478516,
+        "roll": 0.33153343200683594
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 179,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0045",
+          "center_range_m": 9.8816,
+          "local_xy_m": [
+            8.024101866677885,
+            5.7671945239114635
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1034,
+          "box": [
+            0.9028726577758789,
+            0.4481694539388021,
+            0.9605051040649414,
+            0.6968929714626736
+          ],
+          "score": 0.8742830753326416,
+          "image_id": 991,
+          "track_id": 319,
+          "class_label": "person",
+          "lidar_hits": 9,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0362,
+          "projected_box_iou": 0.8014,
+          "screen_id": 259,
+          "screen_center_error_m": 0.0289,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 150,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 10.3486,
+          "local_xy_m": [
+            8.554168807218456,
+            -5.824138464889902
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.5096,
+          "box": [
+            0.0003374874591827393,
+            0.49334937201605905,
+            0.1888613224029541,
+            0.7493451436360677
+          ],
+          "score": 0.9034400582313538,
+          "image_id": 1005,
+          "track_id": 328,
+          "class_label": "car",
+          "lidar_hits": 65,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.1963,
+          "projected_box_iou": 0.76,
+          "screen_id": 263,
+          "screen_center_error_m": 0.2997,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 9.8816,
+      "furthest_m": 10.3486
+    },
+    {
+      "frame": 3324,
+      "time_s": 326,
+      "progress_m": 1369.505,
+      "ego_speed_mps": 5.813,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=3324&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=3324&camera=chase",
+      "ego_pose": {
+        "x": -144.84812927246094,
+        "y": 123.13009643554688,
+        "z": 0.005574289709329605,
+        "pitch": -0.13600240647792816,
+        "yaw": 62.69752883911133,
+        "roll": 0.2675850987434387
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 179,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0045",
+          "center_range_m": 11.647,
+          "local_xy_m": [
+            10.486009398480086,
+            5.069224409980771
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1031,
+          "box": [
+            0.7519957065582276,
+            0.4736482832166884,
+            0.7982211589813233,
+            0.6402361975775824
+          ],
+          "score": 0.8475310206413269,
+          "image_id": 991,
+          "track_id": 319,
+          "class_label": "person",
+          "lidar_hits": 7,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0715,
+          "projected_box_iou": 0.8706,
+          "screen_id": 259,
+          "screen_center_error_m": 0.0321,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 150,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 14.6626,
+          "local_xy_m": [
+            12.384356336266336,
+            -7.849733978029331
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.4707,
+          "box": [
+            0.08151132464408875,
+            0.5003105163574219,
+            0.2146857500076294,
+            0.6456795586480035
+          ],
+          "score": 0.8649952411651611,
+          "image_id": 1005,
+          "track_id": 328,
+          "class_label": "car",
+          "lidar_hits": 36,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.3433,
+          "projected_box_iou": 0.7687,
+          "screen_id": 263,
+          "screen_center_error_m": 0.38,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 11.647,
+      "furthest_m": 14.6626
+    },
+    {
+      "frame": 3322,
+      "time_s": 325.8,
+      "progress_m": 1368.371,
+      "ego_speed_mps": 5.49,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=3322&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=3322&camera=chase",
+      "ego_pose": {
+        "x": -145.3905487060547,
+        "y": 122.13700866699219,
+        "z": 0.005590531509369612,
+        "pitch": -0.13421045243740082,
+        "yaw": 64.76322174072266,
+        "roll": 0.2390713095664978
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 150,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 16.7364,
+          "local_xy_m": [
+            14.0783218253762,
+            -9.050224536358721
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.4637,
+          "box": [
+            0.0849449098110199,
+            0.49338743421766496,
+            0.21066701412200928,
+            0.6218270195855035
+          ],
+          "score": 0.8893595337867737,
+          "image_id": 1005,
+          "track_id": 328,
+          "class_label": "car",
+          "lidar_hits": 20,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.3757,
+          "projected_box_iou": 0.8038,
+          "screen_id": 263,
+          "screen_center_error_m": 0.3697,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 179,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0045",
+          "center_range_m": 12.505,
+          "local_xy_m": [
+            11.587583401406194,
+            4.701498562443015
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1031,
+          "box": [
+            0.71304292678833,
+            0.4748061286078559,
+            0.7439488410949707,
+            0.6207269456651475
+          ],
+          "score": 0.7997123003005981,
+          "image_id": 991,
+          "track_id": 319,
+          "class_label": "person",
+          "lidar_hits": 6,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0272,
+          "projected_box_iou": 0.6581,
+          "screen_id": 259,
+          "screen_center_error_m": 0.0642,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 12.505,
+      "furthest_m": 16.7364
+    },
+    {
+      "frame": 72,
+      "time_s": 0.8,
+      "progress_m": 0.704,
+      "ego_speed_mps": 1.76,
+      "active_event": "pedestrian",
+      "inspector": "./inspect.html?run=city-life&frame=72&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=72&camera=chase",
+      "ego_pose": {
+        "x": -58.10926818847656,
+        "y": 135.4488525390625,
+        "z": 0.005632156040519476,
+        "pitch": -0.08866216242313385,
+        "yaw": -0.4461941421031952,
+        "roll": 0.013447490520775318
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 129,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 16.9113,
+          "local_xy_m": [
+            16.45266787913715,
+            -3.9117375137443746
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 1.1802,
+          "box": [
+            0.3136314392089844,
+            0.493263922797309,
+            0.4170419692993164,
+            0.6083086649576823
+          ],
+          "score": 0.8785422444343567,
+          "image_id": 1,
+          "track_id": 1,
+          "class_label": "car",
+          "lidar_hits": 28,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.3915,
+          "projected_box_iou": 0.8944,
+          "screen_id": 1,
+          "screen_center_error_m": 0.2882,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 151,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 11.2444,
+          "local_xy_m": [
+            9.085257737864897,
+            6.625256569198348
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2806,
+          "box": [
+            0.9032691955566406,
+            0.45706956651475694,
+            0.9461771011352539,
+            0.6704660203721788
+          ],
+          "score": 0.8593587875366211,
+          "image_id": 3,
+          "track_id": 3,
+          "class_label": "person",
+          "lidar_hits": 7,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0038,
+          "projected_box_iou": 0.6054,
+          "screen_id": 3,
+          "screen_center_error_m": 0.0698,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 11.2444,
+      "furthest_m": 16.9113
+    },
+    {
+      "frame": 3320,
+      "time_s": 325.6,
+      "progress_m": 1367.303,
+      "ego_speed_mps": 5.162,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=3320&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=3320&camera=chase",
+      "ego_pose": {
+        "x": -145.86883544921875,
+        "y": 121.18383026123047,
+        "z": 0.005595106165856123,
+        "pitch": -0.133151575922966,
+        "yaw": 66.70866394042969,
+        "roll": 0.21351386606693268
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 150,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 18.7354,
+          "local_xy_m": [
+            15.62122481633671,
+            -10.343799270101766
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.4581,
+          "box": [
+            0.07990155220031739,
+            0.4938754187689887,
+            0.20082058906555175,
+            0.6083847469753689
+          ],
+          "score": 0.8479580879211426,
+          "image_id": 1005,
+          "track_id": 328,
+          "class_label": "car",
+          "lidar_hits": 22,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.4238,
+          "projected_box_iou": 0.8028,
+          "screen_id": 263,
+          "screen_center_error_m": 0.3997,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 179,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0045",
+          "center_range_m": 13.3181,
+          "local_xy_m": [
+            12.598856162206497,
+            4.317509713111344
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1031,
+          "box": [
+            0.6766425609588623,
+            0.4824085235595703,
+            0.7015125751495361,
+            0.6127302805582683
+          ],
+          "score": 0.8300719261169434,
+          "image_id": 991,
+          "track_id": 319,
+          "class_label": "person",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.1427,
+          "projected_box_iou": 0.5826,
+          "screen_id": 259,
+          "screen_center_error_m": 0.0987,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 13.3181,
+      "furthest_m": 18.7354
+    },
+    {
+      "frame": 3318,
+      "time_s": 325.4,
+      "progress_m": 1366.3,
+      "ego_speed_mps": 4.831,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=3318&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=3318&camera=chase",
+      "ego_pose": {
+        "x": -146.28810119628906,
+        "y": 120.27528381347656,
+        "z": 0.005618077237159014,
+        "pitch": -0.1363910734653473,
+        "yaw": 68.53515625,
+        "roll": 0.19042889773845673
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 150,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 20.6521,
+          "local_xy_m": [
+            17.016157981007733,
+            -11.70303648296657
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.4781,
+          "box": [
+            0.06681516766548157,
+            0.4982701195610894,
+            0.19065325260162352,
+            0.6012933943006727
+          ],
+          "score": 0.8142149448394775,
+          "image_id": 1005,
+          "track_id": 328,
+          "class_label": "car",
+          "lidar_hits": 16,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.4395,
+          "projected_box_iou": 0.83,
+          "screen_id": 263,
+          "screen_center_error_m": 0.4549,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 179,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0045",
+          "center_range_m": 14.0957,
+          "local_xy_m": [
+            13.530875213588486,
+            3.9500453972433163
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1031,
+          "box": [
+            0.6426507472991944,
+            0.47830170525444876,
+            0.674916124343872,
+            0.606035402086046
+          ],
+          "score": 0.861743152141571,
+          "image_id": 991,
+          "track_id": 319,
+          "class_label": "person",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.029,
+          "projected_box_iou": 0.7925,
+          "screen_id": 259,
+          "screen_center_error_m": 0.0076,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 14.0957,
+      "furthest_m": 20.6521
+    },
+    {
+      "frame": 3316,
+      "time_s": 325.2,
+      "progress_m": 1365.365,
+      "ego_speed_mps": 4.51,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=3316&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=3316&camera=chase",
+      "ego_pose": {
+        "x": -146.65379333496094,
+        "y": 119.41449737548828,
+        "z": 0.005635333713144064,
+        "pitch": -0.143778458237648,
+        "yaw": 70.24500274658203,
+        "roll": 0.16979047656059265
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 150,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 22.4919,
+          "local_xy_m": [
+            18.257264709831624,
+            -13.136169431645975
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.4581,
+          "box": [
+            0.04935133457183838,
+            0.4977746751573351,
+            0.17096431255340577,
+            0.5939113193088108
+          ],
+          "score": 0.8378198742866516,
+          "image_id": 1005,
+          "track_id": 328,
+          "class_label": "car",
+          "lidar_hits": 14,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.499,
+          "projected_box_iou": 0.8394,
+          "screen_id": 263,
+          "screen_center_error_m": 0.5142,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 179,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0045",
+          "center_range_m": 14.8139,
+          "local_xy_m": [
+            14.37515850863836,
+            3.5784191471771396
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1031,
+          "box": [
+            0.6194280624389649,
+            0.47758411831325953,
+            0.649686336517334,
+            0.5998384687635634
+          ],
+          "score": 0.8188567161560059,
+          "image_id": 991,
+          "track_id": 319,
+          "class_label": "person",
+          "lidar_hits": 7,
+          "radar_sensors": [
+            "radar",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0504,
+          "projected_box_iou": 0.8233,
+          "screen_id": 259,
+          "screen_center_error_m": 0.034,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 14.8139,
+      "furthest_m": 22.4919
+    },
+    {
+      "frame": 1100,
+      "time_s": 103.6,
+      "progress_m": 407.498,
+      "ego_speed_mps": 6.803,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=1100&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1100&camera=chase",
+      "ego_pose": {
+        "x": 228.32179260253906,
+        "y": 135.47679138183594,
+        "z": 1.0304609537124634,
+        "pitch": 1.0478160381317139,
+        "yaw": 91.42710876464844,
+        "roll": -0.0031913004349917173
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 138,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 23.7826,
+          "local_xy_m": [
+            23.771249049098795,
+            0.7344822771369708
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.4514,
+          "box": [
+            0.48248753547668455,
+            0.5060253567165799,
+            0.546837854385376,
+            0.5653372022840711
+          ],
+          "score": 0.8402053117752075,
+          "image_id": 455,
+          "track_id": 142,
+          "class_label": "car",
+          "lidar_hits": 13,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0896,
+          "projected_box_iou": 0.7157,
+          "screen_id": 109,
+          "screen_center_error_m": 0.5765,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 162,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 10.4227,
+          "local_xy_m": [
+            8.374946551061788,
+            6.204277758783468
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.253,
+          "box": [
+            0.9153939247131347,
+            0.452837880452474,
+            0.9652470588684082,
+            0.6861300150553385
+          ],
+          "score": 0.8782093524932861,
+          "image_id": 474,
+          "track_id": 154,
+          "class_label": "person",
+          "lidar_hits": 10,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0529,
+          "projected_box_iou": 0.5995,
+          "screen_id": 116,
+          "screen_center_error_m": 0.0846,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 10.4227,
+      "furthest_m": 23.7826
+    },
+    {
+      "frame": 3314,
+      "time_s": 325,
+      "progress_m": 1364.489,
+      "ego_speed_mps": 4.21,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=3314&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=3314&camera=chase",
+      "ego_pose": {
+        "x": -146.97190856933594,
+        "y": 118.60163116455078,
+        "z": 0.00563750509172678,
+        "pitch": -0.15927046537399292,
+        "yaw": 71.84107971191406,
+        "roll": 0.14860281348228455
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 150,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 24.2389,
+          "local_xy_m": [
+            19.349166043347687,
+            -14.59918723445556
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.4685,
+          "box": [
+            0.033355891704559326,
+            0.4974739498562283,
+            0.15917929410934448,
+            0.5862534840901693
+          ],
+          "score": 0.8517293930053711,
+          "image_id": 1005,
+          "track_id": 328,
+          "class_label": "car",
+          "lidar_hits": 15,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.755,
+          "projected_box_iou": 0.8627,
+          "screen_id": 263,
+          "screen_center_error_m": 0.5928,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 179,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0045",
+          "center_range_m": 15.4895,
+          "local_xy_m": [
+            15.148381562395233,
+            3.2329810131150154
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1034,
+          "box": [
+            0.6056114673614502,
+            0.47513436211480037,
+            0.6271397113800049,
+            0.5916568332248264
+          ],
+          "score": 0.705390989780426,
+          "image_id": 991,
+          "track_id": 319,
+          "class_label": "person",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0778,
+          "projected_box_iou": 0.7023,
+          "screen_id": 259,
+          "screen_center_error_m": 0.0777,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 15.4895,
+      "furthest_m": 24.2389
+    },
+    {
+      "frame": 1094,
+      "time_s": 103,
+      "progress_m": 403.684,
+      "ego_speed_mps": 5.895,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=1094&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1094&camera=chase",
+      "ego_pose": {
+        "x": 228.415771484375,
+        "y": 131.6639404296875,
+        "z": 0.95241779088974,
+        "pitch": 1.0559706687927246,
+        "yaw": 91.3969955444336,
+        "roll": 0.0018406391609460115
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 162,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 14.3822,
+          "local_xy_m": [
+            12.927820788742057,
+            6.302227022661792
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2594,
+          "box": [
+            0.7557117938995361,
+            0.47154659695095485,
+            0.786439847946167,
+            0.613924068874783
+          ],
+          "score": 0.8103178143501282,
+          "image_id": 474,
+          "track_id": 154,
+          "class_label": "person",
+          "lidar_hits": 6,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0696,
+          "projected_box_iou": 0.7212,
+          "screen_id": 116,
+          "screen_center_error_m": 0.0401,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        },
+        {
+          "actor_id": 138,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 25.1872,
+          "local_xy_m": [
+            25.186194366096355,
+            -0.22099211742005131
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 2.4586,
+          "box": [
+            0.46332507133483886,
+            0.5080155266655816,
+            0.5249660015106201,
+            0.5630594041612413
+          ],
+          "score": 0.7146093249320984,
+          "image_id": 455,
+          "track_id": 142,
+          "class_label": "car",
+          "lidar_hits": 7,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.4519,
+          "projected_box_iou": 0.7125,
+          "screen_id": 109,
+          "screen_center_error_m": 0.5722,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 14.3822,
+      "furthest_m": 25.1872
+    },
+    {
+      "frame": 1092,
+      "time_s": 102.8,
+      "progress_m": 402.536,
+      "ego_speed_mps": 5.569,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=1092&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1092&camera=chase",
+      "ego_pose": {
+        "x": 228.44371032714844,
+        "y": 130.5164337158203,
+        "z": 0.9289219975471497,
+        "pitch": 1.0604013204574585,
+        "yaw": 91.39673614501953,
+        "roll": 0.0016421150648966432
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 138,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 25.7714,
+          "local_xy_m": [
+            25.76767023508823,
+            -0.43684381242004455
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 1.6714,
+          "box": [
+            0.4596532344818115,
+            0.5077100118001302,
+            0.5201279163360596,
+            0.5627679612901476
+          ],
+          "score": 0.3789817988872528,
+          "image_id": 455,
+          "track_id": 142,
+          "class_label": "car",
+          "lidar_hits": 10,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.5345,
+          "projected_box_iou": 0.7331,
+          "screen_id": 109,
+          "screen_center_error_m": 0.5003,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 162,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 15.6651,
+          "local_xy_m": [
+            14.32653646520821,
+            6.336145724310799
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2594,
+          "box": [
+            0.7284819126129151,
+            0.474783198038737,
+            0.7531726360321045,
+            0.5997569190131293
+          ],
+          "score": 0.660197377204895,
+          "image_id": 474,
+          "track_id": 154,
+          "class_label": "person",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0439,
+          "projected_box_iou": 0.6711,
+          "screen_id": 116,
+          "screen_center_error_m": 0.0949,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 15.6651,
+      "furthest_m": 25.7714
+    },
+    {
+      "frame": 3312,
+      "time_s": 324.8,
+      "progress_m": 1363.67,
+      "ego_speed_mps": 3.952,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=3312&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=3312&camera=chase",
+      "ego_pose": {
+        "x": -147.2492218017578,
+        "y": 117.83343505859375,
+        "z": 0.005625930614769459,
+        "pitch": -0.1883772611618042,
+        "yaw": 73.34283447265625,
+        "roll": 0.1272798478603363
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 150,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 25.9145,
+          "local_xy_m": [
+            20.3012278518125,
+            -16.106560895930972
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.4505,
+          "box": [
+            0.013465255498886108,
+            0.4984222835964627,
+            0.12806327342987062,
+            0.580351299709744
+          ],
+          "score": 0.5585113167762756,
+          "image_id": 1005,
+          "track_id": 327,
+          "class_label": "car",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 1.2383,
+          "projected_box_iou": 0.7697,
+          "screen_id": 263,
+          "screen_center_error_m": 0.5869,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 179,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0045",
+          "center_range_m": 16.1079,
+          "local_xy_m": [
+            15.847075898203062,
+            2.8872289363845276
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1034,
+          "box": [
+            0.5922248363494873,
+            0.4746996561686198,
+            0.612175989151001,
+            0.5896133422851563
+          ],
+          "score": 0.7874519228935242,
+          "image_id": 991,
+          "track_id": 319,
+          "class_label": "person",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.1111,
+          "projected_box_iou": 0.7061,
+          "screen_id": 259,
+          "screen_center_error_m": 0.0681,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 16.1079,
+      "furthest_m": 25.9145
+    },
+    {
+      "frame": 3310,
+      "time_s": 324.6,
+      "progress_m": 1362.896,
+      "ego_speed_mps": 3.768,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=3310&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=3310&camera=chase",
+      "ego_pose": {
+        "x": -147.4927520751953,
+        "y": 117.10093688964844,
+        "z": 0.005624284502118826,
+        "pitch": -0.22532470524311066,
+        "yaw": 74.75888061523438,
+        "roll": 0.11604154109954834
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 179,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0045",
+          "center_range_m": 16.6862,
+          "local_xy_m": [
+            16.48810740508528,
+            2.5635489872103774
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.0898,
+          "box": [
+            0.5728354930877686,
+            0.47570813496907555,
+            0.5973880290985107,
+            0.5833885616726345
+          ],
+          "score": 0.8080998063087463,
+          "image_id": 991,
+          "track_id": 319,
+          "class_label": "person",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.1147,
+          "projected_box_iou": 0.8947,
+          "screen_id": 259,
+          "screen_center_error_m": 0.1466,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 150,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 27.5217,
+          "local_xy_m": [
+            21.12454335039026,
+            -17.64082474015764
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.425,
+          "box": [
+            0,
+            0.49461165534125434,
+            0.11397058963775634,
+            0.5768267737494575
+          ],
+          "score": 0.7076069116592407,
+          "image_id": 1005,
+          "track_id": 327,
+          "class_label": "car",
+          "lidar_hits": 11,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.1628,
+          "projected_box_iou": 0.8853,
+          "screen_id": 263,
+          "screen_center_error_m": 0.5936,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 16.6862,
+      "furthest_m": 27.5217
+    },
+    {
+      "frame": 3308,
+      "time_s": 324.4,
+      "progress_m": 1362.15,
+      "ego_speed_mps": 3.673,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=3308&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=3308&camera=chase",
+      "ego_pose": {
+        "x": -147.70997619628906,
+        "y": 116.38994598388672,
+        "z": 0.0056367795914411545,
+        "pitch": -0.2501327097415924,
+        "yaw": 76.11419677734375,
+        "roll": 0.11148753017187119
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 150,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 29.0711,
+          "local_xy_m": [
+            21.836086912061468,
+            -19.191580435304786
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.4107,
+          "box": [
+            0,
+            0.49872716267903644,
+            0.09166291952133179,
+            0.5725962320963541
+          ],
+          "score": 0.6488125920295715,
+          "image_id": 1005,
+          "track_id": 327,
+          "class_label": "car",
+          "lidar_hits": 6,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.6973,
+          "projected_box_iou": 0.8154,
+          "screen_id": 263,
+          "screen_center_error_m": 0.7554,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 179,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0045",
+          "center_range_m": 17.2424,
+          "local_xy_m": [
+            17.097550652402777,
+            2.230110074812605
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1034,
+          "box": [
+            0.5605744361877442,
+            0.4747996860080295,
+            0.5818659782409668,
+            0.5782903883192274
+          ],
+          "score": 0.745768666267395,
+          "image_id": 991,
+          "track_id": 319,
+          "class_label": "person",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.1219,
+          "projected_box_iou": 0.7912,
+          "screen_id": 259,
+          "screen_center_error_m": 0.1385,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 17.2424,
+      "furthest_m": 29.0711
+    },
+    {
+      "frame": 338,
+      "time_s": 27.4,
+      "progress_m": 86.941,
+      "ego_speed_mps": 5.229,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=338&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=338&camera=chase",
+      "ego_pose": {
+        "x": 28.108633041381836,
+        "y": 134.19110107421875,
+        "z": 0.0055844043381512165,
+        "pitch": -0.12734472751617432,
+        "yaw": -0.8146626353263855,
+        "roll": -0.017846468836069107
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 132,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 34.4339,
+          "local_xy_m": [
+            34.25509368193579,
+            -3.504999397497006
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.2604,
+          "box": [
+            0.4266666412353516,
+            0.5023550669352214,
+            0.4666783332824707,
+            0.5446913401285808
+          ],
+          "score": 0.717377245426178,
+          "image_id": 77,
+          "track_id": 26,
+          "class_label": "car",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.0849,
+          "projected_box_iou": 0.7816,
+          "screen_id": 22,
+          "screen_center_error_m": 0.165,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 155,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0016",
+          "center_range_m": 19.6934,
+          "local_xy_m": [
+            17.02598877595897,
+            -9.896768551558099
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1802,
+          "box": [
+            0.1721140503883362,
+            0.4789870368109809,
+            0.19693578481674195,
+            0.5805037604437934
+          ],
+          "score": 0.8250020146369934,
+          "image_id": 82,
+          "track_id": 27,
+          "class_label": "person",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.1305,
+          "projected_box_iou": 0.7058,
+          "screen_id": 23,
+          "screen_center_error_m": 0.2648,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 19.6934,
+      "furthest_m": 34.4339
+    },
+    {
+      "frame": 1454,
+      "time_s": 139,
+      "progress_m": 601.262,
+      "ego_speed_mps": 5.326,
+      "active_event": "lead",
+      "inspector": "./inspect.html?run=city-life&frame=1454&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1454&camera=chase",
+      "ego_pose": {
+        "x": 65.45756530761719,
+        "y": 193.3678436279297,
+        "z": 0.5398420095443726,
+        "pitch": -1.5496450662612915,
+        "yaw": 179.8520965576172,
+        "roll": 0.003218223573639989
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 114,
+          "actor_type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 39.961,
+          "local_xy_m": [
+            39.960954170470146,
+            0.002180240245330506
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 8.34,
+          "box": [
+            0.4882349967956543,
+            0.49586346944173176,
+            0.5127189636230469,
+            0.5295101165771484
+          ],
+          "score": 0.3846381604671478,
+          "image_id": 578,
+          "track_id": 162,
+          "class_label": "car",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.2156,
+          "projected_box_iou": 0.7253,
+          "screen_id": 127,
+          "screen_center_error_m": 0.2481,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 168,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0029",
+          "center_range_m": 25.0755,
+          "local_xy_m": [
+            24.250200044012384,
+            6.380442311865416
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2,
+          "box": [
+            0.6291812896728516,
+            0.4608801947699653,
+            0.6462058067321778,
+            0.5511419508192275
+          ],
+          "score": 0.6121484637260437,
+          "image_id": 586,
+          "track_id": 189,
+          "class_label": "person",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.106,
+          "projected_box_iou": 0.6894,
+          "screen_id": 148,
+          "screen_center_error_m": 0.606,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 25.0755,
+      "furthest_m": 39.961
+    },
+    {
+      "frame": 1480,
+      "time_s": 141.6,
+      "progress_m": 615.088,
+      "ego_speed_mps": 5.305,
+      "active_event": "lead",
+      "inspector": "./inspect.html?run=city-life&frame=1480&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1480&camera=chase",
+      "ego_pose": {
+        "x": 51.6314811706543,
+        "y": 193.40245056152344,
+        "z": 0.24243927001953125,
+        "pitch": -1.3334691524505615,
+        "yaw": 179.86155700683594,
+        "roll": 0.0030455586966127157
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 114,
+          "actor_type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 41.3149,
+          "local_xy_m": [
+            41.31479850427212,
+            0.06806553600217852
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 3.9825,
+          "box": [
+            0.4884489059448242,
+            0.49158833821614584,
+            0.5134644508361816,
+            0.5240011427137586
+          ],
+          "score": 0.446871817111969,
+          "image_id": 578,
+          "track_id": 162,
+          "class_label": "car",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.1219,
+          "projected_box_iou": 0.7829,
+          "screen_id": 127,
+          "screen_center_error_m": 0.6513,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 167,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0035",
+          "center_range_m": 10.2424,
+          "local_xy_m": [
+            8.692450709559548,
+            5.417386683684536
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2,
+          "box": [
+            0.8477221488952636,
+            0.47429334852430555,
+            0.9023592948913575,
+            0.681917487250434
+          ],
+          "score": 0.8551473617553711,
+          "image_id": 598,
+          "track_id": 193,
+          "class_label": "person",
+          "lidar_hits": 9,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.3286,
+          "projected_box_iou": 0.685,
+          "screen_id": 150,
+          "screen_center_error_m": 0.5389,
+          "screen_opacity": 0.85,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 10.2424,
+      "furthest_m": 41.3149
+    },
+    {
+      "frame": 1478,
+      "time_s": 141.4,
+      "progress_m": 614.024,
+      "ego_speed_mps": 5.31,
+      "active_event": "lead",
+      "inspector": "./inspect.html?run=city-life&frame=1478&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1478&camera=chase",
+      "ego_pose": {
+        "x": 52.69465255737305,
+        "y": 193.39981079101562,
+        "z": 0.26294106245040894,
+        "pitch": -1.3993443250656128,
+        "yaw": 179.86126708984375,
+        "roll": 0.0030531943775713444
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 114,
+          "actor_type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 41.639,
+          "local_xy_m": [
+            41.63901322310986,
+            0.027244783736467715
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.3604,
+          "box": [
+            0.4887134075164795,
+            0.49131198459201386,
+            0.5123037815093994,
+            0.5221268547905816
+          ],
+          "score": 0.5023695826530457,
+          "image_id": 578,
+          "track_id": 162,
+          "class_label": "car",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.2584,
+          "projected_box_iou": 0.7607,
+          "screen_id": 127,
+          "screen_center_error_m": 0.7855,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 168,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0029",
+          "center_range_m": 10.7092,
+          "local_xy_m": [
+            8.60827666413719,
+            6.370651041769082
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2,
+          "box": [
+            0.9173484802246094,
+            0.4646821763780382,
+            0.9719758987426758,
+            0.6817931281195746
+          ],
+          "score": 0.8621997237205505,
+          "image_id": 586,
+          "track_id": 189,
+          "class_label": "person",
+          "lidar_hits": 14,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0725,
+          "projected_box_iou": 0.5937,
+          "screen_id": 148,
+          "screen_center_error_m": 0.4097,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 10.7092,
+      "furthest_m": 41.639
+    },
+    {
+      "frame": 1466,
+      "time_s": 140.2,
+      "progress_m": 607.642,
+      "ego_speed_mps": 5.326,
+      "active_event": "lead",
+      "inspector": "./inspect.html?run=city-life&frame=1466&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1466&camera=chase",
+      "ego_pose": {
+        "x": 59.07729721069336,
+        "y": 193.38389587402344,
+        "z": 0.3978829085826874,
+        "pitch": -1.5496461391448975,
+        "yaw": 179.85769653320312,
+        "roll": 0.003100506728515029
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 114,
+          "actor_type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 42.0616,
+          "local_xy_m": [
+            42.061570350836554,
+            -0.0014765012102778835
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 6.44,
+          "box": [
+            0.48870172500610354,
+            0.49180692036946616,
+            0.5113862037658692,
+            0.5256671905517578
+          ],
+          "score": 0.3830006420612335,
+          "image_id": 578,
+          "track_id": 162,
+          "class_label": "car",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.0095,
+          "projected_box_iou": 0.6834,
+          "screen_id": 127,
+          "screen_center_error_m": 1.1202,
+          "screen_opacity": 0.85,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 168,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0029",
+          "center_range_m": 17.6238,
+          "local_xy_m": [
+            16.43053969465166,
+            6.374701413005765
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2,
+          "box": [
+            0.6996552467346191,
+            0.4734851837158203,
+            0.7195315361022949,
+            0.5779020097520616
+          ],
+          "score": 0.7654015421867371,
+          "image_id": 586,
+          "track_id": 189,
+          "class_label": "person",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0114,
+          "projected_box_iou": 0.5506,
+          "screen_id": 148,
+          "screen_center_error_m": 0.0742,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 17.6238,
+      "furthest_m": 42.0616
+    },
+    {
+      "frame": 1472,
+      "time_s": 140.8,
+      "progress_m": 610.832,
+      "ego_speed_mps": 5.323,
+      "active_event": "lead",
+      "inspector": "./inspect.html?run=city-life&frame=1472&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1472&camera=chase",
+      "ego_pose": {
+        "x": 55.887332916259766,
+        "y": 193.39186096191406,
+        "z": 0.3282945156097412,
+        "pitch": -1.49415922164917,
+        "yaw": 179.86041259765625,
+        "roll": 0.0030375400092452765
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 114,
+          "actor_type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 42.1512,
+          "local_xy_m": [
+            42.151233021577006,
+            -0.005034275864418403
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.4,
+          "box": [
+            0.4884484767913818,
+            0.49140697055392796,
+            0.511328649520874,
+            0.5232184092203777
+          ],
+          "score": 0.42387890815734863,
+          "image_id": 578,
+          "track_id": 162,
+          "class_label": "car",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.2424,
+          "projected_box_iou": 0.7118,
+          "screen_id": 127,
+          "screen_center_error_m": 0.9528,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 168,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0029",
+          "center_range_m": 14.0492,
+          "local_xy_m": [
+            12.520869768323644,
+            6.372361913128235
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2,
+          "box": [
+            0.7697027683258056,
+            0.4738968743218316,
+            0.8011576652526855,
+            0.6133104960123698
+          ],
+          "score": 0.771474301815033,
+          "image_id": 586,
+          "track_id": 189,
+          "class_label": "person",
+          "lidar_hits": 10,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0344,
+          "projected_box_iou": 0.5944,
+          "screen_id": 148,
+          "screen_center_error_m": 0.0226,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 14.0492,
+      "furthest_m": 42.1512
+    },
+    {
+      "frame": 1468,
+      "time_s": 140.4,
+      "progress_m": 608.705,
+      "ego_speed_mps": 5.326,
+      "active_event": "lead",
+      "inspector": "./inspect.html?run=city-life&frame=1468&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1468&camera=chase",
+      "ego_pose": {
+        "x": 58.01393127441406,
+        "y": 193.38656616210938,
+        "z": 0.37422335147857666,
+        "pitch": -1.5496450662612915,
+        "yaw": 179.85902404785156,
+        "roll": 0.003092269180342555
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 114,
+          "actor_type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 42.1578,
+          "local_xy_m": [
+            42.15781989450057,
+            0.0005828323282750791
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 6.08,
+          "box": [
+            0.4881667375564575,
+            0.4928281995985243,
+            0.5123270273208618,
+            0.5221571604410807
+          ],
+          "score": 0.7170556783676147,
+          "image_id": 578,
+          "track_id": 162,
+          "class_label": "car",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.2249,
+          "projected_box_iou": 0.7391,
+          "screen_id": 127,
+          "screen_center_error_m": 1.0351,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 168,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0029",
+          "center_range_m": 16.4153,
+          "local_xy_m": [
+            15.127318827701847,
+            6.373784082361385
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2,
+          "box": [
+            0.718114185333252,
+            0.4692674848768446,
+            0.7424718856811523,
+            0.5878296322292752
+          ],
+          "score": 0.7926837801933289,
+          "image_id": 586,
+          "track_id": 189,
+          "class_label": "person",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0414,
+          "projected_box_iou": 0.6267,
+          "screen_id": 148,
+          "screen_center_error_m": 0.0524,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 16.4153,
+      "furthest_m": 42.1578
+    },
+    {
+      "frame": 1470,
+      "time_s": 140.6,
+      "progress_m": 609.769,
+      "ego_speed_mps": 5.325,
+      "active_event": "lead",
+      "inspector": "./inspect.html?run=city-life&frame=1470&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1470&camera=chase",
+      "ego_pose": {
+        "x": 56.95055389404297,
+        "y": 193.38922119140625,
+        "z": 0.3510356843471527,
+        "pitch": -1.5288574695587158,
+        "yaw": 179.86012268066406,
+        "roll": 0.002908511785790324
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 114,
+          "actor_type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 42.1842,
+          "local_xy_m": [
+            42.184184226968945,
+            0.00262032067750885
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.72,
+          "box": [
+            0.48845615386962893,
+            0.49153658548990886,
+            0.5111634254455566,
+            0.5239031049940321
+          ],
+          "score": 0.434235543012619,
+          "image_id": 578,
+          "track_id": 162,
+          "class_label": "car",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.2482,
+          "projected_box_iou": 0.6899,
+          "screen_id": 127,
+          "screen_center_error_m": 0.9907,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 168,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0029",
+          "center_range_m": 15.2223,
+          "local_xy_m": [
+            13.824061062650024,
+            6.372967082061468
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2,
+          "box": [
+            0.7404532909393311,
+            0.46535860697428383,
+            0.7658067226409913,
+            0.6011849721272786
+          ],
+          "score": 0.8049517273902893,
+          "image_id": 586,
+          "track_id": 189,
+          "class_label": "person",
+          "lidar_hits": 8,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0444,
+          "projected_box_iou": 0.5985,
+          "screen_id": 148,
+          "screen_center_error_m": 0.0263,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 2,
+      "nearest_m": 15.2223,
+      "furthest_m": 42.1842
+    },
+    {
+      "frame": 74,
+      "time_s": 1,
+      "progress_m": 1.102,
+      "ego_speed_mps": 2.202,
+      "active_event": "pedestrian",
+      "inspector": "./inspect.html?run=city-life&frame=74&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=74&camera=chase",
+      "ego_pose": {
+        "x": -57.7113037109375,
+        "y": 135.42831420898438,
+        "z": 0.0056908042170107365,
+        "pitch": -0.08786596357822418,
+        "yaw": -1.0847206115722656,
+        "roll": 0.0094596603885293
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 129,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 16.0912,
+          "local_xy_m": [
+            15.656846796980025,
+            -3.713473955868126
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 1.7605,
+          "box": [
+            0.3094778537750244,
+            0.4917898390028212,
+            0.41849255561828613,
+            0.6164656745062934
+          ],
+          "score": 0.8621689081192017,
+          "image_id": 1,
+          "track_id": 1,
+          "class_label": "car",
+          "lidar_hits": 40,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.4238,
+          "projected_box_iou": 0.8943,
+          "screen_id": 1,
+          "screen_center_error_m": 0.3291,
+          "screen_opacity": 1,
+          "raw_range_rank": 4
+        },
+        {
+          "actor_id": 151,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 10.7292,
+          "local_xy_m": [
+            8.352625276132173,
+            6.7341715520606105
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2802,
+          "box": [
+            0.949615478515625,
+            0.45325775146484376,
+            0.9997495651245117,
+            0.6858849419487847
+          ],
+          "score": 0.8991818428039551,
+          "image_id": 3,
+          "track_id": 3,
+          "class_label": "person",
+          "lidar_hits": 11,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0531,
+          "projected_box_iou": 0.7783,
+          "screen_id": 3,
+          "screen_center_error_m": 0.0127,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 1,
+      "nearest_m": 10.7292,
+      "furthest_m": 16.0912
+    },
+    {
+      "frame": 1776,
+      "time_s": 171.2,
+      "progress_m": 730.857,
+      "ego_speed_mps": 2.956,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=1776&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1776&camera=chase",
+      "ego_pose": {
+        "x": -62.1623420715332,
+        "y": 185.79220581054688,
+        "z": 0.005657386500388384,
+        "pitch": -0.22561879456043243,
+        "yaw": -140.70191955566406,
+        "roll": -0.047338470816612244
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 141,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 14.9565,
+          "local_xy_m": [
+            12.392116138425212,
+            -8.374567050485597
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.9672,
+          "box": [
+            0.0007442116737365722,
+            0.5105504353841146,
+            0.23137855529785156,
+            0.6555981953938802
+          ],
+          "score": 0.9238892197608948,
+          "image_id": 638,
+          "track_id": 202,
+          "class_label": "car",
+          "lidar_hits": 46,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.7636,
+          "projected_box_iou": 0.8627,
+          "screen_id": 160,
+          "screen_center_error_m": 0.6363,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        },
+        {
+          "actor_id": 169,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0043",
+          "center_range_m": 23.4772,
+          "local_xy_m": [
+            19.032284689735953,
+            13.746008609763607
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.0358,
+          "box": [
+            0.8771415710449219,
+            0.47516106499565974,
+            0.8983772277832032,
+            0.5709268358018663
+          ],
+          "score": 0.8213467001914978,
+          "image_id": 640,
+          "track_id": 204,
+          "class_label": "person",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.139,
+          "projected_box_iou": 0.8533,
+          "screen_id": 163,
+          "screen_center_error_m": 0.4702,
+          "screen_opacity": 1,
+          "raw_range_rank": 4
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 2,
+      "eligible_default_rows": 1,
+      "nearest_m": 14.9565,
+      "furthest_m": 23.4772
+    },
+    {
+      "frame": 1090,
+      "time_s": 102.6,
+      "progress_m": 401.455,
+      "ego_speed_mps": 5.231,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=1090&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1090&camera=chase",
+      "ego_pose": {
+        "x": 228.4700164794922,
+        "y": 129.43516540527344,
+        "z": 0.9067997932434082,
+        "pitch": 1.0652971267700195,
+        "yaw": 91.39579010009766,
+        "roll": 0.00179784104693681
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 138,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 26.4321,
+          "local_xy_m": [
+            26.425654580803833,
+            -0.5855136368692543
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0.9062,
+          "box": [
+            0.4581028938293457,
+            0.5057047526041667,
+            0.5163337707519531,
+            0.5614046732584635
+          ],
+          "score": 0.7610048055648804,
+          "image_id": 455,
+          "track_id": 142,
+          "class_label": "car",
+          "lidar_hits": 9,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.4689,
+          "projected_box_iou": 0.7566,
+          "screen_id": 109,
+          "screen_center_error_m": 0.4996,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 162,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 16.909,
+          "local_xy_m": [
+            15.658828288723527,
+            6.38084120197431
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2594,
+          "box": [
+            0.7094654083251953,
+            0.4781527837117513,
+            0.7300045967102051,
+            0.5892513063218858
+          ],
+          "score": 0.8797634243965149,
+          "image_id": 474,
+          "track_id": 154,
+          "class_label": "person",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.1316,
+          "projected_box_iou": 0.6216,
+          "screen_id": 116,
+          "screen_center_error_m": 0.1039,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 1,
+      "eligible_default_rows": 2,
+      "nearest_m": 16.909,
+      "furthest_m": 26.4321
+    },
+    {
+      "frame": 1088,
+      "time_s": 102.4,
+      "progress_m": 400.442,
+      "ego_speed_mps": 4.88,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=1088&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1088&camera=chase",
+      "ego_pose": {
+        "x": 228.49462890625,
+        "y": 128.42276000976562,
+        "z": 0.8861592411994934,
+        "pitch": 1.0683519840240479,
+        "yaw": 91.39432525634766,
+        "roll": 0.0015631620772182941
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 162,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 18.0882,
+          "local_xy_m": [
+            16.91227193779992,
+            6.415359847559288
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.263,
+          "box": [
+            0.6934285163879395,
+            0.47335133022732206,
+            0.716153335571289,
+            0.5833632151285807
+          ],
+          "score": 0.7240720391273499,
+          "image_id": 474,
+          "track_id": 154,
+          "class_label": "person",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0604,
+          "projected_box_iou": 0.8173,
+          "screen_id": 116,
+          "screen_center_error_m": 0.0151,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        },
+        {
+          "actor_id": 138,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 27.1645,
+          "local_xy_m": [
+            27.155837646802855,
+            -0.6874252688156145
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0.3046,
+          "box": [
+            0.4571533203125,
+            0.5072664896647135,
+            0.5134028434753418,
+            0.5599743313259549
+          ],
+          "score": 0.4006919264793396,
+          "image_id": 455,
+          "track_id": 142,
+          "class_label": "car",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.6793,
+          "projected_box_iou": 0.7357,
+          "screen_id": 109,
+          "screen_center_error_m": 0.4291,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 1,
+      "eligible_default_rows": 2,
+      "nearest_m": 18.0882,
+      "furthest_m": 27.1645
+    },
+    {
+      "frame": 1086,
+      "time_s": 102.2,
+      "progress_m": 399.5,
+      "ego_speed_mps": 4.521,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=1086&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1086&camera=chase",
+      "ego_pose": {
+        "x": 228.5175018310547,
+        "y": 127.4813232421875,
+        "z": 0.8666477203369141,
+        "pitch": 1.0728728771209717,
+        "yaw": 91.39230346679688,
+        "roll": 0.001603648066520691
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 138,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 27.9891,
+          "local_xy_m": [
+            27.979479407882426,
+            -0.7320905284416057
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0.0447,
+          "box": [
+            0.45798587799072266,
+            0.5072132110595703,
+            0.511879825592041,
+            0.5580377790662977
+          ],
+          "score": 0.5834975838661194,
+          "image_id": 455,
+          "track_id": 142,
+          "class_label": "car",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.7151,
+          "projected_box_iou": 0.7307,
+          "screen_id": 109,
+          "screen_center_error_m": 0.3839,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 162,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 19.2192,
+          "local_xy_m": [
+            18.104654830339143,
+            6.44986759412391
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.263,
+          "box": [
+            0.682213306427002,
+            0.48276333279079864,
+            0.7011286735534668,
+            0.5751311408148871
+          ],
+          "score": 0.6023089289665222,
+          "image_id": 474,
+          "track_id": 154,
+          "class_label": "person",
+          "lidar_hits": 7,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0331,
+          "projected_box_iou": 0.6788,
+          "screen_id": 116,
+          "screen_center_error_m": 0.0869,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 1,
+      "eligible_default_rows": 2,
+      "nearest_m": 19.2192,
+      "furthest_m": 27.9891
+    },
+    {
+      "frame": 1082,
+      "time_s": 101.8,
+      "progress_m": 397.838,
+      "ego_speed_mps": 3.773,
+      "active_event": "roadworks",
+      "inspector": "./inspect.html?run=city-life&frame=1082&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1082&camera=chase",
+      "ego_pose": {
+        "x": 228.55784606933594,
+        "y": 125.81919860839844,
+        "z": 0.8316506743431091,
+        "pitch": 1.0622153282165527,
+        "yaw": 91.38776397705078,
+        "roll": 0.001558573916554451
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 162,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 21.2882,
+          "local_xy_m": [
+            20.2587003881058,
+            6.540062958867501
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.267,
+          "box": [
+            0.6638794898986816,
+            0.48180601331922746,
+            0.6817502021789551,
+            0.5647182040744357
+          ],
+          "score": 0.36241966485977173,
+          "image_id": 474,
+          "track_id": 154,
+          "class_label": "person",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.076,
+          "projected_box_iou": 0.7572,
+          "screen_id": 116,
+          "screen_center_error_m": 0.2334,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        },
+        {
+          "actor_id": 138,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 29.6324,
+          "local_xy_m": [
+            29.623180380824653,
+            -0.7387409856314344
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0,
+          "box": [
+            0.4607822418212891,
+            0.5049452039930555,
+            0.5106719970703125,
+            0.5531534830729167
+          ],
+          "score": 0.7506299018859863,
+          "image_id": 455,
+          "track_id": 142,
+          "class_label": "car",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.4231,
+          "projected_box_iou": 0.7409,
+          "screen_id": 109,
+          "screen_center_error_m": 0.3998,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 1,
+      "eligible_default_rows": 2,
+      "nearest_m": 21.2882,
+      "furthest_m": 29.6324
+    },
+    {
+      "frame": 1080,
+      "time_s": 101.6,
+      "progress_m": 397.117,
+      "ego_speed_mps": 3.421,
+      "active_event": "roadworks",
+      "inspector": "./inspect.html?run=city-life&frame=1080&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1080&camera=chase",
+      "ego_pose": {
+        "x": 228.57533264160156,
+        "y": 125.09874725341797,
+        "z": 0.8166002035140991,
+        "pitch": 1.044778823852539,
+        "yaw": 91.38593292236328,
+        "roll": 0.0014981281710788608
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 138,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 30.3528,
+          "local_xy_m": [
+            30.343867510218985,
+            -0.7377381981280111
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0,
+          "box": [
+            0.4615014553070068,
+            0.5033839331732856,
+            0.5102536678314209,
+            0.5511787838406033
+          ],
+          "score": 0.7183151841163635,
+          "image_id": 455,
+          "track_id": 142,
+          "class_label": "car",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.1893,
+          "projected_box_iou": 0.7576,
+          "screen_id": 109,
+          "screen_center_error_m": 0.3983,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 162,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 22.228,
+          "local_xy_m": [
+            21.230284082824447,
+            6.584717051213897
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.267,
+          "box": [
+            0.6552104473114013,
+            0.48445926242404513,
+            0.671815824508667,
+            0.5598477681477865
+          ],
+          "score": 0.49516138434410095,
+          "image_id": 474,
+          "track_id": 154,
+          "class_label": "person",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.1104,
+          "projected_box_iou": 0.7147,
+          "screen_id": 116,
+          "screen_center_error_m": 0.2766,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 1,
+      "eligible_default_rows": 2,
+      "nearest_m": 22.228,
+      "furthest_m": 30.3528
+    },
+    {
+      "frame": 1078,
+      "time_s": 101.4,
+      "progress_m": 396.463,
+      "ego_speed_mps": 3.109,
+      "active_event": "roadworks",
+      "inspector": "./inspect.html?run=city-life&frame=1078&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1078&camera=chase",
+      "ego_pose": {
+        "x": 228.59120178222656,
+        "y": 124.4450912475586,
+        "z": 0.8030361533164978,
+        "pitch": 1.026158094406128,
+        "yaw": 91.38456726074219,
+        "roll": 0.0014558180700987577
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 138,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 31.0065,
+          "local_xy_m": [
+            30.997733691126328,
+            -0.7369446639411277
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0,
+          "box": [
+            0.46216092109680174,
+            0.503020519680447,
+            0.5101885318756103,
+            0.5496995290120442
+          ],
+          "score": 0.6194539070129395,
+          "image_id": 455,
+          "track_id": 142,
+          "class_label": "car",
+          "lidar_hits": 11,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.2094,
+          "projected_box_iou": 0.7646,
+          "screen_id": 109,
+          "screen_center_error_m": 0.4084,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 162,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 23.1063,
+          "local_xy_m": [
+            22.134790460699325,
+            6.629770450016939
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2517,
+          "box": [
+            0.6513604164123535,
+            0.4843491872151693,
+            0.6665837287902832,
+            0.5592609405517578
+          ],
+          "score": 0.4855467975139618,
+          "image_id": 474,
+          "track_id": 154,
+          "class_label": "person",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.1478,
+          "projected_box_iou": 0.7224,
+          "screen_id": 116,
+          "screen_center_error_m": 0.3632,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 1,
+      "eligible_default_rows": 2,
+      "nearest_m": 23.1063,
+      "furthest_m": 31.0065
+    },
+    {
+      "frame": 2414,
+      "time_s": 235,
+      "progress_m": 1003.449,
+      "ego_speed_mps": 5.08,
+      "active_event": "braking",
+      "inspector": "./inspect.html?run=city-life&frame=2414&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=2414&camera=chase",
+      "ego_pose": {
+        "x": -78.0912857055664,
+        "y": -83.00337982177734,
+        "z": -0.8235155940055847,
+        "pitch": 0.27341288328170776,
+        "yaw": -90.15694427490234,
+        "roll": 0.004265600815415382
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 115,
+          "actor_type": "car",
+          "role": "braking",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 32.9765,
+          "local_xy_m": [
+            32.976543187847255,
+            0.0018247122278265693
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 7.98,
+          "box": [
+            0.48446102142333985,
+            0.4918595208062066,
+            0.5162128448486328,
+            0.5365389506022136
+          ],
+          "score": 0.7579842805862427,
+          "image_id": 767,
+          "track_id": 245,
+          "class_label": "car",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left",
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0841,
+          "projected_box_iou": 0.8805,
+          "screen_id": 189,
+          "screen_center_error_m": 0.0384,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 171,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0026",
+          "center_range_m": 23.5211,
+          "local_xy_m": [
+            17.541510119272186,
+            -15.669594778656554
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 0,
+          "box": [
+            0.008883501589298248,
+            0.46917504204644095,
+            0.027526307106018066,
+            0.5704572041829427
+          ],
+          "score": 0.7944127917289734,
+          "image_id": 824,
+          "track_id": 252,
+          "class_label": "person",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.0457,
+          "projected_box_iou": 0.7116,
+          "screen_id": 196,
+          "screen_center_error_m": 0.0457,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 1,
+      "eligible_default_rows": 2,
+      "nearest_m": 23.5211,
+      "furthest_m": 32.9765
+    },
+    {
+      "frame": 1956,
+      "time_s": 189.2,
+      "progress_m": 816.181,
+      "ego_speed_mps": 7.255,
+      "active_event": "bus",
+      "inspector": "./inspect.html?run=city-life&frame=1956&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1956&camera=chase",
+      "ego_pose": {
+        "x": -74.36295318603516,
+        "y": 104.00900268554688,
+        "z": 0.2988954186439514,
+        "pitch": 0.7403006553649902,
+        "yaw": -95.07048034667969,
+        "roll": 0.2826157510280609
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 126,
+          "actor_type": "bus",
+          "role": "stopped_bus",
+          "blueprint": "vehicle.fuso.mitsubishi",
+          "center_range_m": 52.2176,
+          "local_xy_m": [
+            52.00786709863085,
+            4.675189430583415
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0,
+          "box": [
+            0.5312202930450439,
+            0.47020479838053386,
+            0.5612731456756592,
+            0.5351202223036025
+          ],
+          "score": 0.8355460166931152,
+          "image_id": 682,
+          "track_id": 214,
+          "class_label": "bus",
+          "lidar_hits": 6,
+          "radar_sensors": [
+            "radar"
+          ],
+          "range_error_m": 1.3319,
+          "projected_box_iou": 0.873,
+          "screen_id": 169,
+          "screen_center_error_m": 1.2907,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 170,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0049",
+          "center_range_m": 13.8965,
+          "local_xy_m": [
+            11.875667114439512,
+            7.216756555862759
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.26,
+          "box": [
+            0.8287678718566894,
+            0.524506590101454,
+            0.8502421379089355,
+            0.6172833336724175
+          ],
+          "score": 0.7801893353462219,
+          "image_id": 697,
+          "track_id": 215,
+          "class_label": "person",
+          "lidar_hits": 4,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.2199,
+          "projected_box_iou": 0.6159,
+          "screen_id": 170,
+          "screen_center_error_m": 0.7151,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 1,
+      "eligible_default_rows": 2,
+      "nearest_m": 13.8965,
+      "furthest_m": 52.2176
+    },
+    {
+      "frame": 68,
+      "time_s": 0.4,
+      "progress_m": 0.173,
+      "ego_speed_mps": 0.869,
+      "active_event": "pedestrian",
+      "inspector": "./inspect.html?run=city-life&frame=68&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=68&camera=chase",
+      "ego_pose": {
+        "x": -58.63908004760742,
+        "y": 135.47474670410156,
+        "z": 0.005952575709670782,
+        "pitch": -0.0717841312289238,
+        "yaw": 0.670175313949585,
+        "roll": 0.01631277985870838
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 129,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 17.9505,
+          "local_xy_m": [
+            17.432806637033647,
+            -4.279836947028614
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": null,
+          "box": [
+            0.3158928871154785,
+            0.49388775295681425,
+            0.4104461669921875,
+            0.6005030314127604
+          ],
+          "score": 0.8780950307846069,
+          "image_id": 1,
+          "track_id": 1,
+          "class_label": "car",
+          "lidar_hits": 24,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.4316,
+          "projected_box_iou": 0.8804,
+          "screen_id": 1,
+          "screen_center_error_m": 0.3892,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        },
+        {
+          "actor_id": 151,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 12.0797,
+          "local_xy_m": [
+            10.251817631537591,
+            6.388936929654382
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": null,
+          "box": [
+            0.8344715118408204,
+            0.471245363023546,
+            0.8823022842407227,
+            0.6508101145426433
+          ],
+          "score": 0.8476473689079285,
+          "image_id": 3,
+          "track_id": 3,
+          "class_label": "person",
+          "lidar_hits": 11,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.1517,
+          "projected_box_iou": 0.7966,
+          "screen_id": 3,
+          "screen_center_error_m": 0.1027,
+          "screen_opacity": 1,
+          "raw_range_rank": 1
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 0,
+      "eligible_default_rows": 2,
+      "nearest_m": 12.0797,
+      "furthest_m": 17.9505
+    },
+    {
+      "frame": 66,
+      "time_s": 0.2,
+      "progress_m": 0.042,
+      "ego_speed_mps": 0.42,
+      "active_event": "pedestrian",
+      "inspector": "./inspect.html?run=city-life&frame=66&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=66&camera=chase",
+      "ego_pose": {
+        "x": -58.7703742980957,
+        "y": 135.48097229003906,
+        "z": 0.0038777280133217573,
+        "pitch": -0.12305671721696854,
+        "yaw": 1.0099773406982422,
+        "roll": 0.01575627736747265
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 129,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 18.1666,
+          "local_xy_m": [
+            17.627506205200117,
+            -4.39293350672299
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": null,
+          "box": [
+            0.3146007299423218,
+            0.4932707044813368,
+            0.40724945068359375,
+            0.5982843187120226
+          ],
+          "score": 0.8593165874481201,
+          "image_id": 1,
+          "track_id": 1,
+          "class_label": "car",
+          "lidar_hits": 28,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.5395,
+          "projected_box_iou": 0.8764,
+          "screen_id": 1,
+          "screen_center_error_m": 0.4786,
+          "screen_opacity": 1,
+          "raw_range_rank": 3
+        },
+        {
+          "actor_id": 151,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 12.3891,
+          "local_xy_m": [
+            10.642830328997114,
+            6.341964798002396
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": null,
+          "box": [
+            0.8152614593505859,
+            0.46412794325086804,
+            0.8568769454956054,
+            0.6386201646592882
+          ],
+          "score": 0.8724064826965332,
+          "image_id": 3,
+          "track_id": 3,
+          "class_label": "person",
+          "lidar_hits": 9,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0952,
+          "projected_box_iou": 0.7271,
+          "screen_id": 3,
+          "screen_center_error_m": 0.2317,
+          "screen_opacity": 1,
+          "raw_range_rank": 2
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 1,
+      "moving": 0,
+      "eligible_default_rows": 2,
+      "nearest_m": 12.3891,
+      "furthest_m": 18.1666
+    }
+  ],
+  "requested_exposures": [
+    {
+      "frame": 342,
+      "time_s": 27.8,
+      "progress_m": 89.167,
+      "ego_speed_mps": 5.882,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=342&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=342&camera=chase",
+      "ego_pose": {
+        "x": 30.334421157836914,
+        "y": 134.15940856933594,
+        "z": 0.005550828296691179,
+        "pitch": -0.13078391551971436,
+        "yaw": -0.8126249313354492,
+        "roll": -0.017785297706723213
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 132,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 30.4804,
+          "local_xy_m": [
+            30.278705780206167,
+            -3.500923312753905
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.3604,
+          "box": [
+            0.41544551849365235,
+            0.5000514136420355,
+            0.459684944152832,
+            0.5514268239339193
+          ],
+          "score": 0.8433933854103088,
+          "image_id": 77,
+          "track_id": 26,
+          "class_label": "car",
+          "lidar_hits": 7,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.025,
+          "projected_box_iou": 0.8383,
+          "screen_id": 22,
+          "screen_center_error_m": 0.016,
+          "screen_opacity": 1,
+          "raw_range_rank": 3,
+          "local_motion_and_id": {
+            "frame_interval": [
+              337,
+              347
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 8,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 11,
+            "observed_screen_source_ids": [
+              26
+            ],
+            "matched_same_display_id_steps": 10,
+            "max_0_1s_translation_residual_m": 0.0959,
+            "worst_step_ending_frame": 341
+          }
+        },
+        {
+          "actor_id": 116,
+          "actor_type": "van",
+          "role": "occluder",
+          "blueprint": "vehicle.sprinter.mercedes",
+          "center_range_m": 52.9247,
+          "local_xy_m": [
+            52.80857945816614,
+            3.5038438241927223
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0,
+          "box": [
+            0.5243049144744873,
+            0.4802793714735243,
+            0.5472692012786865,
+            0.5248743693033854
+          ],
+          "score": 0.5299491882324219,
+          "image_id": 80,
+          "track_id": 20,
+          "class_label": "car",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar"
+          ],
+          "range_error_m": 0.7368,
+          "projected_box_iou": 0.8146,
+          "screen_id": 21,
+          "screen_center_error_m": 0.7105,
+          "screen_opacity": 1,
+          "raw_range_rank": 4,
+          "local_motion_and_id": {
+            "frame_interval": [
+              337,
+              347
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 3,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 9,
+            "observed_screen_source_ids": [
+              20
+            ],
+            "matched_same_display_id_steps": 7,
+            "max_0_1s_translation_residual_m": 0.039,
+            "worst_step_ending_frame": 344
+          }
+        },
+        {
+          "actor_id": 155,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0016",
+          "center_range_m": 18.2013,
+          "local_xy_m": [
+            15.279574780328499,
+            -9.890444400107176
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2002,
+          "box": [
+            0.13443692922592163,
+            0.4737002478705512,
+            0.15599786043167113,
+            0.5899639129638672
+          ],
+          "score": 0.8451476097106934,
+          "image_id": 82,
+          "track_id": 27,
+          "class_label": "person",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.0856,
+          "projected_box_iou": 0.5212,
+          "screen_id": 23,
+          "screen_center_error_m": 0.2635,
+          "screen_opacity": 1,
+          "raw_range_rank": 1,
+          "local_motion_and_id": {
+            "frame_interval": [
+              337,
+              347
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 4,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 10,
+            "observed_screen_source_ids": [
+              27
+            ],
+            "matched_same_display_id_steps": 8,
+            "max_0_1s_translation_residual_m": 0.19,
+            "worst_step_ending_frame": 344
+          }
+        },
+        {
+          "actor_id": 156,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0023",
+          "center_range_m": 18.7631,
+          "local_xy_m": [
+            15.293190643992785,
+            -10.870633721701187
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.1802,
+          "box": [
+            0.09443384408950806,
+            0.4729914347330729,
+            0.12316745519638062,
+            0.588710445827908
+          ],
+          "score": 0.8508332371711731,
+          "image_id": 85,
+          "track_id": 23,
+          "class_label": "person",
+          "lidar_hits": 6,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.1229,
+          "projected_box_iou": 0.4787,
+          "screen_id": 15,
+          "screen_center_error_m": 0.6904,
+          "screen_opacity": 1,
+          "raw_range_rank": 2,
+          "local_motion_and_id": {
+            "frame_interval": [
+              337,
+              347
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 5,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 6,
+            "observed_screen_source_ids": [
+              23
+            ],
+            "matched_same_display_id_steps": 5,
+            "max_0_1s_translation_residual_m": 0.2983,
+            "worst_step_ending_frame": 344
+          }
+        }
+      ],
+      "vehicles": 2,
+      "pedestrians": 2,
+      "moving": 3,
+      "eligible_default_rows": 3,
+      "nearest_m": 18.2013,
+      "furthest_m": 52.9247
+    },
+    {
+      "frame": 1772,
+      "time_s": 170.8,
+      "progress_m": 729.702,
+      "ego_speed_mps": 2.849,
+      "active_event": null,
+      "inspector": "./inspect.html?run=city-life&frame=1772&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=1772&camera=chase",
+      "ego_pose": {
+        "x": -61.288307189941406,
+        "y": 186.54478454589844,
+        "z": 0.005674639716744423,
+        "pitch": -0.2629908323287964,
+        "yaw": -142.85757446289062,
+        "roll": -0.05553480610251427
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 142,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 18.4491,
+          "local_xy_m": [
+            14.60944728416241,
+            -11.266474488052976
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 4.9608,
+          "box": [
+            0,
+            0.5053037431504991,
+            0.17372902631759643,
+            0.6264761606852214
+          ],
+          "score": 0.919449508190155,
+          "image_id": 634,
+          "track_id": 201,
+          "class_label": "car",
+          "lidar_hits": 24,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.368,
+          "projected_box_iou": 0.8785,
+          "screen_id": 159,
+          "screen_center_error_m": 0.5385,
+          "screen_opacity": 1,
+          "raw_range_rank": 2,
+          "local_motion_and_id": {
+            "frame_interval": [
+              1767,
+              1777
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 10,
+            "exact_raw_track_id_measured_frames": 7,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 11,
+            "observed_screen_source_ids": [
+              203,
+              201,
+              206
+            ],
+            "matched_same_display_id_steps": 10,
+            "max_0_1s_translation_residual_m": 0.1524,
+            "worst_step_ending_frame": 1771
+          }
+        },
+        {
+          "actor_id": 141,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "center_range_m": 17.2264,
+          "local_xy_m": [
+            15.680251248004451,
+            -7.132843696309298
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 5.4354,
+          "box": [
+            0.1573458194732666,
+            0.5037646823459201,
+            0.32695784568786623,
+            0.6167287190755208
+          ],
+          "score": 0.918871283531189,
+          "image_id": 638,
+          "track_id": 202,
+          "class_label": "car",
+          "lidar_hits": 37,
+          "radar_sensors": [
+            "radar_front_left"
+          ],
+          "range_error_m": 0.7121,
+          "projected_box_iou": 0.8327,
+          "screen_id": 160,
+          "screen_center_error_m": 0.3035,
+          "screen_opacity": 1,
+          "raw_range_rank": 1,
+          "local_motion_and_id": {
+            "frame_interval": [
+              1767,
+              1777
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 11,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 11,
+            "observed_screen_source_ids": [
+              202
+            ],
+            "matched_same_display_id_steps": 10,
+            "max_0_1s_translation_residual_m": 0.112,
+            "worst_step_ending_frame": 1773
+          }
+        },
+        {
+          "actor_id": 169,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0043",
+          "center_range_m": 24.8506,
+          "local_xy_m": [
+            19.955978994008394,
+            14.80922499535541
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.0325,
+          "box": [
+            0.8851883888244629,
+            0.48026707967122395,
+            0.9046740531921387,
+            0.5699752807617188
+          ],
+          "score": 0.8170931935310364,
+          "image_id": 640,
+          "track_id": 204,
+          "class_label": "person",
+          "lidar_hits": 5,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0692,
+          "projected_box_iou": 0.8048,
+          "screen_id": 163,
+          "screen_center_error_m": 0.1198,
+          "screen_opacity": 1,
+          "raw_range_rank": 4,
+          "local_motion_and_id": {
+            "frame_interval": [
+              1767,
+              1777
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 8,
+            "exact_raw_track_id_measured_frames": 3,
+            "exact_display_id_frames": 6,
+            "position_qualified_current_display_frames": 5,
+            "observed_screen_source_ids": [
+              204
+            ],
+            "matched_same_display_id_steps": 3,
+            "max_0_1s_translation_residual_m": 0.102,
+            "worst_step_ending_frame": 1777
+          }
+        }
+      ],
+      "vehicles": 2,
+      "pedestrians": 1,
+      "moving": 3,
+      "eligible_default_rows": 2,
+      "nearest_m": 17.2264,
+      "furthest_m": 24.8506
+    },
+    {
+      "frame": 70,
+      "time_s": 0.6,
+      "progress_m": 0.394,
+      "ego_speed_mps": 1.316,
+      "active_event": "pedestrian",
+      "inspector": "./inspect.html?run=city-life&frame=70&camera=front",
+      "chase_inspector": "./inspect.html?run=city-life&frame=70&camera=chase",
+      "ego_pose": {
+        "x": -58.41870880126953,
+        "y": 135.46420288085938,
+        "z": 0.005908442661166191,
+        "pitch": -0.08604900538921356,
+        "yaw": 0.16377630829811096,
+        "roll": 0.01543728169053793
+      },
+      "matched_screen_objects": [
+        {
+          "actor_id": 129,
+          "actor_type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "center_range_m": 17.5267,
+          "local_xy_m": [
+            17.039486159652995,
+            -4.103817009004883
+          ],
+          "center_error_gate_m": 2,
+          "preceding_half_second_mps": 0.6203,
+          "box": [
+            0.31560683250427246,
+            0.4924478742811415,
+            0.4134575366973877,
+            0.6026337093777127
+          ],
+          "score": 0.8739902377128601,
+          "image_id": 1,
+          "track_id": 1,
+          "class_label": "car",
+          "lidar_hits": 32,
+          "radar_sensors": [
+            "radar",
+            "radar_front_left"
+          ],
+          "range_error_m": 0.4462,
+          "projected_box_iou": 0.8904,
+          "screen_id": 1,
+          "screen_center_error_m": 0.3404,
+          "screen_opacity": 1,
+          "raw_range_rank": 3,
+          "local_motion_and_id": {
+            "frame_interval": [
+              65,
+              75
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 11,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 11,
+            "observed_screen_source_ids": [
+              1
+            ],
+            "matched_same_display_id_steps": 10,
+            "max_0_1s_translation_residual_m": 0.0902,
+            "worst_step_ending_frame": 69
+          }
+        },
+        {
+          "actor_id": 151,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0019",
+          "center_range_m": 11.6976,
+          "local_xy_m": [
+            9.724639819037272,
+            6.501183422867019
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2802,
+          "box": [
+            0.8610996246337891,
+            0.46895412868923614,
+            0.9038597106933594,
+            0.6612589518229167
+          ],
+          "score": 0.8483332991600037,
+          "image_id": 3,
+          "track_id": 3,
+          "class_label": "person",
+          "lidar_hits": 11,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.0755,
+          "projected_box_iou": 0.6587,
+          "screen_id": 3,
+          "screen_center_error_m": 0.1142,
+          "screen_opacity": 1,
+          "raw_range_rank": 2,
+          "local_motion_and_id": {
+            "frame_interval": [
+              65,
+              75
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 11,
+            "exact_raw_track_id_measured_frames": 10,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 11,
+            "observed_screen_source_ids": [
+              3
+            ],
+            "matched_same_display_id_steps": 10,
+            "max_0_1s_translation_residual_m": 0.2369,
+            "worst_step_ending_frame": 68
+          }
+        },
+        {
+          "actor_id": 152,
+          "actor_type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0048",
+          "center_range_m": 11.4815,
+          "local_xy_m": [
+            8.722967563940289,
+            7.465599961201894
+          ],
+          "center_error_gate_m": 1,
+          "preceding_half_second_mps": 1.2802,
+          "box": [
+            0.9750424385070801,
+            0.47744763692220055,
+            0.9995827674865723,
+            0.6532942454020182
+          ],
+          "score": 0.5308741927146912,
+          "image_id": 2,
+          "track_id": 5,
+          "class_label": "person",
+          "lidar_hits": 3,
+          "radar_sensors": [
+            "radar_front_right"
+          ],
+          "range_error_m": 0.2249,
+          "projected_box_iou": 0.3998,
+          "screen_id": 2,
+          "screen_center_error_m": 0.488,
+          "screen_opacity": 1,
+          "raw_range_rank": 1,
+          "local_motion_and_id": {
+            "frame_interval": [
+              65,
+              75
+            ],
+            "exposures": 11,
+            "exact_raw_track_id_frames": 7,
+            "exact_raw_track_id_measured_frames": 5,
+            "exact_display_id_frames": 11,
+            "position_qualified_current_display_frames": 9,
+            "observed_screen_source_ids": [
+              2,
+              5
+            ],
+            "matched_same_display_id_steps": 7,
+            "max_0_1s_translation_residual_m": 0.3985,
+            "worst_step_ending_frame": 73
+          }
+        }
+      ],
+      "vehicles": 1,
+      "pedestrians": 2,
+      "moving": 2,
+      "eligible_default_rows": 3,
+      "nearest_m": 11.4815,
+      "furthest_m": 17.5267
+    }
+  ],
+  "incomplete_optical_exposures": [
+    {
+      "frame": 64,
+      "time_s": 0,
+      "optical_matches": 3,
+      "matched_screen_objects": 2,
+      "misses": [
+        {
+          "actor_id": 129,
+          "track_id": 1,
+          "actor_type": "car",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    },
+    {
+      "frame": 90,
+      "time_s": 2.6,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 112,
+          "track_id": 10,
+          "actor_type": "pedestrian",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    },
+    {
+      "frame": 304,
+      "time_s": 24,
+      "optical_matches": 2,
+      "matched_screen_objects": 0,
+      "misses": [
+        {
+          "actor_id": 116,
+          "track_id": 20,
+          "actor_type": "van",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        },
+        {
+          "actor_id": 156,
+          "track_id": 24,
+          "actor_type": "pedestrian",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 1.6061
+        }
+      ]
+    },
+    {
+      "frame": 316,
+      "time_s": 25.2,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 156,
+          "track_id": 23,
+          "actor_type": "pedestrian",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 1.9271
+        }
+      ]
+    },
+    {
+      "frame": 320,
+      "time_s": 25.6,
+      "optical_matches": 3,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 116,
+          "track_id": 20,
+          "actor_type": "van",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        },
+        {
+          "actor_id": 155,
+          "track_id": 23,
+          "actor_type": "pedestrian",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 1.989
+        }
+      ]
+    },
+    {
+      "frame": 322,
+      "time_s": 25.8,
+      "optical_matches": 2,
+      "matched_screen_objects": 0,
+      "misses": [
+        {
+          "actor_id": 116,
+          "track_id": 20,
+          "actor_type": "van",
+          "reason": "held_or_below_opacity_threshold",
+          "opacity": 0.333
+        },
+        {
+          "actor_id": 155,
+          "track_id": 23,
+          "actor_type": "pedestrian",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 2.0423
+        }
+      ]
+    },
+    {
+      "frame": 324,
+      "time_s": 26,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 156,
+          "track_id": 23,
+          "actor_type": "pedestrian",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 2.1252
+        }
+      ]
+    },
+    {
+      "frame": 330,
+      "time_s": 26.6,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 156,
+          "track_id": 23,
+          "actor_type": "pedestrian",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 2.2006
+        }
+      ]
+    },
+    {
+      "frame": 334,
+      "time_s": 27,
+      "optical_matches": 4,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 132,
+          "track_id": 26,
+          "actor_type": "car",
+          "reason": "held_or_below_opacity_threshold",
+          "opacity": 0.333
+        },
+        {
+          "actor_id": 155,
+          "track_id": 27,
+          "actor_type": "pedestrian",
+          "reason": "held_or_below_opacity_threshold",
+          "opacity": 0.333
+        },
+        {
+          "actor_id": 156,
+          "track_id": 23,
+          "actor_type": "pedestrian",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 2.2982
+        }
+      ]
+    },
+    {
+      "frame": 338,
+      "time_s": 27.4,
+      "optical_matches": 3,
+      "matched_screen_objects": 2,
+      "misses": [
+        {
+          "actor_id": 156,
+          "track_id": 23,
+          "actor_type": "pedestrian",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 2.387
+        }
+      ]
+    },
+    {
+      "frame": 340,
+      "time_s": 27.6,
+      "optical_matches": 3,
+      "matched_screen_objects": 2,
+      "misses": [
+        {
+          "actor_id": 156,
+          "track_id": 23,
+          "actor_type": "pedestrian",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 1.3203
+        }
+      ]
+    },
+    {
+      "frame": 550,
+      "time_s": 48.6,
+      "optical_matches": 2,
+      "matched_screen_objects": 0,
+      "misses": [
+        {
+          "actor_id": 134,
+          "track_id": 72,
+          "actor_type": "car",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        },
+        {
+          "actor_id": 157,
+          "track_id": 65,
+          "actor_type": "pedestrian",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 1.3735
+        }
+      ]
+    },
+    {
+      "frame": 552,
+      "time_s": 48.8,
+      "optical_matches": 2,
+      "matched_screen_objects": 0,
+      "misses": [
+        {
+          "actor_id": 134,
+          "track_id": 72,
+          "actor_type": "car",
+          "reason": "held_or_below_opacity_threshold",
+          "opacity": 0.333
+        },
+        {
+          "actor_id": 157,
+          "track_id": 65,
+          "actor_type": "pedestrian",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 1.4451
+        }
+      ]
+    },
+    {
+      "frame": 554,
+      "time_s": 49,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 134,
+          "track_id": 72,
+          "actor_type": "car",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 2.3801
+        }
+      ]
+    },
+    {
+      "frame": 566,
+      "time_s": 50.2,
+      "optical_matches": 2,
+      "matched_screen_objects": 0,
+      "misses": [
+        {
+          "actor_id": 134,
+          "track_id": 73,
+          "actor_type": "car",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 5.8707
+        },
+        {
+          "actor_id": 158,
+          "track_id": 78,
+          "actor_type": "pedestrian",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    },
+    {
+      "frame": 1072,
+      "time_s": 100.8,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 162,
+          "track_id": 154,
+          "actor_type": "pedestrian",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    },
+    {
+      "frame": 1352,
+      "time_s": 128.8,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 166,
+          "track_id": 180,
+          "actor_type": "pedestrian",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    },
+    {
+      "frame": 1448,
+      "time_s": 138.4,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 168,
+          "track_id": 189,
+          "actor_type": "pedestrian",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    },
+    {
+      "frame": 1474,
+      "time_s": 141,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 167,
+          "track_id": 191,
+          "actor_type": "pedestrian",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 1.1849
+        }
+      ]
+    },
+    {
+      "frame": 1756,
+      "time_s": 169.2,
+      "optical_matches": 3,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 141,
+          "track_id": 202,
+          "actor_type": "car",
+          "reason": "drawn_center_outside_gate",
+          "error_m": 2.0817
+        },
+        {
+          "actor_id": 169,
+          "track_id": 204,
+          "actor_type": "pedestrian",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    },
+    {
+      "frame": 1770,
+      "time_s": 170.6,
+      "optical_matches": 3,
+      "matched_screen_objects": 2,
+      "misses": [
+        {
+          "actor_id": 169,
+          "track_id": 204,
+          "actor_type": "pedestrian",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    },
+    {
+      "frame": 1792,
+      "time_s": 172.8,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 150,
+          "track_id": 207,
+          "actor_type": "car",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    },
+    {
+      "frame": 1800,
+      "time_s": 173.6,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 150,
+          "track_id": 207,
+          "actor_type": "car",
+          "reason": "held_or_below_opacity_threshold",
+          "opacity": 0.333
+        }
+      ]
+    },
+    {
+      "frame": 1932,
+      "time_s": 186.8,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 170,
+          "track_id": 215,
+          "actor_type": "pedestrian",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    },
+    {
+      "frame": 2284,
+      "time_s": 222,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 145,
+          "track_id": 242,
+          "actor_type": "car",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    },
+    {
+      "frame": 2402,
+      "time_s": 233.8,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 171,
+          "track_id": 250,
+          "actor_type": "pedestrian",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    }
+  ],
+  "source_hashes": {
+    "candidates": "febc771fec44c9faf7550b071b4e57c2fbbe5611360836f6c9d6a81ff57befed",
+    "object_memory": "045444bf8700509d9658dafb1c8c6736ebda6e2f7b5c7c33ad03243ff4b57274",
+    "physical_audit": "b3fe2a3698fabc8ead385a1a7176723de55f02997385cba403ec8a3e0cf02d4a",
+    "barrier_review": null,
+    "cone_review": null
+  }
+}

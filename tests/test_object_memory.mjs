@@ -34,6 +34,22 @@ const repeat = (count, make) => Array.from({length: count}, (_, i) => make(i));
 // A lane centre line along the world x axis, sampled every 2 m as a town export is.
 const lane = repeat(101, i => [i * 2 - 100, 0, 0]);
 
+test('a far car needs a compact upright lidar face, current registered camera class and Doppler for immediate admission',()=>{
+  const surface=[[39,-.8,.45],[39,0,.45],[39,.8,.45],[39,-.8,1.2],[39,.8,1.2]];
+  const track=car(3,40,0,{speed_mps:null,confidence:.48,lidar_hits:5,cameras:['front'],
+    radial_mps:-2,sources:['rgb','lidar','radar'],surface_xyz:surface});
+  const box={label:'car',box:[.48,.48,.52,.515],score:.48,range_supported:true,track_id:3,image_id:7};
+  const render=(sample,reading)=>{
+    const frames=repeat(8,i=>({frame:i,sim_time:i/10,run_id:'r',perception_version:'surround-v1',
+      observer_map:{ego:[0,0,0]},tracks:i===7?[sample]:[],camera_detections:{front:i===7?[reading]:[]}}));
+    return new ReplayMemory({}).at(frames,7).objects;
+  };
+  assert.ok(render(track,box).some(o=>o.opacity>=.5));
+  for(const weak of [{radial_mps:null},{lidar_hits:3},{surface_xyz:surface.map(([x,y])=>[x,y,.5])}])
+    assert.equal(render({...track,...weak},box).length,0);
+  assert.equal(render(track,{...box,range_supported:false}).length,0);
+});
+
 test('only a coast whose repeated surface belongs to a newly measured striped board loses its car symbol',()=>{
   const patch=[[-.4,0,.2],[.4,0,.2],[-.4,0,.75],[.4,0,.75],[0,0,.55]];
   function replay({separation=0,score=.46,fresh=false,approved=true,extraPoint=false}={}){

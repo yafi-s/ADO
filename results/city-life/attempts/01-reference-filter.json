@@ -1,0 +1,31 @@
+{
+  "status": "aborted_for_reference_error",
+  "candidate": "city-life",
+  "seed": 212,
+  "checkpoint": "long-city-drive-6hel7ej7",
+  "capture_checkout": {
+    "head_at_capture_start": "39bfcf1f968425c8000b5af7839f5d4b126ed17f",
+    "source_archive": "capture-source.zip",
+    "source_sha256": "9461d794d8b3168aac73e149095f132ea20db85591feda5906479c8fceb1db04",
+    "note": "Archive hashes identify the exact execution sources, including working tree edits."
+  },
+  "preserved_complete_rows": 403,
+  "first_preserved_frame": 67,
+  "last_preserved_frame": 469,
+  "raw_range_folder": "sweeps-uvca_biq",
+  "reason": "The optional bounding-box metadata changed the radius origin after the first actor. Early reference inspection found eligible actors missing and distant actors included. The drive was stopped. No full-route or density score is claimed.",
+  "example": {
+    "frame": 67,
+    "actor_id": 115,
+    "ego_xy": [
+      -58.81,
+      135.48
+    ],
+    "actor_xy": [
+      -78.02,
+      -56.72
+    ],
+    "separation_m": 193.16,
+    "max_eligible_m": 100.0
+  }
+}

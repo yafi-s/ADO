@@ -1,4 +1,5 @@
 import {readRevisionReport, revisionCohorts} from './benchmarks-v2.mjs';
+import {loadTrafficStudy} from './city-traffic.mjs';
 
 const policies = new Map([
   ['fusion', 'Learned sensor fusion'],
@@ -365,8 +366,8 @@ async function loadRevision() {
 load();
 void loadRevision();
 
-async function loadCityReview() {
-  const response = await fetch('./media/urban-review.json', {cache: 'no-cache'});
+async function loadCityReview(id, file) {
+  const response = await fetch(`./media/${file}`, {cache: 'no-cache'});
   if (!response.ok) return;
   const study = await response.json();
   if (!Array.isArray(study.checks) || !study.checks.length) return;
@@ -387,8 +388,10 @@ async function loadCityReview() {
     row.append(title, element('td', check.result), links);
     rows.push(row);
   }
-  document.getElementById('city-review-rows').replaceChildren(...rows);
-  document.getElementById('city-review-limits').textContent = study.scope;
-  document.getElementById('city-review').hidden = false;
+  document.getElementById(`${id}-rows`).replaceChildren(...rows);
+  document.getElementById(`${id}-limits`).textContent = study.scope;
+  document.getElementById(id).hidden = false;
 }
-void loadCityReview().catch(() => {});
+void loadCityReview('city-review', 'urban-review.json').catch(() => {});
+void loadCityReview('city-life-review', 'city-life-review.json').catch(() => {});
+void loadTrafficStudy().catch(() => {});

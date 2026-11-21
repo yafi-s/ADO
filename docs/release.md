@@ -3,8 +3,8 @@
 Download the ZIP and `SHA256SUMS.txt` from the same release. With both files in the same folder, run the following command in PowerShell and compare the full hash with the value in `SHA256SUMS.txt`.
 
 ```powershell
-Get-FileHash .\ADO-v0.4.0-Windows.zip -Algorithm SHA256
-Get-FileHash .\ADO-Urban-Pace-1080p.mp4 -Algorithm SHA256
+Get-FileHash .\ADO-v0.5.0-Windows.zip -Algorithm SHA256
+Get-FileHash .\ADO-City-Life-1080p.mp4 -Algorithm SHA256
 ```
 
 Extract the entire ZIP to a writable folder and double-click `ADO\Start-ADO.cmd`. The first launch installs the official CARLA 1.0 Windows server, Town01_Opt and Town03_Opt map content, the matching Python client, and the project's Python dependencies. The two simulator downloads total about 20.8 GB. Allow around 50 GB of free space on the extraction drive for the downloads and unpacked simulator. If a download is interrupted, run `Start-ADO.cmd` again to resume. After setup, use `Start-ADO.cmd` or `Watch-Live.cmd` to open the original Town01 live driving console. Press Ctrl+C in the launcher window to stop it. To open the Town03 console, follow the [city driving instructions](city-driving.md#run-it-locally).
@@ -17,7 +17,9 @@ The ZIP includes trained checkpoints, source code, Blender vehicle assets, synch
 py -3.12 -m http.server 8765 --bind 127.0.0.1
 ```
 
-In v0.4, `Watch-City.cmd` opens the Town03 console with the urban pace checkpoint and barrier sensing. The featured Market drive includes six synchronized camera tracks, the frame inspector, and the barrier appearance review. The Windows ZIP includes the original replay data and the exact camera-exposure evidence behind that review. The [v0.4 release](https://github.com/yafi-s/ADO/releases/tag/v0.4.0) also includes the native 1920 × 1080 chase film, `ADO-Urban-Pace-1080p.mp4`. The [public replay](https://yafi-s.github.io/ADO/?run=urban-pace) keeps the camera tracks and compressed replay data on Pages. Large original JSON downloads can link to the release commit to keep the site within its size limit.
+The v0.5 Windows ZIP includes the City Life drive with six synchronized cameras, the roadside-clearance checkpoint, and the frame-aligned population reference and execution sources. `ADO-City-Life-1080p.mp4` is the native 1920 × 1080 chase master. Both City Life and Urban Pace keep their 1080p chase playback and compressed replay packs on Pages. Pages can serve other historical camera tracks and original JSON downloads from the exact checkout commit to stay within its 1 GB limit. [v0.5 release](https://github.com/yafi-s/ADO/releases/tag/v0.5.0) · [City Life replay](https://yafi-s.github.io/ADO/?run=city-life)
+
+The v0.4 Market drive includes six synchronized camera tracks, the frame inspector, and the barrier appearance review. The current Windows ZIP keeps the original replay and camera-exposure evidence and includes the cone review from the same capture. The v0.4 release includes the original chase master, `ADO-Urban-Pace-1080p.mp4`. [v0.4 release](https://github.com/yafi-s/ADO/releases/tag/v0.4.0) · [Urban Pace replay](https://yafi-s.github.io/ADO/?run=urban-pace)
 
 The [v0.3 release](https://github.com/yafi-s/ADO/releases/tag/v0.3.0) includes the city cruise checkpoint, the tactical keep, yield, and pass studies, and `ADO-Surround-City-1080p.mp4`. The [v0.2 release](https://github.com/yafi-s/ADO/releases/tag/v0.2.0) includes the original Town03 film and the Behavior v2 training notebook, checkpoint, and matched Town01 comparison. The current ZIP includes the [closed-loop study with its archive provenance](../results/behavior-v2/README.md). The separate Waymo research source and pilot carry the original licenses and attribution. [Waymo research terms](../waymo_training/NOTICE.md)
 
@@ -26,10 +28,43 @@ The [v0.3 release](https://github.com/yafi-s/ADO/releases/tag/v0.3.0) includes t
 Install Git and Python 3.12 or later. Put `ffprobe` from FFmpeg on PATH for the video checks. Commit the evaluated manifest, summaries, compressed traces, recordings, and Builds & logs index with the code and models. Build from the exact release commit or from the tag after it has been created. Use a separate output folder for each version so its checksum file stays with the matching archive.
 
 ```powershell
+py -3.12 tools/build_windows_release.py --ref v0.5.0 --tag v0.5.0 --output .local/release/v0.5.0 --film-master "C:\Path\To\Capture\master\chase.mp4"
 py -3.12 tools/build_windows_release.py --ref v0.4.0 --tag v0.4.0 --output .local/release/v0.4.0 --film-master "C:\Path\To\Capture\master\chase.mp4"
 py -3.12 tools/build_windows_release.py --ref v0.3.0 --tag v0.3.0 --output .local/release/v0.3.0 --film-master "C:\Path\To\Capture\master\chase.mp4"
 py -3.12 tools/build_windows_release.py --ref v0.2.0 --tag v0.2.0 --output .local/release/v0.2.0
 py -3.12 tools/build_windows_release.py --ref v0.1.0 --tag v0.1.0 --output .local/release/v0.1.0
 ```
 
-The optional `--film-master` argument supplies the chase master produced by the capture. The build checks its size, hash, frame count and encoding against the committed manifest, stages it alongside the ZIP, and includes both files in `SHA256SUMS.txt`. Upload the versioned ZIP, checksum file and staged chase master to the matching GitHub release. The local `release-metadata.json` records the archived commit, ZIP size, and SHA-256. The build reads the selected Git tree so the archive uses the committed source, media and evidence. The external CARLA runtime, virtual environments, local experiments and private Waymo records stay outside the ZIP.
+`--film-master` supplies the verified chase master produced by the capture and is required for v0.5. The build checks its size, hash, frame count and encoding against the committed manifest, stages it alongside the ZIP, and includes both files in `SHA256SUMS.txt`. The v0.5 ZIP also checks City Life safety and density totals against the native frame data and verifies the historical Urban Pace review. Keep each release asset below 2 GB. Upload the versioned ZIP, checksum file and staged chase master to the matching GitHub release. `release-metadata.json` records the archived commit and each v0.5 upload's size and SHA-256. The ZIP uses the selected Git tree for the committed source, media and evidence. The external CARLA runtime, virtual environments, local experiments and private Waymo records stay outside the ZIP.
+
+## Reproduce the City Life range study
+
+`ADO-City-Life-Range-Sweeps.zip` is a separate download for reproducing the offline perception study. Its `raw` directory contains the original perception journal, road geometry and scored telemetry. `sweeps` contains one native lidar and radar packet per recorded frame, plus the original front-horizon crop on acquisition frames. `manifest.json` lists frame coverage and the byte length and SHA-256 of every evidence file. `reference/object-memory-before.mjs` preserves the baseline renderer from its pinned Git commit. [City Life range study download](https://github.com/yafi-s/ADO/releases/download/v0.5.0/ADO-City-Life-Range-Sweeps.zip)
+
+From the extracted v0.5 Windows package or the tagged ADO source, use Python 3.12 with the packages in `requirements.txt` and Node.js for the display score. These commands verify the archive and reproduce the full-range tracker, the 60 m single-scale comparison and a sampled check of the native front-horizon boxes. The offline study uses the recorded sensor packets and can run without CARLA. [Scoring method and complete results](../results/distant-awareness/README.md)
+
+```powershell
+$asset = 'C:\Downloads\ADO-City-Life-Range-Sweeps.zip'
+$study = 'C:\ADO-City-Life-Range-Sweeps'
+$work = 'C:\ADO-City-Life-Range-Results'
+Get-FileHash $asset -Algorithm SHA256
+py -3.12 tools/package_city_range_study.py verify $asset
+Expand-Archive -LiteralPath $asset -DestinationPath $study
+New-Item -ItemType Directory -Path $work
+$env:OPENBLAS_NUM_THREADS = '1'
+py -3.12 tools/ablate_distant_range.py "$study/raw" "$study/sweeps" "$work/native-verification" --verification-only
+py -3.12 tools/ablate_distant_range.py "$study/raw" "$study/sweeps" "$work/sixty-metre-single-scale"
+py -3.12 tools/project_distant_reference.py "$study/raw" "$work/registration.json"
+node tools/score_distant_awareness.mjs "$work/sixty-metre-single-scale" "$work/before.json" --memory-file "$study/reference/object-memory-before.mjs" --projection "$work/registration.json"
+node tools/score_distant_awareness.mjs "$study/raw" "$work/after.json" --projection "$work/registration.json"
+py -3.12 tools/replay_distant_optics.py "$study/raw" "$work/crop-check.json" --native-sweeps "$study/sweeps" --stride 128
+```
+
+To build the optional asset, pass the sealed capture directory, its matching sweep directory and a new output path. After the Windows ZIP and chase master have passed their own checks, attach the range asset to add its checksum to `SHA256SUMS.txt`. The attach step checks that both ZIPs contain evidence from the same City Life recording.
+
+```powershell
+$release = '.local/release/v0.5.0'
+$studyZip = "$release/ADO-City-Life-Range-Sweeps.zip"
+py -3.12 tools/package_city_range_study.py build 'C:\Path\To\SealedCapture' 'C:\Path\To\NativeSweeps' $studyZip
+py -3.12 tools/package_city_range_study.py attach $studyZip $release
+```

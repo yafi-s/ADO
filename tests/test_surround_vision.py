@@ -8,6 +8,25 @@ from crosswalk.surround_vision import GRID, SIZE, STRIDE, SurroundDetector
 
 
 class PairGeometry(unittest.TestCase):
+    def test_small_front_crop_remaps_bounds_and_preserves_the_full_scale_reading(self):
+        observer = SurroundDetector.__new__(SurroundDetector)
+        observed = []
+
+        def detect(rgb):
+            observed.append(rgb.shape)
+            return [dict(label="person", score=.8, box=[.2, .3, .25, .5]),
+                    dict(label="car", score=.9, box=[.0, .3, .02, .5]),
+                    dict(label="car", score=.9, box=[.2, .2, .8, .8])]
+
+        observer.detect = detect
+        zoom, = observer.horizon_boxes(np.zeros((360, 640, 3), dtype=np.uint8))
+        self.assertEqual(observed, [(144, 320, 3)])
+        self.assertEqual(zoom["inference_layout"], "front-horizon-2x")
+        np.testing.assert_allclose(zoom["box"], [.35, (112+43.2)/360, .375, 184/360])
+        full = dict(zoom, inference_layout="single")
+        separate = dict(zoom, box=[.6, .4, .62, .44])
+        self.assertEqual(observer.merge_horizon([full], [zoom, separate]), [full, separate])
+
     def test_splits_views_and_ignores_gutter(self):
         observer = SurroundDetector.__new__(SurroundDetector)
         observer.threshold = .35

@@ -1,0 +1,71 @@
+{
+  "schema": "ado-city-interaction-display-v1",
+  "capture": "long-city-drive-nxksaiij",
+  "trial": "urban-pace",
+  "frames": 3354,
+  "counts": {
+    "vehicle_and_pedestrian": 0,
+    "two_vehicles_and_pedestrian": 0,
+    "two_of_each": 0
+  },
+  "representatives": [],
+  "all_verified_exposures": [],
+  "requested_exposures": [],
+  "incomplete_optical_exposures": [
+    {
+      "frame": 2552,
+      "time_s": 34,
+      "optical_matches": 2,
+      "matched_screen_objects": 0,
+      "misses": [
+        {
+          "actor_id": 606,
+          "track_id": 11,
+          "actor_type": "van",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        },
+        {
+          "actor_id": 607,
+          "track_id": 12,
+          "actor_type": "pedestrian",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    },
+    {
+      "frame": 2554,
+      "time_s": 34.2,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 606,
+          "track_id": 11,
+          "actor_type": "van",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    },
+    {
+      "frame": 3356,
+      "time_s": 114.4,
+      "optical_matches": 2,
+      "matched_screen_objects": 1,
+      "misses": [
+        {
+          "actor_id": 620,
+          "track_id": 99,
+          "actor_type": "pedestrian",
+          "reason": "no_drawn_object_using_source_id_and_class"
+        }
+      ]
+    }
+  ],
+  "source_hashes": {
+    "candidates": "98e14efd3cc6ca331e4c0679100af0e30f8e13109571e5380479e31f1f6db512",
+    "object_memory": "045444bf8700509d9658dafb1c8c6736ebda6e2f7b5c7c33ad03243ff4b57274",
+    "physical_audit": "04d400ad6babc95cdba92a4804b6be4dc7eb60b2a4e728d0de959726ba93a29a",
+    "barrier_review": "b239338aac001703bf15fe18ccdb75259eda43218dcb08a73666eb990357e91f",
+    "cone_review": "b95ad92905bd811cb318639a501841388bc79450d9859dccab66e84a632ee1bf"
+  }
+}

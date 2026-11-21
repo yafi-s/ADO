@@ -33,7 +33,29 @@
             <p>Recorded driving and perception results from Town03 and Town01, with the camera footage and logs behind each measurement.</p>
           </div>
         </section>
-        <section class="results" id="city-review" aria-labelledby="city-review-title" hidden>
+        <section class="results" id="traffic-study" aria-labelledby="traffic-title" hidden>
+          <header class="traffic-heading">
+            <h2 class="study-title" id="traffic-title">Pace and city traffic</h2>
+            <div class="source-picker"><label for="traffic-drive">Recording</label><select id="traffic-drive"></select></div>
+          </header>
+          <div class="panel traffic-panel">
+            <div class="traffic-key"><strong>Speed · km/h</strong><span>Actual</span><span>Requested</span></div>
+            <svg id="traffic-plot" viewBox="0 0 700 144" role="img" aria-label="Actual and requested speed over the recorded drive"></svg>
+            <div class="traffic-scrub"><label for="traffic-time">Time</label><input id="traffic-time" type="range" min="0" value="0" step="1"><output for="traffic-time" id="traffic-timestamp"></output></div>
+            <div class="traffic-reading" id="traffic-reading"></div>
+            <div class="traffic-links"><a id="traffic-watch">Watch here</a><a id="traffic-frame">Inspect this exposure</a><button id="traffic-cones" type="button">Jump to cones</button><button id="traffic-mixed" type="button">Find mixed traffic</button></div>
+          </div>
+          <p class="result-note" id="traffic-summary"></p>
+        </section>
+        <section class="results drive-review" id="city-life-review" aria-labelledby="city-life-title" hidden>
+          <h2 class="study-title" id="city-life-title">City Life driving and perception</h2>
+          <div class="panel table-wrap"><table>
+            <thead><tr><th scope="col">Test</th><th scope="col">Measured result</th><th scope="col">Evidence</th></tr></thead>
+            <tbody id="city-life-review-rows"></tbody>
+          </table></div>
+          <p class="result-note" id="city-life-review-limits"></p>
+        </section>
+        <section class="results drive-review" id="city-review" aria-labelledby="city-review-title" hidden>
           <h2 class="study-title" id="city-review-title">Urban pace and barriers</h2>
           <div class="panel">
             <div class="table-wrap" tabindex="0"><table>

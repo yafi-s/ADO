@@ -6,9 +6,10 @@ import {recordedChapters} from './encounter-chapters.mjs';
 import {VideoExposureClock, MEDIA_TIME_TOLERANCE, replayIndexAt} from './exposure-clock.mjs';
 import {loadReplay} from './replay-pack.mjs';
 import {barrierName,barrierReviewer} from './barrier-review.mjs';
+import {coneReviewer} from './cone-observations.mjs';
 import {cornerReturns, lidarCount} from './sensor-returns.mjs';
 import {bicycleAssociations,RIDER_HISTORY_FRAMES} from './rider-association.mjs';
-import {bearingObservations, cameraBoxes, cameraLamp, inspectionCamera, measuredHeads, LAMP_COLOURS, MAX_CAMERA_HOLD_S} from './lamp-observations.mjs';
+import {bearingObservations, cameraBoxes, cameraLamp, frontBearingCue, inspectionCamera, measuredHeads, LAMP_COLOURS, MAX_CAMERA_HOLD_S} from './lamp-observations.mjs';
 
 const CAR_URL = './vehicle-assets/waymo-ipace.glb';
 const TOWN_URL = './media/town.json';
@@ -17,7 +18,8 @@ const CAMERA_ORDER = Object.keys(CAMERA_LABELS);
 const LOCAL_CONSOLE = ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname);
 const POLICY_LABELS = {
   fusion: 'Learned multisensor', camera: 'Learned vision',
-  'ado-city-pace-v1': 'ADO urban pace', 'ado-city-cruise-v1': 'ADO urban cruise', 'ado-city-policy-v1': 'ADO city driver', 'ado-behavior-v2': 'ADO behavior v2',
+  'ado-city-clearance-v1': 'ADO city clearance', 'ado-city-pace-v1': 'ADO urban pace',
+  'ado-city-cruise-v1': 'ADO urban cruise', 'ado-city-policy-v1': 'ADO city driver', 'ado-behavior-v2': 'ADO behavior v2',
   demonstrator: 'Training instructor', teacher: 'Training instructor'
 };
 const OUTCOME_LABELS = {complete: 'Route complete', red_light: 'Red-light violation'};
@@ -64,10 +66,12 @@ const state = {
   liveRun: undefined,
   frame: null,
   selectedTrack: null,
+  allTracks: false,
+  requestedTrack: null,
   riders: new Map(),
   riderFrames: [],
   camera: null,
-  preferredCamera: 'chase',   // the view that shows the vehicle in its street
+  preferredCamera: 'front',   // registered to the forward bearing observations
   cameras: [],
   view: 'follow',
   layers: {path: true, tracks: true, returns: true},
@@ -372,6 +376,7 @@ function meter(id, name, value) {
 }
 
 function trackKind(label) {
+  if (label==='traffic_cone') return 'cone';
   if (ROAD_USER_LABELS.has(label)) return 'vru';
   return VEHICLE_LABELS.has(label) ? 'vehicle' : 'other';
 }
@@ -383,6 +388,12 @@ function trackBearing(track) {
 }
 
 function trackMeta(track) {
+  if(track.label==='traffic_cone'){
+    if(track.coasting)return `Last seen ${tenth.format(track.age_s)} s ago`;
+    if(track.range_source==='footprint')return `${track.lidar_hits} LiDAR hits · RGB last seen ${tenth.format(track.age_s)} s ago`;
+    const basis=track.range_source==='ground_gated_xy'?'ground-gated LiDAR':'projected LiDAR';
+    return `${track.cameras.map(c=>CAMERA_LABELS[c]).join(' / ')} RGB · ${track.lidar_hits} ${basis} ${track.lidar_hits===1?'hit':'hits'}`;
+  }
   const parts = [];
   if (track.coasting) {
     parts.push(finite(track.age_s) ? `Coasting ${tenth.format(track.age_s)} s` : 'Coasting');
@@ -468,8 +479,10 @@ function renderBearingRows() {
   if (focused?.isConnected && document.activeElement !== focused) focused.focus({preventScroll:true});
 }
 
+function frameTracks(frame) { return [...(frame?.tracks??[]), ...(frame?.cone_tracks??[])]; }
+
 function inspectSource(id){
-  const track=state.frame?.tracks?.find(track=>String(track.id)===String(id));
+  const track=frameTracks(state.frame).find(track=>String(track.id)===String(id));
   const camera=trackView(track);
   if(!camera)return;
   bearings.selected=null;
@@ -544,7 +557,7 @@ function trackRow(row, existing) {
 }
 
 function renderSensing(frame) {
-  if (state.selectedTrack != null && !frame?.tracks?.some(track=>track.id===state.selectedTrack))setSelectedTrack(null);
+  if (state.selectedTrack != null && !frameTracks(frame).some(track=>track.id===state.selectedTrack))setSelectedTrack(null);
   const visible = Boolean(frame) && state.source !== 'training';
   show('sensing', visible);
   renderBearingRows();
@@ -570,8 +583,8 @@ function renderSensing(frame) {
     trackSignature = '';
     return;
   }
-  const recorded = Array.isArray(frame.tracks);
-  const tracks = (recorded ? frame.tracks : [])
+  const recorded = Array.isArray(frame.tracks) || Array.isArray(frame.cone_tracks);
+  const tracks = frameTracks(frame)
     .filter(track => track && finite(track.x) && finite(track.y))
     .map(track => ({track, range: Math.hypot(track.x, track.y)}))
     .sort((a, b) => a.range - b.range);
@@ -594,7 +607,10 @@ function renderSensing(frame) {
   }
 
   const groups=[...objects.values()];
-  const visibleTracks=groups.slice(0,TRACK_ROWS);
+  show('all-tracks', groups.length > TRACK_ROWS);
+  attr($('all-tracks'), 'aria-expanded', String(state.allTracks));
+  text('all-tracks', state.allTracks ? 'Show fewer' : `Show all ${groups.length}`);
+  const visibleTracks=state.allTracks ? groups : groups.slice(0,TRACK_ROWS);
   const selected=groups.find(group=>group.members.some(({track})=>track.id===state.selectedTrack));
   if(selected && !visibleTracks.includes(selected))visibleTracks[visibleTracks.length-1]=selected;
   const rows = visibleTracks.map(({key,group,members}) => {
@@ -706,6 +722,17 @@ function renderFrameFacts(frame) {
 function renderTelemetry(frame) {
   updateInspectorLink();
   text('speed', finite(frame?.speed_mps) ? whole.format(Math.max(0, Math.round(frame.speed_mps * 3.6))) : '—');
+  const target = frame?.speed_request_mps;
+  const limit = frame?.posted_limit_kmh;
+  const hasTarget = finite(target) && target >= 0;
+  const hasLimit = finite(limit) && limit > 0;
+  const targetCue = $('pace-target');
+  const limitCue = $('pace-limit');
+  targetCue.parentElement.hidden = !hasTarget && !hasLimit;
+  targetCue.hidden = !hasTarget;
+  limitCue.hidden = !hasLimit;
+  if (hasTarget) targetCue.lastElementChild.textContent = whole.format(target * 3.6);
+  if (hasLimit) limitCue.lastElementChild.textContent = whole.format(limit);
   renderActivity(frame);
 
   const phase = typeof frame?.phase === 'string' ? sentence(frame.phase) : '';
@@ -830,7 +857,7 @@ function syncRunPicker() {
 function syncUrl(entry) {
   try {
     const url = new URL(location.href);
-    for(const key of ['at','view','camera'])url.searchParams.delete(key);
+    for(const key of ['at','view','camera','frame','track'])url.searchParams.delete(key);
     if (entry?.trial_id) url.searchParams.set('run', entry.trial_id);
     else url.searchParams.delete('run');
     history.replaceState(null, '', url);
@@ -985,6 +1012,11 @@ function presentAt(time, seeking = false, exact = false) {
     state.riders=bicycleAssociations(frames,index);
     sceneCall('setRiderAssociations',state.riders);
     state.frame = frame;
+    if (state.requestedTrack?.frame === frame.frame) {
+      const chosen = frameTracks(frame).find(t => String(t.id) === state.requestedTrack.id);
+      if (chosen) setSelectedTrack(chosen.id);
+      state.requestedTrack = null;
+    }
   }
   // While a movie exposure is on screen, only the virtual camera may pan
   // within its presentation interval. Pausing and stepping use its exact time.
@@ -1196,12 +1228,14 @@ function renderCameraBoxes() {
   if(!boxes.length)return;
   // SVG's default meet alignment matches the media element's object-fit: contain.
   overlay.setAttribute('viewBox',`0 0 ${width} ${height}`);
+  const early=frontBearingCue(boxes);
   for(const item of boxes){
     const [x0,y0,x1,y1]=item.box.map(n=>clamp(n,0,1));
     const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
     rect.setAttribute('x',x0*width);rect.setAttribute('y',y0*height);
     rect.setAttribute('width',(x1-x0)*width);rect.setAttribute('height',(y1-y0)*height);
-    rect.setAttribute('stroke',item.lamp?LAMP_COLOURS[item.lamp]:trackKind(item.label)==='vru'?'#ffb76b':'#9edbd6');
+    rect.setAttribute('stroke',item.lamp?LAMP_COLOURS[item.lamp]:item.label==='traffic_cone'?'#ff994a':trackKind(item.label)==='vru'?'#ffb76b':'#9edbd6');
+    if(item.label==='traffic_cone')rect.dataset.kind='cone';
     if (item.key) {
       rect.dataset.bearingOnly = 'true';
       if (bearings.selected === item.key || riderImageKey(state.selectedTrack)===item.key) rect.dataset.selected = 'true';
@@ -1212,14 +1246,18 @@ function renderCameraBoxes() {
       rect.dataset.trackId=String(item.track_id);
     }
     overlay.append(rect);
-    if (item.age_s > 0) {
+    if (item.age_s > 0 || item === early) {
       const age = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       const size = Math.max(18, width * .032);
       age.setAttribute('font-size', size);
-      age.setAttribute('x', (x1 > .72 ? x1 : x0) * width);
+      const alignRight = x1 > .62;
+      age.setAttribute('x', (alignRight ? x1 : x0) * width);
       age.setAttribute('y', Math.max(size, y0 * height - 5));
-      if (x1 > .72) age.setAttribute('text-anchor', 'end');
-      age.textContent = bearingAgeLabel(item.age_s);
+      if (alignRight) age.setAttribute('text-anchor', 'end');
+      if (item === early) {
+        age.dataset.earlyBearing = 'true';
+        age.textContent = `${sentence(item.label)} · camera only${item.age_s ? ' · '+bearingAgeLabel(item.age_s) : ''}`;
+      } else age.textContent = bearingAgeLabel(item.age_s);
       overlay.append(age);
     }
   }
@@ -1373,6 +1411,8 @@ function beginSource(source) {
   clearBearings();
   state.source = source;
   state.entry = null;
+  state.allTracks = false;
+  state.requestedTrack = null;
   state.run = null;
   state.replay = null;
   state.training = null;
@@ -1449,7 +1489,7 @@ async function loadChapterManifest(entry, replay, signal) {
   }
 }
 
-async function openRecorded(entry, startSeconds = 0, requestedCamera = null) {
+async function openRecorded(entry, startSeconds = 0, requestedCamera = null, frameNumber = null, trackId = null) {
   const signal = beginSource('recorded');
   state.entry = entry;
   state.run = findRun(entry);
@@ -1472,7 +1512,7 @@ async function openRecorded(entry, startSeconds = 0, requestedCamera = null) {
     try {
       replay = await loadReplay(entry.replay_pack_url ?? state.run?.replay_pack_url, signal, parseReplay,
         () => getJson(entry.replay_url ?? state.run?.replay_url ?? `${dir}/replay.json`, {signal, timeout: 30000}),
-        entry.barrier_review_url||entry.barrier_review_sha256 ? entry : state.run??entry);
+        {...state.run,...entry});
       if (replay && !signal.aborted) replays.set(dir, replay);
     } catch (error) {
       if (signal.aborted) return;
@@ -1487,14 +1527,18 @@ async function openRecorded(entry, startSeconds = 0, requestedCamera = null) {
   const listed = Array.isArray(entry.cameras) ? entry.cameras : Array.isArray(replay?.cameras) ? replay.cameras : ['front','chase'];
   const cameras=[...new Set(listed.filter(camera=>CAMERA_ORDER.includes(camera)))];
   setCameras(cameras,requestedCamera);
-  const start = replay && finite(startSeconds) ? Math.max(0, Math.min(startSeconds, replay.end)) : 0;
+  const index = replay && Number.isInteger(frameNumber) ? replay.frames.findIndex(f => f.frame === frameNumber) : -1;
+  const start = index >= 0 ? replay.times[index]
+    : replay && finite(startSeconds) ? Math.max(0, Math.min(startSeconds, replay.end)) : 0;
+  const autoplay = index < 0 && !reducedMotion;
+  if (index >= 0 && trackId) state.requestedTrack = {frame: frameNumber, id: trackId};
   if (state.camera) {
-    loadVideo(videoUrl(), start, !reducedMotion);
+    loadVideo(videoUrl(), start, autoplay);
   } else {
     clock.t = start;
     if (replay) presentAt(start);
     feedNote('No camera footage is listed for this run.');
-    clock.playing = Boolean(replay) && !reducedMotion;
+    clock.playing = Boolean(replay) && autoplay;
     if (!replay) setMode('unavailable', 'Unavailable');
   }
   renderRun();
@@ -1616,8 +1660,9 @@ function showLiveImage(frame) {
 }
 
 const reviewLiveFrame=barrierReviewer();
+const qualifyLiveCones=coneReviewer();
 function showLive(raw) {
-  const frame=reviewLiveFrame(raw);
+  const frame=qualifyLiveCones(reviewLiveFrame(raw));
   setMode('live', 'Live');
   if (frame.run_id !== state.liveRun) {
     setSelectedTrack(null);
@@ -1778,6 +1823,10 @@ function closeMenu() {
 }
 
 function bind() {
+  $('all-tracks').addEventListener('click', () => {
+    state.allTracks = !state.allTracks;
+    renderSensing(state.frame);
+  });
   for (const button of sourceButtons) {
     button.addEventListener('click', () => {
       if (button.dataset.source === 'live') {
@@ -1911,7 +1960,8 @@ async function boot() {
     if (entry) {
       const view=search.get('view');
       if(view==='follow'||view==='overview')setView(view);
-      openRecorded(entry, Number(search.get('at')),search.get('camera'));
+      openRecorded(entry, Number(search.get('at')), search.get('camera'),
+        search.has('frame') ? Number(search.get('frame')) : null, search.get('track'));
     }
     else showUnresolved(requested);
   } else if (!LOCAL_CONSOLE) {

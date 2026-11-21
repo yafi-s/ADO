@@ -141,3 +141,24 @@ test('source cancellation aborts pack download without loading the raw replay', 
   controller.abort();
   assert.equal(await pending, null);
 });
+
+test('loads the exact compressed original when the city replay pack is unavailable', async t => {
+  const previousFetch = globalThis.fetch, previousLocation = globalThis.location;
+  t.after(() => {
+    globalThis.fetch = previousFetch;
+    globalThis.location = previousLocation;
+  });
+  globalThis.location = new URL('https://example.test/ADO/');
+  const original = [{frame: 123, observer_map: {path: [[1, 1]]}}];
+  const calls = [];
+  globalThis.fetch = async url => {
+    calls.push(url.pathname);
+    return url.pathname.endsWith('/replay.json.gz')
+      ? new Response(gzipSync(JSON.stringify(original))) : new Response('', {status: 404});
+  };
+  const signal = new AbortController().signal;
+  const replay = await loadReplay('./media/city-life/replay-pack.json.gz', signal, value => value,
+    () => assert.fail('requested JSON instead of reading the gzip original'), {replay_url: './media/city-life/replay.json.gz'});
+  assert.deepEqual(replay, original);
+  assert.deepEqual(calls, ['/ADO/media/city-life/replay-pack.json.gz', '/ADO/media/city-life/replay.json.gz']);
+});

@@ -93,19 +93,22 @@ export function applyBarrierReview(replay,review){
 }
 
 export async function loadBarrierReview(entry,signal){
-  const url=entry?.barrier_review_url,expected=entry?.barrier_review_sha256;
+  return loadSensorReview(entry?.barrier_review_url,entry?.barrier_review_sha256,'barrier review',signal);
+}
+
+export async function loadSensorReview(url,expected,label,signal){
   if(!url&&!expected)return null;
-  if(typeof url!=='string'||!/^[a-f0-9]{64}$/i.test(expected??''))throw Error('Incomplete barrier review reference.');
+  if(typeof url!=='string'||!/^[a-f0-9]{64}$/i.test(expected??''))throw Error('Incomplete '+label+' reference.');
   const address=new URL(url,location.href);
-  if(address.origin!==location.origin||!['http:','https:'].includes(address.protocol))throw Error('Invalid barrier review URL.');
+  if(address.origin!==location.origin||!['http:','https:'].includes(address.protocol))throw Error('Invalid '+label+' URL.');
   const integrity='sha256-'+btoa(String.fromCharCode(...expected.match(/../g).map(pair=>parseInt(pair,16))));
   const response=await fetch(address,{signal,cache:'no-cache',redirect:'error',integrity});
-  if(!response.ok)throw Error('Could not load the recorded barrier review.');
+  if(!response.ok)throw Error('Could not load the recorded '+label+'.');
   const bytes=await response.arrayBuffer();
   if(globalThis.crypto?.subtle){
     const hash=new Uint8Array(await crypto.subtle.digest('SHA-256',bytes));
     const actual=Array.from(hash,b=>b.toString(16).padStart(2,'0')).join('');
-    if(actual!==expected.toLowerCase())throw Error('Barrier review checksum mismatch.');
+    if(actual!==expected.toLowerCase())throw Error(label+' checksum mismatch.');
   }
   return JSON.parse(new TextDecoder().decode(bytes));
 }

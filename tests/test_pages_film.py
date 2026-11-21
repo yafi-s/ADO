@@ -43,7 +43,7 @@ class PagesFilmTests(unittest.TestCase):
         self.url = f"{pages.GITHUB_REPO}/releases/download/{tag}/{asset}"
 
     def test_release_master_replaces_only_the_featured_film(self):
-        for tag in pages.RELEASE_FILMS:
+        for tag in ("v0.2.0", "v0.3.0", "v0.4.0"):
             with self.subTest(tag=tag):
                 self.fixture(tag)
                 with patch.object(pages, "urlopen", return_value=BytesIO(self.master)) as request:
@@ -143,6 +143,60 @@ class PagesFilmTests(unittest.TestCase):
         staged_manifest = json.loads(self.manifest.read_bytes())
         self.assertEqual(staged_manifest["sha256"], manifest["sha256"])
         self.assertEqual(staged_manifest["external_artifacts"], paths)
+
+    def test_city_life_stages_both_native_resolution_chase_films(self):
+        self.fixture("v0.4.0")
+        urban = self.chase
+        urban_release = self.url
+        self.fixture("v0.5.0")
+        city = self.chase
+        with patch.object(pages, "urlopen", side_effect=lambda *_args, **_options: BytesIO(self.master)) as request:
+            pages.prepare(self.web, archive_revision="1" * 40)
+        self.assertEqual([call.args[0] for call in request.call_args_list], [urban_release, self.url])
+        for chase in (urban, city):
+            self.assertEqual(chase.read_bytes(), self.master)
+            manifest = json.loads(chase.with_name("manifest.json").read_bytes())
+            self.assertEqual(manifest["camera_videos"]["chase"], self.master_info)
+            self.assertIn(f"/{'1' * 40}/", manifest["archive_chase"]["url"])
+
+    def test_historical_camera_is_only_relocated_after_a_verified_seekable_url(self):
+        self.fixture("v0.4.0")
+        front = self.folder / "front.mp4"
+        front.write_bytes(b"front camera" * 400)
+        old = json.loads(self.manifest.read_bytes())
+        old["sha256"][front.name] = pages.sha256(front)
+        pages.write_json(self.manifest, old)
+        catalog = self.web / "media/viewer-catalog.json"
+        pages.write_json(catalog, [{"path": "urban-pace", "cameras": ["chase", "front"]}])
+        build = json.loads(self.build.read_bytes())
+        build["showcases"][0]["recording_path"] = "urban-pace"
+        build["evidence"] = [{"url": "./media/urban-pace/front.mp4"}]
+        pages.write_json(self.build, build)
+        limit = pages.site_size(self.web) - 1000
+        revision = "b" * 40
+        url = pages.archive_revision_url(revision, "urban-pace", front.name)
+
+        def response(status):
+            remote = BytesIO(front.read_bytes()[:32])
+            remote.status = status
+            remote.headers = {"Content-Range": f"bytes 0-31/{front.stat().st_size}", "Access-Control-Allow-Origin": "*"}
+            return remote
+
+        with patch.object(pages, "urlopen", return_value=response(200)), self.assertRaisesRegex(ValueError, "seekable"):
+            pages.fit_archive_cameras(self.web, build, revision, limit)
+        self.assertTrue(front.is_file())
+        self.assertNotIn("camera_urls", build["showcases"][0])
+        with patch.object(pages, "urlopen", return_value=response(206)) as request:
+            pages.fit_archive_cameras(self.web, build, revision, limit)
+        requested = request.call_args.args[0]
+        self.assertEqual(requested.full_url, url)
+        self.assertEqual(requested.headers["Range"], "bytes=0-31")
+        entry, = json.loads(catalog.read_bytes())
+        self.assertEqual(entry["camera_urls"], {"front": url})
+        self.assertEqual(build["showcases"][0]["camera_urls"], {"front": url})
+        self.assertEqual(build["evidence"][0]["url"], url)
+        self.assertFalse(front.exists())
+        self.assertEqual(self.chase.read_bytes(), self.compact)
 
 
 if __name__ == "__main__":

@@ -35,3 +35,7 @@ The surround rider display checks vehicle motion against recorded radar rays aft
 ![Earlier day display at a signal with a yellow centre line and a blue path](media/ado-display-day.png)
 
 The public site reads recorded evidence. A local session reads the live simulator. The camera inset, graph and controls share the original recorded frame numbers and simulation times. The Builds & Logs page identifies the source revision and checkpoint and exposes the control trace behind each published drive. The driving benchmark, development recordings and higher-quality showcase runs have separate labels.
+
+## Inspect one exposure
+
+A link with a native frame number opens the rider display paused on its synchronized camera exposure. A source ID selects the corresponding measured object. For example, in the earlier Urban Pace film, the front camera and roof lidar support a lead car at 49.83 m. Open the link to see it highlighted, then use the frame inspector to step forward. The speed instruments show measured speed, the driving policy's request and the current posted limit when those values were recorded. [Selected lead car](https://yafi-s.github.io/ADO/?run=urban-pace&frame=3452&track=106&camera=front)

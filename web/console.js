@@ -2,6 +2,7 @@ import {SensorView} from './sensor.js';
 import {cornerReturns, lidarCount} from './sensor-returns.mjs';
 import {loadReplay} from './replay-pack.mjs';
 import {barrierName,barrierReviewer} from './barrier-review.mjs';
+import {coneReviewer} from './cone-observations.mjs';
 import {cameraBoxes, LAMP_COLOURS} from './lamp-observations.mjs';
 import {artifactUrl, previewImage, setArtifactLink, validRecordingPath} from './build-data.js';
 
@@ -162,7 +163,7 @@ function renderDetections() {
     const caption = document.createElement('span');
     caption.className = 'detection-label';
     const confidence = Number.isFinite(score) ? ` ${Math.round(score * 100)}%` : '';
-    caption.textContent = `${barrierName(detection)??label}${confidence}${detection.range_supported === false ? ' · bearing only' : ''}`;
+    caption.textContent = `${barrierName(detection)??String(label??'Object').replaceAll('_',' ')}${confidence}${detection.range_supported === false ? ' · bearing only' : ''}`;
     element.append(caption);
     boxes.push(element);
   }
@@ -448,6 +449,7 @@ async function stopSimulator() {
 
 async function monitorLive(signal) {
   const qualify=barrierReviewer();
+  const qualifyCones=coneReviewer();
   let failedPolls = 0;
   let local = Boolean(options);
   while (!signal.aborted && stopState !== 'stopped') {
@@ -457,7 +459,7 @@ async function monitorLive(signal) {
     }
     try {
       const raw = await readJson('/api/frame', signal, 1800);
-      const frame=raw&&qualify(raw);
+      const frame=raw&&qualifyCones(qualify(raw));
       if (!Number.isFinite(frame?.frame)) throw new Error('No current simulation frame');
       if (signal.aborted) return;
       failedPolls = 0;

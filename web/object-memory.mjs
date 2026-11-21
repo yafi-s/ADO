@@ -507,6 +507,24 @@ function measure(object, sample, ctx, deps, state) {
   witnessed(object, sample, ctx, state);
 }
 
+// A small image of a car can match a flat strip of asphalt or a wide wall. Only a compact
+// upright face with lateral spread, a plausible optical height and an independent Doppler
+// association can admit a distant passenger car on the first exposure.
+function resolvedFrontCar(s, range, frame) {
+  if(s.label!=='car'||range<25||s.confidence<.42||s.lidar_hits<5||!finite(s.radial_mps)||
+    !s.sources?.includes('radar')||!s.cameras?.includes('front'))return false;
+  const read=frame.camera_detections?.front?.find(b=>b.track_id===s.id&&b.range_supported&&b.label==='car');
+  const points=s.surface_xyz;
+  if(!read||!Array.isArray(points)||points.length<5)return false;
+  const height=(read.box[3]-read.box[1])*(s.x-CAMERA_X)*2*360/640;
+  if(height<.85||height>2.4)return false;
+  const spread=values=>Math.max(...values)-Math.min(...values);
+  const width=spread(points.map(([x,y])=>(s.x*y-s.y*x)/range));
+  const depth=spread(points.map(([x,y])=>(s.x*x+s.y*y)/range));
+  const rise=spread(points.map(p=>p[2]));
+  return width>=.65&&width<=3&&depth<=3.0&&rise>=.55&&rise<=1.9;
+}
+
 // The object was measured in this frame.
 function witnessed(object, sample, ctx, state) {
   const {s, range} = sample;
@@ -578,10 +596,11 @@ function witnessed(object, sample, ctx, state) {
   const resolvedPerson = fusedPerson && (s.confidence >= SURE.confidence || repeatedPerson) && s.lidar_hits >= 4 &&
     s.cameras?.length > 0 && finite(s.radial_mps);
   const immediatePerson = resolvedPerson || (fusedPerson && range <= 12 && s.confidence >= .35);
-  const sure = (s.confidence >= SURE.confidence && range <= SURE.range) || immediatePerson;
+  const earlyCar = resolvedFrontCar(s,range,ctx.frame);
+  const sure = (s.confidence >= SURE.confidence && range <= SURE.range) || immediatePerson || earlyCar;
   const joined = state.warm < GRACE_S && finite(s.speed_mps);
   if (sure || joined || object.hits >= 3 || (object.hits >= 2 && object.peak >= FAIR)) {
-    if (!object.confirmed && immediatePerson) object.alpha = .72;
+    if (!object.confirmed && (immediatePerson || earlyCar)) object.alpha = .72;
     if (!object.confirmed && state.warm < GRACE_S) object.alpha = 1 - 1e-9;   // joining mid-drive: show what is tracked at once
     object.confirmed = true;
   }
@@ -783,6 +802,10 @@ export function advance(state, ctx, deps = {}) {
   }
   const dt = ctx.reset ? 0 : clamp(ctx.dt, 0, .8);
   state.warm = Math.min(30, state.warm + dt);
+  for(const {track} of frame.cone_conflicts??[]){
+    const key=state.ids.get(track.id);
+    if(state.objects.get(key)?.sourceId===track.id)state.objects.delete(key);
+  }
   // A fresh negative barrier review withdraws a previously confirmed compound.
   for(const id of frame.barrier_review?.revoked??[]){
     const key=state.ids.get(id),previous=state.objects.get(key);
@@ -968,7 +991,8 @@ export function advance(state, ctx, deps = {}) {
     if (overrun) leave(object, 'driven through');
     else if (fx < -BEHIND_M && frame.perception_version !== 'surround-v1') leave(object, 'passed');
     else if (frame.perception_version === 'surround-v1' && unseen > CARRY_LIMIT_S) leave(object, 'depth support expired');
-    else if (Math.hypot(fx, fy) > RANGE_M) leave(object, 'out of range');
+    else if (Math.hypot(fx, fy) > (frame.perception_version === 'surround-v1' && unseen <= GRACE_S ? 100 : RANGE_M))
+      leave(object, 'out of range');
 
     const held = unseen > GRACE_S;
     const offRoad = frame.perception_version !== 'surround-v1' && object.family === 'wheeled' && deps.laneDistance ? deps.laneDistance(object.x, object.z) > OFF_ROAD_M : false;
@@ -1003,7 +1027,15 @@ export function advance(state, ctx, deps = {}) {
       speed});
   }
   for (const [id, key] of state.ids) if (!state.objects.has(key)) state.ids.delete(id);
-  return frame.perception_version==='surround-v1'?distinctVehicles(drawn,state,ctx):drawn;
+  const result=frame.perception_version==='surround-v1'?distinctVehicles(drawn,state,ctx):drawn;
+  for(const cone of frame.cone_tracks??[]){
+    // Acquisition-locked footprints use the road surface only for display elevation.
+    const ground=deps.groundAt?.(cone.world_x,cone.world_y,ctx.h);
+    result.push({key:cone.id,sourceId:cone.id,label:'traffic_cone',family:'cone',x:cone.world_x,z:cone.world_y,
+      y:finite(ground)?ground:ctx.h,heading:0,length:cone.length*1.32,width:cone.width*1.32,height:cone.height,
+      opacity:cone.coasting?.48:1,held:!!cone.coasting,moving:false,speed:0});
+  }
+  return result;
 }
 
 // The page's memory. Frames may arrive in any order: a frame reached again, or reached with

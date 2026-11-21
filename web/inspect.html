@@ -18,8 +18,9 @@
       <div class="views">
         <section class="panel">
           <div class="panel-head"><h2>Native camera</h2><label>View <select id="camera"></select></label></div>
-          <div id="movie-stage"><p id="movie-status" role="status">Loading footage…</p></div>
+          <div id="movie-stage"><svg id="cone-overlay" aria-hidden="true" hidden></svg><p id="movie-status" role="status">Loading footage…</p></div>
           <p class="caption" id="movie-caption"></p>
+          <ul class="cone-evidence" id="cone-evidence" aria-label="Traffic cone measurements in this exposure" hidden></ul>
         </section>
         <section class="panel">
           <div class="panel-head"><h2>Registered overhead</h2><label>Zoom <select id="scale"><option value="10">Detail · 10 m</option><option value="24">Near · 24 m</option><option value="36" selected>Street · 36 m</option><option value="72">Wide · 72 m</option></select></label></div>

@@ -10,7 +10,7 @@ import shutil
 import subprocess
 from tempfile import TemporaryDirectory
 from urllib.error import HTTPError
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 
 GITHUB_REPO = "https://github.com/yafi-s/ADO"
@@ -19,10 +19,15 @@ RELEASE_FILMS = {
     "v0.2.0": ("long-city-drive", "ADO-Town03-Chase-1080p.mp4"),
     "v0.3.0": ("surround-city", "ADO-Surround-City-1080p.mp4"),
     "v0.4.0": ("urban-pace", "ADO-Urban-Pace-1080p.mp4"),
+    "v0.5.0": ("city-life", "ADO-City-Life-1080p.mp4"),
 }
 LARGE_RECORDINGS = ("urban-pace", "surround-city", "long-city-drive")
 SITE_LIMIT = 1_000_000_000
 SITE_RESERVE = 1_000_000
+# Keep at least the bit budget of the previous Pages film for the archived Urban Pace chase.
+URBAN_CHASE_BUDGET = 108_000_000
+CITY_LIFE_CHASE_BUDGET = 125_000_000
+PAGES_ORIGIN = "https://yafi-s.github.io"
 VIDEO_FIELDS = ("width", "height", "codec_name", "nb_read_frames", "pix_fmt", "r_frame_rate")
 
 
@@ -86,18 +91,40 @@ def encode_for_site(source, target, master, budget):
     raise ValueError(f"Encoded chase film exceeds its {budget} byte Pages allocation")
 
 
-def fit_archive_data(web, build, revision):
-    limit = SITE_LIMIT - SITE_RESERVE
-    if site_size(web) <= limit:
-        return
+def verify_archive_url(url, path):
+    size = path.stat().st_size
+    end = min(size, 32) - 1
+    request = Request(url, headers={"Range": f"bytes=0-{end}", "Origin": PAGES_ORIGIN})
+    with path.open("rb") as local, urlopen(request, timeout=30) as remote:
+        if (remote.status != 206 or remote.headers.get("Content-Range") != f"bytes 0-{end}/{size}"
+                or remote.headers.get("Access-Control-Allow-Origin") not in ("*", PAGES_ORIGIN)
+                or remote.read(end + 1) != local.read(end + 1)):
+            raise ValueError(f"Archive URL does not serve the capture with seekable byte ranges: {url}")
+
+
+def archive_revision_url(revision, directory, name):
     if not revision or not re.fullmatch(r"[0-9a-f]{40}", revision):
         raise ValueError("Pages needs the immutable checkout commit to link archived recording data")
+    return f"{ARCHIVE_REPO}/{revision}/web/media/{directory}/{name}"
+
+
+def catalog_runs(build):
+    return [run for section in ("runs", "showcases", "development_runs", "native_replays")
+            for run in build.get(section, [])]
+
+
+def fit_archive_data(web, build, revision, *, limit=None, city_life=False):
+    if limit is None:
+        limit = SITE_LIMIT - SITE_RESERVE
+    if site_size(web) <= limit:
+        return
+    archive_revision_url(revision, "", "")
 
     catalog = web / "media/viewer-catalog.json"
     records = json.loads(catalog.read_bytes())
-    runs = [run for section in ("runs", "showcases", "development_runs", "native_replays")
-            for run in build.get(section, [])]
-    for directory in LARGE_RECORDINGS:
+    runs = catalog_runs(build)
+    directories = (*LARGE_RECORDINGS, "city-life") if city_life else LARGE_RECORDINGS
+    for directory in directories:
         folder = web / "media" / directory
         manifest_path = folder / "manifest.json"
         if not manifest_path.is_file():
@@ -120,7 +147,9 @@ def fit_archive_data(web, build, revision):
             if sha256(path) != checks.get(name):
                 raise ValueError(f"Archived public data differs from the capture manifest: {path}")
             local = f"./media/{directory}/{name}"
-            url = f"{ARCHIVE_REPO}/{revision}/web/media/{directory}/{name}"
+            url = archive_revision_url(revision, directory, name)
+            if city_life:
+                verify_archive_url(url, path)
             entry[field] = url
             for run in runs:
                 if run.get("recording_path") == directory:
@@ -136,24 +165,59 @@ def fit_archive_data(web, build, revision):
             print(f"Linked the original {directory}/{name} at the checkout commit.")
 
 
-def prepare(web, archive_revision=None):
-    build_path = web / "media/build.json"
-    if not build_path.is_file():
+def fit_archive_cameras(web, build, revision, limit):
+    if site_size(web) <= limit:
         return
-    build = json.loads(build_path.read_bytes())
-    tag = build.get("release", {}).get("label")
-    if tag == "v0.4.0":
-        fit_archive_data(web, build, archive_revision)
-    total = site_size(web)
-    if total > SITE_LIMIT:
-        raise ValueError(f"The committed Pages site already exceeds {SITE_LIMIT} bytes ({total} bytes)")
-    if tag not in RELEASE_FILMS:
-        return
+    catalog = web / "media/viewer-catalog.json"
+    records = json.loads(catalog.read_bytes())
+    # Keep the current and archived Urban Pace chase videos on Pages. Prefer local chase playback for older drives.
+    candidates = []
+    for entry in records:
+        directory = entry["path"]
+        if directory not in LARGE_RECORDINGS:
+            continue
+        for camera in entry["cameras"]:
+            if camera not in {"chase", "front", "left", "right", "rear_left", "rear_right"}:
+                raise ValueError(f"Unknown historical camera: {camera}")
+            if (directory, camera) == ("urban-pace", "chase"):
+                continue
+            path = web / "media" / directory / f"{camera}.mp4"
+            if path.is_file():
+                candidates.append((camera == "chase", -path.stat().st_size, directory, camera, path, entry))
+    runs = catalog_runs(build)
+    for _, _, directory, camera, path, entry in sorted(candidates, key=lambda row: row[:4]):
+        if site_size(web) <= limit:
+            return
+        manifest_path = path.with_name("manifest.json")
+        manifest = json.loads(manifest_path.read_bytes())
+        if sha256(path) != manifest["sha256"][path.name]:
+            raise ValueError(f"Archived camera differs from the capture manifest: {path}")
+        url = archive_revision_url(revision, directory, path.name)
+        verify_archive_url(url, path)
+        local = f"./media/{directory}/{path.name}"
+        entry.setdefault("camera_urls", {})[camera] = url
+        for run in runs:
+            if run.get("recording_path") == directory:
+                run.setdefault("camera_urls", {})[camera] = url
+                if run.get("video_url") == local:
+                    run["video_url"] = url
+        for item in build.get("evidence", []):
+            if item["url"] == local:
+                item["url"] = url
+        manifest.setdefault("external_artifacts", {})[path.name] = url
+        write_json(manifest_path, manifest)
+        write_json(catalog, records)
+        write_json(web / "media/build.json", build)
+        path.unlink()
+        print(f"Linked the original {directory}/{path.name} at the checkout commit.")
+
+
+def stage_chase(web, build, tag, *, budget=None, archive_revision=None, require_1080=False):
     directory, asset = RELEASE_FILMS[tag]
     folder = web / "media" / directory
     manifest_path = folder / "manifest.json"
     if not manifest_path.is_file():
-        if tag in {"v0.3.0", "v0.4.0"}:
+        if tag in {"v0.3.0", "v0.4.0", "v0.5.0"}:
             raise ValueError(f"Missing the featured chase capture manifest at {manifest_path}")
         return
     manifest = json.loads(manifest_path.read_bytes())
@@ -162,23 +226,32 @@ def prepare(web, archive_revision=None):
     compact_digest = manifest["sha256"]["chase.mp4"]
     if sha256(compact) != compact_digest:
         raise ValueError("Committed chase film differs from its capture manifest")
+    if require_1080 and ((master["width"], master["height"]) != (1920, 1080)
+                         or master["file_bytes"] >= 2_000_000_000):
+        raise ValueError(f"Wrong native 1080p chase master at {manifest_path}")
     if (master["sha256"] == compact_digest
             or manifest.get("playback_chase", {}).get("source_sha256") == master["sha256"]):
+        if require_1080 and (manifest["video"]["width"], manifest["video"]["height"]) != (1920, 1080):
+            raise ValueError(f"Wrong staged 1080p film at {manifest_path}")
         return
 
     source = f"{GITHUB_REPO}/releases/download/{tag}/{asset}"
     compact_size = compact.stat().st_size
-    budget = SITE_LIMIT - SITE_RESERVE - (total - compact_size)
+    if budget is None:
+        budget = SITE_LIMIT - SITE_RESERVE - (site_size(web) - compact_size)
     with TemporaryDirectory(prefix=".ado-pages-film-", dir=web.parent) as scratch:
         original = Path(scratch) / "master.mp4"
         if not download(source, original, master):
+            if require_1080:
+                verify_encode(compact, master)
             print("Full-quality asset has not been published yet. Serving the verified compact film.")
             return
         if original.stat().st_size <= budget:
             playback = original
             video = {key: master[key] for key in VIDEO_FIELDS}
             kind = "release-master"
-        elif budget > 0 and (budget >= compact_size * 1.10 or manifest["video"]["height"] < master["height"]):
+        elif budget > 0 and (require_1080 or budget >= compact_size * 1.10
+                             or manifest["video"]["height"] < master["height"]):
             playback = Path(scratch) / "playback.mp4"
             video = encode_for_site(original, playback, master, budget)
             kind = "pages-encode"
@@ -190,7 +263,8 @@ def prepare(web, archive_revision=None):
 
     manifest["archive_chase"] = {
         "sha256": compact_digest, "video": manifest["video"],
-        "url": f"{ARCHIVE_REPO}/{tag}/web/media/{directory}/chase.mp4",
+        "url": (archive_revision_url(archive_revision, directory, compact.name) if archive_revision
+                else f"{ARCHIVE_REPO}/{tag}/web/media/{directory}/chase.mp4"),
     }
     manifest["playback_chase"] = {"kind": kind, "source_sha256": master["sha256"], "source": source}
     manifest["sha256"]["chase.mp4"] = digest
@@ -201,11 +275,43 @@ def prepare(web, archive_revision=None):
     for run in build.get("showcases", []):
         if run["trial_id"] == manifest["trial_id"]:
             run.update(width=video["width"], height=video["height"])
-    write_json(build_path, build)
+    write_json(web / "media/build.json", build)
     total = site_size(web)
     if total > SITE_LIMIT:
         raise ValueError(f"Staged Pages site exceeds {SITE_LIMIT} bytes ({total} bytes)")
     print(f"Serving {video['width']} x {video['height']} chase footage as {kind} ({total} bytes for Pages).")
+
+
+def stage_city_life(web, build, revision):
+    city = web / "media/city-life/chase.mp4"
+    urban = web / "media/urban-pace/chase.mp4"
+    budget = max(CITY_LIFE_CHASE_BUDGET, city.stat().st_size)
+    archive_budget = max(URBAN_CHASE_BUDGET, urban.stat().st_size)
+    limit = SITE_LIMIT - SITE_RESERVE - (budget - city.stat().st_size) - (archive_budget - urban.stat().st_size)
+    fit_archive_data(web, build, revision, limit=limit, city_life=True)
+    fit_archive_cameras(web, build, revision, limit)
+    if site_size(web) > limit:
+        raise ValueError(f"The city films and their evidence exceed the Pages budget ({site_size(web)} bytes)")
+    stage_chase(web, build, "v0.4.0", budget=archive_budget, archive_revision=revision, require_1080=True)
+    stage_chase(web, build, "v0.5.0", archive_revision=revision, require_1080=True)
+
+
+def prepare(web, archive_revision=None):
+    build_path = web / "media/build.json"
+    if not build_path.is_file():
+        return
+    build = json.loads(build_path.read_bytes())
+    tag = build.get("release", {}).get("label")
+    if tag == "v0.5.0":
+        stage_city_life(web, build, archive_revision)
+        return
+    if tag == "v0.4.0":
+        fit_archive_data(web, build, archive_revision)
+    total = site_size(web)
+    if total > SITE_LIMIT:
+        raise ValueError(f"The committed Pages site already exceeds {SITE_LIMIT} bytes ({total} bytes)")
+    if tag in RELEASE_FILMS:
+        stage_chase(web, build, tag)
 
 
 if __name__ == "__main__":

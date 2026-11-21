@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {bearingObservations, cameraBoxes} from '../web/lamp-observations.mjs';
+import {bearingObservations, cameraBoxes, frontBearingCue} from '../web/lamp-observations.mjs';
 
 const person = {label: 'person', box: [.83, .31, .94, .88], image_id: 7, range_supported: false, track_id: null};
 const fresh = {
@@ -13,6 +13,14 @@ const skipped = {
   camera_detections: {right: []}, camera_inference_age_s: {left: .1, front: .1, right: 0}
 };
 const views = ['front', 'left', 'right'];
+
+test('only a small registered forward bearing receives the camera-only cue',()=>{
+  const pending={view:'front',key:'front-7',label:'person',box:[.52,.49,.53,.55],age_s:0};
+  const car={...pending,key:'front-8',label:'car',box:[.49,.49,.50,.51]};
+  assert.equal(frontBearingCue([car,pending]),pending);
+  assert.equal(frontBearingCue([{...pending,view:'rear_left'},{...pending,key:undefined},
+    {...pending,box:[.42,.2,.58,.6]}, {...pending,label:'barrier'}]),null);
+});
 
 test('a fresh unsupported person gets its own identifiable image observation, then holds the recorded bounds for the next skipped frame', () => {
   const items = bearingObservations(fresh, null, views);

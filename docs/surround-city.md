@@ -1,5 +1,7 @@
 # Surround sensing and urban overtaking
 
+The City Life observer acquires 1280 × 720 front imagery and a 100 m roof-lidar sweep, with a registered 640 × 360 front movie. In the rider display, camera-only observations stay attached to their image until a range-supported track exists. [Inspect a ranged vehicle at 76.7 m](https://yafi-s.github.io/ADO/?run=city-life&frame=281&track=20&camera=front) · [Native measurements and coverage by distance](../results/distant-awareness/README.md)
+
 The rider display and camera movies share the same CARLA frame clock. Select **Front**, **Left**, **Right**, **Rear left** or **Rear right** to see the measurements that supplied a track. **Chase** is an independent spectator camera. The center screen renders the revised I-PACE from Blender; the camera movies show CARLA's Lincoln carrying the simulated sensors.
 
 ## Current rider recording

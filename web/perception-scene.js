@@ -41,7 +41,7 @@ const PALETTES = {
     pathFar:[.024,.35,.38], pathNear:[.16,.81,.68],
     wallDark:[.026,.041,.058], wallLit:[.074,.102,.126], wallEdge:[.030,.052,.066],
     shadow:'#061012', shadowOpacity:.57, lidar:'#8cced2', radar:'#e6b979',
-    vehicle:'#7792b8', rider:'#f2b45e', person:'#f4aa51', barrier:'#ff7854', unknown:'#8597a4',
+    vehicle:'#7792b8', rider:'#f2b45e', person:'#f4aa51', barrier:'#ff7854', cone:'#fe7127', unknown:'#8597a4',
     glass:'#233d52', lamp:'#e6ecff', tail:'#e9877c', tyre:'#232f39', hub:'#637885', glow:.025, rim:.14, exposure:1.04,
     signalBody:'#2a3644', signalOff:'#141c26', red:'#ff453a', amber:'#ffb01f', green:'#2fe37a'
   },
@@ -51,7 +51,7 @@ const PALETTES = {
     pathFar:'#7fa8f5', pathNear:'#1f5fe8',
     wallDark:'#cdd2da', wallLit:'#e9ecf0', wallEdge:[-.035,-.033,-.03],
     shadow:'#1d2633', shadowOpacity:.34, lidar:'#5578b4', radar:'#d9641a',
-    vehicle:'#8e9da9', rider:'#bf762e', person:'#c96022', barrier:'#d44826', unknown:'#9daab2',
+    vehicle:'#8e9da9', rider:'#bf762e', person:'#c96022', barrier:'#d44826', cone:'#e8621b', unknown:'#9daab2',
     glass:'#505f71', lamp:'#f6f7f9', tail:'#c97875', tyre:'#4b5560', hub:'#828f9b', glow:0, rim:0, exposure:1.0,
     signalBody:'#5d6674', signalOff:'#39414d', red:'#e5352b', amber:'#e39a0c', green:'#17a85a'
   }
@@ -869,7 +869,7 @@ export class PerceptionScene {
     const trail=makeTrail(color);
     trail.renderOrder=1;
     this.trackGroup.add(group,trail);
-    const track={id,label,group,foot,trail,materials:shape.materials,history:[],from:V(),to:V(),fromAngle:0,toAngle:0,
+    const track={id,label,group,foot,trail,materials:shape.materials,bodyPaint:shape.bodyPaint,history:[],from:V(),to:V(),fromAngle:0,toAngle:0,
       size:V(),fromSize:V(),toSize:V(),opacity:-1,fromOpacity:0,toOpacity:0};
     this.tracks.set(id,track);return track;
   }
@@ -965,6 +965,17 @@ export class PerceptionScene {
       track.sourceId=object.sourceId;
       track.sourceIds=object.sourceIds;
       track.mountedRider=object.mountedRider;
+      if(TRACK_TONE[label]==='vehicle'||label==='person'){
+        // Keep the measured silhouette and its depth test. Recent, confirmed distant bodies
+        // need a darker paint on the day road and slightly brighter paint on the night road.
+        const source=nativeTracks.get(object.sourceId);
+        const current=source?.last_cameras?.length && !object.held && !object.leaving && object.opacity>=.5;
+        const contrast=current ? clamp((Math.hypot(source.x,source.y)-30)/34,0,1) *
+          clamp((.5-(source.class_age_s??Infinity))/.3,0,1) : 0;
+        const day=this.look===PALETTES.day;
+        track.bodyPaint.color.set(this.look[TRACK_TONE[label]]).multiplyScalar(day?1-.60*contrast:1);
+        track.bodyPaint.emissiveIntensity=this.look.glow+(day?0:.85*contrast);
+      }
       track.from.copy(track.group.position);track.to.set(object.x,object.y,object.z);
       track.fromAngle=track.group.rotation.y;track.toAngle=-object.heading*rad;
       // The symbol stays within sizes its class can have; the ground outline keeps the estimate itself.
@@ -976,13 +987,13 @@ export class PerceptionScene {
       if(fresh||object.turned)track.fromAngle=track.toAngle;
       if(fresh){
         track.from.copy(track.to);track.fromSize.copy(track.toSize);track.group.scale.copy(track.toSize);
-        track.fromOpacity=carried??(reset?object.opacity:0);
+        track.fromOpacity=carried??(reset||label==='traffic_cone'?object.opacity:0);
       }
       if(replay){
         const following=nextObjects.get(object.key);
         track.from.copy(track.to);track.fromAngle=track.toAngle;track.fromSize.copy(track.toSize);
         track.fromOpacity=object.opacity;
-        if(following&&following.label===object.label){
+        if(following&&following.label===object.label&&label!=='traffic_cone'){
           track.to.set(following.x,following.y,following.z);
           if(!following.turned)track.toAngle=-following.heading*rad;
           plausibleSize(label,track.size.set(following.length,following.height,following.width),track.toSize);

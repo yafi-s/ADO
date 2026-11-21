@@ -4,6 +4,9 @@ from collections import Counter
 from contextlib import ExitStack
 import json
 import math
+import os
+from pathlib import Path
+from tempfile import mkdtemp
 from time import perf_counter, sleep
 
 import cv2
@@ -126,11 +129,18 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             if range_only:
                 raise ValueError("Surround tracking needs RGB views")
             from .surround import SurroundPerception
-            from .surround_vision import SurroundDetector
+            from .camera_geometry import CAMERAS
+            from .traffic_cones import detect_views as detect_cones_in_views
+            from .surround_vision import SurroundDetector, horizon_region
             from .signal_observer import SignalObserver
             surround_perception = SurroundPerception(evidence_dir=evidence_dir)
             surround_detector = SurroundDetector()
             signals = SignalObserver(world) if visuals else None
+            range_tape = None
+            if target := os.environ.get("CROSSWALK_RANGE_TAPE"):
+                from .radar_geometry import RADARS
+                Path(target).mkdir(parents=True, exist_ok=True)
+                range_tape = Path(mkdtemp(prefix="sweeps-", dir=target))
         elif visuals:
             from .tracking import Tracker
             spatial_tracker = Tracker()
@@ -198,6 +208,22 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 teacher_speed = update_instructor(scene, teacher)
             frame = world.tick()
             obs = rig.read(frame)
+            if surround_perception is not None:
+                surround_pose = scene.ego.get_transform()
+                ego_xy_yaw = (surround_pose.location.x, surround_pose.location.y, surround_pose.rotation.yaw)
+                surround_obs = dict(obs)
+                # The rider display has longer lidar reach. Preserve the controller's trained 60 m input.
+                scan = surround_obs["lidar"]
+                obs["lidar"] = scan[np.einsum("ij,ij->i", scan[:, :3], scan[:, :3]) <= 60**2]
+                if range_tape is not None:
+                    optical = surround_obs.get("front_optical")
+                    image = {}
+                    if optical is not None and step % 2 == 0:
+                        x0,y0,x1,y1 = horizon_region(optical)
+                        image = dict(horizon_rgb=optical[y0:y1,x0:x1], horizon_xyxy=[x0,y0,x1,y1],
+                                     front_size_wh=[optical.shape[1],optical.shape[0]])
+                    np.savez(range_tape / f"{frame}.npz", lidar=scan, ego_xy_yaw=ego_xy_yaw,
+                             **{name: surround_obs[name] for name in RADARS}, **image)
             speed = vehicle_speed(scene.ego)
             if observer is None:
                 local_route = navigation.read(scene.ego)
@@ -215,10 +241,10 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 if step % 2 == 0:
                     detections = detector.detect(obs["front"])
                 if surround_perception is not None:
-                    pose = scene.ego.get_transform()
-                    measured_front = surround_detector.detect(obs["front"]) if step % 2 == 0 else []
+                    measured_front = surround_detector.detect_front(
+                        obs["front"], surround_obs.get("front_optical")) if step % 2 == 0 else []
                     obs["surround_tracks"] = surround_perception.update(
-                        surround_detector, obs, measured_front, (pose.location.x, pose.location.y, pose.rotation.yaw),
+                        surround_detector, surround_obs, measured_front, ego_xy_yaw,
                         step * DT, step)
                 if observer is None:
                     x = features(obs["front"], obs["lidar"], obs["radar"], speed, detections,
@@ -317,8 +343,10 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                         selected = np.asarray(points).reshape(-1, 2) @ rotation + origin
                         measured["plan_xy"] = np.vstack((origin, selected)).round(3).tolist()
                     signal_reads = signals.read(pose, obs, step * DT)
-                    surface = obs["lidar"][:, :3].copy()
+                    surface = surround_obs["lidar"][:, :3].copy()
                     surface[:, 2] += 2.30
+                    measured["cone_observations"] = detect_cones_in_views(
+                        {view: surround_obs[view] for view in CAMERAS}, surface)
                     surface = surface[(surface[:, 2] > .20) & (surface[:, 2] < 5.0)]
                     sparse = surface[::max(1, math.ceil(len(surface) / 180))]
                     measured.update(perception_version="surround-v1", signals=signal_reads,

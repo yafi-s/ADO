@@ -31,6 +31,9 @@ def load_driver(path):
     if version == "ado-city-pace-v1":
         from .city_pace import CityPaceModel, FEATURE_NAMES as city_names
         return CityPaceModel.load(path), city_names, version
+    if version == "ado-city-clearance-v1":
+        from .city_clearance import ClearanceModel, FEATURE_NAMES as clearance_names
+        return ClearanceModel.load(path), clearance_names, version
     raise ValueError(f"Unknown driving model: {version}")
 
 
@@ -75,7 +78,7 @@ class LoggedDriver:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", type=Path, default=PROJECT / "models/city-pace/candidate.npz")
+    parser.add_argument("--model", type=Path, default=PROJECT / "models/city-clearance/candidate.npz")
     parser.add_argument("--seed", type=int, default=211)
     parser.add_argument("--crossing-delay", type=float, default=0., help="Additional pedestrian departure delay in simulated seconds")
     parser.add_argument("--max-steps", type=int, default=9000)
@@ -84,6 +87,8 @@ def main():
     parser.add_argument("--port", type=int, default=2468)
     parser.add_argument("--attach", action="store_true", help="Use an idle Town03_Opt server")
     parser.add_argument("--serve", action="store_true", help="Stream the live cameras and measured controls")
+    parser.add_argument("--population-profile", choices=("standard", "city-life"),
+                        help="Street population (the live city-clearance driver defaults to City Life)")
     parser.add_argument("--surround", action=argparse.BooleanOptionalAction, default=None,
                         help="Run the five-camera perception rig (on by default for the live urban cruise driver)")
     parser.add_argument("--tactical", action=argparse.BooleanOptionalAction, default=None,
@@ -99,7 +104,7 @@ def main():
         parser.error("Crossing delay must be finite and nonnegative")
     model_sha = fingerprint(args.model)
     driver, names, schema = load_driver(args.model)
-    live_cruise = args.serve and schema in ("ado-city-cruise-v1", "ado-city-pace-v1")
+    live_cruise = args.serve and schema in ("ado-city-cruise-v1", "ado-city-pace-v1", "ado-city-clearance-v1")
     options = {key: True for key, value in (("surround", args.surround), ("tactical", args.tactical))
                if (live_cruise if value is None else value)}
     tactical_sha = None
@@ -107,7 +112,10 @@ def main():
         from .overtake import MODEL as tactical_checkpoint
         tactical_sha = fingerprint(tactical_checkpoint)
     model = LoggedDriver(driver)
-    scene_factory = partial(JourneyScenario, barriers=True) if schema == "ado-city-pace-v1" else JourneyScenario
+    population_profile = args.population_profile or (
+        "city-life" if args.serve and schema == "ado-city-clearance-v1" else "standard")
+    scene_factory = partial(JourneyScenario, population_profile=population_profile,
+                            barriers=schema in ("ado-city-pace-v1", "ado-city-clearance-v1"))
     root = args.output or PROJECT / "out/city-drives"
     root.mkdir(parents=True, exist_ok=True)
     folder = Path(mkdtemp(prefix=f"city-{args.seed}-", dir=root))
@@ -130,7 +138,7 @@ def main():
                 features=np.asarray(model.observations), feature_names=names,
                 speed_request_mps=model.requested_speed,
                 **({"posted_limit_kmh": model.posted_limits} if model.uses_posted_limit else {}))
-    summary.update(producer=producer, model_sha256=model_sha, policy_schema=schema,
+    summary.update(producer=producer, model_sha256=model_sha, policy_schema=schema, population_profile=population_profile,
                    surround=bool(options.get("surround")), tactical=bool(options.get("tactical")),
                    tactical_model_sha256=tactical_sha)
     write_json(folder / "summary.json", summary)

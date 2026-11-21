@@ -38,6 +38,9 @@ class CityPaceModel(UrbanCruiseModel):
         self.signed_speed_limit = None
         return super().new_observer()
 
+    def _edge_speed(self):
+        return self.side_speed
+
     def _plan(self, x):
         baseline = CityModel._plan(self, x)
         starts, splits, thresholds, left, right, values = self.cruise_forest
@@ -65,7 +68,7 @@ class CityPaceModel(UrbanCruiseModel):
         side = min(x[INDEX["right_edge_lidar"]], x[INDEX["left_edge_lidar"]],
                    x[INDEX["right_edge_lidar_recent"]])
         if side < 36.:
-            requested = min(requested, np.sqrt(self.side_speed**2 + 3.6 * max(0., side - self.standoff)))
+            requested = min(requested, np.sqrt(self._edge_speed()**2 + 3.6 * max(0., side - self.standoff)))
         requested = min(requested, junction, posted / 3.6, CRUISE_MAX)
         if self.signed_speed_limit is not None:
             requested = min(requested, self.signed_speed_limit)

@@ -27,6 +27,11 @@ def _anchors():
 GRID, STRIDE = _anchors()
 
 
+def horizon_region(rgb):
+    height, width = rgb.shape[:2]
+    return round(width*.25), round(height*.31), round(width*.75), round(height*.71)
+
+
 def _place(rgb, canvas, y, max_height):
     if rgb.dtype != np.uint8 or rgb.ndim != 3 or rgb.shape[2] != 3 or not rgb.size:
         raise ValueError("expected a nonempty uint8 RGB image")
@@ -105,6 +110,43 @@ class SurroundDetector:
         canvas = np.full((SIZE, SIZE, 3), 114, dtype=np.uint8)
         region = _place(rgb, canvas, 0, SIZE)
         return _view_boxes(self._forward(canvas), region, self.threshold, "single")
+
+    def horizon_boxes(self, rgb):
+        """A second optical scale for small road users ahead, in original-image coordinates."""
+        h, w = rgb.shape[:2]
+        x0, y0, x1, y1 = horizon_region(rgb)
+        answers = []
+        for hit in self.detect(rgb[y0:y1, x0:x1]):
+            if hit["label"] not in ("person", "car", "truck", "bus") or hit["score"] < .60:
+                continue
+            left, top, right, bottom = hit["box"]
+            # A crop edge can cut a nearby vehicle into a second, smaller-looking object.
+            if min(left, top, 1-right, 1-bottom) < .015:
+                continue
+            bounds = [(x0 + left*(x1-x0))/w, (y0 + top*(y1-y0))/h,
+                      (x0 + right*(x1-x0))/w, (y0 + bottom*(y1-y0))/h]
+            if bounds[3]-bounds[1] <= .12 and bounds[2]-bounds[0] <= .12:
+                answers.append(dict(hit, box=bounds, inference_layout="front-horizon-2x"))
+        return answers
+
+    @staticmethod
+    def merge_horizon(full, zoom):
+        """Keep full-frame detections intact when the same image region is seen at both scales."""
+        result = list(full)
+        for hit in zoom:
+            x, y, r, b = hit["box"]
+            area = (r-x)*(b-y)
+            for previous in result:
+                l, t, a, z = previous["box"]
+                overlap = max(0., min(r,a)-max(x,l)) * max(0., min(b,z)-max(y,t))
+                if overlap > .40 * min(area, (a-l)*(z-t)):
+                    break
+            else:
+                result.append(hit)
+        return result
+
+    def detect_front(self, rgb, optical=None):
+        return self.merge_horizon(self.detect(rgb), self.horizon_boxes(rgb if optical is None else optical))
 
     def detect_pair(self, first_rgb, second_rgb):
         """Classify synchronized auxiliary images in one pass, with a 10-pixel gutter."""

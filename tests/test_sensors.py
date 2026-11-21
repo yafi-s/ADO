@@ -48,6 +48,29 @@ def stub_rig(test, *, visuals=False, ue5=False, range_only=False, surround=False
 
 
 class RigTests(unittest.TestCase):
+    def test_surround_front_resolution_preserves_registered_control_image(self):
+        with patch.dict(os.environ, {"CROSSWALK_FRONT_HD":"1"}):
+            rig, streams = stub_rig(self, surround=True)
+        height,width=720,1280
+        pixels=np.zeros((height,width,4),np.uint8)
+        pixels[:,width//2:,2]=240
+        for name,(_,actor) in streams.items():
+            if name=="collision":
+                continue
+            raw=pixels.tobytes() if name=="front" else bytes(4) if name in rig.rendering["cameras"] else b""
+            actor.listen.call_args.args[0](SimpleNamespace(frame=3,raw_data=raw,
+                width=width if name=="front" else 1,height=height if name=="front" else 1))
+        result=rig.read(3,timeout=0)
+        self.assertEqual(rig.rendering["surround"]["lidar_range_m"],100)
+        self.assertEqual(streams["front"][1].attributes["image_size_x"],"1280")
+        self.assertEqual(result["front_optical"].shape,(720,1280,3))
+        self.assertEqual(result["front"].shape,(360,640,3))
+        np.testing.assert_array_equal(result["front"][:,320:,0],240)
+        np.testing.assert_array_equal(result["front"][:,:320,0],0)
+        with patch.dict(os.environ, {"CROSSWALK_FRONT_HD":"0"}):
+            _, fallback = stub_rig(self, surround=True)
+        self.assertEqual(fallback["front"][1].attributes["image_size_x"],"640")
+
     def test_surround_camera_and_lidar_coverage(self):
         rig, streams = stub_rig(self, surround=True)
         geometry = rig.rendering["surround"]
