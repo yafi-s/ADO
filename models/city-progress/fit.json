@@ -1,0 +1,32 @@
+{
+  "schema": "ado-city-progress-v1",
+  "checkpoint_sha256": "3676ffd5f730a565ea17c537ebd32a93b4e041bcae53cfe350597962eaa4ea62",
+  "base_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+  "source_sha256": "38c56df5eeafdfc3677df5f2deff99db87ad520e1392209a72cc0ac084bb7be9",
+  "parameters": {
+    "free_speed_mps": 10.63525104522705,
+    "lateral_acceleration_mps2": 1.7286138534545898,
+    "recovery_acceleration_mps2": 2.590517044067383
+  },
+  "observed_frames": {
+    "native_frames": 3141,
+    "cruise_fit": 165,
+    "turn_fit": 125,
+    "recovery_fit": 313
+  },
+  "braking_holdout_trials": 3,
+  "braking_holdout_signed_errors_m": [
+    0.03238356632017858,
+    -0.006231716541481802,
+    -0.03892484563046139
+  ],
+  "brake_response_tested_through_mps": 8.075061167814589,
+  "demonstration": "Town03 native instructor seed 75; fitted speeds, curvature and acceleration are measured.",
+  "scope": "Offline fit. Controller comparisons require new closed-loop runs.",
+  "inputs": {
+    "models/city-clearance/candidate.npz": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+    "data/city-cruise/lessons.zip": "d8a6718793f1b65102d79e459e37dc8d21d5674e011c011512f58a120380e796",
+    "results/roadworks-pace/stopping-calibration.json": "3b4c7d8950570e68f684f09f6242796ee78bb543b6bfe01a14abdc623ede449d",
+    "crosswalk/city_progress_fit.py": "ca10e75f93e0e43867cd7256cdad74108e6019306964d25b7f075d0ef3e4115d"
+  }
+}

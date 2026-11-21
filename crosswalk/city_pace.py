@@ -74,6 +74,9 @@ class CityPaceModel(UrbanCruiseModel):
             requested = min(requested, self.signed_speed_limit)
         if self.tactical_speed_limit is not None:
             requested = min(requested, self.tactical_speed_limit)
+        return self._finish_request(x, baseline, requested)
+
+    def _finish_request(self, x, baseline, requested):
         # A briefly clear frame must not cause an immediate surge after a slowdown.
         if self.last_speed_request is not None:
             requested = min(requested, self.last_speed_request + .185)

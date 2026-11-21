@@ -126,6 +126,7 @@ class RouteLamps:
                                      float(min(dist[matches])), signal.id))
 
     def observe(self, ego, images):
+        self.governing_gap = None
         if not self.map:
             return None
         pose = ego.get_transform()
@@ -143,6 +144,7 @@ class RouteLamps:
         if not candidates:
             return None
         gap, _, _, heads = min(candidates, key=lambda x: (round(x[0], 1), x[1], x[2]))
+        self.governing_gap = gap
         ego_inverse = np.asarray(pose.get_inverse_matrix())
         transforms = {name: mount @ ego_inverse for name, mount in self.mount_inverses.items()}
         selected = select_crop(heads, images, transforms)
