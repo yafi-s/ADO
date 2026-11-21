@@ -50,6 +50,7 @@
         <div class="run-actions">
           <button class="action-button action-primary" id="run-start" type="submit" disabled>Start run</button>
           <button class="action-button" id="run-repeat" type="button" hidden>Rerun with +1 s delay</button>
+          <button class="action-button" id="run-stop" type="button" disabled>Stop simulator</button>
         </div>
       </form>
     </section>
@@ -87,16 +88,28 @@
       <section class="panel sensor-panel" aria-labelledby="sensor-heading">
         <header class="panel-head">
           <h2 id="sensor-heading">Sensor view</h2>
-          <span class="unit-tag">Top down</span>
+          <span class="unit-tag" id="sensor-unit">Top down</span>
+          <div class="camera-controls" id="sensor-controls" aria-label="Sensor display" role="group" hidden>
+            <button type="button" data-sensor-view="returns" aria-pressed="true" aria-controls="sensor">Returns</button>
+            <button type="button" data-sensor-view="route" aria-pressed="false" aria-controls="sensor">Route</button>
+          </div>
         </header>
         <div class="sensor-stage">
           <canvas id="sensor" role="img" aria-label="Top-down lidar returns and radar detections around the vehicle"></canvas>
-          <span class="plot-scale">10 m rings</span>
+          <span class="plot-scale" id="plot-scale">10 m rings</span>
+          <span class="plot-scale" id="route-source" hidden>Map ground truth</span>
           <span id="radar-reading" class="radar-reading" hidden></span>
         </div>
-        <div class="legend">
+        <div class="legend" id="returns-legend">
           <span><i class="dot lidar-dot"></i>Lidar <b id="lidar-count">—</b></span>
           <span><i class="dot radar-dot"></i>Radar <b id="radar-count">—</b></span>
+        </div>
+        <div class="legend route-legend" id="route-legend" hidden>
+          <span><i class="dot ego-dot"></i>Ego</span>
+          <span><i class="dot start-dot"></i>Start</span>
+          <span><i class="dot destination-dot"></i>Destination</span>
+          <span id="route-traffic" hidden><i class="dot traffic-dot"></i>Traffic</span>
+          <span id="route-hazard" hidden><i class="dot hazard-dot"></i><span id="route-hazard-label">Hazard</span></span>
         </div>
       </section>
     </div>

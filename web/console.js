@@ -5,16 +5,19 @@ const ids = [
   'detections', 'camera-empty', 'view-label', 'frame-label',
   'playback', 'play', 'clock', 'seek', 'end-clock', 'loop', 'live-strip', 'live-clock', 'ir-note', 'front-note',
   'sensor', 'radar-reading', 'lidar-count', 'radar-count', 'map', 'frame', 'speed',
+  'sensor-unit', 'sensor-controls', 'plot-scale', 'route-source', 'returns-legend', 'route-legend',
+  'route-traffic', 'route-hazard', 'route-hazard-label',
   'steer', 'steer-direction', 'throttle', 'brake',
   'progress', 'route-total', 'lateral', 'collisions', 'scenario', 'policy', 'seed', 'phase', 'weather',
   'run-panel', 'run-form', 'run-scenario', 'run-destination', 'run-seed', 'run-delay', 'run-start',
-  'run-repeat', 'run-status', 'run-request-error', 'destination-field', 'delay-field',
+  'run-repeat', 'run-stop', 'run-status', 'run-request-error', 'destination-field', 'delay-field',
   'weather-field', 'grip-field', 'run-weather', 'run-grip', 'telemetry-grip', 'grip',
   'telemetry-destination', 'destination', 'telemetry-delay', 'crossing-delay',
   'telemetry-red-light', 'red-light-count', 'telemetry-yield', 'yield-count'
 ];
 const ui = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 const cameraButtons = [...document.querySelectorAll('[data-camera]')];
+const sensorButtons = [...document.querySelectorAll('[data-sensor-view]')];
 const cameraLabels = {
   chase: 'Chase camera', front: 'Front camera', infrared: 'Thermal proxy',
   left: 'Left camera', right: 'Right camera'
@@ -48,6 +51,7 @@ let runStatus;
 let runError;
 let submitting = false;
 let submittal = 0;
+let stopState = '';
 
 function setText(id, value) {
   const text = String(value ?? '—');
@@ -56,12 +60,18 @@ function setText(id, value) {
 
 function setMode(nextMode, label) {
   mode = nextMode;
-  ui['source-state'].dataset.mode = mode;
-  setText('source-state', label);
+  const stopLabel = mode === 'live' && simulatorStopLabel();
+  ui['source-state'].dataset.mode = stopLabel ? (stopState === 'stopped' ? 'stopped' : 'stopping') : mode;
+  setText('source-state', stopLabel || label);
   ui['encounter-picker'].hidden = mode !== 'replay' || !ui.encounter.options.length;
   ui['run-panel'].hidden = mode !== 'live' || !options;
   ui.playback.hidden = mode === 'live';
   ui['live-strip'].hidden = mode !== 'live';
+}
+
+function simulatorStopLabel() {
+  if (!stopState) return '';
+  return stopState === 'stopped' ? 'Simulator stopped' : 'Stopping simulator';
 }
 
 function showMessage(message) {
@@ -183,8 +193,33 @@ function renderTelemetry(frame) {
   ui['telemetry-yield'].hidden = !Number.isFinite(frame?.yield_violations);
   setText('yield-count', numeric(frame?.yield_violations));
   setText('live-clock', timeLabel(frame?.sim_time));
-  sensor.update(lidar, radar);
+  sensor.update(lidar, radar, frame?.observer_map);
+  renderSensorPanel();
   renderDetections();
+}
+
+function renderSensorPanel() {
+  const showingRoute = sensor.view === 'route';
+  const hasRoute = Boolean(sensor.route);
+  ui['sensor-controls'].hidden = !hasRoute;
+  ui['sensor-unit'].hidden = hasRoute;
+  ui['plot-scale'].hidden = showingRoute;
+  ui['route-source'].hidden = !showingRoute;
+  ui['returns-legend'].hidden = showingRoute;
+  ui['route-legend'].hidden = !showingRoute;
+  ui['route-traffic'].hidden = !sensor.route?.traffic;
+  ui['route-hazard'].hidden = !sensor.route?.hazard;
+  const hazardType = sensor.route?.hazard_type ?? '';
+  if (ui['route-hazard'].dataset.kind !== hazardType) ui['route-hazard'].dataset.kind = hazardType;
+  setText('route-hazard-label', {vehicle: 'Hazard vehicle', pedestrian: 'Pedestrian'}[hazardType] ?? 'Hazard');
+  const label = showingRoute
+    ? 'Map ground truth showing the route and simulator actor positions'
+    : 'Top-down lidar returns and radar detections around the vehicle';
+  if (ui.sensor.getAttribute('aria-label') !== label) ui.sensor.setAttribute('aria-label', label);
+  for (const button of sensorButtons) {
+    const pressed = String(button.dataset.sensorView === sensor.view);
+    if (button.getAttribute('aria-pressed') !== pressed) button.setAttribute('aria-pressed', pressed);
+  }
 }
 
 async function readJson(url, signal, timeout, request = {}) {
@@ -278,7 +313,7 @@ function installOptions(settings) {
 function renderRunStatus() {
   const state = runStatus?.state;
   const settings = runStatus?.settings;
-  const busy = submitting || state === 'queued';
+  const busy = submitting || state === 'queued' || Boolean(stopState);
   const canRerun = terminalStates.has(state) && delayScenarios.has(settings?.scenario) &&
     Number.isFinite(settings.crossing_delay) && settings.crossing_delay + 1 <= (Number(ui['run-delay'].max) || Infinity);
   const outcome = runStatus?.outcome;
@@ -295,10 +330,11 @@ function renderRunStatus() {
     complete: outcomeCode ? `${runName} · ${outcomeLabel}` : `${runName} finished.`,
     error: runStatus?.error || `${runName} stopped with an error.`
   };
-  setText('run-status', submitting ? 'Submitting drive…' : messages[state] || 'Checking simulator status…');
+  setText('run-status', simulatorStopLabel() || (submitting ? 'Submitting drive…' : messages[state] || 'Checking simulator status…'));
   setText('run-request-error', runError ?? '');
   ui['run-request-error'].hidden = !runError;
   ui['run-start'].disabled = busy || !state;
+  ui['run-stop'].disabled = busy || !state;
   ui['run-repeat'].hidden = !canRerun;
   ui['run-repeat'].disabled = busy;
 }
@@ -313,7 +349,11 @@ function clearLiveFrame() {
 }
 
 async function monitorStatus(signal) {
-  while (!signal.aborted) {
+  while (!signal.aborted && stopState !== 'stopped') {
+    if (stopState) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      continue;
+    }
     const requested = submittal;
     try {
       const status = await readJson('/api/status', signal, 1800);
@@ -331,7 +371,7 @@ async function monitorStatus(signal) {
 }
 
 async function submitDrive(settings) {
-  if (submitting || runStatus?.state === 'queued') return;
+  if (submitting || runStatus?.state === 'queued' || stopState) return;
   submittal++;
   submitting = true;
   runError = undefined;
@@ -352,10 +392,55 @@ async function submitDrive(settings) {
   }
 }
 
+async function stopSimulator() {
+  if (!options || mode !== 'live' || !runStatus?.state || ui['run-stop'].disabled) return;
+  const signal = new AbortController().signal;
+  stopState = 'requesting';
+  runError = undefined;
+  setMode('live', '');
+  renderRunStatus();
+  try {
+    await readJson('/api/stop', signal, 5000, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: '{}'
+    });
+    stopState = 'stopping';
+  } catch (error) {
+    stopState = '';
+    runError = error.message;
+    if (mode === 'live') setMode('live', latestFrame ? 'Live simulator' : 'Simulator connected');
+    renderRunStatus();
+    return;
+  }
+
+  // The local HTTP server closes after CARLA has cleaned up.
+  let disconnectedPolls = 0;
+  while (stopState === 'stopping') {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      await readJson('/api/status', signal, 1500);
+      disconnectedPolls = 0;
+    } catch {
+      if (++disconnectedPolls < 2) continue;
+      stopState = 'stopped';
+      if (mode === 'live') {
+        setMode('live', '');
+        if (!latestFrame) showMessage('Select Recorded drive to watch a replay.');
+      }
+      renderRunStatus();
+    }
+  }
+}
+
 async function monitorLive(signal) {
   let failedPolls = 0;
   let local = Boolean(options);
-  while (!signal.aborted) {
+  while (!signal.aborted && stopState !== 'stopped') {
+    if (stopState) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      continue;
+    }
     try {
       const frame = await readJson('/api/frame', signal, 1800);
       if (!Number.isFinite(frame?.frame)) throw new Error('No current simulation frame');
@@ -586,6 +671,11 @@ async function connect() {
     ui.stream.removeAttribute('src');
     setCameras([]);
     renderTelemetry();
+    if (stopState === 'stopped') {
+      setMode('live', '');
+      showMessage('Select Recorded drive to watch a replay.');
+      return;
+    }
     showMessage('Connecting to the drive…');
     try {
       const settings = await readJson('/api/options', signal, 1800);
@@ -619,6 +709,13 @@ for (const button of cameraButtons) {
 
 ui.source.addEventListener('change', connect);
 ui.encounter.addEventListener('change', () => openReplay(connectionSignal()));
+ui['run-stop'].addEventListener('click', stopSimulator);
+for (const button of sensorButtons) {
+  button.addEventListener('click', () => {
+    sensor.setView(button.dataset.sensorView);
+    renderSensorPanel();
+  });
+}
 ui['run-scenario'].addEventListener('change', () => setScenarioFields(ui['run-scenario'].value));
 ui['run-form'].addEventListener('submit', event => {
   event.preventDefault();

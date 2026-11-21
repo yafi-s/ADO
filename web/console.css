@@ -19,6 +19,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .connection{margin-left:auto;display:flex;align-items:center;gap:8px;font-family:var(--mono);text-transform:uppercase;font-size:10px;letter-spacing:1px;color:#dee4da;white-space:nowrap}
 .connection::before{content:"";width:7px;height:7px;border-radius:50%;background:#99a69d}
 .connection[data-mode=live]::before{background:#b1eb86;box-shadow:0 0 0 3px #72994f40}
+.connection[data-mode=stopping]::before{background:#f8c97b}
 .connection[data-mode=replay]::before{background:#f8c97b}
 .intro{display:flex;align-items:end;justify-content:space-between;gap:15px;margin:31px 0 23px}
 .eyebrow,.unit-tag,.view-label,.frame-label,.plot-scale,.radar-reading,.data-head>span{font-family:var(--mono);font-size:10px;letter-spacing:.8px;text-transform:uppercase}
@@ -75,6 +76,13 @@ button:disabled{cursor:default}
 .dot{display:inline-block;width:8px;height:8px}
 .lidar-dot{background:#4c9b83;border-radius:50%}
 .radar-dot{background:#c7822c;transform:rotate(45deg);width:7px;height:7px}
+.route-legend{justify-content:center;flex-wrap:wrap;gap:5px 12px;font-size:13px}
+.ego-dot{width:10px;height:10px;background:#496b54;clip-path:polygon(0 0,100% 50%,0 100%)}
+.start-dot{width:9px;height:9px;border:1.5px solid #456d59;border-radius:50%}
+.destination-dot{width:9px;height:9px;background:#1b6b4b}
+.traffic-dot{width:7px;height:7px;background:#a76a23;transform:rotate(45deg)}
+.hazard-dot{width:9px;height:9px;border-radius:50%;background:#a44054}
+#route-hazard[data-kind=vehicle] .hazard-dot{border-radius:2px}
 .data-panel{margin-top:18px}
 .data-head{min-height:48px;border-bottom:1px solid var(--line);padding:8px 20px}
 .readouts{display:grid;grid-template-columns:.95fr 1.25fr .9fr .8fr 1.4fr 1fr .8fr;padding:18px 0}
@@ -117,7 +125,7 @@ footer a:hover{color:#182620;text-decoration-color:currentColor}
 .action-button:disabled { opacity: .55; }
 #loop { min-height: 27px; padding: 3px 8px; font-size: 12px; }
 @media (max-width: 850px) {
-  .camera-panel .panel-head { flex-wrap: wrap; }
+  .camera-panel .panel-head, .sensor-panel .panel-head { flex-wrap: wrap; }
 }
 @media (max-width: 690px) {
   .run-panel { padding: 12px; margin-bottom: 12px; }

@@ -184,6 +184,45 @@ class LiveTests(unittest.TestCase):
                     with missing.exception as response:
                         self.assertEqual(response.code, 404)
 
+    def test_stop_latches_for_local_interactive_console_only(self):
+        options = {"scenarios": ["pedestrian"], "destinations": ["station"]}
+        drive = {"scenario": "pedestrian", "destination": "station", "seed": 0, "crossing_delay": 0}
+
+        def post(live, path="stop", payload=None, **headers):
+            request = Request(live.url + f"api/{path}", json.dumps({} if payload is None else payload).encode(),
+                              {"Content-Type": "application/json", **headers})
+            return urlopen(request, timeout=5)
+
+        with Live(0, options) as live:
+            for code, kwargs in (
+                (403, {"Origin": "https://example.org"}),
+                (415, {"Content-Type": "text/plain"}),
+                (400, {"payload": {"unexpected": True}}),
+            ):
+                with self.subTest(code=code), self.assertRaises(HTTPError) as rejected:
+                    post(live, **kwargs)
+                with rejected.exception as response:
+                    self.assertEqual(response.code, code)
+                self.assertFalse(live.stop_requested())
+            with post(live, "drive", drive) as response:
+                self.assertEqual(response.status, 202)
+            with post(live, Origin=live.url.rstrip("/")) as response:
+                self.assertEqual(response.status, 202)
+                self.assertEqual(json.load(response), {"stopping": True})
+            with self.assertRaises(HTTPError) as conflict:
+                post(live, "drive", drive)
+            with conflict.exception as response:
+                self.assertEqual(response.code, 409)
+            self.assertTrue(live.stop_requested())
+            self.assertIsNone(live.next_request())
+
+        with Live(0) as live:
+            with self.assertRaises(HTTPError) as unavailable:
+                post(live)
+            with unavailable.exception as response:
+                self.assertEqual(response.code, 404)
+            self.assertFalse(live.stop_requested())
+
 
 @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "Requires FFmpeg")
 class RecordingTests(unittest.TestCase):

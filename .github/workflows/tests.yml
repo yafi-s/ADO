@@ -12,6 +12,11 @@ jobs:
           python-version: '3.12'
           cache: pip
       - run: choco install ffmpeg -y --no-progress
+      - name: Cache the release-verified CARLA client
+        uses: actions/cache@v4
+        with:
+          path: .local/carla-1.0-cp312-cp312-win_amd64.whl
+          key: carla-win64-cp312-07b5d86f11e47636f3886358b5d32b47435f32d06cad00723ecad44035915a61
       - run: .\setup.ps1 -ClientOnly
       - name: Verify the town geometry for offline route tests
         shell: pwsh

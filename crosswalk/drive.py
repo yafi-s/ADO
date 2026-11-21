@@ -38,6 +38,21 @@ def _sensor_plot(lidar, radar):
     return points.astype(float).round(1).tolist(), xyv.astype(float).round(1).tolist()
 
 
+def _xy(location):
+    return [round(location.x, 2), round(location.y, 2)]
+
+
+def _observer_map(scene, path):
+    pose = scene.ego.get_transform()
+    hazard = scene.hazard
+    return {
+        "path": path, "ego": [*_xy(pose.location), round(pose.rotation.yaw, 2)],
+        "traffic": _xy(scene.traffic.get_location()) if scene.traffic else None,
+        "hazard": _xy(hazard.get_location()) if hazard else None,
+        "hazard_type": ("pedestrian" if hazard.type_id.startswith("walker.") else "vehicle") if hazard else None,
+    }
+
+
 def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             recording=None, realtime=False, max_steps=None, district=None, crossing_delay=0.,
             destination=None, run_id=None, change_request=None, weather="seeded", grip=1.0):
@@ -64,6 +79,7 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
         body = BodyKit(world, scene.ego)
         stack.callback(body.close)
         visuals = live is not None or recording is not None
+        display_path = [_xy(p) for p in scene.route[:-1:4]] + [_xy(scene.route[-1])] if visuals else []
         rig = Rig(world, scene.ego, visuals=visuals)
         stack.callback(rig.close)
         # Settle the suspension and prime the GPU cameras while all actors wait.
@@ -150,7 +166,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             if visuals:
                 lp, rp = _sensor_plot(obs["lidar"], obs["radar"])
                 telemetry = dict(row, lidar=lp, radar=rp, detections=detections, detection_age_s=(step % 2)*DT,
-                                 run_id=run_id, destination=state["destination"], crossing_delay=crossing_delay)
+                                 run_id=run_id, destination=state["destination"], crossing_delay=crossing_delay,
+                                 observer_map=_observer_map(scene, display_path))
                 if recording:
                     recording.append(telemetry, obs)
                 if live:
@@ -268,6 +285,8 @@ def main():
             pending = None
             def changed():
                 nonlocal pending
+                if live.stop_requested():
+                    return True
                 pending = live.next_request()
                 return pending is not None
             if live:
@@ -289,9 +308,11 @@ def main():
                     live.set_status("complete", run_id=index, settings=settings, outcome=result, error=None)
             print(json.dumps(result), flush=True)
             if args.interactive:
-                while pending is None:
+                while pending is None and not live.stop_requested():
                     sleep(0.1)
                     pending = live.next_request()
+                if live.stop_requested():
+                    break
                 settings = pending
             elif not args.loop:
                 break

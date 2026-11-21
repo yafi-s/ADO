@@ -108,7 +108,8 @@ class _ConsoleHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
         live = self.server.live
-        if urlsplit(self.path).path != "/api/drive" or live.options is None:
+        path = urlsplit(self.path).path
+        if path not in ("/api/drive", "/api/stop") or live.options is None:
             self._drive_error(HTTPStatus.NOT_FOUND, "Drive controls are unavailable.")
             return
         if not self._same_origin():
@@ -132,13 +133,22 @@ class _ConsoleHandler(SimpleHTTPRequestHandler):
             if len(raw) != length:
                 raise ValueError("The drive request body is incomplete.")
             request = json.loads(raw.decode("utf-8"))
-            live.queue_drive(request)
+            if path == "/api/stop":
+                if request != {}:
+                    raise ValueError("Send an empty JSON object to stop the simulator.")
+                live.request_stop()
+                reply = b'{"stopping":true}'
+            else:
+                if not live.queue_drive(request):
+                    self._drive_error(HTTPStatus.CONFLICT, "The simulator is stopping.")
+                    return
+                reply = b'{"queued":true}'
         except (UnicodeDecodeError, json.JSONDecodeError, RecursionError):
             self._drive_error(HTTPStatus.BAD_REQUEST, "Send a valid JSON object.")
         except ValueError as error:
             self._drive_error(HTTPStatus.BAD_REQUEST, str(error))
         else:
-            self._send_json(HTTPStatus.ACCEPTED, b'{"queued":true}')
+            self._send_json(HTTPStatus.ACCEPTED, reply)
 
     def _same_origin(self):
         port = self.server.server_port
@@ -202,6 +212,7 @@ class Live:
         self._lock = Lock()
         self._frame = None
         self._pending = None
+        self._stopping = False
         self.set_status("idle")
 
     @staticmethod
@@ -219,6 +230,7 @@ class Live:
         self.clear()
         with self._lock:
             self._pending = None
+            self._stopping = False
         self.set_status("idle")
         self.server = ThreadingHTTPServer(("127.0.0.1", self.port), _ConsoleHandler)
         self.server.live = self
@@ -276,7 +288,19 @@ class Live:
                 raise ValueError("Choose a supported grip factor.")
             normalized["grip"] = float(grip)
         with self._lock:
+            if self._stopping:
+                return False
             self._pending = normalized
+            return True
+
+    def request_stop(self):
+        with self._lock:
+            self._stopping = True
+            self._pending = None
+
+    def stop_requested(self):
+        with self._lock:
+            return self._stopping
 
     def next_request(self):
         with self._lock:
