@@ -51,6 +51,15 @@ def measure(folder):
     cone = next((e for e in summary["events"] if e["kind"] == "roadworks"), None)
     samples, windows = [], {"alongside": [], "after": []}
     history, density = deque(maxlen=6), []
+    cone_review = {}
+    if manifest.get("cone_review_sha256"):
+        source = folder / "cone-observations.json"
+        with source.open("rb") as stream:
+            if hashlib.file_digest(stream, "sha256").hexdigest() != manifest["cone_review_sha256"]:
+                raise ValueError("Cone review differs from the recording manifest")
+        cone_review = {r["frame"]: r["cone_observations"] for r in json.loads(source.read_bytes())["frames"]}
+    cone_sample, mixed_sample = None, None
+    cone_rank, mixed_rank = (0, 0), (0, 0)
     names = {"car": "vehicle", "truck": "vehicle", "bus": "vehicle", "vehicle": "vehicle",
              "van": "vehicle", "motorcycle": "vehicle", "pedestrian": "pedestrian"}
     with opener(path, "rt", encoding="utf-8-sig") as stream:
@@ -68,9 +77,19 @@ def measure(folder):
             speed = row["speed_mps"] * 3.6
             request = row.get("speed_request_mps")
             request = None if request is None else round(request * 3.6, 2)
+            sample = [round(t, 2), row["frame"], round(row["progress_m"], 2), round(speed, 2),
+                      request, row.get("posted_limit_kmh"), *(nearby or [None, None])]
             if index % 10 == 0 or row["frame"] == manifest["last_frame"]:
-                samples.append([round(t, 2), row["frame"], round(row["progress_m"], 2), round(speed, 2),
-                                request, row.get("posted_limit_kmh"), *(nearby or [None, None])])
+                samples.append(sample)
+            ranged = row.get("cone_observations") or cone_review.get(row["frame"], [])
+            front = [c for c in ranged if c.get("camera") == "front" and c.get("lidar_hits", 0) > 0]
+            rank = (len(front), sum(c["lidar_hits"] for c in front))
+            if rank > cone_rank:
+                cone_rank, cone_sample = rank, sample
+            if nearby and min(nearby) > 0:
+                rank = (min(nearby), sum(nearby))
+                if rank > mixed_rank:
+                    mixed_rank, mixed_sample = rank, sample
             if cone:
                 offset = row["progress_m"] - cone["station_m"]
                 if 0 <= offset < 40:
@@ -83,6 +102,10 @@ def measure(folder):
                    "median_requested_kmh": round(median(r for _, r in rows), 2)
                    if all(r is not None for _, r in rows) else None}
             for name, rows in windows.items() if rows}
+    for sample in (cone_sample, mixed_sample):
+        if sample is not None and sample not in samples:
+            samples.append(sample)
+    samples.sort(key=lambda s: s[0])
     return {"trial": manifest["trial_id"], "label": manifest["catalog_entry"]["label"],
             "frames": summary["frames"], "source_sha256": digest,
             "nearby": {"radius_m": 50, "eligible_frames": len(density),
@@ -90,7 +113,8 @@ def measure(folder):
                        "two_each_frames": sum(v >= 2 and p >= 2 for v, p in density),
                        "peak_moving_vehicles": max(v for v, _ in density),
                        "peak_moving_pedestrians": max(p for _, p in density)},
-            "roadworks": pace, "cones_at_s": None if not cone else cone.get("exposed_s"), "samples": samples}
+            "roadworks": pace, "cones_at_s": cone_sample[0] if cone_sample else None,
+            "mixed_at_s": mixed_sample[0] if mixed_sample else None, "samples": samples}
 
 
 if __name__ == "__main__":

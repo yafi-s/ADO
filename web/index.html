@@ -64,6 +64,10 @@
         <div class="hud" id="cluster" data-state="idle">
           <section class="speedo" aria-label="Speed and controls">
             <p class="speed"><span class="num" id="speed">—</span><abbr class="unit" title="kilometres per hour">km/h</abbr></p>
+            <dl class="speed-plan" aria-label="Speed planning in kilometres per hour" hidden>
+              <div id="pace-target" title="Speed requested by the driver on this frame" hidden><dt>Target</dt><dd></dd></div>
+              <div id="pace-limit" title="Current posted speed limit" hidden><dt>Limit</dt><dd></dd></div>
+            </dl>
             <div class="inputs" id="inputs" hidden>
               <div class="gauge" data-kind="steer">
                 <span class="k">Steer</span>

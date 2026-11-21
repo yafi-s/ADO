@@ -39,6 +39,9 @@ def publish(web, directory, *, feature=False, source_revision=None, source_snaps
     if manifest["policy"]["schema"] == "ado-city-cruise-v1" and not tactical:
         entry["selection_note"] = ("Town03 development course with staged traffic. The fitted pass planner "
                                    "uses measured clearance in the current and neighboring lanes.")
+    if manifest["policy"]["schema"] == "ado-city-clearance-v1" and folder == "city-life":
+        entry["selection_note"] = ("One continuous Town03 development drive with moving neighborhood traffic "
+                                   "and the roadside-clearance driver.")
     base = f"./media/{folder}"
     summary = manifest["summary"]
     show = {key: summary[key] for key in ("scenario", "policy", "seed", "destination", "district", "outcome",
@@ -51,6 +54,11 @@ def publish(web, directory, *, feature=False, source_revision=None, source_snaps
                 width=manifest["video"]["width"], height=manifest["video"]["height"],
                 manifest_url=entry["manifest"], log_url=f"{base}/telemetry.json", video_url=f"{base}/chase.mp4",
                 cameras=entry["cameras"])
+    if folder == "city-life":
+        replay = manifest["replay"]
+        if replay not in ("replay.json", "replay.json.gz") or replay not in manifest["sha256"]:
+            raise ValueError("City Life needs the original measured replay in its manifest")
+        entry["replay_url"] = show["replay_url"] = f"{base}/{replay}"
     if tactical:
         show["tactical_score"] = manifest["score"]
     else:
@@ -76,7 +84,7 @@ def publish(web, directory, *, feature=False, source_revision=None, source_snaps
         canonical = json.dumps(manifest["policy"]["code_sha256"], sort_keys=True).encode()
         show["source"] = {"fingerprint": hashlib.sha256(canonical).hexdigest(), "url": entry["manifest"]}
     pack = recording / "replay-pack.json.gz"
-    pace = manifest["policy"]["schema"] == "ado-city-pace-v1"
+    pace = manifest["policy"]["schema"] in ("ado-city-pace-v1", "ado-city-clearance-v1")
     if pace and not pack.is_file():
         raise ValueError(f"Pack the urban replay before indexing: {pack}")
     if pack.is_file():

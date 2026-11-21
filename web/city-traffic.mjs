@@ -59,6 +59,7 @@ export async function loadTrafficStudy() {
     scrub.max = run.samples.length - 1;
     scrub.value = 0;
     byId('traffic-cones').hidden = run.cones_at_s == null;
+    byId('traffic-mixed').hidden = run.mixed_at_s == null;
     const d = run.nearby;
     byId('traffic-summary').textContent = `A moving vehicle and a moving pedestrian were both within 50 m for ${(d.moving_car_and_ped_frames * .1).toFixed(1)} of ${(d.eligible_frames * .1).toFixed(1)} scored seconds. These counts come from physical actor positions and include people or vehicles hidden from the sensors.`;
     showTick();
@@ -76,6 +77,7 @@ export async function loadTrafficStudy() {
     seek((x - left) / (right - left) * end);
   });
   byId('traffic-cones').addEventListener('click', () => seek(run.cones_at_s));
+  byId('traffic-mixed').addEventListener('click', () => seek(run.mixed_at_s));
   scrub.addEventListener('input', showTick);
   selector.addEventListener('change', draw);
   draw();
