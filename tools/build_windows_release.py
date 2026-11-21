@@ -77,7 +77,10 @@ SURROUND_REQUIRED = (
     f"{SURROUND_MEDIA}/manifest.json", *(f"web/media/{name}/manifest.json" for name in TACTICAL_RECORDINGS),
 )
 PACE_REQUIRED = (
-    "crosswalk/city_pace.py", "crosswalk/barrier.py", "crosswalk/barrier_collect.py", "crosswalk/barrier_scene.py",
+    "crosswalk/city_pace.py", "crosswalk/speed_signs.py", "crosswalk/cycle_association.py",
+    "crosswalk/town01_interaction.py", "crosswalk/town01_interaction_gate.py",
+    "models/town01-yield-gated-v04/calibration.json", "results/town01-yield-gated-v04/audit.json",
+    "crosswalk/barrier_chain.py", "crosswalk/barrier.py", "crosswalk/barrier_collect.py", "crosswalk/barrier_scene.py",
     "crosswalk/barrier_study.py", "models/city-pace/candidate.npz", "models/city-pace/fit.json",
     BARRIER_MODEL, BARRIER_DATA, BARRIER_VALIDATION,
     "web/follow-heading.mjs", f"{PACE_MEDIA}/manifest.json",

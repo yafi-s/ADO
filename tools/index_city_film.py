@@ -3,6 +3,8 @@ import argparse
 import hashlib
 import json
 import subprocess
+from contextlib import nullcontext
+from zipfile import ZipFile
 from pathlib import Path
 
 
@@ -18,7 +20,7 @@ def write_json(path, data):
     temp.replace(path)
 
 
-def publish(web, directory, *, feature=False, source_revision=None):
+def publish(web, directory, *, feature=False, source_revision=None, source_snapshot=None):
     media = (web / "media").resolve()
     recording = (media / directory).resolve()
     folder = recording.relative_to(media).as_posix()
@@ -58,13 +60,17 @@ def publish(web, directory, *, feature=False, source_revision=None):
         source_root = web.resolve().parent
         commit = subprocess.check_output(["git", "rev-parse", "--verify", f"{source_revision}^{{commit}}"],
                                          cwd=source_root, text=True).strip()
-        for name, expected in manifest["policy"]["code_sha256"].items():
-            path = Path("crosswalk") / name
-            if Path(name).name != name or digest(source_root / path) != expected:
-                raise ValueError(f"Local source differs from the recorded capture: {name}")
-            blob = subprocess.check_output(["git", "show", f"{commit}:{path.as_posix()}"], cwd=source_root)
-            if blob.replace(b"\r\n", b"\n") != (source_root / path).read_bytes().replace(b"\r\n", b"\n"):
-                raise ValueError(f"Source revision differs from the recorded capture: {name}")
+        with (ZipFile(source_snapshot) if source_snapshot else nullcontext()) as snapshot:
+            for name, expected in manifest["policy"]["code_sha256"].items():
+                if Path(name).name != name:
+                    raise ValueError(f"Invalid captured source path: {name}")
+                path = Path("crosswalk") / name
+                measured = snapshot.read(path.as_posix()) if snapshot else (source_root / path).read_bytes()
+                if hashlib.sha256(measured).hexdigest() != expected:
+                    raise ValueError(f"Source bytes differ from the recorded capture: {name}")
+                blob = subprocess.check_output(["git", "show", f"{commit}:{path.as_posix()}"], cwd=source_root)
+                if blob.replace(b"\r\n", b"\n") != measured.replace(b"\r\n", b"\n"):
+                    raise ValueError(f"Source revision differs from the recorded capture: {name}")
         show["source"] = {"commit": commit, "url": f"https://github.com/yafi-s/ADO/tree/{commit}"}
     else:
         canonical = json.dumps(manifest["policy"]["code_sha256"], sort_keys=True).encode()
@@ -79,6 +85,20 @@ def publish(web, directory, *, feature=False, source_revision=None):
         if pace and pack.name not in manifest["sha256"]:
             manifest["sha256"][pack.name] = entry["replay_pack_sha256"]
             write_json(recording / "manifest.json", manifest)
+    sidecar = recording / "barrier-review.json"
+    if pace and sidecar.is_file():
+        review = json.loads(sidecar.read_bytes())
+        if (review.get("schema") != "ado-barrier-post-review-v1" or review.get("partial")
+                or review.get("first_frame") != manifest["first_frame"]
+                or review.get("last_frame") != manifest["last_frame"]
+                or review.get("capture_frames") != summary["frames"]):
+            raise ValueError("Barrier review does not match the complete camera recording")
+        h = digest(sidecar)
+        for target in (entry, show, manifest):
+            target["barrier_review_url"] = f"{base}/{sidecar.name}"
+            target["barrier_review_sha256"] = h
+        manifest["sha256"][sidecar.name] = h
+        write_json(recording / "manifest.json", manifest)
     build_path = media / "build.json"
     catalog_path = media / "viewer-catalog.json"
     build = json.loads(build_path.read_bytes())
@@ -95,6 +115,7 @@ if __name__ == "__main__":
     cli.add_argument("directory", help="Installed path relative to web/media")
     cli.add_argument("--web", type=Path, default=Path(__file__).resolve().parents[1] / "web")
     cli.add_argument("--source-revision", help="Git revision containing the measured capture code")
+    cli.add_argument("--source-snapshot", type=Path, help="Verified execution sources when the checkout has changed since capture")
     cli.add_argument("--feature", action="store_true", help="Make this the default recording")
     args = cli.parse_args()
-    publish(args.web, args.directory, feature=args.feature, source_revision=args.source_revision)
+    publish(args.web, args.directory, feature=args.feature, source_revision=args.source_revision, source_snapshot=args.source_snapshot)
