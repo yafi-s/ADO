@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 
@@ -17,7 +18,7 @@ def write_json(path, data):
     temp.replace(path)
 
 
-def publish(web, directory, *, feature=False):
+def publish(web, directory, *, feature=False, source_revision=None):
     media = (web / "media").resolve()
     recording = (media / directory).resolve()
     folder = recording.relative_to(media).as_posix()
@@ -45,6 +46,18 @@ def publish(web, directory, *, feature=False):
                 manifest_url=entry["manifest"], log_url=f"{base}/telemetry.json", video_url=f"{base}/chase.mp4",
                 encounters_handled=sum(e["handled"] for e in summary["events"]),
                 encounters_planned=len(manifest["required_event_kinds"]))
+    if source_revision:
+        source_root = web.resolve().parent
+        commit = subprocess.check_output(["git", "rev-parse", "--verify", f"{source_revision}^{{commit}}"],
+                                         cwd=source_root, text=True).strip()
+        for name, expected in manifest["policy"]["code_sha256"].items():
+            path = Path("crosswalk") / name
+            if Path(name).name != name or digest(source_root / path) != expected:
+                raise ValueError(f"Local source differs from the recorded capture: {name}")
+            blob = subprocess.check_output(["git", "show", f"{commit}:{path.as_posix()}"], cwd=source_root)
+            if blob.replace(b"\r\n", b"\n") != (source_root / path).read_bytes().replace(b"\r\n", b"\n"):
+                raise ValueError(f"Source revision differs from the recorded capture: {name}")
+        show["source"] = {"commit": commit, "url": f"https://github.com/yafi-s/ADO/tree/{commit}"}
     pack = recording / "replay-pack.json.gz"
     if pack.is_file():
         entry["replay_pack_url"] = show["replay_pack_url"] = f"{base}/{pack.name}"
@@ -63,6 +76,7 @@ if __name__ == "__main__":
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("directory", help="Installed path relative to web/media")
     cli.add_argument("--web", type=Path, default=Path(__file__).resolve().parents[1] / "web")
+    cli.add_argument("--source-revision", help="Git revision containing the measured capture code")
     cli.add_argument("--feature", action="store_true", help="Make this the default recording")
     args = cli.parse_args()
-    publish(args.web, args.directory, feature=args.feature)
+    publish(args.web, args.directory, feature=args.feature, source_revision=args.source_revision)

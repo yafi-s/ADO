@@ -12,6 +12,7 @@ const CAMERA_ORDER = ['front', 'chase'];
 const LOCAL_CONSOLE = ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname);
 const POLICY_LABELS = {
   fusion: 'Learned multisensor', camera: 'Learned vision',
+  'ado-city-policy-v1': 'ADO city driver', 'ado-behavior-v2': 'ADO behavior v2',
   demonstrator: 'Training instructor', teacher: 'Training instructor'
 };
 const OUTCOME_LABELS = {complete: 'Route complete', red_light: 'Red-light violation'};
@@ -677,10 +678,11 @@ function renderRun() {
 
   const recorded = source === 'recorded';
   fact('outcome', recorded && run?.outcome ? OUTCOME_LABELS[run.outcome] ?? sentence(String(run.outcome)) : null);
-  const checkpoint = build?.checkpoints?.[run?.policy];
+  const checkpoint = Object.values(build?.checkpoints ?? {}).find(item => item.sha256 === run?.model_sha256);
   hashFact('checkpoint', recorded ? run?.model_sha256 : null,
     checkpoint?.sha256 && checkpoint.sha256 === run?.model_sha256 ? checkpoint.url : null);
-  hashFact('revision', source === 'recorded' || source === 'training' ? build?.source?.commit : null, build?.source?.url);
+  const revision = run?.source ?? build?.legacy_run_source ?? build?.source;
+  hashFact('revision', source === 'recorded' || source === 'training' ? revision?.commit : null, revision?.url);
   renderFrameFacts(state.frame);
   renderChapters();
   renderRunLinks();
