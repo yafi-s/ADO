@@ -26,8 +26,8 @@ from .world import _raised
 LOOK = (3.,7.,13.,18.,25.,32.,40.)
 
 
-def _spawn(world, road_map, stack, blueprint, lane, station):
-    wp = road_map.get_waypoint_xodr(4,lane,station)
+def _spawn(world, road_map, stack, blueprint, lane, station, *, road=4):
+    wp = road_map.get_waypoint_xodr(road,lane,station)
     actor = world.spawn_actor(world.get_blueprint_library().find(blueprint), _raised(wp.transform,.35))
     stack.callback(actor.destroy)
     actor.apply_control(carla.VehicleControl(brake=1.))
@@ -76,23 +76,36 @@ def _score(rows, case):
         ok &= bool(waiting and committed and result['first_yield_s'] < result['first_commit_s']
                    and result['yield_s'] >= .6 and result['max_yield_lateral_error_m'] < .75
                    and result['clearance_at_commit_m'] > 15.)
+        if waiting and committed and 'tactical_speed_limit_mps' in waiting[0]['tactical']:
+            held = [r for r in rows if waiting[0]['time_s'] <= r['time_s'] < committed[0]['time_s']]
+            stopped = next((i for i,r in enumerate(held) if r['speed_mps'] <= .05), len(held))
+            result.update(hold_throttle_frames=sum(r['throttle'] > 0. for r in held),
+                          peak_speed_after_stop_mps=max((r['speed_mps'] for r in held[stopped:]), default=None),
+                          unheld_frames_before_commit=sum(r['tactical']['tactical_speed_limit_mps'] != 0. for r in held))
+            ok &= bool(stopped < len(held) and result['peak_speed_after_stop_mps'] < .1
+                       and not result['hold_throttle_frames'] and not result['unheld_frames_before_commit'])
     if case=='clear':
         ok &= not waiting
     result['passed'] = bool(ok)
     return result
 
 
-def evaluate(world, case, model_path, folder, record=False):
+def evaluate(world, case, model_path, folder, record=False, *,
+             source_lane=(4, 3), ego_s=86., corridor=None):
     model, _, _ = load_driver(model_path)
     observer = model.new_observer()
     road_map = world.get_map()
-    corridor = PassingCorridor.from_map(road_map)
-    planner = TacticalPass(corridor)
+    if corridor is None:
+        corridor = PassingCorridor.from_map(road_map, source_lane)
+    planner = TacticalPass(corridor, measured_hold=hasattr(model, 'tactical_speed_limit'))
+    road, lane = source_lane
+    direction = -1. if lane > 0 else 1.
+    target = road_map.get_waypoint_xodr(road, lane, ego_s).get_left_lane().lane_id
     with ExitStack() as stack:
-        ego = _spawn(world,road_map,stack,'vehicle.lincoln.mkz',3,86.)
-        lead = _spawn(world,road_map,stack,'vehicle.tesla.model3',3,62.) if case!='no-lead' else None
-        other = _spawn(world,road_map,stack,'vehicle.mini.cooper',2,84.) if case=='occupied' else None
-        navigation = Navigation([road_map.get_waypoint_xodr(4,3,float(s)).transform.location for s in range(89,0,-1)])
+        ego = _spawn(world,road_map,stack,'vehicle.lincoln.mkz',lane,ego_s,road=road)
+        lead = _spawn(world,road_map,stack,'vehicle.tesla.model3',lane,ego_s+direction*24.,road=road) if case!='no-lead' else None
+        other = _spawn(world,road_map,stack,'vehicle.mini.cooper',target,ego_s+direction*2.,road=road) if case=='occupied' else None
+        navigation = Navigation([road_map.get_waypoint_xodr(road,lane,ego_s+direction*i).transform.location for i in range(-3,86)])
         rig = Rig(world,ego,range_only=True)
         stack.callback(rig.close)
         chase = None
@@ -126,6 +139,8 @@ def evaluate(world, case, model_path, folder, record=False):
             x = observer.observe(obs,[],points[:6],speed,route_preview=points[6:],stopline_gap=60.)
             if getattr(model,'uses_posted_limit',False):
                 model.posted_limit_kmh = float(ego.get_speed_limit())
+            if planner.measured_hold:
+                model.tactical_speed_limit = planner.speed_limit
             result = model.predict(np.asarray([*x,0.,60.],dtype=np.float32))
             steer, throttle, brake = planner.apply(result,speed)
             ego.apply_control(carla.VehicleControl(steer=steer,throttle=throttle,brake=brake))
@@ -182,6 +197,9 @@ def main():
                       tactical_model_sha256=hashlib.sha256(MODEL.read_bytes()).hexdigest(),
                       features='real 360-degree LiDAR, radar, localized lane geometry, speed; no RGB detections',
                       city_model=str(args.model),cases=[])
+        for name in ('city_pace.py', 'overtake.py', 'overtake_trials.py'):
+            source = Path(__file__).with_name(name)
+            manifest.setdefault('runtime_sources_sha256', {})[name] = hashlib.sha256(source.read_bytes()).hexdigest()
         for case in args.cases:
             manifest['cases'].append(evaluate(world,case,args.model,folder,args.record))
             (folder/'summary.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf8')

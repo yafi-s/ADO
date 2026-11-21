@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import {parseArgs} from 'node:util';
 import {audit,match,sector} from './audit_city_perception.mjs';
-import {bicycleAssociations} from '../web/rider-association.mjs';
+import {bicycleAssociations,RIDER_HISTORY_FRAMES} from '../web/rider-association.mjs';
 const {values,positionals}=parseArgs({allowPositionals:true,options:{'static-map':{type:'string'},town:{type:'string'},
   'memory-file':{type:'string'},'memory-revision':{type:'string'},output:{type:'string'}}});
 if(positionals.length!==1||!values.output)throw new Error('Pass one recording and an output JSON file');
@@ -10,7 +10,7 @@ const history=[],associations=[],sectors={},unknown={predictions:0,position_matc
 const close=v=>Math.hypot(v.x,v.y)<=35;
 const stats=await audit(positionals[0],{staticFile:values['static-map'],townFile:values.town,memoryFile:values['memory-file'],
   memoryRevision:values['memory-revision'],onFrame({frame,actors,tracker,display}){
-    history.push(frame);if(history.length>13)history.shift();
+    history.push(frame);if(history.length>RIDER_HISTORY_FRAMES)history.shift();
     const hints=bicycleAssociations(history);
     const shown=display.map(p=>p.label==='person'&&hints.has(p.sourceId)?{...p,label:'bicycle',hint:hints.get(p.sourceId)}:p);
     const base=match(actors,display),overlay=match(actors,shown);

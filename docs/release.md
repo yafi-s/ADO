@@ -3,7 +3,8 @@
 Download the ZIP and `SHA256SUMS.txt` from the same release. With both files in the same folder, run the following command in PowerShell and compare the full hash with the value in `SHA256SUMS.txt`.
 
 ```powershell
-Get-FileHash .\ADO-v0.3.0-Windows.zip -Algorithm SHA256
+Get-FileHash .\ADO-v0.4.0-Windows.zip -Algorithm SHA256
+Get-FileHash .\ADO-Urban-Pace-1080p.mp4 -Algorithm SHA256
 ```
 
 Extract the entire ZIP to a writable folder and double-click `ADO\Start-ADO.cmd`. The first launch installs the official CARLA 1.0 Windows server, Town01_Opt and Town03_Opt map content, the matching Python client, and the project's Python dependencies. The two simulator downloads total about 20.8 GB. Allow around 50 GB of free space on the extraction drive for the downloads and unpacked simulator. If a download is interrupted, run `Start-ADO.cmd` again to resume. After setup, use `Start-ADO.cmd` or `Watch-Live.cmd` to open the original Town01 live driving console. Press Ctrl+C in the launcher window to stop it. To open the Town03 console, follow the [city driving instructions](city-driving.md#run-it-locally).
@@ -16,15 +17,16 @@ The ZIP includes trained checkpoints, source code, Blender vehicle assets, synch
 py -3.12 -m http.server 8765 --bind 127.0.0.1
 ```
 
-The v0.2 archive includes the CARLA Behavior v2 training notebook and checkpoint under `data\behavior-v2` and `models\behavior-v2`. The closed-loop study, when available, bundles reports, per-trial frame traces and exact inputs under `results\behavior-v2`. Published Town03 recordings carry a manifest with the measured outcome and encounter results. The separate Waymo research source and published pilot include the [Waymo research terms](../waymo_training/NOTICE.md) and its original license and attribution notices.
+In v0.4, `Watch-City.cmd` opens the Town03 console with the urban pace checkpoint and barrier sensing. The featured Market drive includes six synchronized camera tracks, the frame inspector, and the barrier appearance review. The Windows ZIP includes the original replay data and the exact camera-exposure evidence behind that review. The [v0.4 release](https://github.com/yafi-s/ADO/releases/tag/v0.4.0) also includes the native 1920 × 1080 chase film, `ADO-Urban-Pace-1080p.mp4`. The [public replay](https://yafi-s.github.io/ADO/?run=urban-pace) keeps the camera tracks and compressed replay data on Pages. Large original JSON downloads can link to the release commit to keep the site within its size limit.
 
-The v0.3 archive adds the city cruise checkpoint and tactical keep, yield, and pass model. `Watch-City.cmd` opens the live Town03 console with both the surround observer and tactical planner enabled. The Town03 replays synchronize chase, front, left, right, rear-left, and rear-right footage with telemetry. Two supplemental recordings show a moving-car pass with an open adjacent lane and a pass after yielding to adjacent traffic. The v0.3 GitHub release carries the source-quality 1920 × 1080 chase film as `ADO-Surround-City-1080p.mp4`. GitHub Pages uses the verified master or a same-resolution encode when the master exceeds the site budget. The [v0.2 release](https://github.com/yafi-s/ADO/releases/tag/v0.2.0) retains the original full-quality Town03 film.
+The [v0.3 release](https://github.com/yafi-s/ADO/releases/tag/v0.3.0) includes the city cruise checkpoint, the tactical keep, yield, and pass studies, and `ADO-Surround-City-1080p.mp4`. The [v0.2 release](https://github.com/yafi-s/ADO/releases/tag/v0.2.0) includes the original Town03 film and the Behavior v2 training notebook, checkpoint, and matched Town01 comparison. The current ZIP includes the [closed-loop study with its archive provenance](../results/behavior-v2/README.md). The separate Waymo research source and pilot carry the original licenses and attribution. [Waymo research terms](../waymo_training/NOTICE.md)
 
 ## Build the release ZIP
 
 Install Git and Python 3.12 or later. Put `ffprobe` from FFmpeg on PATH for the video checks. Commit the evaluated manifest, summaries, compressed traces, recordings, and Builds & logs index with the code and models. Build from the exact release commit or from the tag after it has been created. Use a separate output folder for each version so its checksum file stays with the matching archive.
 
 ```powershell
+py -3.12 tools/build_windows_release.py --ref v0.4.0 --tag v0.4.0 --output .local/release/v0.4.0 --film-master "C:\Path\To\Capture\master\chase.mp4"
 py -3.12 tools/build_windows_release.py --ref v0.3.0 --tag v0.3.0 --output .local/release/v0.3.0 --film-master "C:\Path\To\Capture\master\chase.mp4"
 py -3.12 tools/build_windows_release.py --ref v0.2.0 --tag v0.2.0 --output .local/release/v0.2.0
 py -3.12 tools/build_windows_release.py --ref v0.1.0 --tag v0.1.0 --output .local/release/v0.1.0

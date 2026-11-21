@@ -91,7 +91,7 @@ def _nearest(distances):
 
 
 class TacticalPass:
-    def __init__(self, corridor, model=None):
+    def __init__(self, corridor, model=None, *, measured_hold=False):
         self.corridor = corridor
         self.model = model or GapChoice()
         self.history = deque(maxlen=10)
@@ -101,15 +101,24 @@ class TacticalPass:
         self.coverage = (False, False)
         self.info = {}
         self.yielding = False
+        self.measured_hold = measured_hold
+        self.source_age = None
+        self.source_speed = None
+        self.raw_source_gap = 60.
+        self.source_clear = False
+
+    @property
+    def speed_limit(self):
+        return 0. if self.yielding else None
 
     @classmethod
-    def from_scene_map(cls, scene):
+    def from_scene_map(cls, scene, *, measured_hold=False):
         urban = getattr(scene, '_urban', None)
         if urban is None:
             return None
         corridor = PassingCorridor.from_map(scene._map, urban.lane_change.source_lane)
         scene.tactical_lane_scoring = True
-        return cls(corridor)
+        return cls(corridor, measured_hold=measured_hold)
 
     def measure(self, pose, lidar, station):
         # CARLA's 360-degree ray-cast sensor is 2.30 m above the vehicle origin.
@@ -138,18 +147,48 @@ class TacticalPass:
             front = 0.
         if rear == 60. and not covered[1]:
             rear = 0.
+        source_pavement = relative[(abs(side) < 1.) & (abs(height) < .43)] if self.measured_hold else ()
+        source_gap, source_speed = self._source_motion(station, source_gap, source_pavement)
+        return (source_gap, source_speed, front, rear)
+
+    def _source_motion(self, station, gap, pavement):
         self.scan += 1
-        if source_gap < 60.:
-            observed = station + source_gap
+        self.raw_source_gap = gap
+        self.source_age = None
+        self.source_clear = False
+        if self.measured_hold and self.history:
+            last_scan, last_surface = self.history[-1]
+            age = self.scan - last_scan
+            elapsed = age / 10.
+            expected = last_surface + (self.source_speed or 0.) * min(elapsed, .5) - station
+            if gap < 60.:
+                # A jump to a different surface cannot supply velocity for a
+                # newly appearing lead. Allow for ordinary surface jitter.
+                tolerance = 1.5 + elapsed * (30. if self.source_speed is None else 5.)
+                if age > 5 or abs(expected - gap) > tolerance:
+                    self.history.clear()
+                    self.source_speed = None
+            else:
+                self.source_age = age
+                if age <= 5 and self.source_speed is not None:
+                    return float(np.clip(expected, 0., 59.)), self.source_speed
+                # Empty returns alone cannot release an established wait. A
+                # visible patch of source lane beyond the old bumper can.
+                self.source_clear = bool(np.count_nonzero((pavement > expected + 1.) & (pavement < expected + 15.)) >= 3)
+                if not self.source_clear:
+                    return 60., 30.
+        if gap < 60.:
+            observed = station + gap
             self.history.append((self.scan, observed))
+            self.source_age = 0
         else:
             self.history.clear()
         # Fit velocity in world coordinates, robust to returns switching
         # surfaces and to changes in ego speed while braking.
         velocity = [10.*(b[1]-a[1])/(b[0]-a[0]) for a in self.history for b in self.history
                     if b[0]-a[0]>=3]
-        source_speed = float(np.clip(np.median(velocity),0.,30.)) if velocity else 30.
-        return (source_gap, source_speed, front, rear)
+        self.source_speed = float(np.clip(np.median(velocity),0.,30.)) if velocity else None
+        return gap, self.source_speed if self.source_speed is not None else 30.
 
     def preview(self, ego, lidar, defaults, speed, lookaheads=(3.,7.,13.,18.,25.,32.,40.)):
         pose = ego.get_transform()
@@ -157,9 +196,14 @@ class TacticalPass:
         station, lateral = self.corridor.coordinates(xy)
         angle = math.radians(pose.rotation.yaw)
         heading = np.array((math.cos(angle), math.sin(angle)))
+        was_yielding = self.yielding
         self.info, self.yielding = {}, False
         if (station < 0 or station > self.corridor.arc[-1] or lateral < -self.corridor.width-2.
                 or lateral > 1.85 or heading @ self.corridor.forward < .85):
+            if self.measured_hold:
+                self.history.clear()
+                self.source_speed = self.commit = None
+                self.pass_votes = 0
             return defaults
         measured = self.measure(pose, lidar, station)
         action, probabilities = self.model.predict(measured)
@@ -168,9 +212,15 @@ class TacticalPass:
         # in its original lane. A newly occupied gap cancels the invitation.
         if self.commit is not None and lateral > -.45 and action == 'yield':
             self.commit = None
-        if self.commit is None and self.pass_votes >= 3:
+        if self.commit is None and self.pass_votes >= 3 and (not self.measured_hold or self.source_age == 0):
             self.commit = float(station)
         self.yielding = self.commit is None and action=='yield'
+        if self.measured_hold and was_yielding and self.commit is None:
+            # Maintain the stop through confirmation of the adjacent opening.
+            # A freshly measured lead that gains enough speed (or distance)
+            # to warrant ordinary following also releases the wait.
+            following = action == 'keep' and self.source_age == 0 and self.source_speed is not None
+            self.yielding = not (following or self.source_clear)
         stations = station+np.asarray(lookaheads)
         # Use the learned trajectory choice as long as this road segment is in range.
         # After completing a pass the original route and selected lane coincide.
@@ -186,10 +236,15 @@ class TacticalPass:
                          corridor_station_m=round(float(station),3),
                          adjacent_pavement_seen=[bool(v) for v in self.coverage],
                          source_lateral_m=round(float(lateral),3), committed=self.commit is not None)
+        if self.measured_hold:
+            if self.yielding:
+                self.info['maneuver'] = 'yield'
+            self.info.update(raw_source_gap_m=round(self.raw_source_gap, 3), source_age_scans=self.source_age,
+                             source_pavement_clear=self.source_clear, tactical_speed_limit_mps=self.speed_limit)
         return local.ravel()
 
     def apply(self, predicted, speed):
-        if self.yielding:
+        if self.yielding and not self.measured_hold:
             steer, _, brake = predicted
             return steer, 0., max(float(brake), min(.65, .22+.06*speed))
         return predicted

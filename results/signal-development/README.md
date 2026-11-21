@@ -1,6 +1,6 @@
 # Signal control development
 
-The frozen controller mixes the base and expert pedals using a learned weight computed from observed lamp history. On the two signal routes it stopped on red, resumed on green, and finished both green-from-start controls without a post-start stop. The Market trip completed 235.42 m. The Station trip still timed out at 39.55 m of 247.26 m. All six runs recorded zero collisions and zero red violations. [Frozen controller results](history/results.json)
+The frozen controller mixes the base and expert pedals using a learned weight computed from observed lamp history. On the two signal routes it stopped on red, resumed on green, and finished both green-from-start controls without a post-start stop. The Market trip completed 235.42 m. The Station trip still timed out at 39.55 m of 247.26 m. All six runs recorded zero collisions and zero red violations. [Frozen controller results](history/results.json) A later sensor-fusion policy finished this same Station layout cleanly at 247.19 m. [Matched start and native log](../city-review/station-32/comparison.json)
 
 ## Comparison on training-district development routes
 

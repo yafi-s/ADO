@@ -1,5 +1,9 @@
 # Town01_Opt driving results
 
+The v0.4 Town01 policy passed all 16 targeted assessment drives and both additional interactive trips. Its matched clear-road control took 15.1 s. The v0.4 Town03 film separately passed 11/11 encounters and 11/11 junctions across 3,354 exposures. Both CARLA-calibrated Waymo research arms passed all four cases on one development seed, including the arm using only CARLA inputs. [Town01 assessment design and scores](../results/town01-yield-gated-v04/README.md) · [Town03 release review](../results/urban-pace/README.md) · [Watch the current film](https://yafi-s.github.io/ADO/?run=urban-pace) · [Waymo calibration results](../waymo_training/CARLA_SPEED_CALIBRATION.md)
+
+## Archived Town01 evaluations
+
 The following is the archived v0.1 evaluation. The v0.2 comparison reports 47/50 clean finishes against 32/50 on fresh matched cases, and 97/100 against the historical 70/100. The complete comparison archive includes every saved frame trace. [Read the v0.2 results](../results/behavior-v2/README.md) · [View comparisons by case](https://yafi-s.github.io/ADO/benchmarks.html)
 
 

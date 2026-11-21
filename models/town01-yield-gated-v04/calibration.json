@@ -1,0 +1,63 @@
+{
+  "version": "town01-yield-gated-v04",
+  "baseline_sha256": "25b7059a6a559ece65e2c8c64ddc1197d95c763f008be9bb31797d69617b1a6c",
+  "lessons_sha256": "e507492135560dea7aa8b50a16e38cd2d86048060c06e63b21f4db88d75baa7f",
+  "training_episodes": [
+    "left-43.npz",
+    "left-44.npz",
+    "left-47.npz",
+    "left-48.npz",
+    "pedestrian-43.npz",
+    "pedestrian-44.npz",
+    "pedestrian-47.npz",
+    "pedestrian-48.npz",
+    "pedestrian-delayed-43.npz",
+    "pedestrian-delayed-44.npz",
+    "pedestrian-delayed-47.npz",
+    "pedestrian-delayed-48.npz"
+  ],
+  "junction_standoff_m": 4.92993426322937,
+  "crossing_standoff_m": 2.6392898559570312,
+  "deceleration_mps2": 2.4795899987220764,
+  "gate_person_height": 0.04,
+  "gate_speed_error": 0.2,
+  "gate_hold_frames": 12,
+  "gate_train": [
+    "clear-43.npz",
+    "clear-44.npz",
+    "clear-47.npz",
+    "occluded-43.npz",
+    "occluded-44.npz",
+    "occluded-47.npz",
+    "pedestrian-43.npz",
+    "pedestrian-44.npz",
+    "pedestrian-47.npz",
+    "pedestrian-delayed-43.npz",
+    "pedestrian-delayed-44.npz",
+    "pedestrian-delayed-47.npz",
+    "turn-43.npz",
+    "turn-44.npz",
+    "turn-47.npz"
+  ],
+  "gate_dev": [
+    "clear-48.npz",
+    "occluded-48.npz",
+    "pedestrian-48.npz",
+    "pedestrian-delayed-48.npz",
+    "turn-48.npz"
+  ],
+  "gate_train_score": {
+    "misses": 32,
+    "positives": 156,
+    "false": 216,
+    "negatives": 631,
+    "loss": 0.752570197895079
+  },
+  "gate_dev_score": {
+    "misses": 22,
+    "positives": 69,
+    "false": 67,
+    "negatives": 211,
+    "loss": 0.9552167044439865
+  }
+}

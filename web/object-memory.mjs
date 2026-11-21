@@ -22,9 +22,9 @@ const turn = (from, to) => (((to - from) % 360) + 540) % 360 - 180;   // shortes
 const toward = (value, target, step) => value < target ? Math.min(target, value + step) : Math.max(target, value - step);
 
 const WHEELED = new Set(['car', 'truck', 'bus', 'motorcycle', 'bicycle']);
-const LABELS = new Set([...WHEELED, 'person']);
+const LABELS = new Set([...WHEELED, 'person', 'barrier']);
 // Classes the detector confuses with one another are one family for matching.
-export const familyOf = label => label === 'person' ? 'person' : WHEELED.has(label) ? 'wheeled' : 'unknown';
+export const familyOf = label => label === 'person' || label === 'barrier' ? label : WHEELED.has(label) ? 'wheeled' : 'unknown';
 
 // The front camera sits this far ahead of the vehicle origin and sees 90 degrees (crosswalk/robotaxi.py).
 const CAMERA_X = 1.30;
@@ -39,8 +39,8 @@ const VIEW_RANGE_M = 40;
 const GRACE_S = .25;            // the detector idles on alternate frames
 const CANDIDATE_S = .7;         // an unconfirmed measurement waits this long for a second one
 const SURE = {confidence: .6, range: 15}, FAIR = .42;   // the detector reports boxes from .35 up
-const GATE_M = {person: 1.2, wheeled: 2.4, unknown: 1.5};
-const DRIFT_MPS = {person: 2, wheeled: 1.5, unknown: 1.5};   // how far an unseen object may have moved, per second
+const GATE_M = {person: 1.2, wheeled: 2.4, barrier: .8, unknown: 1.5};
+const DRIFT_MPS = {person: 2, wheeled: 1.5, barrier: 0, unknown: 1.5};   // how far an unseen object may have moved, per second
 const TRAVEL_DRIFT_MPS = 8;
 const GATE_LIMIT_M = 6;
 const CARRY_S = 1;              // a travelling object continues this long without a measurement
@@ -49,7 +49,7 @@ const CARRY_LIMIT_S = 3;        // and no longer than this, even with lidar retu
 const UNSEEN_IN_VIEW_S = 2;     // held in clear view with no detection over it
 const SEEN_SHARE = .6;          // a box narrower than this share of the object's expected width is not it
 const SEEN_PAST_S = .4;         // something farther off seen where it would stand, for this long: it has gone
-const LIDAR_EXTENDS_S = {wheeled: 8, person: 2, unknown: 2};   // returns on its footprint extend that
+const LIDAR_EXTENDS_S = {wheeled: 8, person: 2, barrier: 0, unknown: 2};   // returns on its footprint extend that
 const BESIDE_S = {near: 2, far: 6};   // out of the camera's view, with no lidar returns on it
 const NEAR_SILENT_S = 1;        // in view and close by, with neither a box nor lidar returns
 const NEAR_M = 12;
@@ -150,12 +150,53 @@ export function contextOf(frame, previous = null, heightAt = () => 0, clock = 0)
 }
 
 export function createState() {
-  return {objects: new Map(), ids: new Map(), next: 1, warm: 0};
+  return {objects: new Map(), ids: new Map(), images: new Map(), uncertainCars:new Map(), next: 1, warm: 0};
 }
 
 function validSample(sample) {
   return sample?.id != null && [sample.x, sample.y, sample.z, sample.length, sample.width, sample.height].every(finite) &&
     sample.length > 0 && sample.width > 0 && sample.height > 0;
+}
+
+function surfaceBounds(s){
+  if(!Array.isArray(s.surface_xyz)||s.surface_xyz.length<3)return null;
+  const angle=(s.heading??0)*rad,c=Math.cos(angle),n=Math.sin(angle);
+  const lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];
+  for(const point of s.surface_xyz){
+    if(!Array.isArray(point)||point.length!==3||!point.every(finite))continue;
+    const [x,y,z]=point;
+    const p=[x*c+y*n,y*c-x*n,z];
+    for(let i=0;i<3;i++){lo[i]=Math.min(lo[i],p[i]);hi[i]=Math.max(hi[i],p[i]);}
+  }
+  if(!finite(lo[0]))return null;
+  const [a,b,z]=lo.map((lower,i)=>(lower+hi[i])/2);
+  const [length,width,height]=lo.map((lower,i)=>Math.max(.15,hi[i]-lower));
+  return {x:a*c-b*n,y:a*n+b*c,z,length,width,height};
+}
+
+// A low-confidence car box can range against a long hedge or wall. Mark its
+// depth cluster as unclassified while the same image or range track continues.
+// Preserve the measured surface, including when two fits share that image.
+function rangedReading(s,frame,state,t){
+  if(frame.perception_version!=='surround-v1'||!motorVehicle(s.label))return {s};
+  const bounds=surfaceBounds(s);
+  if(s.label!=='car')return {s,bounds};
+  const linked=(s.cameras??[]).flatMap(view=>(frame.camera_detections?.[view]??[])
+    .filter(b=>b.track_id===s.id&&b.range_supported&&b.label==='car')
+    .map(b=>state.images.get(view+':'+b.image_id+':car')).filter(Boolean));
+  const impossible=bounds && Math.max(bounds.length,bounds.width)>7.5;
+  if(impossible&&linked.length&&s.confidence<.6)for(const image of linked)image.diffuse=true;
+  // A few points on the edge of a previously measured tall, unclassified
+  // structure cannot establish a whole passenger car. Wait for a resolved
+  // image/range observation while continuing to show the measured footprint.
+  const previous=state.objects.get(state.ids.get(s.id));
+  const weakUpgrade=previous?.family==='unknown' && previous.hits>=2 && previous.height>2.5 &&
+    linked.length && s.lidar_hits<=4 && s.confidence<.5;
+  if(weakUpgrade || (linked.some(image=>image.diffuse)&&s.confidence<.6))state.uncertainCars.set(s.id,t);
+  else if(linked.length && s.confidence>=.6 && !impossible)state.uncertainCars.delete(s.id);
+  if(!state.uncertainCars.has(s.id))return {s,bounds};
+  state.uncertainCars.set(s.id,t);
+  return {s:{...s,...bounds,label:'unknown'},bounds};
 }
 
 // Does anything recorded in this frame vouch for a remembered object at ego-frame (fx, fy)?
@@ -198,12 +239,14 @@ function evidence(object, fx, fy, local, frame) {
 
 // A travelling object was carried along its course and nothing returns from where that put it.
 // Look back along the course, toward where it was last measured, for returns on its footprint.
-function stoppedAt(object, ctx, cos, sin) {
+function stoppedAt(object, ctx, cos, sin, requireDoppler=false) {
   const local = (object.heading - ctx.degrees) * rad;
   for (const share of [.75, .5, .25, 0]) {
     const x = object.raw.x + (object.x - object.raw.x) * share, z = object.raw.z + (object.z - object.raw.z) * share;
     const dx = x - ctx.x, dz = z - ctx.z;
-    if (evidence(object, cos * dx + sin * dz, -sin * dx + cos * dz, local, ctx.frame).lidar) return {x, z};
+    const fx=cos*dx+sin*dz, fy=-sin*dx+cos*dz;
+    if(evidence(object,fx,fy,local,ctx.frame).lidar &&
+       (!requireDoppler || stationaryRays(object,ctx,fx,fy,local,cos,sin)))return {x,z};
   }
   return null;
 }
@@ -216,6 +259,32 @@ function leave(object, why) {
 const MASTS={radar:[2,0,.9],radar_front_left:[1.85,-.85,.82],radar_front_right:[1.85,.85,.82],
   radar_rear_left:[-2.05,-.85,.82],radar_rear_right:[-2.05,.85,.82]};
 const motorVehicle=label=>label==='car'||label==='truck'||label==='bus';
+
+function correctedRay(ctx,sensor,p){
+  const mount=MASTS[sensor],front=sensor==='radar';
+  const dx=p[0]-mount[0],dy=p[1]-mount[1],dz=front?0:p[2]-mount[2];
+  const range=Math.hypot(dx,dy,dz);
+  if(range<2)return null;
+  const nx=dx/range,ny=dy/range;
+  const speed=p[front?2:3]+(ctx.forwardV-ctx.yawRate*mount[1])*nx+(ctx.rightV+ctx.yawRate*mount[0])*ny;
+  return {nx,ny,speed};
+}
+
+function stationaryRays(object,ctx,fx,fy,local,cos,sin){
+  const vx=cos*object.vx+sin*object.vz,vy=cos*object.vz-sin*object.vx;
+  const c=Math.cos(local),s=Math.sin(local);
+  let still=0,moving=0;
+  for(const sensor of Object.keys(MASTS)){
+    for(const p of (sensor==='radar'?ctx.frame.radar:ctx.frame.corner_radar?.[sensor])??[]){
+      const dx=p[0]-fx,dy=p[1]-fy;
+      if(Math.abs(dx*c+dy*s)>object.length/2+.45||Math.abs(dy*c-dx*s)>object.width/2+.45)continue;
+      const ray=correctedRay(ctx,sensor,p);
+      if(!ray||Math.abs(vx*ray.nx+vy*ray.ny)<1)continue;
+      if(Math.abs(ray.speed)<.5)still++;else moving++;
+    }
+  }
+  return still>=2&&still>moving;
+}
 
 // A changing visible surface can move a fitted box several metres while the car is
 // stationary. Measure motion independently on the Doppler rays assigned to the box.
@@ -235,17 +304,44 @@ function laneSpeed(sample,ctx,axis){
       if(!finite(v)||Math.abs(v-hit.radial_mps)>.65)continue;
       const x=p[0]-s.x,y=p[1]-s.y;
       if(Math.abs(x*c+y*sn)>s.length/2+.55||Math.abs(y*c-x*sn)>s.width/2+.45)continue;
-      const dx=p[0]-mount[0],dy=p[1]-mount[1],dz=front?0:p[2]-mount[2];
-      const r=Math.hypot(dx,dy,dz), projection=(dx*c+dy*sn)/r;
-      if(r<2||Math.abs(projection)<.55)continue;
-      const ego=((ctx.forwardV-ctx.yawRate*mount[1])*dx+(ctx.rightV+ctx.yawRate*mount[0])*dy)/r;
-      speeds.push((v+ego)/projection);
+      const ray=correctedRay(ctx,sensor,p);
+      if(!ray)continue;
+      const projection=ray.nx*c+ray.ny*sn;
+      if(Math.abs(projection)>=.55)speeds.push(ray.speed/projection);
     }
   }
   if(speeds.length<3)return null;
   speeds.sort((a,b)=>a-b);
   if(speeds[Math.floor(speeds.length*.75)]-speeds[Math.floor(speeds.length*.25)]>1.3)return null;
   return speeds[Math.floor(speeds.length/2)];
+}
+
+// The visible side of a moving car can wander across its fitted centre,
+// especially in a turn. Fit both world-space velocity components over several
+// measurements, rejecting one-off jumps and poorly resolved direction.
+function fittedCourse(seen){
+  if(seen.length<4)return null;
+  const origin=seen[0],end=seen.at(-1),span=end.t-origin.t;
+  if(span<.75||seen.some(p=>p.sourceId!==end.sourceId))return null;
+  let time=0,x=0,z=0;
+  for(const p of seen){time+=p.t-origin.t;x+=p.x;z+=p.z;}
+  const n=seen.length;
+  time=origin.t+time/n;x/=n;z/=n;
+  let tt=0,tx=0,tz=0;
+  for(const p of seen){
+    const dt=p.t-time;
+    tt+=dt*dt;tx+=dt*(p.x-x);tz+=dt*(p.z-z);
+  }
+  const vx=tx/tt,vz=tz/tt,speed=Math.hypot(vx,vz);
+  if(speed*span<1.6)return null;
+  let along=0,across=0;
+  for(const p of seen){
+    const dx=p.x-x-vx*(p.t-time),dz=p.z-z-vz*(p.t-time);
+    along+=((dx*vx+dz*vz)/speed)**2;
+    across+=((dz*vx-dx*vz)/speed)**2;
+  }
+  if(Math.sqrt(along/n)>.17*speed*span||Math.sqrt(across/n)>.85)return null;
+  return {vx,vz,x:x+vx*(end.t-time),z:z+vz*(end.t-time)};
 }
 
 // Fold one measurement into an object: where it is, which way it faces, how big it is.
@@ -275,7 +371,7 @@ function measure(object, sample, ctx, deps, state) {
   // Is it really going somewhere? The reported position of a stopped object wanders by a few tenths
   // of a metre as the view of it changes. Only net, straight movement of measured positions is travel.
   if (fresh) object.seen.length = 0;
-  object.seen.push({t, x: mx, z: mz});
+  object.seen.push({t, x: mx, z: mz, sourceId:s.id});
   while (t - object.seen[0].t > TRAVEL_SECONDS) object.seen.shift();
   const first = object.seen[0], latest = object.seen.at(-1);
   let travelling = object.travelling;
@@ -321,6 +417,7 @@ function measure(object, sample, ctx, deps, state) {
     if(Math.abs(object.dopplerSpeed)<.42)travelling=false;
     else if(Math.abs(object.dopplerSpeed)>.75)travelling=true;
   }
+  if(label==='barrier')travelling=false;
   object.travelFor = travelling ? object.travelFor + sinceHit : 0;
   object.stillFor = travelling ? 0 : object.stillFor + sinceHit;
   object.travelling = travelling;
@@ -334,12 +431,21 @@ function measure(object, sample, ctx, deps, state) {
       const velocity=object.dopplerSpeed;
       object.vx=ac*velocity;object.vz=as*velocity;
     }
+    // A turning vehicle can move across the mapped lane. Consistent world-space
+    // motion from the same ranging track resolves velocity on both axes.
+    const fitted=motor && object.classPeak>=.6 && object.sourceId===s.id ? fittedCourse(object.seen) : null;
+    if(fitted && !corroborated){
+      const gain=ease(sinceHit,.18);
+      object.vx+=gain*(fitted.vx-object.vx);
+      object.vz+=gain*(fitted.vz-object.vz);
+    }
+    if(fitted)object.lastCourse={t,speed:Math.hypot(fitted.vx,fitted.vz)};
     const px = object.x + object.vx * sinceDrawn, pz = object.z + object.vz * sinceDrawn;
-    const rx = mx - px, rz = mz - pz;
+    const rx = (fitted?.x??mx) - px, rz = (fitted?.z??mz) - pz;
     // A depth/identity handoff is an uncertain correction, never an instantaneous jump.
-    const correction=motor?Math.min(1,Math.max(.10,1.8*sinceDrawn)/(Math.hypot(rx,rz)||1)):1;
+    const correction=motor?Math.min(1,Math.max(.10,(fitted?4:1.8)*sinceDrawn)/(Math.hypot(rx,rz)||1)):1;
     object.x = px + TRACK_ALPHA * correction*rx; object.z = pz + TRACK_ALPHA * correction*rz;
-    if(!corroborated){
+    if(!corroborated&&!fitted){
       object.vx += TRACK_BETA * correction*rx / sinceHit; object.vz += TRACK_BETA * correction*rz / sinceHit;
     }
   } else {
@@ -404,13 +510,31 @@ function measure(object, sample, ctx, deps, state) {
 // The object was measured in this frame.
 function witnessed(object, sample, ctx, state) {
   const {s, range} = sample;
+  if(object.sourceId!==s.id)object.mounted=null;
+  if(sample.mounted){
+    object.mounted={t:ctx.t-s.cycle_association.age_s,length:s.length,width:s.width,height:s.height};
+  }
   object.sourceId = s.id;
   object.support=s.lidar_hits??0;
+  if (s.label === 'barrier' && ['striped_board', 'chain'].includes(s.barrier_subtype)) {
+    object.barrierSubtype = s.barrier_subtype;
+    object.barrierSubtypeConfidence = s.subtype_confidence;
+  }
   object.boxes=s.rgb_boxes;
   object.classReadings=(s.cameras??[]).flatMap(view=>{
     const box=ctx.frame.camera_detections?.[view]?.find(d=>d.track_id===s.id&&d.range_supported);
+    if(box?.label===object.label && motorVehicle(box.label)){
+      const history=state.images.get(view+':'+box.image_id+':'+box.label);
+      object.classPeak=Math.max(object.classPeak??0,history?.peak??box.score);
+      (object.classViews??=new Set()).add(view);
+    }
     return box&&motorVehicle(box.label)?[[box.label,box.score]]:[];
   });
+  for(const [label,score] of object.classReadings){
+    if(label!==object.label)continue;
+    object.classCount=(object.classCount??0)+1;
+    object.classPeak=Math.max(object.classPeak??0,score);
+  }
   if(motorVehicle(object.label)&&Array.isArray(s.surface_xyz)&&s.surface_xyz.length>=3){
     // A stationary object's exposed faces accumulate in world space. Moving
     // objects retain only the current scan so their past positions cannot elongate them.
@@ -426,6 +550,12 @@ function witnessed(object, sample, ctx, state) {
       history.push({t:ctx.t,x:ctx.x,z:ctx.z,base:ctx.h+s.z-s.height/2,points});
       object.surfaceCells=new Set(history.flatMap(scan=>scan.points.map(p=>Math.floor(p[0]/.55)+','+Math.floor(p[1]/.55))));
     }
+    // Repeated depth patches with substantial horizontal and vertical extent
+    // can sustain a weak camera class. Thin poles and flat strips cannot.
+    if(s.label===object.label && s.lidar_hits>=6 && sample.bounds){
+      const {length,width,height}=sample.bounds;
+      if(length>=.65&&width>=.65&&height>=.6)object.bodyScans=(object.bodyScans??0)+1;
+    }
   }
   object.hits++;
   object.lastHit = object.lastBox = object.lastLidar = ctx.t;
@@ -440,7 +570,12 @@ function witnessed(object, sample, ctx, state) {
   const fusedPerson = s.label === 'person' && ['rgb','lidar','radar'].every(source => s.sources?.includes(source));
   // A resolved camera class supported by a lidar surface and actual Doppler can
   // localize a pedestrian beyond the range at which a class score alone is trusted.
-  const resolvedPerson = fusedPerson && s.confidence >= SURE.confidence && s.lidar_hits >= 4 &&
+  const repeatedPerson = fusedPerson && s.cameras?.some(camera=>{
+    const linked=ctx.frame.camera_detections?.[camera]?.find(b=>b.track_id===s.id&&b.range_supported&&b.label==='person');
+    const history=linked&&state.images.get(camera+':'+linked.image_id+':person');
+    return history?.count>=3 && history.peak>=SURE.confidence;
+  });
+  const resolvedPerson = fusedPerson && (s.confidence >= SURE.confidence || repeatedPerson) && s.lidar_hits >= 4 &&
     s.cameras?.length > 0 && finite(s.radial_mps);
   const immediatePerson = resolvedPerson || (fusedPerson && range <= 12 && s.confidence >= .35);
   const sure = (s.confidence >= SURE.confidence && range <= SURE.range) || immediatePerson;
@@ -502,6 +637,36 @@ function sameMovingSurface(a,b,t){
   // Require overlap along a patch of bodywork, rather than one corner or bumper tip.
   for(const p of hits)for(const q of hits)if(Math.hypot(p[0]-q[0],p[1]-q[1])>1)return true;
   return false;
+}
+
+// A weak passenger-car fit may put its inferred body behind a surface that
+// later resolves as a striped board. Withdraw only the remembered car whose
+// complete recent returns lie on the *measured* board. The native camera/range
+// records remain available, including the earlier car interpretation.
+function withdrawCarsOnBoard(state,samples,ctx,cos,sin){
+  const confirmed=ctx.frame.barrier_review?.cameras;
+  if(!confirmed?.length)return;
+  for(const {s,mx,mz} of samples){
+    if(s.label!=='barrier'||s.barrier_subtype!=='striped_board'||s.coasting||s.lidar_hits<4||
+       !confirmed.some(c=>c.confirmed&&c.box?.track_id===s.id&&c.box.barrier_subtype==='striped_board'))continue;
+    const points=(s.surface_xyz??[]).filter(p=>Array.isArray(p)&&p.length===3&&p.every(finite))
+      .map(([x,y,h])=>[ctx.x+x*cos-y*sin,ctx.z+x*sin+y*cos,ctx.h+h]);
+    if(points.length<4)continue;
+    const angle=(ctx.degrees+s.heading)*rad,c=Math.cos(angle),n=Math.sin(angle);
+    const onBoard=([x,z,h])=>{
+      const dx=x-mx,dz=z-mz;
+      if(Math.abs(dx*c+dz*n)>s.length/2+.2||Math.abs(dz*c-dx*n)>s.width/2+.2)return false;
+      return points.some(([bx,bz,bh])=>(bx-x)**2+(bz-z)**2+(bh-h)**2<=.4**2);
+    };
+    for(const car of state.objects.values()){
+      if(car.label!=='car'||car.lastHit===ctx.t||ctx.t-car.lastHit>.6||car.surfaceMoving||
+         car.classViews?.size!==1||!finite(car.classPeak)||car.classPeak>=SURE.confidence||
+         Math.hypot(car.raw.x-mx,car.raw.z-mz)>car.length/2+1)continue;
+      const scans=car.surfaces?.filter(scan=>ctx.t-scan.t<=1)??[];
+      if(scans.length>=2&&scans.every(scan=>scan.points.length>=4&&scan.points.every(onBoard)))
+        state.objects.delete(car.key);
+    }
+  }
 }
 
 function stationaryEnvelope(group,state,heading){
@@ -614,24 +779,46 @@ function distinctVehicles(drawn,state,ctx){
 export function advance(state, ctx, deps = {}) {
   const {frame, t, x: ex, z: ez, degrees, located} = ctx;
   if (ctx.reset) {
-    state.objects.clear(); state.ids.clear(); state.warm = 0;
+    state.objects.clear(); state.ids.clear(); state.images.clear(); state.uncertainCars.clear(); state.warm = 0;
   }
   const dt = ctx.reset ? 0 : clamp(ctx.dt, 0, .8);
   state.warm = Math.min(30, state.warm + dt);
+  // A fresh negative barrier review withdraws a previously confirmed compound.
+  for(const id of frame.barrier_review?.revoked??[]){
+    const key=state.ids.get(id),previous=state.objects.get(key);
+    if(previous?.sourceId===id&&previous.family==='barrier')state.objects.delete(key);
+  }
   const cos = Math.cos(degrees * rad), sin = Math.sin(degrees * rad);
 
-  const samples = [], listed = new Set();
-  for (const s of Array.isArray(frame.tracks) ? frame.tracks : []) {
-    if (!validSample(s) || listed.has(s.id)) continue;
-    listed.add(s.id);
+  for(const [key,obs] of state.images)if(t-obs.time>.5)state.images.delete(key);
+  for(const [id,last] of state.uncertainCars)if(t-last>1.0)state.uncertainCars.delete(id);
+  for(const [camera,boxes] of Object.entries(frame.camera_detections??{})){
+    for(const box of boxes??[]){
+      if((box.label!=='person'&&!motorVehicle(box.label))||!finite(box.image_id)||!finite(box.score))continue;
+      const key=camera+':'+box.image_id+':'+box.label, prior=state.images.get(key);
+      state.images.set(key,{time:t,count:(prior?.count??0)+1,peak:Math.max(prior?.peak??0,box.score),diffuse:prior?.diffuse??false});
+    }
+  }
+
+  const samples = [], listed = new Map();
+  for (const track of Array.isArray(frame.tracks) ? frame.tracks : []) {
+    if (!validSample(track) || listed.has(track.id)) continue;
+    listed.set(track.id,track);
+    const {s,bounds}=rangedReading(track,frame,state,t);
     const sources = Array.isArray(s.sources) ? s.sources : [];
     // A 2D class score cannot establish depth, and a coast is the tracker's guess, not a measurement.
     // Joining a drive part-way is the exception: what the tracker is coasting was measured a moment
     // before, in frames this memory never saw, so it is taken up as already remembered.
     const joining = s.coasting === true && state.warm < GRACE_S && !sources.length && !state.ids.has(s.id);
     if (!joining && (s.coasting === true || !(sources.includes('lidar') || sources.includes('radar')))) continue;
-    const label = LABELS.has(s.label) ? s.label : 'unknown';
-    samples.push({s, label, family: familyOf(label), range: Math.hypot(s.x, s.y), object: null, joining,
+    // The mounted-cycle model attaches a wheel classification to the ranged
+    // person's native identity. A skipped wheel exposure yields "person" again
+    // on that very same track. Keep one spatial body for both observations.
+    const cycle=s.cycle_association;
+    const mounted=s.label==='bicycle' && cycle?.paired_observations>=3 && finite(cycle.age_s) &&
+      cycle.age_s>=0 && cycle.age_s<=.21 && ['shared rider/bicycle lidar','bicycle-exclusive lidar'].includes(cycle.range_source);
+    const label = mounted?'person':LABELS.has(s.label)?s.label:'unknown';
+    samples.push({s,mounted,bounds,label, family: familyOf(label), range: Math.hypot(s.x, s.y), object: null, joining,
       mx: ex + cos * s.x - sin * s.y, mz: ez + sin * s.x + cos * s.y});
   }
 
@@ -705,6 +892,7 @@ export function advance(state, ctx, deps = {}) {
     measure(object, sample, ctx, deps, state);
   }
 
+  withdrawCarsOnBoard(state,samples,ctx,cos,sin);
   const drawn = [];
   for (const object of state.objects.values()) {
     const unseen = t - object.lastHit;
@@ -722,7 +910,8 @@ export function advance(state, ctx, deps = {}) {
         object.x += object.vx * dt; object.z += object.vz * dt;
       } else if (object.rest) {
         // Glide back to where it came to rest.
-        const follow = ease(dt, REST_SECONDS);
+        const gap=Math.hypot(object.rest.x-object.x,object.rest.z-object.z);
+        const follow = Math.min(ease(dt, REST_SECONDS),object.lastCourse?4*dt/(gap||1):1);
         object.x += (object.rest.x - object.x) * follow; object.z += (object.rest.z - object.z) * follow;
         if (Math.hypot(object.rest.x - object.x, object.rest.z - object.z) < .05) object.rest = null;
       }
@@ -735,6 +924,14 @@ export function advance(state, ctx, deps = {}) {
         if(frame.perception_version==='surround-v1'&&object.family==='unknown'&&(!seen.lidar||unseen>.65)){
           leave(object,'surface support expired');
         }
+        // Depth-only reobservations can confirm a surface on a hedge or shelter.
+        // A weak, isolated camera classification cannot sustain a vehicle after
+        // the assigned depth measurements also stop.
+        const tentativeVehicle = motorVehicle(object.label) && object.classCount>0 &&
+          (object.bodyScans??0)<3 && object.classViews?.size===1 &&
+          object.classPeak<.50 && object.classCount<3;
+        if(frame.perception_version==='surround-v1' && unseen>.55 &&
+           (tentativeVehicle || object.family==='barrier'))leave(object,'surface support expired');
         // Something farther off, seen where the object would stand, means it is no longer there.
         object.pastFor = seen.inView && seen.past ? object.pastFor + dt : 0;
         if (object.pastFor > SEEN_PAST_S) leave(object, 'seen past');
@@ -742,7 +939,10 @@ export function advance(state, ctx, deps = {}) {
           if (unseen > CARRY_S / 2 && !seen.lidar) {
             // Nothing returns from where its course has taken it. Returns from a point it has
             // already passed mean it stopped there; none at all, a second on, mean it has gone.
-            const stop = stoppedAt(object, ctx, cos, sin);
+            // Scattered XY returns behind a recently resolved moving car do
+            // not justify reversing it down its last measured trajectory.
+            const resolvedTravel=object.lastCourse?.speed>3 && object.lastHit-object.lastCourse.t<.4;
+            const stop = stoppedAt(object,ctx,cos,sin,resolvedTravel);
             if (stop) {
               object.rest = stop; object.travelling = false; object.vx = object.vz = 0; object.stillFor = 0;
               object.lastLidar = t;
@@ -783,8 +983,21 @@ export function advance(state, ctx, deps = {}) {
     }
     if (object.alpha <= 0) continue;
     const speed = object.speed;
+    if(object.mounted){
+      // Use the same two-second semantic horizon and current/recent lidar
+      // continuity required for an optical rider association. The source's
+      // class is still available in the raw measurement inspector.
+      const source=listed.get(object.sourceId);
+      const validSource=source && (source.label==='person'||source.label==='bicycle') &&
+        (source.coasting?source.age_s<=.20001:source.sources?.includes('lidar') && source.lidar_hits>=3);
+      if(!validSource||t-object.mounted.t>2.00001)object.mounted=null;
+    }
     drawn.push({key: object.key, sourceId: object.sourceId, label: object.label, family: object.family, x: object.x, y: object.y, z: object.z,
       heading: object.heading, length: object.length, width: object.width, height: object.height,
+      ...(object.mounted?{label:'bicycle',family:'wheeled',mountedRider:true,
+        length:object.mounted.length,width:object.mounted.width,height:object.mounted.height}:{}),
+      ...(object.label === 'barrier' && object.barrierSubtype ? {barrierSubtype:object.barrierSubtype,
+        barrierSubtypeConfidence:object.barrierSubtypeConfidence} : {}),
       opacity: object.alpha * object.solid, held, leaving: object.leaving, why: object.why, turned: object.turned,
       moving: located && !held && object.travelling && finite(speed) && speed > (object.label === 'person' ? .30 : .55),
       speed});

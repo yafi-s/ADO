@@ -1,3 +1,4 @@
+import gzip
 import hashlib
 from io import BytesIO
 import json
@@ -27,8 +28,8 @@ def fixture_zip(members):
     return ZipFile(stream)
 
 
-def city_film(complete, surround=False):
-    media = release.SURROUND_MEDIA if surround else "web/media/long-city-drive"
+def city_film(complete, surround=False, pace=False):
+    media = release.PACE_MEDIA if pace else release.SURROUND_MEDIA if surround else "web/media/long-city-drive"
     model = b"test checkpoint"
     score = dict(frame=42, camera_frame=42, video_index=0, map=release.CITY_PRODUCER["map"])
     frame = dict(score, run_id="long-city-drive")
@@ -38,7 +39,8 @@ def city_film(complete, surround=False):
         "town.json": json_bytes(dict(producer=release.CITY_PRODUCER, roads=[[[1, 2, 3], [2, 3, 4]]])),
     })
     milestones = dict(triggered=True, exposed=True, cleared=True, passed=True, handled=True, violation=False)
-    kinds = sorted(release.CITY_EVENTS) if complete else ["pedestrian"]
+    required_events = sorted(release.CITY_EVENTS | {"barrier"} if pace else release.CITY_EVENTS)
+    kinds = required_events if complete else ["pedestrian"]
     events = [dict(milestones, kind=kind) for kind in kinds]
     outcome = "complete" if complete else "lane_departure"
     summary = dict(outcome=outcome, events=events, frames=1, progress_m=1420 if complete else 160,
@@ -47,14 +49,14 @@ def city_film(complete, surround=False):
     manifest = dict(producer=release.CITY_PRODUCER, benchmark_member=False, teacher=False, map_asset="town.json",
                     source_mode="one closed-loop simulation with simultaneous camera capture",
                     policy=dict(schema="ado-behavior-v2", path="candidate.npz", sha256=sha256(model)),
-                    required_event_kinds=sorted(release.CITY_EVENTS), trial_id="long-city-drive",
+                    required_event_kinds=required_events, trial_id="long-city-drive",
                     outcome=outcome, events=events, summary=summary,
                     passed=complete, failure_reasons=[] if complete else ["route_incomplete"],
                     first_frame=42, last_frame=42, sha256={name: sha256(data) for name, data in files.items()})
     members = {f"{media}/{name}": data for name, data in files.items()}
-    folder = "city-cruise" if surround else "behavior-v2"
+    folder = "city-pace" if pace else "city-cruise" if surround else "behavior-v2"
     members[f"models/{folder}/candidate.npz"] = model
-    if surround:
+    if surround or pace:
         manifest.update(perimeter_views=list(release.PERIMETER_VIEWS), camera_videos={})
         for camera in release.SURROUND_CAMERAS:
             name = f"{camera}.mp4"
@@ -64,10 +66,17 @@ def city_film(complete, surround=False):
             manifest["camera_videos"][camera] = dict(nb_read_frames="1", codec_name="h264", pix_fmt="yuv420p",
                                                     r_frame_rate="10/1", width=320, height=180)
         tactical = json_bytes(dict(format="ado-tactical-pass-v1"))
-        manifest["policy"].update(schema=release.SURROUND_SCHEMA, tactical_sha256=sha256(tactical))
+        schema = release.PACE_SCHEMA if pace else release.SURROUND_SCHEMA
+        manifest["policy"].update(schema=schema, tactical_sha256=sha256(tactical))
         members[release.TACTICAL_MODEL] = tactical
-        members["models/city-cruise/fit.json"] = json_bytes(dict(
-            schema=release.SURROUND_SCHEMA, model_sha256=sha256(model)))
+        members[f"models/{folder}/fit.json"] = json_bytes(dict(schema=schema, model_sha256=sha256(model)))
+    if pace:
+        members[release.BARRIER_MODEL] = b"test barrier model"
+        manifest["policy"]["barrier_sha256"] = sha256(members[release.BARRIER_MODEL])
+        pack = gzip.compress(json_bytes(dict(format="ado-replay-pack-v1", replay=[frame],
+                                             shared_path=None, path_ranges=[])))
+        members[f"{media}/replay-pack.json.gz"] = pack
+        manifest["sha256"]["replay-pack.json.gz"] = sha256(pack)
     return media, manifest, members
 
 
@@ -107,6 +116,10 @@ class WindowsReleaseTests(unittest.TestCase):
         self.assertIn("waymo_training", release.release_paths("v0.2.0"))
         self.assertNotIn(release.SURROUND_DETECTOR, release.required_files("v0.2.0"))
         self.assertIn(release.SURROUND_DETECTOR, release.required_files("v0.3.0"))
+        self.assertNotIn(release.BARRIER_MODEL, release.required_files("v0.3.0"))
+        self.assertIn(release.BARRIER_MODEL, release.required_files("v0.4.0"))
+        self.assertEqual(release.featured_recording("v0.4.0"),
+                         (release.PACE_MEDIA, release.PACE_MASTER, release.PACE_SCHEMA))
 
     @patch.object(release, "verify_video")
     def test_city_film_accepts_truthful_outcomes(self, verify_video):
@@ -149,6 +162,24 @@ class WindowsReleaseTests(unittest.TestCase):
             source.write_bytes(b"X" + video[1:])
             with self.assertRaisesRegex(ValueError, "Wrong surround master SHA-256"):
                 release.stage_release_master(source, package.fp, target)
+
+    @patch.object(release, "verify_video")
+    def test_pace_film_verifies_eleven_events_and_an_exact_replay_pack(self, verify_video):
+        media, manifest, members = city_film(True, pace=True)
+        with fixture_zip(members) as archive:
+            release.verify_city_film(archive, media, manifest, Path("unused"))
+        self.assertEqual(verify_video.call_count, 6)
+
+        manifest["required_event_kinds"].remove("barrier")
+        with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, "Inconsistent encounter"):
+            release.verify_city_film(archive, media, manifest, Path("unused"))
+        manifest["required_event_kinds"].append("barrier")
+        pack = gzip.compress(json_bytes(dict(format="ado-replay-pack-v1", replay=[],
+                                             shared_path=None, path_ranges=[])))
+        members[f"{media}/replay-pack.json.gz"] = pack
+        manifest["sha256"]["replay-pack.json.gz"] = sha256(pack)
+        with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, "Replay pack differs"):
+            release.verify_city_film(archive, media, manifest, Path("unused"))
 
     def test_tactical_study_accepts_yield_then_pass_and_rejects_swapped_timing(self):
         score = dict(case="occupied", passed=True, frames=140, collisions=0, yield_s=3.0,

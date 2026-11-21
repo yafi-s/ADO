@@ -1,0 +1,484 @@
+{
+  "study": "cb6549c8957e567154e40d3708dc6f39f73417f957ec7e23f9998ba25555b1ef",
+  "v02_archive_sha256": "7d4f663ac8c5188f999fe25c5597a44f6aacaa333feeae56e6726d50b6c96594",
+  "cohort": {
+    "known_failure": {
+      "n": 6,
+      "clean": 6,
+      "contacts": 0,
+      "yields": 0,
+      "reds": 0,
+      "routes": 6
+    },
+    "known_control": {
+      "n": 4,
+      "clean": 4,
+      "contacts": 0,
+      "yields": 0,
+      "reds": 0,
+      "routes": 4
+    },
+    "fresh_challenge": {
+      "n": 6,
+      "clean": 6,
+      "contacts": 0,
+      "yields": 0,
+      "reds": 0,
+      "routes": 4
+    }
+  },
+  "archived_setups_matched": 10,
+  "archived_setups_compared": 10,
+  "drives": [
+    {
+      "group": "known_failure",
+      "seed": 105,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 27.3,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.639,
+      "weather": "ClearNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:8972579032256376029:60680105972043958",
+      "interventions": {
+        "path edge": 52,
+        "oncoming": 64
+      },
+      "matched": true,
+      "v02": {
+        "clean": false,
+        "outcome": "complete",
+        "duration_s": 20.1,
+        "contacts": 0,
+        "yields": 1,
+        "min_reference_gap_m": 0.0
+      },
+      "v02_first_event": {
+        "sim_time": 8.0,
+        "phase": "yield to oncoming",
+        "speed_mps": 1.548,
+        "brake": 0.0,
+        "throttle": 0.06383,
+        "seconds_before_clear": 2.5
+      }
+    },
+    {
+      "group": "known_failure",
+      "seed": 104,
+      "case": "pedestrian-delayed",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 26.1,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.589,
+      "weather": "ClearNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "interventions": {
+        "path edge": 142,
+        "path occupancy": 12
+      },
+      "matched": true,
+      "v02": {
+        "clean": false,
+        "outcome": "collision",
+        "duration_s": 8.6,
+        "contacts": 1,
+        "yields": 0,
+        "min_reference_gap_m": 0.0
+      },
+      "v02_first_event": {
+        "sim_time": 8.5,
+        "phase": "crossing",
+        "speed_mps": 1.998,
+        "brake": 0.0,
+        "throttle": 0.25825
+      }
+    },
+    {
+      "group": "known_failure",
+      "seed": 107,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 25.7,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.638,
+      "weather": "ClearNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:2394027140967327237:11206238115112060158",
+      "interventions": {
+        "oncoming": 46,
+        "path edge": 33
+      },
+      "matched": true,
+      "v02": {
+        "clean": false,
+        "outcome": "complete",
+        "duration_s": 20.3,
+        "contacts": 0,
+        "yields": 1,
+        "min_reference_gap_m": 0.0
+      },
+      "v02_first_event": {
+        "sim_time": 8.0,
+        "phase": "yield to oncoming",
+        "speed_mps": 1.416,
+        "brake": 0.0,
+        "throttle": 0.16766,
+        "seconds_before_clear": 0.1
+      }
+    },
+    {
+      "group": "known_failure",
+      "seed": 2111,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 25.9,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.637,
+      "weather": "CloudyNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:16863333859041109800:14351861254528017548",
+      "interventions": {
+        "oncoming": 47,
+        "path edge": 33
+      },
+      "matched": true,
+      "v02": {
+        "clean": false,
+        "outcome": "complete",
+        "duration_s": 20.3,
+        "contacts": 0,
+        "yields": 1,
+        "min_reference_gap_m": 0.0
+      },
+      "v02_first_event": {
+        "sim_time": 7.7,
+        "phase": "yield to oncoming",
+        "speed_mps": 1.371,
+        "brake": 0.0,
+        "throttle": 0.1611,
+        "seconds_before_clear": 0.4
+      }
+    },
+    {
+      "group": "known_failure",
+      "seed": 2112,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 26.6,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.639,
+      "weather": "WetNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:6830903086470162795:7386938724144755859",
+      "interventions": {
+        "oncoming": 63,
+        "path edge": 34
+      },
+      "matched": true,
+      "v02": {
+        "clean": false,
+        "outcome": "complete",
+        "duration_s": 20.2,
+        "contacts": 0,
+        "yields": 1,
+        "min_reference_gap_m": 0.0
+      },
+      "v02_first_event": {
+        "sim_time": 7.9,
+        "phase": "yield to oncoming",
+        "speed_mps": 1.53,
+        "brake": 0.0,
+        "throttle": 0.0754,
+        "seconds_before_clear": 1.8
+      }
+    },
+    {
+      "group": "known_failure",
+      "seed": 2113,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 26.3,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.638,
+      "weather": "WetNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:17818062520319460807:17881305857188723417",
+      "interventions": {
+        "oncoming": 61,
+        "path edge": 34
+      },
+      "matched": true,
+      "v02": {
+        "clean": false,
+        "outcome": "complete",
+        "duration_s": 20.3,
+        "contacts": 0,
+        "yields": 1,
+        "min_reference_gap_m": 0.0
+      },
+      "v02_first_event": {
+        "sim_time": 7.9,
+        "phase": "yield to oncoming",
+        "speed_mps": 1.487,
+        "brake": 0.0,
+        "throttle": 0.0721,
+        "seconds_before_clear": 1.3
+      }
+    },
+    {
+      "group": "known_control",
+      "seed": 104,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 25.2,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.838,
+      "weather": "ClearNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:13290280297253767684:9027554915029637620",
+      "interventions": {
+        "oncoming": 34
+      },
+      "matched": true,
+      "v02": {
+        "clean": true,
+        "outcome": "complete",
+        "duration_s": 23.1,
+        "contacts": 0,
+        "yields": 0,
+        "min_reference_gap_m": 2.776
+      }
+    },
+    {
+      "group": "known_control",
+      "seed": 103,
+      "case": "pedestrian-delayed",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 25.5,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.753,
+      "weather": "ClearSunset",
+      "event_triggered": true,
+      "event_cleared": false,
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "interventions": {
+        "path edge": 147,
+        "path occupancy": 10
+      },
+      "matched": true,
+      "v02": {
+        "clean": true,
+        "outcome": "complete",
+        "duration_s": 19.5,
+        "contacts": 0,
+        "yields": 0,
+        "min_reference_gap_m": 0.0
+      }
+    },
+    {
+      "group": "known_control",
+      "seed": 104,
+      "case": "turn",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 17.1,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 60.0,
+      "weather": "ClearNoon",
+      "event_triggered": false,
+      "event_cleared": false,
+      "route_id": "heldout:3775805030958742715:5229681167277143984",
+      "interventions": {},
+      "matched": true,
+      "v02": {
+        "clean": true,
+        "outcome": "complete",
+        "duration_s": 17.0,
+        "contacts": 0,
+        "yields": 0,
+        "min_reference_gap_m": 60.0
+      }
+    },
+    {
+      "group": "known_control",
+      "seed": 104,
+      "case": "clear",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 19.6,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 60.0,
+      "weather": "ClearNoon",
+      "event_triggered": false,
+      "event_cleared": false,
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "interventions": {
+        "path edge": 118
+      },
+      "matched": true,
+      "v02": {
+        "clean": true,
+        "outcome": "complete",
+        "duration_s": 13.5,
+        "contacts": 0,
+        "yields": 0,
+        "min_reference_gap_m": 60.0
+      }
+    },
+    {
+      "group": "fresh_challenge",
+      "seed": 4901,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 25.7,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.64,
+      "weather": "CloudyNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:2394027140967327237:11206238115112060158",
+      "interventions": {
+        "oncoming": 46,
+        "path edge": 34
+      }
+    },
+    {
+      "group": "fresh_challenge",
+      "seed": 4902,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 25.7,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.638,
+      "weather": "CloudyNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:2394027140967327237:11206238115112060158",
+      "interventions": {
+        "oncoming": 47,
+        "path edge": 35
+      }
+    },
+    {
+      "group": "fresh_challenge",
+      "seed": 4901,
+      "case": "pedestrian-delayed",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 26.0,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.722,
+      "weather": "CloudyNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:1685798326636834773:1393736687397013782",
+      "interventions": {
+        "path edge": 142,
+        "path occupancy": 13
+      }
+    },
+    {
+      "group": "fresh_challenge",
+      "seed": 4902,
+      "case": "pedestrian-delayed",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 24.6,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.716,
+      "weather": "CloudyNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "interventions": {
+        "path edge": 129,
+        "path occupancy": 9
+      }
+    },
+    {
+      "group": "fresh_challenge",
+      "seed": 4902,
+      "case": "turn",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 18.4,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 60.0,
+      "weather": "CloudyNoon",
+      "event_triggered": false,
+      "event_cleared": false,
+      "route_id": "heldout:15286927235374450472:6171617817676467106",
+      "interventions": {
+        "path edge": 12
+      }
+    },
+    {
+      "group": "fresh_challenge",
+      "seed": 4902,
+      "case": "clear",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 19.5,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 60.0,
+      "weather": "CloudyNoon",
+      "event_triggered": false,
+      "event_cleared": false,
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "interventions": {
+        "path edge": 117
+      }
+    }
+  ]
+}

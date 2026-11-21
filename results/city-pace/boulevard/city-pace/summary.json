@@ -1,0 +1,128 @@
+{
+  "scenario": "boulevard",
+  "seed": 316,
+  "policy": "ado-city-pace-v1",
+  "weather": "ClearNoon",
+  "road_id": 67,
+  "lane_id": -2,
+  "start_xy": [
+    229.63,
+    81.57
+  ],
+  "outcome": "complete",
+  "frames": 299,
+  "duration_s": 29.9,
+  "progress_m": 285.56,
+  "route_length_m": 285.489,
+  "contacts": [],
+  "collision_events": 0,
+  "max_lateral_error_m": 0.027,
+  "spawn_lateral_m": 0.0,
+  "spawn_yaw_deg": 0.0,
+  "min_hazard_gap_m": 60.0,
+  "moving_within_1m_frames": 0,
+  "turn_direction": null,
+  "district": null,
+  "destination": "Boulevard end",
+  "crossing_delay_s": 0.0,
+  "camera_rendering": {
+    "requested": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "cameras": {
+      "front": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "false",
+          "dlss_screen_percentage": "100.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "false",
+          "dlss_screen_percentage": "100.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "left": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "right": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      }
+    }
+  },
+  "ego_blueprint": "vehicle.lincoln.mkz",
+  "background_actors": {
+    "walkers": 0,
+    "vehicles": 0
+  },
+  "sensor_configuration": "three-camera-lidar-radar",
+  "route_id": "Town03 road 67 lane -2, OpenDRIVE s=1..300",
+  "road_ids": [
+    67
+  ],
+  "junction_ids": [],
+  "event_triggered": false,
+  "event_cleared": false,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "stopped_for_hazard": false,
+  "closest_in_path_speed_mps": 0.058,
+  "wall_seconds": 21.403,
+  "model_sha256": "43ee49e6b7bd8d258b1b3ed0ae90314eace178f33debeb9e11c81beb8b08e535",
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town03_Opt"
+  }
+}

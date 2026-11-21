@@ -2,9 +2,13 @@
 
 The Town03 Market route covers roughly 1.42 km and passes through 11 junctions. CARLA advances the car from its measured steering, throttle and brake inputs. Its cameras, roof lidar and forward radar observe the resulting world on the next simulation tick. A website recording can therefore be checked against what the sensors saw and what the driver commanded.
 
-## Watch the measured drive
+## Watch the v0.4 drive
 
-The final seed-211 recording ran for **354.3 simulated seconds**. The car traveled 1,415.16 m along the 1,415.44 m Market route, passed eleven junctions and reached 18.66 km/h. CARLA recorded zero contacts, red-light violations or yield violations. The chase camera captured 1920×1080 at ten frames per simulated second with High rendering and DLSS at 67%. The forward policy camera stayed at 640×360. The mounted sensors move with CARLA's native Lincoln. The separate perception display renders ADO's Blender robotaxi at the recorded ego pose. [Watch the synchronized recording](https://yafi-s.github.io/ADO/?run=long-city-drive) · [Run and camera manifest](../web/media/long-city-drive/manifest.json)
+The current High-rendering film follows seed 212 across 3,354 matched exposures, including a 0.5 s additional delay for crossing pedestrians. ADO passed all eleven encounters and eleven junctions with zero contacts or recorded red-light or yield violations. Two roadside barricades form the additional encounter on this version of the Market route. The car passed them with 1.047 m minimum side clearance. [Watch v0.4](https://yafi-s.github.io/ADO/?run=urban-pace) · [Inspect frame 3460](https://yafi-s.github.io/ADO/inspect.html?run=urban-pace&frame=3460&camera=front) · [Release review](../results/urban-pace/README.md) · [Speed and braking traces](../results/city-pace/README.md)
+
+## Archived v0.2 drive
+
+The original v0.2 seed-211 recording ran for **354.3 simulated seconds**. The car traveled 1,415.16 m along the 1,415.44 m Market route, passed eleven junctions and reached 18.66 km/h. CARLA recorded zero contacts, red-light violations or yield violations. The chase camera captured 1920×1080 at ten frames per simulated second with High rendering and DLSS at 67%. The forward policy camera stayed at 640×360. The mounted sensors move with CARLA's native Lincoln. The separate perception display renders ADO's Blender robotaxi at the recorded ego pose. [Watch the synchronized recording](https://yafi-s.github.io/ADO/?run=long-city-drive) · [Run and camera manifest](../web/media/long-city-drive/manifest.json)
 
 [![The recorded CARLA chase camera shows ADO drawing alongside the stopped bus in the adjacent lane](media/town03-bus.jpg)](https://yafi-s.github.io/ADO/?run=long-city-drive&at=210)
 
@@ -30,18 +34,18 @@ For each encounter, the log distinguishes the planned location, actual exposure,
 Double-click **Watch-City.cmd** on Windows to install or verify CARLA 1.0 and open the local perception display. After setup, the equivalent command from the project root is below.
 
 ```powershell
-.\.venv-city\Scripts\python.exe -m ado city-drive --serve --open-browser --seed 211
+.\.venv-city\Scripts\python.exe -m ado city-drive --serve --open-browser --seed 212 --crossing-delay 0.5
 ```
 
-Each attempt writes its own summary and compressed frame log under `out/city-drives`. The lower-cost live profile is the default. To record a simultaneous 1080p chase camera and forward camera at High quality, run the film command with a fresh output path. This captures one ego car over one continuous simulation.
+Each attempt writes its own summary and compressed frame log under `out/city-drives`. The lower-cost live profile is the default. To record the current five onboard views and a 1080p chase camera at High quality, run the film command with a fresh output path. This captures one ego car over one continuous simulation.
 
 ```powershell
-.\.venv-city\Scripts\python.exe -m ado city-film --model models/city-v1/candidate-73-74.npz --map Town03_Opt --destination market --seed 211 --output out/my-city-film
+.\.venv-city\Scripts\python.exe -m ado city-film --model models/city-pace/candidate.npz --map Town03_Opt --destination market --seed 212 --crossing-delay 0.5 --output out/my-city-film
 ```
 
 ## Training and evaluation
 
-The city policy retains the Town01 steering and pedal feedback and learns speed from range measurements, measured traffic-light color and map geometry. Its Colab fit includes two Town03 teaching episodes using this course. The public recording is a development demonstration with staged traffic. [City model](../models/city-v1/README.md) · [Native fixture checks and recorded failures](../results/city-development/README.md)
+The original v0.2 city policy retains the Town01 steering and pedal feedback and learns speed from range measurements, measured traffic-light color and map geometry. Its Colab fit includes two Town03 teaching episodes using this course. The public recording is a development demonstration with staged traffic. [City model](../models/city-v1/README.md) · [Native fixture checks and recorded failures](../results/city-development/README.md)
 
 The Town01-trained controller uses 17,236 examples from 80 CARLA driving demonstrations. The public Colab recipe reproduces the saved model and training report byte-for-byte. Town03 is a separate city integration test. The model also has a controlled Town01 comparison using ten encounter types. The real Waymo research track has its own Colab training, validation and simulator transfer results. [CARLA training and Colab notebook](../data/behavior-v2/README.md) · [Matched comparison protocol](behavior-v2-protocol.md) · [Real Waymo model and transfer trial](../waymo_training/MOTION_TRANSFER.md)
 

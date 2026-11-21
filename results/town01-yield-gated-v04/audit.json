@@ -1,0 +1,475 @@
+{
+  "study": "27287035324b511b69eab12cf0fd08a582fa2afc66b7dc44fcd7afa354d61750",
+  "v02_archive_sha256": "7d4f663ac8c5188f999fe25c5597a44f6aacaa333feeae56e6726d50b6c96594",
+  "cohort": {
+    "known_failure": {
+      "n": 6,
+      "clean": 6,
+      "contacts": 0,
+      "yields": 0,
+      "reds": 0,
+      "routes": 6
+    },
+    "known_control": {
+      "n": 4,
+      "clean": 4,
+      "contacts": 0,
+      "yields": 0,
+      "reds": 0,
+      "routes": 4
+    },
+    "fresh_challenge": {
+      "n": 6,
+      "clean": 6,
+      "contacts": 0,
+      "yields": 0,
+      "reds": 0,
+      "routes": 4
+    }
+  },
+  "archived_setups_matched": 10,
+  "archived_setups_compared": 10,
+  "drives": [
+    {
+      "group": "known_failure",
+      "seed": 105,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 25.4,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.638,
+      "weather": "ClearNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:8972579032256376029:60680105972043958",
+      "interventions": {
+        "oncoming": 65
+      },
+      "matched": true,
+      "v02": {
+        "clean": false,
+        "outcome": "complete",
+        "duration_s": 20.1,
+        "contacts": 0,
+        "yields": 1,
+        "min_reference_gap_m": 0.0
+      },
+      "v02_first_event": {
+        "sim_time": 8.0,
+        "phase": "yield to oncoming",
+        "speed_mps": 1.548,
+        "brake": 0.0,
+        "throttle": 0.06383,
+        "seconds_before_clear": 2.5
+      }
+    },
+    {
+      "group": "known_failure",
+      "seed": 104,
+      "case": "pedestrian-delayed",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 22.1,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.551,
+      "weather": "ClearNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "interventions": {
+        "path edge": 44,
+        "path occupancy": 12
+      },
+      "matched": true,
+      "v02": {
+        "clean": false,
+        "outcome": "collision",
+        "duration_s": 8.6,
+        "contacts": 1,
+        "yields": 0,
+        "min_reference_gap_m": 0.0
+      },
+      "v02_first_event": {
+        "sim_time": 8.5,
+        "phase": "crossing",
+        "speed_mps": 1.998,
+        "brake": 0.0,
+        "throttle": 0.25825
+      }
+    },
+    {
+      "group": "known_failure",
+      "seed": 107,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 23.9,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.638,
+      "weather": "ClearNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:2394027140967327237:11206238115112060158",
+      "interventions": {
+        "oncoming": 48
+      },
+      "matched": true,
+      "v02": {
+        "clean": false,
+        "outcome": "complete",
+        "duration_s": 20.3,
+        "contacts": 0,
+        "yields": 1,
+        "min_reference_gap_m": 0.0
+      },
+      "v02_first_event": {
+        "sim_time": 8.0,
+        "phase": "yield to oncoming",
+        "speed_mps": 1.416,
+        "brake": 0.0,
+        "throttle": 0.16766,
+        "seconds_before_clear": 0.1
+      }
+    },
+    {
+      "group": "known_failure",
+      "seed": 2111,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 24.1,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.638,
+      "weather": "CloudyNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:16863333859041109800:14351861254528017548",
+      "interventions": {
+        "oncoming": 50
+      },
+      "matched": true,
+      "v02": {
+        "clean": false,
+        "outcome": "complete",
+        "duration_s": 20.3,
+        "contacts": 0,
+        "yields": 1,
+        "min_reference_gap_m": 0.0
+      },
+      "v02_first_event": {
+        "sim_time": 7.7,
+        "phase": "yield to oncoming",
+        "speed_mps": 1.371,
+        "brake": 0.0,
+        "throttle": 0.1611,
+        "seconds_before_clear": 0.4
+      }
+    },
+    {
+      "group": "known_failure",
+      "seed": 2112,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 25.0,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.639,
+      "weather": "WetNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:6830903086470162795:7386938724144755859",
+      "interventions": {
+        "oncoming": 63
+      },
+      "matched": true,
+      "v02": {
+        "clean": false,
+        "outcome": "complete",
+        "duration_s": 20.2,
+        "contacts": 0,
+        "yields": 1,
+        "min_reference_gap_m": 0.0
+      },
+      "v02_first_event": {
+        "sim_time": 7.9,
+        "phase": "yield to oncoming",
+        "speed_mps": 1.53,
+        "brake": 0.0,
+        "throttle": 0.0754,
+        "seconds_before_clear": 1.8
+      }
+    },
+    {
+      "group": "known_failure",
+      "seed": 2113,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 24.6,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.637,
+      "weather": "WetNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:17818062520319460807:17881305857188723417",
+      "interventions": {
+        "oncoming": 61
+      },
+      "matched": true,
+      "v02": {
+        "clean": false,
+        "outcome": "complete",
+        "duration_s": 20.3,
+        "contacts": 0,
+        "yields": 1,
+        "min_reference_gap_m": 0.0
+      },
+      "v02_first_event": {
+        "sim_time": 7.9,
+        "phase": "yield to oncoming",
+        "speed_mps": 1.487,
+        "brake": 0.0,
+        "throttle": 0.0721,
+        "seconds_before_clear": 1.3
+      }
+    },
+    {
+      "group": "known_control",
+      "seed": 104,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 25.2,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.822,
+      "weather": "ClearNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:13290280297253767684:9027554915029637620",
+      "interventions": {
+        "oncoming": 36
+      },
+      "matched": true,
+      "v02": {
+        "clean": true,
+        "outcome": "complete",
+        "duration_s": 23.1,
+        "contacts": 0,
+        "yields": 0,
+        "min_reference_gap_m": 2.776
+      }
+    },
+    {
+      "group": "known_control",
+      "seed": 103,
+      "case": "pedestrian-delayed",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 20.6,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 0.314,
+      "weather": "ClearSunset",
+      "event_triggered": true,
+      "event_cleared": false,
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "interventions": {
+        "path occupancy": 54,
+        "path edge": 5
+      },
+      "matched": true,
+      "v02": {
+        "clean": true,
+        "outcome": "complete",
+        "duration_s": 19.5,
+        "contacts": 0,
+        "yields": 0,
+        "min_reference_gap_m": 0.0
+      }
+    },
+    {
+      "group": "known_control",
+      "seed": 104,
+      "case": "turn",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 17.1,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 60.0,
+      "weather": "ClearNoon",
+      "event_triggered": false,
+      "event_cleared": false,
+      "route_id": "heldout:3775805030958742715:5229681167277143984",
+      "interventions": {},
+      "matched": true,
+      "v02": {
+        "clean": true,
+        "outcome": "complete",
+        "duration_s": 17.0,
+        "contacts": 0,
+        "yields": 0,
+        "min_reference_gap_m": 60.0
+      }
+    },
+    {
+      "group": "known_control",
+      "seed": 104,
+      "case": "clear",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 15.1,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 60.0,
+      "weather": "ClearNoon",
+      "event_triggered": false,
+      "event_cleared": false,
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "interventions": {
+        "path edge": 29
+      },
+      "matched": true,
+      "v02": {
+        "clean": true,
+        "outcome": "complete",
+        "duration_s": 13.5,
+        "contacts": 0,
+        "yields": 0,
+        "min_reference_gap_m": 60.0
+      }
+    },
+    {
+      "group": "fresh_challenge",
+      "seed": 5261,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 25.4,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.531,
+      "weather": "ClearSunset",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:18012748355327883017:16842419400333335766",
+      "interventions": {
+        "oncoming": 65
+      }
+    },
+    {
+      "group": "fresh_challenge",
+      "seed": 5262,
+      "case": "left",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 23.7,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.638,
+      "weather": "WetNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:11504313560094405168:17001461084024650822",
+      "interventions": {
+        "oncoming": 42
+      }
+    },
+    {
+      "group": "fresh_challenge",
+      "seed": 5261,
+      "case": "pedestrian-delayed",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 20.6,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.696,
+      "weather": "ClearSunset",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:16123783738375204722:307598117943672832",
+      "interventions": {
+        "path edge": 9,
+        "path occupancy": 16
+      }
+    },
+    {
+      "group": "fresh_challenge",
+      "seed": 5262,
+      "case": "pedestrian-delayed",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 23.7,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 2.71,
+      "weather": "WetNoon",
+      "event_triggered": true,
+      "event_cleared": true,
+      "route_id": "heldout:3964038132807506733:13145696058795595090",
+      "interventions": {
+        "path edge": 84,
+        "path occupancy": 14
+      }
+    },
+    {
+      "group": "fresh_challenge",
+      "seed": 5262,
+      "case": "turn",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 17.2,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 60.0,
+      "weather": "WetNoon",
+      "event_triggered": false,
+      "event_cleared": false,
+      "route_id": "heldout:11504313560094405168:17001461084024650822",
+      "interventions": {}
+    },
+    {
+      "group": "fresh_challenge",
+      "seed": 5262,
+      "case": "clear",
+      "clean": true,
+      "outcome": "complete",
+      "duration_s": 20.0,
+      "yields": 0,
+      "reds": 0,
+      "contacts": 0,
+      "min_reference_gap_m": 60.0,
+      "weather": "WetNoon",
+      "event_triggered": false,
+      "event_cleared": false,
+      "route_id": "heldout:3964038132807506733:13145696058795595090",
+      "interventions": {
+        "path edge": 127
+      }
+    }
+  ]
+}

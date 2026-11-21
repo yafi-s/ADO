@@ -134,9 +134,11 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
         elif visuals:
             from .tracking import Tracker
             spatial_tracker = Tracker()
+        pace = getattr(model, "policy", model)
         if tactical:
             from .overtake import TacticalPass
-            tactical_pass = TacticalPass.from_scene_map(scene)
+            tactical_pass = (TacticalPass.from_scene_map(scene, measured_hold=True) if hasattr(pace, "tactical_speed_limit")
+                             else TacticalPass.from_scene_map(scene))
         include_aux = live is not None or recording is not None and not getattr(recording, "primary_rig_only", False)
         rig_options = {"surround": True} if surround else {}
         rig = Rig(world, scene.ego, visuals=include_aux, range_only=range_only, **rig_options)
@@ -164,6 +166,12 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 raise RuntimeError("CARLA did not apply the requested wheel grip.")
         detector = None if range_only else Detector()
         navigation = Navigation(scene.route)
+        signed_limits = None
+        if getattr(pace, "uses_signed_speed_preview", False):
+            from .speed_signs import SignedRouteLimits
+            nose = scene.ego.bounding_box.location.x + scene.ego.bounding_box.extent.x
+            signed_limits = SignedRouteLimits.from_map(world.get_map(), scene.route, navigation.arc, nose)
+        signed_approach = None
         make_observer = observation_factory or getattr(model, "new_observer", None)
         observer = make_observer() if make_observer is not None else None
         teacher_speed = None
@@ -197,6 +205,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 points = navigation.read(scene.ego, (3., 7., 13., 18., 25., 32., 40.))
                 if tactical_pass is not None:
                     points = tactical_pass.preview(scene.ego, obs["lidar"], points, speed)
+                    if getattr(tactical_pass, "measured_hold", False):
+                        pace.tactical_speed_limit = tactical_pass.speed_limit
                 local_route = points[:6]
             if range_only:
                 from .policy import range_features
@@ -233,6 +243,9 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             else:
                 if getattr(model, "uses_posted_limit", False):
                     model.posted_limit_kmh = scene.ego.get_speed_limit()
+                    if signed_limits is not None:
+                        signed_approach = signed_limits.approach(navigation.progress, speed, model.posted_limit_kmh)
+                        pace.signed_speed_limit = signed_approach[0] if signed_approach else None
                 if observer is not None and hasattr(observer, "observe_and_predict"):
                     pose = scene.ego.get_transform()
                     predicted = observer.observe_and_predict(obs, detections, local_route, speed,
@@ -265,8 +278,20 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 "yield_violations": state["yield_violations"],
                 "event_triggered": state["event_triggered"], "event_cleared": state["event_cleared"],
             }
+            if trace:
+                earlier = trace[max(0, len(trace)-5)]
+                row["longitudinal_accel_mps2"] = round(
+                    (speed-earlier["speed_mps"])/(row["sim_time"]-earlier["sim_time"]), 3)
             if getattr(model, "uses_posted_limit", False):
                 row["posted_limit_kmh"] = round(float(model.posted_limit_kmh), 2)
+                if signed_approach:
+                    cap, upcoming, gap = signed_approach
+                    row["upcoming_posted_kmh"] = upcoming
+                    row["upcoming_sign_gap_m"] = round(gap, 3)
+                    row["signed_approach_cap_mps"] = round(cap, 4)
+                speed_request = getattr(model, "last_speed_request", None)
+                if speed_request is not None:
+                    row["speed_request_mps"] = round(float(speed_request), 5)
             if teacher is not None:
                 row["instructor_speed_mps"] = teacher_speed
             if "events" in state:
@@ -297,6 +322,7 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                     surface = surface[(surface[:, 2] > .20) & (surface[:, 2] < 5.0)]
                     sparse = surface[::max(1, math.ceil(len(surface) / 180))]
                     measured.update(perception_version="surround-v1", signals=signal_reads,
+                                    barrier_review=surround_perception.barrier_review,
                                     lidar_xyz=sparse.astype(float).round(2).tolist(),
                                     corner_radar=surround_perception.radar_points,
                                     camera_detections=surround_perception.view_detections,
@@ -399,8 +425,9 @@ def main():
     parser.add_argument("--weather", choices=list(WEATHER), default="seeded")
     parser.add_argument("--grip", choices=GRIP, type=float, default=1.0)
     parser.add_argument("--seed", type=int, default=101)
-    parser.add_argument("--policy", choices=["fusion", "camera"], default="fusion")
-    parser.add_argument("--model", help="Override the default models/<policy>.npz")
+    parser.add_argument("--policy", choices=["fusion", "camera", "town01-yield-v04", "town01-yield-gated-v04"],
+                        default="fusion")
+    parser.add_argument("--model", help="Override the selected policy's default checkpoint")
     parser.add_argument("--port", type=int, default=2468)
     parser.add_argument("--attach", action="store_true", help="Use an existing, idle Town01 server")
     parser.add_argument("--serve", action="store_true", help="Watch the run at http://127.0.0.1:8765")
@@ -421,7 +448,14 @@ def main():
         parser.error("--loop requires --serve and a single-run recording requires omitting --loop")
     if args.tour and not args.loop:
         parser.error("--tour requires --loop")
-    model = Model.load(args.model or f"models/{args.policy}.npz")
+    if args.policy == "town01-yield-v04":
+        from .town01_interaction import InteractionModel, MODEL
+        model = InteractionModel.load(args.model or MODEL)
+    elif args.policy == "town01-yield-gated-v04":
+        from .town01_interaction_gate import GatedInteractionModel, MODEL
+        model = GatedInteractionModel.load(args.model or MODEL)
+    else:
+        model = Model.load(args.model or f"models/{args.policy}.npz")
     settings = dict(scenario=args.scenario, seed=args.seed, crossing_delay=args.crossing_delay,
                     destination=args.destination, weather=args.weather, grip=args.grip)
     options = dict(scenarios=[dict(id=k, label=v) for k,v in SCENARIOS.items()],

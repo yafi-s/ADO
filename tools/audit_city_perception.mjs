@@ -7,12 +7,13 @@ import {pathToFileURL, fileURLToPath} from 'node:url';
 import {parseArgs} from 'node:util';
 import {createGunzip,gunzipSync} from 'node:zlib';
 import {Transform} from 'node:stream';
+import {barrierReviewer} from '../web/barrier-review.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const rad = Math.PI / 180;
 const limit = 35, gate = 3;
 const truthLabels = {pedestrian:'person', car:'car', cyclist:'bicycle', van:'car', bus:'bus',
-  bicycle:'bicycle', motorcycle:'motorcycle', truck:'truck'};
+  bicycle:'bicycle', motorcycle:'motorcycle', truck:'truck', barrier:'barrier'};
 const rounded = value => Number(value.toFixed(3));
 const family = label => label === 'person' ? 'person' : ['car','vehicle','bus','van','truck','bicycle','motorcycle'].includes(label) ? 'wheeled' : label;
 const sum = values => values.reduce((a,b) => a+b, 0);
@@ -169,6 +170,8 @@ function summarize(s) {
     reacquisitions:sum(actors.map(a=>a.reacquisitions)),direct_id_switches:sum(actors.map(a=>a.direct_id_switches)),actors};
 }
 
+export {stats as newLayer, evaluate as scoreLayer, summarize as layerSummary};
+
 function recording(directory) {
   const input=['replay-pack.json.gz','perception.jsonl','perception.jsonl.gz','replay.json'].find(name=>fs.existsSync(path.join(directory,name)));
   if (!input) throw new Error('Recording has no replay or perception journal');
@@ -201,8 +204,11 @@ function recording(directory) {
   return {frames:readFrames(),info};
 }
 
-export async function audit(directory,{memoryRevision,memoryFile:sourceFile,frameFile,townFile,staticFile,probes=[],onFrame}={}) {
+export async function audit(directory,{memoryRevision,memoryFile:sourceFile,frameFile,townFile,staticFile,barrierReviewFile,probes=[],onFrame}={}) {
   const {frames,info}=recording(directory);
+  const reviewBytes=barrierReviewFile?fs.readFileSync(barrierReviewFile):null;
+  const review=reviewBytes?JSON.parse(reviewBytes):null;
+  const qualify=barrierReviewer(review);
   if(memoryRevision&&sourceFile)throw new Error('Choose one display source');
   const memoryFile=sourceFile?path.resolve(sourceFile):path.join(root,'web/object-memory.mjs');
   const source=memoryRevision
@@ -240,11 +246,11 @@ export async function audit(directory,{memoryRevision,memoryFile:sourceFile,fram
       const {ego,ego_z}=frame.observer_map;
       const {sim_time,video_time,seed,run_id,scenario,tracks,detections,camera_detections,lidar,radar,corner_radar,perception_version}=frame;
       const input={frame:frame.frame,sim_time,video_time,seed,run_id,scenario,tracks,detections,
-        camera_detections,lidar,radar,corner_radar,perception_version,observer_map:{ego,ego_z}};
-      context=contextOf(input,context);
+        camera_detections,lidar,radar,corner_radar,perception_version,barrier_review:frame.barrier_review,observer_map:{ego,ego_z}};
+      context=contextOf(qualify(input),context);
       const display=advance(state,context,deps).map(p=>({id:p.key,sourceId:p.sourceId,label:p.label,...localPose(p.x,p.z,ego),
         world:[p.x,p.z],foot:p.y,heading:p.heading,dimensions:[p.length,p.height,p.width],opacity:p.opacity,
-        status:p.held?'remembered':'current'}));
+        status:p.held?'remembered':'current',barrierSubtype:p.barrierSubtype,mountedRider:p.mountedRider}));
       const actors=observerActors(frame,frame.observer_map.others,onFrame?60:limit);
       const tracker=frame.tracks.map(p=>({...p,status:p.coasting?'coasting':'measured'}));
       const record={frame:frame.frame,sim_time:frame.sim_time,ego,progress_m:frame.progress_m,active_event:frame.active_event,
@@ -259,13 +265,15 @@ export async function audit(directory,{memoryRevision,memoryFile:sourceFile,fram
         record.parked={tracker:trackRows.actors.filter(a=>a.role==='parked-map-vehicle'),
           display:displayRows.actors.filter(a=>a.role==='parked-map-vehicle')};
       }
-      if (onFrame) onFrame({frame,actors:all,tracker,display});
+      if (onFrame) onFrame({frame,riderFrame:context.frame,actors:all,tracker,display});
       if (fd!==null) fs.writeSync(fd,JSON.stringify(record)+'\n');
       if (target.has(frame.frame)) samples.push({...record,detection_labels:(frame.detections??[]).map(d=>d.label),
         detection_age_s:frame.detection_age_s});
     }
   } finally {if (fd!==null) fs.closeSync(fd);}
   if (!count) throw new Error('No complete frames to audit');
+  if(review && (review.first_frame!==first||review.last_frame!==prior))throw Error('Barrier review does not match the input frames');
+  if(reviewBytes)info.barrier_review_sha256=hash(reviewBytes);
   return {...info,town_sha256:hash(townBytes),memory_sha256_lf:hash(source.toString().replaceAll('\r\n','\n')),frames:count,
     first_frame:first,last_frame:prior,radius_m:limit,match_gate_m:gate,
     tracker:summarize(layers.tracker),display:summarize(layers.display),
@@ -276,9 +284,9 @@ export async function audit(directory,{memoryRevision,memoryFile:sourceFile,fram
 if (path.resolve(process.argv[1]??'')===fileURLToPath(import.meta.url)) {
   const {values,positionals}=parseArgs({allowPositionals:true,options:{
     output:{type:'string'},frames:{type:'string'},town:{type:'string'},'static-map':{type:'string'},
-    'memory-revision':{type:'string'},'memory-file':{type:'string'},probe:{type:'string',multiple:true}}});
+    'memory-revision':{type:'string'},'memory-file':{type:'string'},'barrier-review':{type:'string'},probe:{type:'string',multiple:true}}});
   if (positionals.length!==1) throw new Error('Pass one recording directory and optional --output summary.json --frames frame-matches.jsonl --probe FRAME --memory-revision COMMIT');
-  const result=await audit(positionals[0],{memoryRevision:values['memory-revision'],memoryFile:values['memory-file'],frameFile:values.frames,
+  const result=await audit(positionals[0],{memoryRevision:values['memory-revision'],memoryFile:values['memory-file'],frameFile:values.frames,barrierReviewFile:values['barrier-review'],
     townFile:values.town,staticFile:values['static-map'],probes:values.probe?.map(Number)});
   const json=JSON.stringify(result,null,2)+'\n';
   if (values.output) fs.writeFileSync(values.output,json); else process.stdout.write(json);

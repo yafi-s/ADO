@@ -1,0 +1,1623 @@
+{
+  "schema": "ado-chain-recognition-v1",
+  "archive_sha256": "39433cc4c77da410d705e82ff54bee2ef2ebb0c8b7f6dfc30819a40107e14b14",
+  "detector_source_sha256": "f3b3f4ee3c29f4713555adda05497d2737722464ef05cb4cefe25af1e9a2ef4c",
+  "detector_source_lf_sha256": "f607712d43690292023bc1308530dc330cc65427e3f48eee69d05b21a66de7b5",
+  "exposures": 162,
+  "by_condition": {
+    "raw_chain": {
+      "exposures": 18,
+      "fresh_predictions": 0,
+      "unmatched_predictions": 0,
+      "matched": 0,
+      "missed": 0,
+      "distinct_matched_site_distance_pairs": 0
+    },
+    "chain": {
+      "exposures": 18,
+      "matched": 9,
+      "missed": 9,
+      "fresh_predictions": 9,
+      "unmatched_predictions": 0,
+      "distinct_matched_site_distance_pairs": 4
+    },
+    "unlinked": {
+      "exposures": 18,
+      "fresh_predictions": 0,
+      "unmatched_predictions": 0,
+      "matched": 0,
+      "missed": 0,
+      "distinct_matched_site_distance_pairs": 0
+    },
+    "lone_post": {
+      "exposures": 18,
+      "fresh_predictions": 0,
+      "unmatched_predictions": 0,
+      "matched": 0,
+      "missed": 0,
+      "distinct_matched_site_distance_pairs": 0
+    },
+    "warning": {
+      "exposures": 18,
+      "fresh_predictions": 0,
+      "unmatched_predictions": 0,
+      "matched": 0,
+      "missed": 0,
+      "distinct_matched_site_distance_pairs": 0
+    },
+    "barrel": {
+      "exposures": 18,
+      "fresh_predictions": 0,
+      "unmatched_predictions": 0,
+      "matched": 0,
+      "missed": 0,
+      "distinct_matched_site_distance_pairs": 0
+    },
+    "cone": {
+      "exposures": 18,
+      "fresh_predictions": 0,
+      "unmatched_predictions": 0,
+      "matched": 0,
+      "missed": 0,
+      "distinct_matched_site_distance_pairs": 0
+    },
+    "barricade": {
+      "fresh_predictions": 18,
+      "exposures": 18,
+      "matched": 18,
+      "missed": 0,
+      "unmatched_predictions": 0,
+      "distinct_matched_site_distance_pairs": 6
+    },
+    "clear": {
+      "exposures": 18,
+      "fresh_predictions": 0,
+      "unmatched_predictions": 0,
+      "matched": 0,
+      "missed": 0,
+      "distinct_matched_site_distance_pairs": 0
+    }
+  },
+  "unmatched_predictions": 0,
+  "frames": [
+    {
+      "name": "validation_0_raw_chain_5_s0",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_raw_chain_5_s1",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_raw_chain_5_s2",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_raw_chain_7_s0",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_raw_chain_7_s1",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_raw_chain_7_s2",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_raw_chain_10_s0",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_raw_chain_10_s1",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_raw_chain_10_s2",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_chain_5_s0",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          5,
+          6
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "validation_0_chain_5_s1",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.8519,
+          "center_error_m": 0.0301,
+          "laser_hits": 14,
+          "chain_support": {
+            "posts": [
+              6,
+              7
+            ],
+            "span_hits": 1
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          9,
+          7
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "validation_0_chain_5_s2",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.7407,
+          "center_error_m": 0.021,
+          "laser_hits": 14,
+          "chain_support": {
+            "posts": [
+              6,
+              7
+            ],
+            "span_hits": 1
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          5,
+          6
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "validation_0_chain_7_s0",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          4,
+          4
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "validation_0_chain_7_s1",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          1,
+          4
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "validation_0_chain_7_s2",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          1,
+          4
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "validation_0_chain_10_s0",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          1,
+          1
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "validation_0_chain_10_s1",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.4431,
+          "center_error_m": 0.019,
+          "laser_hits": 5,
+          "chain_support": {
+            "posts": [
+              2,
+              2
+            ],
+            "span_hits": 1
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          2,
+          2
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "validation_0_chain_10_s2",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          2,
+          1
+        ],
+        "interior_corridor_hits": 2
+      }
+    },
+    {
+      "name": "validation_0_unlinked_5_s0",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_unlinked_5_s1",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_unlinked_5_s2",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_unlinked_7_s0",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_unlinked_7_s1",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_unlinked_7_s2",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_unlinked_10_s0",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_unlinked_10_s1",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_unlinked_10_s2",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_lone_post_5_s0",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_lone_post_5_s1",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_lone_post_5_s2",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_lone_post_7_s0",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_lone_post_7_s1",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_lone_post_7_s2",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_lone_post_10_s0",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_lone_post_10_s1",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_lone_post_10_s2",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_warning_5_s0",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_warning_5_s1",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_warning_5_s2",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_warning_7_s0",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_warning_7_s1",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_warning_7_s2",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_warning_10_s0",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_warning_10_s1",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_warning_10_s2",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barrel_5_s0",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barrel_5_s1",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barrel_5_s2",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barrel_7_s0",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barrel_7_s1",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barrel_7_s2",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barrel_10_s0",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barrel_10_s1",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barrel_10_s2",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_cone_5_s0",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_cone_5_s1",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_cone_5_s2",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_cone_7_s0",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_cone_7_s1",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_cone_7_s2",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_cone_10_s0",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_cone_10_s1",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_cone_10_s2",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barricade_5_s0",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8885,
+          "center_error_m": 0.0917,
+          "laser_hits": 60,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barricade_5_s1",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8863,
+          "center_error_m": 0.0561,
+          "laser_hits": 54,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barricade_5_s2",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8836,
+          "center_error_m": 0.0626,
+          "laser_hits": 65,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barricade_7_s0",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.9565,
+          "center_error_m": 0.045,
+          "laser_hits": 42,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barricade_7_s1",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.9547,
+          "center_error_m": 0.0397,
+          "laser_hits": 35,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barricade_7_s2",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.952,
+          "center_error_m": 0.0475,
+          "laser_hits": 34,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barricade_10_s0",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.9371,
+          "center_error_m": 0.0322,
+          "laser_hits": 16,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barricade_10_s1",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.9384,
+          "center_error_m": 0.0086,
+          "laser_hits": 13,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_barricade_10_s2",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.9363,
+          "center_error_m": 0.0176,
+          "laser_hits": 18,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_clear_5_s0",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_clear_5_s1",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_clear_5_s2",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_clear_7_s0",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_clear_7_s1",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_clear_7_s2",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_clear_10_s0",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_clear_10_s1",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_0_clear_10_s2",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_raw_chain_5_s0",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_raw_chain_5_s1",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_raw_chain_5_s2",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_raw_chain_7_s0",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_raw_chain_7_s1",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_raw_chain_7_s2",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_raw_chain_10_s0",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_raw_chain_10_s1",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_raw_chain_10_s2",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_chain_5_s0",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.5926,
+          "center_error_m": 0.0073,
+          "laser_hits": 13,
+          "chain_support": {
+            "posts": [
+              7,
+              5
+            ],
+            "span_hits": 1
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          7,
+          5
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "validation_1_chain_5_s1",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.7037,
+          "center_error_m": 0.0033,
+          "laser_hits": 6,
+          "chain_support": {
+            "posts": [
+              2,
+              3
+            ],
+            "span_hits": 1
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          2,
+          4
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "validation_1_chain_5_s2",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.6296,
+          "center_error_m": 0.0359,
+          "laser_hits": 11,
+          "chain_support": {
+            "posts": [
+              7,
+              3
+            ],
+            "span_hits": 1
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          7,
+          3
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "validation_1_chain_7_s0",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 1.0,
+          "center_error_m": 0.0772,
+          "laser_hits": 10,
+          "chain_support": {
+            "posts": [
+              5,
+              3
+            ],
+            "span_hits": 2
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          5,
+          4
+        ],
+        "interior_corridor_hits": 2
+      }
+    },
+    {
+      "name": "validation_1_chain_7_s1",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.6296,
+          "center_error_m": 0.0074,
+          "laser_hits": 8,
+          "chain_support": {
+            "posts": [
+              3,
+              4
+            ],
+            "span_hits": 1
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          3,
+          4
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "validation_1_chain_7_s2",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.7407,
+          "center_error_m": 0.0094,
+          "laser_hits": 9,
+          "chain_support": {
+            "posts": [
+              3,
+              4
+            ],
+            "span_hits": 2
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          3,
+          6
+        ],
+        "interior_corridor_hits": 2
+      }
+    },
+    {
+      "name": "validation_1_chain_10_s0",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          2,
+          1
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "validation_1_chain_10_s1",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          3,
+          2
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "validation_1_chain_10_s2",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          4,
+          0
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "validation_1_unlinked_5_s0",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_unlinked_5_s1",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_unlinked_5_s2",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_unlinked_7_s0",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_unlinked_7_s1",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_unlinked_7_s2",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_unlinked_10_s0",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_unlinked_10_s1",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_unlinked_10_s2",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_lone_post_5_s0",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_lone_post_5_s1",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_lone_post_5_s2",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_lone_post_7_s0",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_lone_post_7_s1",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_lone_post_7_s2",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_lone_post_10_s0",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_lone_post_10_s1",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_lone_post_10_s2",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_warning_5_s0",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_warning_5_s1",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_warning_5_s2",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_warning_7_s0",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_warning_7_s1",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_warning_7_s2",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_warning_10_s0",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_warning_10_s1",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_warning_10_s2",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barrel_5_s0",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barrel_5_s1",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barrel_5_s2",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barrel_7_s0",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barrel_7_s1",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barrel_7_s2",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barrel_10_s0",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barrel_10_s1",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barrel_10_s2",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_cone_5_s0",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_cone_5_s1",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_cone_5_s2",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_cone_7_s0",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_cone_7_s1",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_cone_7_s2",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_cone_10_s0",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_cone_10_s1",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_cone_10_s2",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barricade_5_s0",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.7828,
+          "center_error_m": 0.1052,
+          "laser_hits": 51,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barricade_5_s1",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.7796,
+          "center_error_m": 0.1078,
+          "laser_hits": 46,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barricade_5_s2",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.7792,
+          "center_error_m": 0.1036,
+          "laser_hits": 37,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barricade_7_s0",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8607,
+          "center_error_m": 0.0706,
+          "laser_hits": 24,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barricade_7_s1",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8592,
+          "center_error_m": 0.0769,
+          "laser_hits": 28,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barricade_7_s2",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8653,
+          "center_error_m": 0.0625,
+          "laser_hits": 32,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barricade_10_s0",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8814,
+          "center_error_m": 0.0823,
+          "laser_hits": 10,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barricade_10_s1",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8895,
+          "center_error_m": 0.0848,
+          "laser_hits": 7,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_barricade_10_s2",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8912,
+          "center_error_m": 0.1151,
+          "laser_hits": 6,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_clear_5_s0",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_clear_5_s1",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_clear_5_s2",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_clear_7_s0",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_clear_7_s1",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_clear_7_s2",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_clear_10_s0",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_clear_10_s1",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "validation_1_clear_10_s2",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    }
+  ]
+}

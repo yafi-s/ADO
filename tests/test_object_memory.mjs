@@ -34,6 +34,98 @@ const repeat = (count, make) => Array.from({length: count}, (_, i) => make(i));
 // A lane centre line along the world x axis, sampled every 2 m as a town export is.
 const lane = repeat(101, i => [i * 2 - 100, 0, 0]);
 
+test('only a coast whose repeated surface belongs to a newly measured striped board loses its car symbol',()=>{
+  const patch=[[-.4,0,.2],[.4,0,.2],[-.4,0,.75],[.4,0,.75],[0,0,.55]];
+  function replay({separation=0,score=.46,fresh=false,approved=true,extraPoint=false}={}){
+    const frames=repeat(6,i=>{
+      const points=patch.map(([u,v,z])=>[8+u,v+separation,z]);
+      if(extraPoint)points.push([10,.3,.7]);
+      const vehicle=car(1,9.9,separation,{confidence:score,cameras:['front'],lidar_hits:9,surface_xyz:points});
+      const board=car(2,8,0,{label:'barrier',barrier_subtype:'striped_board',confidence:.9,
+        length:1.2,width:.35,height:1,z:.5,cameras:['front'],lidar_hits:9,surface_xyz:patch.map(([u,v,z])=>[8+u,v,z])});
+      const observed=i<5||fresh?[vehicle]:[];
+      if(i===5)observed.push(board);
+      const boxes=observed.map(t=>({label:t.label,track_id:t.id,barrier_subtype:t.barrier_subtype,score:t.confidence,
+        image_id:t.id,range_supported:true,box:[.45,.45,.55,.65]}));
+      return {frame:i,sim_time:i/10,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+        tracks:observed,camera_detections:{front:boxes},barrier_review:{cameras:i===5?[{view:'front',box:boxes.at(-1),confirmed:approved}]:[]}};
+    });
+    const memory=new ReplayMemory({});
+    assert.ok(memory.at(frames,4).objects.some(o=>o.label==='car'),'future board classification cannot change earlier history');
+    return memory.at(frames,5).objects.map(o=>o.label);
+  }
+  assert.deepEqual(replay(),['barrier']);
+  for(const control of [{separation:1.15},{extraPoint:true},{score:.85},{fresh:true},{approved:false}]){
+    assert.deepEqual(replay(control),['car','barrier']);
+  }
+});
+
+test('a single ranged rider keeps one identity through intermittent mounted bicycle classifications',()=>{
+  const frames=repeat(13,i=>{
+    const mounted=i===4||i===8;
+    const sample=person(73,8,.5,{confidence:.9,lidar_hits:8,cameras:['front'],sources:['lidar','rgb']});
+    if(mounted)Object.assign(sample,{label:'bicycle',length:1.7,width:.55,cycle_association:{
+      range_source:'shared rider/bicycle lidar',paired_observations:4,surface_hits:8,age_s:0}});
+    return {frame:i,sim_time:i/10,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+      tracks:[sample,person(74,8,2.8,{confidence:.9})]};
+  });
+  const memory=new ReplayMemory({});
+  const baseline=memory.at(frames,3).objects.find(o=>o.sourceId===73).key;
+  for(let i=4;i<frames.length;i++){
+    const outputs=memory.at(frames,i).objects,owned=outputs.filter(o=>o.sourceId===73);
+    assert.equal(owned.length,1);
+    assert.equal(owned[0].key,baseline);
+    assert.equal(owned[0].label,'bicycle');
+    assert.equal(outputs.find(o=>o.sourceId===74).label,'person');
+  }
+});
+
+test('a weak car box on a long measured surface stays inspectable as an unclassified footprint',()=>{
+  const frames=repeat(8,i=>{
+    const clear=i>=4;
+    const surface=clear?[[9,-.7,0],[10,.8,.7],[11,0,1.2]]:[[6,0,0],[10,.1,.5],[15,.1,.7]];
+    const score=clear?.82:.44;
+    return {frame:i,sim_time:i/10,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+      tracks:[car(2,10,0,{confidence:score,cameras:['front'],surface_xyz:surface,lidar_hits:8})],
+      camera_detections:{front:[{label:'car',image_id:10,score,range_supported:true,track_id:2}]}};
+  });
+  const memory=new ReplayMemory({});
+  assert.equal(memory.at(frames,3).objects[0].label,'unknown');
+  assert.equal(memory.at(frames,3).objects[0].sourceId,2);
+  assert.equal(memory.at(frames,7).objects[0].label,'car');
+  assert.equal(frames[3].tracks[0].label,'car');
+});
+
+test('the first ranging observation can confirm a repeatedly seen pedestrian while image-only boxes stay unplaced',()=>{
+  const frames=repeat(10,i=>({frame:i,sim_time:i/10,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+    camera_detections:{front:[{image_id:11,label:'person',score:i===9?.46:.73,track_id:i===9?9:null,range_supported:i===9}]},
+    tracks:i===9?[person(9,24,4,{cameras:['front'],confidence:.46,lidar_hits:4,
+      sources:['rgb','lidar','radar'],radial_mps:-3})]:[]}));
+  const memory=new ReplayMemory({});
+  assert.deepEqual(memory.at(frames,8).objects,[]);
+  assert.equal(memory.at(frames,9).objects[0].label,'person');
+});
+
+test('a confirmed post-and-chain subtype reaches the renderer with measured confidence',()=>{
+  const frames=repeat(4,i=>({frame:i,sim_time:i/10,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+    camera_detections:{front:[]},tracks:[car(2,8,0,{label:'barrier',barrier_subtype:'chain',subtype_confidence:.68,
+      length:1.64,width:.24,height:.70,cameras:['front'],sources:['rgb','lidar'],confidence:.68,lidar_hits:8})]}));
+  const drawn=new ReplayMemory({}).at(frames,3).objects[0];
+  assert.equal(drawn.label,'barrier');
+  assert.equal(drawn.barrierSubtype,'chain');
+  assert.equal(drawn.barrierSubtypeConfidence,.68);
+});
+
+test('a range-supported work-zone barrier stays distinct from people and vehicles and expires when its depth stops',()=>{
+  const frames=repeat(19,i=>({frame:i,sim_time:i/10,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+    camera_detections:{front:[]},tracks:i<4?[car(2,8,0,{label:'barrier',length:1.19,width:.40,height:1.09,
+      cameras:['front'],sources:['rgb','lidar'],confidence:.8,lidar_hits:8}),person(5,8,1)]:[]}));
+  const memory=new ReplayMemory({});
+  assert.equal(memory.at(frames,3).objects.filter(p=>p.family==='barrier').length,1);
+  assert.equal(memory.at(frames,3).objects.filter(p=>p.family==='person').length,1);
+  assert.ok(!memory.at(frames,18).objects.some(p=>p.family==='barrier'));
+});
+
 test('continuous playback, cold chapter jumps and reverse seeks reconstruct identical rear tracks', () => {
   const frames = repeat(235, i => ({
     frame: i, sim_time: i / 10, scenario: 'test', perception_version: 'surround-v1',

@@ -3,6 +3,7 @@ import {buildRoadUser, disposeRoadUserGeometry, plausibleSize, TRACK_TONE} from 
 import {ObjectMemory, ReplayMemory, laneAxes} from './object-memory.mjs';
 import {SignalHeads, townFeatures} from './signal-heads.js';
 import {cornerReturns} from './sensor-returns.mjs';
+import {FollowHeading} from './follow-heading.mjs';
 
 const V = (x = 0, y = 0, z = 0) => new T.Vector3(x, y, z);
 const finite = Number.isFinite;
@@ -40,7 +41,7 @@ const PALETTES = {
     pathFar:[.024,.35,.38], pathNear:[.16,.81,.68],
     wallDark:[.026,.041,.058], wallLit:[.074,.102,.126], wallEdge:[.030,.052,.066],
     shadow:'#061012', shadowOpacity:.57, lidar:'#8cced2', radar:'#e6b979',
-    vehicle:'#7792b8', rider:'#f2b45e', person:'#f4aa51', unknown:'#8597a4',
+    vehicle:'#7792b8', rider:'#f2b45e', person:'#f4aa51', barrier:'#ff7854', unknown:'#8597a4',
     glass:'#233d52', lamp:'#e6ecff', tail:'#e9877c', tyre:'#232f39', hub:'#637885', glow:.025, rim:.14, exposure:1.04,
     signalBody:'#2a3644', signalOff:'#141c26', red:'#ff453a', amber:'#ffb01f', green:'#2fe37a'
   },
@@ -50,7 +51,7 @@ const PALETTES = {
     pathFar:'#7fa8f5', pathNear:'#1f5fe8',
     wallDark:'#cdd2da', wallLit:'#e9ecf0', wallEdge:[-.035,-.033,-.03],
     shadow:'#1d2633', shadowOpacity:.34, lidar:'#5578b4', radar:'#d9641a',
-    vehicle:'#8e9da9', rider:'#bf762e', person:'#c96022', unknown:'#9daab2',
+    vehicle:'#8e9da9', rider:'#bf762e', person:'#c96022', barrier:'#d44826', unknown:'#9daab2',
     glass:'#505f71', lamp:'#f6f7f9', tail:'#c97875', tyre:'#4b5560', hub:'#828f9b', glow:0, rim:0, exposure:1.0,
     signalBody:'#5d6674', signalOff:'#39414d', red:'#e5352b', amber:'#e39a0c', green:'#17a85a'
   }
@@ -464,7 +465,7 @@ function showSignal(parts, signal, state) {
 // The simulator names lamp states Red, Yellow and Green.
 const lampState=value=>({red:'red',yellow:'amber',amber:'amber',green:'green'})[String(value).toLowerCase()]||null;
 
-// The camera turns with the vehicle after this lag, so the scene does not swing with every steering input.
+// Live has no future measurements. Ease its camera as they arrive.
 const CAMERA_SECONDS=.32;
 const ease=(seconds,over)=>1-Math.exp(-Math.max(0,seconds)/over);
 
@@ -526,6 +527,7 @@ export class PerceptionScene {
     });
     this.resources=0;
     this.view='follow';this.yaw=0;this.fromYaw=0;this.toYaw=0;this.cameraYaw=0;
+    this.reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
     this.from=V();this.to=V();this.at=V();
     this.target=V();this.offset=V();
     this.orbit=0;this.pitch=0;this.zoom=1;this.dirty=true;
@@ -557,13 +559,14 @@ export class PerceptionScene {
       if(this.disposed)return;
       this.raf=requestAnimationFrame(this.animate);
       const interpolating=this.duration>0 && now<this.started+this.duration+35;
-      const settling=this.view==='follow' && Math.abs(shortest(this.cameraYaw,this.yaw))>.0006;
+      const settling=this.frame&&!this.followHeading&&this.view==='follow'&&Math.abs(shortest(this.cameraYaw,this.yaw))>.0006;
       if(document.hidden||(!this.dirty&&!interpolating&&!settling))return;
       if(!this.dirty&&now-(this.lastDraw||0)<24)return;
       this.sample(now);
-      // The camera turns with the vehicle after a short lag, so the scene does not swing with every steering input.
-      const elapsed=clamp((now-(this.lastDraw||now))/1000,0,.1);
-      this.cameraYaw=this.snapCamera?this.yaw:this.cameraYaw+shortest(this.cameraYaw,this.yaw)*ease(elapsed,CAMERA_SECONDS);
+      if(!this.followHeading){
+        const elapsed=clamp((now-(this.lastDraw||now))/1000,0,.1);
+        this.cameraYaw=this.snapCamera||this.reducedMotion.matches?this.yaw:this.cameraYaw+shortest(this.cameraYaw,this.yaw)*ease(elapsed,CAMERA_SECONDS);
+      }
       this.snapCamera=false;
       this.placeCamera();
       this.positionTrackBadge();
@@ -596,7 +599,7 @@ export class PerceptionScene {
     const frame=this.frame;
     if(frame){
       this.clearTracks();this.frame=null;
-      if(this.replayFrames)this.updateReplay(this.replayFrames,this.replayIndex,this.fraction);
+      if(this.replayFrames)this.updateReplay(this.replayFrames,this.replayIndex,this.fraction,this.cameraFraction);
       else this.update(frame);
     }
     this.dirty=true;
@@ -833,8 +836,8 @@ export class PerceptionScene {
   setRiderAssociations(riders){ this.riders=riders; }
   sourceGroups(frame){
     if(!frame||frame.frame!==this.frame?.frame||frame.run_id!==this.frame?.run_id)return [];
-    return [...this.tracks.values()].filter(t=>t.sourceIds?.length>1)
-      .map(t=>({key:t.id,primary:t.sourceId,ids:t.sourceIds,label:t.label}));
+    return [...this.tracks.values()].filter(t=>t.sourceIds?.length>1||t.mountedRider)
+      .map(t=>({key:t.id,primary:t.sourceId,ids:t.sourceIds??[t.sourceId],label:t.label,mountedRider:t.mountedRider}));
   }
 
   positionTrackBadge(){
@@ -871,14 +874,19 @@ export class PerceptionScene {
     this.tracks.set(id,track);return track;
   }
 
-  updateReplay(frames,index,fraction) {
+  updateReplay(frames,index,fraction,cameraFraction=fraction) {
     const frame=frames[index];
     if(!frame)return;
+    const cameraChanged=cameraFraction!==this.cameraFraction;
+    this.cameraFraction=cameraFraction;
     if(this.frame===frame && this.replayFrames===frames && this.replayMemory) {
       if(fraction!==this.fraction){this.fraction=fraction;this.dirty=true;}
+      if(cameraChanged&&this.view==='follow'&&(cameraFraction===0||
+        Math.abs(this.followHeading.at(index,cameraFraction)-this.cameraYaw)>.00008))this.dirty=true;
       return;
     }
     const discontinuity=!this.frame || this.replayFrames!==frames || this.replayIndex+1!==index;
+    if(this.replayFrames!==frames)this.followHeading=new FollowHeading(frames);
     this.replayFrames=frames;this.replayIndex=index;this.fraction=fraction;
     this.replayMemory??=new ReplayMemory(this.memory.deps);
     const heightAt=(x,z)=>this.height(x,z);
@@ -890,7 +898,7 @@ export class PerceptionScene {
   update(frame,replay=null) {
     if(this.disposed)return;
     const now=performance.now();
-    if(!replay){this.replayFrames=null;this.replayMemory=null;this.fraction=null;}
+    if(!replay){this.replayFrames=null;this.replayMemory=null;this.followHeading=null;this.fraction=null;}
     if(!frame){
       this.frame=null;this.ego.visible=false;this.returnGroup.visible=false;this.localized=false;
       this.measuredSignals.update(null);
@@ -933,7 +941,11 @@ export class PerceptionScene {
       fillReturns(this.lidar,frame.lidar_xyz,null);fillReturns(this.surfaces,[],null);
     }else{
       fillReturns(this.lidar,frame.lidar,.085);
-      fillReturns(this.surfaces,(frame.tracks||[]).flatMap(track=>track.surface_xyz||[]),null);
+      const measurements=[...(frame.tracks??[])];
+      for(const raw of frame.barrier_review?.tracks??[]){
+        if(!measurements.some(t=>t.id===raw.id))measurements.push(raw);
+      }
+      fillReturns(this.surfaces,measurements.flatMap(track=>track.surface_xyz||[]),null);
     }
     fillReturns(this.radar,frame.radar,.105);fillReturns(this.cornerRadar,cornerReturns(frame),null);
     this.lightSignals(frame,ctx);
@@ -942,7 +954,8 @@ export class PerceptionScene {
     const nativeTracks=new Map((frame.tracks??[]).map(track=>[track.id,track]));
     for(const object of objects){
       const inferred=object.label==='person'?this.riders?.get(object.sourceId)?.label:null;
-      const label=inferred??(Object.hasOwn(TRACK_TONE,object.label)?object.label:'unknown');
+      const label=object.label==='barrier'&&object.barrierSubtype==='chain'?'chain_barrier':
+        inferred??(Object.hasOwn(TRACK_TONE,object.label)?object.label:'unknown');
       drawn.add(object.key);
       let track=this.tracks.get(object.key), carried=null;
       // The memory settled on another class for it: swap the symbol where it stands.
@@ -951,6 +964,7 @@ export class PerceptionScene {
       track=track||this.makeTrack(object.key,label);
       track.sourceId=object.sourceId;
       track.sourceIds=object.sourceIds;
+      track.mountedRider=object.mountedRider;
       track.from.copy(track.group.position);track.to.set(object.x,object.y,object.z);
       track.fromAngle=track.group.rotation.y;track.toAngle=-object.heading*rad;
       // The symbol stays within sizes its class can have; the ground outline keeps the estimate itself.
@@ -1001,6 +1015,7 @@ export class PerceptionScene {
     const t=this.fraction??(this.duration?clamp((now-this.started)/this.duration,0,1):1);
     this.at.lerpVectors(this.from,this.to,t);
     this.yaw=this.fromYaw+shortest(this.fromYaw,this.toYaw)*t;
+    if(this.followHeading)this.cameraYaw=this.followHeading.at(this.replayIndex,this.cameraFraction);
     this.ego.position.copy(this.at);this.ego.rotation.y=this.yaw;
     this.floor.material.uniforms.uEgo.value.copy(this.at);
     if(this.path)this.path.material.uniforms.uStation.value=this.stationFrom+(this.stationTo-this.stationFrom)*t;
@@ -1031,7 +1046,7 @@ export class PerceptionScene {
     this.offset.set(Math.cos(bearing)*Math.cos(vertical)*distance,Math.sin(vertical)*distance,
       Math.sin(bearing)*Math.cos(vertical)*distance);
     if(!overview){
-      this.target.applyAxisAngle(PerceptionScene.up,this.yaw);
+      this.target.applyAxisAngle(PerceptionScene.up,this.cameraYaw);
       this.offset.applyAxisAngle(PerceptionScene.up,this.cameraYaw);
     }
     this.target.add(this.at);

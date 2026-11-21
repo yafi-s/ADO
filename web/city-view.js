@@ -318,7 +318,7 @@ class CityScene {
     }
     actors.forEach((a, i) => {
       const walker = a.type === 'walker' || a.type === 'pedestrian';
-      const kind = walker ? 'walker' : ['bus', 'cyclist', 'cone', 'van'].includes(a.type) ? a.type : 'vehicle';
+      const kind = walker ? 'walker' : ['bus', 'cyclist', 'cone', 'van', 'barrier'].includes(a.type) ? a.type : 'vehicle';
       let marker = this.actors[i];
       if (!marker || marker.userData.kind !== kind) {
         if (marker) {
@@ -329,13 +329,15 @@ class CityScene {
         marker.userData.kind = kind;
         if (kind === 'cone') {
           mesh(this.coneBody, this.coneMat, marker).position.y = .26;
-        } else if (kind === 'bus' || kind === 'cyclist') {
-          const shape = buildRoadUser(kind === 'bus' ? 'bus' : 'bicycle', {
-            vehicle: 0x8196c2, rider: 0xe1a44a, glass: 0x314558, tyre: 0x25313a,
+        } else if (kind === 'bus' || kind === 'cyclist' || kind === 'barrier') {
+          const shape = buildRoadUser(kind === 'cyclist' ? 'bicycle' : kind, {
+            vehicle: 0x8196c2, rider: 0xe1a44a, barrier: 0xec762a, glass: 0x314558, tyre: 0x25313a,
             hub: 0x96a0ac, lamp: 0xf6edd8, tail: 0xe76d68, glow: .05
           });
           const nominal = kind === 'bus' ? [7.7, 2.8, 2.1] : [1.85, 1.65, .65];
-          const size = point(a.dimensions_m, 3) ? a.dimensions_m : nominal;
+          // The surveyed streetboard's native static AABB is already world-rotated.
+          const size = kind === 'barrier' && a.blueprint === 'static.prop.streetbarrier'
+            ? [1.19, 1.09, .40] : point(a.dimensions_m, 3) ? a.dimensions_m : nominal;
           shape.group.scale.set(...size);
           marker.add(shape.group);
           marker.userData.materials = shape.materials;
@@ -534,7 +536,8 @@ async function startRecording() {
       const primary = legacy.map(entry => {
         const supplemental = viewerByPath.get(entry?.path);
         return {...entry, map: entry?.map ?? supplemental?.map, map_url: entry?.map_url ?? supplemental?.map_url,
-          replay_pack_url: entry?.replay_pack_url ?? supplemental?.replay_pack_url};
+          replay_pack_url: entry?.replay_pack_url ?? supplemental?.replay_pack_url,
+          replay_url: entry?.replay_url ?? supplemental?.replay_url};
       });
       catalog = [...primary, ...extra].filter(entry => typeof entry?.label === 'string' &&
         typeof entry.path === 'string' && (entry.path === '' || /^[\w-]+(?:\/[\w-]+)*$/.test(entry.path)));
@@ -547,7 +550,7 @@ async function startRecording() {
     void scene?.loadTown(selected?.map_url, typeof selected?.map === 'string' ? selected.map : null);
     const directory = './media/' + (el('case').value ? el('case').value + '/' : '');
     const playback = await loadReplay(selected?.replay_pack_url, signal, parseRecording,
-      () => read(directory + 'replay.json', signal, 30000));
+      () => read(selected?.replay_url ?? directory + 'replay.json', signal, 30000),selected);
     if (signal.aborted) return;
     recording = playback;
     playing = recording.end > 0;

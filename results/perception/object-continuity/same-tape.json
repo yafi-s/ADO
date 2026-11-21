@@ -1,0 +1,7208 @@
+{
+  "release": "a7a00120ff6e3f2e266db7de1880e31c38289553",
+  "association_sha256_lf": {
+    "before": "37397ce1fba0f084cc1bc0ad9ca3e7ca75c8f838ee25eb1a7b5f91d94fc17248",
+    "after": "774d0c148d496d1fa4744c0fba3e37d9e934ae1d4046d964aa95b886f311dfbd"
+  },
+  "scoring_sha256_lf": {
+    "tools/audit_city_perception.mjs": "9b671451bf3088aeeba323ca18beca99e2c12272cfa7b9b65e66f0e6f23d4e66",
+    "tools/audit_city_motion.mjs": "bfc3481a31ed7abd015ed9ef5bbc4ddef4ba6bc655e80ca662c41b19151b068e",
+    "web/road-users.js": "5bccdfaaceab986c9091a355b4c011fab37c9048f7168b53d1a0ceeb3e8a992d",
+    "tools/compare_rider_object_replays.mjs": "7671269ec44de9897d037325d26ff7c70fe484d75ee22174011ccb4921735cb0"
+  },
+  "replays": {
+    "surround-city": {
+      "before": {
+        "input_sha256": "7fa6eea96ed07e23a1d877b291b0c62526fad7a3157126ab2ac2ff3d5581014e",
+        "frames": 3173,
+        "first": 727,
+        "last": 3899,
+        "town_sha256": "ad7db3ded5e31a8ffb463c1498625ac0a0e35e9f4746f8cbc9113134c6b31e63",
+        "parked_sha256": "453adee19ae15adc10c45f47db97177bd2cf4e8296bdb5ad9173ad7dc3eff77c",
+        "memory_sha256_lf": "ab4afd7f1b069bbeb9aaa58ec4293f9ccd00f49b59a2f03e24c2026cd2ce6f91",
+        "tracker": {
+          "actor_frames": 2883,
+          "matched": 1717,
+          "exact_label_hits": 1650,
+          "prediction_frames": 3450,
+          "unmatched_predictions": 1730
+        },
+        "spatial": {
+          "overall": {
+            "actor_frames": 2883,
+            "matched": 1841,
+            "exact_label_hits": 1831,
+            "prediction_frames": 4295,
+            "unmatched_predictions": 2438
+          },
+          "sector": {
+            "front": {
+              "actor_frames": 1447,
+              "matched": 961,
+              "exact_label_hits": 951,
+              "prediction_frames": 1376,
+              "unmatched_predictions": 413
+            },
+            "left": {
+              "actor_frames": 253,
+              "matched": 135,
+              "exact_label_hits": 135,
+              "prediction_frames": 540,
+              "unmatched_predictions": 399
+            },
+            "right": {
+              "actor_frames": 310,
+              "matched": 197,
+              "exact_label_hits": 197,
+              "prediction_frames": 1144,
+              "unmatched_predictions": 945
+            },
+            "rear": {
+              "actor_frames": 873,
+              "matched": 548,
+              "exact_label_hits": 548,
+              "prediction_frames": 1235,
+              "unmatched_predictions": 681
+            }
+          },
+          "by_status": {
+            "current": {
+              "prediction_frames": 2475,
+              "unmatched_predictions": 932
+            },
+            "remembered": {
+              "prediction_frames": 1820,
+              "unmatched_predictions": 1506
+            }
+          },
+          "position_error": {
+            "p50_m": 0.231,
+            "p95_m": 1.354
+          },
+          "direct_id_switches": 2,
+          "reacquisitions": 2
+        },
+        "spatial_with_parked": {
+          "overall": {
+            "actor_frames": 4198,
+            "matched": 2250,
+            "exact_label_hits": 2240,
+            "prediction_frames": 4295,
+            "unmatched_predictions": 2048
+          },
+          "sector": {
+            "front": {
+              "actor_frames": 1555,
+              "matched": 984,
+              "exact_label_hits": 974,
+              "prediction_frames": 1376,
+              "unmatched_predictions": 387
+            },
+            "left": {
+              "actor_frames": 582,
+              "matched": 272,
+              "exact_label_hits": 272,
+              "prediction_frames": 540,
+              "unmatched_predictions": 281
+            },
+            "right": {
+              "actor_frames": 1090,
+              "matched": 433,
+              "exact_label_hits": 433,
+              "prediction_frames": 1144,
+              "unmatched_predictions": 715
+            },
+            "rear": {
+              "actor_frames": 971,
+              "matched": 561,
+              "exact_label_hits": 561,
+              "prediction_frames": 1235,
+              "unmatched_predictions": 665
+            }
+          },
+          "by_status": {
+            "current": {
+              "prediction_frames": 2475,
+              "unmatched_predictions": 803
+            },
+            "remembered": {
+              "prediction_frames": 1820,
+              "unmatched_predictions": 1245
+            }
+          },
+          "position_error": {
+            "p50_m": 0.319,
+            "p95_m": 1.532
+          },
+          "direct_id_switches": 2,
+          "reacquisitions": 4
+        },
+        "overlay": {
+          "scenario": {
+            "hits": 1864,
+            "unmatched": 2415
+          },
+          "with_parked": {
+            "hits": 2273,
+            "unmatched": 2025
+          }
+        },
+        "associations": [
+          {
+            "frame": 3435,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3436,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3437,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3438,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3439,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3440,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3441,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3442,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3443,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.2
+          },
+          {
+            "frame": 3444,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.3
+          },
+          {
+            "frame": 3445,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3446,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3447,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3448,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3449,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3450,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3451,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.2
+          },
+          {
+            "frame": 3452,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.3
+          },
+          {
+            "frame": 3453,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3454,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3455,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.2
+          },
+          {
+            "frame": 3456,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.3
+          },
+          {
+            "frame": 3457,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.4
+          }
+        ],
+        "source_cases": {
+          "hedge": {
+            "source_ids": [
+              23,
+              24
+            ],
+            "native_measurements": 9,
+            "symbol_ticks": {
+              "car/current": 20,
+              "car/remembered": 50
+            },
+            "matched": 0,
+            "frames": [
+              [
+                1092,
+                23,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1093,
+                23,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1094,
+                23,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1095,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1096,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1097,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1098,
+                24,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1099,
+                24,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1100,
+                23,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1101,
+                23,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1102,
+                23,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1103,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1104,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1105,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1106,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1107,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1108,
+                23,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1109,
+                23,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1110,
+                23,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1111,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1112,
+                23,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1113,
+                23,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1114,
+                23,
+                20,
+                "car",
+                "current"
+              ],
+              [
+                1115,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1116,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1116,
+                24,
+                21,
+                "car",
+                "current"
+              ],
+              [
+                1117,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1117,
+                24,
+                21,
+                "car",
+                "current"
+              ],
+              [
+                1118,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1118,
+                24,
+                21,
+                "car",
+                "current"
+              ],
+              [
+                1119,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1119,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1120,
+                23,
+                20,
+                "car",
+                "remembered"
+              ],
+              [
+                1120,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1121,
+                24,
+                21,
+                "car",
+                "current"
+              ],
+              [
+                1122,
+                24,
+                21,
+                "car",
+                "current"
+              ],
+              [
+                1123,
+                24,
+                21,
+                "car",
+                "current"
+              ],
+              [
+                1124,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1125,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1126,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1127,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1128,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1129,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1130,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1131,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1132,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1133,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1134,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1135,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1136,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1137,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1138,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1139,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1140,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1141,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1142,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1143,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1144,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1145,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1146,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1147,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1148,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1149,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1150,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1151,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1152,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1153,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1154,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1155,
+                24,
+                21,
+                "car",
+                "remembered"
+              ],
+              [
+                1156,
+                24,
+                21,
+                "car",
+                "remembered"
+              ]
+            ]
+          },
+          "residential_frontage": {
+            "source_ids": [
+              50,
+              55
+            ],
+            "native_measurements": 7,
+            "symbol_ticks": {
+              "truck/current": 13,
+              "truck/remembered": 44
+            },
+            "matched": 0,
+            "frames": [
+              [
+                1377,
+                50,
+                45,
+                "truck",
+                "current"
+              ],
+              [
+                1378,
+                50,
+                45,
+                "truck",
+                "current"
+              ],
+              [
+                1379,
+                50,
+                45,
+                "truck",
+                "current"
+              ],
+              [
+                1380,
+                50,
+                45,
+                "truck",
+                "current"
+              ],
+              [
+                1381,
+                50,
+                45,
+                "truck",
+                "current"
+              ],
+              [
+                1382,
+                50,
+                45,
+                "truck",
+                "current"
+              ],
+              [
+                1383,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1384,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1385,
+                50,
+                45,
+                "truck",
+                "current"
+              ],
+              [
+                1386,
+                50,
+                45,
+                "truck",
+                "current"
+              ],
+              [
+                1387,
+                50,
+                45,
+                "truck",
+                "current"
+              ],
+              [
+                1388,
+                50,
+                45,
+                "truck",
+                "current"
+              ],
+              [
+                1389,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1390,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1391,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1392,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1393,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1394,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1395,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1396,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1397,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1398,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1399,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1400,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1401,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1402,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1403,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1404,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1405,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1406,
+                50,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1407,
+                55,
+                45,
+                "truck",
+                "current"
+              ],
+              [
+                1408,
+                55,
+                45,
+                "truck",
+                "current"
+              ],
+              [
+                1409,
+                55,
+                45,
+                "truck",
+                "current"
+              ],
+              [
+                1410,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1411,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1412,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1413,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1414,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1415,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1416,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1417,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1418,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1419,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1420,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1421,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1422,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1423,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1424,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1425,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1426,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1427,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1428,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1429,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1430,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1431,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1432,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ],
+              [
+                1433,
+                55,
+                45,
+                "truck",
+                "remembered"
+              ]
+            ]
+          },
+          "shelter": {
+            "source_ids": [
+              70
+            ],
+            "native_measurements": 8,
+            "symbol_ticks": {
+              "unknown/current": 15,
+              "unknown/remembered": 6,
+              "car/current": 3,
+              "car/remembered": 34
+            },
+            "matched": 0,
+            "frames": [
+              [
+                1633,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1634,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1635,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1636,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1637,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1638,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1639,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1640,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1641,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1642,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1643,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1644,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1645,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1646,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1647,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1648,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1649,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1650,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1651,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1652,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1653,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1654,
+                70,
+                62,
+                "car",
+                "current"
+              ],
+              [
+                1655,
+                70,
+                62,
+                "car",
+                "current"
+              ],
+              [
+                1656,
+                70,
+                62,
+                "car",
+                "current"
+              ],
+              [
+                1657,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1658,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1659,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1660,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1661,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1662,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1663,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1664,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1665,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1666,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1667,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1668,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1669,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1670,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1671,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1672,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1673,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1674,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1675,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1676,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1677,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1678,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1679,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1680,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1681,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1682,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1683,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1684,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1685,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1686,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1687,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1688,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1689,
+                70,
+                62,
+                "car",
+                "remembered"
+              ],
+              [
+                1690,
+                70,
+                62,
+                "car",
+                "remembered"
+              ]
+            ]
+          }
+        },
+        "all_wheeled_steps": {
+          "world_translation_m": {
+            "n": 2405,
+            "median": 0,
+            "p95": 0.803,
+            "max": 1.005,
+            "worst_frames": [
+              1111,
+              1112
+            ],
+            "worst_time_s": 38.5
+          },
+          "heading_deg": {
+            "n": 2405,
+            "median": 0,
+            "p95": 0.923,
+            "max": 6.466,
+            "worst_frames": [
+              3088,
+              3089
+            ],
+            "worst_time_s": 236.2
+          },
+          "max_extent_m": {
+            "n": 2405,
+            "median": 0,
+            "p95": 0.065,
+            "max": 0.344,
+            "worst_frames": [
+              1229,
+              1230
+            ],
+            "worst_time_s": 50.3
+          },
+          "over_1m": 2,
+          "over_15deg": 0,
+          "over_0_4m_extent": 0,
+          "examples": [
+            {
+              "frame": 1112,
+              "time_s": 38.5,
+              "id": 20,
+              "actual": null,
+              "prior_actor": null,
+              "world_step_m": 1.005,
+              "heading_step_deg": 0.58,
+              "max_extent_step_m": 0.021,
+              "from": {
+                "id": 20,
+                "label": "car",
+                "world": [
+                  69.328,
+                  156.977
+                ],
+                "heading": 95.05,
+                "dimensions": [
+                  5.4,
+                  1.916,
+                  2.1
+                ],
+                "foot": 0.07,
+                "opacity": 0.75,
+                "status": "remembered"
+              },
+              "to": {
+                "id": 20,
+                "label": "car",
+                "world": [
+                  69.292,
+                  157.982
+                ],
+                "heading": 95.63,
+                "dimensions": [
+                  5.4,
+                  1.894,
+                  2.1
+                ],
+                "foot": 0.07,
+                "opacity": 1,
+                "status": "current"
+              }
+            },
+            {
+              "frame": 1108,
+              "time_s": 38.1,
+              "id": 20,
+              "actual": null,
+              "prior_actor": null,
+              "world_step_m": 1.002,
+              "heading_step_deg": 5.86,
+              "max_extent_step_m": 0.012,
+              "from": {
+                "id": 20,
+                "label": "car",
+                "world": [
+                  69.452,
+                  153.231
+                ],
+                "heading": 89.19,
+                "dimensions": [
+                  5.4,
+                  1.928,
+                  2.1
+                ],
+                "foot": 0.07,
+                "opacity": 0.6,
+                "status": "remembered"
+              },
+              "to": {
+                "id": 20,
+                "label": "car",
+                "world": [
+                  69.416,
+                  154.233
+                ],
+                "heading": 95.05,
+                "dimensions": [
+                  5.4,
+                  1.916,
+                  2.1
+                ],
+                "foot": 0.07,
+                "opacity": 0.85,
+                "status": "current"
+              }
+            }
+          ]
+        },
+        "encounters": {
+          "pedestrian/113/1": {
+            "within_35m_frames": 203,
+            "matched": 132,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 749,
+              "time_s": 2.2,
+              "range_m": 24.889,
+              "id": 1,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 761,
+              "time_s": 3.4,
+              "range_m": 20.288,
+              "id": 3,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 761,
+              "time_s": 3.4,
+              "range_m": 20.288,
+              "id": 3,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 132,
+              "median": 0.09,
+              "p95": 0.531,
+              "max": 1.086,
+              "worst_frames": [
+                770
+              ],
+              "worst_time_s": 4.3
+            },
+            "same_id_translation_error_m": {
+              "n": 131,
+              "median": 0.032,
+              "p95": 0.132,
+              "max": 0.539,
+              "worst_frames": [
+                770,
+                771
+              ],
+              "worst_time_s": 4.4
+            },
+            "same_id_extent_error_m": {
+              "n": 131,
+              "median": 0.003,
+              "p95": 0.015,
+              "max": 0.048,
+              "worst_frames": [
+                871,
+                872
+              ],
+              "worst_time_s": 14.5
+            }
+          },
+          "parked-map-vehicle/level-12166413250794706622/1": {
+            "within_35m_frames": 182,
+            "matched": 153,
+            "distinct_ids": 2,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 751,
+              "time_s": 2.4,
+              "range_m": 40.2,
+              "id": 2,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 753,
+              "time_s": 2.6,
+              "range_m": 39.626,
+              "id": 2,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 754,
+              "time_s": 2.7,
+              "range_m": 39.322,
+              "id": 2,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 153,
+              "median": 0.689,
+              "p95": 0.713,
+              "max": 0.749,
+              "worst_frames": [
+                891
+              ],
+              "worst_time_s": 16.4
+            },
+            "same_id_translation_error_m": {
+              "n": 151,
+              "median": 0,
+              "p95": 0.045,
+              "max": 0.389,
+              "worst_frames": [
+                799,
+                800
+              ],
+              "worst_time_s": 7.3
+            },
+            "same_id_extent_error_m": {
+              "n": 151,
+              "median": 0,
+              "p95": 0.029,
+              "max": 0.045,
+              "worst_frames": [
+                804,
+                805
+              ],
+              "worst_time_s": 7.8
+            }
+          },
+          "parked-map-vehicle/level-6183424760014961521/1": {
+            "within_35m_frames": 178,
+            "matched": 48,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 765,
+              "time_s": 3.8,
+              "range_m": 31.44,
+              "id": 3,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 767,
+              "time_s": 4,
+              "range_m": 30.781,
+              "id": 4,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 768,
+              "time_s": 4.1,
+              "range_m": 30.453,
+              "id": 4,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 48,
+              "median": 0.848,
+              "p95": 0.887,
+              "max": 0.898,
+              "worst_frames": [
+                772
+              ],
+              "worst_time_s": 4.5
+            },
+            "same_id_translation_error_m": {
+              "n": 47,
+              "median": 0,
+              "p95": 0.014,
+              "max": 0.038,
+              "worst_frames": [
+                777,
+                778
+              ],
+              "worst_time_s": 5.1
+            },
+            "same_id_extent_error_m": {
+              "n": 47,
+              "median": 0,
+              "p95": 0.001,
+              "max": 0.004,
+              "worst_frames": [
+                775,
+                776
+              ],
+              "worst_time_s": 4.9
+            }
+          },
+          "occluder/117/1": {
+            "within_35m_frames": 158,
+            "matched": 158,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 988,
+              "time_s": 26.1,
+              "range_m": 59.779,
+              "id": 10,
+              "status": "coasting"
+            },
+            "first_draw": {
+              "frame": 991,
+              "time_s": 26.4,
+              "range_m": 58.281,
+              "id": 12,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 992,
+              "time_s": 26.5,
+              "range_m": 57.742,
+              "id": 12,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 158,
+              "median": 0.545,
+              "p95": 0.8,
+              "max": 1.063,
+              "worst_frames": [
+                1089
+              ],
+              "worst_time_s": 36.2
+            },
+            "same_id_translation_error_m": {
+              "n": 157,
+              "median": 0,
+              "p95": 0.09,
+              "max": 0.253,
+              "worst_frames": [
+                1091,
+                1092
+              ],
+              "worst_time_s": 36.5
+            },
+            "same_id_extent_error_m": {
+              "n": 157,
+              "median": 0.019,
+              "p95": 0.065,
+              "max": 0.072,
+              "worst_frames": [
+                1078,
+                1079
+              ],
+              "worst_time_s": 35.2
+            }
+          },
+          "occluded/118/1": {
+            "within_35m_frames": 156,
+            "matched": 108,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1063,
+              "time_s": 33.6,
+              "range_m": 15.485,
+              "id": 18,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1063,
+              "time_s": 33.6,
+              "range_m": 15.485,
+              "id": 16,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 1063,
+              "time_s": 33.6,
+              "range_m": 15.485,
+              "id": 16,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 108,
+              "median": 0.08,
+              "p95": 0.368,
+              "max": 0.639,
+              "worst_frames": [
+                1106
+              ],
+              "worst_time_s": 37.9
+            },
+            "same_id_translation_error_m": {
+              "n": 107,
+              "median": 0.022,
+              "p95": 0.13,
+              "max": 0.328,
+              "worst_frames": [
+                1106,
+                1107
+              ],
+              "worst_time_s": 38
+            },
+            "same_id_extent_error_m": {
+              "n": 107,
+              "median": 0.001,
+              "p95": 0.006,
+              "max": 0.039,
+              "worst_frames": [
+                1066,
+                1067
+              ],
+              "worst_time_s": 34
+            }
+          },
+          "parked-map-vehicle/level-6664586185198452187/1": {
+            "within_35m_frames": 58,
+            "matched": 25,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1216,
+              "time_s": 48.9,
+              "range_m": 20.575,
+              "id": 39,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1217,
+              "time_s": 49,
+              "range_m": 20.734,
+              "id": 36,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 1218,
+              "time_s": 49.1,
+              "range_m": 20.947,
+              "id": 36,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 25,
+              "median": 0.39,
+              "p95": 0.39,
+              "max": 0.39,
+              "worst_frames": [
+                1241
+              ],
+              "worst_time_s": 51.4
+            },
+            "same_id_translation_error_m": {
+              "n": 24,
+              "median": 0,
+              "p95": 0,
+              "max": 0.022,
+              "worst_frames": [
+                1218,
+                1219
+              ],
+              "worst_time_s": 49.2
+            },
+            "same_id_extent_error_m": {
+              "n": 24,
+              "median": 0,
+              "p95": 0,
+              "max": 0.036,
+              "worst_frames": [
+                1218,
+                1219
+              ],
+              "worst_time_s": 49.2
+            }
+          },
+          "background/133/1": {
+            "within_35m_frames": 55,
+            "matched": 45,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1193,
+              "time_s": 46.6,
+              "range_m": 44.039,
+              "id": 34,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1199,
+              "time_s": 47.2,
+              "range_m": 37.498,
+              "id": 31,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 1201,
+              "time_s": 47.4,
+              "range_m": 35.25,
+              "id": 31,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 45,
+              "median": 0.309,
+              "p95": 0.84,
+              "max": 1.094,
+              "worst_frames": [
+                1256
+              ],
+              "worst_time_s": 52.9
+            },
+            "same_id_translation_error_m": {
+              "n": 44,
+              "median": 0.082,
+              "p95": 0.134,
+              "max": 0.139,
+              "worst_frames": [
+                1245,
+                1246
+              ],
+              "worst_time_s": 51.9
+            },
+            "same_id_extent_error_m": {
+              "n": 44,
+              "median": 0.029,
+              "p95": 0.065,
+              "max": 0.065,
+              "worst_frames": [
+                1242,
+                1243
+              ],
+              "worst_time_s": 51.6
+            }
+          },
+          "parked-map-vehicle/level-11906624848723412420/1": {
+            "within_35m_frames": 272,
+            "matched": 46,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1386,
+              "time_s": 65.9,
+              "range_m": 17.854,
+              "id": 51,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1425,
+              "time_s": 69.8,
+              "range_m": 20.755,
+              "id": 51,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 1426,
+              "time_s": 69.9,
+              "range_m": 20.806,
+              "id": 51,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 46,
+              "median": 0.636,
+              "p95": 0.649,
+              "max": 0.682,
+              "worst_frames": [
+                1432
+              ],
+              "worst_time_s": 70.5
+            },
+            "same_id_translation_error_m": {
+              "n": 45,
+              "median": 0,
+              "p95": 0.033,
+              "max": 0.045,
+              "worst_frames": [
+                1432,
+                1433
+              ],
+              "worst_time_s": 70.6
+            },
+            "same_id_extent_error_m": {
+              "n": 45,
+              "median": 0,
+              "p95": 0.034,
+              "max": 0.038,
+              "worst_frames": [
+                1427,
+                1428
+              ],
+              "worst_time_s": 70.1
+            }
+          },
+          "signal_queue/112/1": {
+            "within_35m_frames": 189,
+            "matched": 132,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1403,
+              "time_s": 67.6,
+              "range_m": 13.98,
+              "id": 53,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1404,
+              "time_s": 67.7,
+              "range_m": 13.57,
+              "id": 48,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 1405,
+              "time_s": 67.8,
+              "range_m": 13.19,
+              "id": 48,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 132,
+              "median": 0.152,
+              "p95": 0.905,
+              "max": 1.003,
+              "worst_frames": [
+                1517
+              ],
+              "worst_time_s": 79
+            },
+            "same_id_translation_error_m": {
+              "n": 131,
+              "median": 0.023,
+              "p95": 0.103,
+              "max": 0.186,
+              "worst_frames": [
+                1499,
+                1500
+              ],
+              "worst_time_s": 77.3
+            },
+            "same_id_extent_error_m": {
+              "n": 131,
+              "median": 0.003,
+              "p95": 0.049,
+              "max": 0.076,
+              "worst_frames": [
+                1527,
+                1528
+              ],
+              "worst_time_s": 80.1
+            }
+          },
+          "background/134/1": {
+            "within_35m_frames": 180,
+            "matched": 116,
+            "distinct_ids": 3,
+            "duplicate_frames": 1,
+            "footprint_duplicates": 1,
+            "first_spatial_track": {
+              "frame": 1701,
+              "time_s": 97.4,
+              "range_m": 34.457,
+              "id": 74,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1703,
+              "time_s": 97.6,
+              "range_m": 33.279,
+              "id": 66,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 1704,
+              "time_s": 97.7,
+              "range_m": 32.661,
+              "id": 66,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 116,
+              "median": 0.486,
+              "p95": 2.398,
+              "max": 2.911,
+              "worst_frames": [
+                1820
+              ],
+              "worst_time_s": 109.3
+            },
+            "same_id_translation_error_m": {
+              "n": 113,
+              "median": 0.054,
+              "p95": 0.284,
+              "max": 0.392,
+              "worst_frames": [
+                1741,
+                1742
+              ],
+              "worst_time_s": 101.5
+            },
+            "same_id_extent_error_m": {
+              "n": 113,
+              "median": 0.008,
+              "p95": 0.065,
+              "max": 0.065,
+              "worst_frames": [
+                1743,
+                1744
+              ],
+              "worst_time_s": 101.7
+            }
+          },
+          "background/129/1": {
+            "within_35m_frames": 83,
+            "matched": 69,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1729,
+              "time_s": 100.2,
+              "range_m": 26.483,
+              "id": 75,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1733,
+              "time_s": 100.6,
+              "range_m": 23.422,
+              "id": 67,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 1733,
+              "time_s": 100.6,
+              "range_m": 23.422,
+              "id": 67,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 69,
+              "median": 0.027,
+              "p95": 0.146,
+              "max": 0.391,
+              "worst_frames": [
+                1734
+              ],
+              "worst_time_s": 100.7
+            },
+            "same_id_translation_error_m": {
+              "n": 68,
+              "median": 0.003,
+              "p95": 0.122,
+              "max": 0.285,
+              "worst_frames": [
+                1734,
+                1735
+              ],
+              "worst_time_s": 100.8
+            },
+            "same_id_extent_error_m": {
+              "n": 68,
+              "median": 0,
+              "p95": 0.012,
+              "max": 0.036,
+              "worst_frames": [
+                1738,
+                1739
+              ],
+              "worst_time_s": 101.2
+            }
+          },
+          "lead/115/2": {
+            "within_35m_frames": 225,
+            "matched": 140,
+            "distinct_ids": 2,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1851,
+              "time_s": 112.4,
+              "range_m": 46.51,
+              "id": 80,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1863,
+              "time_s": 113.6,
+              "range_m": 37.65,
+              "id": 73,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 1864,
+              "time_s": 113.7,
+              "range_m": 37.06,
+              "id": 73,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 140,
+              "median": 0.105,
+              "p95": 1.605,
+              "max": 2.714,
+              "worst_frames": [
+                2082
+              ],
+              "worst_time_s": 135.5
+            },
+            "same_id_translation_error_m": {
+              "n": 138,
+              "median": 0.008,
+              "p95": 0.096,
+              "max": 0.308,
+              "worst_frames": [
+                2081,
+                2082
+              ],
+              "worst_time_s": 135.5
+            },
+            "same_id_extent_error_m": {
+              "n": 138,
+              "median": 0.002,
+              "p95": 0.019,
+              "max": 0.055,
+              "worst_frames": [
+                2080,
+                2081
+              ],
+              "worst_time_s": 135.4
+            }
+          },
+          "background/130/2": {
+            "within_35m_frames": 181,
+            "matched": 124,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 2321,
+              "time_s": 159.4,
+              "range_m": 28.811,
+              "id": 104,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 2325,
+              "time_s": 159.8,
+              "range_m": 27.671,
+              "id": 93,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 2326,
+              "time_s": 159.9,
+              "range_m": 27.381,
+              "id": 93,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 124,
+              "median": 0.373,
+              "p95": 1.411,
+              "max": 1.569,
+              "worst_frames": [
+                2350
+              ],
+              "worst_time_s": 162.3
+            },
+            "same_id_translation_error_m": {
+              "n": 123,
+              "median": 0.016,
+              "p95": 0.102,
+              "max": 0.53,
+              "worst_frames": [
+                2340,
+                2341
+              ],
+              "worst_time_s": 161.4
+            },
+            "same_id_extent_error_m": {
+              "n": 123,
+              "median": 0,
+              "p95": 0.021,
+              "max": 0.292,
+              "worst_frames": [
+                2350,
+                2351
+              ],
+              "worst_time_s": 162.4
+            }
+          },
+          "stopped_bus/127/1": {
+            "within_35m_frames": 150,
+            "matched": 150,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 2535,
+              "time_s": 180.8,
+              "range_m": 45.94,
+              "id": 107,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 2537,
+              "time_s": 181,
+              "range_m": 44.521,
+              "id": 95,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 2538,
+              "time_s": 181.1,
+              "range_m": 43.832,
+              "id": 95,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 150,
+              "median": 0.39,
+              "p95": 1.276,
+              "max": 1.329,
+              "worst_frames": [
+                2700
+              ],
+              "worst_time_s": 197.3
+            },
+            "same_id_translation_error_m": {
+              "n": 149,
+              "median": 0.017,
+              "p95": 0.09,
+              "max": 0.091,
+              "worst_frames": [
+                2629,
+                2630
+              ],
+              "worst_time_s": 190.3
+            },
+            "same_id_extent_error_m": {
+              "n": 149,
+              "median": 0.054,
+              "p95": 0.118,
+              "max": 0.283,
+              "worst_frames": [
+                2560,
+                2561
+              ],
+              "worst_time_s": 183.4
+            }
+          },
+          "braking/116/1": {
+            "within_35m_frames": 140,
+            "matched": 127,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 2811,
+              "time_s": 208.4,
+              "range_m": 30.25,
+              "id": 117,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 2813,
+              "time_s": 208.6,
+              "range_m": 29.66,
+              "id": 103,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 2814,
+              "time_s": 208.7,
+              "range_m": 29.36,
+              "id": 103,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 127,
+              "median": 0.146,
+              "p95": 0.304,
+              "max": 0.355,
+              "worst_frames": [
+                2928
+              ],
+              "worst_time_s": 220.1
+            },
+            "same_id_translation_error_m": {
+              "n": 126,
+              "median": 0.015,
+              "p95": 0.093,
+              "max": 0.22,
+              "worst_frames": [
+                2813,
+                2814
+              ],
+              "worst_time_s": 208.7
+            },
+            "same_id_extent_error_m": {
+              "n": 126,
+              "median": 0.002,
+              "p95": 0.016,
+              "max": 0.042,
+              "worst_frames": [
+                2917,
+                2918
+              ],
+              "worst_time_s": 219.1
+            }
+          },
+          "parked-map-vehicle/level-12109274621266969479/1": {
+            "within_35m_frames": 141,
+            "matched": 92,
+            "distinct_ids": 2,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 2893,
+              "time_s": 216.6,
+              "range_m": 42.314,
+              "id": 118,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 2894,
+              "time_s": 216.7,
+              "range_m": 41.976,
+              "id": 104,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 2895,
+              "time_s": 216.8,
+              "range_m": 41.632,
+              "id": 104,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 92,
+              "median": 1,
+              "p95": 1.071,
+              "max": 1.189,
+              "worst_frames": [
+                2973
+              ],
+              "worst_time_s": 224.6
+            },
+            "same_id_translation_error_m": {
+              "n": 90,
+              "median": 0,
+              "p95": 0.045,
+              "max": 0.045,
+              "worst_frames": [
+                2991,
+                2992
+              ],
+              "worst_time_s": 226.5
+            },
+            "same_id_extent_error_m": {
+              "n": 90,
+              "median": 0,
+              "p95": 0.02,
+              "max": 0.035,
+              "worst_frames": [
+                2973,
+                2974
+              ],
+              "worst_time_s": 224.7
+            }
+          },
+          "background/131/1": {
+            "within_35m_frames": 218,
+            "matched": 112,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 2929,
+              "time_s": 220.2,
+              "range_m": 25.048,
+              "id": 120,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 2931,
+              "time_s": 220.4,
+              "range_m": 24.308,
+              "id": 105,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 2931,
+              "time_s": 220.4,
+              "range_m": 24.308,
+              "id": 105,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 112,
+              "median": 0.109,
+              "p95": 1.034,
+              "max": 1.266,
+              "worst_frames": [
+                2946
+              ],
+              "worst_time_s": 221.9
+            },
+            "same_id_translation_error_m": {
+              "n": 111,
+              "median": 0.004,
+              "p95": 0.286,
+              "max": 0.73,
+              "worst_frames": [
+                2951,
+                2952
+              ],
+              "worst_time_s": 222.5
+            },
+            "same_id_extent_error_m": {
+              "n": 111,
+              "median": 0.002,
+              "p95": 0.046,
+              "max": 0.292,
+              "worst_frames": [
+                2940,
+                2941
+              ],
+              "worst_time_s": 221.4
+            }
+          },
+          "parked-map-vehicle/level-327314708892034233/1": {
+            "within_35m_frames": 80,
+            "matched": 45,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 3261,
+              "time_s": 253.4,
+              "range_m": 27.417,
+              "id": 135,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 3263,
+              "time_s": 253.6,
+              "range_m": 27.263,
+              "id": 116,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 3264,
+              "time_s": 253.7,
+              "range_m": 27.206,
+              "id": 116,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 45,
+              "median": 1.533,
+              "p95": 1.558,
+              "max": 1.558,
+              "worst_frames": [
+                3284
+              ],
+              "worst_time_s": 255.7
+            },
+            "same_id_translation_error_m": {
+              "n": 44,
+              "median": 0,
+              "p95": 0,
+              "max": 0.045,
+              "worst_frames": [
+                3284,
+                3285
+              ],
+              "worst_time_s": 255.8
+            },
+            "same_id_extent_error_m": {
+              "n": 44,
+              "median": 0,
+              "p95": 0,
+              "max": 0.048,
+              "worst_frames": [
+                3284,
+                3285
+              ],
+              "worst_time_s": 255.8
+            }
+          },
+          "oncoming/119/1": {
+            "within_35m_frames": 112,
+            "matched": 111,
+            "distinct_ids": 2,
+            "duplicate_frames": 21,
+            "footprint_duplicates": 21,
+            "first_spatial_track": {
+              "frame": 3011,
+              "time_s": 228.4,
+              "range_m": 34.466,
+              "id": 125,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 3012,
+              "time_s": 228.5,
+              "range_m": 33.81,
+              "id": 108,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 3013,
+              "time_s": 228.6,
+              "range_m": 33.154,
+              "id": 108,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 111,
+              "median": 0.63,
+              "p95": 2.084,
+              "max": 2.435,
+              "worst_frames": [
+                3102
+              ],
+              "worst_time_s": 237.5
+            },
+            "same_id_translation_error_m": {
+              "n": 109,
+              "median": 0.089,
+              "p95": 0.501,
+              "max": 0.902,
+              "worst_frames": [
+                3102,
+                3103
+              ],
+              "worst_time_s": 237.6
+            },
+            "same_id_extent_error_m": {
+              "n": 109,
+              "median": 0.009,
+              "p95": 0.065,
+              "max": 0.065,
+              "worst_frames": [
+                3083,
+                3084
+              ],
+              "worst_time_s": 235.7
+            }
+          },
+          "background/135/1": {
+            "within_35m_frames": 61,
+            "matched": 51,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 3249,
+              "time_s": 252.2,
+              "range_m": 51.166,
+              "id": 134,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 3274,
+              "time_s": 254.7,
+              "range_m": 21.301,
+              "id": 117,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 3275,
+              "time_s": 254.8,
+              "range_m": 20.013,
+              "id": 117,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 51,
+              "median": 1.029,
+              "p95": 1.732,
+              "max": 1.902,
+              "worst_frames": [
+                3296
+              ],
+              "worst_time_s": 256.9
+            },
+            "same_id_translation_error_m": {
+              "n": 50,
+              "median": 0.086,
+              "p95": 0.421,
+              "max": 0.5,
+              "worst_frames": [
+                3275,
+                3276
+              ],
+              "worst_time_s": 254.9
+            },
+            "same_id_extent_error_m": {
+              "n": 50,
+              "median": 0.015,
+              "p95": 0.065,
+              "max": 0.065,
+              "worst_frames": [
+                3298,
+                3299
+              ],
+              "worst_time_s": 257.2
+            }
+          },
+          "background/132/1": {
+            "within_35m_frames": 187,
+            "matched": 142,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 3357,
+              "time_s": 263,
+              "range_m": 25.871,
+              "id": 146,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 3363,
+              "time_s": 263.6,
+              "range_m": 23.515,
+              "id": 125,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 3364,
+              "time_s": 263.7,
+              "range_m": 23.126,
+              "id": 125,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 142,
+              "median": 0.076,
+              "p95": 0.275,
+              "max": 0.785,
+              "worst_frames": [
+                3366
+              ],
+              "worst_time_s": 263.9
+            },
+            "same_id_translation_error_m": {
+              "n": 141,
+              "median": 0.002,
+              "p95": 0.1,
+              "max": 0.437,
+              "worst_frames": [
+                3366,
+                3367
+              ],
+              "worst_time_s": 264
+            },
+            "same_id_extent_error_m": {
+              "n": 141,
+              "median": 0.003,
+              "p95": 0.018,
+              "max": 0.066,
+              "worst_frames": [
+                3419,
+                3420
+              ],
+              "worst_time_s": 269.3
+            }
+          },
+          "pedestrian-delayed/114/1": {
+            "within_35m_frames": 209,
+            "matched": 124,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 3515,
+              "time_s": 278.8,
+              "range_m": 20.699,
+              "id": 153,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 3519,
+              "time_s": 279.2,
+              "range_m": 18.961,
+              "id": 129,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 3520,
+              "time_s": 279.3,
+              "range_m": 18.523,
+              "id": 129,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 124,
+              "median": 0.066,
+              "p95": 2.039,
+              "max": 2.976,
+              "worst_frames": [
+                3643
+              ],
+              "worst_time_s": 291.6
+            },
+            "same_id_translation_error_m": {
+              "n": 122,
+              "median": 0.029,
+              "p95": 0.229,
+              "max": 0.67,
+              "worst_frames": [
+                3628,
+                3629
+              ],
+              "worst_time_s": 290.2
+            },
+            "same_id_extent_error_m": {
+              "n": 122,
+              "median": 0.003,
+              "p95": 0.017,
+              "max": 0.265,
+              "worst_frames": [
+                3628,
+                3629
+              ],
+              "worst_time_s": 290.2
+            }
+          }
+        }
+      },
+      "after": {
+        "input_sha256": "7fa6eea96ed07e23a1d877b291b0c62526fad7a3157126ab2ac2ff3d5581014e",
+        "frames": 3173,
+        "first": 727,
+        "last": 3899,
+        "town_sha256": "ad7db3ded5e31a8ffb463c1498625ac0a0e35e9f4746f8cbc9113134c6b31e63",
+        "parked_sha256": "453adee19ae15adc10c45f47db97177bd2cf4e8296bdb5ad9173ad7dc3eff77c",
+        "memory_sha256_lf": "602884d383e8c56f0991356ef731b5875f9f968711e3b7ed07ce705bcf69a8ff",
+        "tracker": {
+          "actor_frames": 2883,
+          "matched": 1717,
+          "exact_label_hits": 1650,
+          "prediction_frames": 3450,
+          "unmatched_predictions": 1730
+        },
+        "spatial": {
+          "overall": {
+            "actor_frames": 2883,
+            "matched": 1902,
+            "exact_label_hits": 1892,
+            "prediction_frames": 4068,
+            "unmatched_predictions": 2151
+          },
+          "sector": {
+            "front": {
+              "actor_frames": 1447,
+              "matched": 993,
+              "exact_label_hits": 983,
+              "prediction_frames": 1384,
+              "unmatched_predictions": 388
+            },
+            "left": {
+              "actor_frames": 253,
+              "matched": 135,
+              "exact_label_hits": 135,
+              "prediction_frames": 463,
+              "unmatched_predictions": 321
+            },
+            "right": {
+              "actor_frames": 310,
+              "matched": 217,
+              "exact_label_hits": 217,
+              "prediction_frames": 1105,
+              "unmatched_predictions": 889
+            },
+            "rear": {
+              "actor_frames": 873,
+              "matched": 557,
+              "exact_label_hits": 557,
+              "prediction_frames": 1116,
+              "unmatched_predictions": 553
+            }
+          },
+          "by_status": {
+            "current": {
+              "prediction_frames": 2477,
+              "unmatched_predictions": 887
+            },
+            "remembered": {
+              "prediction_frames": 1591,
+              "unmatched_predictions": 1264
+            }
+          },
+          "position_error": {
+            "p50_m": 0.247,
+            "p95_m": 1.441
+          },
+          "direct_id_switches": 2,
+          "reacquisitions": 2
+        },
+        "spatial_with_parked": {
+          "overall": {
+            "actor_frames": 4198,
+            "matched": 2311,
+            "exact_label_hits": 2301,
+            "prediction_frames": 4068,
+            "unmatched_predictions": 1761
+          },
+          "sector": {
+            "front": {
+              "actor_frames": 1555,
+              "matched": 1016,
+              "exact_label_hits": 1006,
+              "prediction_frames": 1384,
+              "unmatched_predictions": 362
+            },
+            "left": {
+              "actor_frames": 582,
+              "matched": 272,
+              "exact_label_hits": 272,
+              "prediction_frames": 463,
+              "unmatched_predictions": 203
+            },
+            "right": {
+              "actor_frames": 1090,
+              "matched": 453,
+              "exact_label_hits": 453,
+              "prediction_frames": 1105,
+              "unmatched_predictions": 659
+            },
+            "rear": {
+              "actor_frames": 971,
+              "matched": 570,
+              "exact_label_hits": 570,
+              "prediction_frames": 1116,
+              "unmatched_predictions": 537
+            }
+          },
+          "by_status": {
+            "current": {
+              "prediction_frames": 2477,
+              "unmatched_predictions": 758
+            },
+            "remembered": {
+              "prediction_frames": 1591,
+              "unmatched_predictions": 1003
+            }
+          },
+          "position_error": {
+            "p50_m": 0.378,
+            "p95_m": 1.532
+          },
+          "direct_id_switches": 2,
+          "reacquisitions": 4
+        },
+        "overlay": {
+          "scenario": {
+            "hits": 1941,
+            "unmatched": 2112
+          },
+          "with_parked": {
+            "hits": 2350,
+            "unmatched": 1722
+          }
+        },
+        "associations": [
+          {
+            "frame": 3435,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3436,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3437,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3438,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3439,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3440,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3441,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3442,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3443,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.2
+          },
+          {
+            "frame": 3444,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.3
+          },
+          {
+            "frame": 3445,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3446,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3447,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3448,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3449,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3450,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3451,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.2
+          },
+          {
+            "frame": 3452,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.3
+          },
+          {
+            "frame": 3453,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0
+          },
+          {
+            "frame": 3454,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.1
+          },
+          {
+            "frame": 3455,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.2
+          },
+          {
+            "frame": 3456,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.3
+          },
+          {
+            "frame": 3457,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.4
+          },
+          {
+            "frame": 3458,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.5
+          },
+          {
+            "frame": 3459,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.6
+          },
+          {
+            "frame": 3460,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "front",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.7
+          },
+          {
+            "frame": 3461,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "left",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.8
+          },
+          {
+            "frame": 3462,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "left",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 0.9
+          },
+          {
+            "frame": 3463,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "left",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 1
+          },
+          {
+            "frame": 3464,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "left",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 1.1
+          },
+          {
+            "frame": 3465,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "left",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 1.2
+          },
+          {
+            "frame": 3466,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "left",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 1.3
+          },
+          {
+            "frame": 3467,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "left",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 1.4
+          },
+          {
+            "frame": 3468,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "left",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 1.5
+          },
+          {
+            "frame": 3469,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "left",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 1.6
+          },
+          {
+            "frame": 3470,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "left",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 1.7
+          },
+          {
+            "frame": 3471,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "left",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 1.8
+          },
+          {
+            "frame": 3472,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "left",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 1.9
+          },
+          {
+            "frame": 3473,
+            "source_id": 143,
+            "display_id": 122,
+            "sector": "left",
+            "reference_role": "cyclist",
+            "optical_camera": "front",
+            "last_pair_age_s": 2
+          }
+        ],
+        "source_cases": {
+          "hedge": {
+            "source_ids": [
+              23,
+              24
+            ],
+            "native_measurements": 9,
+            "symbol_ticks": {
+              "unknown/current": 20,
+              "unknown/remembered": 15
+            },
+            "matched": 0,
+            "frames": [
+              [
+                1092,
+                23,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1093,
+                23,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1094,
+                23,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1095,
+                23,
+                19,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1096,
+                23,
+                19,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1097,
+                23,
+                19,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1098,
+                24,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1099,
+                24,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1100,
+                23,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1101,
+                23,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1102,
+                23,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1103,
+                23,
+                19,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1104,
+                23,
+                19,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1105,
+                23,
+                19,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1106,
+                23,
+                19,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1107,
+                23,
+                19,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1108,
+                23,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1109,
+                23,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1110,
+                23,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1111,
+                23,
+                19,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1112,
+                23,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1113,
+                23,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1114,
+                23,
+                19,
+                "unknown",
+                "current"
+              ],
+              [
+                1115,
+                23,
+                19,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1116,
+                23,
+                19,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1116,
+                24,
+                20,
+                "unknown",
+                "current"
+              ],
+              [
+                1117,
+                24,
+                20,
+                "unknown",
+                "current"
+              ],
+              [
+                1118,
+                24,
+                20,
+                "unknown",
+                "current"
+              ],
+              [
+                1119,
+                24,
+                20,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1120,
+                24,
+                20,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1121,
+                24,
+                20,
+                "unknown",
+                "current"
+              ],
+              [
+                1122,
+                24,
+                20,
+                "unknown",
+                "current"
+              ],
+              [
+                1123,
+                24,
+                20,
+                "unknown",
+                "current"
+              ],
+              [
+                1124,
+                24,
+                20,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1125,
+                24,
+                20,
+                "unknown",
+                "remembered"
+              ]
+            ]
+          },
+          "residential_frontage": {
+            "source_ids": [
+              50,
+              55
+            ],
+            "native_measurements": 7,
+            "symbol_ticks": {
+              "truck/current": 10,
+              "truck/remembered": 7
+            },
+            "matched": 0,
+            "frames": [
+              [
+                1377,
+                50,
+                44,
+                "truck",
+                "current"
+              ],
+              [
+                1378,
+                50,
+                44,
+                "truck",
+                "current"
+              ],
+              [
+                1379,
+                50,
+                44,
+                "truck",
+                "current"
+              ],
+              [
+                1380,
+                50,
+                44,
+                "truck",
+                "current"
+              ],
+              [
+                1381,
+                50,
+                44,
+                "truck",
+                "current"
+              ],
+              [
+                1382,
+                50,
+                44,
+                "truck",
+                "current"
+              ],
+              [
+                1383,
+                50,
+                44,
+                "truck",
+                "remembered"
+              ],
+              [
+                1384,
+                50,
+                44,
+                "truck",
+                "remembered"
+              ],
+              [
+                1385,
+                50,
+                44,
+                "truck",
+                "current"
+              ],
+              [
+                1386,
+                50,
+                44,
+                "truck",
+                "current"
+              ],
+              [
+                1387,
+                50,
+                44,
+                "truck",
+                "current"
+              ],
+              [
+                1388,
+                50,
+                44,
+                "truck",
+                "current"
+              ],
+              [
+                1389,
+                50,
+                44,
+                "truck",
+                "remembered"
+              ],
+              [
+                1390,
+                50,
+                44,
+                "truck",
+                "remembered"
+              ],
+              [
+                1391,
+                50,
+                44,
+                "truck",
+                "remembered"
+              ],
+              [
+                1392,
+                50,
+                44,
+                "truck",
+                "remembered"
+              ],
+              [
+                1393,
+                50,
+                44,
+                "truck",
+                "remembered"
+              ]
+            ]
+          },
+          "shelter": {
+            "source_ids": [
+              70
+            ],
+            "native_measurements": 8,
+            "symbol_ticks": {
+              "unknown/current": 18,
+              "unknown/remembered": 9
+            },
+            "matched": 0,
+            "frames": [
+              [
+                1633,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1634,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1635,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1636,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1637,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1638,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1639,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1640,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1641,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1642,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1643,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1644,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1645,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1646,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1647,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1648,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1649,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1650,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1651,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1652,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1653,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1654,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1655,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1656,
+                70,
+                62,
+                "unknown",
+                "current"
+              ],
+              [
+                1657,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1658,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ],
+              [
+                1659,
+                70,
+                62,
+                "unknown",
+                "remembered"
+              ]
+            ]
+          }
+        },
+        "all_wheeled_steps": {
+          "world_translation_m": {
+            "n": 2125,
+            "median": 0,
+            "p95": 0.802,
+            "max": 1.014,
+            "worst_frames": [
+              1771,
+              1772
+            ],
+            "worst_time_s": 104.5
+          },
+          "heading_deg": {
+            "n": 2125,
+            "median": 0,
+            "p95": 1.21,
+            "max": 6.302,
+            "worst_frames": [
+              3087,
+              3088
+            ],
+            "worst_time_s": 236.1
+          },
+          "max_extent_m": {
+            "n": 2125,
+            "median": 0,
+            "p95": 0.065,
+            "max": 0.344,
+            "worst_frames": [
+              1229,
+              1230
+            ],
+            "worst_time_s": 50.3
+          },
+          "over_1m": 2,
+          "over_15deg": 0,
+          "over_0_4m_extent": 0,
+          "examples": [
+            {
+              "frame": 1772,
+              "time_s": 104.5,
+              "id": 69,
+              "actual": null,
+              "prior_actor": null,
+              "world_step_m": 1.014,
+              "heading_step_deg": 1.415,
+              "max_extent_step_m": 0.028,
+              "from": {
+                "id": 69,
+                "label": "car",
+                "world": [
+                  218.228,
+                  171.968
+                ],
+                "heading": 131.18,
+                "dimensions": [
+                  4.4,
+                  1.294,
+                  1.573
+                ],
+                "foot": 1.919,
+                "opacity": 1,
+                "status": "current"
+              },
+              "to": {
+                "id": 69,
+                "label": "car",
+                "world": [
+                  217.515,
+                  172.689
+                ],
+                "heading": 132.595,
+                "dimensions": [
+                  4.372,
+                  1.295,
+                  1.573
+                ],
+                "foot": 1.959,
+                "opacity": 1,
+                "status": "current"
+              }
+            },
+            {
+              "frame": 1770,
+              "time_s": 104.3,
+              "id": 69,
+              "actual": null,
+              "prior_actor": null,
+              "world_step_m": 1.005,
+              "heading_step_deg": 0.888,
+              "max_extent_step_m": 0.002,
+              "from": {
+                "id": 69,
+                "label": "car",
+                "world": [
+                  219.455,
+                  170.636
+                ],
+                "heading": 130.292,
+                "dimensions": [
+                  4.4,
+                  1.292,
+                  1.573
+                ],
+                "foot": 1.897,
+                "opacity": 1,
+                "status": "current"
+              },
+              "to": {
+                "id": 69,
+                "label": "car",
+                "world": [
+                  218.774,
+                  171.375
+                ],
+                "heading": 131.18,
+                "dimensions": [
+                  4.4,
+                  1.294,
+                  1.573
+                ],
+                "foot": 1.919,
+                "opacity": 1,
+                "status": "current"
+              }
+            }
+          ]
+        },
+        "encounters": {
+          "pedestrian/113/1": {
+            "within_35m_frames": 203,
+            "matched": 144,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 749,
+              "time_s": 2.2,
+              "range_m": 24.889,
+              "id": 1,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 749,
+              "time_s": 2.2,
+              "range_m": 24.889,
+              "id": 1,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 749,
+              "time_s": 2.2,
+              "range_m": 24.889,
+              "id": 1,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 144,
+              "median": 0.102,
+              "p95": 1.282,
+              "max": 1.91,
+              "worst_frames": [
+                770
+              ],
+              "worst_time_s": 4.3
+            },
+            "same_id_translation_error_m": {
+              "n": 143,
+              "median": 0.034,
+              "p95": 0.132,
+              "max": 0.952,
+              "worst_frames": [
+                770,
+                771
+              ],
+              "worst_time_s": 4.4
+            },
+            "same_id_extent_error_m": {
+              "n": 143,
+              "median": 0.003,
+              "p95": 0.014,
+              "max": 0.171,
+              "worst_frames": [
+                760,
+                761
+              ],
+              "worst_time_s": 3.4
+            }
+          },
+          "parked-map-vehicle/level-12166413250794706622/1": {
+            "within_35m_frames": 182,
+            "matched": 153,
+            "distinct_ids": 2,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 751,
+              "time_s": 2.4,
+              "range_m": 40.2,
+              "id": 2,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 753,
+              "time_s": 2.6,
+              "range_m": 39.626,
+              "id": 2,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 754,
+              "time_s": 2.7,
+              "range_m": 39.322,
+              "id": 2,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 153,
+              "median": 0.689,
+              "p95": 0.736,
+              "max": 0.762,
+              "worst_frames": [
+                835
+              ],
+              "worst_time_s": 10.8
+            },
+            "same_id_translation_error_m": {
+              "n": 151,
+              "median": 0,
+              "p95": 0.045,
+              "max": 0.46,
+              "worst_frames": [
+                799,
+                800
+              ],
+              "worst_time_s": 7.3
+            },
+            "same_id_extent_error_m": {
+              "n": 151,
+              "median": 0,
+              "p95": 0.029,
+              "max": 0.045,
+              "worst_frames": [
+                804,
+                805
+              ],
+              "worst_time_s": 7.8
+            }
+          },
+          "parked-map-vehicle/level-6183424760014961521/1": {
+            "within_35m_frames": 178,
+            "matched": 48,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 765,
+              "time_s": 3.8,
+              "range_m": 31.44,
+              "id": 3,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 767,
+              "time_s": 4,
+              "range_m": 30.781,
+              "id": 3,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 768,
+              "time_s": 4.1,
+              "range_m": 30.453,
+              "id": 3,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 48,
+              "median": 0.848,
+              "p95": 0.887,
+              "max": 0.898,
+              "worst_frames": [
+                772
+              ],
+              "worst_time_s": 4.5
+            },
+            "same_id_translation_error_m": {
+              "n": 47,
+              "median": 0,
+              "p95": 0.014,
+              "max": 0.038,
+              "worst_frames": [
+                777,
+                778
+              ],
+              "worst_time_s": 5.1
+            },
+            "same_id_extent_error_m": {
+              "n": 47,
+              "median": 0,
+              "p95": 0.001,
+              "max": 0.004,
+              "worst_frames": [
+                775,
+                776
+              ],
+              "worst_time_s": 4.9
+            }
+          },
+          "occluder/117/1": {
+            "within_35m_frames": 158,
+            "matched": 158,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 988,
+              "time_s": 26.1,
+              "range_m": 59.779,
+              "id": 10,
+              "status": "coasting"
+            },
+            "first_draw": {
+              "frame": 991,
+              "time_s": 26.4,
+              "range_m": 58.281,
+              "id": 11,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 992,
+              "time_s": 26.5,
+              "range_m": 57.742,
+              "id": 11,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 158,
+              "median": 0.545,
+              "p95": 0.8,
+              "max": 1.063,
+              "worst_frames": [
+                1089
+              ],
+              "worst_time_s": 36.2
+            },
+            "same_id_translation_error_m": {
+              "n": 157,
+              "median": 0,
+              "p95": 0.09,
+              "max": 0.253,
+              "worst_frames": [
+                1091,
+                1092
+              ],
+              "worst_time_s": 36.5
+            },
+            "same_id_extent_error_m": {
+              "n": 157,
+              "median": 0.019,
+              "p95": 0.065,
+              "max": 0.072,
+              "worst_frames": [
+                1078,
+                1079
+              ],
+              "worst_time_s": 35.2
+            }
+          },
+          "occluded/118/1": {
+            "within_35m_frames": 156,
+            "matched": 108,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1063,
+              "time_s": 33.6,
+              "range_m": 15.485,
+              "id": 18,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1063,
+              "time_s": 33.6,
+              "range_m": 15.485,
+              "id": 15,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 1063,
+              "time_s": 33.6,
+              "range_m": 15.485,
+              "id": 15,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 108,
+              "median": 0.08,
+              "p95": 0.368,
+              "max": 0.639,
+              "worst_frames": [
+                1106
+              ],
+              "worst_time_s": 37.9
+            },
+            "same_id_translation_error_m": {
+              "n": 107,
+              "median": 0.022,
+              "p95": 0.13,
+              "max": 0.328,
+              "worst_frames": [
+                1106,
+                1107
+              ],
+              "worst_time_s": 38
+            },
+            "same_id_extent_error_m": {
+              "n": 107,
+              "median": 0.001,
+              "p95": 0.006,
+              "max": 0.039,
+              "worst_frames": [
+                1066,
+                1067
+              ],
+              "worst_time_s": 34
+            }
+          },
+          "parked-map-vehicle/level-6664586185198452187/1": {
+            "within_35m_frames": 58,
+            "matched": 25,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1216,
+              "time_s": 48.9,
+              "range_m": 20.575,
+              "id": 39,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1217,
+              "time_s": 49,
+              "range_m": 20.734,
+              "id": 35,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 1218,
+              "time_s": 49.1,
+              "range_m": 20.947,
+              "id": 35,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 25,
+              "median": 0.39,
+              "p95": 0.39,
+              "max": 0.39,
+              "worst_frames": [
+                1241
+              ],
+              "worst_time_s": 51.4
+            },
+            "same_id_translation_error_m": {
+              "n": 24,
+              "median": 0,
+              "p95": 0,
+              "max": 0.022,
+              "worst_frames": [
+                1218,
+                1219
+              ],
+              "worst_time_s": 49.2
+            },
+            "same_id_extent_error_m": {
+              "n": 24,
+              "median": 0,
+              "p95": 0,
+              "max": 0.036,
+              "worst_frames": [
+                1218,
+                1219
+              ],
+              "worst_time_s": 49.2
+            }
+          },
+          "background/133/1": {
+            "within_35m_frames": 55,
+            "matched": 45,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1193,
+              "time_s": 46.6,
+              "range_m": 44.039,
+              "id": 34,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1199,
+              "time_s": 47.2,
+              "range_m": 37.498,
+              "id": 30,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 1201,
+              "time_s": 47.4,
+              "range_m": 35.25,
+              "id": 30,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 45,
+              "median": 0.373,
+              "p95": 0.958,
+              "max": 1.238,
+              "worst_frames": [
+                1256
+              ],
+              "worst_time_s": 52.9
+            },
+            "same_id_translation_error_m": {
+              "n": 44,
+              "median": 0.08,
+              "p95": 0.148,
+              "max": 0.167,
+              "worst_frames": [
+                1225,
+                1226
+              ],
+              "worst_time_s": 49.9
+            },
+            "same_id_extent_error_m": {
+              "n": 44,
+              "median": 0.029,
+              "p95": 0.065,
+              "max": 0.065,
+              "worst_frames": [
+                1242,
+                1243
+              ],
+              "worst_time_s": 51.6
+            }
+          },
+          "parked-map-vehicle/level-11906624848723412420/1": {
+            "within_35m_frames": 272,
+            "matched": 46,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1386,
+              "time_s": 65.9,
+              "range_m": 17.854,
+              "id": 51,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1425,
+              "time_s": 69.8,
+              "range_m": 20.755,
+              "id": 51,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 1426,
+              "time_s": 69.9,
+              "range_m": 20.806,
+              "id": 51,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 46,
+              "median": 0.636,
+              "p95": 0.649,
+              "max": 0.682,
+              "worst_frames": [
+                1432
+              ],
+              "worst_time_s": 70.5
+            },
+            "same_id_translation_error_m": {
+              "n": 45,
+              "median": 0,
+              "p95": 0.033,
+              "max": 0.045,
+              "worst_frames": [
+                1432,
+                1433
+              ],
+              "worst_time_s": 70.6
+            },
+            "same_id_extent_error_m": {
+              "n": 45,
+              "median": 0,
+              "p95": 0.034,
+              "max": 0.038,
+              "worst_frames": [
+                1427,
+                1428
+              ],
+              "worst_time_s": 70.1
+            }
+          },
+          "signal_queue/112/1": {
+            "within_35m_frames": 189,
+            "matched": 132,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1403,
+              "time_s": 67.6,
+              "range_m": 13.98,
+              "id": 53,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1404,
+              "time_s": 67.7,
+              "range_m": 13.57,
+              "id": 47,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 1405,
+              "time_s": 67.8,
+              "range_m": 13.19,
+              "id": 47,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 132,
+              "median": 0.241,
+              "p95": 0.792,
+              "max": 0.879,
+              "worst_frames": [
+                1517
+              ],
+              "worst_time_s": 79
+            },
+            "same_id_translation_error_m": {
+              "n": 131,
+              "median": 0.024,
+              "p95": 0.17,
+              "max": 0.285,
+              "worst_frames": [
+                1534,
+                1535
+              ],
+              "worst_time_s": 80.8
+            },
+            "same_id_extent_error_m": {
+              "n": 131,
+              "median": 0.003,
+              "p95": 0.049,
+              "max": 0.076,
+              "worst_frames": [
+                1527,
+                1528
+              ],
+              "worst_time_s": 80.1
+            }
+          },
+          "background/134/1": {
+            "within_35m_frames": 180,
+            "matched": 126,
+            "distinct_ids": 2,
+            "duplicate_frames": 1,
+            "footprint_duplicates": 1,
+            "first_spatial_track": {
+              "frame": 1701,
+              "time_s": 97.4,
+              "range_m": 34.457,
+              "id": 74,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1703,
+              "time_s": 97.6,
+              "range_m": 33.279,
+              "id": 66,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 1704,
+              "time_s": 97.7,
+              "range_m": 32.661,
+              "id": 66,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 126,
+              "median": 0.448,
+              "p95": 2.062,
+              "max": 2.665,
+              "worst_frames": [
+                1828
+              ],
+              "worst_time_s": 110.1
+            },
+            "same_id_translation_error_m": {
+              "n": 124,
+              "median": 0.06,
+              "p95": 0.178,
+              "max": 0.392,
+              "worst_frames": [
+                1741,
+                1742
+              ],
+              "worst_time_s": 101.5
+            },
+            "same_id_extent_error_m": {
+              "n": 124,
+              "median": 0.008,
+              "p95": 0.065,
+              "max": 0.065,
+              "worst_frames": [
+                1782,
+                1783
+              ],
+              "worst_time_s": 105.6
+            }
+          },
+          "background/129/1": {
+            "within_35m_frames": 83,
+            "matched": 69,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1729,
+              "time_s": 100.2,
+              "range_m": 26.483,
+              "id": 75,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1733,
+              "time_s": 100.6,
+              "range_m": 23.422,
+              "id": 67,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 1733,
+              "time_s": 100.6,
+              "range_m": 23.422,
+              "id": 67,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 69,
+              "median": 0.027,
+              "p95": 0.146,
+              "max": 0.391,
+              "worst_frames": [
+                1734
+              ],
+              "worst_time_s": 100.7
+            },
+            "same_id_translation_error_m": {
+              "n": 68,
+              "median": 0.003,
+              "p95": 0.122,
+              "max": 0.285,
+              "worst_frames": [
+                1734,
+                1735
+              ],
+              "worst_time_s": 100.8
+            },
+            "same_id_extent_error_m": {
+              "n": 68,
+              "median": 0,
+              "p95": 0.012,
+              "max": 0.036,
+              "worst_frames": [
+                1738,
+                1739
+              ],
+              "worst_time_s": 101.2
+            }
+          },
+          "lead/115/2": {
+            "within_35m_frames": 225,
+            "matched": 176,
+            "distinct_ids": 2,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 1851,
+              "time_s": 112.4,
+              "range_m": 46.51,
+              "id": 80,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 1863,
+              "time_s": 113.6,
+              "range_m": 37.65,
+              "id": 73,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 1864,
+              "time_s": 113.7,
+              "range_m": 37.06,
+              "id": 73,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 176,
+              "median": 0.144,
+              "p95": 2.263,
+              "max": 2.639,
+              "worst_frames": [
+                2095
+              ],
+              "worst_time_s": 136.8
+            },
+            "same_id_translation_error_m": {
+              "n": 174,
+              "median": 0.018,
+              "p95": 0.254,
+              "max": 0.325,
+              "worst_frames": [
+                2117,
+                2118
+              ],
+              "worst_time_s": 139.1
+            },
+            "same_id_extent_error_m": {
+              "n": 174,
+              "median": 0.002,
+              "p95": 0.029,
+              "max": 0.055,
+              "worst_frames": [
+                2080,
+                2081
+              ],
+              "worst_time_s": 135.4
+            }
+          },
+          "background/130/2": {
+            "within_35m_frames": 181,
+            "matched": 124,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 2321,
+              "time_s": 159.4,
+              "range_m": 28.811,
+              "id": 104,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 2325,
+              "time_s": 159.8,
+              "range_m": 27.671,
+              "id": 93,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 2326,
+              "time_s": 159.9,
+              "range_m": 27.381,
+              "id": 93,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 124,
+              "median": 0.373,
+              "p95": 1.411,
+              "max": 1.569,
+              "worst_frames": [
+                2350
+              ],
+              "worst_time_s": 162.3
+            },
+            "same_id_translation_error_m": {
+              "n": 123,
+              "median": 0.016,
+              "p95": 0.102,
+              "max": 0.53,
+              "worst_frames": [
+                2340,
+                2341
+              ],
+              "worst_time_s": 161.4
+            },
+            "same_id_extent_error_m": {
+              "n": 123,
+              "median": 0,
+              "p95": 0.021,
+              "max": 0.292,
+              "worst_frames": [
+                2350,
+                2351
+              ],
+              "worst_time_s": 162.4
+            }
+          },
+          "stopped_bus/127/1": {
+            "within_35m_frames": 150,
+            "matched": 150,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 2535,
+              "time_s": 180.8,
+              "range_m": 45.94,
+              "id": 107,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 2537,
+              "time_s": 181,
+              "range_m": 44.521,
+              "id": 95,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 2538,
+              "time_s": 181.1,
+              "range_m": 43.832,
+              "id": 95,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 150,
+              "median": 0.39,
+              "p95": 1.276,
+              "max": 1.329,
+              "worst_frames": [
+                2700
+              ],
+              "worst_time_s": 197.3
+            },
+            "same_id_translation_error_m": {
+              "n": 149,
+              "median": 0.017,
+              "p95": 0.09,
+              "max": 0.091,
+              "worst_frames": [
+                2629,
+                2630
+              ],
+              "worst_time_s": 190.3
+            },
+            "same_id_extent_error_m": {
+              "n": 149,
+              "median": 0.054,
+              "p95": 0.118,
+              "max": 0.283,
+              "worst_frames": [
+                2560,
+                2561
+              ],
+              "worst_time_s": 183.4
+            }
+          },
+          "braking/116/1": {
+            "within_35m_frames": 140,
+            "matched": 127,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 2811,
+              "time_s": 208.4,
+              "range_m": 30.25,
+              "id": 117,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 2813,
+              "time_s": 208.6,
+              "range_m": 29.66,
+              "id": 103,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 2814,
+              "time_s": 208.7,
+              "range_m": 29.36,
+              "id": 103,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 127,
+              "median": 0.155,
+              "p95": 0.589,
+              "max": 0.628,
+              "worst_frames": [
+                2924
+              ],
+              "worst_time_s": 219.7
+            },
+            "same_id_translation_error_m": {
+              "n": 126,
+              "median": 0.018,
+              "p95": 0.125,
+              "max": 0.223,
+              "worst_frames": [
+                2867,
+                2868
+              ],
+              "worst_time_s": 214.1
+            },
+            "same_id_extent_error_m": {
+              "n": 126,
+              "median": 0.002,
+              "p95": 0.016,
+              "max": 0.042,
+              "worst_frames": [
+                2917,
+                2918
+              ],
+              "worst_time_s": 219.1
+            }
+          },
+          "parked-map-vehicle/level-12109274621266969479/1": {
+            "within_35m_frames": 141,
+            "matched": 92,
+            "distinct_ids": 2,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 2893,
+              "time_s": 216.6,
+              "range_m": 42.314,
+              "id": 118,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 2894,
+              "time_s": 216.7,
+              "range_m": 41.976,
+              "id": 104,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 2895,
+              "time_s": 216.8,
+              "range_m": 41.632,
+              "id": 104,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 92,
+              "median": 1,
+              "p95": 1.071,
+              "max": 1.189,
+              "worst_frames": [
+                2973
+              ],
+              "worst_time_s": 224.6
+            },
+            "same_id_translation_error_m": {
+              "n": 90,
+              "median": 0,
+              "p95": 0.045,
+              "max": 0.045,
+              "worst_frames": [
+                2991,
+                2992
+              ],
+              "worst_time_s": 226.5
+            },
+            "same_id_extent_error_m": {
+              "n": 90,
+              "median": 0,
+              "p95": 0.02,
+              "max": 0.035,
+              "worst_frames": [
+                2973,
+                2974
+              ],
+              "worst_time_s": 224.7
+            }
+          },
+          "background/131/1": {
+            "within_35m_frames": 218,
+            "matched": 112,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 2929,
+              "time_s": 220.2,
+              "range_m": 25.048,
+              "id": 120,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 2931,
+              "time_s": 220.4,
+              "range_m": 24.308,
+              "id": 105,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 2931,
+              "time_s": 220.4,
+              "range_m": 24.308,
+              "id": 105,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 112,
+              "median": 0.109,
+              "p95": 1.034,
+              "max": 1.266,
+              "worst_frames": [
+                2946
+              ],
+              "worst_time_s": 221.9
+            },
+            "same_id_translation_error_m": {
+              "n": 111,
+              "median": 0.004,
+              "p95": 0.286,
+              "max": 0.73,
+              "worst_frames": [
+                2951,
+                2952
+              ],
+              "worst_time_s": 222.5
+            },
+            "same_id_extent_error_m": {
+              "n": 111,
+              "median": 0.002,
+              "p95": 0.046,
+              "max": 0.292,
+              "worst_frames": [
+                2940,
+                2941
+              ],
+              "worst_time_s": 221.4
+            }
+          },
+          "parked-map-vehicle/level-327314708892034233/1": {
+            "within_35m_frames": 80,
+            "matched": 45,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 3261,
+              "time_s": 253.4,
+              "range_m": 27.417,
+              "id": 135,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 3263,
+              "time_s": 253.6,
+              "range_m": 27.263,
+              "id": 116,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 3264,
+              "time_s": 253.7,
+              "range_m": 27.206,
+              "id": 116,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 45,
+              "median": 1.533,
+              "p95": 1.558,
+              "max": 1.558,
+              "worst_frames": [
+                3284
+              ],
+              "worst_time_s": 255.7
+            },
+            "same_id_translation_error_m": {
+              "n": 44,
+              "median": 0,
+              "p95": 0,
+              "max": 0.045,
+              "worst_frames": [
+                3284,
+                3285
+              ],
+              "worst_time_s": 255.8
+            },
+            "same_id_extent_error_m": {
+              "n": 44,
+              "median": 0,
+              "p95": 0,
+              "max": 0.048,
+              "worst_frames": [
+                3284,
+                3285
+              ],
+              "worst_time_s": 255.8
+            }
+          },
+          "oncoming/119/1": {
+            "within_35m_frames": 112,
+            "matched": 110,
+            "distinct_ids": 2,
+            "duplicate_frames": 12,
+            "footprint_duplicates": 11,
+            "first_spatial_track": {
+              "frame": 3011,
+              "time_s": 228.4,
+              "range_m": 34.466,
+              "id": 125,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 3012,
+              "time_s": 228.5,
+              "range_m": 33.81,
+              "id": 108,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 3013,
+              "time_s": 228.6,
+              "range_m": 33.154,
+              "id": 108,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 110,
+              "median": 0.673,
+              "p95": 2.036,
+              "max": 2.684,
+              "worst_frames": [
+                3103
+              ],
+              "worst_time_s": 237.6
+            },
+            "same_id_translation_error_m": {
+              "n": 107,
+              "median": 0.098,
+              "p95": 0.401,
+              "max": 0.561,
+              "worst_frames": [
+                3100,
+                3101
+              ],
+              "worst_time_s": 237.4
+            },
+            "same_id_extent_error_m": {
+              "n": 107,
+              "median": 0.01,
+              "p95": 0.065,
+              "max": 0.065,
+              "worst_frames": [
+                3075,
+                3076
+              ],
+              "worst_time_s": 234.9
+            }
+          },
+          "background/135/1": {
+            "within_35m_frames": 61,
+            "matched": 51,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 3249,
+              "time_s": 252.2,
+              "range_m": 51.166,
+              "id": 134,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 3274,
+              "time_s": 254.7,
+              "range_m": 21.301,
+              "id": 117,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 3275,
+              "time_s": 254.8,
+              "range_m": 20.013,
+              "id": 117,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 51,
+              "median": 0.461,
+              "p95": 1.524,
+              "max": 1.544,
+              "worst_frames": [
+                3279
+              ],
+              "worst_time_s": 255.2
+            },
+            "same_id_translation_error_m": {
+              "n": 50,
+              "median": 0.077,
+              "p95": 0.427,
+              "max": 0.5,
+              "worst_frames": [
+                3275,
+                3276
+              ],
+              "worst_time_s": 254.9
+            },
+            "same_id_extent_error_m": {
+              "n": 50,
+              "median": 0.015,
+              "p95": 0.065,
+              "max": 0.065,
+              "worst_frames": [
+                3298,
+                3299
+              ],
+              "worst_time_s": 257.2
+            }
+          },
+          "background/132/1": {
+            "within_35m_frames": 187,
+            "matched": 142,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 3357,
+              "time_s": 263,
+              "range_m": 25.871,
+              "id": 146,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 3363,
+              "time_s": 263.6,
+              "range_m": 23.515,
+              "id": 125,
+              "opacity": 0.333
+            },
+            "first_half_opacity": {
+              "frame": 3364,
+              "time_s": 263.7,
+              "range_m": 23.126,
+              "id": 125,
+              "opacity": 0.667
+            },
+            "position_error_m": {
+              "n": 142,
+              "median": 0.076,
+              "p95": 0.275,
+              "max": 0.785,
+              "worst_frames": [
+                3366
+              ],
+              "worst_time_s": 263.9
+            },
+            "same_id_translation_error_m": {
+              "n": 141,
+              "median": 0.002,
+              "p95": 0.1,
+              "max": 0.437,
+              "worst_frames": [
+                3366,
+                3367
+              ],
+              "worst_time_s": 264
+            },
+            "same_id_extent_error_m": {
+              "n": 141,
+              "median": 0.003,
+              "p95": 0.018,
+              "max": 0.066,
+              "worst_frames": [
+                3419,
+                3420
+              ],
+              "worst_time_s": 269.3
+            }
+          },
+          "pedestrian-delayed/114/1": {
+            "within_35m_frames": 209,
+            "matched": 128,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 3515,
+              "time_s": 278.8,
+              "range_m": 20.699,
+              "id": 153,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 3515,
+              "time_s": 278.8,
+              "range_m": 20.699,
+              "id": 129,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 3515,
+              "time_s": 278.8,
+              "range_m": 20.699,
+              "id": 129,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 128,
+              "median": 0.066,
+              "p95": 2.039,
+              "max": 2.976,
+              "worst_frames": [
+                3643
+              ],
+              "worst_time_s": 291.6
+            },
+            "same_id_translation_error_m": {
+              "n": 126,
+              "median": 0.031,
+              "p95": 0.229,
+              "max": 0.67,
+              "worst_frames": [
+                3628,
+                3629
+              ],
+              "worst_time_s": 290.2
+            },
+            "same_id_extent_error_m": {
+              "n": 126,
+              "median": 0.003,
+              "p95": 0.017,
+              "max": 0.265,
+              "worst_frames": [
+                3628,
+                3629
+              ],
+              "worst_time_s": 290.2
+            }
+          }
+        }
+      }
+    },
+    "overtake-clear": {
+      "before": {
+        "input_sha256": "e1b6689388868b654b0d9b493f94ef02c40be2fa97545cfa7a0691b01091af2f",
+        "frames": 116,
+        "first": 7791,
+        "last": 7906,
+        "town_sha256": "ad7db3ded5e31a8ffb463c1498625ac0a0e35e9f4746f8cbc9113134c6b31e63",
+        "parked_sha256": "453adee19ae15adc10c45f47db97177bd2cf4e8296bdb5ad9173ad7dc3eff77c",
+        "memory_sha256_lf": "ab4afd7f1b069bbeb9aaa58ec4293f9ccd00f49b59a2f03e24c2026cd2ce6f91",
+        "tracker": {
+          "actor_frames": 116,
+          "matched": 105,
+          "exact_label_hits": 105,
+          "prediction_frames": 166,
+          "unmatched_predictions": 61
+        },
+        "spatial": {
+          "overall": {
+            "actor_frames": 116,
+            "matched": 115,
+            "exact_label_hits": 115,
+            "prediction_frames": 121,
+            "unmatched_predictions": 6
+          },
+          "sector": {
+            "front": {
+              "actor_frames": 62,
+              "matched": 61,
+              "exact_label_hits": 61,
+              "prediction_frames": 60,
+              "unmatched_predictions": 0
+            },
+            "left": {
+              "actor_frames": 0,
+              "matched": 0,
+              "exact_label_hits": 0,
+              "prediction_frames": 0,
+              "unmatched_predictions": 0
+            },
+            "right": {
+              "actor_frames": 12,
+              "matched": 12,
+              "exact_label_hits": 12,
+              "prediction_frames": 13,
+              "unmatched_predictions": 1
+            },
+            "rear": {
+              "actor_frames": 42,
+              "matched": 42,
+              "exact_label_hits": 42,
+              "prediction_frames": 48,
+              "unmatched_predictions": 5
+            }
+          },
+          "by_status": {
+            "current": {
+              "prediction_frames": 108,
+              "unmatched_predictions": 5
+            },
+            "remembered": {
+              "prediction_frames": 13,
+              "unmatched_predictions": 1
+            }
+          },
+          "position_error": {
+            "p50_m": 0.4,
+            "p95_m": 1.029
+          },
+          "direct_id_switches": 0,
+          "reacquisitions": 0
+        },
+        "spatial_with_parked": {
+          "overall": {
+            "actor_frames": 116,
+            "matched": 115,
+            "exact_label_hits": 115,
+            "prediction_frames": 121,
+            "unmatched_predictions": 6
+          },
+          "sector": {
+            "front": {
+              "actor_frames": 62,
+              "matched": 61,
+              "exact_label_hits": 61,
+              "prediction_frames": 60,
+              "unmatched_predictions": 0
+            },
+            "left": {
+              "actor_frames": 0,
+              "matched": 0,
+              "exact_label_hits": 0,
+              "prediction_frames": 0,
+              "unmatched_predictions": 0
+            },
+            "right": {
+              "actor_frames": 12,
+              "matched": 12,
+              "exact_label_hits": 12,
+              "prediction_frames": 13,
+              "unmatched_predictions": 1
+            },
+            "rear": {
+              "actor_frames": 42,
+              "matched": 42,
+              "exact_label_hits": 42,
+              "prediction_frames": 48,
+              "unmatched_predictions": 5
+            }
+          },
+          "by_status": {
+            "current": {
+              "prediction_frames": 108,
+              "unmatched_predictions": 5
+            },
+            "remembered": {
+              "prediction_frames": 13,
+              "unmatched_predictions": 1
+            }
+          },
+          "position_error": {
+            "p50_m": 0.4,
+            "p95_m": 1.029
+          },
+          "direct_id_switches": 0,
+          "reacquisitions": 0
+        },
+        "overlay": {
+          "scenario": {
+            "hits": 115,
+            "unmatched": 6
+          },
+          "with_parked": {
+            "hits": 115,
+            "unmatched": 6
+          }
+        },
+        "associations": [],
+        "source_cases": {},
+        "all_wheeled_steps": {
+          "world_translation_m": {
+            "n": 118,
+            "median": 0.125,
+            "p95": 0.209,
+            "max": 0.228,
+            "worst_frames": [
+              7860,
+              7861
+            ],
+            "worst_time_s": 7
+          },
+          "heading_deg": {
+            "n": 118,
+            "median": 0,
+            "p95": 0,
+            "max": 0,
+            "worst_frames": [
+              7865,
+              7866
+            ],
+            "worst_time_s": 7.5
+          },
+          "max_extent_m": {
+            "n": 118,
+            "median": 0.003,
+            "p95": 0.065,
+            "max": 0.065,
+            "worst_frames": [
+              7888,
+              7889
+            ],
+            "worst_time_s": 9.8
+          },
+          "over_1m": 0,
+          "over_15deg": 0,
+          "over_0_4m_extent": 0,
+          "examples": []
+        },
+        "encounters": {
+          "moving_lead/580/1": {
+            "within_35m_frames": 116,
+            "matched": 115,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 7791,
+              "time_s": 0,
+              "range_m": 24.019,
+              "id": 1,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 7792,
+              "time_s": 0.1,
+              "range_m": 24.047,
+              "id": 1,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 7792,
+              "time_s": 0.1,
+              "range_m": 24.047,
+              "id": 1,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 115,
+              "median": 0.366,
+              "p95": 0.961,
+              "max": 1.131,
+              "worst_frames": [
+                7881
+              ],
+              "worst_time_s": 9
+            },
+            "same_id_translation_error_m": {
+              "n": 114,
+              "median": 0.087,
+              "p95": 0.095,
+              "max": 0.212,
+              "worst_frames": [
+                7864,
+                7865
+              ],
+              "worst_time_s": 7.4
+            },
+            "same_id_extent_error_m": {
+              "n": 114,
+              "median": 0.004,
+              "p95": 0.065,
+              "max": 0.065,
+              "worst_frames": [
+                7869,
+                7870
+              ],
+              "worst_time_s": 7.9
+            }
+          }
+        }
+      },
+      "after": {
+        "input_sha256": "e1b6689388868b654b0d9b493f94ef02c40be2fa97545cfa7a0691b01091af2f",
+        "frames": 116,
+        "first": 7791,
+        "last": 7906,
+        "town_sha256": "ad7db3ded5e31a8ffb463c1498625ac0a0e35e9f4746f8cbc9113134c6b31e63",
+        "parked_sha256": "453adee19ae15adc10c45f47db97177bd2cf4e8296bdb5ad9173ad7dc3eff77c",
+        "memory_sha256_lf": "602884d383e8c56f0991356ef731b5875f9f968711e3b7ed07ce705bcf69a8ff",
+        "tracker": {
+          "actor_frames": 116,
+          "matched": 105,
+          "exact_label_hits": 105,
+          "prediction_frames": 166,
+          "unmatched_predictions": 61
+        },
+        "spatial": {
+          "overall": {
+            "actor_frames": 116,
+            "matched": 115,
+            "exact_label_hits": 115,
+            "prediction_frames": 121,
+            "unmatched_predictions": 6
+          },
+          "sector": {
+            "front": {
+              "actor_frames": 62,
+              "matched": 61,
+              "exact_label_hits": 61,
+              "prediction_frames": 60,
+              "unmatched_predictions": 0
+            },
+            "left": {
+              "actor_frames": 0,
+              "matched": 0,
+              "exact_label_hits": 0,
+              "prediction_frames": 0,
+              "unmatched_predictions": 0
+            },
+            "right": {
+              "actor_frames": 12,
+              "matched": 12,
+              "exact_label_hits": 12,
+              "prediction_frames": 13,
+              "unmatched_predictions": 1
+            },
+            "rear": {
+              "actor_frames": 42,
+              "matched": 42,
+              "exact_label_hits": 42,
+              "prediction_frames": 48,
+              "unmatched_predictions": 5
+            }
+          },
+          "by_status": {
+            "current": {
+              "prediction_frames": 108,
+              "unmatched_predictions": 5
+            },
+            "remembered": {
+              "prediction_frames": 13,
+              "unmatched_predictions": 1
+            }
+          },
+          "position_error": {
+            "p50_m": 0.4,
+            "p95_m": 1.014
+          },
+          "direct_id_switches": 0,
+          "reacquisitions": 0
+        },
+        "spatial_with_parked": {
+          "overall": {
+            "actor_frames": 116,
+            "matched": 115,
+            "exact_label_hits": 115,
+            "prediction_frames": 121,
+            "unmatched_predictions": 6
+          },
+          "sector": {
+            "front": {
+              "actor_frames": 62,
+              "matched": 61,
+              "exact_label_hits": 61,
+              "prediction_frames": 60,
+              "unmatched_predictions": 0
+            },
+            "left": {
+              "actor_frames": 0,
+              "matched": 0,
+              "exact_label_hits": 0,
+              "prediction_frames": 0,
+              "unmatched_predictions": 0
+            },
+            "right": {
+              "actor_frames": 12,
+              "matched": 12,
+              "exact_label_hits": 12,
+              "prediction_frames": 13,
+              "unmatched_predictions": 1
+            },
+            "rear": {
+              "actor_frames": 42,
+              "matched": 42,
+              "exact_label_hits": 42,
+              "prediction_frames": 48,
+              "unmatched_predictions": 5
+            }
+          },
+          "by_status": {
+            "current": {
+              "prediction_frames": 108,
+              "unmatched_predictions": 5
+            },
+            "remembered": {
+              "prediction_frames": 13,
+              "unmatched_predictions": 1
+            }
+          },
+          "position_error": {
+            "p50_m": 0.4,
+            "p95_m": 1.014
+          },
+          "direct_id_switches": 0,
+          "reacquisitions": 0
+        },
+        "overlay": {
+          "scenario": {
+            "hits": 115,
+            "unmatched": 6
+          },
+          "with_parked": {
+            "hits": 115,
+            "unmatched": 6
+          }
+        },
+        "associations": [],
+        "source_cases": {},
+        "all_wheeled_steps": {
+          "world_translation_m": {
+            "n": 118,
+            "median": 0.125,
+            "p95": 0.209,
+            "max": 0.228,
+            "worst_frames": [
+              7860,
+              7861
+            ],
+            "worst_time_s": 7
+          },
+          "heading_deg": {
+            "n": 118,
+            "median": 0,
+            "p95": 0,
+            "max": 0,
+            "worst_frames": [
+              7865,
+              7866
+            ],
+            "worst_time_s": 7.5
+          },
+          "max_extent_m": {
+            "n": 118,
+            "median": 0.003,
+            "p95": 0.065,
+            "max": 0.065,
+            "worst_frames": [
+              7888,
+              7889
+            ],
+            "worst_time_s": 9.8
+          },
+          "over_1m": 0,
+          "over_15deg": 0,
+          "over_0_4m_extent": 0,
+          "examples": []
+        },
+        "encounters": {
+          "moving_lead/580/1": {
+            "within_35m_frames": 116,
+            "matched": 115,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 7791,
+              "time_s": 0,
+              "range_m": 24.019,
+              "id": 1,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 7792,
+              "time_s": 0.1,
+              "range_m": 24.047,
+              "id": 1,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 7792,
+              "time_s": 0.1,
+              "range_m": 24.047,
+              "id": 1,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 115,
+              "median": 0.366,
+              "p95": 0.946,
+              "max": 1.119,
+              "worst_frames": [
+                7881
+              ],
+              "worst_time_s": 9
+            },
+            "same_id_translation_error_m": {
+              "n": 114,
+              "median": 0.088,
+              "p95": 0.095,
+              "max": 0.212,
+              "worst_frames": [
+                7864,
+                7865
+              ],
+              "worst_time_s": 7.4
+            },
+            "same_id_extent_error_m": {
+              "n": 114,
+              "median": 0.004,
+              "p95": 0.065,
+              "max": 0.065,
+              "worst_frames": [
+                7869,
+                7870
+              ],
+              "worst_time_s": 7.9
+            }
+          }
+        }
+      }
+    },
+    "overtake-yield": {
+      "before": {
+        "input_sha256": "181b98c1c3d0f4b1b5a625a2e7e31e5b009a00597e120fcd869a931ba83349e6",
+        "frames": 183,
+        "first": 7916,
+        "last": 8098,
+        "town_sha256": "ad7db3ded5e31a8ffb463c1498625ac0a0e35e9f4746f8cbc9113134c6b31e63",
+        "parked_sha256": "453adee19ae15adc10c45f47db97177bd2cf4e8296bdb5ad9173ad7dc3eff77c",
+        "memory_sha256_lf": "ab4afd7f1b069bbeb9aaa58ec4293f9ccd00f49b59a2f03e24c2026cd2ce6f91",
+        "tracker": {
+          "actor_frames": 265,
+          "matched": 265,
+          "exact_label_hits": 264,
+          "prediction_frames": 322,
+          "unmatched_predictions": 57
+        },
+        "spatial": {
+          "overall": {
+            "actor_frames": 265,
+            "matched": 264,
+            "exact_label_hits": 264,
+            "prediction_frames": 269,
+            "unmatched_predictions": 5
+          },
+          "sector": {
+            "front": {
+              "actor_frames": 187,
+              "matched": 186,
+              "exact_label_hits": 186,
+              "prediction_frames": 182,
+              "unmatched_predictions": 0
+            },
+            "left": {
+              "actor_frames": 38,
+              "matched": 38,
+              "exact_label_hits": 38,
+              "prediction_frames": 42,
+              "unmatched_predictions": 0
+            },
+            "right": {
+              "actor_frames": 12,
+              "matched": 12,
+              "exact_label_hits": 12,
+              "prediction_frames": 16,
+              "unmatched_predictions": 5
+            },
+            "rear": {
+              "actor_frames": 28,
+              "matched": 28,
+              "exact_label_hits": 28,
+              "prediction_frames": 29,
+              "unmatched_predictions": 0
+            }
+          },
+          "by_status": {
+            "current": {
+              "prediction_frames": 267,
+              "unmatched_predictions": 3
+            },
+            "remembered": {
+              "prediction_frames": 2,
+              "unmatched_predictions": 2
+            }
+          },
+          "position_error": {
+            "p50_m": 0.237,
+            "p95_m": 2.089
+          },
+          "direct_id_switches": 0,
+          "reacquisitions": 0
+        },
+        "spatial_with_parked": {
+          "overall": {
+            "actor_frames": 265,
+            "matched": 264,
+            "exact_label_hits": 264,
+            "prediction_frames": 269,
+            "unmatched_predictions": 5
+          },
+          "sector": {
+            "front": {
+              "actor_frames": 187,
+              "matched": 186,
+              "exact_label_hits": 186,
+              "prediction_frames": 182,
+              "unmatched_predictions": 0
+            },
+            "left": {
+              "actor_frames": 38,
+              "matched": 38,
+              "exact_label_hits": 38,
+              "prediction_frames": 42,
+              "unmatched_predictions": 0
+            },
+            "right": {
+              "actor_frames": 12,
+              "matched": 12,
+              "exact_label_hits": 12,
+              "prediction_frames": 16,
+              "unmatched_predictions": 5
+            },
+            "rear": {
+              "actor_frames": 28,
+              "matched": 28,
+              "exact_label_hits": 28,
+              "prediction_frames": 29,
+              "unmatched_predictions": 0
+            }
+          },
+          "by_status": {
+            "current": {
+              "prediction_frames": 267,
+              "unmatched_predictions": 3
+            },
+            "remembered": {
+              "prediction_frames": 2,
+              "unmatched_predictions": 2
+            }
+          },
+          "position_error": {
+            "p50_m": 0.237,
+            "p95_m": 2.089
+          },
+          "direct_id_switches": 0,
+          "reacquisitions": 0
+        },
+        "overlay": {
+          "scenario": {
+            "hits": 264,
+            "unmatched": 5
+          },
+          "with_parked": {
+            "hits": 264,
+            "unmatched": 5
+          }
+        },
+        "associations": [],
+        "source_cases": {},
+        "all_wheeled_steps": {
+          "world_translation_m": {
+            "n": 262,
+            "median": 0.133,
+            "p95": 0.937,
+            "max": 0.946,
+            "worst_frames": [
+              7986,
+              7987
+            ],
+            "worst_time_s": 7.1
+          },
+          "heading_deg": {
+            "n": 262,
+            "median": 0,
+            "p95": 0,
+            "max": 0.063,
+            "worst_frames": [
+              8082,
+              8083
+            ],
+            "worst_time_s": 16.7
+          },
+          "max_extent_m": {
+            "n": 262,
+            "median": 0.005,
+            "p95": 0.046,
+            "max": 0.112,
+            "worst_frames": [
+              7959,
+              7960
+            ],
+            "worst_time_s": 4.4
+          },
+          "over_1m": 0,
+          "over_15deg": 0,
+          "over_0_4m_extent": 0,
+          "examples": []
+        },
+        "encounters": {
+          "moving_lead/643/1": {
+            "within_35m_frames": 183,
+            "matched": 182,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 7916,
+              "time_s": 0,
+              "range_m": 24.019,
+              "id": 2,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 7917,
+              "time_s": 0.1,
+              "range_m": 24.047,
+              "id": 2,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 7917,
+              "time_s": 0.1,
+              "range_m": 24.047,
+              "id": 2,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 182,
+              "median": 0.131,
+              "p95": 0.38,
+              "max": 0.545,
+              "worst_frames": [
+                8084
+              ],
+              "worst_time_s": 16.8
+            },
+            "same_id_translation_error_m": {
+              "n": 181,
+              "median": 0.064,
+              "p95": 0.106,
+              "max": 0.176,
+              "worst_frames": [
+                8094,
+                8095
+              ],
+              "worst_time_s": 17.9
+            },
+            "same_id_extent_error_m": {
+              "n": 181,
+              "median": 0.003,
+              "p95": 0.038,
+              "max": 0.053,
+              "worst_frames": [
+                8070,
+                8071
+              ],
+              "worst_time_s": 15.5
+            }
+          },
+          "adjacent_traffic/644/1": {
+            "within_35m_frames": 82,
+            "matched": 82,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 7916,
+              "time_s": 0,
+              "range_m": 4.034,
+              "id": 1,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 7916,
+              "time_s": 0,
+              "range_m": 4.034,
+              "id": 1,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 7916,
+              "time_s": 0,
+              "range_m": 4.034,
+              "id": 1,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 82,
+              "median": 0.653,
+              "p95": 2.466,
+              "max": 2.542,
+              "worst_frames": [
+                7965
+              ],
+              "worst_time_s": 4.9
+            },
+            "same_id_translation_error_m": {
+              "n": 81,
+              "median": 0.068,
+              "p95": 0.217,
+              "max": 0.564,
+              "worst_frames": [
+                7958,
+                7959
+              ],
+              "worst_time_s": 4.3
+            },
+            "same_id_extent_error_m": {
+              "n": 81,
+              "median": 0.018,
+              "p95": 0.065,
+              "max": 0.112,
+              "worst_frames": [
+                7959,
+                7960
+              ],
+              "worst_time_s": 4.4
+            }
+          }
+        }
+      },
+      "after": {
+        "input_sha256": "181b98c1c3d0f4b1b5a625a2e7e31e5b009a00597e120fcd869a931ba83349e6",
+        "frames": 183,
+        "first": 7916,
+        "last": 8098,
+        "town_sha256": "ad7db3ded5e31a8ffb463c1498625ac0a0e35e9f4746f8cbc9113134c6b31e63",
+        "parked_sha256": "453adee19ae15adc10c45f47db97177bd2cf4e8296bdb5ad9173ad7dc3eff77c",
+        "memory_sha256_lf": "602884d383e8c56f0991356ef731b5875f9f968711e3b7ed07ce705bcf69a8ff",
+        "tracker": {
+          "actor_frames": 265,
+          "matched": 265,
+          "exact_label_hits": 264,
+          "prediction_frames": 322,
+          "unmatched_predictions": 57
+        },
+        "spatial": {
+          "overall": {
+            "actor_frames": 265,
+            "matched": 264,
+            "exact_label_hits": 264,
+            "prediction_frames": 269,
+            "unmatched_predictions": 5
+          },
+          "sector": {
+            "front": {
+              "actor_frames": 187,
+              "matched": 186,
+              "exact_label_hits": 186,
+              "prediction_frames": 182,
+              "unmatched_predictions": 0
+            },
+            "left": {
+              "actor_frames": 38,
+              "matched": 38,
+              "exact_label_hits": 38,
+              "prediction_frames": 42,
+              "unmatched_predictions": 0
+            },
+            "right": {
+              "actor_frames": 12,
+              "matched": 12,
+              "exact_label_hits": 12,
+              "prediction_frames": 16,
+              "unmatched_predictions": 5
+            },
+            "rear": {
+              "actor_frames": 28,
+              "matched": 28,
+              "exact_label_hits": 28,
+              "prediction_frames": 29,
+              "unmatched_predictions": 0
+            }
+          },
+          "by_status": {
+            "current": {
+              "prediction_frames": 267,
+              "unmatched_predictions": 3
+            },
+            "remembered": {
+              "prediction_frames": 2,
+              "unmatched_predictions": 2
+            }
+          },
+          "position_error": {
+            "p50_m": 0.225,
+            "p95_m": 1.957
+          },
+          "direct_id_switches": 0,
+          "reacquisitions": 0
+        },
+        "spatial_with_parked": {
+          "overall": {
+            "actor_frames": 265,
+            "matched": 264,
+            "exact_label_hits": 264,
+            "prediction_frames": 269,
+            "unmatched_predictions": 5
+          },
+          "sector": {
+            "front": {
+              "actor_frames": 187,
+              "matched": 186,
+              "exact_label_hits": 186,
+              "prediction_frames": 182,
+              "unmatched_predictions": 0
+            },
+            "left": {
+              "actor_frames": 38,
+              "matched": 38,
+              "exact_label_hits": 38,
+              "prediction_frames": 42,
+              "unmatched_predictions": 0
+            },
+            "right": {
+              "actor_frames": 12,
+              "matched": 12,
+              "exact_label_hits": 12,
+              "prediction_frames": 16,
+              "unmatched_predictions": 5
+            },
+            "rear": {
+              "actor_frames": 28,
+              "matched": 28,
+              "exact_label_hits": 28,
+              "prediction_frames": 29,
+              "unmatched_predictions": 0
+            }
+          },
+          "by_status": {
+            "current": {
+              "prediction_frames": 267,
+              "unmatched_predictions": 3
+            },
+            "remembered": {
+              "prediction_frames": 2,
+              "unmatched_predictions": 2
+            }
+          },
+          "position_error": {
+            "p50_m": 0.225,
+            "p95_m": 1.957
+          },
+          "direct_id_switches": 0,
+          "reacquisitions": 0
+        },
+        "overlay": {
+          "scenario": {
+            "hits": 264,
+            "unmatched": 5
+          },
+          "with_parked": {
+            "hits": 264,
+            "unmatched": 5
+          }
+        },
+        "associations": [],
+        "source_cases": {},
+        "all_wheeled_steps": {
+          "world_translation_m": {
+            "n": 262,
+            "median": 0.133,
+            "p95": 0.894,
+            "max": 1.038,
+            "worst_frames": [
+              7976,
+              7977
+            ],
+            "worst_time_s": 6.1
+          },
+          "heading_deg": {
+            "n": 262,
+            "median": 0,
+            "p95": 0,
+            "max": 0.063,
+            "worst_frames": [
+              8082,
+              8083
+            ],
+            "worst_time_s": 16.7
+          },
+          "max_extent_m": {
+            "n": 262,
+            "median": 0.005,
+            "p95": 0.046,
+            "max": 0.112,
+            "worst_frames": [
+              7959,
+              7960
+            ],
+            "worst_time_s": 4.4
+          },
+          "over_1m": 11,
+          "over_15deg": 0,
+          "over_0_4m_extent": 0,
+          "examples": [
+            {
+              "frame": 7975,
+              "time_s": 5.9,
+              "id": 1,
+              "actual": 644,
+              "prior_actor": 644,
+              "world_step_m": 1.038,
+              "heading_step_deg": 0,
+              "max_extent_step_m": 0.008,
+              "from": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.54,
+                  97.573
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.317,
+                  1.717,
+                  2.1
+                ],
+                "foot": 0.424,
+                "opacity": 1,
+                "status": "current"
+              },
+              "to": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.6,
+                  96.538
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.31,
+                  1.713,
+                  2.1
+                ],
+                "foot": 0.445,
+                "opacity": 1,
+                "status": "current"
+              }
+            },
+            {
+              "frame": 7977,
+              "time_s": 6.1,
+              "id": 1,
+              "actual": 644,
+              "prior_actor": 644,
+              "world_step_m": 1.038,
+              "heading_step_deg": 0,
+              "max_extent_step_m": 0.005,
+              "from": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.672,
+                  95.503
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.305,
+                  1.709,
+                  2.1
+                ],
+                "foot": 0.461,
+                "opacity": 1,
+                "status": "current"
+              },
+              "to": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.741,
+                  94.467
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.303,
+                  1.703,
+                  2.1
+                ],
+                "foot": 0.476,
+                "opacity": 1,
+                "status": "current"
+              }
+            },
+            {
+              "frame": 7976,
+              "time_s": 6,
+              "id": 1,
+              "actual": 644,
+              "prior_actor": 644,
+              "world_step_m": 1.037,
+              "heading_step_deg": 0,
+              "max_extent_step_m": 0.005,
+              "from": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.6,
+                  96.538
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.31,
+                  1.713,
+                  2.1
+                ],
+                "foot": 0.445,
+                "opacity": 1,
+                "status": "current"
+              },
+              "to": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.672,
+                  95.503
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.305,
+                  1.709,
+                  2.1
+                ],
+                "foot": 0.461,
+                "opacity": 1,
+                "status": "current"
+              }
+            },
+            {
+              "frame": 7973,
+              "time_s": 5.7,
+              "id": 1,
+              "actual": 644,
+              "prior_actor": 644,
+              "world_step_m": 1.035,
+              "heading_step_deg": 0,
+              "max_extent_step_m": 0.017,
+              "from": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.437,
+                  99.64
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.346,
+                  1.725,
+                  2.1
+                ],
+                "foot": 0.388,
+                "opacity": 1,
+                "status": "current"
+              },
+              "to": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.485,
+                  98.607
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.329,
+                  1.721,
+                  2.1
+                ],
+                "foot": 0.404,
+                "opacity": 1,
+                "status": "current"
+              }
+            },
+            {
+              "frame": 7974,
+              "time_s": 5.8,
+              "id": 1,
+              "actual": 644,
+              "prior_actor": 644,
+              "world_step_m": 1.035,
+              "heading_step_deg": 0,
+              "max_extent_step_m": 0.012,
+              "from": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.485,
+                  98.607
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.329,
+                  1.721,
+                  2.1
+                ],
+                "foot": 0.404,
+                "opacity": 1,
+                "status": "current"
+              },
+              "to": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.54,
+                  97.573
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.317,
+                  1.717,
+                  2.1
+                ],
+                "foot": 0.424,
+                "opacity": 1,
+                "status": "current"
+              }
+            },
+            {
+              "frame": 7972,
+              "time_s": 5.6,
+              "id": 1,
+              "actual": 644,
+              "prior_actor": 644,
+              "world_step_m": 1.033,
+              "heading_step_deg": 0,
+              "max_extent_step_m": 0.023,
+              "from": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.42,
+                  100.673
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.369,
+                  1.73,
+                  2.1
+                ],
+                "foot": 0.372,
+                "opacity": 1,
+                "status": "current"
+              },
+              "to": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.437,
+                  99.64
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.346,
+                  1.725,
+                  2.1
+                ],
+                "foot": 0.388,
+                "opacity": 1,
+                "status": "current"
+              }
+            },
+            {
+              "frame": 7971,
+              "time_s": 5.5,
+              "id": 1,
+              "actual": 644,
+              "prior_actor": 644,
+              "world_step_m": 1.028,
+              "heading_step_deg": 0,
+              "max_extent_step_m": 0.013,
+              "from": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.4,
+                  101.701
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.382,
+                  1.736,
+                  2.1
+                ],
+                "foot": 0.352,
+                "opacity": 1,
+                "status": "current"
+              },
+              "to": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.42,
+                  100.673
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.369,
+                  1.73,
+                  2.1
+                ],
+                "foot": 0.372,
+                "opacity": 1,
+                "status": "current"
+              }
+            },
+            {
+              "frame": 7978,
+              "time_s": 6.2,
+              "id": 1,
+              "actual": 644,
+              "prior_actor": 644,
+              "world_step_m": 1.028,
+              "heading_step_deg": 0,
+              "max_extent_step_m": 0.009,
+              "from": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.741,
+                  94.467
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.303,
+                  1.703,
+                  2.1
+                ],
+                "foot": 0.476,
+                "opacity": 1,
+                "status": "current"
+              },
+              "to": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.844,
+                  93.444
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.303,
+                  1.694,
+                  2.1
+                ],
+                "foot": 0.497,
+                "opacity": 1,
+                "status": "current"
+              }
+            },
+            {
+              "frame": 7970,
+              "time_s": 5.4,
+              "id": 1,
+              "actual": 644,
+              "prior_actor": 644,
+              "world_step_m": 1.024,
+              "heading_step_deg": 0,
+              "max_extent_step_m": 0.008,
+              "from": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.377,
+                  102.725
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.38,
+                  1.744,
+                  2.1
+                ],
+                "foot": 0.331,
+                "opacity": 1,
+                "status": "current"
+              },
+              "to": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.4,
+                  101.701
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.382,
+                  1.736,
+                  2.1
+                ],
+                "foot": 0.352,
+                "opacity": 1,
+                "status": "current"
+              }
+            },
+            {
+              "frame": 7969,
+              "time_s": 5.3,
+              "id": 1,
+              "actual": 644,
+              "prior_actor": 644,
+              "world_step_m": 1.014,
+              "heading_step_deg": 0,
+              "max_extent_step_m": 0.007,
+              "from": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.356,
+                  103.739
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.378,
+                  1.751,
+                  2.1
+                ],
+                "foot": 0.311,
+                "opacity": 1,
+                "status": "current"
+              },
+              "to": {
+                "id": 1,
+                "label": "car",
+                "world": [
+                  -77.377,
+                  102.725
+                ],
+                "heading": 269.714,
+                "dimensions": [
+                  4.38,
+                  1.744,
+                  2.1
+                ],
+                "foot": 0.331,
+                "opacity": 1,
+                "status": "current"
+              }
+            }
+          ]
+        },
+        "encounters": {
+          "moving_lead/643/1": {
+            "within_35m_frames": 183,
+            "matched": 182,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 7916,
+              "time_s": 0,
+              "range_m": 24.019,
+              "id": 2,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 7917,
+              "time_s": 0.1,
+              "range_m": 24.047,
+              "id": 2,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 7917,
+              "time_s": 0.1,
+              "range_m": 24.047,
+              "id": 2,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 182,
+              "median": 0.127,
+              "p95": 0.389,
+              "max": 0.545,
+              "worst_frames": [
+                8084
+              ],
+              "worst_time_s": 16.8
+            },
+            "same_id_translation_error_m": {
+              "n": 181,
+              "median": 0.062,
+              "p95": 0.106,
+              "max": 0.175,
+              "worst_frames": [
+                8094,
+                8095
+              ],
+              "worst_time_s": 17.9
+            },
+            "same_id_extent_error_m": {
+              "n": 181,
+              "median": 0.003,
+              "p95": 0.038,
+              "max": 0.053,
+              "worst_frames": [
+                8070,
+                8071
+              ],
+              "worst_time_s": 15.5
+            }
+          },
+          "adjacent_traffic/644/1": {
+            "within_35m_frames": 82,
+            "matched": 82,
+            "distinct_ids": 1,
+            "duplicate_frames": 0,
+            "footprint_duplicates": 0,
+            "first_spatial_track": {
+              "frame": 7916,
+              "time_s": 0,
+              "range_m": 4.034,
+              "id": 1,
+              "status": "measured"
+            },
+            "first_draw": {
+              "frame": 7916,
+              "time_s": 0,
+              "range_m": 4.034,
+              "id": 1,
+              "opacity": 1
+            },
+            "first_half_opacity": {
+              "frame": 7916,
+              "time_s": 0,
+              "range_m": 4.034,
+              "id": 1,
+              "opacity": 1
+            },
+            "position_error_m": {
+              "n": 82,
+              "median": 0.458,
+              "p95": 2.466,
+              "max": 2.542,
+              "worst_frames": [
+                7965
+              ],
+              "worst_time_s": 4.9
+            },
+            "same_id_translation_error_m": {
+              "n": 81,
+              "median": 0.045,
+              "p95": 0.217,
+              "max": 0.564,
+              "worst_frames": [
+                7958,
+                7959
+              ],
+              "worst_time_s": 4.3
+            },
+            "same_id_extent_error_m": {
+              "n": 81,
+              "median": 0.018,
+              "p95": 0.065,
+              "max": 0.112,
+              "worst_frames": [
+                7959,
+                7960
+              ],
+              "worst_time_s": 4.4
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -5,8 +5,9 @@
 import {recordedChapters} from './encounter-chapters.mjs';
 import {VideoExposureClock, MEDIA_TIME_TOLERANCE, replayIndexAt} from './exposure-clock.mjs';
 import {loadReplay} from './replay-pack.mjs';
+import {barrierName,barrierReviewer} from './barrier-review.mjs';
 import {cornerReturns, lidarCount} from './sensor-returns.mjs';
-import {bicycleAssociations} from './rider-association.mjs';
+import {bicycleAssociations,RIDER_HISTORY_FRAMES} from './rider-association.mjs';
 import {bearingObservations, cameraBoxes, cameraLamp, inspectionCamera, measuredHeads, LAMP_COLOURS, MAX_CAMERA_HOLD_S} from './lamp-observations.mjs';
 
 const CAR_URL = './vehicle-assets/waymo-ipace.glb';
@@ -16,7 +17,7 @@ const CAMERA_ORDER = Object.keys(CAMERA_LABELS);
 const LOCAL_CONSOLE = ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname);
 const POLICY_LABELS = {
   fusion: 'Learned multisensor', camera: 'Learned vision',
-  'ado-city-cruise-v1': 'ADO urban cruise', 'ado-city-policy-v1': 'ADO city driver', 'ado-behavior-v2': 'ADO behavior v2',
+  'ado-city-pace-v1': 'ADO urban pace', 'ado-city-cruise-v1': 'ADO urban cruise', 'ado-city-policy-v1': 'ADO city driver', 'ado-behavior-v2': 'ADO behavior v2',
   demonstrator: 'Training instructor', teacher: 'Training instructor'
 };
 const OUTCOME_LABELS = {complete: 'Route complete', red_light: 'Red-light violation'};
@@ -334,11 +335,13 @@ function activityOf(frame) {
       ? {state: 'accelerating', label: 'Pulling away'}
       : {state: 'stopped', label: 'Stopped'};
   }
-  if (brake > .05) return {state: 'braking', label: 'Braking'};
+  const acceleration = frame.longitudinal_accel_mps2;
+  if (finite(acceleration) && acceleration < -.45) return {state: 'braking', label: brake > .05 ? 'Braking' : 'Slowing down'};
+  if (!finite(acceleration) && brake > .05) return {state: 'braking', label: 'Braking'};
   if (Math.abs(steer) >= .15) {
     return steer < 0 ? {state: 'left', label: 'Turning left'} : {state: 'right', label: 'Turning right'};
   }
-  if (throttle > .45) return {state: 'accelerating', label: 'Accelerating'};
+  if (finite(acceleration) ? acceleration > .45 : throttle > .45) return {state: 'accelerating', label: 'Accelerating'};
   return {state: 'cruising', label: 'Cruising'};
 }
 
@@ -399,7 +402,8 @@ function setSelectedTrack(id) {
 }
 
 function trackView(track) {
-  const view=state.riders.get(track?.id)?.camera;
+  const association=state.riders.get(track?.id);
+  const view=association?.classification_age_s<=.45?association.camera:null;
   return state.cameras.includes(view)?view:inspectionCamera(track,state.cameras,state.camera);
 }
 
@@ -603,10 +607,11 @@ function renderSensing(frame) {
         finite(m.track.radial_mps)?`Relative Doppler ${signedTenth.format(m.track.radial_mps)} m/s`:''].filter(Boolean).join(' · ')})),
     kind: trackKind(label),
     coasting: Boolean(track.coasting),
-    name: state.riders.has(track.id)?'Bicycle rider':sentence(String(label ?? '')) || 'Object',
+    name: state.riders.has(track.id)||group?.mountedRider?'Bicycle rider':sentence(String(barrierName(track)??label??'')) || 'Object',
     where: trackBearing(track),
     range: `${tenth.format(range)} m`,
-    meta: state.riders.has(track.id)?`Bicycle in ${CAMERA_LABELS[state.riders.get(track.id).camera]} camera · Depth from person track · ${trackMeta(track)}`:trackMeta(track)
+    meta: state.riders.has(track.id)?`Bicycle seen in ${CAMERA_LABELS[state.riders.get(track.id).camera]} camera · Depth from person track · ${trackMeta(track)}`:
+      group?.mountedRider?`Ranged rider and bicycle association · ${trackMeta(track)}`:trackMeta(track)
     };
   });
   const signature = JSON.stringify(rows);
@@ -629,7 +634,7 @@ function renderSensing(frame) {
   const lead = tracks.find(({track}) => !track.coasting && track.x > 0 && Math.abs(track.y) <= CORRIDOR_HALF_WIDTH_M);
   show('ahead', Boolean(lead));
   if (lead) {
-    const name = state.riders.has(lead.track.id)?'Bicycle rider':sentence(String(lead.track.label ?? '')) || 'Object';
+    const name = state.riders.has(lead.track.id)||bySource.get(lead.track.id)?.mountedRider?'Bicycle rider':sentence(String(barrierName(lead.track)??lead.track.label??'')) || 'Object';
     text('ahead', `${name} ahead · ${tenth.format(lead.track.x)} m`);
     $('ahead').dataset.kind = trackKind(lead.track.label);
   }
@@ -682,6 +687,8 @@ function renderFrameFacts(frame) {
     collisions: finite(frame?.collision_count) ? whole.format(frame.collision_count) : null,
     redlight: finite(frame?.red_light_violations) ? whole.format(frame.red_light_violations) : null,
     yield: finite(frame?.yield_violations) ? whole.format(frame.yield_violations) : null,
+    request: finite(frame?.speed_request_mps) ? `${tenth.format(frame.speed_request_mps*3.6)} km/h` : null,
+    limit: finite(frame?.posted_limit_kmh) && frame.posted_limit_kmh>0 ? `${whole.format(frame.posted_limit_kmh)} km/h` : null,
     grip: finite(frame?.grip) ? percent.format(frame.grip) : null,
     delay: finite(frame?.crossing_delay) && frame.crossing_delay !== 0 ? `${frame.crossing_delay} s` : null,
     destination: destination ?? sentence(frame?.destination),
@@ -846,7 +853,8 @@ function renderRunLinks() {
   updateInspectorLink();
   link('link-log', source === 'recorded' ? run?.log_url : source === 'training' ? training?.logUrl : null,
     source === 'training' ? 'Demonstration log' : 'Run log');
-  link('link-replay', source === 'recorded' && state.replay ? `${state.dir}/replay.json` : null);
+  link('link-replay', source === 'recorded' && state.replay
+    ? state.entry?.replay_url ?? run?.replay_url ?? `${state.dir}/replay.json` : null);
   const footage = (source === 'recorded' || source === 'training') && film.hasAttribute('src');
   link('link-mp4', footage ? film.src : null);
 }
@@ -978,7 +986,11 @@ function presentAt(time, seeking = false, exact = false) {
     sceneCall('setRiderAssociations',state.riders);
     state.frame = frame;
   }
-  sceneCall('updateReplay', frames, index, fraction);
+  // While a movie exposure is on screen, only the virtual camera may pan
+  // within its presentation interval. Pausing and stepping use its exact time.
+  const cameraFraction = exact && state.view === 'follow' && isPlaying() && !film.seeking && !reducedMotion && interval > 0
+    ? clamp((position() - times[index]) / interval, 0, 1) : fraction;
+  sceneCall('updateReplay', frames, index, fraction, cameraFraction);
   if(changed)renderTelemetry(frame);
 }
 
@@ -1459,7 +1471,8 @@ async function openRecorded(entry, startSeconds = 0, requestedCamera = null) {
   if (!replay) {
     try {
       replay = await loadReplay(entry.replay_pack_url ?? state.run?.replay_pack_url, signal, parseReplay,
-        () => getJson(`${dir}/replay.json`, {signal, timeout: 30000}));
+        () => getJson(entry.replay_url ?? state.run?.replay_url ?? `${dir}/replay.json`, {signal, timeout: 30000}),
+        entry.barrier_review_url||entry.barrier_review_sha256 ? entry : state.run??entry);
       if (replay && !signal.aborted) replays.set(dir, replay);
     } catch (error) {
       if (signal.aborted) return;
@@ -1602,7 +1615,9 @@ function showLiveImage(frame) {
   feedNote('');
 }
 
-function showLive(frame) {
+const reviewLiveFrame=barrierReviewer();
+function showLive(raw) {
+  const frame=reviewLiveFrame(raw);
   setMode('live', 'Live');
   if (frame.run_id !== state.liveRun) {
     setSelectedTrack(null);
@@ -1615,7 +1630,7 @@ function showLive(frame) {
   const previous = bearings.liveFrame;
   if (previous?.frame !== frame.frame || previous?.sim_time !== frame.sim_time) {
     state.riderFrames.push(frame);
-    if(state.riderFrames.length>13)state.riderFrames.shift();
+    if(state.riderFrames.length>RIDER_HISTORY_FRAMES)state.riderFrames.shift();
     state.riders=bicycleAssociations(state.riderFrames);
     clearTimeout(bearings.liveTimer);
     bearings.items = bearingObservations(frame, previous, CAMERA_ORDER);
@@ -1737,7 +1752,8 @@ function catalogFromBuild() {
     cameras: run.cameras,
     map: run.map,
     map_url: run.map_url,
-    replay_pack_url: run.replay_pack_url
+    replay_pack_url: run.replay_pack_url,
+    replay_url: run.replay_url
   }));
 }
 
@@ -1868,7 +1884,7 @@ function tick(stamp) {
       renderTransport();
     }
   }
-  if (clock.video && exposureClock.supported && !smoothPlayback()) renderClock();
+  if (clock.video && exposureClock.supported && !smoothPlayback() && (state.view !== 'follow' || reducedMotion || !isPlaying())) renderClock();
   else syncNow();
 }
 

@@ -1,0 +1,188 @@
+{
+  "schema": "ado-board-car-attribution-v1",
+  "journal_sha256": "035769ea010f15e5b89f4d1a376d5d009a8182ef7fa00fac559de337e79bfb58",
+  "review_sha256": "b239338aac001703bf15fe18ccdb75259eda43218dcb08a73666eb990357e91f",
+  "before_commit": "fd67b7945a9ab0b2df0a96afbefaa056124220bf",
+  "before_memory_sha256_lf": "12e5f6d9fcf8879a0ef525e849f13de922ee243b6632a37bdf1c9a710a8eca98",
+  "after_memory_sha256_lf": "602884d383e8c56f0991356ef731b5875f9f968711e3b7ed07ce705bcf69a8ff",
+  "frame": 3460,
+  "sim_time": 124.8,
+  "projected_car": {
+    "display_id": 85,
+    "source_id": 105,
+    "raw_coast_s": 0.1,
+    "display_length_m": 4.4,
+    "distance_to_board_origin_m": 1.895
+  },
+  "far_board": {
+    "display_id": 88,
+    "source_id": 108,
+    "reference_actor": 618,
+    "source_camera": "front",
+    "fresh_lidar_hits": 12,
+    "distance_to_actor_origin_m": 0.15
+  },
+  "prior_measurements": [
+    {
+      "frame": 3450,
+      "sim_time": 123.8,
+      "sources": [
+        "rgb",
+        "lidar",
+        "radar"
+      ],
+      "raw_lidar_hits": 8,
+      "published_surface_points": 8,
+      "max_distance_to_board_return_m": 0.295,
+      "linked_box_scores": [
+        0.42251336574554443
+      ]
+    },
+    {
+      "frame": 3451,
+      "sim_time": 123.9,
+      "sources": [
+        "lidar",
+        "radar"
+      ],
+      "raw_lidar_hits": 7,
+      "published_surface_points": 7,
+      "max_distance_to_board_return_m": 0.191,
+      "linked_box_scores": []
+    },
+    {
+      "frame": 3452,
+      "sim_time": 124.0,
+      "sources": [
+        "rgb",
+        "lidar",
+        "radar"
+      ],
+      "raw_lidar_hits": 5,
+      "published_surface_points": 5,
+      "max_distance_to_board_return_m": 0.281,
+      "linked_box_scores": [
+        0.5078228116035461
+      ]
+    },
+    {
+      "frame": 3453,
+      "sim_time": 124.1,
+      "sources": [
+        "lidar",
+        "radar"
+      ],
+      "raw_lidar_hits": 8,
+      "published_surface_points": 8,
+      "max_distance_to_board_return_m": 0.31,
+      "linked_box_scores": []
+    },
+    {
+      "frame": 3454,
+      "sim_time": 124.2,
+      "sources": [
+        "lidar",
+        "radar"
+      ],
+      "raw_lidar_hits": 7,
+      "published_surface_points": 7,
+      "max_distance_to_board_return_m": 0.268,
+      "linked_box_scores": []
+    },
+    {
+      "frame": 3455,
+      "sim_time": 124.3,
+      "sources": [
+        "lidar",
+        "radar"
+      ],
+      "raw_lidar_hits": 8,
+      "published_surface_points": 8,
+      "max_distance_to_board_return_m": 0.355,
+      "linked_box_scores": []
+    },
+    {
+      "frame": 3456,
+      "sim_time": 124.4,
+      "sources": [
+        "lidar",
+        "radar"
+      ],
+      "raw_lidar_hits": 10,
+      "published_surface_points": 10,
+      "max_distance_to_board_return_m": 0.318,
+      "linked_box_scores": []
+    },
+    {
+      "frame": 3457,
+      "sim_time": 124.5,
+      "sources": [
+        "lidar",
+        "radar"
+      ],
+      "raw_lidar_hits": 10,
+      "published_surface_points": 10,
+      "max_distance_to_board_return_m": 0.319,
+      "linked_box_scores": []
+    },
+    {
+      "frame": 3458,
+      "sim_time": 124.6,
+      "sources": [
+        "lidar",
+        "radar"
+      ],
+      "raw_lidar_hits": 9,
+      "published_surface_points": 9,
+      "max_distance_to_board_return_m": 0.322,
+      "linked_box_scores": []
+    },
+    {
+      "frame": 3459,
+      "sim_time": 124.7,
+      "sources": [
+        "lidar",
+        "radar"
+      ],
+      "raw_lidar_hits": 14,
+      "published_surface_points": 7,
+      "max_distance_to_board_return_m": 0.259,
+      "linked_box_scores": []
+    }
+  ],
+  "method": "For every published car surface point, transform both sensor samples to world metres using each frame ego pose and ego_z, then measure the nearest 3D distance to the far board raw point cloud at frame 3460. The display only sees its current and prior measurements. Reference actors enter the independent evaluation afterward.",
+  "full_grade": {
+    "scenario": {
+      "before": {
+        "actor_frames": 3309,
+        "matched": 2260,
+        "exact_label_hits": 2256,
+        "prediction_frames": 4609,
+        "unmatched_predictions": 2353
+      },
+      "after": {
+        "actor_frames": 3309,
+        "matched": 2260,
+        "exact_label_hits": 2256,
+        "prediction_frames": 4574,
+        "unmatched_predictions": 2318
+      }
+    },
+    "including_registered_parked": {
+      "before": {
+        "actor_frames": 4565,
+        "matched": 2505,
+        "exact_label_hits": 2501,
+        "prediction_frames": 4609,
+        "unmatched_predictions": 2109
+      },
+      "after": {
+        "actor_frames": 4565,
+        "matched": 2505,
+        "exact_label_hits": 2501,
+        "prediction_frames": 4574,
+        "unmatched_predictions": 2074
+      }
+    }
+  }
+}

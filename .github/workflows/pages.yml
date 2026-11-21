@@ -6,6 +6,7 @@ on:
       - 'web/**'
       - 'results/behavior-v2/**'
       - 'results/perception/rider-motion/*.mp4'
+      - 'results/perception/rider-turns/*.mp4'
       - 'tools/prepare_pages_film.py'
       - 'assets/robotaxi/vehicle/meridian.glb'
       - 'assets/robotaxi/vehicle/meridian-studio.png'
@@ -25,7 +26,7 @@ concurrency:
 jobs:
   publish-from-main:
     # The Pages environment permits deployments from main. A release event runs on a tag.
-    if: github.repository == 'yafi-s/ADO' && github.event_name == 'release' && github.event.release.tag_name == 'v0.3.0'
+    if: github.repository == 'yafi-s/ADO' && github.event_name == 'release' && (github.event.release.tag_name == 'v0.3.0' || github.event.release.tag_name == 'v0.4.0')
     runs-on: ubuntu-latest
     permissions:
       actions: write
@@ -60,16 +61,19 @@ jobs:
       - name: Include the verified driving comparison
         if: ${{ hashFiles('results/behavior-v2/study.json') != '' }}
         run: cp -r results/behavior-v2 web/media/behavior-v2
-      - name: Serve the full-quality city recording when published
+      - name: Include the measured frame-by-frame comparison
+        if: ${{ hashFiles('results/perception/rider-motion/high-occluded-pedestrian-and-van.mp4') != '' }}
+        run: cp results/perception/rider-motion/high-occluded-pedestrian-and-van.mp4 web/media/frame-comparison.mp4
+      - name: Include the measured turning-camera comparison
+        if: ${{ hashFiles('results/perception/rider-turns/right-turn.mp4') != '' }}
+        run: cp results/perception/rider-turns/right-turn.mp4 web/media/turn-camera.mp4
+      - name: Fit the verified city recordings within the Pages budget
         run: |
           if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
             sudo apt-get update
             sudo apt-get install -y ffmpeg
           fi
-          python3 tools/prepare_pages_film.py
-      - name: Include the measured frame-by-frame comparison
-        if: ${{ hashFiles('results/perception/rider-motion/high-occluded-pedestrian-and-van.mp4') != '' }}
-        run: cp results/perception/rider-motion/high-occluded-pedestrian-and-van.mp4 web/media/frame-comparison.mp4
+          python3 tools/prepare_pages_film.py --archive-revision "$GITHUB_SHA"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web

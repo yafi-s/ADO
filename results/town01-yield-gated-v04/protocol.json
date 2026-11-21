@@ -1,0 +1,83 @@
+{
+  "policy": "interaction-gated-v04",
+  "schedule": {
+    "known_failure": [
+      [
+        105,
+        "left"
+      ],
+      [
+        104,
+        "pedestrian-delayed"
+      ],
+      [
+        107,
+        "left"
+      ],
+      [
+        2111,
+        "left"
+      ],
+      [
+        2112,
+        "left"
+      ],
+      [
+        2113,
+        "left"
+      ]
+    ],
+    "known_control": [
+      [
+        104,
+        "left"
+      ],
+      [
+        103,
+        "pedestrian-delayed"
+      ],
+      [
+        104,
+        "turn"
+      ],
+      [
+        104,
+        "clear"
+      ]
+    ],
+    "fresh_challenge": [
+      [
+        5261,
+        "left"
+      ],
+      [
+        5262,
+        "left"
+      ],
+      [
+        5261,
+        "pedestrian-delayed"
+      ],
+      [
+        5262,
+        "pedestrian-delayed"
+      ],
+      [
+        5262,
+        "turn"
+      ],
+      [
+        5262,
+        "clear"
+      ]
+    ]
+  },
+  "weights_sha256": "afe8a3c2ffeb811bd30d7689941c7fb50cc3c4f7748b4e7e843cb6cb9a3a4746",
+  "planner_sha256": {
+    "town01_interaction.py": "772559dd439c341c8ff8349acb6ac670f58f49c5ebaaac46d1fe07ed658e5e96",
+    "town01_interaction_gate.py": "2cf64a04743254b90c80dcf4454c03c10e005ca7bb6d214ef4f59920cb4263a0"
+  },
+  "comparison": "Same ten historical v0.2 encounters and six new seed-case combinations; all planned runs retained.",
+  "primary": "Clean finish: route completed with zero recorded contacts, red-light violations, and yield breaches.",
+  "efficiency": "Duration on clear control seed 104 compared to 13.5 s (v0.2) and 19.6 s (ungated v0.4)."
+}

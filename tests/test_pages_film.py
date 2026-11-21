@@ -96,6 +96,54 @@ class PagesFilmTests(unittest.TestCase):
         request.assert_not_called()
         self.assertEqual(self.chase.read_bytes(), encoded)
 
+    def test_pages_budget_preserves_the_pack_and_links_exact_archived_data(self):
+        self.fixture("v0.4.0")
+        base = "./media/urban-pace"
+        catalog = self.web / "media/viewer-catalog.json"
+        replay = self.folder / "replay.json"
+        telemetry = self.folder / "telemetry.json"
+        pack = self.folder / "replay-pack.json.gz"
+        replay.write_bytes(b"original replay" * 500)
+        telemetry.write_bytes(b"original telemetry" * 500)
+        pack.write_bytes(b"compressed replay")
+        manifest = json.loads(self.manifest.read_bytes())
+        manifest["sha256"].update({path.name: pages.sha256(path) for path in (replay, telemetry, pack)})
+        pages.write_json(self.manifest, manifest)
+        pages.write_json(catalog, [{"path": "urban-pace", "replay_pack_url": f"{base}/{pack.name}",
+                                    "replay_pack_sha256": pages.sha256(pack)}])
+        build = json.loads(self.build.read_bytes())
+        build["showcases"][0].update(recording_path="urban-pace", log_url=f"{base}/{telemetry.name}")
+        build["evidence"] = [{"label": "Recorded telemetry", "url": f"{base}/{telemetry.name}"}]
+        pages.write_json(self.build, build)
+        original_size = pages.site_size(self.web)
+        limit = original_size + pages.SITE_RESERVE - replay.stat().st_size - 1000
+        revision = "a" * 40
+        missing = HTTPError(self.url, 404, "missing release asset", {}, None)
+        with patch.object(pages, "SITE_LIMIT", limit), patch.object(pages, "urlopen", side_effect=missing):
+            with self.assertRaisesRegex(ValueError, "immutable checkout commit"):
+                pages.prepare(self.web)
+            self.assertEqual(pages.site_size(self.web), original_size)
+            pages.prepare(self.web, archive_revision=revision)
+
+        paths = {name: f"{pages.ARCHIVE_REPO}/{revision}/web/media/urban-pace/{name}"
+                 for name in (replay.name, telemetry.name)}
+        self.assertLessEqual(pages.site_size(self.web), limit - pages.SITE_RESERVE)
+        self.assertFalse(replay.exists())
+        self.assertFalse(telemetry.exists())
+        self.assertEqual(pack.read_bytes(), b"compressed replay")
+        self.assertEqual(self.chase.read_bytes(), self.compact)
+        entry, = json.loads(catalog.read_bytes())
+        self.assertEqual(entry["replay_pack_url"], f"{base}/{pack.name}")
+        self.assertEqual(entry["replay_url"], paths[replay.name])
+        self.assertEqual(entry["log_url"], paths[telemetry.name])
+        build = json.loads(self.build.read_bytes())
+        self.assertEqual(build["showcases"][0]["replay_url"], paths[replay.name])
+        self.assertEqual(build["showcases"][0]["log_url"], paths[telemetry.name])
+        self.assertEqual(build["evidence"][0]["url"], paths[telemetry.name])
+        staged_manifest = json.loads(self.manifest.read_bytes())
+        self.assertEqual(staged_manifest["sha256"], manifest["sha256"])
+        self.assertEqual(staged_manifest["external_artifacts"], paths)
+
 
 if __name__ == "__main__":
     unittest.main()

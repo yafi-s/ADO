@@ -1,6 +1,7 @@
 import {SensorView} from './sensor.js';
 import {cornerReturns, lidarCount} from './sensor-returns.mjs';
 import {loadReplay} from './replay-pack.mjs';
+import {barrierName,barrierReviewer} from './barrier-review.mjs';
 import {cameraBoxes, LAMP_COLOURS} from './lamp-observations.mjs';
 import {artifactUrl, previewImage, setArtifactLink, validRecordingPath} from './build-data.js';
 
@@ -161,7 +162,7 @@ function renderDetections() {
     const caption = document.createElement('span');
     caption.className = 'detection-label';
     const confidence = Number.isFinite(score) ? ` ${Math.round(score * 100)}%` : '';
-    caption.textContent = `${label}${confidence}${detection.range_supported === false ? ' · bearing only' : ''}`;
+    caption.textContent = `${barrierName(detection)??label}${confidence}${detection.range_supported === false ? ' · bearing only' : ''}`;
     element.append(caption);
     boxes.push(element);
   }
@@ -223,7 +224,7 @@ function renderSensorPanel() {
   ui['route-hazard'].hidden = !sensor.route?.hazard;
   const hazardType = sensor.route?.hazard_type ?? '';
   if (ui['route-hazard'].dataset.kind !== hazardType) ui['route-hazard'].dataset.kind = hazardType;
-  setText('route-hazard-label', {vehicle: 'Hazard vehicle', car: 'Vehicle', pedestrian: 'Pedestrian', cyclist: 'Cyclist', bus: 'Bus', cone: 'Traffic cone', van: 'Van'}[hazardType] ?? 'Hazard');
+  setText('route-hazard-label', {vehicle: 'Hazard vehicle', car: 'Vehicle', pedestrian: 'Pedestrian', cyclist: 'Cyclist', bus: 'Bus', barrier: 'Traffic barrier', cone: 'Traffic cone', van: 'Van'}[hazardType] ?? 'Hazard');
   const label = showingRoute
     ? 'Map ground truth showing the route and simulator actor positions'
     : 'Top-down lidar returns and radar detections around the vehicle';
@@ -446,6 +447,7 @@ async function stopSimulator() {
 }
 
 async function monitorLive(signal) {
+  const qualify=barrierReviewer();
   let failedPolls = 0;
   let local = Boolean(options);
   while (!signal.aborted && stopState !== 'stopped') {
@@ -454,7 +456,8 @@ async function monitorLive(signal) {
       continue;
     }
     try {
-      const frame = await readJson('/api/frame', signal, 1800);
+      const raw = await readJson('/api/frame', signal, 1800);
+      const frame=raw&&qualify(raw);
       if (!Number.isFinite(frame?.frame)) throw new Error('No current simulation frame');
       if (signal.aborted) return;
       failedPolls = 0;
@@ -615,8 +618,8 @@ function renderArchiveRun(build, entry, directory) {
   archiveHash('source', run && build.source?.commit, run && build.source?.url);
   const checkpoint = build?.checkpoints?.[run?.policy];
   archiveHash('model', run?.model_sha256, checkpoint?.sha256 === run?.model_sha256 ? checkpoint?.url : undefined);
-  setArtifactLink(ui['archive-replay'], directory + '/replay.json');
-  setArtifactLink(ui['archive-log'], run?.log_url);
+  setArtifactLink(ui['archive-replay'], entry.replay_url ?? directory + '/replay.json');
+  setArtifactLink(ui['archive-log'], entry.log_url ?? run?.log_url);
 }
 
 function showPreview(build) {
@@ -742,7 +745,8 @@ async function openReplay(signal, trialId) {
   const directory = entry.path ? `./media/${entry.path}` : './media';
   try {
     const recording = recordings.get(directory) ??
-      await loadReplay(entry.replay_pack_url, signal, parseReplay, () => readJson(`${directory}/replay.json`, signal, 30000));
+      await loadReplay(entry.replay_pack_url, signal, parseReplay,
+        () => readJson(entry.replay_url ?? `${directory}/replay.json`, signal, 30000),entry);
     if (signal.aborted) return;
     recordings.set(directory, recording);
     replay = {...recording, directory, cameraUrls: entry.camera_urls};

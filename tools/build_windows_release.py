@@ -33,6 +33,13 @@ REQUIRED = (
 )
 BEHAVIOR_ROOT = "results/behavior-v2"
 STUDY_FILES = ("fresh.json", "regression.json", "study.json", "closed-loop-evidence.zip", "README.md")
+ORIGINAL_BEHAVIOR_ARCHIVE = {
+    "url": f"{PUBLIC_REPO}/raw/refs/tags/v0.2.0/{BEHAVIOR_ROOT}/closed-loop-evidence.zip",
+    "bytes": 6115585,
+    "sha256": "08b4288f26c4aaefca5b0522bbc093418d778d9f65a0b905f97fcd32c76ab0b5",
+}
+ORIGINAL_BEHAVIOR_MANIFEST = "f3742e11e373b8ebe545aa32023d30c6b0f53672b22ae501f01500a55677876e"
+ORIGINAL_REPORT_WRITER = "5d83b9fc3cf6ffaf7c04fea9b119893069fbefd403972ffb079c19ed0443e979"
 WAYMO_MEDIA = "web/media/waymo-research-pilot"
 BEHAVIOR_REQUIRED = (
     "ado/__main__.py", "crosswalk/behavior_v2.py", "crosswalk/city_drive.py", "crosswalk/journey.py",
@@ -48,6 +55,18 @@ CITY_ARTIFACTS = {"chase.mp4", "front.mp4", "chase.jpg", "front.jpg", "poster.jp
 SURROUND_MEDIA = "web/media/surround-city"
 SURROUND_MASTER = "ADO-Surround-City-1080p.mp4"
 SURROUND_SCHEMA = "ado-city-cruise-v1"
+PACE_MEDIA = "web/media/urban-pace"
+PACE_MASTER = "ADO-Urban-Pace-1080p.mp4"
+PACE_SCHEMA = "ado-city-pace-v1"
+BARRIER_MODEL = "models/barrier-appearance.json"
+BARRIER_DATA = "data/barrier-recognition/town03-native.zip"
+BARRIER_VALIDATION = "results/barrier-recognition/validation.json"
+BARRIER_REVIEW = "barrier-review.json"
+BARRIER_WITNESS = "data/barrier-recognition/hero-post-proposals.zip"
+BARRIER_POST_MODEL = "models/barrier-post-appearance.npz"
+BARRIER_POST_FIT = "results/barrier-recognition/post-appearance-fit.json"
+BARRIER_POST_SOURCE = "crosswalk/barrier_posts.py"
+BARRIER_REVIEW_SOURCE = "crosswalk/barrier_review.py"
 PERIMETER_VIEWS = ("left", "right", "rear_left", "rear_right")
 SURROUND_CAMERAS = ("chase", "front", *PERIMETER_VIEWS)
 TACTICAL_MODEL = "models/tactical-pass/choice.json"
@@ -62,6 +81,17 @@ SURROUND_REQUIRED = (
     "models/city-cruise/candidate.npz", "models/city-cruise/fit.json", TACTICAL_MODEL,
     SURROUND_DETECTOR, "vendor/yolox/LICENSE", "vendor/yolox/README.md",
     f"{SURROUND_MEDIA}/manifest.json", *(f"web/media/{name}/manifest.json" for name in TACTICAL_RECORDINGS),
+)
+PACE_REQUIRED = (
+    "crosswalk/city_pace.py", "crosswalk/speed_signs.py", "crosswalk/cycle_association.py",
+    "crosswalk/town01_interaction.py", "crosswalk/town01_interaction_gate.py",
+    "models/town01-yield-gated-v04/calibration.json", "results/town01-yield-gated-v04/audit.json",
+    "crosswalk/barrier_chain.py", "crosswalk/barrier.py", "crosswalk/barrier_collect.py", "crosswalk/barrier_scene.py",
+    "crosswalk/barrier_study.py", "models/city-pace/candidate.npz", "models/city-pace/fit.json",
+    BARRIER_MODEL, BARRIER_DATA, BARRIER_VALIDATION,
+    BARRIER_POST_SOURCE, BARRIER_REVIEW_SOURCE, BARRIER_POST_MODEL, BARRIER_POST_FIT, BARRIER_WITNESS,
+    "web/barrier-review.mjs", "web/follow-heading.mjs", "web/inspect.mjs",
+    f"{PACE_MEDIA}/manifest.json", f"{PACE_MEDIA}/{BARRIER_REVIEW}",
 )
 CITY_EVENTS = {"pedestrian", "pedestrian-delayed", "occluded", "lead", "braking", "left",
                "signal", "cyclist", "roadworks", "bus"}
@@ -96,11 +126,23 @@ def surround_release(tag):
     return tuple(map(int, tag[1:].split("."))) >= (0, 3, 0)
 
 
+def pace_release(tag):
+    return tuple(map(int, tag[1:].split("."))) >= (0, 4, 0)
+
+
+def featured_recording(tag):
+    if pace_release(tag):
+        return PACE_MEDIA, PACE_MASTER, PACE_SCHEMA
+    return SURROUND_MEDIA, SURROUND_MASTER, SURROUND_SCHEMA
+
+
 def release_paths(tag):
     return (*PACKAGE_PATHS, "waymo_training", "Watch-City.cmd") if behavior_release(tag) else PACKAGE_PATHS
 
 
 def required_files(tag):
+    if pace_release(tag):
+        return (*REQUIRED, *BEHAVIOR_REQUIRED, *SURROUND_REQUIRED, *PACE_REQUIRED)
     if surround_release(tag):
         return (*REQUIRED, *BEHAVIOR_REQUIRED, *SURROUND_REQUIRED)
     return (*REQUIRED, *BEHAVIOR_REQUIRED) if behavior_release(tag) else REQUIRED
@@ -170,7 +212,7 @@ def verify_digest(archive, relative, expected):
         require(hashlib.file_digest(item, "sha256").hexdigest() == expected, f"Wrong SHA-256 for {relative}")
 
 
-def verify_behavior_release(archive, files, build):
+def verify_behavior_release(archive, files, build, *, derivative_required=False):
     provenance = read_json(archive, "data/behavior-v2/provenance.json")["artifacts"]
     for relative, artifact in provenance.items():
         require(archive.getinfo(PREFIX + relative).file_size == artifact["bytes"], f"Wrong size for {relative}")
@@ -193,13 +235,13 @@ def verify_behavior_release(archive, files, build):
             "Waymo research clip checksum coverage is incomplete")
 
     paths = {f"{BEHAVIOR_ROOT}/{name}" for name in STUDY_FILES}
-    if not files.isdisjoint(paths):
+    if derivative_required or not files.isdisjoint(paths):
         missing = sorted(paths - files)
         require(not missing, f"Incomplete Behavior v2 benchmark bundle: {', '.join(missing)}")
-        verify_behavior_study(archive)
+        verify_behavior_study(archive, derivative_required=derivative_required)
 
 
-def verify_behavior_study(archive):
+def verify_behavior_study(archive, *, derivative_required=False):
     study = read_json(archive, f"{BEHAVIOR_ROOT}/study.json")
     for stage in ("fresh", "regression"):
         relative = f"{BEHAVIOR_ROOT}/{stage}.json"
@@ -221,6 +263,8 @@ def verify_behavior_study(archive):
         require({"SHA256SUMS", "manifest.json", "archive-info.json", "protocol.md",
                  "execution/results/primary.json", "published-v0.1/traces.jsonl.gz"} <= members,
                 "Missing Behavior v2 benchmark provenance or historical logs")
+        if derivative_required or "derivation.json" in members or "derivation" in artifact:
+            verify_behavior_derivative(evidence, artifact, len(entries))
         manifest = json.loads(evidence.read("manifest.json"))
         for stage in ("fresh", "regression"):
             trials = {f"{stage}/{trial['seed']}-{trial['case_id']}-{trial['policy']}"
@@ -232,17 +276,57 @@ def verify_behavior_study(archive):
                     f"Missing Behavior v2 {stage} trial logs")
 
 
+def verify_behavior_derivative(evidence, artifact, member_count):
+    require(artifact.get("verified_members") == member_count and "derivation.json" in evidence.namelist(),
+            "Missing Behavior v2 derivative provenance or member inventory")
+    derivation = json.loads(evidence.read("derivation.json"))
+    require(artifact.get("derivation") == derivation and derivation["original_archive"] == ORIGINAL_BEHAVIOR_ARCHIVE
+            and derivation["original_manifest_sha256"] == ORIGINAL_BEHAVIOR_MANIFEST
+            and hashlib.sha256(evidence.read("manifest.json")).hexdigest() == ORIGINAL_BEHAVIOR_MANIFEST,
+            "Wrong original Behavior v2 evidence provenance")
+    writer = derivation["modified_member"]
+    require(writer["path"] == "execution/crosswalk/report.py" and writer["original_sha256"] == ORIGINAL_REPORT_WRITER
+            and writer["derivative_sha256"] != ORIGINAL_REPORT_WRITER,
+            "Wrong Behavior v2 derivative member")
+    checks = dict(line.split("  ", 1)[::-1] for line in evidence.read("SHA256SUMS").decode().splitlines())
+    require(checks.keys() == set(evidence.namelist()) - {"SHA256SUMS"}
+            and checks[writer["path"]] == writer["derivative_sha256"], "Incomplete Behavior v2 derivative checksums")
+    for name, expected in checks.items():
+        require(hashlib.sha256(evidence.read(name)).hexdigest() == expected,
+                f"Wrong Behavior v2 derivative SHA-256 for {name}")
+
+
+def verify_packed_replay(archive, media, replay):
+    with archive.open(f"{PREFIX}{media}/replay-pack.json.gz") as compressed, gzip.GzipFile(fileobj=compressed) as stream:
+        pack = json.load(stream)
+    frames, ranges, path = pack["replay"], pack["path_ranges"], pack["shared_path"]
+    require(pack["format"] == "ado-replay-pack-v1" and isinstance(frames, list) and isinstance(ranges, list)
+            and (isinstance(path, list) if ranges else path is None), f"Invalid replay pack at {media}")
+    previous = 0
+    for begin, end in ranges:
+        require(type(begin) is int and type(end) is int and previous <= begin < end <= len(frames),
+                f"Invalid route reference in replay pack at {media}")
+        for index in range(begin, end):
+            observer = frames[index]["observer_map"]
+            require("path" not in observer, f"Conflicting route in replay pack at {media}")
+            observer["path"] = path
+        previous = end
+    require(frames == replay, f"Replay pack differs from the original recording at {media}")
+
+
 def verify_city_film(archive, media, capture, scratch, tactical_case=None):
     require(capture["producer"] == CITY_PRODUCER and capture["benchmark_member"] is False
             and capture["teacher"] is False and capture["map_asset"] == "town.json"
             and capture["source_mode"] == "one closed-loop simulation with simultaneous camera capture",
             f"Wrong Town03 film provenance at {media}")
     policy = capture["policy"]
-    surround = policy["schema"] == SURROUND_SCHEMA
+    pace = policy["schema"] == PACE_SCHEMA
+    surround = policy["schema"] in {SURROUND_SCHEMA, PACE_SCHEMA}
     cameras = SURROUND_CAMERAS if surround else ("chase", "front")
     artifacts = CITY_ARTIFACTS | {f"{camera}.mp4" for camera in cameras}
     if tactical_case is not None:
-        require(surround, f"Wrong tactical study policy at {media}")
+        require(policy["schema"] == SURROUND_SCHEMA, f"Wrong tactical study policy at {media}")
+    if tactical_case is not None or pace:
         artifacts.add("replay-pack.json.gz")
     require(artifacts <= capture["sha256"].keys(), f"Incomplete Town03 film at {media}")
     if surround:
@@ -252,15 +336,17 @@ def verify_city_film(archive, media, capture, scratch, tactical_case=None):
         verify_digest(archive, TACTICAL_MODEL, policy["tactical_sha256"])
         require(read_json(archive, TACTICAL_MODEL)["format"] == "ado-tactical-pass-v1",
                 f"Invalid tactical model at {media}")
-        fit = read_json(archive, "models/city-cruise/fit.json")
-        require(fit["model_sha256"] == policy["sha256"] and fit["schema"] == SURROUND_SCHEMA,
-                f"Wrong city cruise fit at {media}")
+        fit = read_json(archive, f"models/{'city-pace' if pace else 'city-cruise'}/fit.json")
+        require(fit["model_sha256"] == policy["sha256"] and fit["schema"] == policy["schema"],
+                f"Wrong city model fit at {media}")
+    if pace:
+        verify_digest(archive, BARRIER_MODEL, policy["barrier_sha256"])
     for name, digest in capture["sha256"].items():
         require(re.fullmatch(r"[a-zA-Z0-9_.-]+", name), f"Invalid Town03 film artifact at {media}: {name}")
         verify_digest(archive, f"{media}/{name}", digest)
 
     folder = {"ado-behavior-v2": "behavior-v2", "ado-city-policy-v1": "city-v1",
-              SURROUND_SCHEMA: "city-cruise"}.get(policy["schema"])
+              SURROUND_SCHEMA: "city-cruise", PACE_SCHEMA: "city-pace"}.get(policy["schema"])
     require(folder is not None and re.fullmatch(r"[a-zA-Z0-9_-]+\.npz", policy["path"]),
             f"Invalid Town03 policy path at {media}")
     verify_digest(archive, f"models/{folder}/{policy['path']}", policy["sha256"])
@@ -269,12 +355,14 @@ def verify_city_film(archive, media, capture, scratch, tactical_case=None):
 
     summary = capture["summary"]
     if tactical_case is None:
-        verify_journey_result(capture, media)
+        verify_journey_result(capture, media, CITY_EVENTS | {"barrier"} if pace else CITY_EVENTS)
     else:
         verify_tactical_result(capture, media, tactical_case)
 
     telemetry = read_json(archive, f"{media}/telemetry.json")
     replay = read_json(archive, f"{media}/replay.json")
+    if pace:
+        verify_packed_replay(archive, media, replay)
     require(len(telemetry) == len(replay) == summary["frames"] > 0
             and capture["last_frame"] - capture["first_frame"] + 1 == len(telemetry),
             f"Wrong Town03 film frame count at {media}")
@@ -297,20 +385,20 @@ def verify_city_film(archive, media, capture, scratch, tactical_case=None):
             verify_video(archive, relative, len(telemetry), scratch)
 
 
-def verify_journey_result(capture, media):
+def verify_journey_result(capture, media, required_events=CITY_EVENTS):
     summary = capture["summary"]
     events = capture["events"]
     event_kinds = {event["kind"] for event in events}
     require(summary["outcome"] == capture["outcome"] and summary["events"] == events
-            and set(capture["required_event_kinds"]) == CITY_EVENTS
-            and len(capture["required_event_kinds"]) == len(CITY_EVENTS)
-            and event_kinds <= CITY_EVENTS and len(events) == len(event_kinds),
+            and set(capture["required_event_kinds"]) == required_events
+            and len(capture["required_event_kinds"]) == len(required_events)
+            and event_kinds <= required_events and len(events) == len(event_kinds),
             f"Inconsistent encounter results at {media}")
     require(isinstance(capture["passed"], bool) and capture["passed"] == (not capture["failure_reasons"]),
             f"Inconsistent Town03 film outcome at {media}")
     if capture["passed"]:
         milestones = ("triggered", "exposed", "cleared", "passed", "handled")
-        require(summary["outcome"] == "complete" and event_kinds == CITY_EVENTS
+        require(summary["outcome"] == "complete" and event_kinds == required_events
                 and summary["progress_m"] >= summary["route_length_m"] - 0.6 and summary["duration_s"] >= 120
                 and all(summary[key] == 0 for key in ("collision_events", "red_light_violations", "yield_violations"))
                 and all(not event["violation"] and all(event[key] for key in milestones) for event in events),
@@ -350,22 +438,77 @@ def verify_tactical_recordings(archive, build, viewer_records, scratch):
         verify_city_film(archive, media, capture, scratch, tactical_case=case)
 
 
+def verify_barrier_review(archive, capture, showcase, entry):
+    relative = f"{PACE_MEDIA}/{BARRIER_REVIEW}"
+    url = f"./{relative.removeprefix('web/')}"
+    expected = capture["sha256"][BARRIER_REVIEW]
+    require(all(ref["barrier_review_url"] == url and ref["barrier_review_sha256"] == expected
+                for ref in (capture, showcase, entry)), "Barrier review links differ from the recorded artifact")
+    verify_digest(archive, relative, expected)
+    review = read_json(archive, relative)
+    first, last = capture["first_frame"], capture["last_frame"]
+    frames = capture["summary"]["frames"]
+    raw = capture["raw_sha256"]
+    cameras = {camera: {"sha256": raw[f"{camera}.mjpeg"], "images": frames}
+               for camera in SURROUND_CAMERAS if camera != "chase"}
+    require(review["schema"] == "ado-barrier-post-review-v1" and review["partial"] is False
+            and (review["first_frame"], review["last_frame"], review["capture_frames"]) == (first, last, frames)
+            and review["native_journal_sha256"] == raw["perception.jsonl"] and review["native_mjpeg"] == cameras
+            and all(first <= int(frame) <= last for frame in review["frames"]),
+            "Barrier review does not match the complete native urban recording")
+    verify_digest(archive, BARRIER_POST_MODEL, review["model_sha256"])
+    fit = read_json(archive, BARRIER_POST_FIT)
+    require(fit["schema"] == "ado-post-appearance-fit-v1"
+            and fit["model_sha256"] == review["model_sha256"] and fit["threshold"] == review["threshold"],
+            "The barrier review uses a different post appearance fit")
+    for path, key in ((BARRIER_POST_SOURCE, "post_classifier_lf_sha256"),
+                      (BARRIER_REVIEW_SOURCE, "review_code_lf_sha256")):
+        source = archive.read(PREFIX + path).replace(b"\r\n", b"\n")
+        require(hashlib.sha256(source).hexdigest() == review[key], f"Wrong barrier review source: {path}")
+    verify_digest(archive, BARRIER_WITNESS, review["witness_sha256"])
+    with archive.open(PREFIX + BARRIER_WITNESS) as stream, ZipFile(stream) as witness:
+        inputs = json.loads(witness.read("inputs.json"))
+        require(inputs["schema"] == "ado-barrier-post-witness-v1" and inputs["partial"] is False
+                and (inputs["first_frame"], inputs["last_frame"], inputs["frames"]) == (first, last, frames)
+                and inputs["raw_journal_sha256"] == raw["perception.jsonl"] and inputs["native_mjpeg"] == cameras,
+                "Barrier witness does not match the complete native urban recording")
+        for observation in inputs["packets"]:
+            name = observation["source_jpeg"]
+            require(hashlib.sha256(witness.read(name)).hexdigest() == observation["source_jpeg_sha256"],
+                    f"Wrong native barrier witness exposure: {name}")
+
+
 def verify_surround_release(archive, build, viewer_records, tag):
-    capture = read_json(archive, f"{SURROUND_MEDIA}/manifest.json")
-    require(capture["policy"]["schema"] == SURROUND_SCHEMA, "Featured drive is missing the city cruise policy")
-    require(any(row["trial_id"] == capture["trial_id"] and row["recording_path"] == "surround-city"
-                for row in build["showcases"]), "Surround city drive is missing from the build catalog")
-    require(any(row["trial_id"] == capture["trial_id"] and row["path"] == "surround-city"
+    media, asset, schema = featured_recording(tag)
+    directory = PurePosixPath(media).name
+    capture = read_json(archive, f"{media}/manifest.json")
+    require(capture["policy"]["schema"] == schema, f"Featured drive is missing the {schema} policy")
+    showcase = next((row for row in build["showcases"]
+                     if row["trial_id"] == capture["trial_id"] and row["recording_path"] == directory), None)
+    require(showcase is not None, f"{directory} is missing from the build catalog")
+    require(any(row["trial_id"] == capture["trial_id"] and row["path"] == directory
                 and tuple(row["cameras"]) == SURROUND_CAMERAS for row in viewer_records),
-            "Surround city drive or its cameras are missing from the viewer catalog")
+            f"{directory} or its cameras are missing from the viewer catalog")
+    if pace_release(tag):
+        entry = viewer_records[0]
+        require(entry["path"] == directory and entry["benchmark_member"] is False
+                and entry["replay_pack_url"] == f"./media/{directory}/replay-pack.json.gz"
+                and entry["replay_pack_sha256"] == capture["sha256"]["replay-pack.json.gz"],
+                "Featured urban drive or its replay pack is missing from the viewer catalog")
+        report = read_json(archive, BARRIER_VALIDATION)
+        require(report["schema"] == "ado-barrier-validation-v1"
+                and report["model_sha256"] == capture["policy"]["barrier_sha256"],
+                "The barrier validation uses a different recognition model")
+        verify_digest(archive, BARRIER_DATA, report["archive_sha256"])
+        verify_barrier_review(archive, capture, showcase, entry)
     master = capture["master"]["chase"]
     require(master["path"] == "master/chase.mp4" and (master["width"], master["height"]) == (1920, 1080)
             and master["file_bytes"] > 0 and re.fullmatch(r"[0-9a-f]{64}", master["sha256"])
             and master["nb_read_frames"] == str(capture["summary"]["frames"])
             and master["codec_name"] == "h264" and master["pix_fmt"] == "yuv420p"
             and master["r_frame_rate"] == "10/1", "Wrong surround master metadata")
-    require(any(item["url"] == f"{PUBLIC_REPO}/releases/download/{tag}/{SURROUND_MASTER}"
-                for item in build["evidence"]), "Builds & logs is missing the surround master release asset")
+    require(any(item["url"] == f"{PUBLIC_REPO}/releases/download/{tag}/{asset}"
+                for item in build["evidence"]), "Builds & logs is missing the master release asset")
     verify_digest(archive, SURROUND_DETECTOR, SURROUND_DETECTOR_SHA256)
     requirements = archive.read(PREFIX + "requirements.txt").decode()
     for dependency in ("numpy", "opencv-python-headless", "onnxruntime"):
@@ -373,9 +516,9 @@ def verify_surround_release(archive, build, viewer_records, tag):
                 f"The Windows installer is missing the pinned {dependency} dependency")
 
 
-def stage_release_master(source, archive, target):
+def stage_release_master(source, archive, target, media=SURROUND_MEDIA):
     with ZipFile(archive) as package:
-        capture = read_json(package, f"{SURROUND_MEDIA}/manifest.json")
+        capture = read_json(package, f"{media}/manifest.json")
     master = capture["master"]["chase"]
     shutil.copyfile(source, target)
     require(target.stat().st_size == master["file_bytes"], "Wrong surround master size")
@@ -474,7 +617,7 @@ def validate_zip(path, files, commit, tag, scratch):
                   if row.get("recording_path") is not None]
         expected_ids = {row["trial_id"] for row in [*catalog, *showcases, *extras]}
         if behavior_release(tag):
-            verify_behavior_release(archive, files, build)
+            verify_behavior_release(archive, files, build, derivative_required=pace_release(tag))
             expected_ids.add(load(f"{WAYMO_MEDIA}/entry.json")["trial_id"])
         require(len(viewer_records) == len(expected_ids) and
                 {row["trial_id"] for row in viewer_records} == expected_ids,
@@ -514,7 +657,7 @@ def validate_zip(path, files, commit, tag, scratch):
 
 def build_release(ref, tag, output, film_master=None):
     require(re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", tag), "Use a version tag such as v0.1.0")
-    require(film_master is None or surround_release(tag), "--film-master applies to the surround-city release")
+    require(film_master is None or surround_release(tag), "--film-master applies to v0.3.0 and newer releases")
     commit = resolve_commit(ref, tag)
     files = package_inventory(commit, tag)
     output = output.resolve()
@@ -530,8 +673,9 @@ def build_release(ref, tag, output, film_master=None):
         checksums = f"{sha256}  {archive.name}\n"
         artifacts = [archive]
         if film_master is not None:
-            film = scratch / SURROUND_MASTER
-            film_sha256 = stage_release_master(film_master, archive, film)
+            media, asset, _ = featured_recording(tag)
+            film = scratch / asset
+            film_sha256 = stage_release_master(film_master, archive, film, media)
             checksums += f"{film_sha256}  {film.name}\n"
             artifacts.append(film)
         sums = scratch / "SHA256SUMS.txt"
@@ -549,7 +693,7 @@ def main():
     parser.add_argument("--ref", required=True, help="Git commit SHA or tag for the release tree")
     parser.add_argument("--tag", required=True, help="Release version tag")
     parser.add_argument("--output", type=Path, default=Path(".local/release"))
-    parser.add_argument("--film-master", type=Path, help="Include the verified standalone surround chase master")
+    parser.add_argument("--film-master", type=Path, help="Include the verified standalone featured chase master")
     args = parser.parse_args()
     try:
         archive, commit, sha256 = build_release(args.ref, args.tag, args.output, args.film_master)

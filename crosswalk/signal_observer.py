@@ -63,6 +63,11 @@ def illuminated_color(crop):
 
 COLOR_NAMES = ("off", "red", "yellow", "green")
 CALIBRATION = Path(__file__).resolve().parents[1] / "models/surround-signals/colors.npz"
+SUPPORT_THRESHOLD = .50
+RESOLVED_CROP_HEIGHT = 13  # Three nominal pixel rows per bulb plus the four-pixel guard band.
+CONFIRM_WINDOW_S = .25
+CONSECUTIVE_WINDOW_S = .15
+HOLD_LIMIT_S = .10
 
 
 def housing_features(crop):
@@ -90,15 +95,49 @@ class HousingClassifier:
             self.intercept = d["intercept"]
             self.threshold = float(d["threshold"])
 
-    def read(self, crop):
+    def evidence(self, crop):
         x = (housing_features(crop)-self.mean) / self.scale
         logits = np.clip(x, -8, 8) @ self.weights + self.intercept
         prob = np.exp(logits-logits.max())
         prob /= prob.sum()
         label = int(np.argmax(prob))
-        if label == 0 or prob[label] < self.threshold:
-            return None
         return COLOR_NAMES[label], float(prob[label])
+
+    def read(self, crop):
+        color, probability = self.evidence(crop)
+        if color == "off" or probability < self.threshold:
+            return None
+        return color, probability
+
+
+def bulb_contrast(crop, color, native_shape=None):
+    """Measure a fitted color against nearby housing pixels in 8-bit RGB levels."""
+    height = (native_shape if native_shape is not None else crop.shape[:2])[0]
+    image = cv2.resize(crop, (12, 24), interpolation=cv2.INTER_LINEAR).astype(np.float32)
+    bulb = {"red": .17, "yellow": .50, "green": .83}[color]
+    usable = 1 - 4 / height
+    center = (2 / height + usable * bulb) * 23
+    radius = max(1.5, .15 * usable * 24)
+    rows = image[max(2, math.floor(center - radius)):min(22, math.ceil(center + radius) + 1)]
+    center_rgb = rows[:, 4:8].mean(axis=(0, 1))
+    housing_rgb = rows[:, [2, 3, 8, 9]].mean(axis=(0, 1))
+    r, g, b = center_rgb - housing_rgb
+    if color == "red":
+        return r - g, r
+    if color == "green":
+        return g - (r + b) / 2, g
+    chroma = min(center_rgb[:2]) - center_rgb[2] - (min(housing_rgb[:2]) - housing_rgb[2])
+    return chroma, (r + g) / 2
+
+
+def visible_bulb(crop, color, native_shape=None):
+    height, width = native_shape if native_shape is not None else crop.shape[:2]
+    if height > 14:
+        return True
+    if height < 10 or width < 7:
+        return False
+    chroma, brightness = bulb_contrast(crop, color, native_shape)
+    return chroma >= .8 and brightness >= -3.
 
 
 class SignalObserver:
@@ -120,9 +159,44 @@ class SignalObserver:
         return {key: str(self.reference_actors[key].get_state()).split(".")[-1].lower()
                 for key in sorted(identities) if key in self.reference_actors}
 
+    def _camera_votes(self, head, sensor_matrices, images):
+        votes = []
+        support = set()
+        resolved = False
+        for name, matrix in sensor_matrices.items():
+            rgb = images[name]
+            box = project_box(head.vertices, matrix, rgb.shape, CAMERAS[name].hfov)
+            if box is None:
+                continue
+            x0, y0, x1, y1 = box
+            crop = rgb[y0:y1, x0:x1]
+            if crop.shape[0] < 6 or crop.shape[1] < 4:
+                continue
+            resolved |= crop.shape[0] >= RESOLVED_CROP_HEIGHT
+            if self.classifier is None:
+                result = illuminated_color(crop)
+                if result is not None:
+                    color, strength = result
+                    votes.append((strength, name, box, color))
+                continue
+            color, strength = self.classifier.evidence(crop)
+            if color == "off":
+                if strength >= self.classifier.threshold:
+                    support.add(color)
+            elif not visible_bulb(crop, color):
+                support.add("unresolved")
+            elif strength >= SUPPORT_THRESHOLD:
+                support.add(color)
+                if strength >= self.classifier.threshold:
+                    votes.append((strength, name, box, color))
+        return votes, support, resolved
+
     def read(self, pose, images, sim_time=None):
         inv = np.asarray(pose.get_inverse_matrix())
         sensor_matrices = {name: mount @ inv for name, mount in self.mounts.items() if name in images}
+        if sim_time is not None:
+            previous_candidates, previous_confirmed = self.candidates, self.recent
+            self.candidates, self.recent = {}, {}
         readings = []
         for head in self.heads:
             dx = head.center[0] - pose.location.x
@@ -139,41 +213,34 @@ class SignalObserver:
                 yaw = math.radians(head.yaw)
                 if (dx * math.cos(yaw) + dy * math.sin(yaw)) / distance < .45:
                     continue
-            votes = []
-            for name, matrix in sensor_matrices.items():
-                rgb = images[name]
-                box = project_box(head.vertices, matrix, rgb.shape, CAMERAS[name].hfov)
-                if box is None:
-                    continue
-                x0, y0, x1, y1 = box
-                crop = rgb[y0:y1, x0:x1]
-                if crop.shape[0] < 6 or crop.shape[1] < 4:
-                    continue
-                result = self.classifier.read(crop) if self.classifier is not None else illuminated_color(crop)
-                if result is not None:
-                    color, strength = result
-                    votes.append((strength, name, box, color))
+            votes, support, resolved = self._camera_votes(head, sensor_matrices, images)
             if votes:
                 strength, view, box, color = max(votes)
                 if all(v[3] == color for v in votes):
                     if sim_time is not None:
-                        prior = self.candidates.get(head.key)
-                        count = prior[2] + 1 if prior and prior[0]==color and 0 < sim_time-prior[1] <= .25 else 1
-                        self.candidates[head.key] = (color, sim_time, count)
-                        if count < 2:
-                            # A conflicting isolated flash should not recolor a mapped head.
-                            if head.key in self.recent and self.recent[head.key][1] != color:
-                                del self.recent[head.key]
+                        prior = previous_candidates.get(head.key)
+                        tiny = box[3] - box[1] < RESOLVED_CROP_HEIGHT
+                        gap = sim_time - prior[1] if prior and prior[0] == color else math.inf
+                        self.candidates[head.key] = (color, sim_time)
+                        window = CONSECUTIVE_WINDOW_S if tiny else CONFIRM_WINDOW_S
+                        if not 0 < gap <= window:
                             continue
                     row.update(state=color, view=view, source="camera", pixel_box=list(box),
                                pixel_size=[images[view].shape[1], images[view].shape[0]],
                                confidence=round(strength, 4) if self.classifier else None, age_s=0.)
                     if sim_time is not None:
-                        self.recent[head.key] = (sim_time, color, view)
-            if sim_time is not None and row["state"] == "unknown" and head.key in self.recent:
-                last, color, view = self.recent[head.key]
-                age = sim_time - last
-                if 0 < age <= .30 and not votes:
-                    row.update(state=color, view=view, source="camera", age_s=round(age, 2),
-                               inferred_from="last camera observation")
+                        self.recent[head.key] = (sim_time, color, view, not tiny)
+            if sim_time is not None and not votes:
+                prior = previous_candidates.get(head.key)
+                if resolved and prior and support <= {prior[0]} and 0 < sim_time - prior[1] <= CONFIRM_WINDOW_S:
+                    self.candidates[head.key] = prior
+                if head.key in previous_confirmed:
+                    last, color, view, previously_resolved = previous_confirmed[head.key]
+                    age = sim_time - last
+                    bounded = 0 < age <= HOLD_LIMIT_S or math.isclose(age, HOLD_LIMIT_S, abs_tol=1e-9)
+                    if not previously_resolved or not bounded or not (support == {color} or (resolved and not support)):
+                        continue
+                    self.recent[head.key] = (last, color, view, previously_resolved)
+                    row.update(state=color, view=view, source="camera", age_s=round(age, 2), inferred_from=(
+                        "last camera observation corroborated by current pixels" if support else "last camera observation"))
         return readings
