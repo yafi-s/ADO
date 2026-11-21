@@ -10854,5 +10854,287 @@
       "inside_1m_max_ego_kmh": 14.71
     }
   },
-  "unresolved_actor_body_samples": {}
+  "unresolved_actor_body_samples": {},
+  "abrupt_request_drops": {
+    "drop_at_least_5": {
+      "count": 10,
+      "episodes": 9,
+      "episode_frames": [
+        [
+          353
+        ],
+        [
+          425
+        ],
+        [
+          998
+        ],
+        [
+          1034
+        ],
+        [
+          1058
+        ],
+        [
+          1160
+        ],
+        [
+          1200,
+          1207
+        ],
+        [
+          1978
+        ],
+        [
+          2699
+        ]
+      ],
+      "next_5s_unique_slow_seconds": 19.1,
+      "share_of_all_slow_time_percent": 9.455
+    },
+    "drop_at_least_8": {
+      "count": 6,
+      "episodes": 6,
+      "episode_frames": [
+        [
+          353
+        ],
+        [
+          998
+        ],
+        [
+          1034
+        ],
+        [
+          1058
+        ],
+        [
+          1978
+        ],
+        [
+          2699
+        ]
+      ],
+      "next_5s_unique_slow_seconds": 12.5,
+      "share_of_all_slow_time_percent": 6.188
+    },
+    "retracted_at_least_5": {
+      "count": 0,
+      "episodes": 0,
+      "episode_frames": [],
+      "next_5s_unique_slow_seconds": 0.0,
+      "share_of_all_slow_time_percent": 0.0
+    },
+    "retracted_at_least_8": {
+      "count": 0,
+      "episodes": 0,
+      "episode_frames": [],
+      "next_5s_unique_slow_seconds": 0.0,
+      "share_of_all_slow_time_percent": 0.0
+    },
+    "entries": [
+      {
+        "index": 289,
+        "frame": 353,
+        "time_s": 28.9,
+        "station_m": 96.625,
+        "previous_request_kmh": 30.0,
+        "new_request_kmh": 21.937,
+        "drop_kmh": 8.063,
+        "ego_kmh": 27.162,
+        "previous_binding": null,
+        "new_binding": null,
+        "returned_to_inherited": null,
+        "phase": "clear road",
+        "current_path_roles": [],
+        "near_path_vulnerable_roles": [],
+        "later_path_roles": [],
+        "after_1_5s_peak_decel_mps2": 2.854,
+        "regained_prior_speed_after_trough_s": null,
+        "subsequent_5s_below_15s": 2.4
+      },
+      {
+        "index": 361,
+        "frame": 425,
+        "time_s": 36.1,
+        "station_m": 132.676,
+        "previous_request_kmh": 21.412,
+        "new_request_kmh": 15.133,
+        "drop_kmh": 6.279,
+        "ego_kmh": 21.938,
+        "previous_binding": null,
+        "new_binding": null,
+        "returned_to_inherited": null,
+        "phase": "occluded: crossing",
+        "current_path_roles": [],
+        "near_path_vulnerable_roles": [],
+        "later_path_roles": [
+          "occluded"
+        ],
+        "after_1_5s_peak_decel_mps2": 2.444,
+        "regained_prior_speed_after_trough_s": 10.0,
+        "subsequent_5s_below_15s": 4.1
+      },
+      {
+        "index": 934,
+        "frame": 998,
+        "time_s": 93.4,
+        "station_m": 368.912,
+        "previous_request_kmh": 17.884,
+        "new_request_kmh": 5.408,
+        "drop_kmh": 12.477,
+        "ego_kmh": 16.117,
+        "previous_binding": null,
+        "new_binding": null,
+        "returned_to_inherited": null,
+        "phase": "roadworks: approaching cone taper",
+        "current_path_roles": [],
+        "near_path_vulnerable_roles": [],
+        "later_path_roles": [],
+        "after_1_5s_peak_decel_mps2": 2.354,
+        "regained_prior_speed_after_trough_s": 8.8,
+        "subsequent_5s_below_15s": 4.5
+      },
+      {
+        "index": 970,
+        "frame": 1034,
+        "time_s": 97.0,
+        "station_m": 382.259,
+        "previous_request_kmh": 16.55,
+        "new_request_kmh": 5.408,
+        "drop_kmh": 11.143,
+        "ego_kmh": 15.25,
+        "previous_binding": null,
+        "new_binding": null,
+        "returned_to_inherited": null,
+        "phase": "roadworks: passing cones",
+        "current_path_roles": [],
+        "near_path_vulnerable_roles": [],
+        "later_path_roles": [],
+        "after_1_5s_peak_decel_mps2": 2.256,
+        "regained_prior_speed_after_trough_s": 5.1,
+        "subsequent_5s_below_15s": 4.5
+      },
+      {
+        "index": 994,
+        "frame": 1058,
+        "time_s": 99.4,
+        "station_m": 390.559,
+        "previous_request_kmh": 18.414,
+        "new_request_kmh": 5.408,
+        "drop_kmh": 13.006,
+        "ego_kmh": 15.966,
+        "previous_binding": null,
+        "new_binding": null,
+        "returned_to_inherited": null,
+        "phase": "roadworks: passing cones",
+        "current_path_roles": [],
+        "near_path_vulnerable_roles": [],
+        "later_path_roles": [],
+        "after_1_5s_peak_decel_mps2": 2.49,
+        "regained_prior_speed_after_trough_s": 2.8,
+        "subsequent_5s_below_15s": 2.5
+      },
+      {
+        "index": 1096,
+        "frame": 1160,
+        "time_s": 109.6,
+        "station_m": 466.058,
+        "previous_request_kmh": 39.294,
+        "new_request_kmh": 33.312,
+        "drop_kmh": 5.981,
+        "ego_kmh": 38.376,
+        "previous_binding": null,
+        "new_binding": null,
+        "returned_to_inherited": null,
+        "phase": "clear road",
+        "current_path_roles": [],
+        "near_path_vulnerable_roles": [],
+        "later_path_roles": [],
+        "after_1_5s_peak_decel_mps2": 2.278,
+        "regained_prior_speed_after_trough_s": null,
+        "subsequent_5s_below_15s": 0.0
+      },
+      {
+        "index": 1136,
+        "frame": 1200,
+        "time_s": 113.6,
+        "station_m": 505.738,
+        "previous_request_kmh": 37.025,
+        "new_request_kmh": 30.267,
+        "drop_kmh": 6.757,
+        "ego_kmh": 36.968,
+        "previous_binding": null,
+        "new_binding": null,
+        "returned_to_inherited": null,
+        "phase": "barrier: approaching striped barricades",
+        "current_path_roles": [],
+        "near_path_vulnerable_roles": [],
+        "later_path_roles": [],
+        "after_1_5s_peak_decel_mps2": 2.294,
+        "regained_prior_speed_after_trough_s": null,
+        "subsequent_5s_below_15s": 1.8
+      },
+      {
+        "index": 1143,
+        "frame": 1207,
+        "time_s": 114.3,
+        "station_m": 512.514,
+        "previous_request_kmh": 34.263,
+        "new_request_kmh": 29.067,
+        "drop_kmh": 5.196,
+        "ego_kmh": 34.222,
+        "previous_binding": null,
+        "new_binding": null,
+        "returned_to_inherited": null,
+        "phase": "barrier: approaching striped barricades",
+        "current_path_roles": [],
+        "near_path_vulnerable_roles": [],
+        "later_path_roles": [],
+        "after_1_5s_peak_decel_mps2": 2.348,
+        "regained_prior_speed_after_trough_s": null,
+        "subsequent_5s_below_15s": 2.5
+      },
+      {
+        "index": 1914,
+        "frame": 1978,
+        "time_s": 191.4,
+        "station_m": 832.852,
+        "previous_request_kmh": 30.0,
+        "new_request_kmh": 20.589,
+        "drop_kmh": 9.411,
+        "ego_kmh": 28.595,
+        "previous_binding": null,
+        "new_binding": null,
+        "returned_to_inherited": null,
+        "phase": "bus: approaching stopped bus",
+        "current_path_roles": [],
+        "near_path_vulnerable_roles": [],
+        "later_path_roles": [],
+        "after_1_5s_peak_decel_mps2": 2.284,
+        "regained_prior_speed_after_trough_s": null,
+        "subsequent_5s_below_15s": 0.6
+      },
+      {
+        "index": 2635,
+        "frame": 2699,
+        "time_s": 263.5,
+        "station_m": 1119.105,
+        "previous_request_kmh": 30.0,
+        "new_request_kmh": 16.21,
+        "drop_kmh": 13.79,
+        "ego_kmh": 29.538,
+        "previous_binding": null,
+        "new_binding": null,
+        "returned_to_inherited": null,
+        "phase": "clear road",
+        "current_path_roles": [],
+        "near_path_vulnerable_roles": [],
+        "later_path_roles": [],
+        "after_1_5s_peak_decel_mps2": 4.022,
+        "regained_prior_speed_after_trough_s": 6.4,
+        "subsequent_5s_below_15s": 1.7
+      }
+    ]
+  }
 }

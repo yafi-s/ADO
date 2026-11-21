@@ -265,6 +265,43 @@ def audit(folder, reference):
             for a,b in ends if b-a>=20]
     worst = lambda x: dict(value=rounded(x[np.nanargmax(abs(x))]),time_s=time[np.nanargmax(abs(x))],
                            frame=rows[np.nanargmax(abs(x))]["frame"],station_m=station[np.nanargmax(abs(x))])
+    switches=[]
+    change=np.r_[0.,np.diff(target)]
+    for i in np.flatnonzero(change<=-5):
+        prior,now=rows[i-1].get("progress_evidence",{}),rows[i].get("progress_evidence",{})
+        retracted=None
+        if "base_request_mps" in prior and "base_request_mps" in now:
+            retracted=bool(target[i-1]-prior["base_request_mps"]*3.6>=1 and target[i]-now["base_request_mps"]*3.6<=.1)
+        final=min(i+15,len(rows)-1)
+        after=accel5[i+5:final+1]
+        look=min(i+100,len(rows)-1)
+        trough=i+int(np.argmin(speed[i:look+1]))
+        regained=np.flatnonzero(speed[trough:look+1]>=speed[i-1])
+        switches.append(dict(index=int(i), frame=rows[i]["frame"],time_s=time[i],station_m=station[i],
+                             previous_request_kmh=rounded(target[i-1]),new_request_kmh=rounded(target[i]),
+                             drop_kmh=rounded(-change[i]),ego_kmh=rounded(speed[i]),
+                             previous_binding=prior.get("binding"),new_binding=now.get("binding"),
+                             returned_to_inherited=retracted,phase=rows[i]["phase"],
+                             current_path_roles=flags[i]["path"],near_path_vulnerable_roles=flags[i]["vulnerable"],
+                             later_path_roles=flags[i]["later_path"],after_1_5s_peak_decel_mps2=rounded(max(0.,-np.min(after))) if len(after) else None,
+                             regained_prior_speed_after_trough_s=rounded(time[trough+regained[0]]-time[i]) if len(regained) else None,
+                             subsequent_5s_below_15s=dt((time>=time[i])&(time<time[i]+5-.001)&(speed<15))))
+    def switch_summary(entries):
+        episodes=[]
+        covered=np.zeros(len(rows),bool)
+        for point in entries:
+            i=point["index"]
+            covered[i:i+50]=True
+            if not episodes or point["time_s"]-episodes[-1][-1]["time_s"]>=.999:
+                episodes.append([])
+            episodes[-1].append(point)
+        linked=dt(covered & (speed<15))
+        return dict(count=len(entries),episodes=len(episodes),episode_frames=[[e["frame"] for e in epi] for epi in episodes],
+                    next_5s_unique_slow_seconds=linked,share_of_all_slow_time_percent=rounded(100*linked/max(DT,dt(speed<15))))
+    transitions=dict(drop_at_least_5=switch_summary(switches),drop_at_least_8=switch_summary([x for x in switches if x["drop_kmh"]>=8]),
+                     retracted_at_least_5=switch_summary([x for x in switches if x["returned_to_inherited"]]),
+                     retracted_at_least_8=switch_summary([x for x in switches if x["returned_to_inherited"] and x["drop_kmh"]>=8]),
+                     entries=switches)
     r=dict(source=dict(capture=manifest["capture_id"],policy=s["policy"],policy_sha256=manifest["policy"]["sha256"],
                        map=manifest["producer"]["map"],weather=s["weather"],route=s["route_id"],
                        fixed_delta_seconds=manifest["world_settings"]["fixed_delta_seconds"],
@@ -284,7 +321,7 @@ def audit(folder, reference):
                         half_s_hard_braking_seconds=dt(accel5<-3),raw_hard_braking_seconds=dt(accel<-3),
                         peak_jerk_half_s=worst(jerk),p95_abs_jerk=rounded(np.nanquantile(abs(jerk),.95)),
                         overspeed_posted_plus_1_seconds=dt(speed>posted+1),over_40_seconds=dt(speed>40)),
-           clearance_below_four_m=minima,unresolved_actor_body_samples=unknown)
+           clearance_below_four_m=minima,unresolved_actor_body_samples=unknown,abrupt_request_drops=transitions)
     return r, rows, flags
 
 

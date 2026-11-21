@@ -62,11 +62,16 @@ def create():
         f'{a["median_kmh"]:.1f} km/h before and {b["median_kmh"]:.1f} km/h after. '
         f'Total time inside them was {a["seconds"]:.1f} s before and {b["seconds"]:.1f} s after.',
         ("Every junction", TAG+"audit/README.md"), ("Test protocol", TAG+"audit/PROTOCOL.md"))
-    heldout = read(STUDY / "junction-transfer/transfer-r3-first/audit.json")
+    original_transfer = read(STUDY / "junction-transfer/transfer-r3-first/audit.json")
+    heldout = original_transfer
+    transfer_path = "junction-transfer/transfer-r3-first/audit.json"
+    if heldout["candidate-clear"]["policy_sha256"] != manifest["policy"]["sha256"]:
+        transfer_path = "junction-transfer/j1221-r4-first/audit.json"
+        heldout = read(STUDY / transfer_path)
     arms = ("candidate-clear", "candidate-crossing", "candidate-stops-short")
     if any(heldout[arm]["policy_sha256"] != manifest["policy"]["sha256"] for arm in arms):
         raise ValueError("Off-route comparison used a different checkpoint")
-    old_approach = heldout["baseline-clear"]["exact_station_speeds"]["-12.0"]["actual_kmh"]
+    old_approach = original_transfer["baseline-clear"]["exact_station_speeds"]["-12.0"]["actual_kmh"]
     new_approach = heldout["candidate-clear"]["exact_station_speeds"]["-12.0"]["actual_kmh"]
     crossing = heldout["candidate-crossing"]["grade"]
     short = heldout["candidate-stops-short"]["grade"]
@@ -76,7 +81,7 @@ def create():
         f'{crossing["physical_min_body_gap_m"]:.2f} m minimum clearance. When the Mini stopped short, '
         f'ADO continued at a minimum of {short["near_center_min_speed_kmh"]:.1f} km/h near the crossing.',
         ("Matched camera evidence", TAG+"junction-transfer/README.md"),
-        ("Five trials", TAG+"junction-transfer/transfer-r3-first/audit.json"))
+        ("Native grades", TAG+transfer_path))
     for title, lo, hi, view in (("Beside the bus", 858, 872, "chase"), ("Past the bus", 872, 882, "front")):
         a, b = section(old, lo, hi), section(new, lo, hi)
         result = (f'At {lo}–{hi} m along the route, the car drove at a median '
@@ -84,6 +89,16 @@ def create():
                   f'Elapsed time was {a["seconds"]:.1f} s before and {b["seconds"]:.1f} s after.')
         add(title, result, ("Earlier recording", camera("city-life", a["middle_frame"], view)),
             ("Revised recording", camera("city-progress", b["middle_frame"], view)))
+    trials = read(STUDY / "trials/comparison.json")["cases"]
+    if any(case["after"]["model_sha256"] != manifest["policy"]["sha256"] for case in trials):
+        raise ValueError("Matched trials belong to a different model")
+    walker, = (case["after"]["crossing"] for case in trials if case["case"] == "bus-crossing")
+    add("When the path is occupied",
+        f'{sum(case["after"]["passed"] for case in trials)}/{len(trials)} matched cases passed. '
+        f'When a pedestrian emerged from behind the stopped bus, the revised driver stopped and kept '
+        f'{walker["minimum_body_gap_m"]:.2f} m minimum body clearance.',
+        ("Watch the paired driving tests", "./media/city-progress-tests/comparison.mp4"),
+        ("Controls and failures", TAG+"trials/README.md"))
     a, b = old["whole"]["below_kmh_s"], new["whole"]["below_kmh_s"]
     add("Slow sections across town",
         f'Time below 15 km/h across the full trip changed from {a["15"]:.1f} to {b["15"]:.1f} s. '
