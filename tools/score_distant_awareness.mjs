@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import {parseArgs} from 'node:util';
 import {audit,match} from './audit_city_perception.mjs';
+import {bearingObservations,frontBearingCue} from '../web/lamp-observations.mjs';
 
 const {positionals:[directory,output],values}=parseArgs({allowPositionals:true,options:{
   paired:{type:'string'},reference:{type:'string'},review:{type:'string'},examples:{type:'string'},
@@ -71,7 +72,8 @@ function scoreBoxes(stage,boxes,actors,frame){
   for(const {a,b,iou} of candidates.sort((l,r)=>r.iou-l.iou)){
     if(used.has(b)||found.has(a))continue;
     used.add(b);found.add(a);
-    hit(stage,a,frame,{iou:+iou.toFixed(3),box:b.box.map(n=>+n.toFixed(4)),source:b.inference_layout});
+    hit(stage,a,frame,{iou:+iou.toFixed(3),box:b.box.map(n=>+n.toFixed(4)),source:b.inference_layout,
+      ...(b.range_supported!==undefined?{range_supported:b.range_supported}: {})});
   }
   for(const box of observations)if(!used.has(box))unmatched(stage,box,frame);
 }
@@ -85,6 +87,10 @@ const result=await audit(directory,{staticFile:reference,memoryRevision:values['
   if(frame.camera_inference_age_s?.front===0){
     acquisitions++;
     scoreBoxes('native_optical',frame.camera_detections?.front??[],eligible,frame);
+    if(!values['memory-revision']){
+      const cue=frontBearingCue(bearingObservations(frame,null,['front']));
+      scoreBoxes('native_front_callout',cue?[cue]:[],eligible,frame);
+    }
     if(paired){
       const boxes=paired.get(frame.frame);
       if(!boxes)throw Error('Missing paired front inference '+frame.frame);
