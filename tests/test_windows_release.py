@@ -120,6 +120,11 @@ class WindowsReleaseTests(unittest.TestCase):
         self.assertIn(release.BARRIER_MODEL, release.required_files("v0.4.0"))
         self.assertEqual(release.featured_recording("v0.4.0"),
                          (release.PACE_MEDIA, release.PACE_MASTER, release.PACE_SCHEMA))
+        self.assertEqual(release.featured_recording("v0.5.0"),
+                         (release.LIFE_MEDIA, release.LIFE_MASTER, release.LIFE_SCHEMA))
+        self.assertIn(f"{release.PACE_MEDIA}/{release.CONE_REVIEW}", release.required_files("v0.5.0"))
+        with self.assertRaisesRegex(ValueError, "native 1080p --film-master"):
+            release.build_release("unused", "v0.5.0", Path("unused"))
 
     @patch.object(release, "verify_video")
     def test_city_film_accepts_truthful_outcomes(self, verify_video):
@@ -180,6 +185,54 @@ class WindowsReleaseTests(unittest.TestCase):
         manifest["sha256"]["replay-pack.json.gz"] = sha256(pack)
         with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, "Replay pack differs"):
             release.verify_city_film(archive, media, manifest, Path("unused"))
+
+    @patch.object(release, "verify_city_life_evidence")
+    @patch.object(release, "verify_video")
+    def test_city_life_requires_exact_gzip_replay_and_scored_safety(self, verify_video, _verify_evidence):
+        old_media, manifest, members = city_film(False, pace=True)
+        media = release.LIFE_MEDIA
+        members = {name.replace(old_media, media).replace("models/city-pace/", "models/city-clearance/"): value
+                   for name, value in members.items()}
+        model = manifest["policy"]["sha256"]
+        manifest.update(population_profile="city-life", frame_period_s=.1, trial_id="city-life", replay="replay.json.gz")
+        manifest["policy"]["schema"] = release.LIFE_SCHEMA
+        summary = manifest["summary"]
+        summary.update(policy=release.LIFE_SCHEMA, scenario="journey", duration_s=.1)
+        members["models/city-clearance/fit.json"] = json_bytes(dict(schema=release.LIFE_SCHEMA, model_sha256=model))
+        score = json.loads(members[f"{media}/telemetry.json"])[0]
+        score.update(sim_time=0., video_time=0., collision_count=0, red_light_violations=0, yield_violations=0,
+                     **{key: summary[key] for key in ("progress_m", "route_length_m", "events")})
+        replay = [dict(score, run_id="city-life")]
+        original = json_bytes(replay)
+        manifest["raw_sha256"] = {"replay.json": sha256(original)}
+        del members[f"{media}/replay.json"], manifest["sha256"]["replay.json"]
+        artifacts = {"replay.json.gz": gzip.compress(original), "telemetry.json": json_bytes([score]),
+                     "replay-pack.json.gz": gzip.compress(json_bytes(dict(format="ado-replay-pack-v1", replay=replay,
+                                                                           shared_path=None, path_ranges=[])))}
+        for name, data in artifacts.items():
+            members[f"{media}/{name}"] = data
+            manifest["sha256"][name] = sha256(data)
+        with fixture_zip(members) as archive:
+            release.verify_city_film(archive, media, manifest, Path("unused"))
+        self.assertEqual(verify_video.call_count, 6)
+
+        summary["collision_events"] = 1
+        with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, "totals differ from the scored telemetry"):
+            release.verify_city_film(archive, media, manifest, Path("unused"))
+        manifest["raw_sha256"]["replay.json"] = "0" * 64
+        with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, "differs from the native recording"):
+            release.verify_city_film(archive, media, manifest, Path("unused"))
+
+    def test_population_counts_simultaneous_motion_only_after_six_consecutive_exposures(self):
+        rows = [dict(frame=i, sim_time=i/10, ego=[0, 0],
+                     others=[dict(actor_id=actor, type="car" if actor < 2 else "pedestrian", x=actor + .2*i, y=0)
+                             for actor in range(4)]) for i in range(6)]
+        self.assertEqual(release.population_density(rows)["35"]["two_of_each_frames"], 1)
+        rows[2]["others"].pop()
+        density = release.population_density(rows)["35"]
+        self.assertEqual(density["scored_frames"], 1)
+        self.assertEqual(density["both_frames"], 1)
+        self.assertEqual(density["two_of_each_frames"], 0)
 
     def test_tactical_study_accepts_yield_then_pass_and_rejects_swapped_timing(self):
         score = dict(case="occupied", passed=True, frames=140, collisions=0, yield_s=3.0,

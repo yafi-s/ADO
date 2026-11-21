@@ -26,7 +26,7 @@ concurrency:
 jobs:
   publish-from-main:
     # The Pages environment permits deployments from main. A release event runs on a tag.
-    if: github.repository == 'yafi-s/ADO' && github.event_name == 'release' && (github.event.release.tag_name == 'v0.3.0' || github.event.release.tag_name == 'v0.4.0')
+    if: github.repository == 'yafi-s/ADO' && github.event_name == 'release' && contains(fromJSON('["v0.3.0", "v0.4.0", "v0.5.0"]'), github.event.release.tag_name)
     runs-on: ubuntu-latest
     permissions:
       actions: write
@@ -50,7 +50,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'release' && 'main' || github.ref }}
+          ref: ${{ github.sha }}
       - uses: actions/configure-pages@v5
       - name: Include the Blender design in the public viewer
         run: |
