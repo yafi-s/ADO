@@ -1,6 +1,7 @@
 """Matched stationary red/green RGB measurements on CARLA training-district roads."""
 
 import argparse
+from collections import deque
 from contextlib import ExitStack
 import json
 from pathlib import Path
@@ -224,6 +225,7 @@ def fit_expert(study, lessons, output):
     calibration = calibrate(margins, np.tile([1., 0.], len(margins)//2))
     expert = LampExpert(classifier, calibration, [], [])
     points, pedals = [], []
+    gate_scores, approach_labels = [], []
     drives = []
     for seed in FIT_SEEDS:
         for condition in ("cycle", "green"):
@@ -231,12 +233,21 @@ def fit_expert(study, lessons, output):
             if (record["district"] != "train" or record["seed"] != seed or
                     record["green_from_start"] != (condition == "green") or not record["rows"]):
                 raise ValueError("Signal pedal fit requires nonempty designated training drives.")
+            window, peak = deque(maxlen=5), 0.
             for row in record["rows"]:
-                points.append([5.*expert.red_probability(row["color"]), row["gap"], 2.*row["speed"]])
+                probability = expert.red_probability(row["color"])
+                points.append([5.*probability, row["gap"], 2.*row["speed"]])
                 pedals.append(row["throttle"]-row["brake"])
+                window.append(probability)
+                peak = max(peak, float(np.median(window)))
+                gate_scores.append(peak)
+                approach_labels.append(not record["green_from_start"])
             drives.append(dict(seed=seed, condition=condition, frames=len(record["rows"])))
     expert = LampExpert(classifier, calibration, points, pedals)
     expert.save(output / "lamp.npz")
+    gate_parameters = dict(version=1, median_frames=5, weights=calibrate(gate_scores, approach_labels).tolist())
+    (output / "approach-gate.json").write_bytes(
+        (json.dumps(gate_parameters, sort_keys=True, separators=(",", ":"))+"\n").encode("utf-8"))
     truth, probabilities = [], []
     validation = []
     for root, seeds in ((study, VALIDATION_SEEDS), (lessons, EXTRA_SEEDS)):

@@ -74,3 +74,15 @@ class LampTest(unittest.TestCase):
             expert.save(path)
             np.testing.assert_allclose(LampExpert.load(path).apply((5., red), 2., base),
                                        expert.apply((5., red), 2., base))
+
+    def test_mixture_history_is_local_to_current_approach_and_episode(self):
+        classifier = LampClassifier(np.zeros(4), np.array([1., 0., 0., 0.]))
+        expert = LampExpert(classifier, [7., 0.], [[0., 5., 4.], [5., 5., 4.]], [.8, .8])
+        first, second = expert.for_episode(), expert.for_episode()
+        red, green = (5., np.array([1., 0., 0., 0.])), (5., np.array([-1., 0., 0., 0.]))
+        base = (.12, .1, 0.)
+        self.assertGreater(first.apply(red, 2., base)[1], .78)
+        self.assertGreater(first.apply(green, 2., base)[1], .78)
+        self.assertLess(second.apply(green, 2., base)[1], .12)
+        self.assertEqual(first.apply(None, 2., base), base)
+        self.assertLess(first.apply(green, 2., base)[1], .12)

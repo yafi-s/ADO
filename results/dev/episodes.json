@@ -1,0 +1,5098 @@
+[
+  {
+    "scenario": "pedestrian",
+    "seed": 31,
+    "policy": "fusion",
+    "weather": "CloudyNoon",
+    "road_id": 10,
+    "lane_id": -1,
+    "start_xy": [
+      230.17,
+      59.48
+    ],
+    "outcome": "complete",
+    "frames": 193,
+    "duration_s": 19.3,
+    "progress_m": 63.582,
+    "route_length_m": 64.0,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 3.331,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9476667592865752667:11076101300937052174",
+    "road_ids": [
+      10
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.005,
+    "wall_seconds": 13.568,
+    "case_id": "pedestrian",
+    "trial_id": "31-pedestrian-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "pedestrian",
+    "seed": 31,
+    "policy": "camera",
+    "weather": "CloudyNoon",
+    "road_id": 10,
+    "lane_id": -1,
+    "start_xy": [
+      230.17,
+      59.48
+    ],
+    "outcome": "complete",
+    "frames": 207,
+    "duration_s": 20.7,
+    "progress_m": 63.41,
+    "route_length_m": 64.0,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 0.063,
+    "moving_within_1m_frames": 7,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9476667592865752667:11076101300937052174",
+    "road_ids": [
+      10
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.877,
+    "wall_seconds": 20.614,
+    "case_id": "pedestrian",
+    "trial_id": "31-pedestrian-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "pedestrian",
+    "seed": 31,
+    "policy": "fusion",
+    "weather": "CloudyNoon",
+    "road_id": 10,
+    "lane_id": -1,
+    "start_xy": [
+      230.17,
+      59.48
+    ],
+    "outcome": "complete",
+    "frames": 206,
+    "duration_s": 20.6,
+    "progress_m": 63.642,
+    "route_length_m": 64.0,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 2.843,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 1.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9476667592865752667:11076101300937052174",
+    "road_ids": [
+      10
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.004,
+    "wall_seconds": 14.333,
+    "case_id": "pedestrian-delayed",
+    "trial_id": "31-pedestrian-delayed-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "pedestrian",
+    "seed": 31,
+    "policy": "camera",
+    "weather": "CloudyNoon",
+    "road_id": 10,
+    "lane_id": -1,
+    "start_xy": [
+      230.17,
+      59.48
+    ],
+    "outcome": "complete",
+    "frames": 232,
+    "duration_s": 23.2,
+    "progress_m": 63.649,
+    "route_length_m": 64.0,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 3.971,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 1.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9476667592865752667:11076101300937052174",
+    "road_ids": [
+      10
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.004,
+    "wall_seconds": 16.272,
+    "case_id": "pedestrian-delayed",
+    "trial_id": "31-pedestrian-delayed-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "lead",
+    "seed": 31,
+    "policy": "fusion",
+    "weather": "CloudyNoon",
+    "road_id": 10,
+    "lane_id": -1,
+    "start_xy": [
+      230.17,
+      59.48
+    ],
+    "outcome": "complete",
+    "frames": 194,
+    "duration_s": 19.4,
+    "progress_m": 63.815,
+    "route_length_m": 64.0,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 3.283,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9476667592865752667:11076101300937052174",
+    "road_ids": [
+      10
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.007,
+    "wall_seconds": 13.61,
+    "case_id": "lead",
+    "trial_id": "31-lead-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "lead",
+    "seed": 31,
+    "policy": "camera",
+    "weather": "CloudyNoon",
+    "road_id": 10,
+    "lane_id": -1,
+    "start_xy": [
+      230.17,
+      59.48
+    ],
+    "outcome": "complete",
+    "frames": 221,
+    "duration_s": 22.1,
+    "progress_m": 63.495,
+    "route_length_m": 64.0,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 1.135,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9476667592865752667:11076101300937052174",
+    "road_ids": [
+      10
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 1.109,
+    "wall_seconds": 15.411,
+    "case_id": "lead",
+    "trial_id": "31-lead-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "occluded",
+    "seed": 31,
+    "policy": "fusion",
+    "weather": "CloudyNoon",
+    "road_id": 10,
+    "lane_id": -1,
+    "start_xy": [
+      230.17,
+      59.48
+    ],
+    "outcome": "timeout",
+    "frames": 360,
+    "duration_s": 36.0,
+    "progress_m": 29.14,
+    "route_length_m": 64.0,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 4.492,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9476667592865752667:11076101300937052174",
+    "road_ids": [
+      10
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.006,
+    "wall_seconds": 30.583,
+    "case_id": "occluded",
+    "trial_id": "31-occluded-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "occluded",
+    "seed": 31,
+    "policy": "camera",
+    "weather": "CloudyNoon",
+    "road_id": 10,
+    "lane_id": -1,
+    "start_xy": [
+      230.17,
+      59.48
+    ],
+    "outcome": "timeout",
+    "frames": 360,
+    "duration_s": 36.0,
+    "progress_m": 22.985,
+    "route_length_m": 64.0,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 10.14,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9476667592865752667:11076101300937052174",
+    "road_ids": [
+      10
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.004,
+    "wall_seconds": 34.278,
+    "case_id": "occluded",
+    "trial_id": "31-occluded-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "signal",
+    "seed": 31,
+    "policy": "fusion",
+    "weather": "CloudyNoon",
+    "road_id": 3,
+    "lane_id": 1,
+    "start_xy": [
+      58.38,
+      1.96
+    ],
+    "outcome": "complete",
+    "frames": 182,
+    "duration_s": 18.2,
+    "progress_m": 63.479,
+    "route_length_m": 63.999,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 2.872,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:13142037694948816149:15242325554300579207",
+    "road_ids": [
+      3,
+      2
+    ],
+    "junction_ids": [
+      110
+    ],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.006,
+    "wall_seconds": 12.313,
+    "case_id": "signal",
+    "trial_id": "31-signal-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "signal",
+    "seed": 31,
+    "policy": "camera",
+    "weather": "CloudyNoon",
+    "road_id": 3,
+    "lane_id": 1,
+    "start_xy": [
+      58.38,
+      1.96
+    ],
+    "outcome": "complete",
+    "frames": 217,
+    "duration_s": 21.7,
+    "progress_m": 63.735,
+    "route_length_m": 63.999,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 2.872,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:13142037694948816149:15242325554300579207",
+    "road_ids": [
+      3,
+      2
+    ],
+    "junction_ids": [
+      110
+    ],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.006,
+    "wall_seconds": 14.755,
+    "case_id": "signal",
+    "trial_id": "31-signal-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "left",
+    "seed": 31,
+    "policy": "fusion",
+    "weather": "CloudyNoon",
+    "road_id": 2,
+    "lane_id": -1,
+    "start_xy": [
+      123.69,
+      -2.05
+    ],
+    "outcome": "lane_departure",
+    "frames": 109,
+    "duration_s": 10.9,
+    "progress_m": 36.524,
+    "route_length_m": 67.131,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 3.727,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 0.0,
+    "moving_within_1m_frames": 31,
+    "turn_direction": "left",
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:11138162246494503651:14778818668955044347",
+    "road_ids": [
+      2,
+      21
+    ],
+    "junction_ids": [
+      110
+    ],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 1,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 5.38,
+    "wall_seconds": 7.422,
+    "case_id": "left",
+    "trial_id": "31-left-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "left",
+    "seed": 31,
+    "policy": "camera",
+    "weather": "CloudyNoon",
+    "road_id": 2,
+    "lane_id": -1,
+    "start_xy": [
+      123.69,
+      -2.05
+    ],
+    "outcome": "complete",
+    "frames": 164,
+    "duration_s": 16.4,
+    "progress_m": 66.892,
+    "route_length_m": 67.131,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 0.0,
+    "moving_within_1m_frames": 30,
+    "turn_direction": "left",
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:11138162246494503651:14778818668955044347",
+    "road_ids": [
+      2,
+      21
+    ],
+    "junction_ids": [
+      110
+    ],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 1,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 4.44,
+    "wall_seconds": 14.161,
+    "case_id": "left",
+    "trial_id": "31-left-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "turn",
+    "seed": 31,
+    "policy": "fusion",
+    "weather": "CloudyNoon",
+    "road_id": 21,
+    "lane_id": 1,
+    "start_xy": [
+      92.37,
+      32.24
+    ],
+    "outcome": "complete",
+    "frames": 140,
+    "duration_s": 14.0,
+    "progress_m": 60.397,
+    "route_length_m": 60.852,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 60.0,
+    "moving_within_1m_frames": 0,
+    "turn_direction": "right",
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:4310584848424616253:16701773181077217996",
+    "road_ids": [
+      21,
+      2
+    ],
+    "junction_ids": [
+      110
+    ],
+    "event_triggered": false,
+    "event_cleared": false,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 0.059,
+    "wall_seconds": 17.76,
+    "case_id": "turn",
+    "trial_id": "31-turn-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "turn",
+    "seed": 31,
+    "policy": "camera",
+    "weather": "CloudyNoon",
+    "road_id": 21,
+    "lane_id": 1,
+    "start_xy": [
+      92.37,
+      32.24
+    ],
+    "outcome": "complete",
+    "frames": 157,
+    "duration_s": 15.7,
+    "progress_m": 60.517,
+    "route_length_m": 60.852,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 60.0,
+    "moving_within_1m_frames": 0,
+    "turn_direction": "right",
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:4310584848424616253:16701773181077217996",
+    "road_ids": [
+      21,
+      2
+    ],
+    "junction_ids": [
+      110
+    ],
+    "event_triggered": false,
+    "event_cleared": false,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 0.059,
+    "wall_seconds": 19.0,
+    "case_id": "turn",
+    "trial_id": "31-turn-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "clear",
+    "seed": 31,
+    "policy": "fusion",
+    "weather": "CloudyNoon",
+    "road_id": 10,
+    "lane_id": -1,
+    "start_xy": [
+      230.17,
+      59.48
+    ],
+    "outcome": "complete",
+    "frames": 132,
+    "duration_s": 13.2,
+    "progress_m": 63.736,
+    "route_length_m": 64.0,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 60.0,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9476667592865752667:11076101300937052174",
+    "road_ids": [
+      10
+    ],
+    "junction_ids": [],
+    "event_triggered": false,
+    "event_cleared": false,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 0.059,
+    "wall_seconds": 14.138,
+    "case_id": "clear",
+    "trial_id": "31-clear-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "clear",
+    "seed": 31,
+    "policy": "camera",
+    "weather": "CloudyNoon",
+    "road_id": 10,
+    "lane_id": -1,
+    "start_xy": [
+      230.17,
+      59.48
+    ],
+    "outcome": "complete",
+    "frames": 182,
+    "duration_s": 18.2,
+    "progress_m": 63.672,
+    "route_length_m": 64.0,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.38,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 60.0,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9476667592865752667:11076101300937052174",
+    "road_ids": [
+      10
+    ],
+    "junction_ids": [],
+    "event_triggered": false,
+    "event_cleared": false,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 0.059,
+    "wall_seconds": 12.67,
+    "case_id": "clear",
+    "trial_id": "31-clear-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "trip",
+    "seed": 31,
+    "policy": "fusion",
+    "weather": "CloudyNoon",
+    "road_id": 25,
+    "lane_id": 1,
+    "start_xy": [
+      158.03,
+      37.02
+    ],
+    "outcome": "lane_departure",
+    "frames": 428,
+    "duration_s": 42.8,
+    "progress_m": 216.174,
+    "route_length_m": 235.706,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 3.296,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 3.457,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": "market",
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 3,
+      "vehicles": 2
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:12830937343991442140:18313795912026913960",
+    "road_ids": [
+      25,
+      1,
+      16
+    ],
+    "junction_ids": [
+      54,
+      26
+    ],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.004,
+    "wall_seconds": 29.732,
+    "case_id": "trip",
+    "trial_id": "31-trip-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "trip",
+    "seed": 31,
+    "policy": "camera",
+    "weather": "CloudyNoon",
+    "road_id": 25,
+    "lane_id": 1,
+    "start_xy": [
+      158.03,
+      37.02
+    ],
+    "outcome": "complete",
+    "frames": 480,
+    "duration_s": 48.0,
+    "progress_m": 235.33,
+    "route_length_m": 235.706,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 1.632,
+    "spawn_lateral_m": -0.3800386507287452,
+    "spawn_yaw_deg": 3.6418448589900674,
+    "min_hazard_gap_m": 2.107,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": "market",
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 3,
+      "vehicles": 2
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:12830937343991442140:18313795912026913960",
+    "road_ids": [
+      25,
+      1,
+      16
+    ],
+    "junction_ids": [
+      54,
+      26
+    ],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.007,
+    "wall_seconds": 33.109,
+    "case_id": "trip",
+    "trial_id": "31-trip-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "pedestrian",
+    "seed": 32,
+    "policy": "fusion",
+    "weather": "ClearNoon",
+    "road_id": 1,
+    "lane_id": -1,
+    "start_xy": [
+      325.63,
+      -2.01
+    ],
+    "outcome": "complete",
+    "frames": 189,
+    "duration_s": 18.9,
+    "progress_m": 63.96,
+    "route_length_m": 64.001,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.296,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 4.011,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:10256812778194630590:10918523099532294416",
+    "road_ids": [
+      1
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.012,
+    "wall_seconds": 12.672,
+    "case_id": "pedestrian",
+    "trial_id": "32-pedestrian-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "pedestrian",
+    "seed": 32,
+    "policy": "camera",
+    "weather": "ClearNoon",
+    "road_id": 1,
+    "lane_id": -1,
+    "start_xy": [
+      325.63,
+      -2.01
+    ],
+    "outcome": "complete",
+    "frames": 210,
+    "duration_s": 21.0,
+    "progress_m": 63.762,
+    "route_length_m": 64.001,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.296,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 3.752,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:10256812778194630590:10918523099532294416",
+    "road_ids": [
+      1
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.002,
+    "wall_seconds": 13.857,
+    "case_id": "pedestrian",
+    "trial_id": "32-pedestrian-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "pedestrian",
+    "seed": 32,
+    "policy": "fusion",
+    "weather": "ClearNoon",
+    "road_id": 1,
+    "lane_id": -1,
+    "start_xy": [
+      325.63,
+      -2.01
+    ],
+    "outcome": "complete",
+    "frames": 218,
+    "duration_s": 21.8,
+    "progress_m": 63.916,
+    "route_length_m": 64.001,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.296,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 2.02,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 1.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:10256812778194630590:10918523099532294416",
+    "road_ids": [
+      1
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.005,
+    "wall_seconds": 26.033,
+    "case_id": "pedestrian-delayed",
+    "trial_id": "32-pedestrian-delayed-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "pedestrian",
+    "seed": 32,
+    "policy": "camera",
+    "weather": "ClearNoon",
+    "road_id": 1,
+    "lane_id": -1,
+    "start_xy": [
+      325.63,
+      -2.01
+    ],
+    "outcome": "complete",
+    "frames": 220,
+    "duration_s": 22.0,
+    "progress_m": 63.544,
+    "route_length_m": 64.001,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.296,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 3.343,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 1.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:10256812778194630590:10918523099532294416",
+    "road_ids": [
+      1
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.005,
+    "wall_seconds": 23.285,
+    "case_id": "pedestrian-delayed",
+    "trial_id": "32-pedestrian-delayed-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "lead",
+    "seed": 32,
+    "policy": "fusion",
+    "weather": "ClearNoon",
+    "road_id": 1,
+    "lane_id": -1,
+    "start_xy": [
+      325.63,
+      -2.01
+    ],
+    "outcome": "complete",
+    "frames": 175,
+    "duration_s": 17.5,
+    "progress_m": 63.865,
+    "route_length_m": 64.001,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.296,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 3.834,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:10256812778194630590:10918523099532294416",
+    "road_ids": [
+      1
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.231,
+    "wall_seconds": 12.074,
+    "case_id": "lead",
+    "trial_id": "32-lead-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "lead",
+    "seed": 32,
+    "policy": "camera",
+    "weather": "ClearNoon",
+    "road_id": 1,
+    "lane_id": -1,
+    "start_xy": [
+      325.63,
+      -2.01
+    ],
+    "outcome": "complete",
+    "frames": 224,
+    "duration_s": 22.4,
+    "progress_m": 63.59,
+    "route_length_m": 64.001,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.296,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 2.525,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:10256812778194630590:10918523099532294416",
+    "road_ids": [
+      1
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.072,
+    "wall_seconds": 15.142,
+    "case_id": "lead",
+    "trial_id": "32-lead-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "occluded",
+    "seed": 32,
+    "policy": "fusion",
+    "weather": "ClearNoon",
+    "road_id": 1,
+    "lane_id": -1,
+    "start_xy": [
+      325.63,
+      -2.01
+    ],
+    "outcome": "timeout",
+    "frames": 360,
+    "duration_s": 36.0,
+    "progress_m": 24.431,
+    "route_length_m": 64.001,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.296,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 3.78,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:10256812778194630590:10918523099532294416",
+    "road_ids": [
+      1
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.006,
+    "wall_seconds": 41.663,
+    "case_id": "occluded",
+    "trial_id": "32-occluded-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "occluded",
+    "seed": 32,
+    "policy": "camera",
+    "weather": "ClearNoon",
+    "road_id": 1,
+    "lane_id": -1,
+    "start_xy": [
+      325.63,
+      -2.01
+    ],
+    "outcome": "timeout",
+    "frames": 360,
+    "duration_s": 36.0,
+    "progress_m": 17.324,
+    "route_length_m": 64.001,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.296,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 10.886,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:10256812778194630590:10918523099532294416",
+    "road_ids": [
+      1
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.003,
+    "wall_seconds": 24.415,
+    "case_id": "occluded",
+    "trial_id": "32-occluded-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "signal",
+    "seed": 32,
+    "policy": "fusion",
+    "weather": "ClearNoon",
+    "road_id": 9,
+    "lane_id": -1,
+    "start_xy": [
+      117.99,
+      59.5
+    ],
+    "outcome": "complete",
+    "frames": 156,
+    "duration_s": 15.6,
+    "progress_m": 63.465,
+    "route_length_m": 64.0,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.296,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 2.397,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9579601715296541352:15862187983567996410",
+    "road_ids": [
+      9,
+      10
+    ],
+    "junction_ids": [
+      332
+    ],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.009,
+    "wall_seconds": 18.882,
+    "case_id": "signal",
+    "trial_id": "32-signal-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "signal",
+    "seed": 32,
+    "policy": "camera",
+    "weather": "ClearNoon",
+    "road_id": 9,
+    "lane_id": -1,
+    "start_xy": [
+      117.99,
+      59.5
+    ],
+    "outcome": "complete",
+    "frames": 216,
+    "duration_s": 21.6,
+    "progress_m": 63.44,
+    "route_length_m": 64.0,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.296,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 2.532,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9579601715296541352:15862187983567996410",
+    "road_ids": [
+      9,
+      10
+    ],
+    "junction_ids": [
+      332
+    ],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.004,
+    "wall_seconds": 28.21,
+    "case_id": "signal",
+    "trial_id": "32-signal-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "left",
+    "seed": 32,
+    "policy": "fusion",
+    "weather": "ClearNoon",
+    "road_id": 9,
+    "lane_id": -1,
+    "start_xy": [
+      117.99,
+      59.5
+    ],
+    "outcome": "complete",
+    "frames": 108,
+    "duration_s": 10.8,
+    "progress_m": 66.704,
+    "route_length_m": 67.13,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 1.158,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 0.0,
+    "moving_within_1m_frames": 46,
+    "turn_direction": "left",
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9579601715296541352:15339175434189585461",
+    "road_ids": [
+      9,
+      25
+    ],
+    "junction_ids": [
+      332
+    ],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 1,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 5.842,
+    "wall_seconds": 16.239,
+    "case_id": "left",
+    "trial_id": "32-left-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "left",
+    "seed": 32,
+    "policy": "camera",
+    "weather": "ClearNoon",
+    "road_id": 9,
+    "lane_id": -1,
+    "start_xy": [
+      117.99,
+      59.5
+    ],
+    "outcome": "lane_departure",
+    "frames": 121,
+    "duration_s": 12.1,
+    "progress_m": 40.525,
+    "route_length_m": 67.13,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 3.642,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 0.0,
+    "moving_within_1m_frames": 45,
+    "turn_direction": "left",
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:9579601715296541352:15339175434189585461",
+    "road_ids": [
+      9,
+      25
+    ],
+    "junction_ids": [
+      332
+    ],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 1,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 4.124,
+    "wall_seconds": 8.299,
+    "case_id": "left",
+    "trial_id": "32-left-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "turn",
+    "seed": 32,
+    "policy": "fusion",
+    "weather": "ClearNoon",
+    "road_id": 25,
+    "lane_id": -1,
+    "start_xy": [
+      154.06,
+      19.2
+    ],
+    "outcome": "complete",
+    "frames": 130,
+    "duration_s": 13.0,
+    "progress_m": 66.944,
+    "route_length_m": 67.136,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.348,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 60.0,
+    "moving_within_1m_frames": 0,
+    "turn_direction": "left",
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:8834664397181348591:4874392764628261434",
+    "road_ids": [
+      25,
+      10
+    ],
+    "junction_ids": [
+      332
+    ],
+    "event_triggered": false,
+    "event_cleared": false,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 0.059,
+    "wall_seconds": 8.814,
+    "case_id": "turn",
+    "trial_id": "32-turn-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "turn",
+    "seed": 32,
+    "policy": "camera",
+    "weather": "ClearNoon",
+    "road_id": 25,
+    "lane_id": -1,
+    "start_xy": [
+      154.06,
+      19.2
+    ],
+    "outcome": "complete",
+    "frames": 161,
+    "duration_s": 16.1,
+    "progress_m": 66.694,
+    "route_length_m": 67.136,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.296,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 60.0,
+    "moving_within_1m_frames": 0,
+    "turn_direction": "left",
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:8834664397181348591:4874392764628261434",
+    "road_ids": [
+      25,
+      10
+    ],
+    "junction_ids": [
+      332
+    ],
+    "event_triggered": false,
+    "event_cleared": false,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 0.059,
+    "wall_seconds": 10.966,
+    "case_id": "turn",
+    "trial_id": "32-turn-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "clear",
+    "seed": 32,
+    "policy": "fusion",
+    "weather": "ClearNoon",
+    "road_id": 1,
+    "lane_id": -1,
+    "start_xy": [
+      325.63,
+      -2.01
+    ],
+    "outcome": "complete",
+    "frames": 127,
+    "duration_s": 12.7,
+    "progress_m": 63.602,
+    "route_length_m": 64.001,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.296,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 60.0,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:10256812778194630590:10918523099532294416",
+    "road_ids": [
+      1
+    ],
+    "junction_ids": [],
+    "event_triggered": false,
+    "event_cleared": false,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 0.059,
+    "wall_seconds": 8.504,
+    "case_id": "clear",
+    "trial_id": "32-clear-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "clear",
+    "seed": 32,
+    "policy": "camera",
+    "weather": "ClearNoon",
+    "road_id": 1,
+    "lane_id": -1,
+    "start_xy": [
+      325.63,
+      -2.01
+    ],
+    "outcome": "complete",
+    "frames": 165,
+    "duration_s": 16.5,
+    "progress_m": 63.721,
+    "route_length_m": 64.001,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.296,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 60.0,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": null,
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:10256812778194630590:10918523099532294416",
+    "road_ids": [
+      1
+    ],
+    "junction_ids": [],
+    "event_triggered": false,
+    "event_cleared": false,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 0.059,
+    "wall_seconds": 10.894,
+    "case_id": "clear",
+    "trial_id": "32-clear-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "trip",
+    "seed": 32,
+    "policy": "fusion",
+    "weather": "ClearNoon",
+    "road_id": 16,
+    "lane_id": 1,
+    "start_xy": [
+      338.88,
+      36.79
+    ],
+    "outcome": "timeout",
+    "frames": 1000,
+    "duration_s": 100.0,
+    "progress_m": 36.697,
+    "route_length_m": 247.262,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 0.342,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 60.0,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": "station",
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 3,
+      "vehicles": 2
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:3295262048007518178:12667651780569733249",
+    "road_ids": [
+      16,
+      1,
+      25
+    ],
+    "junction_ids": [
+      26,
+      54
+    ],
+    "event_triggered": false,
+    "event_cleared": false,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 0.059,
+    "wall_seconds": 69.282,
+    "case_id": "trip",
+    "trial_id": "32-trip-fusion",
+    "cohort": "dev",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  {
+    "scenario": "trip",
+    "seed": 32,
+    "policy": "camera",
+    "weather": "ClearNoon",
+    "road_id": 16,
+    "lane_id": 1,
+    "start_xy": [
+      338.88,
+      36.79
+    ],
+    "outcome": "lane_departure",
+    "frames": 457,
+    "duration_s": 45.7,
+    "progress_m": 218.374,
+    "route_length_m": 247.262,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 3.888,
+    "spawn_lateral_m": 0.2962913016514537,
+    "spawn_yaw_deg": 3.467613087007334,
+    "min_hazard_gap_m": 0.986,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "train",
+    "destination": "station",
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 3,
+      "vehicles": 2
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "train:3295262048007518178:12667651780569733249",
+    "road_ids": [
+      16,
+      1,
+      25
+    ],
+    "junction_ids": [
+      26,
+      54
+    ],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.005,
+    "wall_seconds": 31.075,
+    "case_id": "trip",
+    "trial_id": "32-trip-camera",
+    "cohort": "dev",
+    "policy_version": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  }
+]

@@ -152,6 +152,7 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             route_lamps = None
             if lamp_expert is not None and not range_only:
                 from .lamp import RouteLamps
+                lamp_expert = lamp_expert.for_episode()
                 route_lamps = RouteLamps(world, scene.route)
         start = perf_counter()
         for step in range(max_steps):

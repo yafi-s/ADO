@@ -8,6 +8,7 @@ import hashlib
 import json
 from pathlib import Path
 import platform
+import subprocess
 import re
 import shutil
 
@@ -421,12 +422,24 @@ def evaluate(world, root, base, stage, seeds):
     source = {name: fingerprint(src / f"{name}.py") for name in
               ("drive", "world", "district", "policy", "sensors", "control", "vision", "signal_vision",
                "robotaxi", "thermal", "runtime", "viewio", "lamp", "tracking") if (src / f"{name}.py").is_file()}
-    version = identity(dict(fit=fit["fit_id"], scoring=source,
+    gate = None
+    gate_path = PROJECT / "data/signals/approach-gate.json"
+    if specialist and gate_path.is_file():
+        from .lamp import APPROACH_GATE_SHA256
+        if fingerprint(gate_path) != APPROACH_GATE_SHA256:
+            raise ValueError("Invalid learned approach gate")
+        gate = {"path":"data/signals/approach-gate.json", "sha256":APPROACH_GATE_SHA256}
+    version = identity(dict(fit=fit["fit_id"], scoring=source, signal_gate=gate,
                             protocol=[(asdict(t), t.settings, t.record) for t in schedule(stage)]))
     runs = base / stage / version
     results = root / "results" if stage == "evaluate" else root / "results/dev"
+    code_revision = subprocess.run(["git","rev-parse","HEAD"], cwd=PROJECT, capture_output=True,
+                                   text=True, check=False).stdout.strip() if (PROJECT / ".git").exists() else None
+    text_hashes = {name: hashlib.sha256((src/f"{name}.py").read_text(encoding="utf-8-sig").encode("utf-8")).hexdigest()
+                   for name in source}
     manifest = dict(**fit, simulator=f"CARLA {producer['server_version']}", map=producer["map"], dt_seconds=0.1,
-                    evaluation_producer=producer,
+                    evaluation_producer=producer, signal_gate=gate, scoring_revision=code_revision,
+                    normalized_source_sha256=text_hashes,
                     evaluation_id=version, source_sha256=source, python_version=platform.python_version(),
                     numpy_version=np.__version__, opencv_version=cv2.__version__, demonstration_seeds=fit["training_seeds"],
                     test_seeds=sorted({t.seed for t in trials}), training_encounters=TRAIN_KINDS,

@@ -1,11 +1,16 @@
 """Project mapped signal heads into RGB views and learn their color from labelled crops."""
 
+from collections import deque
 from dataclasses import dataclass
+import hashlib
+import json
+from pathlib import Path
 
 import numpy as np
 
 
 CAMERAS = ("front", "left", "right")
+APPROACH_GATE_SHA256 = "59683cd2f611ba51372adb948233dc746d8de703fbe2edafd3555d4952d30d0e"
 
 
 def head_vertices(signal):
@@ -190,6 +195,15 @@ class LampExpert:
         command = self.signed_pedal(observation, speed)
         return base_command[0], max(0., command), max(0., -command)
 
+    def for_episode(self):
+        """Start a new route with empty visual history and the pinned learned mixture."""
+        path = Path(__file__).resolve().parents[1] / "data/signals/approach-gate.json"
+        raw = path.read_text(encoding="utf-8").encode("utf-8")
+        if hashlib.sha256(raw).hexdigest() != APPROACH_GATE_SHA256:
+            raise ValueError(f"Signal approach gate differs from its validated fit at {path}")
+        record = json.loads(raw)
+        return ApproachMixture(self, record["weights"], record["median_frames"])
+
     def save(self, path):
         np.savez_compressed(path, **self.arrays())
 
@@ -214,3 +228,25 @@ class LampExpert:
     def load(cls, path):
         with np.load(path, allow_pickle=False) as data:
             return cls.from_arrays(data)
+
+
+class ApproachMixture:
+    """Blend base and local pedals using RGB history within one visible approach."""
+    def __init__(self, expert, weights, median_frames):
+        self.expert = expert
+        self.weights = weights
+        self.window = deque(maxlen=median_frames)
+        self.peak = 0.
+
+    def apply(self, observation, speed, base_command):
+        if observation is None:
+            self.window.clear()
+            self.peak = 0.
+            return base_command
+        self.window.append(self.expert.red_probability(observation[1]))
+        self.peak = max(self.peak, float(np.median(self.window)))
+        slope, bias = self.weights
+        weight = 1./(1.+np.exp(-(slope*self.peak+bias)))
+        base_pedal = base_command[1]-base_command[2]
+        pedal = weight*self.expert.signed_pedal(observation, speed) + (1.-weight)*base_pedal
+        return base_command[0], max(0., pedal), max(0., -pedal)
