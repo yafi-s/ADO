@@ -1,0 +1,144 @@
+{
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town01_Opt"
+  },
+  "rendering_disabled": true,
+  "subject": "Built-in demonstration driver and scenario events",
+  "trials": [
+    {
+      "scenario": "signal",
+      "seed": 11,
+      "route": "train:13960270649806365996:4322674710353496645",
+      "outcome": "complete",
+      "seconds": 16.7,
+      "progress_m": 63.65286671455206,
+      "event_triggered": true,
+      "event_cleared": true,
+      "minimum_gap_m": 2.6999193419959835,
+      "stopped_for_hazard": true,
+      "red_light_violations": 0,
+      "yield_violations": 0,
+      "ego_reported_controlling_signal_on_red": false,
+      "contacts": []
+    },
+    {
+      "scenario": "left",
+      "seed": 11,
+      "route": "train:5487626627414533056:658696410431433432",
+      "outcome": "complete",
+      "seconds": 19.3,
+      "progress_m": 66.999068677774,
+      "event_triggered": true,
+      "event_cleared": true,
+      "minimum_gap_m": 2.7333534476276276,
+      "stopped_for_hazard": true,
+      "red_light_violations": 0,
+      "yield_violations": 0,
+      "ego_reported_controlling_signal_on_red": null,
+      "contacts": []
+    },
+    {
+      "scenario": "occluded",
+      "seed": 11,
+      "route": "train:7436523921672522229:1862185562113845023",
+      "outcome": "complete",
+      "seconds": 18.0,
+      "progress_m": 63.60263221479321,
+      "event_triggered": true,
+      "event_cleared": true,
+      "minimum_gap_m": 1.8299567039883158,
+      "stopped_for_hazard": true,
+      "red_light_violations": 0,
+      "yield_violations": 0,
+      "ego_reported_controlling_signal_on_red": null,
+      "contacts": []
+    },
+    {
+      "scenario": "trip",
+      "seed": 11,
+      "route": "train:12830937343991442140:18313795912026913960",
+      "outcome": "lane_departure",
+      "seconds": 9.9,
+      "progress_m": 42.98737086861368,
+      "event_triggered": false,
+      "event_cleared": false,
+      "minimum_gap_m": 60.0,
+      "stopped_for_hazard": false,
+      "red_light_violations": 0,
+      "yield_violations": 0,
+      "ego_reported_controlling_signal_on_red": null,
+      "contacts": []
+    }
+  ],
+  "vehicle": {
+    "blueprint": "vehicle.lincoln.mkz",
+    "mass_kg": 1696.0,
+    "bounds_half_extents_m": [
+      2.4459850788116455,
+      0.9178230166435242,
+      0.7620594501495361
+    ],
+    "steering_curve": [
+      [
+        0.0,
+        1.0
+      ],
+      [
+        20.0,
+        0.8999999761581421
+      ],
+      [
+        60.0,
+        0.800000011920929
+      ],
+      [
+        120.0,
+        0.699999988079071
+      ]
+    ],
+    "wheels": [
+      {
+        "max_steer_deg": 70.0,
+        "location_raw": [
+          156.9659423828125,
+          35.62057113647461,
+          0.3675883710384369
+        ],
+        "radius_raw": 35.5,
+        "grip": 3.5
+      },
+      {
+        "max_steer_deg": 70.0,
+        "location_raw": [
+          158.5537109375,
+          35.492591857910156,
+          0.36773622035980225
+        ],
+        "radius_raw": 35.5,
+        "grip": 3.5
+      },
+      {
+        "max_steer_deg": 0.0,
+        "location_raw": [
+          157.19642639160156,
+          38.478599548339844,
+          0.36188068985939026
+        ],
+        "radius_raw": 35.5,
+        "grip": 3.5
+      },
+      {
+        "max_steer_deg": 0.0,
+        "location_raw": [
+          158.78408813476562,
+          38.35062789916992,
+          0.3620285391807556
+        ],
+        "radius_raw": 35.5,
+        "grip": 3.5
+      }
+    ]
+  }
+}
