@@ -704,6 +704,15 @@ function renderFrameFacts(frame) {
     opposing_traffic: 'Opposing traffic detected', vulnerable_road_user: 'Pedestrian or rider detected',
     occupied_corridor: 'Object within the forward corridor'
   };
+  let speedSelection = null;
+  if (hasProgress) {
+    const delta = frame.speed_request_mps - progress.base_request_mps;
+    if (Math.abs(delta) > .001) {
+      speedSelection = `${delta > 0 ? 'Raised' : 'Reduced'} from ${tenth.format(progress.base_request_mps * 3.6)} km/h`;
+    } else {
+      speedSelection = baseReasons[progress.binding] ?? 'Base request retained';
+    }
+  }
   const destination = state.options?.destinations?.find?.(item => item?.id === frame?.destination)?.label;
   const extras = {
     lateral: finite(lateral) ? `${hundredth.format(lateral)} m` : null,
@@ -711,9 +720,7 @@ function renderFrameFacts(frame) {
     redlight: finite(frame?.red_light_violations) ? whole.format(frame.red_light_violations) : null,
     yield: finite(frame?.yield_violations) ? whole.format(frame.yield_violations) : null,
     request: finite(frame?.speed_request_mps) ? `${tenth.format(frame.speed_request_mps*3.6)} km/h` : null,
-    progress: hasProgress ? (frame.speed_request_mps > progress.base_request_mps + .001
-      ? `Raised from ${tenth.format(progress.base_request_mps * 3.6)} km/h`
-      : baseReasons[progress.binding] ?? 'Base request retained') : null,
+    progress: speedSelection,
     sight: progress?.supported_scans >= 3 && finite(progress.sight_m) && progress.sight_m > 0
       ? `${tenth.format(progress.sight_m)} m` : null,
     limit: finite(frame?.posted_limit_kmh) && frame.posted_limit_kmh>0 ? `${whole.format(frame.posted_limit_kmh)} km/h` : null,
