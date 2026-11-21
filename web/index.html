@@ -3,22 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b0c0e">
-  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#090e16">
+  <meta name="color-scheme" content="dark light">
   <title>ADO — Autonomous Driver Omniverse</title>
   <meta name="description" content="Watch the ADO driver perceive and drive: the vehicle, its path and its tracked surroundings in 3D, beside the simulator camera footage.">
   <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAABj0lEQVR42u2WXUvCYBTHjzqdF166N3efOt+aI7sMCovo23QVRNBV3yaC6iNE0J0vtbktUSmn3aWROGizi+nDEBrDPd6EhzH+zxk7v+c5Z39YiGJSsM4Iw5pjA9gAUBwd7nf1mnOdn53iB+xWJKQrOxJ+gCSWkM4J6XicxAkgSVLIptGSIIhCXsAJKOSz0WgUAKZT08mUt4s4AeKi3PXN7TwjYgWURQS4m81mAFB2jQQLoAQApmnWG8/vfQMAaCrJ8xweQCrFMjQFAJretixbltWlvgUFoG7Iioru7r4FB8wLKS3NDZD8jSHs32KyogHAi9Ja2C1DkmRQgNtiLVUDAMMYfo5Gjt3yuUxQALLYYPgxHn85SVV9XRqPRxA+J8yxTFev/TWe1U/gXcLPl+r3BA+PT/2+4ehEInFyXAUAlqE5jh0MhisCeJ6jqaSjLy6vOp3e/J1IpHqwF4vFAEASi/eegLCf7X9PJr3eG8r/WJamt312yQsgZLYc0WzKtm27H9Ubz8gN3oDQ5tfx/wN+ARmcf45SOYksAAAAAElFTkSuQmCC">
   <link rel="preload" href="./fonts/BarlowCondensed-SemiBold.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="./fonts/Barlow-SemiBold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="./display.css">
   <link rel="stylesheet" href="./ado-home.css">
+  <script src="./display.js"></script>
   <script type="module" src="./ado-home.js"></script>
 </head>
 <body>
   <a class="skip" href="#brief">Skip to run details</a>
 
-  <div class="app" id="app" data-feed="inset" data-source="none">
+  <!-- One in-car screen: status bar, the perception view beside its cards, and the app dock. -->
+  <div class="display" id="app" data-feed="inset" data-source="none">
 
-    <header class="bar" id="bar">
+    <header class="statusbar" id="bar">
       <h1 class="brand"><a href="./" aria-label="ADO, Autonomous Driver Omniverse"><b>ADO</b><span>Autonomous Driver Omniverse</span></a></h1>
 
       <div class="source">
@@ -33,63 +36,76 @@
         </label>
       </div>
 
-      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="links">Menu</button>
-      <nav class="links" id="links" aria-label="ADO pages">
-        <a href="./benchmarks.html">Benchmarks</a>
-        <a href="./vehicle.html?model=ipace">Vehicle</a>
-        <a href="./city.html">Map</a>
-        <a href="./drive.html">Console</a>
+      <div class="status-end">
         <span class="build-group">
           <a class="build" id="build-link" href="./builds.html" aria-label="Builds and logs"><span id="build-kicker" hidden>Build</span><b id="build-name">Builds &amp; logs</b></a>
           <a class="build-zip" id="build-zip" download hidden>Download</a>
           <span class="build-note" id="build-note" hidden>Release pending</span>
         </span>
-      </nav>
+        <button class="icon-button display-toggle" id="display-toggle" type="button" aria-keyshortcuts="D">
+          <svg class="i-night" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.2A8 8 0 0 1 9.8 4a8 8 0 1 0 10.2 10.2z"/></svg>
+          <svg class="i-day" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg>
+        </button>
+        <time class="clock" id="display-clock"></time>
+      </div>
     </header>
 
-    <!-- The 3D perception scene fills this region. Everything else floats over it. -->
-    <main class="view" id="view" aria-label="Perception view">
-      <div class="viewport">
-        <canvas id="scene" tabindex="0"
-          aria-label="3D view of the vehicle, its path, tracked objects and sensor returns. Drag to orbit and scroll to zoom.">
-          The 3D perception view needs a browser with WebGL.
-        </canvas>
-      </div>
-      <div class="scrim" aria-hidden="true"></div>
+    <div class="surface">
+      <!-- The 3D perception scene fills this region. The instruments float over it. -->
+      <main class="view" id="view" aria-label="Perception view">
+        <div class="viewport">
+          <canvas id="scene" tabindex="0"
+            aria-label="3D view of the vehicle, its path, tracked objects and sensor returns. Drag to orbit and scroll to zoom.">
+            The 3D perception view needs a browser with WebGL.
+          </canvas>
+        </div>
+        <div class="scrim" aria-hidden="true"></div>
 
-      <div class="notices" aria-live="polite">
-        <p id="note-scene" hidden></p>
-        <p id="note-map" hidden></p>
-        <p id="note-data" hidden></p>
-        <p id="idle-hint" hidden>Simulator idle. <a id="idle-link" href="./drive.html">Start a drive</a></p>
-      </div>
+        <div class="hud" id="cluster" data-state="idle">
+          <section class="speedo" aria-label="Speed and controls">
+            <p class="speed"><span class="num" id="speed">—</span><abbr class="unit" title="kilometres per hour">km/h</abbr></p>
+            <div class="inputs" id="inputs" hidden>
+              <div class="gauge" data-kind="steer">
+                <span class="k">Steer</span>
+                <span class="meter" id="steer-meter" aria-hidden="true"><i></i><b></b></span>
+                <span class="v" id="steer">—</span>
+              </div>
+              <div class="gauge" data-kind="throttle">
+                <span class="k">Throttle</span>
+                <span class="meter" id="throttle-meter" aria-hidden="true"><i></i></span>
+                <span class="v" id="throttle">—</span>
+              </div>
+              <div class="gauge" data-kind="brake">
+                <span class="k">Brake</span>
+                <span class="meter" id="brake-meter" aria-hidden="true"><i></i></span>
+                <span class="v" id="brake">—</span>
+              </div>
+            </div>
+          </section>
 
-      <div class="hud">
-        <section class="cluster" id="cluster" data-state="idle" aria-label="Driving now">
-          <p class="activity" id="activity">Standing by</p>
-          <p class="context" id="context" hidden></p>
-          <p class="ahead" id="ahead" hidden></p>
-          <p class="speed"><span class="num" id="speed">—</span><abbr class="unit" title="kilometres per hour">km/h</abbr></p>
-          <div class="inputs" id="inputs" hidden>
-            <div class="gauge" data-kind="steer">
-              <span class="k">Steer</span>
-              <span class="meter" id="steer-meter" aria-hidden="true"><i></i><b></b></span>
-              <span class="v" id="steer">—</span>
+          <div class="trip" id="route" hidden>
+            <div class="route-head">
+              <span class="k">Route</span>
+              <span class="v"><b id="progress">—</b> / <span id="route-total">—</span> m</span>
+              <span class="dest" id="route-dest" hidden></span>
+              <span class="pct" id="route-pct"></span>
             </div>
-            <div class="gauge" data-kind="throttle">
-              <span class="k">Throttle</span>
-              <span class="meter" id="throttle-meter" aria-hidden="true"><i></i></span>
-              <span class="v" id="throttle">—</span>
-            </div>
-            <div class="gauge" data-kind="brake">
-              <span class="k">Brake</span>
-              <span class="meter" id="brake-meter" aria-hidden="true"><i></i></span>
-              <span class="v" id="brake">—</span>
-            </div>
+            <div class="rail" id="rail" role="progressbar" aria-label="Route progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i><b></b></div>
           </div>
-        </section>
 
-        <div class="deck">
+          <div class="notices" aria-live="polite">
+            <p id="note-scene" hidden></p>
+            <p id="note-map" hidden></p>
+            <p id="note-data" hidden></p>
+            <p id="idle-hint" hidden>Simulator idle. <a id="idle-link" href="./drive.html">Start a drive</a></p>
+          </div>
+
+          <section class="now" aria-label="Driving now">
+            <p class="activity" id="activity">Standing by</p>
+            <p class="context" id="context" hidden></p>
+            <p class="ahead" id="ahead" hidden></p>
+          </section>
+
           <div class="tools" role="toolbar" aria-label="Scene view">
             <div class="seg" role="group" aria-label="Camera position">
               <button type="button" data-view="follow" aria-pressed="true" aria-keyshortcuts="F" title="Follow the vehicle (F)">Follow</button>
@@ -102,106 +118,111 @@
             </div>
             <a class="chip more-link" href="#brief" title="Run details">Details</a>
           </div>
+        </div>
+      </main>
 
-          <div class="route" id="route" hidden>
-            <div class="route-head">
-              <span class="k">Route</span>
-              <span class="v"><b id="progress">—</b> / <span id="route-total">—</span> m</span>
-              <span class="dest" id="route-dest" hidden></span>
-              <span class="pct" id="route-pct"></span>
+      <aside class="side" id="side" aria-label="Footage and run details">
+        <section class="feed" id="feed" aria-label="Simulator camera footage">
+          <div class="feed-frame">
+            <video id="film" muted playsinline preload="auto" hidden></video>
+            <img id="still" alt="" hidden>
+            <p class="feed-note" id="feed-note" role="status">Waiting for footage…</p>
+            <span class="feed-tag" id="feed-tag" hidden></span>
+          </div>
+          <div class="feed-bar">
+            <div class="seg seg-small" id="cam-switch" role="group" aria-label="Camera" hidden>
+              <button type="button" data-camera="front" aria-pressed="true">Front</button>
+              <button type="button" data-camera="chase" aria-pressed="false">Chase</button>
             </div>
-            <div class="rail" id="rail" role="progressbar" aria-label="Route progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i><b></b></div>
-          </div>
-
-          <div class="transport" id="transport" role="group" aria-label="Playback" hidden>
-            <button class="round" id="play" type="button" aria-label="Play" aria-keyshortcuts="K" data-playing="false" disabled>
-              <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.2v13.6L19.2 12z"/></svg>
-              <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z"/></svg>
+            <span class="feed-caption" id="feed-caption">CARLA camera</span>
+            <button class="icon-btn" id="feed-size" type="button" aria-expanded="false" aria-controls="feed" aria-keyshortcuts="C" title="Expand footage (C)">
+              <svg class="i-expand" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>
+              <svg class="i-collapse" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 11h-6V5M5 13h6v6M13 11l7-7M11 13l-7 7"/></svg>
+              <span class="sr" id="feed-size-label">Expand footage</span>
             </button>
-            <span class="time" id="clock">0:00</span>
-            <input class="seek" id="seek" type="range" min="0" max="1" step="0.01" value="0" aria-label="Playback position" disabled>
-            <span class="time" id="end">–:––</span>
           </div>
-
-          <p class="live-strip" id="live-strip" hidden>
-            <span class="live-dot" aria-hidden="true"></span>
-            <span>Sim time <b id="live-clock">–:––</b></span>
-            <span>Frame <b id="live-frame">—</b></span>
-          </p>
-        </div>
-      </div>
-    </main>
-
-    <aside class="side" id="side" aria-label="Footage and run details">
-      <section class="feed" id="feed" aria-label="Simulator camera footage">
-        <div class="feed-frame">
-          <video id="film" muted playsinline preload="auto" hidden></video>
-          <img id="still" alt="" hidden>
-          <p class="feed-note" id="feed-note" role="status">Waiting for footage…</p>
-          <span class="feed-tag" id="feed-tag" hidden></span>
-        </div>
-        <div class="feed-bar">
-          <div class="seg seg-small" id="cam-switch" role="group" aria-label="Camera" hidden>
-            <button type="button" data-camera="front" aria-pressed="true">Front</button>
-            <button type="button" data-camera="chase" aria-pressed="false">Chase</button>
-          </div>
-          <span class="feed-caption" id="feed-caption">CARLA camera</span>
-          <button class="icon-btn" id="feed-size" type="button" aria-expanded="false" aria-controls="feed" aria-keyshortcuts="C" title="Expand footage (C)">
-            <svg class="i-expand" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>
-            <svg class="i-collapse" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 11h-6V5M5 13h6v6M13 11l7-7M11 13l-7 7"/></svg>
-            <span class="sr" id="feed-size-label">Expand footage</span>
-          </button>
-        </div>
-      </section>
-
-      <div class="brief" id="brief" tabindex="-1">
-        <section class="block" id="sensing" aria-labelledby="sensing-h" hidden>
-          <h2 class="label" id="sensing-h">Tracked <span id="track-count"></span></h2>
-          <ul class="tracks" id="tracks"></ul>
-          <p class="quiet" id="tracks-empty" hidden></p>
-          <p class="returns" id="returns-line" hidden>
-            <span>LiDAR <b id="lidar-count">—</b></span>
-            <span>Radar <b id="radar-count">—</b></span>
-            <span class="quiet">returns</span>
-          </p>
         </section>
 
-        <section class="block" id="run-block" aria-labelledby="run-title" hidden>
-          <h2 class="run-title" id="run-title"></h2>
-          <p class="run-id" id="run-id" hidden></p>
-          <dl class="facts">
-            <div id="row-model" hidden><dt>Model</dt><dd id="fact-model"></dd></div>
-            <div id="row-checkpoint" hidden><dt>Checkpoint</dt><dd><a id="fact-checkpoint-link" hidden></a><code id="fact-checkpoint" hidden></code></dd></div>
-            <div id="row-scenario" hidden><dt>Scenario</dt><dd id="fact-scenario"></dd></div>
-            <div id="row-seed" hidden><dt>Seed</dt><dd id="fact-seed"></dd></div>
-            <div id="row-weather" hidden><dt>Weather</dt><dd id="fact-weather"></dd></div>
-            <div id="row-outcome" hidden><dt>Outcome</dt><dd id="fact-outcome"></dd></div>
-            <div id="row-simulator" hidden><dt>Simulator</dt><dd id="fact-simulator"></dd></div>
-            <div id="row-revision" hidden><dt>Source</dt><dd><a id="fact-revision-link" hidden></a><code id="fact-revision" hidden></code></dd></div>
-          </dl>
-          <details class="more" id="more" hidden>
-            <summary>Telemetry</summary>
+        <div class="brief" id="brief" tabindex="-1">
+          <section class="block card" id="sensing" aria-labelledby="sensing-h" hidden>
+            <h2 class="label" id="sensing-h">Tracked <span id="track-count"></span></h2>
+            <ul class="tracks" id="tracks"></ul>
+            <p class="quiet" id="tracks-empty" hidden></p>
+            <p class="returns" id="returns-line" hidden>
+              <span>LiDAR <b id="lidar-count">—</b></span>
+              <span>Radar <b id="radar-count">—</b></span>
+              <span class="quiet">returns</span>
+            </p>
+          </section>
+
+          <section class="block card" id="run-block" aria-labelledby="run-title" hidden>
+            <h2 class="run-title" id="run-title"></h2>
+            <p class="run-id" id="run-id" hidden></p>
             <dl class="facts">
-              <div id="row-lateral" hidden><dt>Lateral error</dt><dd id="fact-lateral"></dd></div>
-              <div id="row-collisions" hidden><dt>Collisions</dt><dd id="fact-collisions"></dd></div>
-              <div id="row-redlight" hidden><dt>Red-light violations</dt><dd id="fact-redlight"></dd></div>
-              <div id="row-yield" hidden><dt>Yield violations</dt><dd id="fact-yield"></dd></div>
-              <div id="row-grip" hidden><dt>Wheel grip</dt><dd id="fact-grip"></dd></div>
-              <div id="row-delay" hidden><dt>Crossing delay</dt><dd id="fact-delay"></dd></div>
-              <div id="row-destination" hidden><dt>Destination</dt><dd id="fact-destination"></dd></div>
-              <div id="row-frame" hidden><dt>Frame</dt><dd id="fact-frame"></dd></div>
-              <div id="row-simtime" hidden><dt>Sim time</dt><dd id="fact-simtime"></dd></div>
+              <div id="row-model" hidden><dt>Model</dt><dd id="fact-model"></dd></div>
+              <div id="row-checkpoint" hidden><dt>Checkpoint</dt><dd><a id="fact-checkpoint-link" hidden></a><code id="fact-checkpoint" hidden></code></dd></div>
+              <div id="row-scenario" hidden><dt>Scenario</dt><dd id="fact-scenario"></dd></div>
+              <div id="row-seed" hidden><dt>Seed</dt><dd id="fact-seed"></dd></div>
+              <div id="row-weather" hidden><dt>Weather</dt><dd id="fact-weather"></dd></div>
+              <div id="row-outcome" hidden><dt>Outcome</dt><dd id="fact-outcome"></dd></div>
+              <div id="row-simulator" hidden><dt>Simulator</dt><dd id="fact-simulator"></dd></div>
+              <div id="row-revision" hidden><dt>Source</dt><dd><a id="fact-revision-link" hidden></a><code id="fact-revision" hidden></code></dd></div>
             </dl>
-          </details>
-          <p class="run-links">
-            <a id="link-log" hidden>Run log</a>
-            <a id="link-replay" hidden>Telemetry</a>
-            <a id="link-mp4" download hidden>MP4</a>
-            <a href="./builds.html">Builds &amp; logs</a>
-          </p>
-        </section>
+            <details class="more" id="more" hidden>
+              <summary>Telemetry</summary>
+              <dl class="facts">
+                <div id="row-lateral" hidden><dt>Lateral error</dt><dd id="fact-lateral"></dd></div>
+                <div id="row-collisions" hidden><dt>Collisions</dt><dd id="fact-collisions"></dd></div>
+                <div id="row-redlight" hidden><dt>Red-light violations</dt><dd id="fact-redlight"></dd></div>
+                <div id="row-yield" hidden><dt>Yield violations</dt><dd id="fact-yield"></dd></div>
+                <div id="row-grip" hidden><dt>Wheel grip</dt><dd id="fact-grip"></dd></div>
+                <div id="row-delay" hidden><dt>Crossing delay</dt><dd id="fact-delay"></dd></div>
+                <div id="row-destination" hidden><dt>Destination</dt><dd id="fact-destination"></dd></div>
+                <div id="row-frame" hidden><dt>Frame</dt><dd id="fact-frame"></dd></div>
+                <div id="row-simtime" hidden><dt>Sim time</dt><dd id="fact-simtime"></dd></div>
+              </dl>
+            </details>
+            <p class="run-links">
+              <a id="link-log" hidden>Run log</a>
+              <a id="link-replay" hidden>Telemetry</a>
+              <a id="link-mp4" download hidden>MP4</a>
+              <a href="./builds.html">Builds &amp; logs</a>
+            </p>
+          </section>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="dockbar">
+      <nav class="dock" id="links" aria-label="ADO pages">
+        <a data-app="drive" href="./" aria-current="page">Drive</a>
+        <a data-app="console" href="./drive.html">Console</a>
+        <a data-app="map" href="./city.html">Map</a>
+        <a data-app="vehicle" href="./vehicle.html?model=ipace">Vehicle</a>
+        <a data-app="results" href="./benchmarks.html">Results</a>
+        <a data-app="builds" href="./builds.html">Builds</a>
+      </nav>
+      <!-- The dock always shows every page, so the page script's menu toggle has nothing to open. -->
+      <button id="menu-btn" type="button" aria-expanded="false" aria-controls="links" hidden>Menu</button>
+
+      <div class="media">
+        <div class="transport" id="transport" role="group" aria-label="Playback" hidden>
+          <button class="round" id="play" type="button" aria-label="Play" aria-keyshortcuts="K" data-playing="false" disabled>
+            <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.2v13.6L19.2 12z"/></svg>
+            <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z"/></svg>
+          </button>
+          <span class="time" id="clock">0:00</span>
+          <input class="seek" id="seek" type="range" min="0" max="1" step="0.01" value="0" aria-label="Playback position" disabled>
+          <span class="time" id="end">–:––</span>
+        </div>
+
+        <p class="live-strip" id="live-strip" hidden>
+          <span class="live-dot" aria-hidden="true"></span>
+          <span>Sim time <b id="live-clock">–:––</b></span>
+          <span>Frame <b id="live-frame">—</b></span>
+        </p>
       </div>
-    </aside>
+    </footer>
   </div>
 
   <noscript><p class="noscript">ADO needs JavaScript to play drives. The build archive is at <a href="./builds.html">Builds &amp; logs</a>.</p></noscript>

@@ -26,6 +26,35 @@ function release(root) {
   root?.removeFromParent();
 }
 
+// Two display palettes. Night keeps the original values; day is a light studio
+// with clay-grey road users. Linear RGB triples feed the shaders directly, hex
+// strings are sRGB. Only colour changes between them, never what is drawn.
+const PALETTES = {
+  night: {
+    sky:'#192633', floorFar:[.013,.024,.035], floorNear:[.025,.042,.054], grid:[.012,.024,.024],
+    roadEdge:[.041,.058,.077], roadMid:[.052,.073,.092], marking:[.32,.43,.49], curb:'#3d4d58',
+    pathFar:[.028,.38,.42], pathNear:[.24,.84,.76],
+    wallDark:[.023,.037,.052], wallLit:[.066,.092,.112], wallEdge:[.014,.029,.037],
+    shadow:'#061012', shadowOpacity:.57, lidar:'#8cced2', radar:'#e6b979',
+    vehicle:'#9caefa', rider:'#e3bc83', person:'#ff9d9b', unknown:'#9cafbf',
+    glass:'#485a8c', lamp:'#cdd6ff', tail:'#c0a7c6', tyre:'#28364c', glow:.14, exposure:1.04
+  },
+  day: {
+    sky:'#eceef2', floorFar:'#e2e5ea', floorNear:'#e7eaee', grid:[-.05,-.047,-.042],
+    roadEdge:'#f3f4f7', roadMid:'#f9fafb', marking:'#9aa3b1', curb:'#cfd4dc',
+    pathFar:'#7fa8f5', pathNear:'#1f5fe8',
+    wallDark:'#cdd2da', wallLit:'#e9ecf0', wallEdge:[-.035,-.033,-.03],
+    shadow:'#1d2633', shadowOpacity:.34, lidar:'#5578b4', radar:'#d9641a',
+    vehicle:'#9fa6b2', rider:'#e08a3c', person:'#e2702a', unknown:'#a7adb8',
+    glass:'#7f8896', lamp:'#f4f5f7', tail:'#d99a8e', tyre:'#596170', glow:0, exposure:1.0
+  }
+};
+const TONES = ['sky','floorFar','floorNear','grid','roadEdge','roadMid','marking','curb','pathFar','pathNear',
+  'wallDark','wallLit','wallEdge','shadow','lidar','radar'];
+const TRACK_TONE = {car:'vehicle', bus:'vehicle', truck:'vehicle', motorcycle:'rider', bicycle:'rider', person:'person', unknown:'unknown'};
+const displayMode = () => document.documentElement.dataset.display === 'day' ? 'day' : 'night';
+const tone = (target, value) => Array.isArray(value) ? target.setRGB(...value) : target.set(value);
+
 const worldVertex = `
 varying vec3 vWorld;
 void main(){
@@ -39,19 +68,20 @@ vec3 aerial(vec3 color, vec3 p) {
   float dist = distance(cameraPosition, p);
   return mix(color, uSky, smoothstep(48., 210., dist)*.96);
 }`;
-function floorMaterial(sky) {
+function floorMaterial(tones) {
   return new T.ShaderMaterial({
-    uniforms:{uSky:{value:sky}, uEgo:{value:V()}}, vertexShader:worldVertex,
+    uniforms:{uSky:{value:tones.sky}, uEgo:{value:V()}, uFar:{value:tones.floorFar}, uNear:{value:tones.floorNear},
+      uGrid:{value:tones.grid}}, vertexShader:worldVertex,
     fragmentShader:`
-      uniform vec3 uSky,uEgo; varying vec3 vWorld;
+      uniform vec3 uSky,uEgo,uFar,uNear,uGrid; varying vec3 vWorld;
       ${haze}
       void main(){
         vec2 g = vWorld.xz / 5.;
         vec2 dd = abs(fract(g + .5) - .5) / max(fwidth(g),vec2(.0001));
         float line = 1.-smoothstep(0.,1.,min(dd.x,dd.y));
         float proximity = 1.-smoothstep(9.,78.,distance(vWorld.xz,uEgo.xz));
-        vec3 base = mix(vec3(.013,.024,.035),vec3(.025,.042,.054), proximity);
-        base += vec3(.012,.024,.024)*line*proximity;
+        vec3 base = mix(uFar,uNear, proximity);
+        base += uGrid*line*proximity;
         gl_FragColor = vec4(aerial(base,vWorld),1.);${endColor}
       }`
   });
@@ -107,10 +137,11 @@ void main(){
   vec4 p=modelMatrix*vec4(position,1.); vWorld=p.xyz;
   gl_Position=projectionMatrix*viewMatrix*p;
 }`;
-function streetMaterial(sky) {
+function streetMaterial(tones) {
   return new T.ShaderMaterial({
-    uniforms:{uSky:{value:sky}},side:T.DoubleSide,vertexShader:ribbonVertex,
-    fragmentShader:`uniform vec3 uSky; varying vec2 vLane; varying vec3 vWorld; varying float vInner;
+    uniforms:{uSky:{value:tones.sky}, uEdge:{value:tones.roadEdge}, uMid:{value:tones.roadMid}, uMark:{value:tones.marking}},
+    side:T.DoubleSide,vertexShader:ribbonVertex,
+    fragmentShader:`uniform vec3 uSky,uEdge,uMid,uMark; varying vec2 vLane; varying vec3 vWorld; varying float vInner;
       ${haze}
       void main(){
         float a=abs(vLane.x), aa=min(.12,fwidth(a)*.7+.001);
@@ -118,17 +149,17 @@ function streetMaterial(sky) {
         float d=mod(vLane.y,7.);
         float dash=smoothstep(.05,.25,d)*(1.-smoothstep(2.65,2.85,d));
         float marking=mix(.52,dash,step(.58,vInner))*lane;
-        vec3 base=mix(vec3(.041,.058,.077),vec3(.052,.073,.092),1.-a);
-        vec3 color=mix(base,vec3(.32,.43,.49),marking*.85);
+        vec3 base=mix(uEdge,uMid,1.-a);
+        vec3 color=mix(base,uMark,marking*.85);
         gl_FragColor=vec4(aerial(color,vWorld),1.);${endColor}
       }`
   });
 }
-function pathMaterial(sky) {
+function pathMaterial(tones) {
   return new T.ShaderMaterial({
-    uniforms:{uSky:{value:sky},uStation:{value:0},uOverview:{value:0}},
+    uniforms:{uSky:{value:tones.sky},uStation:{value:0},uOverview:{value:0},uFar:{value:tones.pathFar},uNear:{value:tones.pathNear}},
     transparent:true,side:T.DoubleSide,depthWrite:false,vertexShader:ribbonVertex,
-    fragmentShader:`uniform vec3 uSky; uniform float uStation,uOverview;
+    fragmentShader:`uniform vec3 uSky,uFar,uNear; uniform float uStation,uOverview;
       varying vec2 vLane; varying vec3 vWorld;
       ${haze}
       void main() {
@@ -143,20 +174,21 @@ function pathMaterial(sky) {
         float ahead=smoothstep(-4.,-.4,along)*(1.-smoothstep(65.,108.,along));
         float energy=mix(ahead*(.18+.82*nearEgo),.32+.68*exp(-abs(along)/42.),uOverview);
         float opacity=energy*mask*(.52+.29*edge+.17*chevron);
-        vec3 color=mix(vec3(.028,.38,.42),vec3(.24,.84,.76),.17*nearEgo+max(edge,chevron)*.81);
+        vec3 color=mix(uFar,uNear,.17*nearEgo+max(edge,chevron)*.81);
         gl_FragColor=vec4(aerial(color,vWorld),opacity);${endColor}
       }`
   });
 }
-function architecture(boxes, sky, egoPosition) {
+function architecture(boxes, tones, egoPosition) {
   const material=new T.ShaderMaterial({
-    uniforms:{uSky:{value:sky},uEgo:{value:egoPosition},uOverview:{value:0}},
+    uniforms:{uSky:{value:tones.sky},uEgo:{value:egoPosition},uOverview:{value:0},
+      uDark:{value:tones.wallDark},uLit:{value:tones.wallLit},uRim:{value:tones.wallEdge}},
     transparent:true,
     vertexShader:`varying vec3 vWorld,vLocal,vNormal;
       void main(){ vLocal=position;vec4 p=instanceMatrix*vec4(position,1.);
         vNormal=normalize(mat3(instanceMatrix)*normal);
         vWorld=p.xyz; gl_Position=projectionMatrix*viewMatrix*p; }`,
-    fragmentShader:`uniform vec3 uSky,uEgo; uniform float uOverview; varying vec3 vWorld,vLocal,vNormal;
+    fragmentShader:`uniform vec3 uSky,uEgo,uDark,uLit,uRim; uniform float uOverview; varying vec3 vWorld,vLocal,vNormal;
       ${haze}
       void main(){
         vec3 ax=abs(vLocal);
@@ -165,7 +197,7 @@ function architecture(boxes, sky, egoPosition) {
         float e=vNormal.y>.6?sideEdge:min(.5-ax.y,sideDist);
         float edge=1.-smoothstep(.001, .007+fwidth(e),e);
         float light=clamp(.4+dot(vNormal,normalize(vec3(-.4,1.,-.25)))*.5,0.,1.);
-        vec3 c=mix(vec3(.023,.037,.052),vec3(.066,.092,.112),light)+edge*vec3(.014,.029,.037);
+        vec3 c=mix(uDark,uLit,light)+edge*uRim;
         float fade=mix(smoothstep(8.,20.,distance(vWorld.xz,uEgo.xz)),1.,uOverview);
         if(fade<.015) discard;
         gl_FragColor=vec4(aerial(c,vWorld),fade);${endColor}
@@ -183,13 +215,13 @@ function architecture(boxes, sky, egoPosition) {
 
 function projectedPatch(color, solid = false) {
   return new T.ShaderMaterial({
-    uniforms:{uColor:{value:C(color)},uPulse:{value:0},uFresh:{value:1}},
+    uniforms:{uColor:{value:color?.isColor?color:C(color)},uPulse:{value:0},uFresh:{value:1},uStrength:{value:.57}},
     transparent:true, depthWrite:false,side:T.DoubleSide,
     vertexShader:`varying vec2 vUv;void main(){vUv=uv*2.-1.;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-    fragmentShader:`uniform vec3 uColor;uniform float uPulse,uFresh;varying vec2 vUv;
+    fragmentShader:`uniform vec3 uColor;uniform float uPulse,uFresh,uStrength;varying vec2 vUv;
       void main() {
         float d=length(vUv);
-        ${solid ? 'float opacity=(1.-smoothstep(.38,1.,d))*.57;' : `
+        ${solid ? 'float opacity=(1.-smoothstep(.38,1.,d))*uStrength;' : `
           float border=abs(length(max(abs(vUv)-vec2(.50,.34),0.))-.22);
           float footprint=(1.-smoothstep(.013,.036+fwidth(border),border))*.54;
           float ring=(1.-smoothstep(.015,.045,abs(d-(.65+.32*uPulse))))*(1.-uPulse)*step(.00001,uPulse);
@@ -220,21 +252,17 @@ function shapedCabin() {
   geo.computeVertexNormals();
   return geo;
 }
-const colors = {
-  car:0x9caefa, bus:0x9caefa, truck:0x9caefa, motorcycle:0xe3bc83,
-  bicycle:0xe3bc83, person:0xff9d9b, unknown:0x9cafbf
-};
 function segment(parent,start,end,radius,mat) {
   const a=V(...start),b=V(...end),delta=b.clone().sub(a);
   const m=add(parent,new T.CylinderGeometry(radius,radius*.85,delta.length(),8),mat);
   m.position.copy(a).add(b).multiplyScalar(.5);
   m.quaternion.setFromUnitVectors(V(0,1,0),delta.normalize());
 }
-function form(label) {
-  const root=new T.Group(),color=colors[label]||colors.unknown;
-  const body=paint(color,{roughness:.4,emissive:color,emissiveIntensity:.14});
-  const glass=paint(0x485a8c,{metalness:.32,roughness:.31,side:T.DoubleSide});
-  const light=ink(0xcdd6ff), dark=paint(0x28364c);
+function form(label, look) {
+  const root=new T.Group(),color=look[TRACK_TONE[label]];
+  const body=paint(color,{roughness:.4,emissive:color,emissiveIntensity:look.glow});
+  const glass=paint(look.glass,{metalness:.32,roughness:.31,side:T.DoubleSide});
+  const light=ink(look.lamp), dark=paint(look.tyre);
   const rounded=(w,h,d,r,mat,x,y,z)=>add(root,new T.RoundedBoxGeometry(w,h,d,2,r),mat,x,y,z);
   if(label==='person') {
     // Symbolic pedestrian, mapped to the estimated track envelope.
@@ -275,17 +303,17 @@ function form(label) {
     }
     for(const sign of [-1,1]){
       rounded(.018,.045,.17,.008,light,.492,.414,sign*.305);
-      rounded(.018,.045,.15,.007,ink(0xc0a7c6),-.491,.412,sign*.32);
+      rounded(.018,.045,.15,.007,ink(look.tail),-.491,.412,sign*.32);
     }
   } else rounded(.97,.97,.97,.075,body,0,.5,0);
   return root;
 }
 
-function cloud(radar) {
+function cloud(radar, color) {
   const geometry=new T.BufferGeometry();
   const material=new T.ShaderMaterial({
     transparent:true,depthWrite:false,
-    uniforms:{uPixel:{value:1},uColor:{value:C(radar?0xe6b979:0x8cced2)}},
+    uniforms:{uPixel:{value:1},uColor:{value:color}},
     vertexShader:`uniform float uPixel;void main(){
       vec4 view=modelViewMatrix*vec4(position,1.);
       gl_Position=projectionMatrix*view;
@@ -379,8 +407,8 @@ export class PerceptionScene {
     this.renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'low-power'});
     this.renderer.toneMapping=T.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure=1.04;
-    const custom=getComputedStyle(canvas).getPropertyValue('--perception-sky').trim();
-    this.sky=C(custom||'#192633');
+    this.tones=Object.fromEntries(TONES.map(name=>[name,new T.Color()]));
+    this.sky=this.tones.sky;
     this.scene=new T.Scene();
     this.scene.background=this.sky;
     this.scene.fog=new T.Fog(this.sky,48,210);
@@ -396,13 +424,13 @@ export class PerceptionScene {
     const key=new T.DirectionalLight(0xfff5dd,2.15);
     key.position.set(-20,40,-22);this.scene.add(key);
     const rim=new T.DirectionalLight(0xacd7ed,1.05);rim.position.set(17,14,20);this.scene.add(rim);
-    this.floor=add(this.scene,new T.PlaneGeometry(6000,6000),floorMaterial(this.sky));
+    this.floor=add(this.scene,new T.PlaneGeometry(6000,6000),floorMaterial(this.tones));
     this.floor.rotation.x=-Math.PI/2;
     this.floor.position.y=-.10;
     this.ego.visible=false;
-    this.shadow=patch(this.ego,5.58,2.75,projectedPatch(0x061012,true),.029);
+    this.shadow=patch(this.ego,5.58,2.75,projectedPatch(this.tones.shadow,true),.029);
     this.returnGroup=new T.Group();this.ego.add(this.returnGroup);
-    this.lidar=cloud(false);this.radar=cloud(true);this.returnGroup.add(this.lidar,this.radar);
+    this.lidar=cloud(false,this.tones.lidar);this.radar=cloud(true,this.tones.radar);this.returnGroup.add(this.lidar,this.radar);
     this.trackGroup=new T.Group();this.scene.add(this.trackGroup);
     this.layers={returns:true,tracks:true,path:true};
     this.tracks=new Map();this.templates=new Map();
@@ -413,6 +441,8 @@ export class PerceptionScene {
     this.orbit=0;this.pitch=0;this.zoom=1;this.dirty=true;
     this.bindings=new AbortController();
     const opts={signal:this.bindings.signal};
+    this.setPalette(displayMode());
+    addEventListener('ado:display',()=>this.setPalette(displayMode()),opts);
     let drag=null;
     canvas.addEventListener('pointerdown',e=>{
       if(e.button!==0||!e.isPrimary)return;
@@ -447,6 +477,27 @@ export class PerceptionScene {
     this.raf=requestAnimationFrame(this.animate);
   }
 
+  // Recolour the scene for the night or day display. Geometry, tracks and rules stay as they are.
+  setPalette(name) {
+    if(this.disposed)return;
+    const look=PALETTES[name]||PALETTES.night;
+    if(look===this.look)return;
+    this.look=look;
+    for(const key of TONES)tone(this.tones[key],look[key]);
+    const custom=name==='night'&&getComputedStyle(this.canvas).getPropertyValue('--perception-sky').trim();
+    if(custom)this.sky.set(custom);
+    this.scene.fog.color.copy(this.sky);
+    this.curbs?.color.copy(this.tones.curb);
+    this.renderer.toneMappingExposure=look.exposure;
+    this.shadow.material.uniforms.uStrength.value=look.shadowOpacity;
+    // Track shapes carry their own materials, so rebuild them from the current frame.
+    for(const template of this.templates.values())release(template);
+    this.templates.clear();
+    const frame=this.frame;
+    if(frame){this.clearTracks();this.frame=null;this.update(frame);}
+    this.dirty=true;
+  }
+
   async loadCar(url) {
     if(this.disposed)return;
     if(url===this.carURL&&this.car)return;
@@ -465,14 +516,15 @@ export class PerceptionScene {
 
   setMap(town) {
     if(this.disposed)return;
-    if(this.map){release(this.map);this.map=null;this.buildings=null;}
+    if(this.map){release(this.map);this.map=null;this.buildings=null;this.curbs=null;}
     this.elevation=new Map();
     this.mapKey=town?.producer?.map;
     const lanes=(town?.roads||[]).map(l=>(Array.isArray(l)?l:l.points||[]).filter(p=>coord(p,3))).filter(l=>l.length>1);
     if(lanes.length){
       this.map=new T.Group();
-      const streets=new T.Mesh(surfaceGeometry(lanes,2.02,.008,roadIndex(lanes)),streetMaterial(this.sky));
-      const sidewalks=ink(0x3d4d58);sidewalks.side=T.DoubleSide;
+      const streets=new T.Mesh(surfaceGeometry(lanes,2.02,.008,roadIndex(lanes)),streetMaterial(this.tones));
+      const sidewalks=ink(this.tones.curb);sidewalks.side=T.DoubleSide;
+      this.curbs=sidewalks;
       const curbs=new T.Mesh(surfaceGeometry(lanes,2.65,-.028),sidewalks);
       this.map.add(curbs,streets);
       for(const lane of lanes)for(const p of lane){
@@ -482,7 +534,7 @@ export class PerceptionScene {
       }
       const boxes=(town.buildings||[]).filter(b=>coord(b.center,3)&&coord(b.extent,3)&&b.extent.every(v=>v>0));
       if(boxes.length){
-        this.buildings=architecture(boxes,this.sky,this.at);
+        this.buildings=architecture(boxes,this.tones,this.at);
         this.map.add(this.buildings);
       }
       this.map.visible=Boolean(this.localized);
@@ -525,7 +577,7 @@ export class PerceptionScene {
       this.stations.push([p.x,p.z,s]);
     });
     const lines=samples.map(p=>[p.x,p.z,p.y]);
-    this.path=new T.Mesh(surfaceGeometry([lines],1.22,.051),pathMaterial(this.sky));
+    this.path=new T.Mesh(surfaceGeometry([lines],1.22,.051),pathMaterial(this.tones));
     this.path.renderOrder=1;this.path.visible=this.layers.path;
     this.scene.add(this.path);
     this.path.material.uniforms.uOverview.value=Number(this.view==='overview');
@@ -554,7 +606,7 @@ export class PerceptionScene {
     for(const id of this.tracks.keys())this.dropTrack(id);
   }
   makeTrack(id,label) {
-    if(!this.templates.has(label))this.templates.set(label,form(label));
+    if(!this.templates.has(label))this.templates.set(label,form(label,this.look));
     const group=new T.Group(), body=this.templates.get(label).clone(true);
     // Each track owns its opacity; geometry stays shared between matching classes.
     const copies=new Map();
@@ -565,7 +617,7 @@ export class PerceptionScene {
       part.material=copies.get(base);
     });
     group.add(body);
-    const color=colors[label]||colors.unknown;
+    const color=this.look[TRACK_TONE[label]];
     const foot=patch(group,1.30,1.55,projectedPatch(color),.034);
     const trail=makeTrail(color);
     this.trackGroup.add(group,trail);
@@ -611,7 +663,7 @@ export class PerceptionScene {
     for(const sample of Array.isArray(frame.tracks)?frame.tracks:[]){
       if(sample?.id==null||![sample.x,sample.y,sample.z,sample.length,sample.width,sample.height].every(finite)||
          sample.length<=0||sample.width<=0||sample.height<=0)continue;
-      const label=Object.hasOwn(colors,sample.label)?sample.label:'unknown';
+      const label=Object.hasOwn(TRACK_TONE,sample.label)?sample.label:'unknown';
       const id=sample.id;
       if(seen.has(id))continue;
       const coast=sample.coasting===true;
