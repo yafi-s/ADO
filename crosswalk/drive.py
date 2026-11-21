@@ -46,23 +46,52 @@ def _observer_map(scene, path):
     pose = scene.ego.get_transform()
     hazard = scene.hazard
     return {
-        "path": path, "ego": [*_xy(pose.location), round(pose.rotation.yaw, 2)],
+        "path": path, "ego": [*_xy(pose.location), round(pose.rotation.yaw, 2)], "ego_z": round(pose.location.z,2),
+        "others": scene.ambient.observer_positions() if scene.ambient else [],
         "traffic": _xy(scene.traffic.get_location()) if scene.traffic else None,
         "hazard": _xy(hazard.get_location()) if hazard else None,
         "hazard_type": ("pedestrian" if hazard.type_id.startswith("walker.") else "vehicle") if hazard else None,
     }
 
 
+def start_demonstration(scene, teacher):
+    ego = scene.ego
+    ego.set_autopilot(True, teacher.get_port())
+    teacher.auto_lane_change(ego, False)
+    teacher.set_desired_speed(ego, 21.6)
+    teacher.distance_to_leading_vehicle(ego, 3.)
+    if scene.kind in ("turn", "trip", "left"):
+        # These scenarios stage every approach with a green signal.
+        teacher.ignore_lights_percentage(ego, 100)
+    teacher.set_path(ego, [*scene.route[5:-1:7], scene.route[-1]])
+
+
+def update_instructor(scene, teacher):
+    if scene.kind in ("signal", "left"):
+        # Only the demonstration instructor can consult a stop line. Traffic
+        # Manager still selects the actual actuators that become training labels.
+        available = max(0., scene.expert_gap() - 2.8)
+        teacher.set_desired_speed(scene.ego, 3.6 * min(6., math.sqrt(4.5 * available)))
+    elif scene.kind == "trip":
+        progress, _ = scene._coordinates(scene.ego.get_location())
+        near_junction = any(entry - 13. <= progress <= exit_ + 7.
+                            for entry, exit_ in scene._junction_ranges)
+        teacher.set_desired_speed(scene.ego, 3.6 * (3.7 if near_junction else 6.0))
+
+
 def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             recording=None, realtime=False, max_steps=None, district=None, crossing_delay=0.,
-            destination=None, run_id=None, change_request=None, weather="seeded", grip=1.0):
+            destination=None, run_id=None, change_request=None, weather="seeded", grip=1.0,
+            range_only=False):
     """Apply t's observation to t+1. Oracle labels and metrics are isolated from inference."""
-    cv2.setNumThreads(1)
+    cv2.setNumThreads(2)
     data, targets = [], []
     trace = []
     outcome = "timeout"
     if max_steps is None:
         max_steps = 1000 if kind == "trip" else 360
+    if range_only and (live is not None or recording is not None):
+        raise ValueError("A range-only development run has no cameras to display or export.")
     with ExitStack() as stack:
         if teacher is not None:
             teacher.set_random_device_seed(seed)
@@ -75,12 +104,13 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             scene.weather = weather
             world.set_weather(getattr(carla.WeatherParameters, weather))
         map_name = world.get_map().name.rsplit("/", 1)[-1]
-        from .robotaxi import BodyKit
-        body = BodyKit(world, scene.ego)
-        stack.callback(body.close)
+        if not range_only:
+            from .robotaxi import BodyKit
+            body = BodyKit(world, scene.ego)
+            stack.callback(body.close)
         visuals = live is not None or recording is not None
         display_path = [_xy(p) for p in scene.route[:-1:4]] + [_xy(scene.route[-1])] if visuals else []
-        rig = Rig(world, scene.ego, visuals=visuals)
+        rig = Rig(world, scene.ego, visuals=visuals, range_only=range_only)
         stack.callback(rig.close)
         # Settle the suspension and prime the GPU cameras while all actors wait.
         for _ in range(8):
@@ -103,35 +133,30 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             measured = [w.friction_force_multiplier for w in scene.ego.get_physics_control().wheels]
             if not np.allclose(requested, measured):
                 raise RuntimeError("CARLA did not apply the requested wheel grip.")
-        detector = Detector()
+        detector = None if range_only else Detector()
         navigation = Navigation(scene.route)
         pending = None
         detections = []
         if teacher is not None:
-            scene.ego.set_autopilot(True, teacher.get_port())
             stack.callback(scene.ego.set_autopilot, False, teacher.get_port())
-            teacher.auto_lane_change(scene.ego, False)
-            teacher.set_desired_speed(scene.ego, 21.6)
-            teacher.distance_to_leading_vehicle(scene.ego, 3.)
-            if kind in ("turn", "trip", "left"):
-                # The isolated turning trial is staged with green signals.
-                teacher.ignore_lights_percentage(scene.ego, 100)
-            teacher.set_path(scene.ego, [*scene.route[5:-1:7], scene.route[-1]])
+            start_demonstration(scene, teacher)
         start = perf_counter()
         for step in range(max_steps):
             scene.before_tick()
-            if teacher is not None and kind in ("signal", "left"):
-                # Provide the instructor with a stop point. The training car still
-                # uses Traffic Manager to select its own throttle, brake and steer.
-                available = max(0., scene.expert_gap() - 2.8)
-                teacher.set_desired_speed(scene.ego, 3.6 * min(6., math.sqrt(4.5 * available)))
+            if teacher is not None:
+                update_instructor(scene, teacher)
             frame = world.tick()
             obs = rig.read(frame)
             speed = vehicle_speed(scene.ego)
-            if step % 2 == 0:
-                detections = detector.detect(obs["front"])
-            x = features(obs["front"], obs["lidar"], obs["radar"], speed, detections,
-                         navigation=navigation.read(scene.ego), side_views=(obs["left"], obs["right"]))
+            local_route = navigation.read(scene.ego)
+            if range_only:
+                from .policy import range_features
+                x = range_features(obs["lidar"], obs["radar"], speed, local_route)
+            else:
+                if step % 2 == 0:
+                    detections = detector.detect(obs["front"])
+                x = features(obs["front"], obs["lidar"], obs["radar"], speed, detections,
+                             navigation=local_route, side_views=(obs["left"], obs["right"]))
             if teacher is not None:
                 applied = scene.ego.get_control()
                 steer, throttle, brake = applied.steer, applied.throttle, applied.brake
@@ -141,7 +166,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                     targets.append((steer, throttle, brake))
                 pending = x
             else:
-                steer, throttle, brake = (float(v) for v in model.predict(x))
+                predicted = model.predict_range(x) if range_only else model.predict(x)
+                steer, throttle, brake = (float(v) for v in predicted)
                 scene.ego.apply_control(carla.VehicleControl(steer=steer, throttle=throttle, brake=brake))
             # Actor geometry below this line is only consulted for scoring.
             state = scene.metrics()
@@ -216,6 +242,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                        turn_direction=getattr(scene, "turn_direction", None),
                        district=district, destination=state["destination"], crossing_delay_s=crossing_delay,
                        camera_rendering=rig.rendering, ego_blueprint=scene.ego.type_id,
+                       background_actors=scene.ambient.counts if scene.ambient else {"walkers":0,"vehicles":0},
+                       sensor_configuration="lidar-radar" if range_only else "three-camera-lidar-radar",
                        route_id=state["route_id"], road_ids=state["road_ids"], junction_ids=state["junction_ids"],
                        event_triggered=state["event_triggered"], event_cleared=state["event_cleared"],
                        red_light_violations=state["red_light_violations"],

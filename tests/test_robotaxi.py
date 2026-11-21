@@ -14,20 +14,35 @@ from crosswalk.sensors import Rig
 class RobotaxiTests(unittest.TestCase):
     def test_all_parts_are_rigid_and_collision_free_and_cleanup_is_idempotent(self):
         world, ego = Mock(), Mock()
+        world.get_settings.return_value.no_rendering_mode = False
         children = [Mock(is_alive=True) for _ in PARTS]
-        blueprints = [Mock() for _ in PARTS]
-        world.get_blueprint_library.return_value.find.side_effect = blueprints
-        world.spawn_actor.side_effect = children
+        blueprint = world.get_blueprint_library.return_value.find.return_value
+        attributes = {}
+        snapshots = []
+        blueprint.set_attribute.side_effect = attributes.__setitem__
+
+        def spawn(bp, transform, **kwargs):
+            snapshots.append(attributes.copy())
+            return children[len(snapshots) - 1]
+
+        world.spawn_actor.side_effect = spawn
         kit = BodyKit(world, ego)
-        for call, actor, bp, part in zip(world.spawn_actor.call_args_list, children, blueprints, PARTS, strict=True):
+        world.get_blueprint_library.return_value.find.assert_called_once_with("static.prop.briefcase")
+        for call, actor, attrs, part in zip(world.spawn_actor.call_args_list, children, snapshots, PARTS, strict=True):
             self.assertIs(call.kwargs["attach_to"], ego)
             self.assertEqual(call.kwargs["attachment_type"], carla.AttachmentType.Rigid)
-            attrs = dict(x.args for x in bp.set_attribute.call_args_list)
-            # In CARLA 0.9.16 static.prop.mesh needs positive spawn mass to attach.
-            self.assertGreater(float(attrs["mass"]), 0)
-            self.assertEqual(attrs["mesh_path"], part.mesh + "." + part.mesh.rsplit("/",1)[1])
+            self.assertNotIn("mass", attrs)
+            path = part.mesh.path
+            self.assertEqual(attrs["mesh_path"], path + "." + path.rsplit("/", 1)[1])
+            # An off-center asset pivot should still put the center of its
+            # visible geometry at the designed location in the ego frame.
+            pivot_offset = carla.Location(*part.mesh.center)
+            center = call.args[1].transform(pivot_offset)
+            for actual, expected in zip((center.x, center.y, center.z), part.center, strict=True):
+                self.assertAlmostEqual(actual, expected, places=5)
             actor.set_simulate_physics.assert_called_once_with(False)
             actor.set_collisions.assert_called_once_with(False)
+            actor.apply_texture.assert_called_once()
         kit.close()
         kit.close()
         for actor in children:

@@ -156,7 +156,7 @@ def dependency_code(path, roots, *, collection=False):
 
 def generator_sources():
     src = PROJECT / "crosswalk"
-    names = ("world", "district", "robotaxi", "sensors", "vision", "signal_vision", "control")
+    names = ("world", "district", "ambient", "robotaxi", "sensors", "vision", "signal_vision", "control")
     versions = {n: fingerprint(src / f"{n}.py") for n in names if (src / f"{n}.py").exists()}
     versions["policy_features"] = dependency_code(src / "policy.py", ("features", "FEATURE_NAMES", "ACTION_NAMES"))
     versions["episode"] = dependency_code(src / "drive.py", ("episode",), collection=True)

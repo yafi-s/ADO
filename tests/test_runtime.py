@@ -52,6 +52,30 @@ class RuntimeTests(unittest.TestCase):
             client.get_client_version.return_value = "1.0"
             self.assertEqual(runtime._connect(2468, None, "log"), (client, "1.0-fe0178f89", "1.0"))
 
+    def test_physics_only_launch_disables_rendering_and_requires_fresh_server(self):
+        with self.assertRaisesRegex(ValueError, "freshly launched"), runtime.simulator(attach=True, physics_only=True):
+            self.fail("accepted physics-only attachment")
+        world = fake_world("Town01_Opt")
+        client = Mock()
+        client.get_world.return_value = world
+        with TemporaryDirectory() as directory, ExitStack() as patches:
+            root = Path(directory)
+            patches.enter_context(patch.object(runtime, "LOCAL", root))
+            patches.enter_context(patch.object(runtime, "_server_executable",
+                                               return_value=root / "CarlaUnreal/Binaries/Win64/server"))
+            patches.enter_context(patch.object(runtime, "_check_port_free"))
+            create = patches.enter_context(patch.object(runtime.subprocess, "Popen"))
+            patches.enter_context(patch.object(runtime, "_connect", return_value=(client, "1.0", "1.0")))
+            with runtime.simulator(physics_only=True) as active:
+                self.assertIs(active, world)
+                self.assertTrue(world.apply_settings.call_args.args[0].no_rendering_mode)
+                args = create.call_args.args[0]
+                self.assertIn("-nullrhi", args)
+                self.assertIn("-corelimit=2", args)
+                for raster_option in ("-RenderOffScreen", "-d3d12", "-vulkan", "-noraytracing",
+                                      "-quality-level", "-ResX", "-ResY", "Engine.RendererSettings"):
+                    self.assertNotIn(raster_option, " ".join(args))
+
     def test_attached_world_and_manager_are_restored_on_interrupt(self):
         world = fake_world(r"\Game\Carla\Maps\Town01_Opt.Town01_Opt")
         before = SimpleNamespace(synchronous_mode=False, no_rendering_mode=True)

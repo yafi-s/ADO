@@ -169,7 +169,12 @@ class LiveTests(unittest.TestCase):
             (assets / "meridian.glb").write_bytes(b"glTF")
             (assets / "meridian-studio.png").write_bytes(b"studio")
             (assets / "meridian.blend").write_bytes(b"source asset")
-            with patch("crosswalk.viewio.VEHICLE_ROOT", assets), Live(0) as live:
+            ipace = root / "ipace"
+            ipace.mkdir()
+            (ipace / "waymo-ipace.glb").write_bytes(b"I-Pace")
+            (ipace / "waymo-ipace.blend").write_bytes(b"source asset")
+            with (patch("crosswalk.viewio.VEHICLE_ROOT", assets),
+                  patch("crosswalk.viewio.IPACE_ROOT", ipace), Live(0) as live):
                 base = live.url + "vehicle-assets/"
                 with urlopen(base + "meridian.glb?v=1", timeout=5) as response:
                     self.assertEqual(response.headers["Content-Type"], "model/gltf-binary")
@@ -178,7 +183,10 @@ class LiveTests(unittest.TestCase):
                     self.assertEqual(response.headers["Content-Type"], "image/png")
                     self.assertEqual(response.headers["Content-Length"], "6")
                     self.assertEqual(response.read(), b"")
-                for path in ("", "meridian.blend", "%2e%2e/meridian.blend"):
+                with urlopen(base + "waymo-ipace.glb", timeout=5) as response:
+                    self.assertEqual(response.headers["Content-Type"], "model/gltf-binary")
+                    self.assertEqual(response.read(), b"I-Pace")
+                for path in ("", "meridian.blend", "waymo-ipace.blend", "%2e%2e/meridian.blend"):
                     with self.subTest(path=path), self.assertRaises(HTTPError) as missing:
                         urlopen(base + path, timeout=5)
                     with missing.exception as response:

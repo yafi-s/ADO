@@ -1,0 +1,512 @@
+{
+  "simulator": "CARLA 1.0",
+  "map": "Town01_Opt",
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town01_Opt"
+  },
+  "engine": "Unreal Engine 5.8",
+  "physics_engine": "Chaos Vehicles",
+  "no_rendering_mode": true,
+  "friction_parameter": "WheelPhysicsControl.friction_force_multiplier",
+  "timestep_s": 0.05,
+  "seeds": [
+    101,
+    102,
+    103
+  ],
+  "friction_scales": [
+    1.0,
+    0.5,
+    0.25
+  ],
+  "acceleration_throttle": 0.65,
+  "brake_command": 1.0,
+  "steer_command": 0.0,
+  "target_speed_mps": 8.0,
+  "start_speed_tolerance_mps": 0.25,
+  "stop_speed_mps": 0.15,
+  "max_lateral_offset_m": 1.0,
+  "acceleration_limit_s": 10.0,
+  "braking_limit_s": 10.0,
+  "settle_duration_s": 1.0,
+  "initialization_duration_s": 0.5,
+  "distance_definition": "Horizontal distance projected along the route from brake command to first near-stop sample.",
+  "comparison": "Compare stopped trials with matching stock settings within each seed. All three trials apply wheel physics once at rest, including the stock grip multipliers at 1x.",
+  "limitations": [
+    "The tire friction values are Chaos wheel grip multipliers and have no calibration to pavement grip or weather effects.",
+    "Throttle ends at the first sample at or above the target speed, so actual brake-entry speeds and positions can vary slightly.",
+    "The experiment samples the near-stop threshold at whole ticks and uses one vehicle model on straight routes."
+  ],
+  "trials": [
+    {
+      "seed": 101,
+      "friction_scale": 1.0,
+      "vehicle": "vehicle.lincoln.mkz",
+      "weather": "ClearSunset",
+      "road_id": 8,
+      "lane_id": 1,
+      "route_start_xyz_m": [
+        392.3096923828125,
+        192.5404052734375,
+        0.0
+      ],
+      "route_end_xyz_m": [
+        392.3258972167969,
+        256.5407409667969,
+        0.0
+      ],
+      "original_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "requested_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "applied_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "final_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "initial_speed_mps": 8.076518223136576,
+      "final_speed_mps": 0.08742118802557332,
+      "braking_start_progress_m": 10.273361441495501,
+      "observed_braking_distance_m": 5.039734025976173,
+      "observed_braking_duration_s": 1.2000000000000002,
+      "stopping_distance_m": 5.039734025976173,
+      "stopping_duration_s": 1.2000000000000002,
+      "max_lateral_offset_m": 0.00014673871584693112,
+      "outcome": "stopped",
+      "matches_stock_setup": true
+    },
+    {
+      "seed": 101,
+      "friction_scale": 0.5,
+      "vehicle": "vehicle.lincoln.mkz",
+      "weather": "ClearSunset",
+      "road_id": 8,
+      "lane_id": 1,
+      "route_start_xyz_m": [
+        392.3096923828125,
+        192.5404052734375,
+        0.0
+      ],
+      "route_end_xyz_m": [
+        392.3258972167969,
+        256.5407409667969,
+        0.0
+      ],
+      "original_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "requested_tire_friction": [
+        1.75,
+        1.75,
+        1.75,
+        1.75
+      ],
+      "applied_tire_friction": [
+        1.75,
+        1.75,
+        1.75,
+        1.75
+      ],
+      "final_tire_friction": [
+        1.75,
+        1.75,
+        1.75,
+        1.75
+      ],
+      "initial_speed_mps": 8.076518223136576,
+      "final_speed_mps": 0.08742118802557332,
+      "braking_start_progress_m": 10.273361441495501,
+      "observed_braking_distance_m": 5.039734025976173,
+      "observed_braking_duration_s": 1.2000000000000002,
+      "stopping_distance_m": 5.039734025976173,
+      "stopping_duration_s": 1.2000000000000002,
+      "max_lateral_offset_m": 0.00014673871584693112,
+      "outcome": "stopped",
+      "matches_stock_setup": true
+    },
+    {
+      "seed": 101,
+      "friction_scale": 0.25,
+      "vehicle": "vehicle.lincoln.mkz",
+      "weather": "ClearSunset",
+      "road_id": 8,
+      "lane_id": 1,
+      "route_start_xyz_m": [
+        392.3096923828125,
+        192.5404052734375,
+        0.0
+      ],
+      "route_end_xyz_m": [
+        392.3258972167969,
+        256.5407409667969,
+        0.0
+      ],
+      "original_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "requested_tire_friction": [
+        0.875,
+        0.875,
+        0.875,
+        0.875
+      ],
+      "applied_tire_friction": [
+        0.875,
+        0.875,
+        0.875,
+        0.875
+      ],
+      "final_tire_friction": [
+        0.875,
+        0.875,
+        0.875,
+        0.875
+      ],
+      "initial_speed_mps": 8.07294810583646,
+      "final_speed_mps": 0.08359366122843777,
+      "braking_start_progress_m": 15.667910252358956,
+      "observed_braking_distance_m": 7.581788625331763,
+      "observed_braking_duration_s": 1.85,
+      "stopping_distance_m": 7.581788625331763,
+      "stopping_duration_s": 1.85,
+      "max_lateral_offset_m": 0.016548221553274033,
+      "outcome": "stopped",
+      "matches_stock_setup": true
+    },
+    {
+      "seed": 102,
+      "friction_scale": 1.0,
+      "vehicle": "vehicle.lincoln.mkz",
+      "weather": "ClearNoon",
+      "road_id": 12,
+      "lane_id": 1,
+      "route_start_xyz_m": [
+        299.4201354980469,
+        195.15696716308594,
+        0.0
+      ],
+      "route_end_xyz_m": [
+        235.420166015625,
+        195.1517791748047,
+        0.0
+      ],
+      "original_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "requested_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "applied_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "final_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "initial_speed_mps": 8.076504738746141,
+      "final_speed_mps": 0.08737274927764702,
+      "braking_start_progress_m": 10.273345985236386,
+      "observed_braking_distance_m": 5.039672869439816,
+      "observed_braking_duration_s": 1.2000000000000002,
+      "stopping_distance_m": 5.039672869439816,
+      "stopping_duration_s": 1.2000000000000002,
+      "max_lateral_offset_m": 0.00012250756809223802,
+      "outcome": "stopped",
+      "matches_stock_setup": true
+    },
+    {
+      "seed": 102,
+      "friction_scale": 0.5,
+      "vehicle": "vehicle.lincoln.mkz",
+      "weather": "ClearNoon",
+      "road_id": 12,
+      "lane_id": 1,
+      "route_start_xyz_m": [
+        299.4201354980469,
+        195.15696716308594,
+        0.0
+      ],
+      "route_end_xyz_m": [
+        235.420166015625,
+        195.1517791748047,
+        0.0
+      ],
+      "original_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "requested_tire_friction": [
+        1.75,
+        1.75,
+        1.75,
+        1.75
+      ],
+      "applied_tire_friction": [
+        1.75,
+        1.75,
+        1.75,
+        1.75
+      ],
+      "final_tire_friction": [
+        1.75,
+        1.75,
+        1.75,
+        1.75
+      ],
+      "initial_speed_mps": 8.076504738746141,
+      "final_speed_mps": 0.08737274927764702,
+      "braking_start_progress_m": 10.273345985236386,
+      "observed_braking_distance_m": 5.039672869439816,
+      "observed_braking_duration_s": 1.2000000000000002,
+      "stopping_distance_m": 5.039672869439816,
+      "stopping_duration_s": 1.2000000000000002,
+      "max_lateral_offset_m": 0.00012250756809223802,
+      "outcome": "stopped",
+      "matches_stock_setup": true
+    },
+    {
+      "seed": 102,
+      "friction_scale": 0.25,
+      "vehicle": "vehicle.lincoln.mkz",
+      "weather": "ClearNoon",
+      "road_id": 12,
+      "lane_id": 1,
+      "route_start_xyz_m": [
+        299.4201354980469,
+        195.15696716308594,
+        0.0
+      ],
+      "route_end_xyz_m": [
+        235.420166015625,
+        195.1517791748047,
+        0.0
+      ],
+      "original_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "requested_tire_friction": [
+        0.875,
+        0.875,
+        0.875,
+        0.875
+      ],
+      "applied_tire_friction": [
+        0.875,
+        0.875,
+        0.875,
+        0.875
+      ],
+      "final_tire_friction": [
+        0.875,
+        0.875,
+        0.875,
+        0.875
+      ],
+      "initial_speed_mps": 8.073617872503354,
+      "final_speed_mps": 0.08469761931616858,
+      "braking_start_progress_m": 15.668212062090678,
+      "observed_braking_distance_m": 7.58343478184711,
+      "observed_braking_duration_s": 1.85,
+      "stopping_distance_m": 7.58343478184711,
+      "stopping_duration_s": 1.85,
+      "max_lateral_offset_m": 0.015491611279164175,
+      "outcome": "stopped",
+      "matches_stock_setup": true
+    },
+    {
+      "seed": 103,
+      "friction_scale": 1.0,
+      "vehicle": "vehicle.lincoln.mkz",
+      "weather": "ClearSunset",
+      "road_id": 15,
+      "lane_id": 1,
+      "route_start_xyz_m": [
+        1.9839352369308472,
+        171.95895385742188,
+        0.0
+      ],
+      "route_end_xyz_m": [
+        1.9505083560943604,
+        107.95894622802734,
+        0.0
+      ],
+      "original_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "requested_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "applied_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "final_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "initial_speed_mps": 8.076509620619136,
+      "final_speed_mps": 0.08737677002610077,
+      "braking_start_progress_m": 10.273347312086418,
+      "observed_braking_distance_m": 5.03967354534608,
+      "observed_braking_duration_s": 1.2000000000000002,
+      "stopping_distance_m": 5.03967354534608,
+      "stopping_duration_s": 1.2000000000000002,
+      "max_lateral_offset_m": 7.700117062444345e-05,
+      "outcome": "stopped",
+      "matches_stock_setup": true
+    },
+    {
+      "seed": 103,
+      "friction_scale": 0.5,
+      "vehicle": "vehicle.lincoln.mkz",
+      "weather": "ClearSunset",
+      "road_id": 15,
+      "lane_id": 1,
+      "route_start_xyz_m": [
+        1.9839352369308472,
+        171.95895385742188,
+        0.0
+      ],
+      "route_end_xyz_m": [
+        1.9505083560943604,
+        107.95894622802734,
+        0.0
+      ],
+      "original_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "requested_tire_friction": [
+        1.75,
+        1.75,
+        1.75,
+        1.75
+      ],
+      "applied_tire_friction": [
+        1.75,
+        1.75,
+        1.75,
+        1.75
+      ],
+      "final_tire_friction": [
+        1.75,
+        1.75,
+        1.75,
+        1.75
+      ],
+      "initial_speed_mps": 8.076509620619136,
+      "final_speed_mps": 0.08737677002610077,
+      "braking_start_progress_m": 10.273347312086418,
+      "observed_braking_distance_m": 5.03967354534608,
+      "observed_braking_duration_s": 1.2000000000000002,
+      "stopping_distance_m": 5.03967354534608,
+      "stopping_duration_s": 1.2000000000000002,
+      "max_lateral_offset_m": 7.700117062444345e-05,
+      "outcome": "stopped",
+      "matches_stock_setup": true
+    },
+    {
+      "seed": 103,
+      "friction_scale": 0.25,
+      "vehicle": "vehicle.lincoln.mkz",
+      "weather": "ClearSunset",
+      "road_id": 15,
+      "lane_id": 1,
+      "route_start_xyz_m": [
+        1.9839352369308472,
+        171.95895385742188,
+        0.0
+      ],
+      "route_end_xyz_m": [
+        1.9505083560943604,
+        107.95894622802734,
+        0.0
+      ],
+      "original_tire_friction": [
+        3.5,
+        3.5,
+        3.5,
+        3.5
+      ],
+      "requested_tire_friction": [
+        0.875,
+        0.875,
+        0.875,
+        0.875
+      ],
+      "applied_tire_friction": [
+        0.875,
+        0.875,
+        0.875,
+        0.875
+      ],
+      "final_tire_friction": [
+        0.875,
+        0.875,
+        0.875,
+        0.875
+      ],
+      "initial_speed_mps": 8.07413335241666,
+      "final_speed_mps": 0.08519572587241074,
+      "braking_start_progress_m": 15.66896664964634,
+      "observed_braking_distance_m": 7.584353669780402,
+      "observed_braking_duration_s": 1.85,
+      "stopping_distance_m": 7.584353669780402,
+      "stopping_duration_s": 1.85,
+      "max_lateral_offset_m": 0.011470464551205893,
+      "outcome": "stopped",
+      "matches_stock_setup": true
+    }
+  ]
+}

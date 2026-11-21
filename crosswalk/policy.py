@@ -43,6 +43,8 @@ GRID_NAMES = tuple(
 )
 FEATURE_NAMES = (LEGACY_FEATURE_NAMES + SIGNAL_NAMES + SIDE_NAMES + PATH_OBJECT_NAMES
                  + RANGE_NAMES + GRID_NAMES)
+RGB_COLUMNS = np.asarray([name.startswith("rgb_") for name in FEATURE_NAMES])
+RANGE_FEATURE_NAMES = tuple(name for name in FEATURE_NAMES if not name.startswith("rgb_"))
 
 
 def _path_objects(detections):
@@ -117,8 +119,8 @@ def _camera_features(image):
     return values
 
 
-def features(rgb, lidar, radar, speed, detections=(), navigation=None, *, side_views):
-    """Encode a synchronized RGB image, lidar sweep, Doppler scan and ego speed.
+def range_features(lidar, radar, speed, navigation):
+    """Pack lidar, radar, speed and navigation in RANGE_FEATURE_NAMES order.
 
     Lidar is mounted at (0, 0, 2.3) and radar at (2, 0, 0.9), both level.
     CARLA's raw radar columns are radial velocity, azimuth, altitude, depth.
@@ -151,17 +153,36 @@ def features(rgb, lidar, radar, speed, detections=(), navigation=None, *, side_v
     nav = np.asarray(navigation, dtype=np.float32)
     if nav.shape != (6,) or not np.isfinite(nav).all():
         raise ValueError("expected three ego-local route points [x3,y3,x7,y7,x13,y13]")
+    proximity = [1./(1.+gap_lidar), 1./(1.+gap_radar), speed/(1.+min(gap_lidar, gap_radar))]
+    grid = _spatial_grid(x - BUMPER_X, y, height, rx, ry, rz, vel)
+    return np.asarray(geometry + nav.tolist() + proximity + grid, dtype=np.float32)
+
+
+def features(rgb, lidar, radar, speed, detections=(), navigation=None, *, side_views):
+    """Combine synchronized range measurements and the three physical RGB camera views."""
     if len(side_views) != 2:
         raise ValueError("expected synchronized left and right RGB camera images")
     side = [value for image in side_views for value in side_features(image)]
-    proximity = [1./(1.+gap_lidar), 1./(1.+gap_radar), speed/(1.+min(gap_lidar, gap_radar))]
-    grid = _spatial_grid(x - BUMPER_X, y, height, rx, ry, rz, vel)
-    return np.asarray(geometry + _camera_features(rgb) + summarize(detections) + nav.tolist()
-                      + signal_candidates(rgb) + side + _path_objects(detections) + proximity + grid,
-                      dtype=np.float32)
+    full = np.empty(len(FEATURE_NAMES), dtype=np.float32)
+    full[~RGB_COLUMNS] = range_features(lidar, radar, speed, navigation)
+    full[RGB_COLUMNS] = (_camera_features(rgb) + summarize(detections) + signal_candidates(rgb)
+                         + side + _path_objects(detections))
+    return full
+
+
+def expand_range(packed):
+    """Align measured rows with shared head indices; missing camera columns stay unavailable."""
+    packed = np.asarray(packed, dtype=np.float32)
+    if packed.ndim != 2 or packed.shape[1] != len(RANGE_FEATURE_NAMES):
+        raise ValueError("expected packed range rows in RANGE_FEATURE_NAMES order")
+    full = np.full((len(packed), len(FEATURE_NAMES)), np.nan, dtype=np.float32)
+    full[:, ~RGB_COLUMNS] = packed
+    return full
 
 
 def input_mask(inputs):
+    if inputs == "range":
+        return ~RGB_COLUMNS
     if inputs not in ("fusion", "camera"):
         raise ValueError(f"unknown model inputs: {inputs}")
     return np.asarray([inputs == "fusion" or name.startswith(("rgb_", "route_"))
@@ -223,15 +244,22 @@ class Model:
         steer, throttle, brake = self.predict_batch(np.asarray(x)[None, :])[0]
         return float(steer), float(throttle), float(brake)
 
+    def predict_range(self, packed):
+        """Apply a range-only diagnostic model to one physical lidar/radar observation."""
+        if self.inputs != "range":
+            raise ValueError("packed range inference requires a range-only model")
+        return self.predict(expand_range(np.asarray(packed)[None, :])[0])
+
     def save(self, path):
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
         params = {f"{head}_{i}": param for head, weights in zip(("steer", "drive"), self.heads)
                   for i, param in enumerate(weights)}
         with path.open("wb") as output:
+            packed = {"packed_feature_names": RANGE_FEATURE_NAMES} if self.inputs == "range" else {}
             np.savez_compressed(output, version=MODEL_VERSION, feature_names=FEATURE_NAMES,
                                 action_names=ACTION_NAMES, inputs=self.inputs, input_mask=self.mask,
-                                mean=self.mean, scale=self.scale, **params)
+                                mean=self.mean, scale=self.scale, **packed, **params)
 
     @classmethod
     def load(cls, path):
@@ -241,6 +269,9 @@ class Model:
                     or tuple(data["action_names"].tolist()) != ACTION_NAMES):
                 raise ValueError("incompatible policy; train an actuator model from demonstrations")
             inputs = str(data["inputs"].item())
+            if inputs == "range" and ("packed_feature_names" not in data
+                                      or tuple(data["packed_feature_names"]) != RANGE_FEATURE_NAMES):
+                raise ValueError("invalid packed range model schema")
             if not np.array_equal(data["input_mask"], input_mask(inputs)):
                 raise ValueError("invalid policy input mask")
             heads = [[data[f"{head}_{i}"] for i in range(4)] for head in ("steer", "drive")]

@@ -182,6 +182,7 @@ class Scenario:
         if not math.isfinite(self.crossing_delay):
             raise ValueError("crossing_delay must be finite")
         self._actors = []
+        self.ambient = None
         self.occluder = self.signal = None
         self.ego = self.hazard = self.traffic = None
         self._previous_weather = world.get_weather()
@@ -254,6 +255,9 @@ class Scenario:
                     if self.signal is not None:
                         self.signal.set_state(carla.TrafficLightState.Red)
             self.world.set_weather(getattr(carla.WeatherParameters, self.weather))
+            if kind == "trip":
+                from .ambient import Ambient
+                self.ambient = Ambient(world, self)
         except BaseException:
             self.close()
             raise
@@ -436,6 +440,8 @@ class Scenario:
 
     def before_tick(self):
         """Schedule the actors' controls for the upcoming fixed physics step."""
+        if getattr(self, "ambient", None):
+            self.ambient.before_tick()
         self._time += self._dt
         oncoming_speed = 6.0
         if self.kind in _WALKING:
@@ -585,6 +591,8 @@ class Scenario:
     def close(self):
         if not self._closed:
             try:
+                if self.ambient:
+                    self.ambient.close()
                 self._destroy_actors()
             finally:
                 try:

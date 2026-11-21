@@ -7,7 +7,8 @@ from pathlib import Path
 import numpy as np
 
 from .steering_search import refine
-from .policy import ACTION_NAMES, FEATURE_NAMES, NAV_NAMES, Model, forward, head_columns, input_mask
+from .policy import (ACTION_NAMES, FEATURE_NAMES, NAV_NAMES, RANGE_FEATURE_NAMES, Model, expand_range,
+                     forward, head_columns, input_mask)
 
 
 def _balanced_weights(bins):
@@ -127,13 +128,15 @@ def _holdout_report(model, X, y):
         "front_color_statistics": ("rgb_horizon_", "rgb_near_"),
         "side_camera_statistics_and_candidates": ("rgb_left_", "rgb_right_"),
     }
-    if model.inputs == "fusion":
+    if model.inputs in ("fusion", "range"):
         groups.update({
             "spatial_lidar_density": ("bev_lidar_density_",),
             "spatial_radar_density_and_velocity": ("bev_radar_",),
         })
     for group, prefixes in groups.items():
-        indices = [i for i, name in enumerate(FEATURE_NAMES) if name.startswith(prefixes)]
+        indices = [i for i, name in enumerate(FEATURE_NAMES) if model.mask[i] and name.startswith(prefixes)]
+        if not indices:
+            continue
         replaced = X.copy()
         replaced[:, indices] = model.mean[1, indices]
         delta = model.predict_batch(replaced) - predicted
@@ -146,10 +149,14 @@ def _holdout_report(model, X, y):
 def train(data_path, out_path, report_path=None, inputs="fusion", *, route_refinement=True, imitation_path=None):
     with np.load(data_path, allow_pickle=False) as records:
         X, y = records["X"], records["y"]
-        if (X.ndim != 2 or X.shape[1] != len(FEATURE_NAMES)
-                or ("feature_names" in records and tuple(records["feature_names"]) != FEATURE_NAMES)
+        names = RANGE_FEATURE_NAMES if inputs == "range" else FEATURE_NAMES
+        if (X.ndim != 2 or X.shape[1] != len(names)
+                or (inputs == "range" and "feature_names" not in records)
+                or ("feature_names" in records and tuple(records["feature_names"]) != names)
                 or ("action_names" in records and tuple(records["action_names"]) != ACTION_NAMES)):
-            raise ValueError("incompatible demonstration schema; collect synchronized city views")
+            raise ValueError(f"incompatible demonstration schema for {inputs} policy")
+        if inputs == "range":
+            X = expand_range(X)
         group_key = next((k for k in ("seed", "seeds", "episode", "episodes", "episode_ids", "episode_id")
                           if k in records), None)
         groups = records[group_key].reshape(-1) if group_key else None
@@ -170,6 +177,8 @@ def train(data_path, out_path, report_path=None, inputs="fusion", *, route_refin
               "head_features": {head: [FEATURE_NAMES[i] for i in indices]
                                 for head, indices in zip(("steer", "drive"), columns)}}
     report["steering_supervision"] = "Original demonstrated steering and its left-right reflection"
+    if inputs == "range":
+        report["packed_feature_names"] = list(RANGE_FEATURE_NAMES)
     report["drive_supervision"] = "Traffic Manager throttle minus brake, weighted by action and stop state"
     if groups is not None:
         if len(groups) != len(y):
@@ -211,7 +220,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", required=True, help="NPZ of synchronized observations and N x 3 controls")
     parser.add_argument("--out", required=True, help="output neural policy NPZ")
-    parser.add_argument("--inputs", choices=("fusion", "camera"), default="fusion")
+    parser.add_argument("--inputs", choices=("fusion", "camera", "range"), default="fusion")
     parser.add_argument("--report", help="optional training and development-holdout JSON")
     parser.add_argument("--imitation-out", help="save the imitation-only control heads before steering search")
     parser.add_argument("--imitation-only", action="store_true", help="fit only the demonstrated actions")

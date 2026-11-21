@@ -37,7 +37,7 @@ def _server_executable():
                             f"at the unpacked simulator. Could not find {name} under {root}.")
 
 
-def _launch_args(exe, port, quality):
+def _launch_args(exe, port, quality, *, physics_only=False):
     if quality not in {"Low", "Medium", "High", "Epic"}:
         raise ValueError(f"Unknown CARLA quality level: {quality}")
     # One combined config override follows UE's -ini:<category>: syntax.
@@ -46,19 +46,20 @@ def _launch_args(exe, port, quality):
     map_section = "[/Script/EngineSettings.GameMapsSettings]"
     map_object = f"{MAP_ASSET}.{MAP_NAME}"
     overrides = [f"{map_section}:{key}={map_object}" for key in ("GameDefaultMap", "ServerDefaultMap")]
+    args = [str(exe), MAP_ASSET, "-unattended", "-nosplash", "-nosound", "-notrace",
+            f"-carla-rpc-port={port}", f"-carla-streaming-port={port + 1}", "-stdout"]
+    if physics_only:
+        return args + ["-nullrhi", "-corelimit=2", "-ini:Engine:" + ",".join(overrides)]
+
+    args += ["-d3d12" if os.name == "nt" else "-vulkan", "-RenderOffScreen", "-ResX=320",
+             "-ResY=180", "-corelimit=4", f"-quality-level={quality}"]
     if quality == "Low":
+        args.append("-noraytracing")
         overrides += [f"[/Script/Engine.RendererSettings]:{key}=0" for key in (
             "r.DynamicGlobalIlluminationMethod", "r.ReflectionMethod", "r.Shadow.Virtual.Enable",
             "r.Lumen.HardwareRayTracing", "r.PathTracing", "r.RayTracing",
         )]
-    return [
-        str(exe), MAP_ASSET, "-ini:Engine:" + ",".join(overrides),
-        "-d3d12" if os.name == "nt" else "-vulkan", "-RenderOffScreen", "-unattended",
-        "-nosplash", "-nosound", "-notrace", "-ResX=320", "-ResY=180",
-        "-corelimit=4", f"-quality-level={quality}", f"-carla-rpc-port={port}",
-        f"-carla-streaming-port={port + 1}", "-stdout",
-        *(["-noraytracing"] if quality == "Low" else []),
-    ]
+    return args + ["-ini:Engine:" + ",".join(overrides)]
 
 
 def _map_name(path):
@@ -113,7 +114,10 @@ def _connect(port, process, log_path):
 
 
 @contextmanager
-def simulator(port=2468, attach=False, quality=DEFAULT_QUALITY, with_manager=False):
+def simulator(port=2468, attach=False, quality=DEFAULT_QUALITY, with_manager=False, *, physics_only=False):
+    """Use physics_only for camera-free vehicle work. Spawning a camera with null RHI crashes UE."""
+    if attach and physics_only:
+        raise ValueError("Physics-only operation requires a freshly launched CARLA server.")
     process = None
     log_path = LOCAL / f"carla-1.0-{port}.log"
     with ExitStack() as cleanup:
@@ -125,7 +129,7 @@ def simulator(port=2468, attach=False, quality=DEFAULT_QUALITY, with_manager=Fal
             for offset in (0, 1, 2):
                 _check_port_free(port + offset)
             exe = _server_executable()
-            args = _launch_args(exe, port, quality)
+            args = _launch_args(exe, port, quality, physics_only=physics_only)
             LOCAL.mkdir(exist_ok=True)
             log = cleanup.enter_context(log_path.open("ab"))
             flags = 0
@@ -161,7 +165,7 @@ def simulator(port=2468, attach=False, quality=DEFAULT_QUALITY, with_manager=Fal
             cleanup.callback(world.apply_settings, world.get_settings())
         settings = world.get_settings()
         settings.synchronous_mode = True
-        settings.no_rendering_mode = False
+        settings.no_rendering_mode = physics_only
         settings.fixed_delta_seconds = 0.1
         settings.substepping = True
         settings.max_substep_delta_time = 0.01

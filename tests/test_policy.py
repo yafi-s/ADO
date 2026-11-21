@@ -6,7 +6,8 @@ import cv2
 import numpy as np
 
 from crosswalk.policy import (BUMPER_X, FEATURE_NAMES, GRID_NAMES, LEGACY_FEATURE_NAMES, NAV_NAMES,
-                              RADAR_X, Model, features, head_columns)
+                              RADAR_X, RANGE_FEATURE_NAMES, Model, expand_range, features,
+                              head_columns, input_mask, range_features)
 from crosswalk.signal_vision import SIGNAL_NAMES, SIDE_NAMES, signal_candidates
 from unittest.mock import patch
 
@@ -98,8 +99,49 @@ class PerceptionTest(unittest.TestCase):
         self.assertTrue(set(indices).issubset(fusion_drive))
         np.testing.assert_equal(camera_steer, fusion_steer)
 
+    def test_packed_range_matches_full_observation_without_using_cameras(self):
+        rng = np.random.default_rng(3)
+        rgb = rng.integers(0, 256, size=IMAGE.shape, dtype=np.uint8)
+        lidar = rng.uniform([0., -5., -2., 0.], [30., 5., 0., 1.], (176, 4))
+        radar = rng.uniform([-8., -.3, -.16, 1.], [8., .3, .16, 22.], (32, 4))
+        route = [3, -.25, 6.8, -1.4, 11.6, -3.0]
+        packed = range_features(lidar, radar, 3., route)
+        mask = input_mask("range")
+        self.assertEqual(RANGE_FEATURE_NAMES, tuple(name for name, used in zip(FEATURE_NAMES, mask) if used))
+        self.assertEqual(len(packed), 108)
+        for image in (rgb, IMAGE):
+            full = features(image, lidar, radar, 3., navigation=route, side_views=(image, image))
+            np.testing.assert_equal(full[mask], packed)
+        self.assertTrue(np.isnan(expand_range(packed[None])[:, ~mask]).all())
+
 
 class LearningTest(unittest.TestCase):
+    def test_packed_diagnostic_fits_real_range_columns_and_rejects_reordered_schema(self):
+        close = np.array([[4., 0., -1., 1.]])
+        variants = np.stack([range_features(points, EMPTY, 3., NAV) for points in (EMPTY, close)])
+        x = np.tile(variants, (64, 1))
+        y = np.tile([[0., .6, 0.], [0., 0., .8]], (64, 1))
+        route = np.column_stack((np.arange(65.), np.zeros(65)))
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            data, dest = folder / "range.npz", folder / "weights.npz"
+            records = dict(X=x, y=y, seed=np.repeat(11, len(y)), route_xy=route, route_lengths=[len(route)],
+                           route_seeds=[11])
+            np.savez(data, feature_names=RANGE_FEATURE_NAMES, **records)
+            with patch("crosswalk.steering_search.GENERATIONS", 2):
+                report = train(data, dest, inputs="range")
+            model = Model.load(dest)
+            self.assertEqual(report["packed_feature_names"], list(RANGE_FEATURE_NAMES))
+            self.assertIn("steering_search_final_fit", report)
+            packed_prediction = np.array([model.predict_range(x) for x in variants])
+            np.testing.assert_allclose(packed_prediction[:, 1:], y[:2, 1:], atol=.04)
+            expanded = expand_range(variants)
+            expanded[:, ~model.mask] = 1.e5
+            np.testing.assert_allclose(model.predict_batch(expanded), packed_prediction)
+            np.savez(data, feature_names=RANGE_FEATURE_NAMES[::-1], **records)
+            with self.assertRaisesRegex(ValueError, "incompatible demonstration schema"):
+                train(data, dest, inputs="range")
+
     def test_actions_learn_from_demonstrations_and_roundtrip(self):
         rng = np.random.default_rng(13)
         n = 480

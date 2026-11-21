@@ -162,6 +162,7 @@ def study(world):
     return dict(
         simulator=f"CARLA {producer['server_version']}", map=producer["map"], producer=producer,
         engine="Unreal Engine 5.8", physics_engine="Chaos Vehicles",
+        no_rendering_mode=original_settings.no_rendering_mode,
         friction_parameter="WheelPhysicsControl.friction_force_multiplier",
         timestep_s=DT_SECONDS, seeds=SEEDS, friction_scales=FRICTION_SCALES,
         acceleration_throttle=THROTTLE, brake_command=1.0, steer_command=0.0,
@@ -184,10 +185,12 @@ def study(world):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=2468)
-    parser.add_argument("--attach", action="store_true", help=f"Use an idle local {MAP_NAME} server.")
+    server = parser.add_mutually_exclusive_group()
+    server.add_argument("--attach", action="store_true", help=f"Use an idle local {MAP_NAME} server.")
+    server.add_argument("--physics-only", action="store_true", help="Launch a server without GPU rendering.")
     parser.add_argument("--output", type=Path, default=Path("results/traction.json"))
     args = parser.parse_args()
-    with simulator(args.port, args.attach) as world:
+    with simulator(args.port, args.attach, physics_only=args.physics_only) as world:
         result = study(world)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     temp = args.output.with_name(args.output.name + ".partial")

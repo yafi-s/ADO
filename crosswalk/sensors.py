@@ -14,12 +14,12 @@ from .thermal import thermal_rgb
 
 def render_profile():
     """Return the requested rig profile. Actor readback is available after spawning the rig."""
-    rgb = os.environ.get("CROSSWALK_RGB_RENDER", "dlss").strip().lower()
-    if rgb not in ("native", "dlss"):
-        raise ValueError("CROSSWALK_RGB_RENDER must be native or dlss.")
+    rgb = os.environ.get("CROSSWALK_RGB_RENDER", "mixed").strip().lower()
+    if rgb not in ("native", "dlss", "mixed"):
+        raise ValueError("CROSSWALK_RGB_RENDER must be native, dlss, or mixed.")
     percentage = 100.0
-    if rgb == "dlss":
-        raw = os.environ.get("CROSSWALK_DLSS_PERCENT", "58")
+    if rgb != "native":
+        raw = os.environ.get("CROSSWALK_DLSS_PERCENT", "50")
         try:
             percentage = float(raw)
         except ValueError:
@@ -50,8 +50,10 @@ def depth_image(image):
 
 
 class Rig:
-    def __init__(self, world, ego, visuals=False):
-        profile = render_profile()
+    def __init__(self, world, ego, visuals=False, range_only=False):
+        if visuals and range_only:
+            raise ValueError("Visuals require camera sensors.")
+        profile = None if range_only else render_profile()
         self.rendering = {"requested": profile, "cameras": {}}
         self.sensors = []
         self.queues = {}
@@ -65,7 +67,9 @@ class Rig:
             available = {}
             if blueprint.startswith("sensor.camera."):
                 rgb = blueprint == "sensor.camera.rgb"
-                use_dlss = rgb and profile["rgb"] == "dlss"
+                use_dlss = rgb and (
+                    profile["rgb"] == "dlss" or (profile["rgb"] == "mixed" and name != "front")
+                )
                 camera_settings = {
                     "use_ray_tracing": "false",
                     "enable_dlss": str(use_dlss).lower(),
@@ -105,10 +109,11 @@ class Rig:
 
         try:
             camera = dict(image_size_x=640, image_size_y=360, fov=90)
-            attach("front", "sensor.camera.rgb", pose(1.3, z=1.65), camera)
-            side_camera = dict(image_size_x=320, image_size_y=180, fov=90, sensor_tick=0)
-            attach("left", "sensor.camera.rgb", pose(1.3, y=-0.75, z=1.65, yaw=-70), side_camera)
-            attach("right", "sensor.camera.rgb", pose(1.3, y=0.75, z=1.65, yaw=70), side_camera)
+            if not range_only:
+                attach("front", "sensor.camera.rgb", pose(1.3, z=1.65), camera)
+                side_camera = dict(image_size_x=320, image_size_y=180, fov=90, sensor_tick=0)
+                attach("left", "sensor.camera.rgb", pose(1.3, y=-0.75, z=1.65, yaw=-70), side_camera)
+                attach("right", "sensor.camera.rgb", pose(1.3, y=0.75, z=1.65, yaw=70), side_camera)
             attach("lidar", "sensor.lidar.ray_cast", pose(z=2.3), dict(
                 channels=32, range=60, points_per_second=160000, rotation_frequency=10,
                 upper_fov=10, lower_fov=-28, noise_stddev=0.015, noise_seed=31))
@@ -116,9 +121,11 @@ class Rig:
                 range=60, horizontal_fov=36, vertical_fov=8, points_per_second=12000, noise_seed=32))
             attach("collision", "sensor.other.collision", pose(), {})
             if visuals:
-                attach("chase", "sensor.camera.rgb", pose(-7.5, z=4.1, pitch=-15), camera)
-                attach("tags", "sensor.camera.semantic_segmentation", pose(1.3, z=1.65), camera)
-                attach("depth", "sensor.camera.depth", pose(1.3, z=1.65), camera)
+                chase = dict(image_size_x=512, image_size_y=288, fov=90)
+                ground_truth = dict(image_size_x=320, image_size_y=180, fov=90)
+                attach("chase", "sensor.camera.rgb", pose(-7.5, z=4.1, pitch=-15), chase)
+                attach("tags", "sensor.camera.semantic_segmentation", pose(1.3, z=1.65), ground_truth)
+                attach("depth", "sensor.camera.depth", pose(1.3, z=1.65), ground_truth)
         except BaseException:
             self.close()
             raise

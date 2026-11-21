@@ -4,7 +4,7 @@ Crosswalk Lab synthesizes a white-hot view for the drive monitor. A nearby pedes
 
 ## Inputs
 
-Each pixel takes its object class from CARLA's raw semantic image and its metric depth from a second camera at the same position, orientation, field of view, resolution and simulation tick. The render uses depth as an approximation of atmospheric path length. CARLA encodes the class in the red byte and depth in three bytes, with red least significant. The thermal computation never samples RGB brightness. [CARLA sensor reference](https://carla.readthedocs.io/en/0.9.16/ref_sensors/) · [CARLA 0.9.16 class IDs](https://github.com/carla-simulator/carla/blob/0.9.16/LibCarla/source/carla/rpc/ObjectLabel.h)
+Each pixel takes its object class from CARLA's raw semantic image and its metric depth from a second camera at the same position, orientation, field of view, resolution and simulation tick. The render uses depth as an approximation of atmospheric path length. CARLA encodes the class in the red byte and depth in three bytes, with red least significant. The thermal computation never samples RGB brightness. [CARLA sensor reference](https://github.com/carla-simulator/carla/blob/1.0/Docs/ref_sensors.md) · [CARLA 1.0 class IDs](https://github.com/carla-simulator/carla/blob/1.0/LibCarla/source/carla/rpc/ObjectLabel.h)
 
 ## Radiance calculation
 

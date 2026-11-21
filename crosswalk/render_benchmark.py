@@ -33,7 +33,7 @@ def gpu():
 
 def trial(world, mode, percent, frames, images):
     os.environ.update(CROSSWALK_RGB_RENDER=mode, CROSSWALK_DLSS_PERCENT=str(percent))
-    cv2.setNumThreads(1)
+    cv2.setNumThreads(2)
     with ExitStack() as stack:
         scene = Scenario(world, "signal", 31, district="train")
         stack.callback(scene.close)
@@ -83,9 +83,13 @@ def main():
                       measurements="Stationary signal approach, five encoded views, lidar, radar, thermal, "
                       "feature extraction and NanoDet every other frame. Sixteen warmup ticks per profile.",
                       profiles=[])
-        for mode, percent in (("native",100),("dlss",58),("dlss",50)):
+        for mode, percent in (("native",100),("dlss",58),("dlss",50),("mixed",50)):
             row = trial(world, mode, percent, args.frames, args.images)
             report["profiles"].append(row)
+            if mode == "mixed":
+                report["selected_mode"] = "mixed"
+                report["selected_percent"] = 50
+                report["selection_reason"] = "Retain native front RGB for small signal lamps and request upscaling on auxiliary RGB views."
             print(mode, percent, row["combined_hz"], "Hz", flush=True)
             args.output.parent.mkdir(parents=True, exist_ok=True)
             tmp = args.output.with_suffix(".partial.json")
