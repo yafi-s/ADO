@@ -12,7 +12,7 @@ from crosswalk.signal_vision import SIGNAL_NAMES, SIDE_NAMES, signal_candidates
 from unittest.mock import patch
 
 from crosswalk.steering_search import refine
-from crosswalk.train import _fit_head
+from crosswalk.train import LOCAL_PEDAL_CUES, _fit_head, _pedal_context_groups
 from crosswalk.train import fit, train
 from crosswalk.vision import VISION_NAMES
 
@@ -116,6 +116,48 @@ class PerceptionTest(unittest.TestCase):
 
 
 class LearningTest(unittest.TestCase):
+    def test_matched_pedal_fit_uses_identical_targets_weights_and_different_physical_cues(self):
+        rng = np.random.default_rng(4)
+        X = rng.uniform(size=(128, len(FEATURE_NAMES))).astype(np.float32)
+        X[:, FEATURE_NAMES.index("ego_speed_mps")] *= 6
+        X[:, FEATURE_NAMES.index("corridor_gap_m")] *= 30
+        y = np.column_stack((np.zeros(128), X[:, 1], X[:, 2]))
+        captures = {}
+        for modality in ("fusion", "camera"):
+            with patch("crosswalk.train._fit_head", wraps=_fit_head) as optimizer:
+                model = fit(X, y, inputs=modality, epochs=2)
+            args = optimizer.call_args_list[1].args
+            captures[modality] = args
+            self.assertEqual(args[3:5], (28, 2))
+            self.assertEqual(model.heads[1][0].shape[1], 28)
+        for index in (1, 2):
+            np.testing.assert_equal(captures["fusion"][index], captures["camera"][index])
+        self.assertLess(captures["camera"][0].shape[1], captures["fusion"][0].shape[1])
+        prediction = model.predict_batch(X)
+        X[:, ~model.mask] = np.nan
+        np.testing.assert_equal(prediction, model.predict_batch(X))
+
+    def test_context_resampling_preserves_direct_hazard_and_launch_measurements(self):
+        _, full = head_columns("fusion")
+        groups = _pedal_context_groups(full, 1.)
+        sampled = {FEATURE_NAMES[full[i]] for indices, _ in groups for i in indices}
+        self.assertTrue({"rgb_near_left_r", "rgb_left_road_contrast",
+                         "bev_lidar_density_36_60m_far_right"} <= sampled)
+        self.assertTrue(sampled.isdisjoint({"ego_speed_mps", "corridor_gap_m", "radar_velocity_mps",
+                                            "rgb_path_person_height", "rgb_path_person_offset_in_heights",
+                                            "bev_lidar_density_4_8m_left", "bev_radar_density_4_8m_right"}))
+
+    def test_combined_readout_has_two_learned_branches_and_preserves_steering(self):
+        X = np.random.default_rng(2).uniform(size=(64, len(FEATURE_NAMES))).astype(np.float32)
+        y = np.column_stack((X[:, 8]-.5, .4*X[:, 0], .3*(1.-X[:, 0])))
+        models = [fit(X, y, epochs=3, pedal_training=kind)
+                  for kind in ("group_resampling", "local_cues", "combined")]
+        broad, compact, combined = models
+        np.testing.assert_equal(broad.heads[0][2], combined.heads[0][2])
+        np.testing.assert_equal(combined.heads[1][2], .5*np.vstack((broad.heads[1][2], compact.heads[1][2])))
+        ignored = [i for i, name in enumerate(FEATURE_NAMES) if name not in LOCAL_PEDAL_CUES]
+        np.testing.assert_equal(compact.heads[1][0][ignored], 0.)
+
     def test_packed_diagnostic_fits_real_range_columns_and_rejects_reordered_schema(self):
         close = np.array([[4., 0., -1., 1.]])
         variants = np.stack([range_features(points, EMPTY, 3., NAV) for points in (EMPTY, close)])
@@ -154,7 +196,8 @@ class LearningTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory)
             np.savez(path / "records.npz", X=X, y=y, seed=np.repeat(np.arange(6), n // 6))
-            report = train(path / "records.npz", path / "policy.npz", inputs="camera", route_refinement=False)
+            report = train(path / "records.npz", path / "policy.npz", inputs="camera", route_refinement=False,
+                           pedal_training="original")
             model = Model.load(path / "policy.npz")
             self.assertEqual(model.inputs, "camera")
             held = report["development_holdout_before_final_refit"]
@@ -238,7 +281,7 @@ class LearningTest(unittest.TestCase):
         X[:, NAV_COLS[1]] = rng.choice([-1., 1.], len(X))
         brake = X[:, cell] == 1.
         y = np.column_stack((-.6 * X[:, NAV_COLS[1]], .7 * ~brake, .8 * brake))
-        model = fit(X, y)
+        model = fit(X, y, pedal_training="group_resampling")
         np.testing.assert_allclose(model.predict_batch(X), y, atol=.05)
         self.assertEqual(model.inputs, "fusion")
         with self.assertRaisesRegex(ValueError, "N x 3"):

@@ -1,0 +1,252 @@
+{
+  "frames": 10086,
+  "inputs": "fusion",
+  "outputs": [
+    "steer",
+    "throttle",
+    "brake"
+  ],
+  "features": 27,
+  "head_features": {
+    "steer": [
+      "ego_speed_mps",
+      "route_3m_x_m",
+      "route_3m_y_m",
+      "route_7m_x_m",
+      "route_7m_y_m",
+      "route_13m_x_m",
+      "route_13m_y_m"
+    ],
+    "drive": [
+      "corridor_gap_m",
+      "radar_velocity_mps",
+      "ego_speed_mps",
+      "rgb_person_confidence",
+      "rgb_person_height",
+      "rgb_person_center_offset",
+      "rgb_vehicle_height",
+      "rgb_signal_red_strength",
+      "rgb_signal_red_diameter",
+      "rgb_signal_green_strength",
+      "rgb_left_red_strength",
+      "rgb_left_green_strength",
+      "rgb_right_red_strength",
+      "rgb_right_green_strength",
+      "rgb_path_person_height",
+      "rgb_path_person_offset_in_heights",
+      "rgb_path_vehicle_height",
+      "rgb_path_vehicle_offset_in_heights",
+      "lidar_inverse_gap",
+      "radar_inverse_gap",
+      "ego_speed_over_gap"
+    ]
+  },
+  "steering_supervision": "Original demonstrated steering and its left-right reflection",
+  "drive_supervision": "Traffic Manager throttle minus brake, weighted by action and stop state",
+  "pedal_training": "local_cues",
+  "available_input_count": 168,
+  "pedal_training_details": {
+    "hidden_units": 28,
+    "hidden_activation": "tanh",
+    "signed_linear_outputs": 1,
+    "epochs": 55,
+    "batch_size": 128,
+    "optimizer": "Adam",
+    "initial_learning_rate": 0.003,
+    "random_seed": 2026,
+    "targets": "unchanged demonstrated throttle minus demonstrated brake",
+    "common_frame_weights": {
+      "base": "inverse square root of signed-action and stopped/moving bin frequency",
+      "action_bin_edges": [
+        -0.5,
+        -0.05,
+        0.05,
+        0.5
+      ],
+      "stopped_speed_mps": 0.5,
+      "launch_multiplier": 3.0,
+      "launch_condition": "speed < 3 m/s and signed pedal > 0.35",
+      "moving_brake_multiplier": 2.0,
+      "moving_brake_condition": "speed > 1 m/s, signed pedal < -0.25, measured corridor gap < 14 m",
+      "range_use": "same measured training-only corridor gap for both policies' sample weights"
+    },
+    "augmentation": "mask lamp cue group to training mean on 65 percent of training rows",
+    "input_names": [
+      "corridor_gap_m",
+      "radar_velocity_mps",
+      "ego_speed_mps",
+      "rgb_person_confidence",
+      "rgb_person_height",
+      "rgb_person_center_offset",
+      "rgb_vehicle_height",
+      "rgb_signal_red_strength",
+      "rgb_signal_red_diameter",
+      "rgb_signal_green_strength",
+      "rgb_left_red_strength",
+      "rgb_left_green_strength",
+      "rgb_right_red_strength",
+      "rgb_right_green_strength",
+      "rgb_path_person_height",
+      "rgb_path_person_offset_in_heights",
+      "rgb_path_vehicle_height",
+      "rgb_path_vehicle_offset_in_heights",
+      "lidar_inverse_gap",
+      "radar_inverse_gap",
+      "ego_speed_over_gap"
+    ]
+  },
+  "group_key": "seed",
+  "groups": 6,
+  "steering_search_seed_holdout": {
+    "algorithm": "cross-entropy search over the 24 neural output weights and bias",
+    "optimizer_source": "https://doi.org/10.1023/A:1010091220143",
+    "population": 48,
+    "generations": 14,
+    "seed": 2026,
+    "time_step_s": 0.1,
+    "ticks_per_window": 45,
+    "vehicle_model": "fixed-speed rear-axle kinematic bicycle with nominal actor midpoint",
+    "nominal_wheelbase_m": 2.85,
+    "geometry_source": "https://github.com/autowarefoundation/autoware_universe/blob/main/simulator/autoware_carla_interface/README.md",
+    "steering_response_source": "https://github.com/carla-simulator/carla/blob/1.0/LibCarla/source/carla/ros2/AutowareSteeringCompensation.h",
+    "upstream_calibration_speed_mps": 3.0,
+    "demonstration_route_count": 40,
+    "objective": "mean rollout lateral RMSE + 0.45 peak error + 0.3 forward progress shortfall + 0.15 mean squared steering change",
+    "training_kinematic_rollouts": {
+      "windows": 25,
+      "imitation_only": {
+        "objective": 1.2969068194530393,
+        "mean_rollout_rmse_m": 0.6796897053718567,
+        "worst_excursion_m": 8.375456809997559,
+        "fraction_within_1_85m": 0.92,
+        "mean_progress_shortfall_m": 0.29323914781212806
+      },
+      "after_search": {
+        "objective": 0.4089399881285207,
+        "mean_rollout_rmse_m": 0.17583903670310974,
+        "worst_excursion_m": 1.2953139543533325,
+        "fraction_within_1_85m": 1.0,
+        "mean_progress_shortfall_m": 0.015572086572647095
+      }
+    },
+    "withheld_kinematic_rollouts": {
+      "windows": 17,
+      "imitation_only": {
+        "objective": 1.9181526933892432,
+        "mean_rollout_rmse_m": 0.9058421850204468,
+        "worst_excursion_m": 8.650069236755371,
+        "fraction_within_1_85m": 0.7647058823529411,
+        "mean_progress_shortfall_m": 0.54143039345303
+      },
+      "after_search": {
+        "objective": 0.5887462631436553,
+        "mean_rollout_rmse_m": 0.2536064684391022,
+        "worst_excursion_m": 1.2775529623031616,
+        "fraction_within_1_85m": 1.0,
+        "mean_progress_shortfall_m": 0.02910764449659516
+      }
+    }
+  },
+  "development_holdout_before_final_refit": {
+    "held_groups": [
+      11
+    ],
+    "frames": 1636,
+    "actuators": {
+      "steer": {
+        "mae": 0.15302491188049316,
+        "rmse": 0.2336374819278717
+      },
+      "throttle": {
+        "mae": 0.12290868908166885,
+        "rmse": 0.20742642879486084
+      },
+      "brake": {
+        "mae": 0.05948769673705101,
+        "rmse": 0.17234887182712555
+      }
+    },
+    "braking": {
+      "frames": 196,
+      "recall_at_brake_0.2": 0.8010204081632653
+    },
+    "braking_while_moving": {
+      "frames": 82,
+      "recall_at_brake_0.2": 0.6585365853658537
+    },
+    "mean_replacement_pedal_sensitivity": {
+      "front_object_detections": {
+        "throttle_mean_absolute_change": 0.0913129597902298,
+        "brake_mean_absolute_change": 0.05420073866844177
+      },
+      "front_signal_candidates": {
+        "throttle_mean_absolute_change": 0.03882361575961113,
+        "brake_mean_absolute_change": 0.011795866303145885
+      },
+      "front_color_statistics": {
+        "throttle_mean_absolute_change": 0.0,
+        "brake_mean_absolute_change": 0.0
+      },
+      "side_camera_statistics_and_candidates": {
+        "throttle_mean_absolute_change": 0.036016661673784256,
+        "brake_mean_absolute_change": 0.012202674522995949
+      },
+      "spatial_lidar_density": {
+        "throttle_mean_absolute_change": 0.0,
+        "brake_mean_absolute_change": 0.0
+      },
+      "spatial_radar_density_and_velocity": {
+        "throttle_mean_absolute_change": 0.0,
+        "brake_mean_absolute_change": 0.0
+      }
+    }
+  },
+  "steering_search_final_fit": {
+    "algorithm": "cross-entropy search over the 24 neural output weights and bias",
+    "optimizer_source": "https://doi.org/10.1023/A:1010091220143",
+    "population": 48,
+    "generations": 14,
+    "seed": 2026,
+    "time_step_s": 0.1,
+    "ticks_per_window": 45,
+    "vehicle_model": "fixed-speed rear-axle kinematic bicycle with nominal actor midpoint",
+    "nominal_wheelbase_m": 2.85,
+    "geometry_source": "https://github.com/autowarefoundation/autoware_universe/blob/main/simulator/autoware_carla_interface/README.md",
+    "steering_response_source": "https://github.com/carla-simulator/carla/blob/1.0/LibCarla/source/carla/ros2/AutowareSteeringCompensation.h",
+    "upstream_calibration_speed_mps": 3.0,
+    "demonstration_route_count": 48,
+    "objective": "mean rollout lateral RMSE + 0.45 peak error + 0.3 forward progress shortfall + 0.15 mean squared steering change",
+    "training_kinematic_rollouts": {
+      "windows": 25,
+      "imitation_only": {
+        "objective": 1.405194059294343,
+        "mean_rollout_rmse_m": 0.7515634298324585,
+        "worst_excursion_m": 8.716059684753418,
+        "fraction_within_1_85m": 0.92,
+        "mean_progress_shortfall_m": 0.2619308353960514
+      },
+      "after_search": {
+        "objective": 0.4291239989811729,
+        "mean_rollout_rmse_m": 0.18633967638015747,
+        "worst_excursion_m": 1.2953137159347534,
+        "fraction_within_1_85m": 1.0,
+        "mean_progress_shortfall_m": 0.017971946373581887
+      }
+    }
+  },
+  "final_model_fit_frames": 10086,
+  "training_action_ranges": {
+    "steer": [
+      -0.40973198413848877,
+      0.5660737156867981
+    ],
+    "throttle": [
+      0.0,
+      0.8500000238418579
+    ],
+    "brake": [
+      0.0,
+      1.0
+    ]
+  }
+}

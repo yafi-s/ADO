@@ -3,6 +3,9 @@ from dataclasses import asdict
 import gzip
 import json
 from pathlib import Path
+import shutil
+import subprocess
+import sys
 from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
@@ -33,7 +36,7 @@ class PublicationTest(unittest.TestCase):
     def publish(self, commissioning=False):
         return pub.publish(self.root, "v0.1.0", self.sha, commissioning)
 
-    def test_commissioning(self):
+    def commissioning_files(self):
         for label, rel in pub.COMMISSIONING_FILES:
             if rel.endswith("verification.json"):
                 data = dict(server="1.0", client="1.0", map="Carla/Maps/Town01_Opt",
@@ -42,6 +45,9 @@ class PublicationTest(unittest.TestCase):
                 data = dict(producer=self.producer, trials=[{"seed": 11}],
                             profiles=[dict(mode="native", frames=2)])
             self.put(rel, data)
+
+    def test_commissioning(self):
+        self.commissioning_files()
         build = self.publish(True)
         self.assertEqual(build["status"], "commissioning")
         self.assertIsNone(build["release"])
@@ -114,3 +120,42 @@ class PublicationTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 self.publish()
         self.assertEqual(index.read_bytes(), published)
+
+    def test_development_cli(self):
+        self.commissioning_files()
+        _, summary, _ = self.fixture()
+        media = self.root / "web/media"
+        dest = media / "dev-crossing"
+        dest.mkdir()
+        for path in [*media.glob("*.mp4"), *media.glob("*.jpg")]:
+            path.rename(dest / path.name)
+        key = "dev31-crossing"
+        self.put("web/media/catalog.json", [dict(trial_id=key, path="dev-crossing", cameras=list(pub.CAMERAS))])
+        (self.root / "web/logs").mkdir()
+        shutil.copyfile(self.root / "models/fusion.npz", self.root / "web/logs/dev31-fusion.npz")
+        summary.update(seed=31, scenario="pedestrian", district="train", cohort="development",
+                       model_sha256=summary["policy_version"])
+        row = dict(frame=44, seed=31, scenario="pedestrian", policy="fusion", map="Town01_Opt", sim_time=0.0,
+                   steer=0.1, throttle=0.4, brake=0, speed_mps=0.5, progress_m=summary["progress_m"])
+        self.put("web/logs/dev31-crossing.json", dict(summary=summary, trace=[row]))
+        self.put("web/media/dev-crossing/replay.json", [dict(row, run_id=key)])
+        args = [sys.executable, "-m", "crosswalk.publish_evidence", "--root", str(self.root),
+                "--source-commit", self.sha, "--development"]
+        subprocess.run(args, check=True, capture_output=True)
+        build = pub.read_json(media / "build.json")
+        self.assertEqual(build["status"], "development")
+        self.assertIsNone(build["release"])
+        self.assertEqual([r["trial_id"] for r in build["runs"]], [key])
+        self.assertEqual(build["checkpoints"]["fusion"]["sha256"], build["runs"][0]["model_sha256"])
+        self.assertEqual(build["preview_video"], "./media/dev-crossing/chase.mp4")
+        self.assertNotEqual(subprocess.run([*args, "--commissioning"], capture_output=True).returncode, 0)
+        for changes in ({"cohort": "primary"}, {"district": "heldout"}, {"model_sha256": "0"*64}, {"frames": 2}):
+            with self.subTest(changes=changes):
+                self.put("web/logs/dev31-crossing.json", dict(summary=dict(summary, **changes), trace=[row]))
+                with self.assertRaises(ValueError):
+                    pub.publish(self.root, "v0.1.0", self.sha, development_only=True)
+        self.put("web/logs/dev31-crossing.json", dict(summary=summary, trace=[row]))
+        self.put("web/media/dev-crossing/replay.json", [dict(row, run_id=key, steer=-0.9)])
+        with self.assertRaisesRegex(ValueError, "controls"):
+            pub.publish(self.root, "v0.1.0", self.sha, development_only=True)
+        self.assertEqual(build, pub.read_json(media / "build.json"))

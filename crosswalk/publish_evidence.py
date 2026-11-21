@@ -138,9 +138,20 @@ def training_clip(web, build):
         build["evidence"].append(dict(label="Traffic Manager training footage", url="./media/training-drive.mp4"))
 
 
-def recordings(media, trials, evaluation_id, frames):
+def check_recording(directory, key, frames):
     import cv2
 
+    replay = read_json(directory / "replay.json")
+    require([r["frame"] for r in replay] == frames and all(r["run_id"] == key for r in replay),
+            f"Replay frames differ from telemetry for {key}")
+    for name in CAMERAS:
+        check_video(directory / f"{name}.mp4", len(replay))
+    for name in POSTERS:
+        require(cv2.imread(str(directory / f"{name}.jpg")) is not None, f"Missing poster for {key}/{name}")
+    return replay
+
+
+def recordings(media, trials, evaluation_id, frames):
     catalog = indexed(read_json(media / "catalog.json"))
     require(catalog.keys() == {k for k, t in trials.items() if t.record}, "Unexpected recording catalog")
     paths = {}
@@ -149,16 +160,50 @@ def recordings(media, trials, evaluation_id, frames):
         path = "" if case == "pedestrian" else case
         require(entry["path"] == path and entry["evaluation_id"] == evaluation_id
                 and entry["cameras"] == list(CAMERAS), f"Wrong recording metadata for {key}")
-        directory = media / path
-        replay = read_json(directory / "replay.json")
-        require([r["frame"] for r in replay] == frames[key] and all(r["run_id"] == key for r in replay),
-                f"Replay frames differ from telemetry for {key}")
-        for name in CAMERAS:
-            check_video(directory / f"{name}.mp4", len(replay))
-        for name in POSTERS:
-            require(cv2.imread(str(directory / f"{name}.jpg")) is not None, f"Missing poster for {key}/{name}")
+        check_recording(media / path, key, frames[key])
         paths[key] = path
     return paths
+
+
+def development(root, logs):
+    key, path = "dev31-crossing", "dev-crossing"
+    web = root / "web"
+    media = web / "media"
+    build = commissioning(root, logs)
+    data = read_json(web / f"logs/{key}.json")
+    episode, trace = data["summary"], data["trace"]
+    expected = dict(seed=31, policy="fusion", scenario="pedestrian")
+    require(all(episode[k] == v for k, v in expected.items()) and episode["district"] == "train"
+            and episode["cohort"] == "development" and validate_producer(episode["producer"]) == build["simulator"],
+            "Unexpected development drive, cohort or producer")
+    digest = episode["model_sha256"]
+    weights = web / "logs/dev31-fusion.npz"
+    require(fingerprint(weights) == digest and Model.load(weights).inputs == "fusion", "Wrong development checkpoint")
+    frames = [r["frame"] for r in trace]
+    require(frames and all(type(f) is int for f in frames) and frames == sorted(set(frames))
+            and len(frames) == episode["frames"] and round(len(frames) * 0.1, 2) == episode["duration_s"]
+            and trace[-1]["progress_m"] == episode["progress_m"], "Development trace and summary disagree")
+    entry = indexed(read_json(media / "catalog.json"))[key]
+    require(entry["path"] == path and sorted(entry["cameras"]) == sorted(CAMERAS),
+            "Development recording catalog mismatch")
+    replay = check_recording(media / path, key, frames)
+    for index, (row, recorded) in enumerate(zip(trace, replay)):
+        require(all(row[k] == v for k, v in expected.items()) and row["map"] == build["simulator"]["map"]
+                and row["sim_time"] == round(index * 0.1, 2)
+                and -1 <= row["steer"] <= 1 and 0 <= row["throttle"] <= 1 and 0 <= row["brake"] <= 1
+                and all(recorded[k] == row[k] for k in (*expected, "map", "steer", "throttle", "brake",
+                                                         "sim_time", "progress_m", "speed_mps")),
+                f"Development controls or telemetry disagree at frame {row['frame']}")
+    run = {k: episode[k] for k in ("seed", "policy", "cohort", "district", "outcome", "progress_m", "duration_s")}
+    run.update(trial_id=key, case_id=episode["scenario"], model_sha256=digest,
+               log_url=f"./logs/{key}.json", recording_path=path)
+    for name in CAMERAS:
+        build["evidence"].append(dict(label=f"Development drive · {name} camera", url=f"./media/{path}/{name}.mp4"))
+    build.update(status="development", title="Learned development drive", release=None,
+                 checkpoints=dict(fusion=dict(sha256=digest, url="./logs/dev31-fusion.npz")), runs=[run],
+                 preview_video=f"./media/{path}/chase.mp4", preview_image=f"./media/{path}/chase.jpg",
+                 preview_label="Learned development drive · CARLA 1.0", preview_log=run["log_url"])
+    return build
 
 
 def evaluated(root, logs, tag):
@@ -189,7 +234,8 @@ def evaluated(root, logs, tag):
                 release=release, checkpoints=checkpoints, evidence=evidence, runs=runs)
 
 
-def publish(root, tag, source_commit, commissioning_only=False):
+def publish(root, tag, source_commit, commissioning_only=False, development_only=False):
+    require(not (commissioning_only and development_only), "Choose only one interim publication mode")
     require(re.fullmatch(r"[0-9a-f]{40}", source_commit), "Use a full source commit SHA")
     require(re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", tag), "Expected a version tag such as v0.1.0")
     web = Path(root) / "web"
@@ -201,12 +247,14 @@ def publish(root, tag, source_commit, commissioning_only=False):
         if commissioning_only:
             build = dict(status="commissioning", title="Simulator commissioning", release=None,
                          checkpoints={}, runs=[], **commissioning(root, logs))
+        elif development_only:
+            build = development(root, logs)
         else:
             build = evaluated(root, logs, tag)
         training_clip(web, build)
         preview = "commissioning-chase.jpg" if commissioning_only else "chase.jpg"
-        build.update(source=dict(commit=source_commit, url=f"{REPO}/tree/{source_commit}"),
-                     preview_image=f"./media/{preview}" if (web / "media" / preview).is_file() else None)
+        build["source"] = dict(commit=source_commit, url=f"{REPO}/tree/{source_commit}")
+        build.setdefault("preview_image", f"./media/{preview}" if (web / "media" / preview).is_file() else None)
         write_json(stage / "build.json", build)
         (web / "logs").mkdir(exist_ok=True)
         (web / "media").mkdir(exist_ok=True)
@@ -221,9 +269,11 @@ def main():
     parser.add_argument("--root", type=Path, default=Path("."))
     parser.add_argument("--tag", default="v0.1.0")
     parser.add_argument("--source-commit", required=True)
-    parser.add_argument("--commissioning", action="store_true")
+    interim = parser.add_mutually_exclusive_group()
+    interim.add_argument("--commissioning", action="store_true")
+    interim.add_argument("--development", action="store_true")
     args = parser.parse_args()
-    result = publish(args.root, args.tag, args.source_commit, args.commissioning)
+    result = publish(args.root, args.tag, args.source_commit, args.commissioning, args.development)
     print(f"Indexed {len(result['runs'])} drives ({result['status']}).")
 
 

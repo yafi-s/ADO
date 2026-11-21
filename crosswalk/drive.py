@@ -110,6 +110,9 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             stack.callback(body.close)
         visuals = live is not None or recording is not None
         display_path = [_xy(p) for p in scene.route[:-1:4]] + [_xy(scene.route[-1])] if visuals else []
+        if visuals:
+            from .tracking import Tracker
+            spatial_tracker = Tracker()
         rig = Rig(world, scene.ego, visuals=visuals, range_only=range_only)
         stack.callback(rig.close)
         # Settle the suspension and prime the GPU cameras while all actors wait.
@@ -191,9 +194,12 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             trace.append(row)
             if visuals:
                 lp, rp = _sensor_plot(obs["lidar"], obs["radar"])
+                pose = scene.ego.get_transform()
+                tracks = spatial_tracker.update(obs["lidar"], obs["radar"], detections if step % 2 == 0 else [],
+                                                (pose.location.x, pose.location.y, pose.rotation.yaw), step*DT)
                 telemetry = dict(row, lidar=lp, radar=rp, detections=detections, detection_age_s=(step % 2)*DT,
                                  run_id=run_id, destination=state["destination"], crossing_delay=crossing_delay,
-                                 observer_map=_observer_map(scene, display_path))
+                                 observer_map=_observer_map(scene, display_path), tracks=tracks)
                 if recording:
                     recording.append(telemetry, obs)
                 if live:

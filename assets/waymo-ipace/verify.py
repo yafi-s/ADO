@@ -10,9 +10,9 @@ OUT=Path(__file__).resolve().parent
 WHEELS={f"Wheel_{a}_{s}":(x,sign*track,.365)
         for x,track,a in ((1.495,.8205,"Front"),(-1.495,.8305,"Back"))
         for sign,s in ((1,"Left"),(-1,"Right"))}
-ANCHORS={"roof_lidar":(-.176,0,1.958),"roof_camera_front":(.494,0,1.656),
-         "perimeter_front_left":(1.67,1.006,.974),"perimeter_front_right":(1.67,-1.006,.974),
-         "perimeter_rear_left":(-2.017,1.006,.826),"perimeter_rear_right":(-2.017,-1.006,.826)}
+ANCHORS={"roof_lidar":(-.176,0,1.958),"roof_camera_front":(.399,0,1.656),
+         "perimeter_front_left":(1.688,1.006,.952),"perimeter_front_right":(1.688,-1.006,.952),
+         "perimeter_rear_left":(-2.075,1.006,.826),"perimeter_rear_right":(-2.075,-1.006,.826)}
 
 
 def bounds(objects):
@@ -46,6 +46,9 @@ def check_anchors():
     for name,xyz in ANCHORS.items():
         ob=bpy.data.objects["sensor_origin_"+name]
         assert (ob.matrix_world.translation-Vector(xyz)).length<.001,(name,ob.matrix_world.translation)
+        expected=(0,1,0) if name.endswith("_left") else (0,-1,0) if name.endswith("_right") else (1,0,0)
+        forward=ob.matrix_world.to_quaternion() @ Vector((1,0,0))
+        assert (forward-Vector(expected)).length<.001,(name,forward)
 
 
 def point(ob):
@@ -89,7 +92,7 @@ def main():
     studio=bpy.data.collections["90 | Photography studio"]
     parts=[ob for ob in bpy.context.scene.objects if ob.name not in studio.objects]
     targets=bounds(parts)
-    assert abs(targets[0][2])<.0001 and abs(targets[1][2]-2.039)<.001
+    assert abs(targets[0][2])<.0001 and abs(targets[1][2]-2.039)<.001,targets
     assert abs(targets[1][1]-1.0695)<.001 and abs(targets[0][1]+1.0695)<.001
     body=bounds(bpy.data.collections["01 | Painted exterior"].objects)
     assert abs(body[1][0]-body[0][0]-4.682)<.006,body

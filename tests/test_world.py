@@ -44,10 +44,21 @@ def fake_scene(seed, kind="braking", perturb=False, road_map=None, signals=(), *
     world.get_actors.return_value.filter.return_value = signals
     person = Mock()
     person.id = "walker.pedestrian.0001"
-    world.get_blueprint_library.return_value.filter.return_value = [person]
+    person.has_attribute.return_value = False
+    def matching_blueprints(pattern):
+        if pattern.startswith("walker."):
+            return [person]
+        bp = Mock()
+        bp.id = pattern
+        bp.has_attribute.return_value = False
+        return [bp]
+    catalog = world.get_blueprint_library.return_value
+    catalog.filter.side_effect = matching_blueprints
+    catalog.find.side_effect = lambda name: matching_blueprints(name)[0]
 
     def spawn(blueprint, transform):
         actor = Mock()
+        actor.type_id = blueprint.id
         actor.bounding_box = carla.BoundingBox(carla.Location(), carla.Vector3D(2, 1, 1))
         actor.get_location.return_value = transform.location
         actor.get_transform.return_value = transform
