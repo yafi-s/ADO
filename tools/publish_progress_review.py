@@ -87,6 +87,10 @@ def create():
         result = (f'At {lo}–{hi} m along the route, the car drove at a median '
                   f'{a["median_kmh"]:.1f} km/h before and {b["median_kmh"]:.1f} km/h after. '
                   f'Elapsed time was {a["seconds"]:.1f} s before and {b["seconds"]:.1f} s after.')
+        if lo == 872:
+            later_before, later_after = section(old, 882, 892), section(new, 882, 892)
+            result += (f' In the next 10 m, median speed rose from {later_before["median_kmh"]:.1f} to '
+                       f'{later_after["median_kmh"]:.1f} km/h.')
         add(title, result, ("Earlier recording", camera("city-life", a["middle_frame"], view)),
             ("Revised recording", camera("city-progress", b["middle_frame"], view)))
     trials = read(STUDY / "trials/comparison.json")["cases"]

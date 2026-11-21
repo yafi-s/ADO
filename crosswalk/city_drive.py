@@ -85,7 +85,7 @@ class LoggedDriver:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", type=Path, default=PROJECT / "models/city-clearance/candidate.npz")
+    parser.add_argument("--model", type=Path, default=PROJECT / "models/city-progress/candidate.npz")
     parser.add_argument("--seed", type=int, default=211)
     parser.add_argument("--crossing-delay", type=float, default=0., help="Additional pedestrian departure delay in simulated seconds")
     parser.add_argument("--max-steps", type=int, default=9000)

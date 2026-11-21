@@ -1,5 +1,7 @@
 # City Progress driver
 
+The v0.6 Windows Town03 launcher selects this checkpoint and the populated City Life profile. The High-quality recorded drive, matched controls and slower sections are documented in the [driving review](../../results/city-progress/README.md).
+
 The City Progress checkpoint extends the learned Town03 City Clearance driver. A second speed proposal uses current pavement visibility and the curvature of the actual navigation path. An approaching lateral surface can lower the final request to a complete stop. The driver keeps the original learned steering and pedal calibration.
 
 ## What was fitted
