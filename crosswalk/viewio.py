@@ -42,9 +42,10 @@ def _json(data):
     return json.dumps(data, separators=(",", ":"), allow_nan=False).encode("utf-8")
 
 
-def _jpegs(shots):
+def _jpegs(shots, *, perimeter=False):
     result = {}
-    for name in CAMERAS:
+    cameras = CAMERAS + tuple(name for name in ("rear_left", "rear_right") if name in shots) if perimeter else CAMERAS
+    for name in cameras:
         image = shots[name]
         if image.ndim != 3 or image.shape[2] != 3 or image.dtype.name != "uint8":
             raise ValueError(f"{name} camera must be an RGB uint8 image")
@@ -317,7 +318,7 @@ class Live:
             return request
 
     def publish(self, telemetry, shots):
-        cameras = {name: base64.b64encode(image).decode("ascii") for name, image in _jpegs(shots).items()}
+        cameras = {name: base64.b64encode(image).decode("ascii") for name, image in _jpegs(shots, perimeter=True).items()}
         metadata = {"map_url": "./api/map"} if self.map_bytes is not None else {}
         frame = _json({**telemetry, **metadata, "cameras": cameras})
         with self._lock:

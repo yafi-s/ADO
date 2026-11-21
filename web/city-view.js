@@ -1,6 +1,7 @@
 import * as T from './vendor/city-view/three-view.js';
 import {buildRoadUser} from './road-users.js';
 import {loadReplay} from './replay-pack.mjs';
+import {SignalHeads, townFeatures} from './signal-heads.js';
 
 const el = id => document.getElementById(id);
 const finite = Number.isFinite;
@@ -75,6 +76,7 @@ class CityScene {
     this.renderer.toneMappingExposure = 1.05;
     this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.6));
     this.scene = new T.Scene();
+    this.measuredSignals = new SignalHeads(this.scene);
     this.look = PALETTES[displayMode()];
     this.scene.background = new T.Color(this.look.sky);
     this.scene.fog = new T.Fog(this.look.sky, 350, 2400);
@@ -194,13 +196,14 @@ class CityScene {
       this[name] = null;
     }
     this.grid.clear();
+    this.measuredSignals.setMasts([]);
     this.floor.position.y = -.16;
     this.routeKey = '';
     if (this.lastFrame) this.show(this.lastFrame);
     this.dirty = true;
     issue('map-issue');
     try {
-      if (typeof url !== 'string' || !/^\.\/media\/(?:[\w-]+\/)*[\w-]+\.json$/i.test(url)) throw new Error('Invalid road map path');
+      if (typeof url !== 'string' || (url !== './api/map' && !/^\.\/media\/(?:[\w-]+\/)*[\w-]+\.json$/i.test(url))) throw new Error('Invalid road map path');
       const data = await read(url, request.control.signal, 30000);
       if (this.mapRequest !== request) return;
       if (mapName && data.producer?.map !== mapName) throw new Error('Road geometry does not match the recording');
@@ -242,6 +245,11 @@ class CityScene {
       this.dirty = true;
       this.mapUrl = url;
       this.mapName = mapName;
+      townFeatures(data.producer?.map).then(features=>{
+        if(this.mapUrl!==url || features?.map!==data.producer?.map)return;
+        this.measuredSignals.setMasts(features?.signals,(x,y)=>this.height(x,y));
+        this.measuredSignals.update(this.lastFrame);this.dirty=true;
+      });
       this.routeKey = '';
       if (this.lastFrame) this.show(this.lastFrame);
       if (this.mode === 'overview' || !this.ego.visible) this.positionCamera(true);
@@ -296,6 +304,7 @@ class CityScene {
   clear() {
     this.dirty = true;
     this.lastFrame = null;
+    this.measuredSignals.update(null);
     this.ego.visible = false;
     this.frameCamera = true;
     this.actors.forEach(a => { a.visible = false; });
@@ -352,6 +361,7 @@ class CityScene {
     const map = frame?.observer_map;
     if (!point(map?.ego, 3)) { this.clear(); return; }
     this.lastFrame = frame;
+    this.measuredSignals.update(frame);
     const path = Array.isArray(map.path) ? map.path : [];
     const routeKey = JSON.stringify(path);
     if (routeKey !== this.routeKey) {
@@ -563,7 +573,7 @@ async function monitor(serial, signal) {
         replayRequest?.abort();
         setMode('live', 'Live');
         resetDrive();
-        void scene?.loadTown();
+        void scene?.loadTown(frame.map_url, frame.map?.split('/').at(-1) ?? null);
         activeLiveId = frame.run_id;
       }
       display(frame);

@@ -124,7 +124,7 @@ class WaymoReplayTests(TestCase):
                 continue
             for wanted in loads.findall((ROOT / "web" / name).read_text(encoding="utf-8")):
                 self.assertIn((Path(name).parent / wanted).as_posix(), PUBLIC_FILES, f"{name} loads {wanted}")
-        for module in ("/object-memory.mjs", "/replay-pack.mjs"):
+        for module in ("/object-memory.mjs", "/replay-pack.mjs", "/lamp-observations.mjs", "/sensor-returns.mjs"):
             status, headers, _ = self.request(module)
             self.assertEqual((status, headers["Content-Type"]), (200, "text/javascript"), module)
 

@@ -28,6 +28,11 @@ export const familyOf = label => label === 'person' ? 'person' : WHEELED.has(lab
 
 // The front camera sits this far ahead of the vehicle origin and sees 90 degrees (crosswalk/robotaxi.py).
 const CAMERA_X = 1.30;
+// Versioned optical registration from crosswalk/camera_geometry.py. Positions are vehicle-local.
+const SURROUND_VIEWS = [
+  ['front', CAMERA_X, 0, 0], ['left', 1.30, -.75, -70], ['right', 1.30, .75, 70],
+  ['rear_left', -1.10, -.70, -145], ['rear_right', -1.10, .70, 145]
+].map(([name,x,y,yaw])=>({name,x,y,c:Math.cos(yaw*rad),s:Math.sin(yaw*rad)}));
 const VIEW_SLOPE = .85;         // inside this share of the half field of view counts as clear view
 const VIEW_RANGE_M = 40;
 
@@ -143,15 +148,21 @@ function validSample(sample) {
 // Does anything recorded in this frame vouch for a remembered object at ego-frame (fx, fy)?
 // `local` is its heading in the vehicle frame, in radians.
 function evidence(object, fx, fy, local, frame) {
-  const depth = fx - CAMERA_X;
-  const inView = depth > 2.5 && Math.abs(fy) < VIEW_SLOPE * depth && Math.hypot(fx, fy) < VIEW_RANGE_M;
-  let box = false, past = false;
-  if (inView) {
+  const surround = frame.perception_version === 'surround-v1' && frame.camera_detections;
+  let inView = false, box = false, past = false;
+  const range = Math.hypot(fx,fy);
+  for (const view of SURROUND_VIEWS) {
+    if (!surround && view.name !== 'front') break;
+    const dx=fx-view.x, dy=fy-view.y;
+    const depth=dx*view.c+dy*view.s, side=dy*view.c-dx*view.s;
+    if (depth<=2.5 || Math.abs(side)>=VIEW_SLOPE*depth || range>=VIEW_RANGE_M) continue;
+    inView=true;
     // Where the object would sit across the camera image, 0 at the left edge and 1 at the right,
     // and the least share of the image's width it would fill at this range.
-    const u = .5 + .5 * fy / depth;
+    const u = .5 + .5 * side / depth;
     const fills = .5 * (object.family === 'person' ? .5 : Math.min(object.width, 1.8)) / depth;
-    for (const item of Array.isArray(frame.detections) ? frame.detections : []) {
+    const boxes = surround ? frame.camera_detections[view.name] : frame.detections;
+    for (const item of Array.isArray(boxes) ? boxes : []) {
       const span = item?.box;
       if (!Array.isArray(span) || familyOf(item.label) !== object.family || u < span[0] - .02 || u > span[2] + .02) continue;
       // A box far too small to be this object is something farther off, seen where it would stand.
@@ -197,7 +208,11 @@ function measure(object, sample, ctx, deps, state) {
   const sinceHit = fresh ? 0 : clamp(t - object.lastHit, 0, 1.5);
   const sinceDrawn = fresh ? 0 : clamp(t - object.t, 0, .8);
 
-  object.votes[label] = (object.votes[label] || 0) + (finite(s.confidence) ? clamp(s.confidence, .05, 1) : .05);
+  // A depth-only update to a classified track carries its existing class.
+  // Count the class vote only when a camera supplied new evidence.
+  if (fresh || !Array.isArray(s.cameras) || s.cameras.length) {
+    object.votes[label] = (object.votes[label] || 0) + (finite(s.confidence) ? clamp(s.confidence, .05, 1) : .05);
+  }
   // The class with the most accumulated confidence names the object. It must lead clearly to take over.
   let leader = object.label;
   for (const [name, weight] of Object.entries(object.votes)) if (weight > (object.votes[leader] || 0)) leader = name;
@@ -310,9 +325,14 @@ function witnessed(object, sample, ctx, state) {
   // Two measurements confirm an object the detector was fairly sure of, three one it was not:
   // boxes near the detector's threshold, twice in a row, were bollards. Joining a drive part-way,
   // the tracker's own second measurement stands in; it reports a speed only from then on.
-  const sure = s.confidence >= SURE.confidence && range <= SURE.range;
+  // A near pedestrian with a camera class, lidar depth and independent Doppler
+  // deserves an immediate symbol, even if this is its first camera box.
+  const closePerson = s.label === 'person' && range <= 12 && s.confidence >= .35 &&
+    ['rgb','lidar','radar'].every(source => s.sources?.includes(source));
+  const sure = (s.confidence >= SURE.confidence && range <= SURE.range) || closePerson;
   const joined = state.warm < GRACE_S && finite(s.speed_mps);
   if (sure || joined || object.hits >= 3 || (object.hits >= 2 && object.peak >= FAIR)) {
+    if (!object.confirmed && closePerson) object.alpha = .72;
     if (!object.confirmed && state.warm < GRACE_S) object.alpha = 1 - 1e-9;   // joining mid-drive: show what is tracked at once
     object.confirmed = true;
   }
@@ -354,9 +374,16 @@ export function advance(state, ctx, deps = {}) {
   // The tracker's own continuity comes first.
   for (const sample of samples) {
     const object = state.objects.get(state.ids.get(sample.s.id));
-    if (!object || taken.has(object.key) || object.family !== sample.family) continue;
+    if (!object || taken.has(object.key)) continue;
+    const classified = object.family === 'unknown' && sample.family !== 'unknown' && sample.s.cameras?.length;
+    if (object.family !== sample.family && !classified) continue;
     const [px, pz] = expected(object);
     if (Math.hypot(sample.mx - px, sample.mz - pz) <= 5) {
+      if (classified) {
+        object.family = sample.family;
+        object.label = sample.label;
+        object.votes = {};
+      }
       sample.object = object; taken.add(object.key);
     }
   }
@@ -387,6 +414,7 @@ export function advance(state, ctx, deps = {}) {
     let owner = null;
     for (const object of state.objects.values()) {
       if (taken.has(object.key) && object.family === sample.family &&
+          frame.perception_version !== 'surround-v1' &&
           Math.hypot(sample.mx - object.raw.x, sample.mz - object.raw.z) <= Math.max(1, object.length / 2 + .5)) {
         owner = object;
         break;
@@ -463,11 +491,12 @@ export function advance(state, ctx, deps = {}) {
     // The vehicle is where the object was remembered, or has left it behind.
     const overrun = unseen > GRACE_S && Math.abs(fx) < EGO_HALF.length && Math.abs(fy) < EGO_HALF.width;
     if (overrun) leave(object, 'driven through');
-    else if (fx < -BEHIND_M) leave(object, 'passed');
+    else if (fx < -BEHIND_M && frame.perception_version !== 'surround-v1') leave(object, 'passed');
+    else if (frame.perception_version === 'surround-v1' && unseen > CARRY_LIMIT_S) leave(object, 'depth support expired');
     else if (Math.hypot(fx, fy) > RANGE_M) leave(object, 'out of range');
 
     const held = unseen > GRACE_S;
-    const offRoad = object.family === 'wheeled' && deps.laneDistance ? deps.laneDistance(object.x, object.z) > OFF_ROAD_M : false;
+    const offRoad = frame.perception_version !== 'surround-v1' && object.family === 'wheeled' && deps.laneDistance ? deps.laneDistance(object.x, object.z) > OFF_ROAD_M : false;
     const shown = !object.leaving && !offRoad;
     object.alpha = toward(object.alpha, shown ? 1 : 0, dt / (shown ? FADE_IN_S : overrun ? .15 : FADE_OUT_S));
     object.solid = toward(object.solid, held ? REMEMBERED : 1, dt / DIM_S);
@@ -514,5 +543,44 @@ export class ObjectMemory {
     }
     this.ctx = ctx;
     return {ctx, objects};
+  }
+}
+
+// Replay the same sensor observations whether a rider scrubs or plays straight through.
+// Checkpoints keep a long drive seekable without retaining a full tracker copy at every frame.
+export class ReplayMemory {
+  constructor(deps) {
+    this.deps = deps;
+  }
+  at(frames, index, heightAt) {
+    if (frames !== this.frames) {
+      this.frames = frames;
+      this.checkpoints = [];
+      this.recent = new Map();
+      this.index = -1;
+      this.ctx = null;
+      this.state = createState();
+    }
+    if (this.recent.has(index)) return this.recent.get(index);
+    const stride = 100;
+    const block = Math.min(Math.floor(index / stride), this.checkpoints.length - 1);
+    const checkpoint = this.checkpoints[block];
+    if (index <= this.index || (checkpoint && this.index < block * stride - 1)) {
+      this.index = block * stride - 1;
+      this.ctx = checkpoint.ctx;
+      this.state = structuredClone(checkpoint.state);
+      this.recent.clear();
+    }
+    while (this.index < index) {
+      const i = ++this.index;
+      if (i % stride === 0 && !this.checkpoints[i / stride]) {
+        this.checkpoints[i / stride] = {ctx: this.ctx, state: structuredClone(this.state)};
+      }
+      this.ctx = contextOf(frames[i], this.ctx, heightAt, i / 10);
+      const objects = advance(this.state, this.ctx, this.deps);
+      this.recent.set(i, {ctx: this.ctx, objects});
+      if (this.recent.size > 2) this.recent.delete(this.recent.keys().next().value);
+    }
+    return this.recent.get(index);
   }
 }

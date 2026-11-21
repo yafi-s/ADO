@@ -1,0 +1,621 @@
+{
+  "trial_id": "overtake-clear",
+  "case": "clear",
+  "policy": {
+    "path": "candidate.npz",
+    "sha256": "78b84c5ead7ba81d34a354b0cf6c509c50c6a8e6bc6beb16f4360b2ab530c634",
+    "schema": "ado-city-cruise-v1",
+    "camera_profile": {
+      "camera_ray_tracing": false,
+      "ground_truth": "native",
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0
+    },
+    "camera_profile_source_sha256": "03786f64393014eae5a8b15cef25f8e4ca0d41b84fbaa9a642ddb30c677b570f",
+    "code_sha256": {
+      "drive.py": "1aeddcf6c17b5f8ff39b46c5b3aa2487df26f7d5b1c39a25f96d75f5ff6e29fb",
+      "journey.py": "ddb6449399d154d5fbfac1f236bec0f534c338b4c5705e7343caf1b9d295ac79",
+      "city_cruise.py": "37619c97b49942763f0dc02e01ae5e58a00d4622f97bb2a297d8131021aaceee",
+      "city_map.py": "c7771eb55798e5dbc2b92874bc6e5c56435e986c8e03119ea1df77d386151521",
+      "control.py": "dbbdc96268e8450f29a04f42b9b418bfdb2190e262e0d6e889fb31c893eee5c1",
+      "lamp.py": "90a551a1e7587d8df46b8b99603ac6c3a670d9673c326e14cb1da7e7c26e934e",
+      "runtime.py": "4adfe36c062fb47ef278dd2a5631bf64e67631577282dcacbab99cbecb76a4f9",
+      "sensors.py": "f220d0578732e1b51586f653ce1c1abe28d917f40130be0e5b0de5375862748c",
+      "showcase.py": "78674d9b1e3e736d5ef7e8ead1ee6b74db11853a168442a7fc3acabaf71df85d",
+      "behavior_v2.py": "a996e4f630912183e7af728ff64b7e1951a3f404660663f6b7f9c80b5769f06f",
+      "journey_ambient.py": "7eeec4df8ed3049ea6b08a3abd5e84ef9b2af9aef0f7d03a3026829c7e9edec4",
+      "urban_map.py": "bc074ac2fee8a70dd893dbd659f9fd284c933034b57f6afeb9713765396544a8",
+      "journey_capture.py": "d584df88ce5f9eab90a89f92a1474600dbb8a6f0b68d3edc41ee69f64dc0d27f",
+      "camera_geometry.py": "f3f6c7e23057937ae43355e8c39c9f2dc96b270fd8552a0275fe1262d78aeec5",
+      "overtake.py": "8ffd32d080ef276180ff5803cc4ff7c401e6d4a2373f1d82df101e96d1097aaf",
+      "radar_geometry.py": "a6220e1cfd56f1452137ce3f94b168bfc09099b9a76e48fbc42d66bab199cd08",
+      "signal_observer.py": "6cc07c2b8179a930189a1e5a6e30de6af0f6dda0f4feed4f8ebcb84571c25561",
+      "surround.py": "d4b4c4802ffc517d0925167b90104af4ca50ea434ba3923b3d1bf69ee40f0671",
+      "surround_vision.py": "e24ab94b11cf0025057d5b669c3e60ab58f821d93889382bb3483a64c5f1de02",
+      "tracking.py": "0eb6aeeb79758e800c4f06488e6a100cda28805383932933faa98c11e99c4255"
+    },
+    "tactical_sha256": "570ece96d6cdf2d8ed72c6253446d58d2a4d2575d0e1d9d1555bf0e55519d13f"
+  },
+  "summary": {
+    "scenario": "overtake",
+    "seed": 211,
+    "policy": "ado-city-cruise-v1",
+    "weather": "ClearNoon",
+    "road_id": 4,
+    "lane_id": 3,
+    "start_xy": [
+      -74.05,
+      114.53
+    ],
+    "outcome": "complete",
+    "frames": 116,
+    "duration_s": 11.6,
+    "progress_m": 68.102,
+    "route_length_m": 68.0,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 1.731,
+    "spawn_lateral_m": 0.0,
+    "spawn_yaw_deg": 0.0,
+    "min_hazard_gap_m": 8.807,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "Boulevard",
+    "destination": "Boulevard",
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "rear_left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "rear_right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      },
+      "surround": {
+        "coordinates": "ego metres, +x forward, +y right, +z up; level mounts, yaw in degrees",
+        "camera_mounts": {
+          "front": {
+            "x": 1.3,
+            "y": 0.0,
+            "z": 1.65,
+            "yaw": 0.0,
+            "width": 640,
+            "height": 360,
+            "hfov": 90.0
+          },
+          "left": {
+            "x": 1.3,
+            "y": -0.75,
+            "z": 1.65,
+            "yaw": -70.0,
+            "width": 320,
+            "height": 180,
+            "hfov": 90.0
+          },
+          "right": {
+            "x": 1.3,
+            "y": 0.75,
+            "z": 1.65,
+            "yaw": 70.0,
+            "width": 320,
+            "height": 180,
+            "hfov": 90.0
+          },
+          "rear_left": {
+            "x": -1.1,
+            "y": -0.7,
+            "z": 1.72,
+            "yaw": -145.0,
+            "width": 320,
+            "height": 180,
+            "hfov": 90.0
+          },
+          "rear_right": {
+            "x": -1.1,
+            "y": 0.7,
+            "z": 1.72,
+            "yaw": 145.0,
+            "width": 320,
+            "height": 180,
+            "hfov": 90.0
+          }
+        },
+        "lidar_mount_xyz": [
+          0.0,
+          0.0,
+          2.3
+        ],
+        "lidar_horizontal_fov_deg": 360.0,
+        "lidar_rotation_hz": 10.0,
+        "lidar_range_m": 60.0,
+        "radar_horizontal_fov_deg": 36,
+        "radar_facing": "front",
+        "corner_radars": {
+          "radar_front_left": {
+            "x": 1.85,
+            "y": -0.85,
+            "z": 0.82,
+            "yaw": -45.0,
+            "range": 40,
+            "horizontal_fov": 100,
+            "vertical_fov": 12,
+            "points_per_second": 4500,
+            "sensor_tick": 0,
+            "noise_seed": 33
+          },
+          "radar_front_right": {
+            "x": 1.85,
+            "y": 0.85,
+            "z": 0.82,
+            "yaw": 45.0,
+            "range": 40,
+            "horizontal_fov": 100,
+            "vertical_fov": 12,
+            "points_per_second": 4500,
+            "sensor_tick": 0,
+            "noise_seed": 34
+          },
+          "radar_rear_left": {
+            "x": -2.05,
+            "y": -0.85,
+            "z": 0.82,
+            "yaw": -135.0,
+            "range": 40,
+            "horizontal_fov": 100,
+            "vertical_fov": 12,
+            "points_per_second": 4500,
+            "sensor_tick": 0,
+            "noise_seed": 35
+          },
+          "radar_rear_right": {
+            "x": -2.05,
+            "y": 0.85,
+            "z": 0.82,
+            "yaw": 135.0,
+            "range": 40,
+            "horizontal_fov": 100,
+            "vertical_fov": 12,
+            "points_per_second": 4500,
+            "sensor_tick": 0,
+            "noise_seed": 36
+          }
+        },
+        "mount_readback": {
+          "frame": 7783,
+          "sensors": {
+            "front": {
+              "xyz_m": [
+                1.3,
+                -0.0,
+                1.65
+              ],
+              "translation_error_m": 4.4128171606793695e-06,
+              "rotation_error_deg": 0.0
+            },
+            "left": {
+              "xyz_m": [
+                1.3,
+                -0.75001,
+                1.65
+              ],
+              "translation_error_m": 8.33198108147329e-06,
+              "rotation_error_deg": 0.0
+            },
+            "right": {
+              "xyz_m": [
+                1.3,
+                0.75,
+                1.65
+              ],
+              "translation_error_m": 2.4815438908163137e-06,
+              "rotation_error_deg": 0.009024707306757602
+            },
+            "rear_left": {
+              "xyz_m": [
+                -1.1,
+                -0.7,
+                1.72
+              ],
+              "translation_error_m": 4.096022692306274e-06,
+              "rotation_error_deg": 0.0
+            },
+            "rear_right": {
+              "xyz_m": [
+                -1.1,
+                0.7,
+                1.72
+              ],
+              "translation_error_m": 6.8331878492278175e-06,
+              "rotation_error_deg": 0.0
+            },
+            "lidar": {
+              "xyz_m": [
+                0.0,
+                -0.0,
+                2.3
+              ],
+              "translation_error_m": 1.2856269714555692e-06,
+              "rotation_error_deg": 0.0
+            },
+            "radar": {
+              "xyz_m": [
+                2.0,
+                -0.0,
+                0.9
+              ],
+              "translation_error_m": 4.4315824148177044e-06,
+              "rotation_error_deg": 0.0
+            },
+            "radar_front_left": {
+              "xyz_m": [
+                1.85001,
+                -0.85001,
+                0.82
+              ],
+              "translation_error_m": 8.403744955485183e-06,
+              "rotation_error_deg": 0.0
+            },
+            "radar_front_right": {
+              "xyz_m": [
+                1.85,
+                0.85,
+                0.82
+              ],
+              "translation_error_m": 5.147770995442577e-06,
+              "rotation_error_deg": 0.0
+            },
+            "radar_rear_left": {
+              "xyz_m": [
+                -2.05,
+                -0.85,
+                0.82
+              ],
+              "translation_error_m": 3.3149738269288146e-06,
+              "rotation_error_deg": 0.0
+            },
+            "radar_rear_right": {
+              "xyz_m": [
+                -2.05,
+                0.85,
+                0.82
+              ],
+              "translation_error_m": 2.861411756648921e-07,
+              "rotation_error_deg": 0.0
+            }
+          }
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 0,
+      "vehicles": 0
+    },
+    "sensor_configuration": "five-camera-360-lidar-five-radar",
+    "route_id": "town03-road4-tactical-study",
+    "road_ids": [
+      4
+    ],
+    "junction_ids": [],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": false,
+    "closest_in_path_speed_mps": 7.26,
+    "wall_seconds": 34.956
+  },
+  "score": {
+    "case": "clear",
+    "frames": 116,
+    "collisions": 0,
+    "yield_s": 0.0,
+    "first_yield_s": null,
+    "first_commit_s": 0.5,
+    "clearance_at_commit_m": null,
+    "first_alongside_s": 6.0,
+    "completed_pass_s": 7.8,
+    "lead_travel_m": 9.038,
+    "lead_speed_during_pass_mps": 1.244,
+    "minimum_passing_clearance_m": 1.535,
+    "minimum_adjacent_gap_while_yielding_m": null,
+    "max_yield_lateral_error_m": null,
+    "ego_travel_m": 68.102,
+    "maximum_source_displacement_m": 3.516,
+    "passed": true
+  },
+  "observer": {
+    "requested": {
+      "image_size_x": "960",
+      "image_size_y": "540",
+      "fov": "78",
+      "sensor_tick": "0",
+      "enable_postprocess_effects": "true",
+      "use_ray_tracing": "false",
+      "enable_dlss": "true",
+      "dlss_screen_percentage": "75"
+    },
+    "actor_attributes": {
+      "image_size_x": "960",
+      "image_size_y": "540",
+      "fov": "78",
+      "sensor_tick": "0",
+      "enable_postprocess_effects": "true",
+      "use_ray_tracing": "false",
+      "enable_dlss": "true",
+      "dlss_screen_percentage": "75"
+    },
+    "dlss_gpu_active": null,
+    "mount_vehicle_local": {
+      "x": -7.8,
+      "y": 0.55,
+      "z": 3.4,
+      "pitch": -10.5,
+      "yaw": -2.0
+    },
+    "blueprint": "sensor.camera.rgb"
+  },
+  "ego_actor_id": 579,
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town03_Opt"
+  },
+  "settings": {
+    "synchronous_mode": true,
+    "no_rendering_mode": false,
+    "fixed_delta_seconds": 0.1,
+    "substepping": true,
+    "max_substep_delta_time": 0.01,
+    "max_substeps": 10
+  },
+  "start": 8,
+  "count": 116,
+  "first_frame": 7791,
+  "last_frame": 7906,
+  "poster_frame": 7851,
+  "purpose": "Supplemental tactical study with a moving lead",
+  "title": "Pass a moving car",
+  "catalog_entry": {
+    "label": "Pass a moving car",
+    "path": "overtake-clear",
+    "trial_id": "overtake-clear",
+    "cameras": [
+      "chase",
+      "front",
+      "left",
+      "right",
+      "rear_left",
+      "rear_right"
+    ],
+    "cohort": "tactical-study",
+    "benchmark_member": false,
+    "selection_note": "Supplemental Town03 moving-lead study. The city driver selects its pass from onboard range measurements.",
+    "district": "Boulevard",
+    "map": "Town03_Opt",
+    "map_url": "./media/overtake-clear/town.json",
+    "manifest": "./media/overtake-clear/manifest.json",
+    "replay_pack_url": "./media/overtake-clear/replay-pack.json.gz",
+    "replay_pack_sha256": "e1b6689388868b654b0d9b493f94ef02c40be2fa97545cfa7a0691b01091af2f"
+  },
+  "cohort": "tactical-study",
+  "benchmark_member": false,
+  "selection_note": "Supplemental Town03 moving-lead study. The city driver selects its pass from onboard range measurements.",
+  "camera_videos": {
+    "chase": {
+      "codec_name": "h264",
+      "width": 960,
+      "height": 540,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "10/1",
+      "nb_read_frames": "116"
+    },
+    "front": {
+      "codec_name": "h264",
+      "width": 640,
+      "height": 360,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "10/1",
+      "nb_read_frames": "116"
+    },
+    "left": {
+      "codec_name": "h264",
+      "width": 320,
+      "height": 180,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "10/1",
+      "nb_read_frames": "116"
+    },
+    "right": {
+      "codec_name": "h264",
+      "width": 320,
+      "height": 180,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "10/1",
+      "nb_read_frames": "116"
+    },
+    "rear_left": {
+      "codec_name": "h264",
+      "width": 320,
+      "height": 180,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "10/1",
+      "nb_read_frames": "116"
+    },
+    "rear_right": {
+      "codec_name": "h264",
+      "width": 320,
+      "height": 180,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "10/1",
+      "nb_read_frames": "116"
+    }
+  },
+  "perimeter_views": [
+    "left",
+    "right",
+    "rear_left",
+    "rear_right"
+  ],
+  "quality_requested": "Low",
+  "passed": true,
+  "frame_period_s": 0.1,
+  "video": {
+    "codec_name": "h264",
+    "width": 960,
+    "height": 540,
+    "pix_fmt": "yuv420p",
+    "r_frame_rate": "10/1",
+    "nb_read_frames": "116"
+  },
+  "front_video": {
+    "codec_name": "h264",
+    "width": 640,
+    "height": 360,
+    "pix_fmt": "yuv420p",
+    "r_frame_rate": "10/1",
+    "nb_read_frames": "116"
+  },
+  "replay": "replay.json",
+  "telemetry": "telemetry.json",
+  "sha256": {
+    "chase.jpg": "76fa8d52aa86361c1b03e54a46c88a7109154d74a5ce5f862cdcb5382ce61e94",
+    "chase.mp4": "c973ffdd0eae449e8ca7400c4132feb29035eccf6faa7ac8eacc9bd029a41c90",
+    "front.jpg": "770c1a1371ac7e34268e3ff761d900834596b6848616be91580e19a5e436fa28",
+    "front.mp4": "fe16ae719a81e3528f6e460b01fd15d70c71c1f7b9f93de5716fa9df84d915af",
+    "left.mp4": "ec6c22465efcca8f7634e7f91c659ab0802047e480fa7eb5c7aa93d39c4f3b34",
+    "poster.jpg": "76fa8d52aa86361c1b03e54a46c88a7109154d74a5ce5f862cdcb5382ce61e94",
+    "rear_left.mp4": "4a35441a5ae621b2abbf05da62c88d5caba9dabcfe21fff386487ff84e7e366c",
+    "rear_right.mp4": "ce0e91155626ba9f5fd5ac10618fc6cc5bb3ff8bfc09b1b2160091fc41316f47",
+    "replay-pack.json.gz": "e1b6689388868b654b0d9b493f94ef02c40be2fa97545cfa7a0691b01091af2f",
+    "replay.json": "0ac4d686167a5a1bd3c0c0f2baa1f054a91645425c5b8cc7bd9bac2e4c056daa",
+    "right.mp4": "f5575cb123eaa0fca4d88af4cb1e40c1dae9d2dde0672d35e60f1bb33c69d063",
+    "telemetry.json": "555c496e03a126190e504292692b104423be8354ac192dc510861d1ed405a12c",
+    "town.json": "ad7db3ded5e31a8ffb463c1498625ac0a0e35e9f4746f8cbc9113134c6b31e63"
+  },
+  "map": "Town03_Opt",
+  "map_asset": "town.json",
+  "map_url": "./media/overtake-clear/town.json",
+  "outcome": "complete",
+  "control_timing": "Frame-t readback drives the measured pose. The command inferred from frame t applies on t+1.",
+  "scene_reference": "Independent oriented actor footprints supply the score; observer_map.others contains simulator reference IDs and never enters the driving model.",
+  "navigation_reference": "observer_map.path is the source-lane destination reference. The tactical planner supplies its selected lateral trajectory to the city steering model.",
+  "inference": "Five RGB, full-sweep lidar and five radars run on the inference rig. The pass classifier uses mapped lane geometry and LiDAR; independent surround tracks and RGB lamp classifications are recorded for perception.",
+  "source_mode": "one closed-loop simulation with simultaneous camera capture",
+  "teacher": false,
+  "plan_provenance": {
+    "source": "Recorded ego pose, logged commitment, native road 4 OpenDRIVE lanes and the fitted planner's exact geometric preview inside this corridor.",
+    "original_replay_sha256": "b079094686d1fd319b6d3a57a99cb26d540d02b4ff10538f79969bcb15ec2839"
+  }
+}

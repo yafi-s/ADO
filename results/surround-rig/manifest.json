@@ -1,0 +1,69 @@
+{
+  "map": "Town03_Opt",
+  "runtime": "CARLA 1.0",
+  "coordinate_frame": "ego +x forward, +y right, +z up, metres",
+  "rgb_model": "opencv-zoo/yolox-s-2022nov-fp32",
+  "model_sha256": "c5c2d13e59ae883e6af3b45daea64af4833a4951c92d116ec270d9ddbe998063",
+  "source": {
+    "preflight_seed": 211,
+    "preflight_frames": 155,
+    "preflight_outcome": "timeout",
+    "preflight_trace_sha256": "82bb7c1dcf1f716c259c60bdd5514087aa9d79103a821d38ab73a01bd9478baa",
+    "preflight_summary_sha256": "fffc109bb0871365a3b3555d11bb7df16554fde019e62d7687364c4533742bbb",
+    "second_drive_seed": 212
+  },
+  "snapshots": [
+    {
+      "folder": "crossing-left",
+      "seed": 211,
+      "step": 96,
+      "original_source": "out/surround-preflight/run01/evidence/surround-kzqwj78j/tick-00096",
+      "target_track": 5,
+      "world_frame": 7568,
+      "semantic_review": "visually verified pedestrian, actor 433"
+    },
+    {
+      "folder": "crossing-rear-left",
+      "seed": 211,
+      "step": 120,
+      "original_source": "out/surround-preflight/run01/evidence/surround-kzqwj78j/tick-00120",
+      "target_track": 5,
+      "world_frame": 7592,
+      "semantic_review": "visually verified pedestrian, actor 433"
+    },
+    {
+      "folder": "rear-right-edge",
+      "seed": 212,
+      "step": 245,
+      "original_source": "out/urban-cruise/surround-evidence-212/surround-ls7msu5g/tick-00245",
+      "target_track": 9,
+      "world_frame": null,
+      "semantic_review": "false-positive car on vegetation"
+    }
+  ],
+  "sha256": {
+    "calibration.json": "68924ed00473f73a0a0504f1bc870c4463001e1225778efd7dac7ccb234c8f25",
+    "crossing-handoff.json": "1c1e1a4bddb54d848f90f30f5979b214facde39731b274ed4bc2f4f1785e0a6e",
+    "crossing-left/frame.json": "c1f51d1ed9dbcc64895a2adfc7f8b672da6ee467b82b2e518da3251a52813ada",
+    "crossing-left/front.png": "182f3a84c25cdab270e2bede1b7fea46283fafaf9042d1c25065a629782696b7",
+    "crossing-left/left.png": "495a5cf8c9bca8105c6ff95ba19c8eaca2a74eba55317b8e76f94a9735059fb0",
+    "crossing-left/range.npz": "62b8de99aee54269382cc5424c11ce6a1d352599dfdb3f8693bb642eb7358f73",
+    "crossing-left/rear_left.png": "e00fbfd6176d17fb637d023b44e19a5bea7a0ddf4e23f260b8e7ceaedf5df328",
+    "crossing-left/rear_right.png": "2a129014de703bb470d7df6757ce36330bbf7675fcfabf206e88db8e526489cb",
+    "crossing-left/right.png": "3f91db99b6856279ce9503d4a361ab821aef04d803c3d277e90fc32e6523a70f",
+    "crossing-rear-left/frame.json": "502a841bded41ae470ec8407f37078d91ded6ac72842cfe7606604a324ff0161",
+    "crossing-rear-left/front.png": "f5565b5fa9a0cc9b4c9d2e63c0965add95d1bc678d1a681551c38b7f14759788",
+    "crossing-rear-left/left.png": "3e56fb3af419c1fca15fd208466b3ff92c41140aec603aa90b9a8c7bdcff25d7",
+    "crossing-rear-left/range.npz": "92d4ad2233789635e07d81d2955e1f93a7cac99f1da01c2a77817dde0c44e5b1",
+    "crossing-rear-left/rear_left.png": "50c5364875ed4ec2206f1e97358b096380031e79916eb24ff8cc952ad0032534",
+    "crossing-rear-left/rear_right.png": "fc01cb50a5b8ff364c551d785bacba9478170ed23d7b756227dab9078e2a1674",
+    "crossing-rear-left/right.png": "17782dc648e403b3386e63cd59aae49d5cbe3b7293f0f18d08d95dcaff8b047b",
+    "rear-right-edge/frame.json": "28c8657d1eb74ee2114104f433dcc534b311532b89e67f917c8aeae7cb4dc841",
+    "rear-right-edge/front.png": "f18863e2435e4a4bf9629f44537baeb1dc7e161438d8eee1c7e0f1d6fa1a793c",
+    "rear-right-edge/left.png": "5d26a56e9f080cc6985b6c6958d1b81f71efcf03ff0981d14e8e15bc13f8155e",
+    "rear-right-edge/range.npz": "ec1b6cabe36d5845d6b738bc4cd446872d168b5ed97ec2717126fc4c8cc6f58c",
+    "rear-right-edge/rear_left.png": "ab89f479242f114f78413a01c2f8b0fed9bd31d22840b9052abae97f60ee08e2",
+    "rear-right-edge/rear_right.png": "02acb39682cd0a7cb42befd2dd55ae3edb4be14cf15994f211998e90e7a53113",
+    "rear-right-edge/right.png": "d48fc2fe2930ef5fa705550a03d487f3a1957dbc17a7759bbfb6bc72c2c6c4f8"
+  }
+}

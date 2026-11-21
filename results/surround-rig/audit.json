@@ -1,0 +1,140 @@
+{
+  "snapshots": [
+    {
+      "folder": "crossing-left",
+      "time_s": 9.600000000000001,
+      "recorded_id": 5,
+      "recorded_label": "person",
+      "ego_xyz": [
+        5.510125521016411,
+        -2.89560365340588,
+        0.7955625422544153
+      ],
+      "verified_surface_points": 8,
+      "projected_points": {
+        "left": 8
+      },
+      "lidar_hits": 16,
+      "doppler": {
+        "radar_front_left": {
+          "hits": 24,
+          "radial_mps": -0.9373438358306885
+        }
+      },
+      "current_tracker_starts_target": true,
+      "lidar_octant_counts": [
+        846,
+        1039,
+        1083,
+        870,
+        895,
+        929,
+        973,
+        734
+      ],
+      "native_return_counts": {
+        "lidar": 7369,
+        "radar": 474,
+        "radar_front_left": 295,
+        "radar_front_right": 260,
+        "radar_rear_left": 307,
+        "radar_rear_right": 288
+      }
+    },
+    {
+      "folder": "crossing-rear-left",
+      "time_s": 12.0,
+      "recorded_id": 5,
+      "recorded_label": "person",
+      "ego_xyz": [
+        -2.5288360997636716,
+        -5.950348438516764,
+        0.9541534565718824
+      ],
+      "verified_surface_points": 11,
+      "projected_points": {
+        "rear_left": 11
+      },
+      "lidar_hits": 21,
+      "doppler": {
+        "radar_rear_left": {
+          "hits": 8,
+          "radial_mps": 1.623239278793335
+        }
+      },
+      "current_tracker_starts_target": true,
+      "lidar_octant_counts": [
+        862,
+        1147,
+        952,
+        882,
+        868,
+        852,
+        1012,
+        767
+      ],
+      "native_return_counts": {
+        "lidar": 7342,
+        "radar": 503,
+        "radar_front_left": 210,
+        "radar_front_right": 178,
+        "radar_rear_left": 351,
+        "radar_rear_right": 354
+      }
+    },
+    {
+      "folder": "rear-right-edge",
+      "time_s": 24.5,
+      "recorded_id": 9,
+      "recorded_label": "car",
+      "ego_xyz": [
+        -3.9085799027878076,
+        13.948532235596542,
+        0.9769103672355411
+      ],
+      "verified_surface_points": 10,
+      "projected_points": {
+        "rear_right": 10
+      },
+      "lidar_hits": 10,
+      "doppler": {
+        "radar_rear_right": {
+          "hits": 22,
+          "radial_mps": 0.2340531051158905
+        }
+      },
+      "current_tracker_starts_target": false,
+      "lidar_octant_counts": [
+        948,
+        969,
+        1091,
+        983,
+        923,
+        1026,
+        837,
+        825
+      ],
+      "native_return_counts": {
+        "lidar": 7602,
+        "radar": 502,
+        "radar_front_left": 372,
+        "radar_front_right": 395,
+        "radar_rear_left": 182,
+        "radar_rear_right": 176
+      }
+    }
+  ],
+  "crossing": {
+    "first_s": 4.2,
+    "last_s": 15.3,
+    "consecutive_frames": 112,
+    "measured_frames": 97,
+    "measured_rgb_views": {
+      "front": 25,
+      "left": 10,
+      "rear_left": 9
+    },
+    "median_world_position_error_m": 0.061,
+    "max_world_position_error_m": 0.144
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town03_Opt"
+  },
+  "speed_model_sha256": "78b84c5ead7ba81d34a354b0cf6c509c50c6a8e6bc6beb16f4360b2ab530c634",
+  "tactical_model_sha256": "570ece96d6cdf2d8ed72c6253446d58d2a4d2575d0e1d9d1555bf0e55519d13f",
+  "features": "real 360-degree LiDAR, radar, localized lane geometry, speed; no RGB detections",
+  "city_model": "models\\city-cruise\\candidate.npz",
+  "cases": [
+    {
+      "case": "clear",
+      "frames": 79,
+      "collisions": 0,
+      "yield_s": 0.0,
+      "first_yield_s": null,
+      "first_commit_s": 0.5,
+      "clearance_at_commit_m": null,
+      "first_alongside_s": 5.9,
+      "completed_pass_s": 7.8,
+      "lead_travel_m": 9.051,
+      "lead_speed_during_pass_mps": 1.244,
+      "minimum_passing_clearance_m": 1.534,
+      "minimum_adjacent_gap_while_yielding_m": null,
+      "max_yield_lateral_error_m": null,
+      "ego_travel_m": 39.214,
+      "maximum_source_displacement_m": 3.518,
+      "passed": true
+    },
+    {
+      "case": "occupied",
+      "frames": 154,
+      "collisions": 0,
+      "yield_s": 5.1,
+      "first_yield_s": 0.3,
+      "first_commit_s": 8.7,
+      "clearance_at_commit_m": 33.426,
+      "first_alongside_s": 13.5,
+      "completed_pass_s": 15.3,
+      "lead_travel_m": 18.516,
+      "lead_speed_during_pass_mps": 1.269,
+      "minimum_passing_clearance_m": 1.535,
+      "minimum_adjacent_gap_while_yielding_m": 0.043,
+      "max_yield_lateral_error_m": 0.001,
+      "ego_travel_m": 48.734,
+      "maximum_source_displacement_m": 3.517,
+      "passed": true
+    },
+    {
+      "case": "no-lead",
+      "frames": 86,
+      "collisions": 0,
+      "yield_s": 0.0,
+      "first_yield_s": null,
+      "first_commit_s": null,
+      "clearance_at_commit_m": null,
+      "first_alongside_s": null,
+      "completed_pass_s": null,
+      "lead_travel_m": null,
+      "lead_speed_during_pass_mps": null,
+      "minimum_passing_clearance_m": null,
+      "minimum_adjacent_gap_while_yielding_m": null,
+      "max_yield_lateral_error_m": null,
+      "ego_travel_m": 45.539,
+      "maximum_source_displacement_m": 0.001,
+      "passed": true
+    }
+  ]
+}

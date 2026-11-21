@@ -1,4 +1,7 @@
 import {SensorView} from './sensor.js';
+import {cornerReturns, lidarCount} from './sensor-returns.mjs';
+import {loadReplay} from './replay-pack.mjs';
+import {cameraBoxes, LAMP_COLOURS} from './lamp-observations.mjs';
 import {artifactUrl, previewImage, setArtifactLink, validRecordingPath} from './build-data.js';
 
 const ids = [
@@ -24,7 +27,7 @@ const cameraButtons = [...document.querySelectorAll('[data-camera]')];
 const sensorButtons = [...document.querySelectorAll('[data-sensor-view]')];
 const cameraLabels = {
   chase: 'Chase camera', front: 'Front camera', infrared: 'Thermal proxy',
-  left: 'Left camera', right: 'Right camera'
+  left: 'Left camera', right: 'Right camera', rear_left: 'Rear left camera', rear_right: 'Rear right camera'
 };
 const policyLabels = {fusion: 'Learned multisensor', camera: 'Learned vision'};
 const delayScenarios = new Set(['trip', 'pedestrian', 'occluded']);
@@ -95,6 +98,7 @@ function setCameras(cameras) {
   if (!cameras.includes(selectedCamera) && cameras.length) selectedCamera = cameras[0];
   for (const button of cameraButtons) {
     button.disabled = !cameras.includes(button.dataset.camera);
+    if (button.dataset.camera.startsWith('rear_')) button.hidden = button.disabled;
     button.setAttribute('aria-pressed', button.dataset.camera === selectedCamera);
   }
   setText('view-label', cameraLabels[selectedCamera]);
@@ -125,14 +129,15 @@ function steeringDirection(steer) {
 
 function renderDetections() {
   const overlay = ui.detections;
-  const detections = renderedFrame?.detections;
-  const visible = selectedCamera === 'front' && ui['camera-empty'].hidden;
+  const detections = cameraBoxes(renderedFrame, selectedCamera);
+  const visible = ui['camera-empty'].hidden;
   const width = mode === 'live' ? ui.stream.naturalWidth : ui.film.videoWidth;
   const height = mode === 'live' ? ui.stream.naturalHeight : ui.film.videoHeight;
-  const show = visible && Array.isArray(detections) && width && height;
+  const show = visible && detections.length && width && height;
   overlay.hidden = !show;
   ui['front-note'].hidden = !show;
   if (!show) return;
+  setText('front-note', `Object detections from the ${selectedCamera.replaceAll('_',' ')} RGB camera.`);
   const viewWidth = ui.viewport.clientWidth;
   const viewHeight = ui.viewport.clientHeight;
   const scale = Math.min(viewWidth / width, viewHeight / height);
@@ -148,13 +153,15 @@ function renderDetections() {
     if (x1 >= x2 || y1 >= y2) continue;
     const element = document.createElement('div');
     element.className = 'detection';
+    if (detection.lamp) element.style.borderColor = LAMP_COLOURS[detection.lamp];
     element.style.left = `${x1 * 100}%`;
     element.style.top = `${y1 * 100}%`;
     element.style.width = `${(x2 - x1) * 100}%`;
     element.style.height = `${(y2 - y1) * 100}%`;
     const caption = document.createElement('span');
     caption.className = 'detection-label';
-    caption.textContent = Number.isFinite(score) ? `${label} ${Math.round(score * 100)}%` : label;
+    const confidence = Number.isFinite(score) ? ` ${Math.round(score * 100)}%` : '';
+    caption.textContent = `${label}${confidence}${detection.range_supported === false ? ' · bearing only' : ''}`;
     element.append(caption);
     boxes.push(element);
   }
@@ -164,9 +171,9 @@ function renderDetections() {
 function renderTelemetry(frame) {
   if (frame === renderedFrame && frame) return;
   renderedFrame = frame;
-  const lidar = frame?.lidar ?? [];
-  const radar = frame?.radar ?? [];
-  setText('lidar-count', frame ? numeric(lidar.length) : '—');
+  const lidar = frame?.lidar_xyz ?? frame?.lidar ?? [];
+  const radar = (frame?.radar ?? []).concat(cornerReturns(frame).map(([x,y,z,v])=>[x,y,v]));
+  setText('lidar-count', frame ? numeric(lidarCount(frame)) : '—');
   setText('radar-count', frame ? numeric(radar.length) : '—');
   setText('map', frame?.map?.split('/').pop() || 'CARLA');
   setText('frame', numeric(frame?.frame));
@@ -198,7 +205,7 @@ function renderTelemetry(frame) {
   ui['telemetry-yield'].hidden = !Number.isFinite(frame?.yield_violations);
   setText('yield-count', numeric(frame?.yield_violations));
   setText('live-clock', timeLabel(frame?.sim_time));
-  sensor.update(lidar, radar, frame?.observer_map);
+  sensor.update(lidar, radar, frame?.observer_map, frame);
   renderSensorPanel();
   renderDetections();
 }
@@ -555,7 +562,7 @@ function loadCamera(position, resume) {
   showMessage('Loading ' + cameraLabels[selectedCamera].toLowerCase() + '…');
   ui.film.hidden = true;
   ui.film.setAttribute('aria-label', `${ui.encounter.selectedOptions[0].textContent} · ${cameraLabels[selectedCamera]}`);
-  const movie = `${replay.directory}/${selectedCamera}.mp4`;
+  const movie = replay.cameraUrls?.[selectedCamera] ?? `${replay.directory}/${selectedCamera}.mp4`;
   ui.film.src = movie;
   setArtifactLink(ui['archive-mp4'], movie);
 }
@@ -685,6 +692,16 @@ async function loadCatalog(signal) {
     entries = available.filter(Boolean);
   }
   if (signal.aborted || !Array.isArray(entries)) return [];
+  try {
+    const view = await readJson('./media/viewer-catalog.json', signal, 4000);
+    const extra = Array.isArray(view) ? view : view?.records ?? [];
+    const supplement = new Map(extra.map(item => [item.path, item]));
+    const basePaths = new Set(entries.map(item => item.path));
+    entries = entries.map(item => ({...item, ...supplement.get(item.path)}))
+      .concat(extra.filter(item => !basePaths.has(item.path)));
+  } catch {
+    if (signal.aborted) return [];
+  }
   const paths = new Set();
   catalog = entries.flatMap(entry => {
     if (typeof entry?.label !== 'string' || !entry.label.trim() || !validRecordingPath(entry.path) || paths.has(entry.path)) return [];
@@ -725,10 +742,10 @@ async function openReplay(signal, trialId) {
   const directory = entry.path ? `./media/${entry.path}` : './media';
   try {
     const recording = recordings.get(directory) ??
-      parseReplay(await readJson(`${directory}/replay.json`, signal, 15000));
+      await loadReplay(entry.replay_pack_url, signal, parseReplay, () => readJson(`${directory}/replay.json`, signal, 30000));
     if (signal.aborted) return;
     recordings.set(directory, recording);
-    replay = {...recording, directory};
+    replay = {...recording, directory, cameraUrls: entry.camera_urls};
   } catch {
     if (signal.aborted) return;
     setMode('replay', 'Replay unavailable');

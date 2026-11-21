@@ -215,6 +215,12 @@ function bus(b) {
   ], p.body, 28, 7);
   // One window band along both sides and a windscreen.
   b.box(9.6, .92, 2.56, .05, p.glass, -.2, 2.08, 0);
+  b.box(.09, .84, 1.94, .07, p.glass, -5.47, 2.10, 0);
+  // Narrow pillars break up the glazing so the long body reads at street scale.
+  for (const x of [-3.55, -1.95, -.35, 1.25, 2.85]) {
+    b.box(.08, .95, 2.58, .025, p.body, x, 2.08, 0);
+  }
+  b.box(.07, .19, .65, .04, p.tyre, -5.50, .89, 0);
   b.shell('bus-screen', [[5.02, 1.42, 2.72, 1.255], [5.34, 1.40, 2.66, 1.225], [5.49, 1.44, 2.5, 1.12]], p.glass, 24, 7);
   for (const x of [-3.7, -2.55, 3.75]) for (const z of [-1.07, 1.07]) b.wheel(x, z, .5, .34);
   for (const side of [-1, 1]) {

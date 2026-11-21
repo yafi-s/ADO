@@ -57,6 +57,7 @@
   .source > .pill { flex: 0 1 auto; }
   .source > .pick { flex: 1 1 140px; }
   .pick select { max-width: none; width: 100%; }
+  .source:has(#source-switch:not([hidden])) #mode:is([data-mode="recorded"],[data-mode="live"]) { display: none; }
 }
 
 /* ---------- Stage ---------- */
@@ -95,9 +96,9 @@
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto;
   grid-template-areas:
-    "speedo trip    tools"
+    "speedo .       tools"
     ".      notices ."
-    "now    now     now";
+    "now    now     trip";
   gap: 12px clamp(10px, 2cqw, 28px);
   padding: var(--pad);
   pointer-events: none;
@@ -140,9 +141,9 @@
 
 /* Route: how far along, and where to. */
 .trip {
-  grid-area: trip; justify-self: center; align-self: start;
+  grid-area: trip; justify-self: end; align-self: end;
   display: grid; gap: 10px;
-  width: clamp(250px, 40cqw, 410px); padding: 12px 17px 14px;
+  width: min(100%, 370px); padding: 11px 14px 13px;
   border-radius: 21px; border: 1px solid var(--line);
   background: var(--glass);
   -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2);
@@ -211,9 +212,9 @@
 
 /* What the driver is doing, said plainly under the vehicle. */
 .now {
-  grid-area: now; justify-self: center;
-  display: grid; justify-items: center; gap: 7px;
-  max-width: min(56ch, 100%); text-align: center;
+  grid-area: now; justify-self: start; align-self: end;
+  display: grid; justify-items: start; gap: 7px;
+  max-width: min(56ch, 100%); text-align: left;
   text-shadow: 0 1px 18px rgba(var(--scrim), .9);
 }
 .activity {
@@ -227,7 +228,9 @@
 .hud[data-state="idle"] .activity { color: var(--ink-2); }
 .hud[data-state="idle"] .activity::before { background: none; border: 2px solid var(--ink-3); }
 .hud[data-state="cruising"] .activity::before,
+.hud[data-state="passing"] .activity::before,
 .hud[data-state="moving"] .activity::before { background: var(--accent); }
+.hud[data-state="waiting"] .activity::before { background: var(--caution); }
 .hud[data-state="accelerating"] .activity::before { background: var(--go); }
 .hud[data-state="left"] .activity::before,
 .hud[data-state="right"] .activity::before { background: var(--accent); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 24%, transparent); }
@@ -264,6 +267,8 @@
 }
 .feed-frame { position: relative; aspect-ratio: 16 / 9; background: #050608; }
 .feed-frame video, .feed-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+#feed-observations { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+#feed-observations rect { fill: none; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
 .feed-note {
   position: absolute; inset: 0; margin: 0; padding: 18px;
   display: grid; place-items: center; text-align: center;
@@ -284,6 +289,7 @@
 .feed-tag[data-mode="idle"]::before { background: none; border: 2px solid rgba(238, 243, 251, .6); }
 .feed-bar { display: flex; align-items: center; gap: 8px; min-height: 46px; padding: 6px 6px 6px 8px; background: var(--surface); }
 .feed-bar .seg { border-color: transparent; }
+.feed-bar select { height: 32px; max-width: 100%; min-width: 0; padding-inline: 9px; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); background: var(--raise); font: 600 13px var(--font); }
 .feed-caption { min-width: 0; padding-left: 6px; font: 600 13px/1 var(--font); color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .icon-btn {
   margin-left: auto; flex: none; display: grid; place-items: center;
@@ -306,6 +312,9 @@
 .quiet { margin: 0; color: var(--ink-3); font-size: 13.5px; }
 
 .tracks { list-style: none; margin: 0; padding: 0; }
+#camera-lights { list-style: none; padding: 7px 0 0; margin: 5px 0; border-top: 1px solid var(--line); }
+#camera-lights li { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); }
+#camera-lights li::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--lamp); }
 .tracks li {
   display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: 3px 10px; align-items: center;
   padding: 10px 0; border-top: 1px solid var(--line);
@@ -437,8 +446,8 @@
 
   .hud {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto minmax(0, 1fr) auto auto;
-    grid-template-areas: "speedo" "trip" "notices" "now" "tools";
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+    grid-template-areas: "speedo" "notices" "now" "trip" "tools";
     gap: 10px; padding: 12px;
   }
   /* Keep clear of the footage thumbnail in the corner. */
@@ -482,12 +491,12 @@
 }
 
 @media (max-width: 550px) and (orientation: portrait) {
-  .tools { gap: 5px; }
+  .tools { gap: 4px; }
   .tools .seg button { padding-inline: 9px; font-size: 12.5px; }
   .tools .layers { gap: 4px; }
-  .tools .chip { padding: 0 9px; gap: 5px; font-size: 12.5px; }
+  .tools .chip { padding: 0 6px; gap: 4px; font-size: 12.5px; }
   .tools .chip i { max-width: 13px; }
-  .tools .more-link { flex: 1 0 38px; justify-content: center; min-width: 38px; font-size: 0; }
+  .tools .more-link { flex: 1 0 28px; justify-content: center; min-width: 28px; font-size: 0; }
   .tools .more-link::after { content: '↓'; font-size: 17px; }
 }
 

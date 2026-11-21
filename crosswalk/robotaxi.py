@@ -128,8 +128,26 @@ def _parts():
 PARTS = tuple(_parts())
 
 
+def perimeter_parts():
+    """Collision-free exterior markers mounted immediately behind the real sensor origins."""
+    from .camera_geometry import CAMERAS
+    from .radar_geometry import CORNER_RADARS, RADARS
+    for name in ("rear_left", "rear_right"):
+        cam = CAMERAS[name]
+        yaw = math.radians(cam.yaw)
+        def behind(distance):
+            return (cam.x-distance*math.cos(yaw), cam.y-distance*math.sin(yaw), cam.z)
+        yield Part(name+" camera pod", HOUSING, behind(.17), PEARL, (0, cam.yaw-90, 0))
+        yield Part(name+" lens", LENS, behind(.008+LENS.size[2]/2), GRAPHITE, (90, cam.yaw, 0))
+    for name in CORNER_RADARS:
+        x, y, z, yaw = RADARS[name]
+        theta = math.radians(yaw)
+        center = (x-.16*math.cos(theta), y-.16*math.sin(theta), z)
+        yield Part(name+" housing", RADAR, center, GRAPHITE, (0, yaw, 90))
+
+
 class BodyKit:
-    def __init__(self, world, ego):
+    def __init__(self, world, ego, *, surround=False):
         import carla
 
         self.actors = []
@@ -137,7 +155,7 @@ class BodyKit:
         textures = {}
         render = not world.get_settings().no_rendering_mode
         try:
-            for part in PARTS:
+            for part in ((*PARTS, *perimeter_parts()) if surround else PARTS):
                 path = part.mesh.path
                 blueprint.set_attribute("mesh_path", path + "." + path.rsplit("/", 1)[1])
                 # The registered prop factory supplies a movable, kinematic

@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_FILES = (
     "index.html", "ado-home.css", "ado-home.js", "perception-scene.js",
     "display.css", "display.js", "road-users.js", "object-memory.mjs",
-    "encounter-chapters.mjs", "replay-pack.mjs",
+    "encounter-chapters.mjs", "replay-pack.mjs", "lamp-observations.mjs", "signal-heads.js", "sensor-returns.mjs",
     "builds.html", "builds.css", "builds.js", "build-data.js",
     "benchmarks.html", "benchmarks.css", "benchmarks.js", "benchmarks-v2.mjs",
     "city.html", "city.css", "city-view.js",

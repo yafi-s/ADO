@@ -1,6 +1,8 @@
 import * as T from './vendor/city-view/three-view.js';
 import {buildRoadUser, disposeRoadUserGeometry, plausibleSize, TRACK_TONE} from './road-users.js';
-import {ObjectMemory, laneAxes} from './object-memory.mjs';
+import {ObjectMemory, ReplayMemory, laneAxes} from './object-memory.mjs';
+import {SignalHeads, townFeatures} from './signal-heads.js';
+import {cornerReturns} from './sensor-returns.mjs';
 
 const V = (x = 0, y = 0, z = 0) => new T.Vector3(x, y, z);
 const finite = Number.isFinite;
@@ -33,23 +35,23 @@ function release(root) {
 // strings are sRGB. Only colour changes between them, never what is drawn.
 const PALETTES = {
   night: {
-    sky:'#192633', floorFar:[.013,.024,.035], floorNear:[.025,.042,.054], grid:[.012,.024,.024],
-    roadEdge:[.036,.052,.070], roadMid:[.047,.067,.086], marking:[.36,.47,.53], centre:[.62,.46,.11], kerb:[.17,.24,.29], curb:'#3a4a56',
-    pathFar:[.028,.38,.42], pathNear:[.24,.84,.76],
+    sky:'#223340', floorFar:[.019,.034,.044], floorNear:[.032,.050,.061], grid:[.004,.008,.008],
+    roadEdge:[.066,.088,.105], roadMid:[.071,.095,.112], marking:[.44,.54,.58], centre:[.65,.47,.16], kerb:[.20,.29,.32], curb:'#455661',
+    pathFar:[.024,.35,.38], pathNear:[.16,.81,.68],
     wallDark:[.026,.041,.058], wallLit:[.074,.102,.126], wallEdge:[.030,.052,.066],
     shadow:'#061012', shadowOpacity:.57, lidar:'#8cced2', radar:'#e6b979',
-    vehicle:'#8a9cf2', rider:'#f2c27c', person:'#ffc27a', unknown:'#9cafbf',
-    glass:'#3d4f86', lamp:'#e6ecff', tail:'#ff8f9c', tyre:'#232f44', hub:'#5b6c9c', glow:.04, rim:.3, exposure:1.04,
+    vehicle:'#7792b8', rider:'#f2b45e', person:'#f4aa51', unknown:'#8597a4',
+    glass:'#233d52', lamp:'#e6ecff', tail:'#e9877c', tyre:'#232f39', hub:'#637885', glow:.025, rim:.14, exposure:1.04,
     signalBody:'#2a3644', signalOff:'#141c26', red:'#ff453a', amber:'#ffb01f', green:'#2fe37a'
   },
   day: {
-    sky:'#eceef2', floorFar:'#e2e5ea', floorNear:'#e7eaee', grid:[-.05,-.047,-.042],
-    roadEdge:'#f3f4f7', roadMid:'#f9fafb', marking:'#9aa3b1', centre:'#d8a019', kerb:'#b4bcc8', curb:'#cfd4dc',
+    sky:'#edf1f3', floorFar:'#dde5e7', floorNear:'#e3e9e9', grid:[-.014,-.014,-.014],
+    roadEdge:'#eff2f4', roadMid:'#f2f4f6', marking:'#8493a0', centre:'#bd8f41', kerb:'#acb8bf', curb:'#c6d2d4',
     pathFar:'#7fa8f5', pathNear:'#1f5fe8',
     wallDark:'#cdd2da', wallLit:'#e9ecf0', wallEdge:[-.035,-.033,-.03],
     shadow:'#1d2633', shadowOpacity:.34, lidar:'#5578b4', radar:'#d9641a',
-    vehicle:'#9fa6b2', rider:'#e08a3c', person:'#e2702a', unknown:'#a7adb8',
-    glass:'#7a8392', lamp:'#f6f7f9', tail:'#d98f84', tyre:'#565e6c', hub:'#878f9c', glow:0, rim:0, exposure:1.0,
+    vehicle:'#8e9da9', rider:'#bf762e', person:'#c96022', unknown:'#9daab2',
+    glass:'#505f71', lamp:'#f6f7f9', tail:'#c97875', tyre:'#4b5560', hub:'#828f9b', glow:0, rim:0, exposure:1.0,
     signalBody:'#5d6674', signalOff:'#39414d', red:'#e5352b', amber:'#e39a0c', green:'#17a85a'
   }
 };
@@ -121,6 +123,8 @@ function roadIndex(roads) {
 function surfaceGeometry(lines, halfWidth, elevation = 0, index = null, reach = 0, paints = null) {
   const xyz=[],uv=[],inside=[],calm=[],paint=[],broken=[],indices=[];
   lines.forEach((source,id) => {
+    const measuredWidth=paints?.[id]?.width;
+    const laneHalf=finite(measuredWidth)&&measuredWidth>0?measuredWidth/2:halfWidth;
     const heading=(i)=>{
       const a=source[Math.max(0,i-1)], b=source[Math.min(source.length-1,i+1)];
       const len=Math.hypot(b[0]-a[0],b[1]-a[1])||1;
@@ -145,9 +149,9 @@ function surfaceGeometry(lines, halfWidth, elevation = 0, index = null, reach = 
       const nx=-dz/len, nz=dx/len;
       if(i) s+=Math.hypot(x-a[0],z-a[1]);
       for(const sign of [-1,1]) {
-        xyz.push(x+sign*halfWidth*nx, y+elevation,z+sign*halfWidth*nz);
+        xyz.push(x+sign*laneHalf*nx, y+elevation,z+sign*laneHalf*nz);
         uv.push(sign,s);
-        inside.push(index?.beside(x+sign*4*nx,z+sign*4*nz,id)?1:0);
+        inside.push(index?.beside(x+sign*laneHalf*2*nx,z+sign*laneHalf*2*nz,id)?1:0);
         calm.push(junction[i]);
         // -1: not recorded, so the shader guesses. 0: unpainted. 1: white. 2: yellow.
         const edge=paints?.[id]?paints[id][sign>0?'plus':'minus']:undefined;
@@ -238,14 +242,15 @@ function crossingMaterial(tones) {
 }
 function pathMaterial(tones) {
   return new T.ShaderMaterial({
-    uniforms:{uSky:{value:tones.sky},uStation:{value:0},uOverview:{value:0},uFar:{value:tones.pathFar},uNear:{value:tones.pathNear}},
+    uniforms:{uSky:{value:tones.sky},uStation:{value:0},uOverview:{value:0},uPreviewSpan:{value:0},uFar:{value:tones.pathFar},uNear:{value:tones.pathNear}},
     transparent:true,side:T.DoubleSide,depthWrite:false,vertexShader:ribbonVertex,
-    fragmentShader:`uniform vec3 uSky,uFar,uNear; uniform float uStation,uOverview;
+    fragmentShader:`uniform vec3 uSky,uFar,uNear; uniform float uStation,uOverview,uPreviewSpan;
       varying vec2 vLane; varying vec3 vWorld;
       ${haze}
       void main() {
         float along=vLane.y-uStation, a=abs(vLane.x);
         float width=mix(.97,.58,smoothstep(2.,72.,along));
+        if(uPreviewSpan>0.)width*=.37;
         float aa=clamp(fwidth(a),.005,.13);
         float mask=1.-smoothstep(width-.115-aa,width+aa,a);
         float edge=smoothstep(width-.18-aa,width-.035+aa,a);
@@ -255,6 +260,8 @@ function pathMaterial(tones) {
         float ahead=smoothstep(-4.,-.4,along)*(1.-smoothstep(65.,108.,along));
         float energy=mix(ahead*(.18+.82*nearEgo),.32+.68*exp(-abs(along)/42.),uOverview);
         float opacity=energy*mask*(.52+.29*edge+.17*chevron);
+        // The surrounding destination route resumes beyond the selected maneuver.
+        if(uPreviewSpan>0.)opacity*=.58*max(1.-smoothstep(-6.,-2.,along),smoothstep(uPreviewSpan-1.,uPreviewSpan+3.,along));
         vec3 color=mix(uFar,uNear,.17*nearEgo+max(edge,chevron)*.81);
         gl_FragColor=vec4(aerial(color,vWorld),opacity);${endColor}
       }`
@@ -346,7 +353,7 @@ function fillReturns(points,returns,height) {
     points.geometry.dispose();points.geometry.setAttribute('position',attr);
   }
   let n=0;
-  for(const p of values)if(coord(p))attr.setXYZ(n++,p[0],height,p[1]);
+  for(const p of values)if(coord(p,height==null?3:2))attr.setXYZ(n++,p[0],height??p[2],p[1]);
   points.geometry.setDrawRange(0,n);attr.needsUpdate=true;
 }
 
@@ -393,15 +400,7 @@ function reviseTrail(trail, history, now, speed) {
 
 // What a town's road description records beyond lane centres: lane directions, edge paint and
 // traffic signals. Written by crosswalk/map_features.py, one file per town.
-const featuresURL=name=>new URL(`./media/map-features/${encodeURIComponent(name)}.json`,import.meta.url);
 const endsKey=(a,b)=>`${a[0].toFixed(2)},${a[1].toFixed(2)}|${b[0].toFixed(2)},${b[1].toFixed(2)}`;
-const featureFiles=new Map();
-function townFeatures(name) {
-  if(!featureFiles.has(name)){
-    featureFiles.set(name,fetch(featuresURL(name)).then(response=>response.ok?response.json():null).catch(()=>null));
-  }
-  return featureFiles.get(name);
-}
 
 // A traffic signal is drawn as a symbol, half again as large as life so its lamps read from the
 // follow camera. Its position and facing are the map's. A lamp is lit only from a recorded state.
@@ -496,9 +495,21 @@ export class PerceptionScene {
     this.floor.position.y=-.10;
     this.ego.visible=false;
     this.shadow=patch(this.ego,5.58,2.75,projectedPatch(this.tones.shadow,true),.029);
-    this.returnGroup=new T.Group();this.ego.add(this.returnGroup);
+    this.returnGroup=new T.Group();this.scene.add(this.returnGroup);
     this.lidar=cloud(false,this.tones.lidar);this.radar=cloud(true,this.tones.radar);this.returnGroup.add(this.lidar,this.radar);
+    this.surfaces=cloud(false,this.tones.lidar);this.cornerRadar=cloud(true,this.tones.radar);
+    this.returnGroup.add(this.surfaces,this.cornerRadar);
     this.trackGroup=new T.Group();this.scene.add(this.trackGroup);
+    this.measuredSignals=new SignalHeads(this.scene);
+    // The planner supplies a new short preview each tick. Refill one ribbon so
+    // video playback never has to compile a new material or allocate a GPU buffer.
+    const strip=Array.from({length:43},(_,i)=>[i,0,0]);
+    this.preview=new T.Mesh(surfaceGeometry([strip],1.22),pathMaterial(this.tones));
+    this.preview.frustumCulled=false;this.preview.renderOrder=1;this.preview.visible=false;
+    this.preview.material.uniforms.uOverview.value=.72;
+    this.preview.geometry.attributes.position.setUsage(T.DynamicDrawUsage);
+    this.preview.geometry.attributes.uv.setUsage(T.DynamicDrawUsage);
+    this.previewSpan=0;this.scene.add(this.preview);
     this.layers={returns:true,tracks:true,path:true};
     this.tracks=new Map();
     // Which objects to draw, and where, is decided by the object memory from the recorded tracks.
@@ -575,7 +586,11 @@ export class PerceptionScene {
   // Draw the current frame again from scratch, after something it is drawn with has changed.
   redraw(){
     const frame=this.frame;
-    if(frame){this.clearTracks();this.frame=null;this.update(frame);}
+    if(frame){
+      this.clearTracks();this.frame=null;
+      if(this.replayFrames)this.updateReplay(this.replayFrames,this.replayIndex,this.fraction);
+      else this.update(frame);
+    }
     this.dirty=true;
   }
 
@@ -630,7 +645,7 @@ export class PerceptionScene {
       const described=new Map((features?.lanes||[]).map(lane=>[endsKey(lane.a,lane.b),lane]));
       const records=lanes.map(lane=>described.get(endsKey(lane[0],lane.at(-1))));
       const paints=features?records:null;
-      const streets=new T.Mesh(surfaceGeometry(lanes,2.02,.008,roadIndex(lanes),2.4,paints),streetMaterial(this.tones));
+      const streets=new T.Mesh(surfaceGeometry(lanes,1.75,.008,roadIndex(lanes),1.1,paints),streetMaterial(this.tones));
       const sidewalks=ink(this.tones.curb);sidewalks.side=T.DoubleSide;
       this.curbs=sidewalks;
       // A sidewalk band beside every lane; under the street surface it also closes junction corners.
@@ -654,9 +669,11 @@ export class PerceptionScene {
       this.map.visible=Boolean(this.localized);
       this.scene.add(this.map);
     }
+    this.measuredSignals.setMasts(features?.signals,(x,z)=>this.height(x,z));
     this.pathKey=null;
     // Headings follow the mapped lanes, so what is remembered is worked out again with this map.
     this.memory.reset();
+    this.replayMemory=null;
     this.redraw();
   }
   // The town's signals, in the current palette.
@@ -672,16 +689,18 @@ export class PerceptionScene {
     this.signals=posts.map(record=>buildSignal(this.signalParts,record,this.height(record.post[0],record.post[1])));
     for(const signal of this.signals)this.map.add(signal.group);
   }
-  // Light each signal from the frame. A recording can list lamp states around the vehicle as
-  // observer_map.signals: [{id, state}] or [{x, y, state}]. Recordings made before that field
-  // say less. The signal scenario, alone or as an event in a journey, records the phase of the
-  // signal the vehicle waits at, and the trip scenario holds every signal on the route at green
-  // (crosswalk/world.py and journey.py; the Town01 recordings' cameras show both). A signal with
-  // no recorded state is drawn unlit.
+  // Legacy logs may explicitly record an observer state for a mapped pole. Without a
+  // per-fixture observation its head stays unlit, including during scripted signal events.
   lightSignals(frame,ctx) {
+    this.measuredSignals.update(ctx.located?frame:null);
+    if(Array.isArray(frame.signals)||frame.perception_version==='surround-v1'){
+      // A surveyed pole can carry multiple real heads. Their measured positions replace the
+      // single schematic mast used by recordings with no fixture observations.
+      for(const signal of this.signals||[])signal.group.visible=false;
+      return;
+    }
     if(!this.signals?.length)return;
     const states=new Map(), listed=frame.observer_map?.signals;
-    const phase=/^(?:signal: )?(red|green)(?: signal)?$/.exec(frame.phase||'');
     if(Array.isArray(listed)){
       for(const entry of listed){
         let match=entry?.id==null?null:this.signals.find(signal=>String(signal.id)===String(entry.id));
@@ -694,17 +713,6 @@ export class PerceptionScene {
         }
         if(match)states.set(match,lampState(entry.state));
       }
-    }else if(ctx.located&&(frame.scenario==='trip'||(phase&&(frame.scenario==='signal'||frame.scenario==='journey')))){
-      // The heads ahead that govern traffic heading the vehicle's way, nearest first.
-      const c=Math.cos(ctx.degrees*rad), n=Math.sin(ctx.degrees*rad), ahead=[];
-      for(const signal of this.signals){
-        const dx=signal.x-ctx.x, dz=signal.z-ctx.z, fx=c*dx+n*dz, fy=-n*dx+c*dz;
-        const along=Math.abs((((signal.yaw-ctx.degrees)%360)+540)%360-180)<35;
-        if(along&&fx>2&&fx<70&&Math.abs(fy)<7)ahead.push([fx,signal]);
-      }
-      ahead.sort((a,b)=>a[0]-b[0]);
-      if(frame.scenario==='trip')for(const [,signal] of ahead)states.set(signal,'green');
-      else if(ahead.length)states.set(ahead[0][1],phase[1]);
     }
     const cos=Math.cos(ctx.degrees*rad), sin=Math.sin(ctx.degrees*rad), follow=this.view==='follow';
     for(const signal of this.signals){
@@ -754,6 +762,40 @@ export class PerceptionScene {
     this.path.material.uniforms.uOverview.value=Number(this.view==='overview');
   }
 
+  setPreview(points) {
+    this.previewSpan=0;
+    if(Array.isArray(points)&&points.length>1&&points.every(p=>coord(p))){
+      const waypoints=[];
+      for(const [x,y] of points){
+        const p=V(x,this.height(x,y),y);
+        if(!waypoints.length||p.distanceToSquared(waypoints.at(-1))>.0001)waypoints.push(p);
+      }
+      if(waypoints.length>1){
+        const {position,uv}=this.preview.geometry.attributes;
+        const samples=new T.CatmullRomCurve3(waypoints).getPoints(position.count/2-1);
+        for(let i=0;i<samples.length;i++){
+          const p=samples[i],a=samples[Math.max(0,i-1)],b=samples[Math.min(samples.length-1,i+1)];
+          const dx=b.x-a.x,dz=b.z-a.z,length=Math.hypot(dx,dz)||1;
+          this.previewSpan+=Math.hypot(p.x-a.x,p.z-a.z);
+          for(const [side,sign] of [[0,-1],[1,1]]){
+            position.setXYZ(i*2+side,p.x-sign*1.22*dz/length,p.y+.075,p.z+sign*1.22*dx/length);
+            uv.setXY(i*2+side,sign,this.previewSpan);
+          }
+        }
+        position.needsUpdate=true;uv.needsUpdate=true;
+      }
+    }
+    this.showPaths();
+  }
+
+  showPaths() {
+    this.preview.visible=this.layers.path&&this.previewSpan>0;
+    if(this.path){
+      this.path.visible=this.layers.path&&(this.view==='overview'||!this.previewSpan);
+      this.path.material.uniforms.uPreviewSpan.value=this.previewSpan;
+    }
+  }
+
   station(x,z) {
     let dist=Infinity,station=0;
     for(let i=1;i<(this.stations?.length||0);i++){
@@ -790,38 +832,74 @@ export class PerceptionScene {
     this.tracks.set(id,track);return track;
   }
 
-  update(frame) {
+  updateReplay(frames,index,fraction) {
+    const frame=frames[index];
+    if(!frame)return;
+    if(this.frame===frame && this.replayFrames===frames && this.replayMemory) {
+      if(fraction!==this.fraction){this.fraction=fraction;this.dirty=true;}
+      return;
+    }
+    const discontinuity=!this.frame || this.replayFrames!==frames || this.replayIndex+1!==index;
+    this.replayFrames=frames;this.replayIndex=index;this.fraction=fraction;
+    this.replayMemory??=new ReplayMemory(this.memory.deps);
+    const heightAt=(x,z)=>this.height(x,z);
+    const current=this.replayMemory.at(frames,index,heightAt);
+    const next=index+1<frames.length?this.replayMemory.at(frames,index+1,heightAt):null;
+    this.update(frame,{current,next:next&&!next.ctx.reset?next:current,discontinuity});
+  }
+
+  update(frame,replay=null) {
     if(this.disposed)return;
     const now=performance.now();
+    if(!replay){this.replayFrames=null;this.replayMemory=null;this.fraction=null;}
     if(!frame){
-      this.frame=null;this.ego.visible=false;this.localized=false;
+      this.frame=null;this.ego.visible=false;this.returnGroup.visible=false;this.localized=false;
+      this.measuredSignals.update(null);
       if(this.map)this.map.visible=false;
-      this.setPath(null);this.clearTracks();this.duration=0;this.memory.ctx=null;
+      this.setPath(null);this.setPreview(null);this.clearTracks();this.duration=0;this.memory.ctx=null;
       this.dirty=true;return;
     }
     const previous=this.frame;
-    if(previous && frame.frame!=null && frame.frame===previous.frame && frame.run_id===previous.run_id &&
-       frame.sim_time===previous.sim_time && frame.scenario===previous.scenario)return;
+    if(!replay && previous && frame.frame!=null && frame.frame===previous.frame && frame.run_id===previous.run_id &&
+       frame.sim_time===previous.sim_time && frame.scenario===previous.scenario && frame.seed===previous.seed)return;
     this.sample(now);
     if(!previous)this.memory.ctx=null;
-    const {ctx,objects}=this.memory.step(frame,(px,pz)=>this.height(px,pz),now/1000);
-    const {t,dt,x,z,degrees,h,located,reset}=ctx;
+    const {ctx,objects}=replay?.current??this.memory.step(frame,(px,pz)=>this.height(px,pz),now/1000);
+    const {t,dt,x,z,degrees,h,located}=ctx;
+    const reset=ctx.reset||Boolean(replay?.discontinuity);
+    this.currentCtx=ctx;
     const m=frame.observer_map;
     if(reset)this.clearTracks();
     this.frame=frame;this.time=t;this.localized=located;
-    this.ego.visible=true;
+    this.ego.visible=true;this.returnGroup.visible=this.layers.returns;
     if(this.map)this.map.visible=located;
     this.from.copy(this.at);this.fromYaw=this.yaw;
     this.to.set(x,h,z);this.toYaw=-degrees*rad;
     if(reset){this.from.copy(this.to);this.fromYaw=this.toYaw;this.snapCamera=true;}
-    this.started=now;this.duration=reset?0:clamp(dt*1000,25,160);
+    this.started=now;this.duration=reset||replay?0:clamp(dt*1000,25,160);
+    if(replay){
+      this.from.set(x,h,z);this.fromYaw=-degrees*rad;
+      const next=replay.next.ctx;
+      this.to.set(next.x,next.h,next.z);this.toYaw=-next.degrees*rad;
+    }
     this.setPath(located?m.path:null);
+    this.setPreview(located?frame.plan_xy:null);
     this.stationFrom=reset?this.station(x,z):(this.path?.material.uniforms.uStation.value||0);
     this.stationTo=this.station(x,z);
+    if(replay){this.stationFrom=this.stationTo;this.stationTo=this.station(this.to.x,this.to.z);}
+    // Range samples remain fixed at their acquisition pose while the vehicle moves between frames.
+    this.returnGroup.position.set(x,h,z);this.returnGroup.rotation.y=-degrees*rad;
     this.showBrake(frame.brake);
-    fillReturns(this.lidar,frame.lidar,.085);fillReturns(this.radar,frame.radar,.105);
+    if(Array.isArray(frame.lidar_xyz)){
+      fillReturns(this.lidar,frame.lidar_xyz,null);fillReturns(this.surfaces,[],null);
+    }else{
+      fillReturns(this.lidar,frame.lidar,.085);
+      fillReturns(this.surfaces,(frame.tracks||[]).flatMap(track=>track.surface_xyz||[]),null);
+    }
+    fillReturns(this.radar,frame.radar,.105);fillReturns(this.cornerRadar,cornerReturns(frame),null);
     this.lightSignals(frame,ctx);
     const drawn=new Set();
+    const nextObjects=new Map(replay?.next.objects.map(o=>[o.key,o]));
     for(const object of objects){
       const label=Object.hasOwn(TRACK_TONE,object.label)?object.label:'unknown';
       drawn.add(object.key);
@@ -843,6 +921,17 @@ export class PerceptionScene {
         track.from.copy(track.to);track.fromSize.copy(track.toSize);track.group.scale.copy(track.toSize);
         track.fromOpacity=carried??(reset?object.opacity:0);
       }
+      if(replay){
+        const following=nextObjects.get(object.key);
+        track.from.copy(track.to);track.fromAngle=track.toAngle;track.fromSize.copy(track.toSize);
+        track.fromOpacity=object.opacity;
+        if(following&&following.label===label){
+          track.to.set(following.x,following.y,following.z);
+          if(!following.turned)track.toAngle=-following.heading*rad;
+          plausibleSize(label,track.size.set(following.length,following.height,following.width),track.toSize);
+          track.toOpacity=following.opacity;
+        }
+      }
       // A remembered object keeps a fainter outline than one measured in this frame.
       track.foot.material.uniforms.uFresh.value=object.held?.18:1;
       const history=track.history;
@@ -860,7 +949,7 @@ export class PerceptionScene {
 
   sample(now){
     if(!this.frame)return;
-    const t=this.duration?clamp((now-this.started)/this.duration,0,1):1;
+    const t=this.fraction??(this.duration?clamp((now-this.started)/this.duration,0,1):1);
     this.at.lerpVectors(this.from,this.to,t);
     this.yaw=this.fromYaw+shortest(this.fromYaw,this.toYaw)*t;
     this.ego.position.copy(this.at);this.ego.rotation.y=this.yaw;
@@ -883,11 +972,11 @@ export class PerceptionScene {
     const overview=this.view==='overview';
     // Follow looks straight down the road from behind and above the vehicle, which sits low in the
     // picture so most of it shows what lies ahead.
-    const vertical=overview?1.13:clamp(.47+this.pitch,.19,1.24);
+    const vertical=overview?1.13:clamp(.36+this.pitch,.19,1.24);
     const bearing=(overview?Math.PI*.5:Math.PI)+this.orbit;
     const portrait=this.camera.aspect<.9;
     const distance=(overview?74:portrait?27:22)*this.zoom;
-    const pivot=overview?0:portrait?6:5.5;
+    const pivot=overview?0:portrait?7.2:7.0;
     this.target.set(pivot,.6,0);
     this.offset.set(Math.cos(bearing)*Math.cos(vertical)*distance,Math.sin(vertical)*distance,
       Math.sin(bearing)*Math.cos(vertical)*distance);
@@ -902,9 +991,10 @@ export class PerceptionScene {
   setView(view){
     if(view!=='follow'&&view!=='overview')return;
     this.view=view;this.orbit=this.pitch=0;this.zoom=1;this.snapCamera=true;
+    this.showPaths();
     if(this.path)this.path.material.uniforms.uOverview.value=Number(view==='overview');
     if(this.buildings)this.buildings.material.uniforms.uOverview.value=Number(view==='overview');
-    if(this.frame&&this.memory.ctx)this.lightSignals(this.frame,this.memory.ctx);
+    if(this.frame&&this.currentCtx)this.lightSignals(this.frame,this.currentCtx);
     this.dirty=true;
   }
   setLayer(layer,enabled){
@@ -912,6 +1002,7 @@ export class PerceptionScene {
     this.layers[layer]=Boolean(enabled);
     const group={returns:this.returnGroup,tracks:this.trackGroup,path:this.path}[layer];
     if(group)group.visible=this.layers[layer];
+    if(layer==='path')this.showPaths();
     this.dirty=true;
   }
   resize(){
@@ -921,7 +1012,7 @@ export class PerceptionScene {
     const ratio=Math.min(window.devicePixelRatio||1,w<650?1.4:1.6,Math.sqrt(2200000/(w*h)));
     this.renderer.setPixelRatio(ratio);
     this.renderer.setSize(w,h,false);
-    this.lidar.material.uniforms.uPixel.value=this.radar.material.uniforms.uPixel.value=ratio;
+    for(const points of [this.lidar,this.radar,this.surfaces,this.cornerRadar])points.material.uniforms.uPixel.value=ratio;
     const style=getComputedStyle(this.canvas);
     const offsetX=Number(style.getPropertyValue('--perception-offset-x'))||0;
     const offsetY=Number(style.getPropertyValue('--perception-offset-y'))||0;
@@ -935,6 +1026,7 @@ export class PerceptionScene {
     this.disposed=true;this.resources++;
     cancelAnimationFrame(this.raf);this.bindings.abort();this.observer?.disconnect();
     this.clearTracks();
+    this.measuredSignals.dispose();
     release(this.scene);disposeRoadUserGeometry();this.environment.dispose();this.renderer.dispose();
   }
 }

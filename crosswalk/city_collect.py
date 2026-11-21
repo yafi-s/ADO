@@ -18,9 +18,10 @@ class CityInstructor:
     new_observer = Observer
     lamp_expert = None
 
-    def __init__(self, base, start_m):
+    def __init__(self, base, start_m, urban_cruise=False):
         self.start_m = start_m
         self.base = base
+        self.urban_cruise = urban_cruise
         self.sensor_lamp_classifier = base.lamp_expert
         self.scene = None
         self.inputs_seen, self.requests, self.actions = [], [], []
@@ -42,6 +43,17 @@ class CityInstructor:
         progress = state["progress_m"]
         on_bend = any(a - 8. < progress < b + 3. for a, b in self.scene._junction_ranges)
         cruise = 3.6 if on_bend else 5.2
+        if self.urban_cruise:
+            # Training supervision only. Approach junctions and street users with
+            # time to decelerate; this privileged route station never enters X.
+            cruise = 11.0
+            zones = [(a-5., b+4., 3.6) for a, b in self.scene._junction_ranges]
+            zones.extend((e.s-21., e.s+6., 5.2) for e in self.scene.events)
+            for start, end, limit in zones:
+                if progress <= end:
+                    cruise = min(cruise, np.sqrt(limit**2 + 3.2*max(0., start-progress)))
+            if state["active_event"] is not None:
+                cruise = min(cruise, 5.2)
         # Constant-deceleration stopping envelope with four metres of standstill space.
         requested = min(cruise, np.sqrt(2. * 1.8 * max(0., gap - 4.0)))
         steer = self.base.predict(x[:len(BASE_NAMES)])[0]
@@ -61,15 +73,17 @@ def main():
     parser.add_argument("--attach", action="store_true")
     parser.add_argument("--start-m", type=float, default=0., help="Training-only departure station in metres")
     parser.add_argument("--seed", type=int, required=True)
+    parser.add_argument("--urban-cruise", action="store_true", help="Collect normal-speed straight-road demonstrations")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     base = BehaviorModel.load(PROJECT/"models/behavior-v2/candidate.npz")
-    model = CityInstructor(base, args.start_m)
+    model = CityInstructor(base, args.start_m, args.urban_cruise)
     with simulator(args.port, args.attach, map_name="Town03_Opt") as world:
         summary, trace, _, _ = episode(world, "journey", args.seed, "privileged-city-instructor", model,
             scene_factory=model.create_scene, destination="market", max_steps=8500)
-    summary.update(training_departure_m=args.start_m, purpose="privileged demonstration only")
+    summary.update(training_departure_m=args.start_m, urban_cruise=args.urban_cruise,
+                   purpose="privileged demonstration only")
     frames = np.array([r["frame"] for r in trace])
     assert len(frames) == len(model.inputs_seen)
     save_arrays(args.output/"lesson.npz", X=model.inputs_seen, y=model.actions, frame=frames,

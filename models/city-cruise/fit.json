@@ -1,0 +1,42 @@
+{
+  "schema": "ado-city-cruise-v1",
+  "model_sha256": "78b84c5ead7ba81d34a354b0cf6c509c50c6a8e6bc6beb16f4360b2ab530c634",
+  "dependencies": {
+    "python": "3.13.18",
+    "numpy": "2.4.6",
+    "sklearn": "1.6.1"
+  },
+  "training": [
+    {
+      "seed": 75,
+      "episode": "demonstration-75",
+      "rows": 3141,
+      "excluded_collision_tail": 0,
+      "requests_above_35_kmh": 397
+    }
+  ],
+  "features": [
+    "junction_gap",
+    "bend_7_13",
+    "bend_13_25",
+    "bend_25_40",
+    "path_body_lidar",
+    "path_body_radar",
+    "path_body_lidar_recent",
+    "path_body_radar_recent",
+    "left_edge_lidar",
+    "right_edge_lidar",
+    "right_edge_lidar_recent",
+    "oncoming_gap_recent",
+    "rgb_person_height_recent",
+    "rgb_vehicle_height",
+    "mapped_lamp_gap_m"
+  ],
+  "sources": {
+    "/content/urban-cruise/crosswalk/city_cruise.py": "37619c97b49942763f0dc02e01ae5e58a00d4622f97bb2a297d8131021aaceee",
+    "models/city-v1/candidate-73-74.npz": "e139089bf706909f6caa711dc189a8a7cc29c7c2d6a9918a6f350b604cb3025e",
+    "data/city-cruise/demonstration-75/lesson.npz": "79b1e859086a7cbe8d4f48de9a7d000a46c6658f882c89ed35ac91f4b872afd4",
+    "data/city-cruise/demonstration-75/trace.jsonl.gz": "259c5d193bc8439410b8868a78c5a8a58d4150cf3201161b3b5a8b3798a8aef6",
+    "data/city-cruise/demonstration-75/summary.json": "0d2cf374cf2052bfc81a79720a9dc4766103f1bbaab6a0ebcf7e8c8786c43c7f"
+  }
+}

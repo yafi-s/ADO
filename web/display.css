@@ -224,7 +224,7 @@ h1, h2, h3, p, dl, dd { margin: 0; }
   color: var(--ink-2); font: 600 13.5px/1 var(--font); white-space: nowrap;
   transition: background-color .16s, color .16s;
 }
-.seg button:hover:not(:disabled) { color: var(--ink); }
+.seg button:not([aria-pressed="true"]):hover:not(:disabled) { color: var(--ink); }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); }
 .seg button:disabled { opacity: .45; }
 .seg button[data-active="true"]::after {
