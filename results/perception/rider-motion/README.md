@@ -3,14 +3,14 @@
 The comparison plays 91 consecutive acquisitions from Town03_Opt, seed 211, at their native 10 Hz. Frame 1062 starts at 33.5 s of simulator time and frame 1152 ends at 42.5 s. The clip runs for 9.1 s. [Play the High replay comparison](high-occluded-pedestrian-and-van.mp4)
 
 - The **left panel** shows the rider display from commit `35b0af102a9d4ebbf9e0c1619df19f0b6b88a1fc`.
-- The **center panel** shows the updated rider display. [Geometry checks and source hashes](high-replay-geometry.json)
+- The **center panel** shows the updated rider display. A faint dashed outline marks remembered vehicles as their last measurement ages. [Geometry checks and source hashes](high-replay-geometry.json)
 - The **right panel** shows the simulator’s front, right and rear-right camera images from the same acquisition. Frame 1063 shows the van ahead. At frame 1095 the pedestrian is in front and the van is beside the ego vehicle. At frame 1141 the van appears in the rear-right camera after the ego vehicle passes. The updated display shows one van where the former display drew overlapping vehicle shapes.
 
 Both rider panels use the production `PerceptionScene.updateReplay`, `sample`, `placeCamera` and renderer, with the captured town and the same i-Pace GLB. The harness uses a 400 × 225 day-mode Follow view. It fixes orbit, pitch, zoom and the viewport offset for the comparison and sets camera yaw to the sampled ego yaw. Video panels use the exact acquisition poses and content at fraction 0.
 
 The geometry probe samples every acquisition and its midpoint in order. It then compares geometry after a pause, after eleven forward and backward seeks, and when advancing by every third acquisition. It evaluates the scene directly at recorded frame fractions and compares ego and sensor acquisition pose, object identity, class, position, shortest-arc heading, scale, footprint scale and opacity.
 
-Both rendered versions matched exactly across 182 pause samples, 22 seek samples and 62 skipped samples. A follow-up browser probe ran the same inputs through the later production modules. All 182 acquisition and midpoint samples matched the frozen clip’s geometry byte for byte. The cyclist association module returned zero rows for these acquisitions. [Verification results and module hashes](high-replay-geometry.json)
+Both rendered versions matched exactly across 182 pause samples, 22 seek samples and 62 skipped samples. The released renderer matched the frozen clip’s geometry in all 182 acquisition and midpoint samples using the archived inputs and the public replay. The cyclist association module returned zero rows for these acquisitions. [Verification results and module hashes](high-replay-geometry.json)
 
 ## Reproduce from the release
 
@@ -40,7 +40,7 @@ Use the immutable `.local/rider-surround-qa/high-prefix-700/perception.jsonl` sn
 With Playwright, Pillow, Chrome, FFmpeg and FFprobe available, run these from the repository root. `ADO_CHROME_PATH` can point to a different Chrome installation. The local candidate snapshot contains the exact renderer modules used for the clip.
 
 ```powershell
-$frozenRiderSources = '.local/rider-surround-qa/motion-clip/candidate-frozen'
+$frozenRiderSources = '.local/rider-surround-qa/motion-clip/candidate-last-seen'
 python tools/capture_rider_motion.py before
 python tools/capture_rider_motion.py after --candidate-sources $frozenRiderSources
 python tools/capture_rider_motion.py assemble
