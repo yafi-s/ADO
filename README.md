@@ -18,7 +18,7 @@ A learned robotaxi driving through an interactive CARLA 1.0 city. Select a desti
 
 [Watch the perception display](https://yafi-s.github.io/ADO/) · [Builds and run logs](https://yafi-s.github.io/ADO/builds.html) · [3D city observer](https://yafi-s.github.io/ADO/city.html) · [Waymo Jaguar I-PACE model](https://yafi-s.github.io/ADO/vehicle.html?model=ipace) · [Benchmark design](docs/city-study.md) · [Research and asset credits](docs/research.md)
 
-[![ADO showing a real recorded CARLA crossing, measured sensor tracks and the native camera feed](docs/media/ado-perception.png)](https://yafi-s.github.io/ADO/)
+[![ADO tracking a bus beside its planned route, with a synchronized native CARLA camera inset](docs/media/town03-perception.png)](https://yafi-s.github.io/ADO/?run=long-city-drive&at=212)
 
 ## Drive a route
 
@@ -28,7 +28,7 @@ On Windows, install Python 3.12 and extract the release ZIP or clone the reposit
 powershell -ExecutionPolicy Bypass -File .\setup.ps1
 ```
 
-**Start-ADO.cmd** verifies the installation. **Watch-Live.cmd** starts an offscreen simulator and opens the driving console after local setup and model fitting. Choose Market or Station for a two-intersection trip, or select an individual encounter. Choose a weather preset or a wheel grip setting, keep the seed fixed and change pedestrian entry timing. Press Ctrl+C in the launcher window to stop the simulator. The public site hosts synchronized recordings. The local program runs new drives.
+**Watch-City.cmd** opens the learned Town03 Market drive with a live perception display. **Start-ADO.cmd** verifies the installation. **Watch-Live.cmd** starts an offscreen simulator and opens the driving console after local setup and model fitting. Choose Market or Station for a two-intersection trip, or select an individual encounter. Choose a weather preset or a wheel grip setting, keep the seed fixed and change pedestrian entry timing. Press Ctrl+C in the launcher window to stop the simulator. The public site hosts synchronized recordings. The local program runs new drives.
 
 See the [Town03 city drive](docs/city-driving.md) for the longer route and its ten planned encounters. To watch recordings from the ZIP without running CARLA, use the [offline replay instructions](docs/release.md).
 

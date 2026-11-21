@@ -1,16 +1,16 @@
 {
   "status": "evaluated",
-  "title": "Held-out evaluation",
+  "title": "City driver and held-out driving study",
   "simulator": {
     "server_version": "1.0",
     "client_version": "1.0",
     "map": "Town01_Opt"
   },
   "release": {
-    "label": "v0.1.0",
-    "url": "https://github.com/yafi-s/ADO/releases/tag/v0.1.0",
-    "zip_url": "https://github.com/yafi-s/ADO/releases/download/v0.1.0/ADO-v0.1.0-Windows.zip",
-    "sha256_url": "https://github.com/yafi-s/ADO/releases/download/v0.1.0/SHA256SUMS.txt"
+    "label": "v0.2.0",
+    "url": "https://github.com/yafi-s/ADO/releases/tag/v0.2.0",
+    "zip_url": "https://github.com/yafi-s/ADO/releases/download/v0.2.0/ADO-v0.2.0-Windows.zip",
+    "sha256_url": "https://github.com/yafi-s/ADO/releases/download/v0.2.0/SHA256SUMS.txt"
   },
   "checkpoints": {
     "fusion": {
@@ -31,6 +31,22 @@
     }
   },
   "evidence": [
+    {
+      "label": "Original 1080p city drive",
+      "url": "https://github.com/yafi-s/ADO/releases/download/v0.2.0/ADO-Town03-Chase-1080p.mp4"
+    },
+    {
+      "label": "Continuous Town03 drive log",
+      "url": "./media/long-city-drive/telemetry.json"
+    },
+    {
+      "label": "All measured comparison frames and failure logs",
+      "url": "https://github.com/yafi-s/ADO/raw/refs/tags/v0.2.0/results/behavior-v2/closed-loop-evidence.zip"
+    },
+    {
+      "label": "Reserved-seed comparison and historical regression",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.2.0/results/behavior-v2/README.md"
+    },
     {
       "label": "City drive and encounter timestamps",
       "url": "https://github.com/yafi-s/ADO/blob/main/docs/city-driving.md"
@@ -1859,8 +1875,16 @@
     }
   ],
   "source": {
+    "commit": "ab83fd7af908cbf6572e9a92917ad36c1b86bf54",
+    "url": "https://github.com/yafi-s/ADO/tree/ab83fd7af908cbf6572e9a92917ad36c1b86bf54"
+  },
+  "preview_image": "./media/chase.jpg",
+  "legacy_run_source": {
     "commit": "9ef24c1448ccecd6256b1b4af41b506948652d82",
     "url": "https://github.com/yafi-s/ADO/tree/9ef24c1448ccecd6256b1b4af41b506948652d82"
   },
-  "preview_image": "./media/chase.jpg"
+  "maps": [
+    "Town01_Opt",
+    "Town03_Opt"
+  ]
 }
