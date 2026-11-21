@@ -10,7 +10,7 @@ import cv2
 import numpy as np
 
 from .city_drive import LoggedDriver, load_driver
-from .city_progress_bus import BusCrossing, crossing_score
+from .city_progress_bus import BusCrossing, body_gap, crossing_score, footprint
 from .drive import episode
 from .experiment import PROJECT, fingerprint, save_arrays, write_json, write_trace
 from .journey import JourneyScenario
@@ -42,14 +42,25 @@ CASES = (*WINDOWS, *PASS_TRIALS, "reopened-board")
 class Witness:
     primary_rig_only = True
 
-    def __init__(self, stream, reference):
+    def __init__(self, stream, reference, target):
         self.stream, self.reference = stream, reference
+        self.target = target
         self.scene = None
+        self.closest = None
 
     def append(self, row, obs):
         score = row["observer_map"]
         measured = dict(frame=row["frame"], sim_time=row["sim_time"], ego=score["ego"],
                         ego_z=score["ego_z"], others=score["others"])
+        if self.target:
+            actor = next(event.actor for event in self.scene.events if event.kind == self.target)
+            ego = self.scene.ego
+            if ego.get_location().distance(actor.get_location()) < 40.:
+                gap = round(body_gap(footprint(ego), footprint(actor)), 3)
+                measured["target_polygon_gap_m"] = gap
+                if self.closest is None or gap < self.closest["gap_m"]:
+                    self.closest = dict(frame=row["frame"], sim_time=row["sim_time"], gap_m=gap,
+                                        ego_kmh=round(row["speed_mps"] * 3.6, 2))
         self.reference.write(json.dumps(measured, separators=(",", ":"), allow_nan=False) + "\n")
         ok, jpeg = cv2.imencode(".jpg", obs["front"][:, :, ::-1], [cv2.IMWRITE_JPEG_QUALITY, 92])
         if not ok:
@@ -73,7 +84,7 @@ def route_trial(world, checkpoint, folder, raw, case):
     raw.mkdir(parents=True, exist_ok=False)
     with (raw / "front.mjpeg").open("xb") as stream, gzip.open(
             folder / "reference.jsonl.gz", "xt", encoding="utf-8") as reference:
-        witness = Witness(stream, reference)
+        witness = Witness(stream, reference, target)
 
         def factory(*args, **kwargs):
             scenario = BusCrossing if case == "bus-crossing" else JourneyScenario
@@ -104,6 +115,7 @@ def route_trial(world, checkpoint, folder, raw, case):
               summary.get("crossing", {}).get("passed", True))
     summary.update(case=case, model_sha256=fingerprint(checkpoint), producer=producer_info(world),
                    start_m=start, end_m=finish, target_event=target, target_pass=bool(passed),
+                   nearest_target_footprint=witness.closest,
                    windows=[interval(trace, a, b) for a, b in windows],
                    first_frame=trace[0]["frame"], last_frame=trace[-1]["frame"],
                    camera_contract="Frame zero in front.mp4 is first_frame. One exposure per 0.1 s step.")

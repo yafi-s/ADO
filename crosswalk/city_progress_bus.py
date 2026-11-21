@@ -97,20 +97,21 @@ class BusCrossing(JourneyScenario):
 
 
 def crossing_score(trace):
-    hidden = next((r for r in trace if r["bus_hides_walker"]), None)
     moving = next((r for r in trace if r["person_speed_mps"] > .5), None)
+    hidden = next((r for r in trace if moving and r["frame"] <= moving["frame"] and r["bus_hides_walker"]), None)
     visible = next((r for r in trace if hidden and r["frame"] > hidden["frame"] and
                     r["walker_started"] and r["bus_hides_walker"] is False), None)
-    occupied = [r for r in trace if r["walker_in_passing_path"]]
+    occupied = [r for r in trace if r["walker_started"] and r["walker_in_passing_path"]]
     clear = next((r for r in trace if r["walker_cleared_passing_path"]), None)
     passed = next((r for r in trace if r["front_to_crossing_m"] <= 0.), None)
+    gap = min((r["person_body_gap_m"] for r in trace if "person_body_gap_m" in r), default=None)
     return dict(hidden_frame=hidden and hidden["frame"], moving_frame=moving and moving["frame"],
                 emerged_frame=visible and visible["frame"],
                 ego_speed_at_emergence_kmh=visible and round(3.6 * visible["speed_mps"], 2),
                 front_distance_at_emergence_m=visible and visible["front_to_crossing_m"],
                 path_occupied_frames=len(occupied), clear_frame=clear and clear["frame"],
                 front_at_crossing_frame=passed and passed["frame"],
-                minimum_body_gap_m=min((r["person_body_gap_m"] for r in trace if "person_body_gap_m" in r), default=None),
+                minimum_body_gap_m=gap,
                 minimum_speed_while_occupied_kmh=min((3.6 * r["speed_mps"] for r in occupied), default=None),
-                passed=bool(hidden and moving and visible and occupied and clear and passed and
+                passed=bool(hidden and moving and visible and occupied and clear and passed and gap and gap > 0. and
                             clear["frame"] < passed["frame"] and not trace[-1]["collision_count"]))

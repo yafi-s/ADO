@@ -160,7 +160,9 @@ def evaluate(world, case, model_path, folder, record=False, *,
                 if step % 2 == 0:
                     detections = detector.detect(obs['front'])
                 if getattr(observer, 'uses_conflict_profile', False):
+                    pose = ego.get_transform()
                     obs.update(progress_frame=frame, progress_camera_age_s=(step % 2) * .1,
+                               progress_ego_pose=(pose.location.x, pose.location.y, pose.rotation.yaw),
                                progress_tactical=planner.info)
                 reading = lamps.observe(ego, obs)
                 if reading is not None:

@@ -1,12 +1,45 @@
 """Paired native crossing-traffic transfer on a Town03 junction outside the Market itinerary."""
 import argparse
+import gzip
+import importlib.abc
+import importlib.util
+import io
+import json
+from dataclasses import dataclass
 from pathlib import Path
 import shutil
+import sys
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import carla
 import cv2
 import numpy as np
+
+
+class SealedSource(importlib.abc.MetaPathFinder, importlib.abc.Loader):
+    """Execute the saved driver under its original file paths for relative model/asset lookup."""
+    def __init__(self, source):
+        with ZipFile(source) as archive:
+            self.files = {name: archive.read(name) for name in archive.namelist()}
+
+    def find_spec(self, fullname, path, target=None):
+        key = fullname.replace(".", "/") + ".py"
+        if key in self.files:
+            return importlib.util.spec_from_loader(fullname, self)
+
+    def exec_module(self, module):
+        key = module.__name__.replace(".", "/") + ".py"
+        module.__file__ = str(Path(__file__).resolve().parents[1] / key)
+        exec(compile(self.files[key], module.__file__, "exec"), module.__dict__)
+
+
+sealed = None
+if __name__ == "__main__" and "--reproduce" in sys.argv:
+    initial = argparse.ArgumentParser(add_help=False)
+    initial.add_argument("--reuse-schedule", type=Path, required=True)
+    opts, _ = initial.parse_known_args()
+    sealed = SealedSource(opts.reuse_schedule / "source.zip")
+    sys.meta_path.insert(0, sealed)
 
 from .city_drive import LoggedDriver, load_driver
 from .city_progress_bus import body_gap, footprint
@@ -17,10 +50,17 @@ from .urban_map import urban_route
 from .world import Scenario, _raised, _vehicle_blueprint
 
 
-JUNCTION = 356
-EGO_CONNECTOR = (384, -1)
-CROSS_CONNECTOR = (434, 1)
-CROSS_SPEED = 3.0
+@dataclass(frozen=True)
+class Site:
+    junction: int
+    ego: tuple
+    traffic: tuple
+    npc_speed: float
+    approach: float
+
+
+SITES = {"original": Site(356, (384, -1), (434, 1), 3., 2.5),
+         "transfer": Site(1221, (1229, 1), (1334, -2), 3.6, 8.)}
 SEED = 881
 STATIONS = (-20., -12., -8., -4., 0., 4., 10.)
 NEAR_MISS_GAP = 1.0
@@ -31,23 +71,23 @@ def xy(p):
     return np.array([p.x, p.y], dtype=float)
 
 
-def geometry(road_map):
+def geometry(road_map, site=SITES["original"]):
     used = sorted({p.junction_id for p in urban_route(road_map, SEED, "market").points if p.is_junction})
-    if JUNCTION in used:
+    if site.junction in used:
         raise ValueError("Test junction is on Market itinerary")
     lanes = {(a.road_id, a.lane_id): (a, b) for a, b in road_map.get_topology()
-             if a.is_junction and a.junction_id == JUNCTION}
-    entry, end = lanes[EGO_CONNECTOR]
-    cross, exit_wp = lanes[CROSS_CONNECTOR]
+             if a.is_junction and a.junction_id == site.junction}
+    entry, end = lanes[site.ego]
+    cross, exit_wp = lanes[site.traffic]
     start, = entry.previous(40.)
     points = [start]
     for _ in range(80):
         choices = points[-1].next(1.)
         if len(choices) > 1:
-            choices = [p for p in choices if (p.road_id, p.lane_id) == EGO_CONNECTOR]
+            choices = [p for p in choices if (p.road_id, p.lane_id) == site.ego]
         point, = choices
         points.append(point)
-    if any(p.junction_id != JUNCTION for p in points if p.is_junction):
+    if any(p.junction_id != site.junction for p in points if p.is_junction):
         raise ValueError("Unexpected additional junction")
     axes = []
     for a, b in [(entry, end), (cross, exit_wp)]:
@@ -58,16 +98,17 @@ def geometry(road_map):
         raise ValueError("Movements must cross at nearly a right angle")
     u, v = np.linalg.solve(np.column_stack((along, -across)), xy(cross.transform.location) - xy(entry.transform.location))
     center = xy(entry.transform.location) + along * u
-    if not (3. < u < 22. and 3. < v < 22.):
+    if not (3. < u < end.transform.location.distance(entry.transform.location) - 3. and
+            3. < v < exit_wp.transform.location.distance(cross.transform.location) - 3.):
         raise ValueError("Crossing point outside both connectors")
-    spawn, = cross.previous(2.5)
+    spawn, = cross.previous(site.approach)
     target, = exit_wp.next(12.)
-    return points, center, axes, spawn, target, used
+    return points, center, axes, spawn, target, cross, used
 
 
 class Junction(Scenario):
     """Actor placement and reference geometry are isolated from the production observer."""
-    def __init__(self, world, *args, departure=None, **kwargs):
+    def __init__(self, world, *args, departure=None, site=SITES["original"], stops_short=False, **kwargs):
         self.world = world
         self._map = world.get_map()
         self._actors = []
@@ -81,6 +122,8 @@ class Junction(Scenario):
         self.rows = {}
         self.step = 0
         self.departure = departure
+        self.site = site
+        self.stops_short = stops_short
         try:
             self.initialize()
         except BaseException:
@@ -88,14 +131,14 @@ class Junction(Scenario):
             raise
 
     def initialize(self):
-        points, self.center, self.axes, cross_spawn, target, self.market = geometry(self._map)
+        points, self.center, self.axes, cross_spawn, target, entry, self.market = geometry(self._map, self.site)
         self._set_route([w.transform.location for w in points])
         self.road_id, self.lane_id = points[0].road_id, points[0].lane_id
         self.roads = list(dict.fromkeys(p.road_id for p in points))
         junction_indices = [i for i, p in enumerate(points) if p.is_junction]
         self._junction_ranges = [tuple(self._coordinates(points[i].transform.location)[0]
                                        for i in (junction_indices[0], junction_indices[-1] + 1))]
-        self.target = target.transform.location
+        self.target = (entry if self.stops_short else target).transform.location
         library = self.world.get_blueprint_library()
 
         def spawn(preferred, legacy, role, pose):
@@ -128,12 +171,14 @@ class Junction(Scenario):
 
     def before_tick(self):
         if self.traffic:
-            self._drive_to(self.traffic, self.target, CROSS_SPEED if self.step >= self.departure else 0.)
+            self._drive_to(self.traffic, self.target, self.site.npc_speed if self.step >= self.departure else 0.)
         self.step += 1
 
     def world_row(self):
         ego = footprint(self.ego)
-        row = dict(ego_xy=ego.round(4).tolist(), ego_station_m=float((xy(self.ego.get_location()) - self.center) @ self.axes[0]))
+        pose = self.ego.get_transform()
+        row = dict(ego_xy=ego.round(4).tolist(), ego_matrix=pose.get_matrix(),
+                   ego_station_m=float((xy(pose.location) - self.center) @ self.axes[0]))
         if self.traffic:
             other = footprint(self.traffic)
             row.update(traffic_xy=other.round(4).tolist(), traffic_station_m=float(
@@ -147,30 +192,43 @@ class Junction(Scenario):
                     lateral_error_m=abs(lateral), route_departure=abs(lateral) > 1.8,
                     hazard_gap_m=row.get("gap_m", 100.), red_light_violations=0, yield_violations=0,
                     event_triggered=self.departure is not None and self.step > self.departure,
-                    event_cleared=row.get("traffic_station_m", -100.) > 4., route_id="356-westbound",
-                    road_ids=self.roads, junction_ids=[JUNCTION], destination="straight")
+                    event_cleared=row.get("traffic_station_m", -100.) > 4., route_id=f"{self.site.junction}-through",
+                    road_ids=self.roads, junction_ids=[self.site.junction], destination="straight")
 
 
 class Samples:
     primary_rig_only = True
 
-    def __init__(self, folder):
+    def __init__(self, folder, raw, side):
         self.folder = folder
+        self.raw = raw
+        self.side = side
 
     def append(self, row, obs):
         step = round(row["sim_time"] / DT)
+        if self.raw and 30 <= step <= 200:
+            stem = f"{step:04d}-{row['frame']}"
+            for name in ("lidar", "radar"):
+                buffer = io.BytesIO()
+                np.save(buffer, obs[name], allow_pickle=False)
+                self.raw.writestr(f"{stem}/{name}.npy", buffer.getvalue())
+            for name in ("front", "left", "right"):
+                ok, data = cv2.imencode(".jpg", obs[name][:,:,::-1], [cv2.IMWRITE_JPEG_QUALITY, 92])
+                if not ok:
+                    raise RuntimeError(f"Missing {name} camera exposure")
+                self.raw.writestr(f"{stem}/{name}.jpg", data.tobytes())
         if step % 5:
             return
         # Both images are untouched RGB exposures apart from resize for the contact strip.
-        panels = [cv2.resize(obs[name], (320, 180)) for name in ("left", "front")]
-        path = self.folder / f"{step:04d}-left-front.jpg"
+        panels = [cv2.resize(obs[name], (320, 180)) for name in (self.side, "front")]
+        path = self.folder / f"{step:04d}-{self.side}-front.jpg"
         if not cv2.imwrite(str(path), np.hstack(panels)[:, :, ::-1]):
             raise RuntimeError(f"Could not write {path}")
 
 
-def calibrate(world, folder):
+def calibrate(world, folder, site):
     """Measure time to the center under native throttle before either controller sees this scene."""
-    scene = Junction(world, departure=0)
+    scene = Junction(world, departure=0, site=site)
     try:
         for _ in range(8):
             world.tick()
@@ -190,7 +248,27 @@ def calibrate(world, folder):
         scene.close()
 
 
-def run(world, checkpoint, folder, departure):
+def station_speeds(trace):
+    """Compare actual speed at identical coordinates, keeping the last applied discrete target."""
+    result = {}
+    for station in STATIONS:
+        for previous, current in zip(trace, trace[1:]):
+            start, end = previous["ego_station_m"], current["ego_station_m"]
+            if not start < station <= end:
+                continue
+            weight = (station - start) / (end - start)
+            result[str(station)] = dict(
+                first_frame=previous["frame"], second_frame=current["frame"],
+                time_s=round(previous["sim_time"] + weight * DT, 4),
+                actual_kmh=round(3.6 * (previous["speed_mps"] + weight *
+                                       (current["speed_mps"] - previous["speed_mps"])), 3),
+                applied_target_kmh=round(3.6 * previous["speed_request_mps"], 3),
+                next_target_kmh=round(3.6 * current["speed_request_mps"], 3))
+            break
+    return result
+
+
+def run(world, checkpoint, folder, departure, site=SITES["original"], stops_short=False, raw=False):
     folder.mkdir(parents=True, exist_ok=False)
     images = folder / "cameras"
     images.mkdir()
@@ -198,11 +276,17 @@ def run(world, checkpoint, folder, departure):
     model = LoggedDriver(driver)
     scenes = []
     def make(*args, **kwargs):
-        scene = Junction(*args, **kwargs, departure=departure)
+        scene = Junction(*args, **kwargs, departure=departure, site=site, stops_short=stops_short)
         scenes.append(scene)
         return scene
-    summary, trace, _, _ = episode(world, "journey", SEED, schema, model, weather="ClearNoon",
-        scene_factory=make, max_steps=320, recording=Samples(images), tactical=True)
+    archive = ZipFile(folder / "sensor-sweeps.zip", "x", ZIP_DEFLATED, compresslevel=1) if raw else None
+    try:
+        summary, trace, _, _ = episode(world, "journey", SEED, schema, model, weather="ClearNoon",
+            scene_factory=make, max_steps=320, recording=Samples(images, archive, "left" if site == SITES["original"]
+                                                                  else "right"), tactical=True)
+    finally:
+        if archive is not None:
+            archive.close()
     scene = scenes[0]
     for row in trace:
         row.update(scene.rows[row["frame"]])
@@ -214,9 +298,10 @@ def run(world, checkpoint, folder, departure):
         if trace[0]["ego_station_m"] <= s <= trace[-1]["ego_station_m"]:
             row = min(trace, key=lambda r: abs(r["ego_station_m"] - s))
             samples[str(s)] = {k: row[k] for k in ("ego_station_m", "frame", "sim_time", "speed_mps", "speed_request_mps")}
-    summary.update(stations=samples, model_sha256=fingerprint(checkpoint), producer=producer_info(world),
+    summary.update(stations=samples, exact_station_speeds=station_speeds(trace),
+                   model_sha256=fingerprint(checkpoint), producer=producer_info(world),
                    center_xy=scene.center.tolist(), axes=[a.tolist() for a in scene.axes], green_heads=scene.ego_heads,
-                   market_junctions=scene.market, departure_step=departure, cross_speed_requested_mps=CROSS_SPEED)
+                   market_junctions=scene.market, departure_step=departure, cross_speed_requested_mps=site.npc_speed)
     write_json(folder / "summary.json", summary)
     print(folder, summary["outcome"], summary["duration_s"], flush=True)
     return trace, summary
@@ -281,6 +366,11 @@ def main():
     parser.add_argument("--candidate", type=Path, default=PROJECT / "models/city-progress/candidate.npz")
     parser.add_argument("--port", type=int, default=3528)
     parser.add_argument("--attach", action="store_true")
+    parser.add_argument("--site", choices=SITES, default="original")
+    parser.add_argument("--reuse-schedule", type=Path, help="Same-site first attempt providing frozen departure")
+    parser.add_argument("--reproduce", action="store_true", help="Reuse the matched candidate clear trace and checkpoint")
+    parser.add_argument("--raw", action="store_true", help="Archive 10 Hz RGB, lidar and radar for 3-20 s")
+    parser.add_argument("--candidate-only", action="store_true", help="Skip baseline on a follow-up candidate")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     checkpoints = {}
@@ -290,28 +380,70 @@ def main():
     snapshot = args.output / "source.zip"
     with ZipFile(snapshot, "x", ZIP_DEFLATED) as archive:
         for path in sorted(Path(__file__).parent.glob("*.py")):
-            archive.write(path, f"crosswalk/{path.name}")
-    write_json(args.output / "protocol.json", dict(seed=SEED, junction=JUNCTION, ego_connector=EGO_CONNECTOR,
-               traffic_connector=CROSS_CONNECTOR, near_miss_gap_m=NEAR_MISS_GAP, near_miss_time_s=NEAR_MISS_TIME,
-               policy_checkpoints={k:fingerprint(v) for k,v in checkpoints.items()},
+            name = f"crosswalk/{path.name}"
+            if sealed and path.name != Path(__file__).name and name in sealed.files:
+                archive.writestr(name, sealed.files[name])
+            else:
+                archive.write(path, name)
+    site = SITES[args.site]
+    anchor = "baseline" if args.site == "original" else "candidate"
+    if args.candidate_only:
+        checkpoints.pop("baseline")
+    write_json(args.output / "protocol.json", dict(seed=SEED, junction=site.junction, ego_connector=site.ego,
+               traffic_connector=site.traffic, npc_speed_mps=site.npc_speed, near_miss_gap_m=NEAR_MISS_GAP,
+               near_miss_time_s=NEAR_MISS_TIME, policy_checkpoints={k:fingerprint(v) for k,v in checkpoints.items()},
                fixture_sha256=fingerprint(Path(__file__)), execution_source_sha256=fingerprint(snapshot),
-               release="Shared NPC departure aligned to clear baseline center arrival",
-               camera_samples="left and front every 0.5 simulated seconds, same row time as trace"))
+               release=f"Shared departure aligned to clear {anchor} center arrival",
+               schedule_reference=str(args.reuse_schedule) if args.reuse_schedule else None,
+               short_stop_control="Same traffic car, spawn and release, brakes at native connector entry",
+               camera_samples="incident side and front every 0.5 simulated seconds, same row time as trace"))
+    if args.reproduce and not (args.reuse_schedule and args.candidate_only):
+        parser.error("--reproduce requires --reuse-schedule and --candidate-only")
     with simulator(args.port, args.attach, quality="High", map_name="Town03_Opt") as world:
-        npc_arrival_step = calibrate(world, args.output)
-        clear = {arm: run(world, path, args.output / f"{arm}-clear", None)[0] for arm,path in checkpoints.items()}
-        if clear["baseline"][-1]["ego_station_m"] < 0.:
-            raise RuntimeError("Clear baseline did not reach conflict center; cannot anchor cross traffic")
-        free_arrival = min(enumerate(clear["baseline"]), key=lambda i: abs(i[1]["ego_station_m"]))[0]
-        departure = max(0, free_arrival - npc_arrival_step)
-        write_json(args.output / "timing.json", dict(clear_baseline_center_step=free_arrival,
-                   npc_center_step=npc_arrival_step, departure_step=departure))
+        if args.reuse_schedule:
+            previous = json.loads((args.reuse_schedule / "protocol.json").read_text())
+            if previous["junction"] != site.junction:
+                raise ValueError("Reused schedule is for another geometry")
+            timing = json.loads((args.reuse_schedule / "timing.json").read_text())
+        else:
+            npc_arrival = calibrate(world, args.output, site)
+        if args.reproduce:
+            if previous["policy_checkpoints"]["candidate"] != fingerprint(checkpoints["candidate"]):
+                raise ValueError("Reproduction must use the first attempt checkpoint")
+            with gzip.open(args.reuse_schedule / "candidate-clear" / "trace.jsonl.gz", "rt") as stream:
+                clear = {"candidate": [json.loads(line) for line in stream]}
+        else:
+            clear = {arm: run(world, path, args.output / f"{arm}-clear", None, site, raw=args.raw)[0]
+                     for arm, path in checkpoints.items()}
+        if not args.reuse_schedule:
+            if clear[anchor][-1]["ego_station_m"] < 0.:
+                raise RuntimeError("Clear arm did not reach conflict center")
+            free_arrival = min(enumerate(clear[anchor]), key=lambda i: abs(i[1]["ego_station_m"]))[0]
+            timing = dict(anchor=anchor, clear_anchor_center_step=free_arrival, npc_center_step=npc_arrival,
+                          departure_step=max(0, free_arrival - npc_arrival))
+        write_json(args.output / "timing.json", timing)
         for arm, path in checkpoints.items():
             folder = args.output / f"{arm}-crossing"
-            rows, summary = run(world, path, folder, departure)
+            rows, summary = run(world, path, folder, timing["departure_step"], site, raw=args.raw)
             score = grade(clear[arm], rows, summary)
             write_json(folder / "grade.json", score)
             print(arm, score, flush=True)
+            if args.site == "transfer" and arm == "candidate":
+                folder = args.output / "candidate-stops-short"
+                rows, summary = run(world, path, folder, timing["departure_step"], site, stops_short=True, raw=args.raw)
+                evidence = grade(clear[arm], rows, summary)
+                near_center = [r for r in rows if -12. <= r["ego_station_m"] <= 8.]
+                stop_score = dict(min_body_gap_m=evidence["physical_min_body_gap_m"],
+                                  counterfactual_min_body_gap_m=evidence["counterfactual_min_body_gap_m"],
+                                  traffic_displacement_m=rows[-1]["traffic_station_m"] - rows[0]["traffic_station_m"],
+                                  traffic_occupancy=evidence["crossing_body_in_ego_path_s"],
+                                  near_center_min_speed_kmh=min((r["speed_mps"] * 3.6 for r in near_center), default=None),
+                                  passed=bool(summary["outcome"] == "complete" and not summary["collision_events"]
+                                              and not evidence["crossing_body_in_ego_path_s"] and near_center
+                                              and all(r["speed_mps"] >= .35 for r in near_center)
+                                              and evidence["counterfactual_min_body_gap_m"] >= NEAR_MISS_GAP))
+                write_json(folder / "grade.json", stop_score)
+                print("stops-short", stop_score, flush=True)
 
 
 if __name__ == "__main__":
