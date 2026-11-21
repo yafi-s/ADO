@@ -1,0 +1,47 @@
+{
+  "case": "adjacent",
+  "geometry": {
+    "road_id": 67,
+    "source_lane": -2,
+    "target_lane": -1,
+    "station_interval_m": [
+      180,
+      300
+    ],
+    "ego_station_m": 210.0,
+    "native_sample_count": 121,
+    "center_separation_m": 3.499995642911837,
+    "minimum_lane_width_m": 3.5,
+    "maximum_lateral_residual_m": 1.4129763697745545e-05,
+    "length_m": 119.99999781233818,
+    "elevation_change_m": -2.362479901581537
+  },
+  "score": {
+    "case": "occupied",
+    "frames": 165,
+    "collisions": 0,
+    "yield_s": 7.5,
+    "first_yield_s": 0.3,
+    "first_commit_s": 7.8,
+    "clearance_at_commit_m": 31.62,
+    "first_alongside_s": 15.2,
+    "completed_pass_s": 16.4,
+    "lead_travel_m": 22.647,
+    "lead_speed_during_pass_mps": 1.45,
+    "minimum_passing_clearance_m": 1.535,
+    "minimum_adjacent_gap_while_yielding_m": 0.001,
+    "max_yield_lateral_error_m": 0.0,
+    "ego_travel_m": 53.127,
+    "maximum_source_displacement_m": 3.519,
+    "hold_throttle_frames": 0,
+    "peak_speed_after_stop_mps": 0.013,
+    "unheld_frames_before_commit": 0,
+    "passed": true
+  },
+  "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town03_Opt"
+  }
+}

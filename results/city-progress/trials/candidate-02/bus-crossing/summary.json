@@ -1,0 +1,541 @@
+{
+  "scenario": "journey",
+  "seed": 622,
+  "policy": "ado-city-progress-v1",
+  "weather": "ClearNoon",
+  "road_id": 24,
+  "lane_id": -1,
+  "start_xy": [
+    -59.12,
+    135.31
+  ],
+  "outcome": "restarted",
+  "frames": 373,
+  "duration_s": 37.3,
+  "progress_m": 909.305,
+  "route_length_m": 1416.438,
+  "contacts": [],
+  "collision_events": 0,
+  "max_lateral_error_m": 1.73,
+  "spawn_lateral_m": 0.1752219052338095,
+  "spawn_yaw_deg": 3.1678425889849384,
+  "min_hazard_gap_m": 60.0,
+  "moving_within_1m_frames": 0,
+  "turn_direction": null,
+  "district": "townwide",
+  "destination": "market",
+  "crossing_delay_s": 0.5,
+  "camera_rendering": {
+    "requested": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "cameras": {
+      "front": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "false",
+          "dlss_screen_percentage": "100.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "false",
+          "dlss_screen_percentage": "100.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "left": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "right": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      }
+    }
+  },
+  "ego_blueprint": "vehicle.lincoln.mkz",
+  "background_actors": {
+    "walkers": 5,
+    "vehicles": 3
+  },
+  "sensor_configuration": "three-camera-lidar-radar",
+  "route_id": "town03_opt-journey:12554229617772571124:3130875034187858017",
+  "road_ids": [
+    24,
+    76,
+    78,
+    79,
+    80,
+    47,
+    67,
+    68,
+    69,
+    4,
+    3,
+    20,
+    21,
+    22,
+    23
+  ],
+  "junction_ids": [
+    103,
+    1038,
+    1352,
+    82,
+    1932,
+    238,
+    861,
+    730,
+    1820,
+    1901,
+    1669
+  ],
+  "event_triggered": true,
+  "event_cleared": false,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "stopped_for_hazard": false,
+  "closest_in_path_speed_mps": 0.059,
+  "wall_seconds": 30.997,
+  "events": [
+    {
+      "kind": "pedestrian",
+      "station_m": 29.0,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "curb_origin_lateral_m": 6.635
+    },
+    {
+      "kind": "occluded",
+      "station_m": 146.99,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "curb_origin_lateral_m": 6.135
+    },
+    {
+      "kind": "signal",
+      "station_m": 323.38,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0
+    },
+    {
+      "kind": "roadworks",
+      "station_m": 376.16,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "cone_count": 6,
+      "blueprint": "static.prop.trafficcone01"
+    },
+    {
+      "kind": "barrier",
+      "station_m": 537.65,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "barrier_count": 2,
+      "blueprint": "static.prop.streetbarrier"
+    },
+    {
+      "kind": "lead",
+      "station_m": 577.65,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0
+    },
+    {
+      "kind": "bus",
+      "station_m": 812.91,
+      "phase": "bus cleared",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": true,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "blueprint": "vehicle.fuso.mitsubishi",
+      "source_lane": [
+        4,
+        3
+      ],
+      "target_lane": [
+        4,
+        2
+      ],
+      "source_lane_seen_s": 13.1,
+      "triggered_s": 16.3,
+      "exposed_s": 16.3,
+      "measured_lane_change_s": 16.7,
+      "measured_lane_change_m": 2.168,
+      "minimum_bus_clearance_m": 0.928,
+      "bus_alongside_s": 23.2,
+      "cleared_s": 32.7,
+      "passed_s": 33.0
+    },
+    {
+      "kind": "braking",
+      "station_m": 978.17,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "peak_lead_deceleration_mps2": 0.0
+    },
+    {
+      "kind": "left",
+      "station_m": 1044.17,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0
+    },
+    {
+      "kind": "cyclist",
+      "station_m": 1201.65,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "blueprint": "vehicle.bh.crossbike"
+    },
+    {
+      "kind": "pedestrian-delayed",
+      "station_m": 1277.65,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "curb_origin_lateral_m": 6.635
+    }
+  ],
+  "turn_counts": {
+    "left": 1,
+    "right": 2,
+    "straight": 8
+  },
+  "junction_traversals": [
+    {
+      "junction_id": 103,
+      "direction": "straight",
+      "entry_m": 41.0,
+      "exit_m": 80.99
+    },
+    {
+      "junction_id": 1038,
+      "direction": "right",
+      "entry_m": 266.71,
+      "exit_m": 293.96
+    },
+    {
+      "junction_id": 1352,
+      "direction": "right",
+      "entry_m": 318.96,
+      "exit_m": 353.16
+    },
+    {
+      "junction_id": 82,
+      "direction": "straight",
+      "entry_m": 650.65,
+      "exit_m": 687.65
+    },
+    {
+      "junction_id": 1932,
+      "direction": "straight",
+      "entry_m": 700.65,
+      "exit_m": 731.22
+    },
+    {
+      "junction_id": 238,
+      "direction": "straight",
+      "entry_m": 773.91,
+      "exit_m": 800.91,
+      "entered_s": 7.3,
+      "completed_s": 13.3
+    },
+    {
+      "junction_id": 861,
+      "direction": "straight",
+      "entry_m": 893.17,
+      "exit_m": 932.17,
+      "entered_s": 35.2
+    },
+    {
+      "junction_id": 730,
+      "direction": "left",
+      "entry_m": 1046.17,
+      "exit_m": 1076.87
+    },
+    {
+      "junction_id": 1820,
+      "direction": "straight",
+      "entry_m": 1235.65,
+      "exit_m": 1253.65
+    },
+    {
+      "junction_id": 1901,
+      "direction": "straight",
+      "entry_m": 1284.65,
+      "exit_m": 1325.65
+    },
+    {
+      "junction_id": 1669,
+      "direction": "straight",
+      "entry_m": 1338.65,
+      "exit_m": 1360.02
+    }
+  ],
+  "turns_completed": {
+    "left": 0,
+    "right": 0,
+    "straight": 1
+  },
+  "clear_road_m": 41.96,
+  "sidewalk_activity": {
+    "spawned": 5,
+    "moved_on_approach": 1,
+    "motion_on_approach_m": [
+      0.0,
+      0.0,
+      3.33,
+      0.0,
+      0.0
+    ]
+  },
+  "background_traffic_activity": {
+    "spawned": 3,
+    "moving_near_ego": 0,
+    "vehicles": [
+      {
+        "blueprint": "vehicle.mini.cooper",
+        "movement": "opposing",
+        "road": 76,
+        "lane": 1,
+        "traveled_m": 53.41,
+        "peak_speed_mps": 5.24,
+        "closest_while_moving_m": 196.55,
+        "left_corridor": false
+      },
+      {
+        "blueprint": "vehicle.tesla.model3",
+        "movement": "parallel",
+        "road": 67,
+        "lane": -1,
+        "traveled_m": 85.06,
+        "peak_speed_mps": 6.6,
+        "closest_while_moving_m": 242.68,
+        "left_corridor": false
+      },
+      {
+        "blueprint": "vehicle.lincoln.mkz",
+        "movement": "opposing",
+        "road": 20,
+        "lane": 1,
+        "traveled_m": 0.0,
+        "peak_speed_mps": 0.0,
+        "closest_while_moving_m": null,
+        "left_corridor": false
+      }
+    ]
+  },
+  "crossing": {
+    "hidden_frame": 236,
+    "moving_frame": 300,
+    "emerged_frame": 308,
+    "ego_speed_at_emergence_kmh": 6.58,
+    "front_distance_at_emergence_m": 6.007,
+    "path_occupied_frames": 17,
+    "clear_frame": 338,
+    "front_at_crossing_frame": 375,
+    "minimum_body_gap_m": 2.556,
+    "minimum_speed_while_occupied_kmh": 0.0,
+    "passed": true
+  },
+  "case": "bus-crossing",
+  "model_sha256": "fc736a368ac3b6d6360c4964b6308f84c56896a1d42c798f6c8c849b05a500b9",
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town03_Opt"
+  },
+  "start_m": 741.0,
+  "end_m": 909.0,
+  "target_event": "bus",
+  "target_pass": true,
+  "windows": [
+    {
+      "start_m": 770.0,
+      "end_m": 800.0,
+      "frames": 68,
+      "seconds": 6.8,
+      "median_kmh": 14.41,
+      "median_request_kmh": 13.83,
+      "seconds_below_10_kmh": 0.0
+    },
+    {
+      "start_m": 800.0,
+      "end_m": 825.0,
+      "frames": 37,
+      "seconds": 3.7,
+      "median_kmh": 26.38,
+      "median_request_kmh": 30.0,
+      "seconds_below_10_kmh": 0.0
+    },
+    {
+      "start_m": 825.0,
+      "end_m": 855.0,
+      "frames": 41,
+      "seconds": 4.1,
+      "median_kmh": 28.23,
+      "median_request_kmh": 27.84,
+      "seconds_below_10_kmh": 0.0
+    },
+    {
+      "start_m": 855.0,
+      "end_m": 890.0,
+      "frames": 139,
+      "seconds": 13.9,
+      "median_kmh": 7.38,
+      "median_request_kmh": 5.41,
+      "seconds_below_10_kmh": 9.9
+    },
+    {
+      "start_m": 858.0,
+      "end_m": 872.0,
+      "frames": 99,
+      "seconds": 9.9,
+      "median_kmh": 5.37,
+      "median_request_kmh": 5.41,
+      "seconds_below_10_kmh": 9.6
+    },
+    {
+      "start_m": 872.0,
+      "end_m": 882.0,
+      "frames": 22,
+      "seconds": 2.2,
+      "median_kmh": 16.03,
+      "median_request_kmh": 21.06,
+      "seconds_below_10_kmh": 0.3
+    },
+    {
+      "start_m": 882.0,
+      "end_m": 892.0,
+      "frames": 14,
+      "seconds": 1.4,
+      "median_kmh": 27.32,
+      "median_request_kmh": 29.07,
+      "seconds_below_10_kmh": 0.0
+    }
+  ],
+  "first_frame": 61,
+  "last_frame": 433,
+  "camera_contract": "Frame zero in front.mp4 is first_frame. One exposure per 0.1 s step."
+}
