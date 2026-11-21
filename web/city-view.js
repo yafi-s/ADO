@@ -126,10 +126,11 @@ class CityScene {
     this.actors = [];
     this.vehicleMat = colorMaterial(0xea9e60);
     this.walkerMat = colorMaterial(0xf87c99);
-    this.actorBody = new T.BoxGeometry(3.9, 1.12, 1.78);
-    this.actorRoof = new T.BoxGeometry(2.05, .52, 1.58);
-    this.walkerBody = new T.CylinderGeometry(.23, .26, 1.24, 12);
-    this.walkerHead = new T.SphereGeometry(.23, 12, 8);
+    // Ground-truth actors arrive as positions, often without a heading, so their markers stay symmetric.
+    this.actorBody = new T.RoundedBoxGeometry(3.9, 1.12, 1.78, 3, .3);
+    this.actorRoof = new T.RoundedBoxGeometry(2.05, .52, 1.58, 3, .2);
+    this.walkerBody = new T.CapsuleGeometry(.2, .92, 5, 14);
+    this.walkerHead = new T.SphereGeometry(.17, 16, 12);
     this.frameCamera = true;
     this.applyPalette();
     addEventListener('ado:display', () => this.applyPalette());
@@ -282,9 +283,9 @@ class CityScene {
         marker = new T.Group();
         marker.userData.walker = walker;
         const body = mesh(walker ? this.walkerBody : this.actorBody, walker ? this.walkerMat : this.vehicleMat, marker);
-        body.position.y = walker ? .64 : .70;
+        body.position.y = walker ? .68 : .70;
         const top = mesh(walker ? this.walkerHead : this.actorRoof, walker ? this.walkerMat : this.vehicleMat, marker);
-        top.position.y = walker ? 1.50 : 1.39;
+        top.position.y = walker ? 1.56 : 1.39;
         this.actors[i] = marker;
         this.scene.add(marker);
       }
