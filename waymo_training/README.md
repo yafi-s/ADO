@@ -4,6 +4,10 @@ This offline research workflow trains an independent predictor on recorded Waymo
 
 The completed Colab pilot evaluated 371 windows from 220 held-out Waymo validation segments. History and routing alone achieved 1.780 m ADE, with 1.808 m for the three-camera model and 2.984 m for constant velocity. [Pilot results and simulator transfer checks](RESULTS.md)
 
+## Run through the Colab CLI
+
+From a full checkout, preview the job with `python -m waymo_training.colab_cli_run --output "A:\ADO-Private-Research\runs" --dry-run`. Remove `--dry-run` to create a dedicated T4 and perform the bounded extraction, fit, evaluation, portable export and verified download. Use your own private output directory. The default cloud job uses an authorized, short-lived read grant limited to the official training and validation object prefixes. The interactive ADC option is available with `--auth adc`. Training and bulk reads run on the remote machine.
+
 ## Run in Google Colab
 
 1. Open the [training notebook in Colab](https://colab.research.google.com/github/yafi-s/ADO/blob/2976891ae4a0a8e3917c4f1c2be8ecb32c599a2b/waymo_training/ADO_Waymo_Colab.ipynb) and connect a **GPU** runtime. Use the Google account with access to the Waymo dataset when authorizing Cloud Storage. The notebook's `google.colab.auth.authenticate_user()` supplies credentials inside the runtime. [Waymo access and terms](https://waymo.com/open/terms/) · [Colab Cloud Storage example](https://colab.research.google.com/notebooks/io.ipynb)
@@ -41,3 +45,5 @@ The pilot reads the first 32 MiB from each of 112 selected training shards and 4
 Compare constant-velocity extrapolation, a history-and-intent neural predictor, and a predictor that adds contemporaneous front, front-left and front-right images. The cache stores these three views at 64 × 96 pixels and the model pools them to 32 × 48 pixels. The same-seed comparison and shuffled-image diagnostic help assess whether the predictor used the camera inputs in this sample.
 
 Logged average displacement error (ADE) is the mean Euclidean waypoint error. Logged final displacement error (FDE) is the Euclidean error at the five-second endpoint. Both measure agreement with the observed trajectory. Waymo's challenge ranks by Rater Feedback Score (RFS), which compares predicted paths against several alternatives scored by humans at selected moments. Its tie-breaking ADE uses the highest-rated reference. Label any pilot results as logged-trajectory metrics and report the evaluated segment and frame counts. [Waymo WOD-E2E paper, §3.5](https://arxiv.org/html/2510.26125v1#S3.SS5) · [Waymo challenge rules](https://waymo.com/open/terms/) · [Official metric schema](https://github.com/waymo-research/waymo-open-dataset/blob/master/src/waymo_open_dataset/protos/end_to_end_driving_metrics.proto)
+
+The portal includes one short, CARLA-generated [Waymo-model transfer recording](https://yafi-s.github.io/ADO/?run=waymo-research-v2-lead-seed41-start3) with synchronized controls and a [non-commercial research notice](../web/media/waymo-research-pilot/NOTICE.md). The model left its lane; the clip is evidence of this test's failure. The other transfer recordings and learned weights stay private.

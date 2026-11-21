@@ -52,6 +52,9 @@ def main():
         run("evaluate",["--features",feature_dir,"--run",args.output,"--device","gpu"])
     (args.output/"runtime.json").write_text(json.dumps(meta,indent=2)+"\n",encoding="utf8")
     shutil.copy2(repo/"waymo_training/NOTICE.md",args.output/"NOTICE.md")
+    agreement = repo/"waymo_training/WAYMO_DATASET_AGREEMENT.txt"
+    if agreement.is_file():
+        shutil.copy2(agreement,args.output/agreement.name)
     print("Completed on Colab. Private weights and evaluation:",args.output,flush=True)
 
 

@@ -56,3 +56,9 @@ The follow-up used the same checkpoint and three scenarios. For the 3 m/s handof
 The pedestrian stayed at the curb in the stationary trial. In the rolling trial the pedestrian began crossing and was still crossing at termination. Neither trial recorded the pedestrian in the driving path within 12 m, so the trials did not evaluate close-range yielding.
 
 One 35-frame CARLA-generated clip illustrates what the frozen Waymo-trained model actually did in the revised stopped-vehicle test. At the closest in-path observation the gap was 11.98 m, speed was 5.55 m/s and brake was zero. The following tick ended the run in lane departure. The public illustration carries its research notice and the Waymo agreement. The complete transfer archives are private. [Watch in ADO](https://yafi-s.github.io/ADO/?run=waymo-research-v2-lead-seed41-start3) · [Simulated footage, controls and attribution](../web/media/waymo-research-pilot/README.md) Waymo records, extracted features and learned weights are excluded from the published branch. [Waymo attribution and non-commercial terms](NOTICE.md)
+
+## Reproducibility and portfolio wording
+
+All six Python source digests recorded on the T4 during training match [revision 41a769f](https://github.com/yafi-s/ADO/tree/41a769f44c0f80bd8c4399be07afefeabfc2c4cd/waymo_training). The selected camera checkpoint was independently exported to NumPy for inference and compared with Keras on 32 real held-out rows.
+
+Trained a 21,600-parameter three-camera trajectory predictor on a Colab T4 using 1,598 real Waymo examples and evaluated 5-second forecasts on 371 held-out examples. Measured 1.81 m average displacement error against a 2.98 m constant-velocity baseline, and published the history-only comparison and simulator transfer failures.
