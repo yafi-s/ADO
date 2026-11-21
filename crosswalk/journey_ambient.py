@@ -119,8 +119,15 @@ class JourneyAmbient(Ambient):
             if not car.active:
                 continue
             pos = car.actor.get_location()
+            if car.previous is None and pos.distance(car.path[0]) > 2.:
+                # A newly spawned actor may still have a missing first snapshot.
+                continue
             if car.previous is not None:
-                car.traveled += math.hypot(pos.x-car.previous.x,pos.y-car.previous.y)
+                step = math.hypot(pos.x-car.previous.x,pos.y-car.previous.y)
+                if step > max(3.,2.*car.speed*self._dt):
+                    car.departed_lane = True
+                else:
+                    car.traveled += step
             car.previous = pos
             v = car.actor.get_velocity()
             speed = math.hypot(v.x,v.y)

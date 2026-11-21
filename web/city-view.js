@@ -1,4 +1,5 @@
 import * as T from './vendor/city-view/three-view.js';
+import {buildRoadUser} from './road-users.js';
 
 const el = id => document.getElementById(id);
 const finite = Number.isFinite;
@@ -129,6 +130,8 @@ class CityScene {
     // Ground-truth actors arrive as positions, often without a heading, so their markers stay symmetric.
     this.actorBody = new T.RoundedBoxGeometry(3.9, 1.12, 1.78, 3, .3);
     this.actorRoof = new T.RoundedBoxGeometry(2.05, .52, 1.58, 3, .2);
+    this.coneBody = new T.CylinderGeometry(.025, .16, .52, 12);
+    this.coneMat = colorMaterial(0xe88a36);
     this.walkerBody = new T.CapsuleGeometry(.2, .92, 5, 14);
     this.walkerHead = new T.SphereGeometry(.17, 16, 12);
     this.frameCamera = true;
@@ -300,25 +303,43 @@ class CityScene {
 
   drawActors(map) {
     const actors = (map.others || []).filter(a => a && finite(a.x) && finite(a.y));
-    for (const [p, type] of [[map.traffic, 'vehicle'], [map.hazard, map.hazard_type === 'pedestrian' ? 'walker' : 'vehicle']]) {
+    for (const [p, type] of [[map.traffic, 'vehicle'], [map.hazard, map.hazard_type ?? 'vehicle']]) {
       if (point(p) && !actors.some(a => Math.hypot(p[0] - a.x, p[1] - a.y) < .7)) actors.push({x:p[0], y:p[1], type});
     }
     actors.forEach((a, i) => {
       const walker = a.type === 'walker' || a.type === 'pedestrian';
+      const kind = walker ? 'walker' : ['bus', 'cyclist', 'cone', 'van'].includes(a.type) ? a.type : 'vehicle';
       let marker = this.actors[i];
-      if (!marker || marker.userData.walker !== walker) {
-        if (marker) this.scene.remove(marker);
+      if (!marker || marker.userData.kind !== kind) {
+        if (marker) {
+          this.scene.remove(marker);
+          marker.userData.materials?.forEach(material => material.dispose());
+        }
         marker = new T.Group();
-        marker.userData.walker = walker;
-        const body = mesh(walker ? this.walkerBody : this.actorBody, walker ? this.walkerMat : this.vehicleMat, marker);
-        body.position.y = walker ? .68 : .70;
-        const top = mesh(walker ? this.walkerHead : this.actorRoof, walker ? this.walkerMat : this.vehicleMat, marker);
-        top.position.y = walker ? 1.56 : 1.39;
+        marker.userData.kind = kind;
+        if (kind === 'cone') {
+          mesh(this.coneBody, this.coneMat, marker).position.y = .26;
+        } else if (kind === 'bus' || kind === 'cyclist') {
+          const shape = buildRoadUser(kind === 'bus' ? 'bus' : 'bicycle', {
+            vehicle: 0x8196c2, rider: 0xe1a44a, glass: 0x314558, tyre: 0x25313a,
+            hub: 0x96a0ac, lamp: 0xf6edd8, tail: 0xe76d68, glow: .05
+          });
+          const nominal = kind === 'bus' ? [7.7, 2.8, 2.1] : [1.85, 1.65, .65];
+          const size = point(a.dimensions_m, 3) ? a.dimensions_m : nominal;
+          shape.group.scale.set(...size);
+          marker.add(shape.group);
+          marker.userData.materials = shape.materials;
+        } else {
+          const body = mesh(walker ? this.walkerBody : this.actorBody, walker ? this.walkerMat : this.vehicleMat, marker);
+          body.position.y = walker ? .68 : .70;
+          const top = mesh(walker ? this.walkerHead : this.actorRoof, walker ? this.walkerMat : this.vehicleMat, marker);
+          top.position.y = walker ? 1.56 : 1.39;
+        }
         this.actors[i] = marker;
         this.scene.add(marker);
       }
-      // Legacy actor telemetry supplies XY only. Use a square footprint to avoid implying a heading.
-      marker.scale.set(!walker && !finite(a.yaw) ? .55 : 1, 1, 1);
+      // Older observer logs sometimes have just XY, so use a neutral car footprint.
+      marker.scale.set(kind === 'vehicle' && !finite(a.yaw) ? .55 : 1, kind === 'van' ? 1.40 : 1, 1);
       marker.rotation.y = -(finite(a.yaw) ? a.yaw : 0) * radians;
       marker.position.set(a.x, this.height(a.x, a.y) + .025, a.y);
       marker.visible = true;

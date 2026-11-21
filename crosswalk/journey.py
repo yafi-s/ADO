@@ -1,4 +1,5 @@
-"""Continuous, metre-sampled Town01 drive with native, independently scored encounters."""
+"""Continuous, metre-sampled CARLA city drive with native, independently scored encounters."""
+from bisect import bisect_left
 import math
 import random
 from dataclasses import dataclass, field
@@ -158,6 +159,9 @@ class Encounter:
     peak_decel: float = 0.
     pass_station: float | None = None
     exit_road: int | None = None
+    exit_lanes: set = field(default_factory=set)
+    exit_arc: list = field(default_factory=list)
+    exit_limits: list = field(default_factory=list)
     lane_change: object = None
     queue: object = None
     walk_setback: float = 0.
@@ -180,8 +184,10 @@ class Encounter:
                 evidence.extend(("queue_exposed_s","queue_departed_green_s"))
         elif self.kind == "bus":
             evidence.extend(("source_lane_seen_s","measured_lane_change_s","bus_alongside_s"))
-        elif self.kind == "braking":
-            evidence.append("lead_stopped_s")
+        elif self.kind in LEADS:
+            evidence.extend(("restarted_s","left_route_s"))
+            if self.kind == "braking":
+                evidence.append("lead_stopped_s")
         elif self.kind == "cyclist":
             evidence.extend(("moving_ahead_s", "left_route_s"))
         elif self.kind == "roadworks":
@@ -190,7 +196,7 @@ class Encounter:
                     triggered="triggered_s" in o, cleared="cleared_s" in o,
                     exposed="exposed_s" in o, passed="passed_s" in o,
                     handled=all(k in o for k in evidence)
-                            and not self.violation,
+                            and not self.violation and "runout_reentered_s" not in o,
                     violation=self.violation, stopped_for_event=self.stopped,
                     minimum_gap_m=round(self.min_gap, 2), **o,
                     **({"peak_lead_deceleration_mps2": round(self.peak_decel, 2)}
@@ -305,6 +311,7 @@ class JourneyScenario(Scenario):
             bp = _vehicle_blueprint(self._catalog,"vehicle.mini.cooper","vehicle.audi.a2")
             bp.set_attribute("role_name","oncoming")
             self.traffic = left.actor = self._required(bp, _raised(far.transform,.35))
+            left.actor.apply_control(carla.VehicleControl(brake=1.))
             left.target = near.transform.location
             left.direction = far.transform.get_forward_vector()
             left.conflict = min(self.route[start:end], key=lambda p: abs(_offset(far.transform.location,p,
@@ -413,6 +420,7 @@ class JourneyScenario(Scenario):
         bp = self._catalog.find("vehicle.tesla.model3")
         bp.set_attribute("role_name", e.kind)
         e.actor = self._required(bp, _raised(e.pose,.35))
+        e.actor.apply_control(carla.VehicleControl(brake=1.))
         self._exit_path(e)
 
     def _exit_path(self, e, start_index=None):
@@ -430,7 +438,7 @@ class JourneyScenario(Scenario):
                 if alternatives:
                     wp = min(alternatives,key=lambda w:(w.road_id,w.lane_id))
                     forked = True
-                    if e.kind=="cyclist":
+                    if e.kind=="cyclist" or e.kind in LEADS:
                         planned_exit = next((j for j in range(i+1,len(self._points))
                                              if not self._points[j].is_junction), i+1)
                         e.pass_station = self._station[min(planned_exit+5,len(self._points)-1)]
@@ -443,13 +451,40 @@ class JourneyScenario(Scenario):
             e.exit_path.append(wp.transform.location)
             if forked and not wp.is_junction and len(e.exit_path)>1:
                 e.exit_road = wp.road_id
-                # At least twenty metres past the fork on the diverging branch.
-                extra = wp.next(20.)
-                if len(extra)==1:
-                    e.exit_path.append(extra[0].transform.location)
+                e.exit_lanes.add((wp.road_id,wp.lane_id))
+                # Continue in metre steps so the follower never aims across an
+                # unobserved bend or brakes in the junction on a long final chord.
+                for _ in range(22):
+                    extra = wp.next(1.)
+                    if not extra:
+                        break
+                    wp = min(extra,key=lambda w:abs(_angle(w.transform.rotation.yaw-wp.transform.rotation.yaw)))
+                    e.exit_lanes.add((wp.road_id,wp.lane_id))
+                    e.exit_path.append(wp.transform.location)
                 break
         if not forked or e.exit_road is None:
             raise RuntimeError(f"No diverging native runout for {e.kind} at waypoint {e.index}")
+        self._prepare_exit(e)
+
+    @staticmethod
+    def _prepare_exit(e):
+        """Speed limits from actual lane-center curvature and distance to stopping point."""
+        points = e.exit_path
+        e.exit_arc = [0.]
+        for a,b in zip(points,points[1:]):
+            e.exit_arc.append(e.exit_arc[-1]+a.distance(b))
+        limits = [10.]*len(points)
+        for i in range(1,len(points)-1):
+            a,b,c = points[i-1:i+2]
+            delta = abs(_angle(math.degrees(math.atan2(c.y-b.y,c.x-b.x)-math.atan2(b.y-a.y,b.x-a.x))))
+            curvature = math.radians(delta)/max(.15,(e.exit_arc[i+1]-e.exit_arc[i-1])/2.)
+            if curvature > .01:
+                limits[i] = min(limits[i],math.sqrt(1.35/curvature))
+        limits[-1] = 0.
+        for i in range(len(limits)-2,-1,-1):
+            travel = e.exit_arc[i+1]-e.exit_arc[i]
+            limits[i] = min(limits[i],math.sqrt(limits[i+1]**2+2.*1.7*travel))
+        e.exit_limits = limits
 
     def _spawn_cyclist(self, e):
         candidates = []
@@ -465,6 +500,7 @@ class JourneyScenario(Scenario):
         bp = min(candidates, key=lambda b:b.id)
         bp.set_attribute("role_name", "journey_cyclist")
         e.actor = self._required(bp, _raised(e.pose, .35))
+        e.actor.apply_control(carla.VehicleControl(brake=1.))
         e.observed["blueprint"] = bp.id
         self._exit_path(e)
 
@@ -497,6 +533,7 @@ class JourneyScenario(Scenario):
         bp = self._catalog.find("vehicle.tesla.model3")
         bp.set_attribute("role_name","journey_signal_queue")
         e.actor = e.queue = self._required(bp, _raised(self._points[origin].transform, .35))
+        e.queue.apply_control(carla.VehicleControl(brake=1.))
         self._exit_path(e, origin)
 
     def _bus_gap(self, e, progress):
@@ -552,12 +589,12 @@ class JourneyScenario(Scenario):
                   "constructioncone" in b.id.lower()), None)
         if bp is None:
             raise RuntimeError("Town01 journey requires a native traffic cone")
-        for advance, inset in zip((0,4,8,12,16,20), (-.05,.15,.32,.32,.15,-.05)):
+        for advance, taper in zip((0,4,8,12,16,20), (0.,.20,.42,.42,.20,0.)):
             wp = self._points[e.index+advance]
             pose = _raised(wp.transform, .04)
             # Leave enough clearance for the Lincoln even on narrower urban streets.
-            inset = min(inset,max(0.,wp.lane_width/2 - 1.5))
-            pose.location = pose.location + pose.get_right_vector() * (wp.lane_width/2 - inset)
+            offset = max(1.70, wp.lane_width/2 + .25 - taper)
+            pose.location = pose.location + pose.get_right_vector() * offset
             actor = self._required(bp, pose)
             box = actor.bounding_box.extent
             if not (.05 <= min(box.x, box.y) and max(box.x, box.y) <= .85):
@@ -713,8 +750,18 @@ class JourneyScenario(Scenario):
             e.state = "departing"
             e.release_pos = pos
             e.mark("release_command_s",self._time)
-        if e.state=="departing" and moving >= 1. and pos.distance(e.release_pos) >= 4.:
-            e.mark("cleared_s",self._time)
+        if e.state=="departing":
+            if moving >= 1. and pos.distance(e.release_pos) >= 4.:
+                e.mark("restarted_s",self._time)
+            if "restarted_s" in e.observed and "left_route_s" not in e.observed:
+                actual_lane = self._map.get_waypoint(pos, project_to_road=False,lane_type=carla.LaneType.Driving)
+                if actual_lane and (actual_lane.road_id,actual_lane.lane_id) in e.exit_lanes:
+                    footprint = e.actor.bounding_box.get_world_vertices(e.actor.get_transform())
+                    edge = min(abs(self._coordinates(vertex)[1]) for vertex in footprint)
+                    if edge > self.ego.bounding_box.extent.y + .75:
+                        e.observed["clearance_at_exit_m"] = round(edge-self.ego.bounding_box.extent.y,3)
+                        e.mark("left_route_s",self._time)
+                        e.mark("cleared_s",self._time)
         return gap
 
     def _signal_gap(self, e):
@@ -774,6 +821,24 @@ class JourneyScenario(Scenario):
                     e.violation = True
         return gap
 
+    def _vehicle_gap(self, actor, ego_progress, ego_lateral, nose):
+        """Occupied corridor from the live vehicle's oriented body, including its turn."""
+        pose, box = actor.get_transform(), actor.bounding_box
+        center = pose.transform(carla.Location(box.location.x,box.location.y,box.location.z))
+        if center.distance(self.ego.get_location()) > 65.:
+            return 60.
+        station, lateral = self._coordinates(center)
+        if station < ego_progress-nose:
+            return 60.
+        segment = self._segments[max(0,min(len(self._segments)-1,bisect_left(self._station,station)-1))]
+        ux, uy = segment[2:4]
+        forward,right = pose.get_forward_vector(),pose.get_right_vector()
+        along = abs(forward.x*ux+forward.y*uy)*box.extent.x + abs(right.x*ux+right.y*uy)*box.extent.y
+        width = abs(forward.y*ux-forward.x*uy)*box.extent.x + abs(right.y*ux-right.x*uy)*box.extent.y
+        if abs(lateral-ego_lateral) > self.ego.bounding_box.extent.y+width+.1:
+            return 60.
+        return _clip(station-ego_progress-nose-along,0.,60.)
+
     def _observe(self):
         if self._last_observation == self._time:
             return
@@ -793,7 +858,8 @@ class JourneyScenario(Scenario):
                 event.setdefault("completed_s",round(self._time,3))
         for e in self.events:
             distance = e.s-progress
-            if not (-140 if e.kind in ("bus","cyclist") else -65) < distance < 65:
+            trailing_lead = e.kind in LEADS and e.state=="departing" and "passed_s" not in e.observed
+            if not trailing_lead and not (-140 if e.kind in ("bus","cyclist") else -65) < distance < 65:
                 continue
             if "passed_s" in e.observed:
                 continue
@@ -826,6 +892,19 @@ class JourneyScenario(Scenario):
             elif distance < -(14. if e.kind=="left" else 6.):
                 if e.kind not in LEADS or "cleared_s" in e.observed or distance < -45:
                     e.mark("passed_s",self._time)
+        # Vehicles can remain physically ahead long after passing the stationary
+        # event's anchor. A frame's reference never discards an occupied corridor
+        # on the strength of an event timestamp or scheduled departure alone.
+        for e in self.events:
+            if e.kind not in LEADS and e.queue is None:
+                continue
+            gap = self._vehicle_gap(e.actor,progress,lateral,nose)
+            if gap < 60. and "left_route_s" in e.observed:
+                e.mark("runout_reentered_s",self._time)
+            if gap < self._gap:
+                self._gap = gap
+                if gap < 30.:
+                    self._active, self.hazard = e, e.actor
         clear = self._active is None and not in_turn
         if clear and self._was_clear:
             self._clear_distance += max(0.,progress-self._last_progress)
@@ -838,9 +917,32 @@ class JourneyScenario(Scenario):
                                 default=None)
 
     def _follow_exit(self, e, speed):
-        pos = e.actor.get_location()
-        nearest = min(range(len(e.exit_path)), key=lambda i: pos.distance(e.exit_path[i]))
-        self._drive_to(e.actor,e.exit_path[min(nearest+5,len(e.exit_path)-1)],speed)
+        # Metre sampling in OpenDRIVE uses the road reference line. At the
+        # tight inside of a turn five samples may span only 2-3 actual metres.
+        # Use arc-length lookahead; reserve zero speed for the actual endpoint.
+        pose = e.actor.get_transform()
+        pos = pose.location
+        nearest = min(range(len(e.exit_path)),key=lambda i:pos.distance(e.exit_path[i]))
+        if e.kind not in LEADS:
+            self._drive_to(e.actor,e.exit_path[min(nearest+5,len(e.exit_path)-1)],speed)
+            return
+        current = _speed(e.actor)
+        requested = min(speed,e.exit_limits[nearest])
+        arc = e.exit_arc[nearest]
+        lookahead = _clip(2.5+.30*current,2.5,5.)
+        goal_index = min(bisect_left(e.exit_arc,arc+lookahead),len(e.exit_path)-1)
+        goal = e.exit_path[goal_index]
+        dx,dy = goal.x-pos.x,goal.y-pos.y
+        forward, right = pose.get_forward_vector(),pose.get_right_vector()
+        ahead, side = dx*forward.x+dy*forward.y, dx*right.x+dy*right.y
+        if nearest >= len(e.exit_path)-2 and (ahead <= .7 or pos.distance(e.exit_path[-1]) < 1.):
+            requested = 0.
+        # Pure pursuit with a sedan wheelbase and conservative urban bend speeds.
+        steer = math.atan2(2.*2.75*side,max(.25,dx*dx+dy*dy))/math.radians(53.)
+        error = requested-current
+        e.actor.apply_control(carla.VehicleControl(steer=_clip(steer,-1.,1.),
+                throttle=_clip(.4*error,0.,.75),
+                brake=1. if requested <= .05 else _clip(-.45*error,0.,1.)))
 
     def before_tick(self):
         self._observe()
@@ -872,6 +974,38 @@ class JourneyScenario(Scenario):
     def expert_gap(self):
         self._observe()
         return self._gap
+
+    def observer_positions(self, radius=100.):
+        """Nearby ground-truth actors for the spectator map only."""
+        actors = [(self.occluder, "van", "occluder")]
+        for event in self.events:
+            if event.kind == "roadworks":
+                actors.extend((cone,"cone","roadworks") for cone in event.cones)
+            elif event.kind in WALKERS:
+                actors.append((event.actor,"pedestrian",event.kind))
+            elif event.kind == "cyclist":
+                actors.append((event.actor,"cyclist",event.kind))
+            elif event.kind == "bus":
+                actors.append((event.actor,"bus","stopped_bus"))
+            else:
+                role = {"signal":"signal_queue","left":"oncoming"}.get(event.kind,event.kind)
+                actors.append((event.actor,"car",role))
+        actors.extend((actor,"pedestrian" if actor.type_id.startswith("walker.") else "car","background")
+                      for actor in self.ambient._actors)
+        center = self.ego.get_location()
+        positions = []
+        for actor, kind, role in actors:
+            if actor is None or not actor.is_alive:
+                continue
+            pose = actor.get_transform()
+            p = pose.location
+            if math.hypot(p.x-center.x,p.y-center.y) <= radius:
+                box = actor.bounding_box.extent
+                positions.append(dict(actor_id=actor.id, type=kind, role=role, blueprint=actor.type_id,
+                                      dimensions_m=[round(2*box.x, 2), round(2*box.z, 2), round(2*box.y, 2)],
+                                      x=round(p.x,2),y=round(p.y,2),z=round(p.z,2),
+                                      yaw=round(pose.rotation.yaw,2)))
+        return positions
 
     def metrics(self):
         self._observe()

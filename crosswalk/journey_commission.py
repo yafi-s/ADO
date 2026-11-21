@@ -21,8 +21,11 @@ def _camera(world, actor, pending, cleanup):
     cam = world.spawn_actor(bp,pose,attach_to=actor)
     cleanup.callback(cam.destroy)
     def receive(image):
-        if pending.empty():
-            pending.put_nowait(image)
+        try:
+            pending.get_nowait()
+        except queue.Empty:
+            pass
+        pending.put_nowait(image)
     cam.listen(receive)
     cleanup.callback(cam.stop)
     return cam
@@ -41,13 +44,16 @@ def inspect(world, report_dir, seed=211, photo=False):
         walkers = [e for e in scene.events if e.kind in WALKERS]
         if photo:
             images = queue.Queue(maxsize=1)
-            camera = _camera(world,bike.actor,images,cleanup)
+            photo_cleanup = cleanup.enter_context(ExitStack())
+            _camera(world,bike.actor,images,photo_cleanup)
+        # New CARLA actors have no reliable position until the first published snapshot.
         for _ in range(12):
-            scene.before_tick()
             world.tick()
+        scene.metrics()
         if photo:
             image = images.get(timeout=6.)
             image.save_to_disk(str(report_dir / "native-bicycle.png"))
+            photo_cleanup.close()
         physical = dict(subject="Native Town03 fixture movements with a stationary ego; no driving-performance score",
                         producer=producer_info(world),seed=seed,route_m=scene.length,actors={},
                         ambient=scene.ambient.counts)
@@ -66,6 +72,8 @@ def inspect(world, report_dir, seed=211, photo=False):
         bike_start = bike.actor.get_location()
         peak_bike = peak_brake = measured_decel = peak_bus = 0.
         previous_brake = 0.
+        lead = by["lead"]
+        lead_exited = False
         native_bike_exit = False
         oncoming_crossed = False
         queue_moved_on_green = False
@@ -89,11 +97,17 @@ def inspect(world, report_dir, seed=211, photo=False):
                 side = _offset(e.pose.location,e.actor.get_location(),e.pose.get_right_vector())
                 e.actor.apply_control(carla.WalkerControl(direction=e.direction,
                                                 speed=1.25 if side>e.walk_finish_side else 0.))
+            scene._follow_exit(lead,8.5)
             scene._follow_exit(bike,3.1)
             scene._follow_exit(brake,3. if step<35 else 0.)
             scene._follow_exit(sig,7.5 if green else 0.)
             scene._drive_to(left.actor,left.target,5.8)
             world.tick()
+            lead_lane = scene._map.get_waypoint(lead.actor.get_location(),project_to_road=False,
+                                                 lane_type=carla.LaneType.Driving)
+            lead_footprint = lead.actor.bounding_box.get_world_vertices(lead.actor.get_transform())
+            if lead_lane and (lead_lane.road_id,lead_lane.lane_id) in lead.exit_lanes:
+                lead_exited |= min(abs(scene._coordinates(v)[1]) for v in lead_footprint) > scene.ego.bounding_box.extent.y+.75
             actual_bike = _speed(bike.actor)
             actual_brake = _speed(brake.actor)
             peak_bike, peak_brake = max(peak_bike,actual_bike), max(peak_brake,actual_brake)
@@ -132,6 +146,8 @@ def inspect(world, report_dir, seed=211, photo=False):
         bus_lane = scene._map.get_waypoint(bus.actor.get_location(),project_to_road=False,lane_type=carla.LaneType.Driving)
         metrics = dict(walker_paths=geometry, van_blocks_fixed_approach=ever_blocked,
                        moving_walker_emerged=emerged, bicycle_peak_mps=peak_bike,
+                       stopped_lead_exited=lead_exited,
+                       stopped_lead_terminal_error_m=lead.actor.get_location().distance(lead.exit_path[-1]),
                        bicycle_travel_m=bike.actor.get_location().distance(bike_start),
                        bicycle_exit_seen=native_bike_exit, brake_entry_mps=peak_brake,
                        lead_peak_deceleration_mps2=measured_decel, lead_final_mps=previous_brake,
@@ -143,6 +159,7 @@ def inspect(world, report_dir, seed=211, photo=False):
         checks = dict(walkers=all(v["minimum_side_m"] < -2.5 for v in geometry.values()),
                       occlusion=ever_blocked and emerged, cycle=native_bike_exit and peak_bike>1.,
                       bus=peak_bus<.25 and metrics["bus_lane"]==list(bus.lane_change.source_lane),
+                      stopped_lead_runout=lead_exited and lead.actor.get_location().distance(lead.exit_path[-1]) < 4.,
                       lead=peak_brake>1.6 and measured_decel>1. and previous_brake<.25,
                       cone=len(cones.cones)==6 and min(cone_clearances)>.10, oncoming=oncoming_crossed,
                       queue=held_red and green_seen and queue_moved_on_green,

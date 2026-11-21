@@ -15,6 +15,7 @@ MAP = Path(os.environ.get("CARLA_TOWN01_XODR", ".local/Town01_Opt-1.0.xodr"))
 
 class Actor:
     def __init__(self, blueprint, pose):
+        self.id = id(self)
         self.type_id = blueprint.id
         self.pose = pose
         self.velocity = carla.Vector3D()
@@ -164,6 +165,20 @@ class JourneyTests(unittest.TestCase):
         scene.ego.apply_control.assert_not_called()
 
     @unittest.skipUnless(TOWN03.is_file(), "Set CARLA_TOWN03_XODR for the urban course")
+    def test_observer_map_uses_physical_actor_categories_and_bounded_range(self):
+        road_map = carla.Map("Town03_Opt",TOWN03.read_text(encoding="utf8"))
+        scene = self.scene(road_map=road_map)
+        complete = scene.observer_positions(1000)
+        self.assertEqual(set(a["type"] for a in complete),{"van","pedestrian","car","cyclist","bus","cone"})
+        self.assertEqual(sum(a["type"]=="cone" for a in complete),6)
+        self.assertEqual(sum(a["role"]=="signal_queue" for a in complete),1)
+        self.assertEqual(len({a["actor_id"] for a in complete}),len(complete))
+        nearby = scene.observer_positions()
+        self.assertLess(len(nearby),len(complete))
+        origin = scene.ego.get_location()
+        self.assertTrue(all((a["x"]-origin.x)**2 + (a["y"]-origin.y)**2 < 100.01**2 for a in nearby))
+
+    @unittest.skipUnless(TOWN03.is_file(), "Set CARLA_TOWN03_XODR for the urban course")
     def test_background_vehicles_need_measured_motion_near_ego(self):
         road_map = carla.Map("Town03_Opt",TOWN03.read_text(encoding="utf8"))
         scene = self.scene(road_map=road_map)
@@ -183,9 +198,10 @@ class JourneyTests(unittest.TestCase):
         scene.before_tick()
         self.assertTrue(parallel.active)
         self.assertEqual(scene.metrics()["background_traffic_activity"]["moving_near_ego"],0)
-        parallel.actor.pose = carla.Transform(parallel.path[6],parallel.actor.pose.rotation)
         parallel.actor.velocity = parallel.actor.pose.get_forward_vector()*4.
-        scene.before_tick()
+        for i in range(1,7):
+            parallel.actor.pose = carla.Transform(parallel.path[i],parallel.actor.pose.rotation)
+            scene.before_tick()
         self.assertEqual(scene.metrics()["background_traffic_activity"]["moving_near_ego"],1)
         self.assertLess(parallel.closest,16.)
         self.assertGreater(parallel.traveled,3.)
@@ -228,6 +244,44 @@ class JourneyTests(unittest.TestCase):
             self.assertTrue(all(c.is_alive for c in event.cones))
             self.assertEqual(scene.ambient.counts,{"walkers":5,"vehicles":0})
 
+    @unittest.skipUnless(TOWN03.is_file(), "Set CARLA_TOWN03_XODR for the urban course")
+    def test_departing_lead_remains_scored_at_actual_seed73_collision_site(self):
+        road_map = carla.Map("Town03_Opt",TOWN03.read_text(encoding="utf8"))
+        scene = self.scene(73,road_map=road_map)
+        e = next(e for e in scene.events if e.kind=="lead")
+        scene.ego.pose = scene._points[e.index-10].transform
+        for _ in range(25):
+            scene.before_tick()
+        impact = min(range(len(scene.route)),key=lambda i:abs(scene._station[i]-660.072))
+        scene.ego.pose = scene._points[impact-7].transform
+        e.actor.pose = scene._points[impact].transform
+        e.actor.velocity = e.pose.get_forward_vector()*2.
+        scene.before_tick()
+        self.assertIn("restarted_s",e.observed)
+        self.assertFalse(e.record()["cleared"])
+        scene.metrics()
+        self.assertFalse(e.record()["handled"])
+        self.assertLess(scene.expert_gap(),5.)
+        self.assertGreater(scene._last_progress-e.s,65.)
+        self.assertLess(min(e.exit_limits[73:90]),3.)
+        e.actor.pose = carla.Transform(e.exit_path[-1],e.actor.pose.rotation)
+        scene.before_tick()
+        scene.metrics()
+        self.assertTrue(e.record()["cleared"])
+        self.assertGreater(e.record()["clearance_at_exit_m"],.75)
+        self.assertFalse(e.record()["handled"])
+        j = next(i for i,s in enumerate(scene._station) if s>e.pass_station+.5)
+        scene.ego.pose = scene._points[j].transform
+        scene.before_tick()
+        scene.metrics()
+        self.assertTrue(e.record()["handled"])
+        # Physical re-entry invalidates the event and restores an obstacle gap.
+        e.actor.pose = scene._points[j+7].transform
+        scene.before_tick()
+        scene.metrics()
+        self.assertFalse(e.record()["handled"])
+        self.assertLess(scene.expert_gap(),5.)
+
     def test_cyclist_needs_motion_ahead_and_actual_exit(self):
         scene = self.scene()
         e = next(e for e in scene.events if e.kind=="cyclist")
@@ -258,6 +312,10 @@ class JourneyTests(unittest.TestCase):
         self.assertFalse(lead.record()["cleared"])
         lead.actor.pose = scene._points[lead.index+9].transform
         lead.actor.velocity = carla.Vector3D(4,0,0)
+        scene.before_tick()
+        self.assertIn("restarted_s",lead.observed)
+        self.assertFalse(lead.record()["cleared"])
+        lead.actor.pose = carla.Transform(lead.exit_path[-1],lead.actor.pose.rotation)
         scene.before_tick()
         self.assertTrue(lead.record()["cleared"])
         signal = next(e for e in scene.events if e.kind=="signal")

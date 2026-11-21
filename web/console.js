@@ -216,7 +216,7 @@ function renderSensorPanel() {
   ui['route-hazard'].hidden = !sensor.route?.hazard;
   const hazardType = sensor.route?.hazard_type ?? '';
   if (ui['route-hazard'].dataset.kind !== hazardType) ui['route-hazard'].dataset.kind = hazardType;
-  setText('route-hazard-label', {vehicle: 'Hazard vehicle', pedestrian: 'Pedestrian'}[hazardType] ?? 'Hazard');
+  setText('route-hazard-label', {vehicle: 'Hazard vehicle', car: 'Vehicle', pedestrian: 'Pedestrian', cyclist: 'Cyclist', bus: 'Bus', cone: 'Traffic cone', van: 'Van'}[hazardType] ?? 'Hazard');
   const label = showingRoute
     ? 'Map ground truth showing the route and simulator actor positions'
     : 'Top-down lidar returns and radar detections around the vehicle';
