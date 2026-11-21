@@ -303,17 +303,18 @@ function architecture(boxes, tones, egoPosition) {
 
 function projectedPatch(color, solid = false) {
   return new T.ShaderMaterial({
-    uniforms:{uColor:{value:color?.isColor?color:C(color)},uFresh:{value:1},uAlpha:{value:1},uStrength:{value:.57}},
+    uniforms:{uColor:{value:color?.isColor?color:C(color)},uFresh:{value:1},uAlpha:{value:1},uStrength:{value:.57},uSelected:{value:0},uLastSeen:{value:0}},
     transparent:true, depthWrite:false,side:T.DoubleSide,
     vertexShader:`varying vec2 vUv;void main(){vUv=uv*2.-1.;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-    fragmentShader:`uniform vec3 uColor;uniform float uFresh,uAlpha,uStrength;varying vec2 vUv;
+    fragmentShader:`uniform vec3 uColor;uniform float uFresh,uAlpha,uStrength,uSelected,uLastSeen;varying vec2 vUv;
       void main() {
         float d=length(vUv);
         ${solid ? 'float opacity=(1.-smoothstep(.38,1.,d))*uStrength;' : `
           float border=abs(length(max(abs(vUv)-vec2(.50,.34),0.))-.22);
-          float footprint=(1.-smoothstep(.013,.036+fwidth(border),border))*.54;
-          float opacity=footprint*(.35+.65*uFresh)*uAlpha;`}
-        gl_FragColor=vec4(uColor,opacity);${endColor}
+          float footprint=(1.-smoothstep(.013,.036+.035*uSelected+fwidth(border),border));
+          float dash=step(.27,fract((atan(vUv.y,vUv.x)+3.142)*3.18));
+          float opacity=footprint*mix(mix(.54*(.35+.65*uFresh),.9*dash,uLastSeen)*uAlpha,1.,uSelected);`}
+        gl_FragColor=vec4(mix(uColor,vec3(.1,.92,.75),uSelected),opacity);${endColor}
       }`
   });
 }
@@ -470,6 +471,11 @@ const ease=(seconds,over)=>1-Math.exp(-Math.max(0,seconds)/over);
 export class PerceptionScene {
   constructor(canvas) {
     this.canvas=canvas;
+    this.trackBadge=document.createElement('span');
+    this.trackBadge.className='scene-track-id';this.trackBadge.hidden=true;
+    this.trackBadge.setAttribute('aria-hidden','true');
+    canvas.after(this.trackBadge);
+    this.badgePosition=V();this.selectedTrackId=null;
     this.renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'low-power'});
     this.renderer.toneMapping=T.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure=1.04;
@@ -515,7 +521,8 @@ export class PerceptionScene {
     // Which objects to draw, and where, is decided by the object memory from the recorded tracks.
     this.memory=new ObjectMemory({
       laneAxis:(x,z,hint,driven)=>this.laneAxis?this.laneAxis(x,z,hint,driven):null,
-      laneDistance:(x,z)=>this.laneAxis?this.laneAxis.distance(x,z):0
+      laneDistance:(x,z)=>this.laneAxis?this.laneAxis.distance(x,z):0,
+      groundAt:(x,z,estimate)=>this.laneAxis?.ground(x,z,estimate)
     });
     this.resources=0;
     this.view='follow';this.yaw=0;this.fromYaw=0;this.toYaw=0;this.cameraYaw=0;
@@ -559,6 +566,7 @@ export class PerceptionScene {
       this.cameraYaw=this.snapCamera?this.yaw:this.cameraYaw+shortest(this.cameraYaw,this.yaw)*ease(elapsed,CAMERA_SECONDS);
       this.snapCamera=false;
       this.placeCamera();
+      this.positionTrackBadge();
       this.renderer.render(this.scene,this.camera);
       this.lastDraw=now;this.dirty=false;
     };
@@ -818,6 +826,37 @@ export class PerceptionScene {
   clearTracks(){
     for(const id of this.tracks.keys())this.dropTrack(id);
   }
+  setSelectedTrack(id){
+    this.selectedTrackId=id;
+    this.dirty=true;
+  }
+  setRiderAssociations(riders){ this.riders=riders; }
+  sourceGroups(frame){
+    if(!frame||frame.frame!==this.frame?.frame||frame.run_id!==this.frame?.run_id)return [];
+    return [...this.tracks.values()].filter(t=>t.sourceIds?.length>1)
+      .map(t=>({key:t.id,primary:t.sourceId,ids:t.sourceIds,label:t.label}));
+  }
+
+  positionTrackBadge(){
+    let selected;
+    for(const track of this.tracks.values()){
+      const on=this.selectedTrackId!=null&&(track.sourceId===this.selectedTrackId||track.sourceIds?.includes(this.selectedTrackId));
+      track.foot.material.uniforms.uSelected.value=on?1:0;
+      if(on)selected=track;
+    }
+    this.trackBadge.hidden=true;
+    if(!selected||!this.layers.tracks||!this.frame)return;
+    this.badgePosition.copy(selected.group.position);
+    this.badgePosition.y+=selected.group.scale.y+.18;
+    this.camera.updateMatrixWorld();
+    this.badgePosition.project(this.camera);
+    const {x,y,z}=this.badgePosition;
+    if(z< -1||z>1||Math.abs(x)>1||Math.abs(y)>1)return;
+    this.trackBadge.style.left=`${(x+1)*50}%`;
+    this.trackBadge.style.top=`${(1-y)*50}%`;
+    this.trackBadge.textContent='#'+this.selectedTrackId;
+    this.trackBadge.hidden=false;
+  }
   makeTrack(id,label) {
     const group=new T.Group(), shape=buildRoadUser(label,this.look);
     group.add(shape.group);
@@ -900,14 +939,18 @@ export class PerceptionScene {
     this.lightSignals(frame,ctx);
     const drawn=new Set();
     const nextObjects=new Map(replay?.next.objects.map(o=>[o.key,o]));
+    const nativeTracks=new Map((frame.tracks??[]).map(track=>[track.id,track]));
     for(const object of objects){
-      const label=Object.hasOwn(TRACK_TONE,object.label)?object.label:'unknown';
+      const inferred=object.label==='person'?this.riders?.get(object.sourceId)?.label:null;
+      const label=inferred??(Object.hasOwn(TRACK_TONE,object.label)?object.label:'unknown');
       drawn.add(object.key);
       let track=this.tracks.get(object.key), carried=null;
       // The memory settled on another class for it: swap the symbol where it stands.
       if(track&&track.label!==label){carried=track.opacity;this.dropTrack(object.key);track=null;}
       const fresh=!track;
       track=track||this.makeTrack(object.key,label);
+      track.sourceId=object.sourceId;
+      track.sourceIds=object.sourceIds;
       track.from.copy(track.group.position);track.to.set(object.x,object.y,object.z);
       track.fromAngle=track.group.rotation.y;track.toAngle=-object.heading*rad;
       // The symbol stays within sizes its class can have; the ground outline keeps the estimate itself.
@@ -925,7 +968,7 @@ export class PerceptionScene {
         const following=nextObjects.get(object.key);
         track.from.copy(track.to);track.fromAngle=track.toAngle;track.fromSize.copy(track.toSize);
         track.fromOpacity=object.opacity;
-        if(following&&following.label===label){
+        if(following&&following.label===object.label){
           track.to.set(following.x,following.y,following.z);
           if(!following.turned)track.toAngle=-following.heading*rad;
           plausibleSize(label,track.size.set(following.length,following.height,following.width),track.toSize);
@@ -934,6 +977,12 @@ export class PerceptionScene {
       }
       // A remembered object keeps a fainter outline than one measured in this frame.
       track.foot.material.uniforms.uFresh.value=object.held?.18:1;
+      if(frame.perception_version==='surround-v1'&&object.held&&TRACK_TONE[label]==='vehicle'){
+        const sources=(object.sourceIds??[object.sourceId]).map(id=>nativeTracks.get(id)).filter(Boolean);
+        const age=sources.length?Math.min(...sources.map(source=>source.age_s??0)):1;
+        track.lastSeen=clamp((age-.35)/.55,0,1);
+      }else track.lastSeen=0;
+      track.foot.material.uniforms.uLastSeen.value=track.lastSeen;
       const history=track.history;
       if(!object.moving)history.length=0;
       while(history.length&&(t-history[0].t>1.65||history.length>=30))history.shift();
@@ -960,9 +1009,10 @@ export class PerceptionScene {
       tr.group.scale.lerpVectors(tr.fromSize,tr.toSize,t);
       tr.group.rotation.y=tr.fromAngle+shortest(tr.fromAngle,tr.toAngle)*t;
       const opacity=tr.fromOpacity+(tr.toOpacity-tr.fromOpacity)*t;
-      if(opacity!==tr.opacity){
+      if(opacity!==tr.opacity||tr.lastSeen!==tr.previousLastSeen){
         tr.opacity=opacity;
-        for(const material of tr.materials)material.opacity=opacity;
+        tr.previousLastSeen=tr.lastSeen;
+        for(const material of tr.materials)material.opacity=opacity*(1-.86*tr.lastSeen);
         tr.foot.material.uniforms.uAlpha.value=opacity;
         tr.trail.material.uniforms.uAlpha.value=opacity;
       }
@@ -1027,6 +1077,7 @@ export class PerceptionScene {
     cancelAnimationFrame(this.raf);this.bindings.abort();this.observer?.disconnect();
     this.clearTracks();
     this.measuredSignals.dispose();
+    this.trackBadge.remove();
     release(this.scene);disposeRoadUserGeometry();this.environment.dispose();this.renderer.dispose();
   }
 }

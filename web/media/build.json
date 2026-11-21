@@ -1,16 +1,16 @@
 {
   "status": "evaluated",
-  "title": "City driver and held-out driving study",
+  "title": "Surround perception and urban cruise",
   "simulator": {
     "server_version": "1.0",
     "client_version": "1.0",
     "map": "Town01_Opt"
   },
   "release": {
-    "label": "v0.2.0",
-    "url": "https://github.com/yafi-s/ADO/releases/tag/v0.2.0",
-    "zip_url": "https://github.com/yafi-s/ADO/releases/download/v0.2.0/ADO-v0.2.0-Windows.zip",
-    "sha256_url": "https://github.com/yafi-s/ADO/releases/download/v0.2.0/SHA256SUMS.txt"
+    "label": "v0.3.0",
+    "url": "https://github.com/yafi-s/ADO/releases/tag/v0.3.0",
+    "zip_url": "https://github.com/yafi-s/ADO/releases/download/v0.3.0/ADO-v0.3.0-Windows.zip",
+    "sha256_url": "https://github.com/yafi-s/ADO/releases/download/v0.3.0/SHA256SUMS.txt"
   },
   "checkpoints": {
     "fusion": {
@@ -28,9 +28,37 @@
     "city-v1": {
       "sha256": "e139089bf706909f6caa711dc189a8a7cc29c7c2d6a9918a6f350b604cb3025e",
       "url": "https://raw.githubusercontent.com/yafi-s/ADO/5673a4ae835dbaf6cfb4b60537474118d6fda92b/models/city-v1/candidate-73-74.npz"
+    },
+    "city-cruise": {
+      "sha256": "78b84c5ead7ba81d34a354b0cf6c509c50c6a8e6bc6beb16f4360b2ab530c634",
+      "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.3.0/models/city-cruise/candidate.npz"
+    },
+    "tactical-pass": {
+      "sha256": "570ece96d6cdf2d8ed72c6253446d58d2a4d2575d0e1d9d1555bf0e55519d13f",
+      "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.3.0/models/tactical-pass/choice.json"
     }
   },
   "evidence": [
+    {
+      "label": "Original 1080p surround city drive",
+      "url": "https://github.com/yafi-s/ADO/releases/download/v0.3.0/ADO-Surround-City-1080p.mp4"
+    },
+    {
+      "label": "Inspect one camera exposure and registered CARLA footprints",
+      "url": "https://yafi-s.github.io/ADO/inspect.html?run=overtake-clear&frame=7849"
+    },
+    {
+      "label": "Frame-by-frame rider motion audit",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.3.0/results/perception/rider-motion/README.md"
+    },
+    {
+      "label": "Urban speed and traffic-signal measurements",
+      "url": "https://github.com/yafi-s/ADO/tree/v0.3.0/results/surround-city"
+    },
+    {
+      "label": "Five-camera recognition and range evidence",
+      "url": "https://github.com/yafi-s/ADO/tree/v0.3.0/results/surround-rig"
+    },
     {
       "label": "Original 1080p city drive",
       "url": "https://github.com/yafi-s/ADO/releases/download/v0.2.0/ADO-Town03-Chase-1080p.mp4"
@@ -1736,6 +1764,52 @@
   "showcases": [
     {
       "scenario": "journey",
+      "policy": "ado-city-cruise-v1",
+      "seed": 211,
+      "destination": "market",
+      "district": "townwide",
+      "outcome": "complete",
+      "frames": 3173,
+      "duration_s": 317.3,
+      "route_length_m": 1415.438,
+      "progress_m": 1415.184,
+      "collision_events": 0,
+      "red_light_violations": 0,
+      "yield_violations": 0,
+      "label": "Surround city drive",
+      "trial_id": "surround-city",
+      "case_id": "journey",
+      "recording_path": "surround-city",
+      "model_sha256": "78b84c5ead7ba81d34a354b0cf6c509c50c6a8e6bc6beb16f4360b2ab530c634",
+      "benchmark_member": false,
+      "selection_note": "Town03 development course with staged traffic. The fitted pass planner uses measured clearance in the current and neighboring lanes.",
+      "cohort": "showcase",
+      "quality_requested": "High",
+      "map": "Town03_Opt",
+      "map_url": "./media/surround-city/town.json",
+      "width": 1280,
+      "height": 720,
+      "manifest_url": "./media/surround-city/manifest.json",
+      "log_url": "./media/surround-city/telemetry.json",
+      "video_url": "./media/surround-city/chase.mp4",
+      "cameras": [
+        "chase",
+        "front",
+        "left",
+        "right",
+        "rear_left",
+        "rear_right"
+      ],
+      "encounters_handled": 10,
+      "encounters_planned": 10,
+      "source": {
+        "commit": "35b0af102a9d4ebbf9e0c1619df19f0b6b88a1fc",
+        "url": "https://github.com/yafi-s/ADO/tree/35b0af102a9d4ebbf9e0c1619df19f0b6b88a1fc"
+      },
+      "replay_pack_url": "./media/surround-city/replay-pack.json.gz"
+    },
+    {
+      "scenario": "journey",
       "policy": "ado-city-policy-v1",
       "seed": 211,
       "destination": "market",
@@ -2001,8 +2075,8 @@
     }
   ],
   "source": {
-    "commit": "ab83fd7af908cbf6572e9a92917ad36c1b86bf54",
-    "url": "https://github.com/yafi-s/ADO/tree/ab83fd7af908cbf6572e9a92917ad36c1b86bf54"
+    "commit": "35b0af102a9d4ebbf9e0c1619df19f0b6b88a1fc",
+    "url": "https://github.com/yafi-s/ADO/tree/35b0af102a9d4ebbf9e0c1619df19f0b6b88a1fc"
   },
   "preview_image": "./media/chase.jpg",
   "legacy_run_source": {

@@ -47,6 +47,34 @@ def select_frames(scored, mounts):
     return chosen
 
 
+def requested_frames(scored, mounts, probes):
+    keys = [probe.split(":") for probe in probes]
+    if any(len(key) != 3 for key in keys):
+        raise ValueError("Use FRAME:ACTOR_ID_OR_ROLE:CAMERA for each probe")
+    wanted = {int(key[0]) for key in keys}
+    selected = {}
+    with scored.open(encoding="utf-8") as rows:
+        for index, line in enumerate(rows):
+            frame = json.loads(line)
+            if frame["frame"] not in wanted:
+                continue
+            actors = frame["tracker"]["actors"] + frame.get("parked", {}).get("tracker", [])
+            for number, token, camera in keys:
+                if int(number) != frame["frame"]:
+                    continue
+                candidates = [a for a in actors if str(a["id"]) == token or a["role"] == token]
+                if len(candidates) != 1 or camera not in mounts:
+                    raise ValueError(f"Missing or ambiguous actor or camera for {number}:{token}:{camera}")
+                a = candidates[0]
+                u = projection(a, mounts[camera])
+                if u is None:
+                    raise ValueError(f"Actor center is outside the selected camera at {number}:{token}:{camera}")
+                selected[number,token,camera] = dict(frame=frame["frame"], index=index, camera=camera,
+                    sim_time=frame["sim_time"], actor_id=a["id"], role=a["role"], kind=a["type"],
+                    sector=a["sector"], u=round(u,3), range_m=a["range_m"])
+    return [selected[tuple(key)] for key in keys]
+
+
 def film_frames(source, indices):
     cap = cv2.VideoCapture(str(source), cv2.CAP_FFMPEG, [cv2.CAP_PROP_N_THREADS, 1])
     try:
@@ -74,13 +102,14 @@ def film_frames(source, indices):
         cap.release()
 
 
-def render(directory, scored, rig, destination):
+def render(directory, scored, rig, destination, probes=()):
     cv2.setNumThreads(1)
     mounts = json.loads(rig.read_text(encoding="utf-8"))["cameras"] if rig else {
         "front": dict(x=1.3, y=0, yaw=0, hfov=90)}
     media = {name: next((p for ext in (".mp4", ".mjpeg") if (p := directory/(name+ext)).is_file()), None)
              for name in mounts}
-    chosen = select_frames(scored, {k: v for k, v in mounts.items() if media[k]})
+    available = {k: v for k, v in mounts.items() if media[k]}
+    chosen = requested_frames(scored, available, probes) if probes else select_frames(scored, available)
     if not chosen:
         raise ValueError("No actor center falls within the available camera bearings")
     panels = {}
@@ -95,14 +124,17 @@ def render(directory, scored, rig, destination):
             for line, label in enumerate(labels):
                 cv2.putText(panel, label, (8, 290+21*line), cv2.FONT_HERSHEY_SIMPLEX, .55,
                             (255, 255, 255), 1, cv2.LINE_AA)
-            panels[r["sector"], r["actor_id"]] = panel
+            panels[r["frame"], r["camera"], r["actor_id"]] = panel
     # Three columns, grouped by sector, with blank cells where fewer than three actors qualified.
     sheet = []
     blank = np.zeros((320, 480, 3), dtype=np.uint8)
-    for sector in ("front", "right", "rear", "left"):
-        row = [panels[sector, r["actor_id"]] for r in chosen if r["sector"] == sector]
+    columns = 2 if probes else 3
+    groups = ([chosen[i:i+columns] for i in range(0,len(chosen),columns)] if probes else
+              [[r for r in chosen if r["sector"] == sector] for sector in ("front","right","rear","left")])
+    for group in groups:
+        row = [panels[r["frame"],r["camera"],r["actor_id"]] for r in group]
         if row:
-            sheet.append(np.hstack(row + [blank]*(3-len(row))))
+            sheet.append(np.hstack(row + [blank]*(columns-len(row))))
     if not cv2.imwrite(str(destination), np.vstack(sheet)):
         raise OSError(f"Could not save {destination}")
     return chosen
@@ -114,5 +146,6 @@ if __name__ == "__main__":
     cli.add_argument("scored", type=Path, help="Frame-level JSONL generated with audit_city_perception.mjs --frames")
     cli.add_argument("destination", type=Path, help="Output image file")
     cli.add_argument("--rig", type=Path, help="Surround evidence frame.json containing camera calibration; omit for v0.2")
+    cli.add_argument("--probe", action="append", default=[], help="Explicit FRAME:ACTOR_ID_OR_ROLE:CAMERA; repeat for a contact sheet")
     args = cli.parse_args()
-    print(json.dumps(render(args.directory, args.scored, args.rig, args.destination), indent=2))
+    print(json.dumps(render(args.directory, args.scored, args.rig, args.destination, args.probe), indent=2))

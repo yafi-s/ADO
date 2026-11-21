@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import {readFileSync} from 'node:fs';
 
 import {ObjectMemory, ReplayMemory, advance, contextOf, createState, laneAxes} from '../web/object-memory.mjs';
-import {measuredHeads, cameraLamp, cameraBoxes} from '../web/lamp-observations.mjs';
+import {measuredHeads, cameraLamp, cameraBoxes, inspectionCamera} from '../web/lamp-observations.mjs';
 import {cornerReturns, lidarCount} from '../web/sensor-returns.mjs';
 
 // A tracker sample as recordings carry it. Positions are in the vehicle frame, x ahead and y to the right.
@@ -50,6 +51,84 @@ test('a range-supported nearby pedestrian appears on its first RGB and Doppler o
   const output = play([...repeat(15,()=>({})),{tracks:[person(6,9,.1,{sources:['rgb','lidar','radar'],speed_mps:null,confidence:.39})]}]);
   assert.equal(output.at(-1)[0].label,'person');
   assert.ok(output.at(-1)[0].opacity>.65);
+});
+
+test('a resolved pedestrian is shown through the next coast outside the close-range score gate', () => {
+  const measured=person(18,15.314,2.228,{confidence:.74,speed_mps:null,cameras:['front'],sources:['rgb','lidar','radar'],
+    lidar_hits:5,radial_mps:-5.62});
+  const observe=t=>play([...repeat(12,()=>({})),{tracks:[t]},{tracks:[coasting(t)]}]);
+  assert.equal(observe(measured).at(-1)[0].sourceId,18);
+  assert.deepEqual(observe({...measured,lidar_hits:2}).at(-1),[]);
+  assert.deepEqual(observe({...measured,radial_mps:null}).at(-1),[]);
+});
+
+test('track inspection uses a recorded camera association and no rectangle during a coast', () => {
+  const track={id:6,cameras:['front','left'],last_cameras:['rear_left'],rgb_boxes:{left:[.1,.2,.3,.8]}};
+  assert.equal(inspectionCamera(track,['chase','front','left'],'left'),'left');
+  assert.equal(inspectionCamera(track,['chase','front'],'chase'),'front');
+  assert.equal(inspectionCamera(track,['chase'],'chase'),null);
+  assert.deepEqual(cameraBoxes({tracks:[track]},'left').map(item=>item.track_id),[6]);
+  const coast={...track,cameras:[],coasting:true};
+  assert.equal(inspectionCamera(coast,['rear_left'],'chase'),'rear_left');
+  assert.deepEqual(cameraBoxes({tracks:[coast]},'rear_left'),[]);
+  assert.deepEqual(cameraBoxes({tracks:[coast]},'left'),[]);
+});
+
+test('wheel contact follows the grade at the object and ignores changes in visible body surface', () => {
+  const slope=laneAxes([[[0,0,0],[4,0,.4],[8,0,.8],[12,0,1.2]]]);
+  const frames=repeat(5,i=>({frame:i,sim_time:i*.1,observer_map:{ego:[0,0,0],ego_z:0},
+    tracks:[car(7,6,0,{z:.8+i*.1,height:1.5})]}));
+  const replay=new ReplayMemory({laneAxis:slope});
+  for(let i=0;i<frames.length;i++)assert.ok(Math.abs(replay.at(frames,i).objects[0].y-.615)<1e-6);
+  assert.equal(slope.ground(6,4,1),null,'an unmeasured sidewalk does not get the adjacent lane elevation');
+});
+
+test('a wheel track cannot snap to a newly exposed face while Doppler still reports a parked car', () => {
+  const lanes=laneAxes([lane]);
+  const frames=repeat(24,i=>{
+    const x=16+(i<16?0:3.8),radar=[[x,-.2,0],[x,0,0],[x,.2,0]];
+    return {frame:i,sim_time:i*.1,perception_version:'surround-v1',observer_map:{ego:[0,0,0],ego_z:0},radar,
+      tracks:[car(1,x,0,{doppler:{radar:{hits:10,radial_mps:0}},lidar_hits:12,confidence:.8})]};
+  });
+  const replay=new ReplayMemory({laneAxis:lanes});
+  const drawn=frames.map((_,i)=>replay.at(frames,i).objects[0]);
+  assert.ok(drawn.slice(1).every((obj,i)=>Math.abs(obj.x-drawn[i].x)<.051));
+});
+
+test('two aligned overlapping car symbols are deduplicated without merging separate nearby lanes', () => {
+  const frames=repeat(5,i=>({frame:i,sim_time:i*.1,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+    tracks:[car(2,11,1,{cameras:['front'],lidar_hits:7}),car(8,11.8,1.2,{cameras:['right'],lidar_hits:25}),
+      car(9,11,4.5,{cameras:['right'],lidar_hits:8})]}));
+  const objects=new ReplayMemory({}).at(frames,4).objects;
+  assert.equal(objects.length,2);
+  assert.deepEqual(objects.find(o=>o.sourceIds).sourceIds,[2,8]);
+});
+
+test('a new unknown range surface fades promptly when fresh point support stops', () => {
+  const frames=repeat(14,i=>({frame:i,sim_time:i/10,perception_version:'surround-v1',
+    observer_map:{ego:[0,0,0]},tracks:i<4?[car(10,8,3,{label:'unknown',sources:['lidar'],cameras:[],
+      confidence:.8,lidar_hits:8})]:[],lidar:[]}));
+  const m=new ReplayMemory({});
+  assert.equal(m.at(frames,3).objects[0].label,'unknown');
+  assert.equal(m.at(frames,9).objects.length,0);
+});
+
+test('the clear-pass rear-camera class handoff keeps one physical lead with both inspectable source IDs', () => {
+  const read=path=>JSON.parse(readFileSync(new URL(path,import.meta.url),'utf8'));
+  const frames=read('../web/media/overtake-clear/replay.json');
+  const lanes=read('../web/media/overtake-clear/town.json').roads;
+  const features=read('../web/media/map-features/Town03_Opt.json');
+  const ends=(a,b)=>[a,b].map(p=>p.slice(0,2).map(n=>n.toFixed(2)).join(',')).join('|');
+  const directions=new Map(features.lanes.map(l=>[ends(l.a,l.b),l.forward]));
+  const axis=laneAxes(lanes,lanes.map(l=>directions.get(ends(l[0],l.at(-1)))));
+  const memory=new ReplayMemory({laneAxis:axis,laneDistance:axis.distance});
+  for(const n of [7882,7884,7888,7891]){
+    const objects=memory.at(frames,frames.findIndex(r=>r.frame===n)).objects;
+    const lead=objects.filter(o=>o.sourceIds?.some(id=>id===4||id===5)||[4,5].includes(o.sourceId));
+    assert.equal(lead.length,1,`frame ${n}`);
+    assert.ok(lead[0].sourceIds.includes(4)&&lead[0].sourceIds.includes(5));
+    assert.equal(lead[0].label,'car');
+  }
 });
 
 test('a lidar-only mover gains a camera class under its original display identity', () => {

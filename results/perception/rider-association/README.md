@@ -1,0 +1,11 @@
+# A rider and bicycle in the Town03 High replay
+
+At 270.8–273.0 s, the display can draw one cyclist at the measured position of person track 143. Front-camera image object 496 supplies the bicycle class. The person supplies the lidar depth. The capture itself retains a ranged person and a separate bearing-only bicycle.
+
+Between frames 3431 and 3453, the same bicycle crossed from near the middle of the image to its left side. On ten camera frames, exactly one independently ranged person was aligned over it. The first three such measurements spanned 0.4 s and moved together, establishing the association at frame 3435. At frame 3449, a sampled native lidar point projected below the rider box and inside the bicycle box at a camera depth of 6.69 m. The median camera depth of the five rider surface points was 6.96 m. That single lower return supports proximity but cannot independently localize or identify the bicycle.
+
+The display checks a causal window of 1.2 s for recurring unique pairs. The rider and bicycle must overlap and move together in image coordinates, and at least one bike score must reach 0.55. A second plausible person, separate ranged bicycle, discontinuity or directly conflicting new evidence blocks the association. A missed measurement can preserve the display briefly while the source rider track carries depth no more than 0.2 s old.
+
+Across all 3,173 frames of the completed High replay, this rule annotated one source person on 23 consecutive frames. The isolated left-camera bicycle box at 41.2 s produced no association. On the separately recorded older approach, all 26 bicycle boxes aligned with a person optically. Its recordings provide a second image-geometry check only. [Earlier camera detections](../../surround-recognition/cyclist-approach.json)
+
+Run `node --test tests/test_rider_association.mjs` from the repository root. The compressed fixture contains the original camera observations and relevant track fields for both High encounters, plus the recorded range samples at frame 3449. The tests verify the exact display interval, the ranged person and bearing-only bicycle inputs, and rejection of competing people, missing depth and temporal breaks. [Source manifest](manifest.json) · [Native observations](high-samples.json.gz)

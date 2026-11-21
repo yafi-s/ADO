@@ -40,9 +40,10 @@ test('chapter button seeks to the frame video time, including before metadata is
   const source = readFileSync(new URL('../web/ado-home.js', import.meta.url), 'utf8');
   const extract = (start, end) => source.slice(source.indexOf(`function ${start}(`), source.indexOf(`function ${end}(`));
   const film = {currentTime: 0}, clock = {video: false}, buttons = [], attrs = {};
-  let visible, syncs = 0;
+  let visible, syncs = 0, invalidations = 0;
   const state = {source: 'recorded', replay: null};
   const context = vm.createContext({recordedChapters, state, film, clock,
+    exposureClock: {beginSeek: () => { invalidations++; }}, replaySeekPending: false, renderCameraBoxes: () => {},
     finite: Number.isFinite, show: (_, value) => { visible = value; },
     $: () => ({replaceChildren: (...items) => buttons.splice(0, buttons.length, ...items)}),
     document: {createElement: () => ({setAttribute: (key, value) => { attrs[key] = value; },
@@ -67,6 +68,8 @@ test('chapter button seeks to the frame video time, including before metadata is
   clock.video = true;
   buttons[0].click();
   assert.equal(film.currentTime, .7);
+  assert.equal(invalidations, 1);
+  assert.equal(context.replaySeekPending, true);
   assert.equal(syncs, 2);
   state.source = 'live';
   state.replay = null;

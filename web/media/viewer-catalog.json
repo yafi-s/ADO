@@ -1,5 +1,27 @@
 [
   {
+    "label": "Surround city drive",
+    "path": "surround-city",
+    "cameras": [
+      "chase",
+      "front",
+      "left",
+      "right",
+      "rear_left",
+      "rear_right"
+    ],
+    "trial_id": "surround-city",
+    "manifest": "./media/surround-city/manifest.json",
+    "cohort": "showcase",
+    "district": "townwide",
+    "benchmark_member": false,
+    "selection_note": "Town03 development course with staged traffic. The fitted pass planner uses measured clearance in the current and neighboring lanes.",
+    "map_url": "./media/surround-city/town.json",
+    "map": "Town03_Opt",
+    "replay_pack_url": "./media/surround-city/replay-pack.json.gz",
+    "replay_pack_sha256": "7fa6eea96ed07e23a1d877b291b0c62526fad7a3157126ab2ac2ff3d5581014e"
+  },
+  {
     "label": "Yield before overtaking",
     "path": "overtake-yield",
     "trial_id": "overtake-yield",

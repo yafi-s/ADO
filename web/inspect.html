@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0c131b">
+  <title>Frame inspector · ADO</title>
+  <link rel="stylesheet" href="./inspect.css">
+  <script type="module" src="./inspect.mjs"></script>
+</head>
+<body>
+  <main>
+    <header><a id="back" href="./">← Rider display</a><h1>Frame inspector</h1>
+      <label class="run">Recording <select id="run" disabled></select></label>
+    </header>
+    <p id="loading" role="status">Loading recordings…</p>
+    <section id="workspace" hidden aria-label="Recorded frame comparison">
+      <div class="views">
+        <section class="panel">
+          <div class="panel-head"><h2>Native camera</h2><label>View <select id="camera"></select></label></div>
+          <div id="movie-stage"><p id="movie-status" role="status">Loading footage…</p></div>
+          <p class="caption" id="movie-caption"></p>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Registered overhead</h2><label>Zoom <select id="scale"><option value="10">Detail · 10 m</option><option value="24">Near · 24 m</option><option value="36" selected>Street · 36 m</option><option value="72">Wide · 72 m</option></select></label></div>
+          <svg id="map" role="img" aria-label="Sensor and observer positions in metres, with the vehicle facing up"></svg>
+          <fieldset class="layers"><legend class="sr">Map layers</legend>
+            <label class="drawn"><input id="drawn" type="checkbox" checked> Rider display</label>
+            <label class="observer"><input id="observer" type="checkbox" checked> CARLA actors</label>
+            <label class="measured"><input id="measured" type="checkbox"> Sensor measurements</label>
+          </fieldset>
+        </section>
+      </div>
+      <section class="transport" aria-label="Frame controls">
+        <div class="readout"><h2 id="frame"></h2><span id="count"></span></div>
+        <label class="sr" for="scrub">Exposure in recording</label><input id="scrub" type="range" min="0" value="0" step="1">
+        <div class="controls"><button id="prev" type="button" aria-keyshortcuts="ArrowLeft">← Previous</button><button id="play" type="button">Play</button><button id="next" type="button" aria-keyshortcuts="ArrowRight">Next →</button></div>
+        <p id="clock" class="caption"></p>
+      </section>
+      <details class="panel detail"><summary>Object positions for this frame</summary><p id="pose"></p><p>Dashed bodies use the simulator’s local bounding box and the actor’s recorded yaw on a level plane. Circles mark actor origins when body geometry is unavailable. Crosses mark tracks with a new depth measurement.</p><div id="objects"></div></details>
+    </section>
+  </main>
+</body>
+</html>

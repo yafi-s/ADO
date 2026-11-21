@@ -3,9 +3,11 @@
 // telemetry keep working if the 3D scene cannot start.
 
 import {recordedChapters} from './encounter-chapters.mjs';
+import {VideoExposureClock, MEDIA_TIME_TOLERANCE, replayIndexAt} from './exposure-clock.mjs';
 import {loadReplay} from './replay-pack.mjs';
 import {cornerReturns, lidarCount} from './sensor-returns.mjs';
-import {cameraBoxes, cameraLamp, measuredHeads, LAMP_COLOURS} from './lamp-observations.mjs';
+import {bicycleAssociations} from './rider-association.mjs';
+import {bearingObservations, cameraBoxes, cameraLamp, inspectionCamera, measuredHeads, LAMP_COLOURS, MAX_CAMERA_HOLD_S} from './lamp-observations.mjs';
 
 const CAR_URL = './vehicle-assets/waymo-ipace.glb';
 const TOWN_URL = './media/town.json';
@@ -60,6 +62,9 @@ const state = {
   dir: '',
   liveRun: undefined,
   frame: null,
+  selectedTrack: null,
+  riders: new Map(),
+  riderFrames: [],
   camera: null,
   preferredCamera: 'chase',   // the view that shows the vehicle in its street
   cameras: [],
@@ -67,12 +72,17 @@ const state = {
   layers: {path: true, tracks: true, returns: true},
   feed: 'inset',
   feedChosen: false,
+  hideFootage: false,
   defaultShown: false
 };
 
 // One playback clock. The video is the master whenever it can play; a timer
 // stands in only for a recorded drive whose footage is missing.
 const clock = {video: false, t: 0, playing: false, pendingT: 0, pendingPlay: false};
+const exposureClock = new VideoExposureClock(film, syncExposure);
+const bearings = {items: [], selected: null, liveTimer: null, liveFrame: null};
+let restoredMediaPosition = null;
+let replaySeekPending = false;
 
 const stage = {scene: null, failed: false, faulted: false, mapUrl: TOWN_URL, mapName: null};
 let loadControl;
@@ -245,9 +255,12 @@ async function bootScene() {
   }
   $('view').dataset.scene = 'on';
   sceneCall('setView', state.view);
+  sceneCall('setSelectedTrack', state.selectedTrack);
+  sceneCall('setRiderAssociations', state.riders);
   for (const [layer, visible] of Object.entries(state.layers)) sceneCall('setLayer', layer, visible);
-  if (state.replay) presentAt(position());
+  if (state.replay) syncNow();
   else if (state.frame) sceneCall('update', state.frame);
+  renderFeed();
 
   note('note-scene', 'Loading the vehicle…');
   const scene = stage.scene;
@@ -256,7 +269,7 @@ async function bootScene() {
     .then(() => true, error => { console.error(error); return false; });
   const [carReady] = await Promise.all([car, loadSceneMap(stage.mapUrl, stage.mapName)]);
   if (!stage.faulted) note('note-scene', carReady ? '' : 'The vehicle model could not be loaded.');
-  if (state.replay) presentAt(position());
+  if (state.replay) syncNow();
   else if (state.frame) sceneCall('update', state.frame);
 }
 
@@ -292,6 +305,8 @@ function renderLayers(frame) {
 
 function present(frame) {
   if (frame === state.frame) return;
+  if(!frame){state.riderFrames.length=0;state.riders=new Map();}
+  sceneCall('setRiderAssociations',state.riders);
   state.frame = frame;
   sceneCall('update', frame);
   renderTelemetry(frame);
@@ -374,14 +389,161 @@ function trackMeta(track) {
   if (Array.isArray(track.cameras) && track.cameras.length) {
     parts.push(track.cameras.map(view => String(view).replaceAll('_', ' ')).join(' / '));
   }
-  if (finite(track.speed_mps)) parts.push(`${whole.format(track.speed_mps * 3.6)} km/h`);
-  if (finite(track.radial_mps)) parts.push(`Doppler ${signedTenth.format(track.radial_mps)} m/s`);
   return parts.join(' · ');
 }
 
+function setSelectedTrack(id) {
+  if (state.selectedTrack === id) return;
+  state.selectedTrack = id;
+  sceneCall('setSelectedTrack', id);
+}
+
+function trackView(track) {
+  const view=state.riders.get(track?.id)?.camera;
+  return state.cameras.includes(view)?view:inspectionCamera(track,state.cameras,state.camera);
+}
+
+function riderImageKey(id){
+  const rider=state.riders.get(id);
+  return rider?JSON.stringify([rider.camera,rider.image_id]):null;
+}
+
+function clearBearings() {
+  clearTimeout(bearings.liveTimer);
+  bearings.liveTimer = null;
+  bearings.liveFrame = null;
+  bearings.items = [];
+  bearings.selected = null;
+}
+
+function bearingAgeLabel(age) {
+  return `Last seen ${hundredth.format(age)} s ago`;
+}
+
+function renderBearingRows() {
+  const list = $('bearing-observations');
+  const linked=new Set([...state.riders.keys()].map(riderImageKey));
+  const visible = bearings.items.filter(item => state.cameras.includes(item.view)&&!linked.has(item.key));
+  show('bearing-observations', visible.length > 0);
+  if (!visible.some(item => item.key === bearings.selected)) bearings.selected = null;
+
+  const focused = list.contains(document.activeElement) ? document.activeElement : null;
+  const previous = new Map([...list.children].map(row => [row.dataset.key, row]));
+  for (const [index, item] of visible.entries()) {
+    let row = previous.get(item.key);
+    if (!row) {
+      row = document.createElement('li');
+      row.dataset.key = item.key;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.append(document.createElement('span'), document.createElement('small'));
+      button.addEventListener('click', () => {
+        const observation = bearings.items.find(candidate => candidate.key === row.dataset.key);
+        if (!observation) return;
+        bearings.selected = bearings.selected === observation.key ? null : observation.key;
+        if (bearings.selected != null) {
+          setSelectedTrack(null);
+          if (!state.layers.tracks) setLayer('tracks', true);
+          selectCamera(observation.view);
+        }
+        renderSensing(state.frame);
+        renderCameraBoxes();
+      });
+      row.append(button);
+    }
+    previous.delete(item.key);
+    const button = row.firstElementChild;
+    const age = item.age_s > 0 ? bearingAgeLabel(item.age_s) : '';
+    button.firstElementChild.textContent = `${sentence(item.label) || 'Object'} · ${CAMERA_LABELS[item.view]} camera · bearing only`;
+    button.lastElementChild.textContent = age;
+    button.lastElementChild.hidden = !age;
+    attr(button, 'aria-pressed', String(bearings.selected === item.key));
+    if (list.children[index] !== row) list.insertBefore(row, list.children[index] ?? null);
+  }
+  for (const item of previous.values()) item.remove();
+  if (focused?.isConnected && document.activeElement !== focused) focused.focus({preventScroll:true});
+}
+
+function inspectSource(id){
+  const track=state.frame?.tracks?.find(track=>String(track.id)===String(id));
+  const camera=trackView(track);
+  if(!camera)return;
+  bearings.selected=null;
+  const selected=state.selectedTrack===track.id?null:track.id;
+  setSelectedTrack(selected);
+  if(selected!=null){
+    if(!state.layers.tracks)setLayer('tracks',true);
+    selectCamera(camera);
+  }
+  renderSensing(state.frame);
+  renderCameraBoxes();
+}
+
+function trackRow(row, existing) {
+  const item=existing??document.createElement('li');
+  if(!existing){
+    const mark=document.createElement('i');mark.className='mark';mark.setAttribute('aria-hidden','true');
+    const name=document.createElement('span');name.className='name';
+    name.append(document.createTextNode(''));
+    const range=document.createElement('span');range.className='range';
+    const meta=document.createElement('span');meta.className='meta';
+    const button=document.createElement('button');
+    button.type='button';button.className='inspect-track';
+    button.addEventListener('click',()=>inspectSource(item.dataset.trackId));
+    name.append(button,document.createElement('small'));
+    const details=document.createElement('details');
+    details.className='source-measurements';
+    details.append(document.createElement('summary'),document.createElement('div'));
+    item.append(mark,name,range,meta,details);
+  }
+  const [,name,range,meta,details]=item.children;
+  const button=name.firstElementChild;
+  item.dataset.trackId=String(row.id);
+  item.dataset.rowKey=row.key;
+  item.dataset.kind=row.kind;
+  item.dataset.coasting=String(row.coasting);
+  item.dataset.selected=String(row.selected);
+  name.firstChild.nodeValue=row.name;
+  name.lastChild.textContent=row.where;
+  range.textContent=row.range;
+  meta.textContent=row.meta;
+  meta.hidden=!row.meta;
+  button.hidden=!row.camera;
+  if(row.camera){
+    const description=`Inspect ${row.name.toLowerCase()} #${row.id} in the ${CAMERA_LABELS[row.camera].toLowerCase()} camera`;
+    button.title=description;button.setAttribute('aria-label',description);
+    button.setAttribute('aria-pressed',String(row.selected));
+    button.textContent='#'+row.id;
+  }
+  details.hidden=row.members.length<2&&!row.members.some(m=>m.motion);
+  if(!details.hidden){
+    details.firstChild.textContent=row.members.length>1?`${row.members.length} sensor IDs · one drawn object`:'Sensor measurements';
+    const sources=details.lastChild;
+    const previous=new Map([...sources.children].map(b=>[b.dataset.sourceId,b]));
+    for(const [i,member] of row.members.entries()){
+      const id=String(member.id);
+      let control=previous.get(id);
+      if(!control){
+        control=document.createElement('button');control.type='button';
+        control.dataset.sourceId=id;
+        control.addEventListener('click',()=>inspectSource(id));
+      }
+      previous.delete(id);
+      control.disabled=!member.camera;
+      control.setAttribute('aria-pressed',String(member.id===state.selectedTrack));
+      control.textContent=`#${id} · ${member.name} · ${member.range}${member.camera?' · '+CAMERA_LABELS[member.camera]+' camera':''}${member.coasting?' · coasting':''}${member.motion?' · '+member.motion:''}`;
+      if(sources.children[i]!==control)sources.insertBefore(control,sources.children[i]??null);
+    }
+    for(const control of previous.values())control.remove();
+  }else details.open=false;
+  return item;
+}
+
 function renderSensing(frame) {
+  if (state.selectedTrack != null && !frame?.tracks?.some(track=>track.id===state.selectedTrack))setSelectedTrack(null);
   const visible = Boolean(frame) && state.source !== 'training';
   show('sensing', visible);
+  renderBearingRows();
   const counts=new Map();
   for(const head of measuredHeads(frame)){
     const lamp=cameraLamp(head);
@@ -410,55 +572,64 @@ function renderSensing(frame) {
     .map(track => ({track, range: Math.hypot(track.x, track.y)}))
     .sort((a, b) => a.range - b.range);
 
-  text('track-count', recorded ? whole.format(tracks.length) : '', '');
+  const sourceGroups=sceneCall('sourceGroups',frame)??[];
+  const bySource=new Map(sourceGroups.flatMap(group=>group.ids.map(id=>[id,group])));
+  const objects=new Map();
+  for(const sample of tracks){
+    const group=bySource.get(sample.track.id);
+    const key=group?'object-'+group.key:'track-'+sample.track.id;
+    if(!objects.has(key))objects.set(key,{key,group,members:[]});
+    objects.get(key).members.push(sample);
+  }
+  const count=objects.size===tracks.length?whole.format(tracks.length):
+    `${tracks.length} IDs · ${objects.size} ${objects.size===1?'object':'objects'}`;
+  text('track-count',recorded?count:'','');
   show('tracks-empty', !tracks.length);
   if (!tracks.length) {
     text('tracks-empty', recorded ? 'Nothing tracked right now.' : 'This drive has no sensor tracks.');
   }
 
-  const rows = tracks.slice(0, TRACK_ROWS).map(({track, range}) => ({
-    kind: trackKind(track.label),
+  const groups=[...objects.values()];
+  const visibleTracks=groups.slice(0,TRACK_ROWS);
+  const selected=groups.find(group=>group.members.some(({track})=>track.id===state.selectedTrack));
+  if(selected && !visibleTracks.includes(selected))visibleTracks[visibleTracks.length-1]=selected;
+  const rows = visibleTracks.map(({key,group,members}) => {
+    const {track,range}=members.find(m=>m.track.id===state.selectedTrack)??members.find(m=>m.track.id===group?.primary)??members[0];
+    const label=group?.label??track.label;
+    return {
+    key,id:track.id, camera:trackView(track), selected:track.id===state.selectedTrack,
+    members:members.map(m=>({id:m.track.id,name:sentence(m.track.label),range:`${tenth.format(m.range)} m`,camera:trackView(m.track),coasting:m.track.coasting,
+      motion:[finite(m.track.speed_mps)?`Raw speed estimate ${tenth.format(m.track.speed_mps*3.6)} km/h`:'',
+        finite(m.track.radial_mps)?`Relative Doppler ${signedTenth.format(m.track.radial_mps)} m/s`:''].filter(Boolean).join(' · ')})),
+    kind: trackKind(label),
     coasting: Boolean(track.coasting),
-    name: sentence(String(track.label ?? '')) || 'Object',
+    name: state.riders.has(track.id)?'Bicycle rider':sentence(String(label ?? '')) || 'Object',
     where: trackBearing(track),
     range: `${tenth.format(range)} m`,
-    meta: trackMeta(track)
-  }));
+    meta: state.riders.has(track.id)?`Bicycle in ${CAMERA_LABELS[state.riders.get(track.id).camera]} camera · Depth from person track · ${trackMeta(track)}`:trackMeta(track)
+    };
+  });
   const signature = JSON.stringify(rows);
   if (signature !== trackSignature) {
     trackSignature = signature;
-    $('tracks').replaceChildren(...rows.map(row => {
-      const item = document.createElement('li');
-      item.dataset.kind = row.kind;
-      if (row.coasting) item.dataset.coasting = 'true';
-      const mark = document.createElement('i');
-      mark.className = 'mark';
-      mark.setAttribute('aria-hidden', 'true');
-      const name = document.createElement('span');
-      name.className = 'name';
-      name.textContent = row.name;
-      const where = document.createElement('small');
-      where.textContent = row.where;
-      name.append(where);
-      const range = document.createElement('span');
-      range.className = 'range';
-      range.textContent = row.range;
-      item.append(mark, name, range);
-      if (row.meta) {
-        const meta = document.createElement('span');
-        meta.className = 'meta';
-        meta.textContent = row.meta;
-        item.append(meta);
-      }
-      return item;
-    }));
+    const list=$('tracks');
+    const focused=list.contains(document.activeElement)?document.activeElement:null;
+    const byId=new Map([...list.children].map(item=>[item.dataset.rowKey,item]));
+    for(const [index,row] of rows.entries()){
+      const key=row.key, item=trackRow(row,byId.get(key));
+      byId.delete(key);
+      // Keep the same button and keyboard focus as its measurements update.
+      if(list.children[index]!==item)list.insertBefore(item,list.children[index]??null);
+    }
+    for(const item of byId.values())item.remove();
+    if(focused?.isConnected&&!focused.hidden&&document.activeElement!==focused)focused.focus({preventScroll:true});
   }
 
   // The nearest fresh track on the vehicle axis is called out beside the speed.
   const lead = tracks.find(({track}) => !track.coasting && track.x > 0 && Math.abs(track.y) <= CORRIDOR_HALF_WIDTH_M);
   show('ahead', Boolean(lead));
   if (lead) {
-    const name = sentence(String(lead.track.label ?? '')) || 'Object';
+    const name = state.riders.has(lead.track.id)?'Bicycle rider':sentence(String(lead.track.label ?? '')) || 'Object';
     text('ahead', `${name} ahead · ${tenth.format(lead.track.x)} m`);
     $('ahead').dataset.kind = trackKind(lead.track.label);
   }
@@ -526,6 +697,7 @@ function renderFrameFacts(frame) {
 }
 
 function renderTelemetry(frame) {
+  updateInspectorLink();
   text('speed', finite(frame?.speed_mps) ? whole.format(Math.max(0, Math.round(frame.speed_mps * 3.6))) : '—');
   renderActivity(frame);
 
@@ -651,6 +823,7 @@ function syncRunPicker() {
 function syncUrl(entry) {
   try {
     const url = new URL(location.href);
+    for(const key of ['at','view','camera'])url.searchParams.delete(key);
     if (entry?.trial_id) url.searchParams.set('run', entry.trial_id);
     else url.searchParams.delete('run');
     history.replaceState(null, '', url);
@@ -670,11 +843,22 @@ function link(id, value, label) {
 
 function renderRunLinks() {
   const {source, run, training} = state;
+  updateInspectorLink();
   link('link-log', source === 'recorded' ? run?.log_url : source === 'training' ? training?.logUrl : null,
     source === 'training' ? 'Demonstration log' : 'Run log');
   link('link-replay', source === 'recorded' && state.replay ? `${state.dir}/replay.json` : null);
   const footage = (source === 'recorded' || source === 'training') && film.hasAttribute('src');
   link('link-mp4', footage ? film.src : null);
+}
+
+function updateInspectorLink() {
+  const enabled = state.source === 'recorded' && state.entry?.trial_id && Number.isInteger(state.frame?.frame);
+  const anchor = $('link-inspect');
+  anchor.hidden = !enabled;
+  if (!enabled) { anchor.removeAttribute('href'); return; }
+  const params = new URLSearchParams({run: state.entry.trial_id, frame: String(state.frame.frame)});
+  if (state.camera) params.set('camera', state.camera);
+  anchor.href = `./inspect.html?${params}`;
 }
 
 function renderChapters() {
@@ -767,22 +951,35 @@ function isPlaying() {
   return videoPending() ? clock.pendingPlay : clock.playing;
 }
 
-function presentAt(time) {
+function canHideFootage() {
+  return state.source === 'recorded' && Boolean(state.replay && stage.scene) && film.hasAttribute('src');
+}
+
+function sensorOnly() {
+  return state.hideFootage && canHideFootage();
+}
+
+function smoothPlayback() {
+  return sensorOnly() && isPlaying() && !film.seeking;
+}
+
+function presentAt(time, seeking = false, exact = false) {
   const {frames, times} = state.replay;
-  let low = 0;
-  let high = times.length - 1;
-  while (low < high) {
-    const middle = Math.ceil((low + high) / 2);
-    if (times[middle] <= time + .001) low = middle;
-    else high = middle - 1;
-  }
-  const frame = frames[low];
-  const fraction = times[low + 1] > times[low] ? clamp((time - times[low]) / (times[low + 1] - times[low]), 0, 1) : 0;
-  if (state.frame !== frame) {
+  const index = replayIndexAt(times, time, exact ? MEDIA_TIME_TOLERANCE : .001);
+  const frame = frames[index];
+  const interval = times[index + 1] - times[index];
+  const fraction = !exact && interval > 0 ? clamp((time - times[index]) / interval, 0, 1) : 0;
+  const changed=state.frame!==frame||seeking;
+  if (changed) {
+    if (seeking) bearings.selected = null;
+    const previous = !seeking && state.frame?.frame < frame.frame ? frames[index - 1] : null;
+    bearings.items = bearingObservations(frame, previous, CAMERA_ORDER);
+    state.riders=bicycleAssociations(frames,index);
+    sceneCall('setRiderAssociations',state.riders);
     state.frame = frame;
-    renderTelemetry(frame);
   }
-  sceneCall('updateReplay', frames, low, fraction);
+  sceneCall('updateReplay', frames, index, fraction);
+  if(changed)renderTelemetry(frame);
 }
 
 // Frames without their own video timestamps map one-to-one onto the video's frames.
@@ -795,11 +992,30 @@ function alignToVideo(replay, length) {
   replay.end = replay.times[count - 1];
 }
 
-function syncNow() {
+function syncNow(seeking = false) {
   if (state.source === 'live') return;
   // The training log only ever follows its own footage.
-  if (state.replay && (clock.video || timerDriven())) presentAt(position());
+  if (state.replay) {
+    if (clock.video) {
+      const smooth = smoothPlayback();
+      const time = smooth ? position() : exposureClock.time;
+      if (time !== null) {
+        presentAt(time, replaySeekPending, !smooth);
+        replaySeekPending = false;
+      }
+    } else if (!videoPending() && timerDriven()) {
+      presentAt(position(), seeking);
+    }
+  }
   renderClock();
+}
+
+function syncExposure() {
+  if (!clock.video || !state.replay) return;
+  const previous = state.frame;
+  syncNow();
+  // The new camera may show the same exposure as its predecessor.
+  if (state.frame === previous) renderCameraBoxes();
 }
 
 function renderClock() {
@@ -846,6 +1062,7 @@ function pause() {
   if (clock.video) film.pause();
   else if (videoPending()) clock.pendingPlay = false;
   else clock.playing = false;
+  syncNow();
   renderTransport();
 }
 
@@ -858,15 +1075,24 @@ function seekTo(time) {
   const total = duration();
   if (state.source === 'live' || total <= 0) return;
   const target = clamp(time, 0, total);
-  if (clock.video) film.currentTime = target;
-  else {
+  if (clock.video) {
+    replaySeekPending = true;
+    if (target !== film.currentTime) {
+      exposureClock.beginSeek(state.replay?.times);
+      film.currentTime = target;
+      renderCameraBoxes();
+    }
+  } else {
     clock.t = target;
     clock.pendingT = target;
   }
-  syncNow();
+  syncNow(true);
 }
 
 function resetPlayback() {
+  restoredMediaPosition = null;
+  replaySeekPending = false;
+  exposureClock.setSource();
   clock.video = false;
   clock.playing = false;
   clock.t = 0;
@@ -886,6 +1112,8 @@ function resetPlayback() {
 }
 
 function loadVideo(url, at, autoplay) {
+  restoredMediaPosition = null;
+  replaySeekPending = false;
   clock.video = false;
   clock.playing = false;
   clock.t = at;
@@ -895,6 +1123,7 @@ function loadVideo(url, at, autoplay) {
   still.hidden = true;
   film.hidden = false;
   film.src = url;
+  exposureClock.setSource(film.src);
   feedNote('Loading footage…');
   renderFeed();
   renderTransport();
@@ -905,17 +1134,39 @@ function videoUrl() {
   return artifactUrl(state.entry?.camera_urls?.[state.camera]) ?? `${state.dir}/${state.camera}.mp4`;
 }
 
-function setCameras(cameras) {
+function selectCamera(camera) {
+  if (!state.cameras.includes(camera)) return;
+  if (sensorOnly()) setFootageVisible(true);
+  if (camera === state.camera) return;
+  state.preferredCamera = camera;
+  state.camera = camera;
+  if (state.source === 'live') {
+    showLiveImage(state.frame);
+    renderFeed();
+  } else if (state.source === 'recorded') {
+    loadVideo(videoUrl(), exposureClock.time ?? position(), isPlaying());
+  }
+  renderSensing(state.frame);
+}
+
+function setCameras(cameras, requestedCamera=null) {
   state.cameras = cameras;
-  state.camera = cameras.includes(state.preferredCamera) ? state.preferredCamera : cameras[0] ?? null;
+  const preferred=cameras.includes(requestedCamera)?requestedCamera:state.preferredCamera;
+  state.camera = cameras.includes(preferred) ? preferred : cameras[0] ?? null;
   $('camera-list').replaceChildren(...cameras.map(camera => new Option(CAMERA_LABELS[camera], camera)));
+  renderBearingRows();
   renderFeed();
 }
 
 function setFeed(size, chosen = false) {
   state.feed = size;
   if (chosen) state.feedChosen = true;
-  $('app').dataset.feed = size;
+  renderFeed();
+}
+
+function setFootageVisible(visible) {
+  state.hideFootage = !visible;
+  syncNow();
   renderFeed();
 }
 
@@ -924,7 +1175,11 @@ function renderCameraBoxes() {
   const live=state.source==='live';
   const width=live?still.naturalWidth:film.videoWidth;
   const height=live?still.naturalHeight:film.videoHeight;
-  const boxes=state.layers.tracks && (live||clock.video) && width && height ? cameraBoxes(state.frame,state.camera) : [];
+  const mediaReady = live ? !still.hidden && still.complete : !sensorOnly() && clock.video && exposureClock.time !== null;
+  const boxes = state.layers.tracks && mediaReady && width && height ? [
+    ...cameraBoxes(state.frame, state.camera).filter(item => item.range_supported !== false),
+    ...bearings.items.filter(item => item.view === state.camera)
+  ] : [];
   overlay.replaceChildren();
   if(!boxes.length)return;
   // SVG's default meet alignment matches the media element's object-fit: contain.
@@ -935,12 +1190,37 @@ function renderCameraBoxes() {
     rect.setAttribute('x',x0*width);rect.setAttribute('y',y0*height);
     rect.setAttribute('width',(x1-x0)*width);rect.setAttribute('height',(y1-y0)*height);
     rect.setAttribute('stroke',item.lamp?LAMP_COLOURS[item.lamp]:trackKind(item.label)==='vru'?'#ffb76b':'#9edbd6');
-    if(item.range_supported===false)rect.setAttribute('stroke-dasharray','3 2');
+    if (item.key) {
+      rect.dataset.bearingOnly = 'true';
+      if (bearings.selected === item.key || riderImageKey(state.selectedTrack)===item.key) rect.dataset.selected = 'true';
+      if (item.age_s > 0) rect.dataset.held = 'true';
+    }
+    if(state.selectedTrack!=null && item.track_id===state.selectedTrack){
+      rect.dataset.selected='true';
+      rect.dataset.trackId=String(item.track_id);
+    }
     overlay.append(rect);
+    if (item.age_s > 0) {
+      const age = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      const size = Math.max(18, width * .032);
+      age.setAttribute('font-size', size);
+      age.setAttribute('x', (x1 > .72 ? x1 : x0) * width);
+      age.setAttribute('y', Math.max(size, y0 * height - 5));
+      if (x1 > .72) age.setAttribute('text-anchor', 'end');
+      age.textContent = bearingAgeLabel(item.age_s);
+      overlay.append(age);
+    }
   }
 }
 
 function renderFeed() {
+  const hidden = sensorOnly();
+  show('feed', !hidden);
+  show('footage-toggle', canHideFootage());
+  attr($('footage-toggle'), 'aria-pressed', String(!hidden));
+  attr($('footage-toggle'), 'title', hidden ? 'Show synchronized camera footage' : 'Hide footage for smooth sensor playback');
+  $('app').dataset.feed = hidden ? 'hidden' : state.feed;
+  updateInspectorLink();
   renderCameraBoxes();
   const source = state.source;
   const camera = state.camera ? CAMERA_LABELS[state.camera] : '';
@@ -982,7 +1262,11 @@ function renderFeed() {
 function videoReady() {
   if (!film.hasAttribute('src') || clock.video) return;
   if (state.replay) alignToVideo(state.replay, film.duration);
-  if (clock.pendingT > 0 && finite(film.duration)) film.currentTime = Math.min(clock.pendingT, film.duration);
+  if (clock.pendingT > 0 && finite(film.duration)) {
+    exposureClock.beginSeek(state.replay?.times);
+    film.currentTime = Math.min(clock.pendingT, film.duration);
+    if (film.seeking) restoredMediaPosition = film.currentTime;
+  }
   clock.video = true;
   clock.playing = false;
   feedNote('');
@@ -993,7 +1277,21 @@ function videoReady() {
 }
 film.addEventListener('loadedmetadata', videoReady);
 film.addEventListener('canplay', videoReady);
+film.addEventListener('loadeddata', syncExposure);
 still.addEventListener('load', renderCameraBoxes);
+
+film.addEventListener('seeking', () => {
+  exposureClock.beginSeek(state.replay?.times);
+  if (restoredMediaPosition == null || Math.abs(restoredMediaPosition - film.currentTime) > .001) replaySeekPending = true;
+  restoredMediaPosition = null;
+  renderCameraBoxes();
+});
+
+film.addEventListener('seeked', () => {
+  exposureClock.finishSeek(state.replay?.times);
+  renderTransport();
+  syncExposure();
+});
 
 film.addEventListener('error', () => {
   if (!film.hasAttribute('src')) return;
@@ -1008,6 +1306,8 @@ film.addEventListener('error', () => {
     }
   }
   film.removeAttribute('src');
+  exposureClock.setSource();
+  replaySeekPending = false;
   film.load();
   film.hidden = true;
   clock.video = false;
@@ -1030,7 +1330,7 @@ film.addEventListener('error', () => {
   renderRunLinks();
 });
 
-for (const event of ['play', 'pause', 'ended', 'durationchange', 'seeked']) {
+for (const event of ['play', 'pause', 'ended', 'durationchange']) {
   film.addEventListener(event, () => {
     renderTransport();
     syncNow();
@@ -1057,6 +1357,8 @@ function beginSource(source) {
   loadControl = new AbortController();
   resetPlayback();
   if (state.entry) state.lastEntry = state.entry;
+  setSelectedTrack(null);
+  clearBearings();
   state.source = source;
   state.entry = null;
   state.run = null;
@@ -1135,7 +1437,7 @@ async function loadChapterManifest(entry, replay, signal) {
   }
 }
 
-async function openRecorded(entry, startSeconds = 0) {
+async function openRecorded(entry, startSeconds = 0, requestedCamera = null) {
   const signal = beginSource('recorded');
   state.entry = entry;
   state.run = findRun(entry);
@@ -1170,12 +1472,14 @@ async function openRecorded(entry, startSeconds = 0) {
   setMode('recorded', 'Recorded');
 
   const listed = Array.isArray(entry.cameras) ? entry.cameras : Array.isArray(replay?.cameras) ? replay.cameras : ['front','chase'];
-  setCameras([...new Set(listed.filter(camera => CAMERA_ORDER.includes(camera)))]);
+  const cameras=[...new Set(listed.filter(camera=>CAMERA_ORDER.includes(camera)))];
+  setCameras(cameras,requestedCamera);
   const start = replay && finite(startSeconds) ? Math.max(0, Math.min(startSeconds, replay.end)) : 0;
-  if (replay) presentAt(start);
   if (state.camera) {
     loadVideo(videoUrl(), start, !reducedMotion);
   } else {
+    clock.t = start;
+    if (replay) presentAt(start);
     feedNote('No camera footage is listed for this run.');
     clock.playing = Boolean(replay) && !reducedMotion;
     if (!replay) setMode('unavailable', 'Unavailable');
@@ -1301,9 +1605,29 @@ function showLiveImage(frame) {
 function showLive(frame) {
   setMode('live', 'Live');
   if (frame.run_id !== state.liveRun) {
+    setSelectedTrack(null);
+    clearBearings();
+    state.riderFrames.length=0;state.riders=new Map();
     state.liveRun = frame.run_id;
     void loadSceneMap(frame.map_url ?? TOWN_URL, frame.map?.split('/').at(-1) ?? null);
     renderRun();
+  }
+  const previous = bearings.liveFrame;
+  if (previous?.frame !== frame.frame || previous?.sim_time !== frame.sim_time) {
+    state.riderFrames.push(frame);
+    if(state.riderFrames.length>13)state.riderFrames.shift();
+    state.riders=bicycleAssociations(state.riderFrames);
+    clearTimeout(bearings.liveTimer);
+    bearings.items = bearingObservations(frame, previous, CAMERA_ORDER);
+    bearings.liveFrame = frame;
+    const oldestHeld = Math.max(0, ...bearings.items.map(item => item.age_s));
+    if (oldestHeld > 0) {
+      bearings.liveTimer = setTimeout(() => {
+        bearings.items = bearings.items.filter(item => item.age_s === 0);
+        renderBearingRows();
+        renderCameraBoxes();
+      }, (MAX_CAMERA_HOLD_S - oldestHeld) * 1000);
+    }
   }
   showLiveImage(frame);
   present(frame);
@@ -1465,20 +1789,10 @@ function bind() {
     button.addEventListener('click', () => setLayer(button.dataset.layer, !state.layers[button.dataset.layer]));
   }
 
-  function selectCamera(camera) {
-    if (camera === state.camera || !state.cameras.includes(camera)) return;
-    state.preferredCamera = camera;
-    state.camera = camera;
-    if (state.source === 'live') {
-      showLiveImage(state.frame);
-      renderFeed();
-    } else if (state.source === 'recorded') {
-      loadVideo(videoUrl(), position(), isPlaying());
-    }
-  }
   for (const button of cameraButtons) button.addEventListener('click', () => selectCamera(button.dataset.camera));
   $('camera-list').addEventListener('change', event => selectCamera(event.target.value));
 
+  $('footage-toggle').addEventListener('click', () => setFootageVisible(sensorOnly()));
   $('feed-size').addEventListener('click', () => setFeed(state.feed === 'dock' ? 'inset' : 'dock', true));
   $('play').addEventListener('click', togglePlay);
   $('seek').addEventListener('input', () => seekTo(Number($('seek').value)));
@@ -1554,7 +1868,8 @@ function tick(stamp) {
       renderTransport();
     }
   }
-  syncNow();
+  if (clock.video && exposureClock.supported && !smoothPlayback()) renderClock();
+  else syncNow();
 }
 
 async function boot() {
@@ -1577,7 +1892,11 @@ async function boot() {
   if (requested) {
     state.wanted = 'recorded';
     const entry = resolveRun(requested);
-    if (entry) openRecorded(entry, Number(search.get('at')));
+    if (entry) {
+      const view=search.get('view');
+      if(view==='follow'||view==='overview')setView(view);
+      openRecorded(entry, Number(search.get('at')),search.get('camera'));
+    }
     else showUnresolved(requested);
   } else if (!LOCAL_CONSOLE) {
     showDefault();

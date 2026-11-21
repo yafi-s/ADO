@@ -1,6 +1,8 @@
 # Town03 perception audit
 
-On the same 3,543 frames of the published 1.415 km city drive, the revised display drew the correct nearby pedestrian on 24 additional frames. Unmatched drawings stayed at 331. At 6.0 seconds, the first crossing pedestrian appeared as soon as the camera, lidar and radar supplied a joint measurement. The cyclist still went undrawn on every one of its 240 nearby frames.
+The [full High-drive audit](production/README.md) covers all 3,173 frames of the final city drive, both moving overtakes, motion and size errors, detection latency and native camera evidence. On the older 3,543-frame v0.2 recording, the final display matches 1,086 of 3,241 nearby scenario actor-frames, with 288 unmatched drawings out of 1,375. The stopped bus improves from 56 to 83 matched actor-frames and its maximum same-ID position step falls from 1.608 m to 0.140 m. [Final legacy regression check](production/legacy-final-coverage.json)
+
+The commissioning comparisons below retain their original display revisions. On the same 3,543 original frames, the early confirmation revision drew the correct nearby pedestrian on 24 additional frames. Unmatched drawings stayed at 331. At 6.0 seconds, the first crossing pedestrian appeared as soon as the camera, lidar and radar supplied a joint measurement. The cyclist went undrawn on every one of its 240 nearby frames.
 
 ## Native five-camera commissioning run
 
@@ -30,7 +32,7 @@ In a separate seed-212 commissioning run, the rear-right camera labeled the edge
 
 ![A long hedge in the right camera at the projected position, paired with the clipped rear-right car box](seed212-hedge.jpg)
 
-The encounter comparison pairs frames chronologically, maximizes the number of legal pairs and then minimizes pose error. A pair must have the same actor role and bearing sector, ego centers within 1 m, ego headings within 4°, route stations within 1.5 m and actor centers within 1.5 m in ego coordinates. Both recordings must be within 35 m of the event station and actor. For this crossing, every commissioning frame paired with a separate v0.2 frame, and the maximum ego-center displacement was 0.09 m. All paired frame numbers are in `native-preflight-aligned.json`.
+The encounter comparison pairs frames chronologically, maximizes the number of legal pairs and then minimizes pose error. A pair must have the same actor role and bearing sector, ego centers within 1 m, ego headings within 4°, route stations within 1.5 m and actor centers within 1.5 m in ego coordinates. Both recordings must be within 35 m of the actor. When a route passes the same actor more than once, the comparison selects the continuous nearby visit with the most frames during its scripted event. The nominal event station breaks ties. For this crossing, every commissioning frame paired with a separate v0.2 frame, and the maximum ego-center displacement was 0.09 m. All paired frame numbers are in `native-preflight-aligned.json`.
 
 ## Identical recording, two display versions
 

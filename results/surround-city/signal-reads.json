@@ -1,0 +1,29 @@
+{
+  "counts": {
+    "mapped_head_frames": 17469,
+    "unknown": 14829,
+    "scored_camera_readings": 2640,
+    "correct": 2634,
+    "held_from_previous_frame": 384
+  },
+  "by_camera": {
+    "rear_right": 190,
+    "front": 1730,
+    "right": 176,
+    "left": 145,
+    "rear_left": 399
+  },
+  "target_junction": {
+    "red->red": 18,
+    "green->red": 6,
+    "green->green": 240
+  },
+  "confusion": {
+    "green->green": 1340,
+    "green->red": 6,
+    "red->red": 1294
+  },
+  "units": "head-frames; correlated views and nearby frames are not independent",
+  "denominator": "All mapped heads within 60 m, including out-of-view, occluded and back-facing heads",
+  "source": "RGB measurements compared to CARLA reference after control"
+}
