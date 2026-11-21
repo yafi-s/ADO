@@ -66,6 +66,7 @@ const state = {
   liveRun: undefined,
   frame: null,
   selectedTrack: null,
+  requestedTrack: null,
   riders: new Map(),
   riderFrames: [],
   camera: null,
@@ -852,7 +853,7 @@ function syncRunPicker() {
 function syncUrl(entry) {
   try {
     const url = new URL(location.href);
-    for(const key of ['at','view','camera'])url.searchParams.delete(key);
+    for(const key of ['at','view','camera','frame','track'])url.searchParams.delete(key);
     if (entry?.trial_id) url.searchParams.set('run', entry.trial_id);
     else url.searchParams.delete('run');
     history.replaceState(null, '', url);
@@ -1007,6 +1008,11 @@ function presentAt(time, seeking = false, exact = false) {
     state.riders=bicycleAssociations(frames,index);
     sceneCall('setRiderAssociations',state.riders);
     state.frame = frame;
+    if (state.requestedTrack?.frame === frame.frame) {
+      const chosen = frameTracks(frame).find(t => String(t.id) === state.requestedTrack.id);
+      if (chosen) setSelectedTrack(chosen.id);
+      state.requestedTrack = null;
+    }
   }
   // While a movie exposure is on screen, only the virtual camera may pan
   // within its presentation interval. Pausing and stepping use its exact time.
@@ -1401,6 +1407,7 @@ function beginSource(source) {
   clearBearings();
   state.source = source;
   state.entry = null;
+  state.requestedTrack = null;
   state.run = null;
   state.replay = null;
   state.training = null;
@@ -1477,7 +1484,7 @@ async function loadChapterManifest(entry, replay, signal) {
   }
 }
 
-async function openRecorded(entry, startSeconds = 0, requestedCamera = null) {
+async function openRecorded(entry, startSeconds = 0, requestedCamera = null, frameNumber = null, trackId = null) {
   const signal = beginSource('recorded');
   state.entry = entry;
   state.run = findRun(entry);
@@ -1515,14 +1522,18 @@ async function openRecorded(entry, startSeconds = 0, requestedCamera = null) {
   const listed = Array.isArray(entry.cameras) ? entry.cameras : Array.isArray(replay?.cameras) ? replay.cameras : ['front','chase'];
   const cameras=[...new Set(listed.filter(camera=>CAMERA_ORDER.includes(camera)))];
   setCameras(cameras,requestedCamera);
-  const start = replay && finite(startSeconds) ? Math.max(0, Math.min(startSeconds, replay.end)) : 0;
+  const index = replay && Number.isInteger(frameNumber) ? replay.frames.findIndex(f => f.frame === frameNumber) : -1;
+  const start = index >= 0 ? replay.times[index]
+    : replay && finite(startSeconds) ? Math.max(0, Math.min(startSeconds, replay.end)) : 0;
+  const autoplay = index < 0 && !reducedMotion;
+  if (index >= 0 && trackId) state.requestedTrack = {frame: frameNumber, id: trackId};
   if (state.camera) {
-    loadVideo(videoUrl(), start, !reducedMotion);
+    loadVideo(videoUrl(), start, autoplay);
   } else {
     clock.t = start;
     if (replay) presentAt(start);
     feedNote('No camera footage is listed for this run.');
-    clock.playing = Boolean(replay) && !reducedMotion;
+    clock.playing = Boolean(replay) && autoplay;
     if (!replay) setMode('unavailable', 'Unavailable');
   }
   renderRun();
@@ -1940,7 +1951,8 @@ async function boot() {
     if (entry) {
       const view=search.get('view');
       if(view==='follow'||view==='overview')setView(view);
-      openRecorded(entry, Number(search.get('at')),search.get('camera'));
+      openRecorded(entry, Number(search.get('at')), search.get('camera'),
+        search.has('frame') ? Number(search.get('frame')) : null, search.get('track'));
     }
     else showUnresolved(requested);
   } else if (!LOCAL_CONSOLE) {

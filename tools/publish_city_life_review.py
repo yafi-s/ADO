@@ -83,7 +83,7 @@ def scorecard():
         f'On the same Urban Pace sensor tape, the lead car first appeared as a correctly placed 3D body at '
         f'{after["range_m"]:.1f} m, versus {before["range_m"]:.1f} m with the older display. The front '
         'camera can also show a bearing before the sensors have enough range evidence for a 3D body.',
-        ("Inspect the lead car", f'./inspect.html?run=urban-pace&frame={after["frame"]}&camera=front'),
+        ("See the selected lead car", f'./?run=urban-pace&frame={after["frame"]}&track={after["source"]}&camera=front'),
         ("By class and distance", TAG + "results/distant-awareness/README.md"))
     return {"checks": checks, "scope": "The site replays closed-loop simulated drives. "
             "Population counts include occluded traffic. A 3D symbol needs measured range. "
