@@ -384,7 +384,7 @@ function styleConfidence(track, confidence, coasting) {
 // estimated afresh every frame and arrive noisy; the drawing eases toward them.
 const SHAPE_SECONDS=.55, HEADING_SECONDS=.4, TRACK_ALPHA=.5, TRACK_BETA=.14, CAMERA_SECONDS=.32;
 const ease=(seconds,over)=>1-Math.exp(-Math.max(0,seconds)/over);
-const turn=(from,to)=>((to-from+540)%360)-180;   // shortest signed difference in degrees
+const turn=(from,to)=>(((to-from)%360)+540)%360-180;   // shortest signed difference in degrees, for any operands
 
 export class PerceptionScene {
   constructor(canvas) {
