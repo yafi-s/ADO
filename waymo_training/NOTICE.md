@@ -15,3 +15,5 @@ Use the following Waymo-provided attribution from §1 in Waymo-derived work, inc
 Keep downloaded records and extracted features in private runtime storage. The agreement places conditions on redistribution of the dataset and its modifications. Any permitted release of trained architectures, weights, biases, or associated derivatives must include this attribution, a copy of the agreement, and a prominent notice that the full release and downstream use or modification are governed by the agreement, including its non-commercial restrictions. See §§1, 2, and 4. [Waymo's agreement](https://waymo.com/open/terms/) · [Waymo's FAQ](https://waymo.com/open/faq/)
 
 The simulator's [MIT license](../LICENSE) covers the legacy simulator software. The Waymo agreement governs the Waymo data and the data-derived model artifacts described here. Any reused upstream schema files carry their own license notices.
+
+A text copy of the published [Waymo agreement](WAYMO_DATASET_AGREEMENT.txt) is included for reference. Waymo research results and model-derived materials are subject to its non-commercial conditions.

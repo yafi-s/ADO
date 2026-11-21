@@ -1,0 +1,40 @@
+{
+  "trial_id": "waymo-research-v2-lead-seed41-start3",
+  "case_id": "lead",
+  "scenario": "lead",
+  "policy": "Waymo-trained three-camera waypoint predictor with calibrated CARLA controller",
+  "seed": 41,
+  "cohort": "waymo_research",
+  "label": "Waymo research pilot - stopped lead vehicle - lane departure",
+  "outcome": "lane_departure",
+  "recording_path": "waymo-research-pilot",
+  "cameras": [
+    "front",
+    "chase"
+  ],
+  "model_sha256": "4757047aa66ba141d9485ecbc956424e0dd87af84056190e12096088a08a7503",
+  "source_checkpoint_sha256": "ce12751edc37302cdc6a16a006e706e6d5d28559ea079594c6f634408cd089e9",
+  "duration_s": 3.4,
+  "progress_m": 22.57291059239424,
+  "model_progress_m": 8.215838672987296,
+  "synthetic_render": true,
+  "benchmark_eligible": false,
+  "benchmark_comparable": false,
+  "case_controls": {
+    "seed": 41,
+    "map": "Town01_Opt",
+    "weather": "CloudyNoon",
+    "scenario": "lead",
+    "reference_actor": "Stopped lead vehicle",
+    "requested_handoff_speed_mps": 3.0,
+    "observed_handoff_speed_mps": 2.9912567138671875,
+    "rolling_history": "steady",
+    "warmup_s": 4.8,
+    "tracker": "calibrated-v2",
+    "control_dt_s": 0.1
+  },
+  "log_url": "./media/waymo-research-pilot/report.json",
+  "report_url": "./media/waymo-research-pilot/README.md",
+  "notice_url": "./media/waymo-research-pilot/NOTICE.md",
+  "agreement_url": "./media/waymo-research-pilot/WAYMO_DATASET_AGREEMENT.txt"
+}

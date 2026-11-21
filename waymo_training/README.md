@@ -2,9 +2,11 @@
 
 This offline research workflow trains an independent predictor on recorded Waymo camera, ego-history, and routing data from the Waymo Open Dataset End-to-End Driving v1.0.0. It predicts 20 future ego waypoints over five seconds. The pilot uses Waymo data exclusively. Keep records and feature caches in private runtime storage and treat checkpoints as restricted research artifacts under [Waymo's non-commercial terms](NOTICE.md).
 
+The completed Colab pilot evaluated 371 windows from 220 held-out Waymo validation segments. History and routing alone achieved 1.780 m ADE, with 1.808 m for the three-camera model and 2.984 m for constant velocity. [Pilot results and simulator transfer checks](RESULTS.md)
+
 ## Run in Google Colab
 
-1. Open [ADO_Waymo_Colab.ipynb](ADO_Waymo_Colab.ipynb) and connect a **GPU** runtime. Use the Google account with access to the Waymo dataset when authorizing Cloud Storage. The notebook's `google.colab.auth.authenticate_user()` supplies credentials inside the runtime. [Waymo access and terms](https://waymo.com/open/terms/) · [Colab Cloud Storage example](https://colab.research.google.com/notebooks/io.ipynb)
+1. Open the [training notebook in Colab](https://colab.research.google.com/github/yafi-s/ADO/blob/2976891ae4a0a8e3917c4f1c2be8ecb32c599a2b/waymo_training/ADO_Waymo_Colab.ipynb) and connect a **GPU** runtime. Use the Google account with access to the Waymo dataset when authorizing Cloud Storage. The notebook's `google.colab.auth.authenticate_user()` supplies credentials inside the runtime. [Waymo access and terms](https://waymo.com/open/terms/) · [Colab Cloud Storage example](https://colab.research.google.com/notebooks/io.ipynb)
 2. Stage the sampled data directly from Waymo Cloud Storage into the Colab runtime. The extractor validates the TFRecord checksums and writes compact feature shards from complete examples. It records source object generations and hashes in `/content/ado-data/manifest.json`. Train after extraction finishes so a repeat starts with the same data.
 3. Use a private Google Drive folder for checkpoints if the run must survive the Colab runtime ending. Keep temporary records and feature files under `/content`. Recreate the same feature set before resuming a checkpoint in a new runtime.
 
@@ -17,6 +19,14 @@ python -m waymo_training.evaluate --features /content/ado-data/features --run /c
 ```
 
 Training also runs evaluation. To resume, use the original feature snapshot, package versions, training options, and output directory with `--resume`. Preserve the full run folder for resuming, including its `resume/` state. Keep the resulting `config.json`, `training_curve.json`, `evaluation.json`, and checkpoint files together with the [data and model notice](NOTICE.md).
+
+## Play a private CARLA transfer recording
+
+From the research branch checkout, point the replay launcher to the private simulator results folder containing `report.json`. The viewer serves the recording on this computer. Press Ctrl+C in the terminal to stop it.
+
+```powershell
+python -m waymo_training.replay --results "A:\path\to\private-transfer-results" --open-browser
+```
 
 ## Dataset and targets
 
