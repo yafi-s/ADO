@@ -95,7 +95,7 @@ def main():
     if args.case=="unmatched":
         example=metrics["evidence"]["unmatched_current_examples"][args.example]
         chosen=dict(example["example"],display_id=example["display_id"],camera_label=example["example"]["camera_class"])
-        residual=f"nearest registered actor {chosen['nearest']['distance_m']:.2f} m"
+        residual=f"nearest scored road user {chosen['nearest']['distance_m']:.2f} m"
     else:
         chosen=metrics["evidence"][args.case]
         residual=f"{chosen['reference_residual_m']:.2f} m from actor origin"

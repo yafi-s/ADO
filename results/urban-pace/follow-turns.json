@@ -223,5 +223,197 @@
         "max": 25.923
       }
     }
+  },
+  "installed_replay": {
+    "verified_kinematic_joins": 3354,
+    "pack_sha256": "d38b98a40cf165058ec86a5cee5b8fb4b318d3853caa9762603f2fe9699ad956",
+    "file": "web/media/urban-pace/replay-pack.json.gz"
+  },
+  "browser_check": {
+    "default": {
+      "home": "/",
+      "query": "",
+      "run": "urban-pace",
+      "view": "follow",
+      "model": true,
+      "canvas": true,
+      "source": "recorded",
+      "camera": "chase"
+    },
+    "turn_paused": {
+      "index": 838,
+      "frame": 3050,
+      "native": 3050,
+      "f": 0,
+      "c": 0,
+      "paused": true
+    },
+    "turn_playing": {
+      "index": 838,
+      "frame": 3050,
+      "native": 3050,
+      "f": 0,
+      "c": 0.5619999999999923,
+      "paused": false
+    },
+    "turn_rewound": {
+      "index": 836,
+      "frame": 3048,
+      "native": 3048,
+      "f": 0,
+      "c": 0,
+      "paused": true
+    },
+    "inspector_native_video_step": [
+      {
+        "control": "initial",
+        "native_frame": 3460,
+        "decoded_s": 124.8
+      },
+      {
+        "control": "next",
+        "native_frame": 3461,
+        "decoded_s": 124.9
+      },
+      {
+        "control": "prev",
+        "native_frame": 3460,
+        "decoded_s": 124.8
+      },
+      {
+        "control": "prev",
+        "native_frame": 3459,
+        "decoded_s": 124.7
+      },
+      {
+        "control": "next",
+        "native_frame": 3460,
+        "decoded_s": 124.8
+      }
+    ],
+    "results_rows": 12,
+    "results_links": [
+      {
+        "label": "Watch the drive",
+        "path": "/?run=urban-pace",
+        "local_http_status": 200
+      },
+      {
+        "label": "Inspect frames",
+        "path": "/inspect.html?run=urban-pace",
+        "local_http_status": 200
+      },
+      {
+        "label": "Speed traces",
+        "tag_target": "results/urban-pace/speed-traces.png",
+        "exists_in_release_tree": true
+      },
+      {
+        "label": "Study",
+        "tag_target": "results/city-pace/README.md",
+        "exists_in_release_tree": true
+      },
+      {
+        "label": "Sign test",
+        "tag_target": "results/city-pace/signed-transition/with-preview/speeds.json",
+        "exists_in_release_tree": true
+      },
+      {
+        "label": "Blocked lane",
+        "path": "/media/workzone-tests/closed-then-open.mp4",
+        "local_http_status": 200
+      },
+      {
+        "label": "Wet and curbside controls",
+        "tag_target": "results/workzone-stop/README.md",
+        "exists_in_release_tree": true
+      },
+      {
+        "label": "Inspect the two boards",
+        "path": "/inspect.html?run=urban-pace&frame=3460&camera=front",
+        "local_http_status": 200
+      },
+      {
+        "label": "Native board evidence",
+        "tag_target": "results/barrier-recognition/hero-journey.json",
+        "exists_in_release_tree": true
+      },
+      {
+        "label": "Chain tests and limits",
+        "tag_target": "results/barrier-recognition/README.md",
+        "exists_in_release_tree": true
+      },
+      {
+        "label": "Native signal audit",
+        "tag_target": "results/surround-city/signal-reader-transition.md",
+        "exists_in_release_tree": true
+      },
+      {
+        "label": "Watch a featured turn",
+        "path": "/?run=urban-pace&at=61.3",
+        "local_http_status": 200
+      },
+      {
+        "label": "Turn measurements",
+        "tag_target": "results/urban-pace/follow-turns.md",
+        "exists_in_release_tree": true
+      },
+      {
+        "label": "Same-tape comparison",
+        "tag_target": "results/perception/object-continuity/README.md",
+        "exists_in_release_tree": true
+      },
+      {
+        "label": "Featured drive audit",
+        "tag_target": "results/urban-pace/perception.json",
+        "exists_in_release_tree": true
+      },
+      {
+        "label": "Second-road scores and videos",
+        "tag_target": "results/tactical-pass/v04-road67/README.md",
+        "exists_in_release_tree": true
+      },
+      {
+        "label": "Cases and limitations",
+        "tag_target": "results/town01-yield-gated-v04/README.md",
+        "exists_in_release_tree": true
+      },
+      {
+        "label": "Paired research trials",
+        "tag_target": "waymo_training/CARLA_SPEED_CALIBRATION.md",
+        "exists_in_release_tree": true
+      }
+    ],
+    "page_errors": []
+  },
+  "screenshot": {
+    "file": "docs/media/urban-pace.png",
+    "sha256": "ead100bb4b8825a18ca5fd4c78dcdb0cb9adf6d97e5901bcc5516511bff1df84",
+    "pixels": [
+      1440,
+      900
+    ],
+    "native_frame": 3460,
+    "media_time_s": 124.8,
+    "native_camera": "front",
+    "track": 104,
+    "native_actor": 617,
+    "planar_track_range_m": 5.685,
+    "sensor_position_error_m": 0.134,
+    "scene_ego_xyz": [
+      135.27,
+      2.09,
+      193.19
+    ],
+    "acquisition_xyz": [
+      135.27,
+      2.09,
+      193.19
+    ],
+    "rendered_barrier_ids": [
+      104,
+      108
+    ],
+    "selected_camera_boxes": 1
   }
 }

@@ -1,0 +1,159 @@
+{
+  "checks": [
+    {
+      "test": "City drive",
+      "result": "1.42 km in 335.4 simulated seconds. 11/11 encounters handled, 0 contacts and 0 traffic violations.",
+      "evidence": [
+        {
+          "label": "Watch the drive",
+          "url": "./?run=urban-pace"
+        },
+        {
+          "label": "Inspect frames",
+          "url": "./inspect.html?run=urban-pace"
+        }
+      ]
+    },
+    {
+      "test": "Cruising pace",
+      "result": "Median speed on the empty boulevard rose from 28.4 to 39.6 km/h. Standard deviation fell from 3.37 to 1.75 km/h. Clear-straight median in the featured drive was 29.7 km/h across all speed zones.",
+      "evidence": [
+        {
+          "label": "Speed traces",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/urban-pace/speed-traces.png"
+        },
+        {
+          "label": "Study",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/city-pace/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Lower speed limit",
+      "result": "Began slowing 31.4 m upstream and entered the 30 km/h zone at 30.16 km/h in a matched native test.",
+      "evidence": [
+        {
+          "label": "Sign test",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/city-pace/signed-transition/with-preview/speeds.json"
+        }
+      ]
+    },
+    {
+      "test": "Stopping and restarting",
+      "result": "Stopped 9.9 s behind the board, then reached 28.7 km/h. The wet test also held for 9.9 s. Together the curbside controls recorded 0 s stopped on approach.",
+      "evidence": [
+        {
+          "label": "Blocked lane",
+          "url": "./media/workzone-tests/closed-then-open.mp4"
+        },
+        {
+          "label": "Wet and curbside controls",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/workzone-stop/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Striped boards",
+      "result": "12/12 held-out board exposures identified, with 0 false detections across 48 controls. In the featured drive, 153 of 155 qualified fresh board measurements matched staged or mapped boards within 0.65 m. The other 2 estimates landed farther from their references.",
+      "evidence": [
+        {
+          "label": "Inspect the two boards",
+          "url": "./inspect.html?run=urban-pace&frame=3460&camera=front"
+        },
+        {
+          "label": "Native board evidence",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/barrier-recognition/hero-journey.json"
+        }
+      ]
+    },
+    {
+      "test": "Post-and-chain display",
+      "result": "9/18 linked-chain exposures had raw support in the independent High test, and the final display retained 6/18. The detector made 0 false calls across 126 controls. On the featured drive, 28 proposals produced 0 visible chain symbols.",
+      "evidence": [
+        {
+          "label": "Chain tests and limits",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/barrier-recognition/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Signal colors",
+      "result": "On the same live RGB, wrong colors fell from 3 to 0 and correct colors from 2,570 to 2,057. The revised display left 16,328 head observations neutral and confirmed green at 4.0 s versus 3.6 s. The separate 25 m test still gave 38 wrong colors in 72 head observations.",
+      "evidence": [
+        {
+          "label": "Native signal audit",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/surround-city/signal-reader-transition.md"
+        }
+      ]
+    },
+    {
+      "test": "Follow camera on turns",
+      "result": "Across 8 turns in the featured drive, the 95th-percentile heading error fell from 8.39° to 0.62°. Fitted lag fell from 333 to 0 ms at 16.7 ms resolution. All 3,354 native exposures aligned.",
+      "evidence": [
+        {
+          "label": "Watch a featured turn",
+          "url": "./?run=urban-pace&at=61.3"
+        },
+        {
+          "label": "Turn measurements",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/urban-pace/follow-turns.md"
+        }
+      ]
+    },
+    {
+      "test": "Object continuity",
+      "result": "On the identical v0.3 tape including registered parked vehicles, matched drawings increased from 2,273 to 2,350. Unmatched drawings fell from 2,025 to 1,722. The featured drive matched 2,505 of 4,565 nearby actor-frames, including registered parked vehicles.",
+      "evidence": [
+        {
+          "label": "Same-tape comparison",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/perception/object-continuity/README.md"
+        },
+        {
+          "label": "Featured drive audit",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/urban-pace/perception.json"
+        }
+      ]
+    },
+    {
+      "test": "Cyclist display",
+      "result": "The featured drive drew the bicycle correctly in 78/239 frames within 35 m. Duplicate person/bicycle drawings fell from 71 frames to 0 on the same recording.",
+      "evidence": [
+        {
+          "label": "Cyclist and range evidence",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/perception/cycle-range-v04/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Passing on a second road",
+      "result": "3/3 cases passed on a second configured Town03 corridor. The cases tested a clear lane, an occupied lane and a no-lead control across 308 frames. Both passing corridors use configured straight lanes with legal lane changes.",
+      "evidence": [
+        {
+          "label": "Second-road scores and videos",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/tactical-pass/v04-road67/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Yield and crossing failures",
+      "result": "6/6 previous failures, 4/4 preserved controls and 6/6 new Town01 challenges finished cleanly. The interactive launcher finished 2/2 named trips cleanly.",
+      "evidence": [
+        {
+          "label": "Cases and limitations",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/town01-yield-gated-v04/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Waymo forecast transfer",
+      "result": "In 8 separate native research runs on one Town01 seed, CARLA calibration finished 4/4 cases cleanly and calibration with the Waymo forecast finished 4/4.",
+      "evidence": [
+        {
+          "label": "Paired research trials",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/waymo_training/CARLA_SPEED_CALIBRATION.md"
+        }
+      ]
+    }
+  ],
+  "scope": "The city course, configured passing corridors and named Town01 cases are controlled simulator tests. The evidence covers those routes and fixtures. Thin chains, uncertain signal colors and partly hidden road users remain harder to identify."
+}
