@@ -1,0 +1,2500 @@
+{
+  "study_id": "7443f94691e62373404f0915ef3020879a75e9e7ff25c023837cefe3c6653864",
+  "stage": "regression",
+  "completed_drives": 100,
+  "expected_drives": 100,
+  "complete": true,
+  "all_pairs_verified": true,
+  "baseline_source": "published_v0.1",
+  "arms": {
+    "baseline": {
+      "drives": 100,
+      "clean": 70,
+      "unique_layouts": 39,
+      "outcomes": {
+        "complete": 72,
+        "timeout": 17,
+        "lane_departure": 9,
+        "collision": 2
+      },
+      "contacts": 2,
+      "yield_breaches": 7,
+      "red_breaches": 0
+    },
+    "candidate": {
+      "drives": 100,
+      "clean": 97,
+      "unique_layouts": 39,
+      "outcomes": {
+        "complete": 99,
+        "collision": 1
+      },
+      "contacts": 1,
+      "yield_breaches": 2,
+      "red_breaches": 0
+    }
+  },
+  "by_case": {
+    "pedestrian": {
+      "baseline": {
+        "drives": 10,
+        "clean": 9,
+        "unique_layouts": 9,
+        "outcomes": {
+          "complete": 9,
+          "timeout": 1
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      },
+      "candidate": {
+        "drives": 10,
+        "clean": 10,
+        "unique_layouts": 9,
+        "outcomes": {
+          "complete": 10
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      }
+    },
+    "pedestrian-delayed": {
+      "baseline": {
+        "drives": 10,
+        "clean": 7,
+        "unique_layouts": 9,
+        "outcomes": {
+          "complete": 7,
+          "collision": 2,
+          "timeout": 1
+        },
+        "contacts": 2,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      },
+      "candidate": {
+        "drives": 10,
+        "clean": 9,
+        "unique_layouts": 9,
+        "outcomes": {
+          "complete": 9,
+          "collision": 1
+        },
+        "contacts": 1,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      }
+    },
+    "lead": {
+      "baseline": {
+        "drives": 10,
+        "clean": 9,
+        "unique_layouts": 9,
+        "outcomes": {
+          "complete": 9,
+          "timeout": 1
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      },
+      "candidate": {
+        "drives": 10,
+        "clean": 10,
+        "unique_layouts": 9,
+        "outcomes": {
+          "complete": 10
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      }
+    },
+    "braking": {
+      "baseline": {
+        "drives": 10,
+        "clean": 10,
+        "unique_layouts": 9,
+        "outcomes": {
+          "complete": 10
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      },
+      "candidate": {
+        "drives": 10,
+        "clean": 10,
+        "unique_layouts": 9,
+        "outcomes": {
+          "complete": 10
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      }
+    },
+    "occluded": {
+      "baseline": {
+        "drives": 10,
+        "clean": 2,
+        "unique_layouts": 10,
+        "outcomes": {
+          "timeout": 8,
+          "complete": 2
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      },
+      "candidate": {
+        "drives": 10,
+        "clean": 10,
+        "unique_layouts": 10,
+        "outcomes": {
+          "complete": 10
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      }
+    },
+    "signal": {
+      "baseline": {
+        "drives": 10,
+        "clean": 10,
+        "unique_layouts": 9,
+        "outcomes": {
+          "complete": 10
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      },
+      "candidate": {
+        "drives": 10,
+        "clean": 10,
+        "unique_layouts": 9,
+        "outcomes": {
+          "complete": 10
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      }
+    },
+    "left": {
+      "baseline": {
+        "drives": 10,
+        "clean": 3,
+        "unique_layouts": 7,
+        "outcomes": {
+          "complete": 5,
+          "lane_departure": 5
+        },
+        "contacts": 0,
+        "yield_breaches": 7,
+        "red_breaches": 0
+      },
+      "candidate": {
+        "drives": 10,
+        "clean": 8,
+        "unique_layouts": 7,
+        "outcomes": {
+          "complete": 10
+        },
+        "contacts": 0,
+        "yield_breaches": 2,
+        "red_breaches": 0
+      }
+    },
+    "turn": {
+      "baseline": {
+        "drives": 10,
+        "clean": 5,
+        "unique_layouts": 10,
+        "outcomes": {
+          "lane_departure": 1,
+          "timeout": 4,
+          "complete": 5
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      },
+      "candidate": {
+        "drives": 10,
+        "clean": 10,
+        "unique_layouts": 10,
+        "outcomes": {
+          "complete": 10
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      }
+    },
+    "clear": {
+      "baseline": {
+        "drives": 10,
+        "clean": 9,
+        "unique_layouts": 9,
+        "outcomes": {
+          "complete": 9,
+          "timeout": 1
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      },
+      "candidate": {
+        "drives": 10,
+        "clean": 10,
+        "unique_layouts": 9,
+        "outcomes": {
+          "complete": 10
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      }
+    },
+    "trip": {
+      "baseline": {
+        "drives": 10,
+        "clean": 6,
+        "unique_layouts": 2,
+        "outcomes": {
+          "timeout": 1,
+          "complete": 6,
+          "lane_departure": 3
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      },
+      "candidate": {
+        "drives": 10,
+        "clean": 10,
+        "unique_layouts": 2,
+        "outcomes": {
+          "complete": 10
+        },
+        "contacts": 0,
+        "yield_breaches": 0,
+        "red_breaches": 0
+      }
+    }
+  },
+  "matched_pairs": 100,
+  "paired_clean": {
+    "both_clean": 70,
+    "candidate_only": 27,
+    "neither_clean": 3
+  },
+  "setup_mismatches": [],
+  "cases": [
+    {
+      "seed": 101,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "route_id": "heldout:1431749066934380702:6890067477783345005",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "route_id": "heldout:1431749066934380702:6890067477783345005",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "lead",
+      "policy": "fusion",
+      "route_id": "heldout:1431749066934380702:6890067477783345005",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "braking",
+      "policy": "fusion",
+      "route_id": "heldout:1431749066934380702:6890067477783345005",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "route_id": "heldout:6013992302381433855:137950524674576145",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 101,
+      "case_id": "signal",
+      "policy": "fusion",
+      "route_id": "heldout:8771244164543662497:6726054496240402774",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "left",
+      "policy": "fusion",
+      "route_id": "heldout:15165477045396695810:11051458094771975564",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "turn",
+      "policy": "fusion",
+      "route_id": "heldout:11033606218228336222:8457060931293590350",
+      "outcome": "lane_departure",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 101,
+      "case_id": "clear",
+      "policy": "fusion",
+      "route_id": "heldout:1431749066934380702:6890067477783345005",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "trip",
+      "policy": "fusion",
+      "route_id": "heldout:6123726579003061302:4225981044877295467",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 102,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "route_id": "heldout:8609243555562322251:6893049740187721589",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "route_id": "heldout:8609243555562322251:6893049740187721589",
+      "outcome": "collision",
+      "collision_events": 1,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 102,
+      "case_id": "lead",
+      "policy": "fusion",
+      "route_id": "heldout:8609243555562322251:6893049740187721589",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "braking",
+      "policy": "fusion",
+      "route_id": "heldout:8609243555562322251:6893049740187721589",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "route_id": "heldout:8609243555562322251:6893049740187721589",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 102,
+      "case_id": "signal",
+      "policy": "fusion",
+      "route_id": "heldout:14335719676872571408:16082771918683144725",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "left",
+      "policy": "fusion",
+      "route_id": "heldout:14335719676872571408:17346985259630670897",
+      "outcome": "lane_departure",
+      "collision_events": 0,
+      "yield_violations": 1,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 102,
+      "case_id": "turn",
+      "policy": "fusion",
+      "route_id": "heldout:17843085584433959458:8981245619524112079",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 102,
+      "case_id": "clear",
+      "policy": "fusion",
+      "route_id": "heldout:8609243555562322251:6893049740187721589",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "trip",
+      "policy": "fusion",
+      "route_id": "heldout:18353354934416032283:5678142788876304865",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "lead",
+      "policy": "fusion",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "braking",
+      "policy": "fusion",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 103,
+      "case_id": "signal",
+      "policy": "fusion",
+      "route_id": "heldout:6305078056545050282:16772634573074031688",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "left",
+      "policy": "fusion",
+      "route_id": "heldout:2394027140967327237:11206238115112060158",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "turn",
+      "policy": "fusion",
+      "route_id": "heldout:10968479669724531040:6291452129380791442",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 103,
+      "case_id": "clear",
+      "policy": "fusion",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "trip",
+      "policy": "fusion",
+      "route_id": "heldout:6123726579003061302:4225981044877295467",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "outcome": "collision",
+      "collision_events": 1,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 104,
+      "case_id": "lead",
+      "policy": "fusion",
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "braking",
+      "policy": "fusion",
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "signal",
+      "policy": "fusion",
+      "route_id": "heldout:13290280297253767684:12152096039829774728",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "left",
+      "policy": "fusion",
+      "route_id": "heldout:13290280297253767684:9027554915029637620",
+      "outcome": "lane_departure",
+      "collision_events": 0,
+      "yield_violations": 1,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 104,
+      "case_id": "turn",
+      "policy": "fusion",
+      "route_id": "heldout:3775805030958742715:5229681167277143984",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 104,
+      "case_id": "clear",
+      "policy": "fusion",
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "trip",
+      "policy": "fusion",
+      "route_id": "heldout:18353354934416032283:5678142788876304865",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "route_id": "heldout:18122705760349346704:6954154144916523120",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "route_id": "heldout:18122705760349346704:6954154144916523120",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "lead",
+      "policy": "fusion",
+      "route_id": "heldout:18122705760349346704:6954154144916523120",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "braking",
+      "policy": "fusion",
+      "route_id": "heldout:18122705760349346704:6954154144916523120",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "route_id": "heldout:18122705760349346704:6954154144916523120",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 105,
+      "case_id": "signal",
+      "policy": "fusion",
+      "route_id": "heldout:18012748355327883017:13763684751430640580",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "left",
+      "policy": "fusion",
+      "route_id": "heldout:8972579032256376029:60680105972043958",
+      "outcome": "lane_departure",
+      "collision_events": 0,
+      "yield_violations": 1,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 105,
+      "case_id": "turn",
+      "policy": "fusion",
+      "route_id": "heldout:16363445569783200988:3509223860528515696",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "clear",
+      "policy": "fusion",
+      "route_id": "heldout:18122705760349346704:6954154144916523120",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "trip",
+      "policy": "fusion",
+      "route_id": "heldout:6123726579003061302:4225981044877295467",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "route_id": "heldout:2394608048043951155:15802686155651923900",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "route_id": "heldout:2394608048043951155:15802686155651923900",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "lead",
+      "policy": "fusion",
+      "route_id": "heldout:2394608048043951155:15802686155651923900",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "braking",
+      "policy": "fusion",
+      "route_id": "heldout:2394608048043951155:15802686155651923900",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "route_id": "heldout:2394608048043951155:15802686155651923900",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 106,
+      "case_id": "signal",
+      "policy": "fusion",
+      "route_id": "heldout:8771244164543662497:6726054496240402774",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "left",
+      "policy": "fusion",
+      "route_id": "heldout:15165477045396695810:11051458094771975564",
+      "outcome": "lane_departure",
+      "collision_events": 0,
+      "yield_violations": 1,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 106,
+      "case_id": "turn",
+      "policy": "fusion",
+      "route_id": "heldout:15165477045396695810:11051458094771975564",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "clear",
+      "policy": "fusion",
+      "route_id": "heldout:2394608048043951155:15802686155651923900",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "trip",
+      "policy": "fusion",
+      "route_id": "heldout:18353354934416032283:5678142788876304865",
+      "outcome": "lane_departure",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 107,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "route_id": "heldout:17484804139041673086:9321886293265984588",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "route_id": "heldout:17484804139041673086:9321886293265984588",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "lead",
+      "policy": "fusion",
+      "route_id": "heldout:17484804139041673086:9321886293265984588",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "braking",
+      "policy": "fusion",
+      "route_id": "heldout:17484804139041673086:9321886293265984588",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "route_id": "heldout:5210720291671832597:9520244292474982757",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 107,
+      "case_id": "signal",
+      "policy": "fusion",
+      "route_id": "heldout:15165477045396695810:1922814357302797920",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "left",
+      "policy": "fusion",
+      "route_id": "heldout:2394027140967327237:11206238115112060158",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 1,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 107,
+      "case_id": "turn",
+      "policy": "fusion",
+      "route_id": "heldout:8771244164543662497:15019529574963224255",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "clear",
+      "policy": "fusion",
+      "route_id": "heldout:17484804139041673086:9321886293265984588",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "trip",
+      "policy": "fusion",
+      "route_id": "heldout:6123726579003061302:4225981044877295467",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 108,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "route_id": "heldout:2065198176024312391:9974083575976548771",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 108,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "route_id": "heldout:2065198176024312391:9974083575976548771",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 108,
+      "case_id": "lead",
+      "policy": "fusion",
+      "route_id": "heldout:2065198176024312391:9974083575976548771",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 108,
+      "case_id": "braking",
+      "policy": "fusion",
+      "route_id": "heldout:2065198176024312391:9974083575976548771",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 108,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "route_id": "heldout:2065198176024312391:9974083575976548771",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 108,
+      "case_id": "signal",
+      "policy": "fusion",
+      "route_id": "heldout:491216374199558771:2639384597782376362",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 108,
+      "case_id": "left",
+      "policy": "fusion",
+      "route_id": "heldout:12125715988933359065:17411185313824829609",
+      "outcome": "lane_departure",
+      "collision_events": 0,
+      "yield_violations": 1,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 108,
+      "case_id": "turn",
+      "policy": "fusion",
+      "route_id": "heldout:15573733801603797834:6190565125907172400",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 108,
+      "case_id": "clear",
+      "policy": "fusion",
+      "route_id": "heldout:2065198176024312391:9974083575976548771",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 108,
+      "case_id": "trip",
+      "policy": "fusion",
+      "route_id": "heldout:18353354934416032283:5678142788876304865",
+      "outcome": "lane_departure",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 109,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "lead",
+      "policy": "fusion",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "braking",
+      "policy": "fusion",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "route_id": "heldout:8096331322560460820:9692536227543461709",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "signal",
+      "policy": "fusion",
+      "route_id": "heldout:16863333859041109800:13995159303536466607",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "left",
+      "policy": "fusion",
+      "route_id": "heldout:14335719676872571408:17346985259630670897",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 1,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 109,
+      "case_id": "turn",
+      "policy": "fusion",
+      "route_id": "heldout:15884356742231034971:4720167944692428395",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "clear",
+      "policy": "fusion",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "trip",
+      "policy": "fusion",
+      "route_id": "heldout:6123726579003061302:4225981044877295467",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "route_id": "heldout:8309095434328558842:14071849576853708039",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "route_id": "heldout:8309095434328558842:14071849576853708039",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "lead",
+      "policy": "fusion",
+      "route_id": "heldout:8309095434328558842:14071849576853708039",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "braking",
+      "policy": "fusion",
+      "route_id": "heldout:8309095434328558842:14071849576853708039",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "route_id": "heldout:9157542818916884082:10811674003347673886",
+      "outcome": "timeout",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 110,
+      "case_id": "signal",
+      "policy": "fusion",
+      "route_id": "heldout:7080054139037399124:17775089527777448205",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "left",
+      "policy": "fusion",
+      "route_id": "heldout:6027282564854638798:10541787014292903516",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "turn",
+      "policy": "fusion",
+      "route_id": "heldout:6027282564854638798:10541787014292903516",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "clear",
+      "policy": "fusion",
+      "route_id": "heldout:8309095434328558842:14071849576853708039",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "trip",
+      "policy": "fusion",
+      "route_id": "heldout:18353354934416032283:5678142788876304865",
+      "outcome": "lane_departure",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 101,
+      "case_id": "pedestrian",
+      "policy": "candidate",
+      "route_id": "heldout:1431749066934380702:6890067477783345005",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "pedestrian-delayed",
+      "policy": "candidate",
+      "route_id": "heldout:1431749066934380702:6890067477783345005",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "lead",
+      "policy": "candidate",
+      "route_id": "heldout:1431749066934380702:6890067477783345005",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "braking",
+      "policy": "candidate",
+      "route_id": "heldout:1431749066934380702:6890067477783345005",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "occluded",
+      "policy": "candidate",
+      "route_id": "heldout:6013992302381433855:137950524674576145",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "signal",
+      "policy": "candidate",
+      "route_id": "heldout:8771244164543662497:6726054496240402774",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "left",
+      "policy": "candidate",
+      "route_id": "heldout:15165477045396695810:11051458094771975564",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "turn",
+      "policy": "candidate",
+      "route_id": "heldout:11033606218228336222:8457060931293590350",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "clear",
+      "policy": "candidate",
+      "route_id": "heldout:1431749066934380702:6890067477783345005",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 101,
+      "case_id": "trip",
+      "policy": "candidate",
+      "route_id": "heldout:6123726579003061302:4225981044877295467",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "pedestrian",
+      "policy": "candidate",
+      "route_id": "heldout:8609243555562322251:6893049740187721589",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "pedestrian-delayed",
+      "policy": "candidate",
+      "route_id": "heldout:8609243555562322251:6893049740187721589",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "lead",
+      "policy": "candidate",
+      "route_id": "heldout:8609243555562322251:6893049740187721589",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "braking",
+      "policy": "candidate",
+      "route_id": "heldout:8609243555562322251:6893049740187721589",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "occluded",
+      "policy": "candidate",
+      "route_id": "heldout:8609243555562322251:6893049740187721589",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "signal",
+      "policy": "candidate",
+      "route_id": "heldout:14335719676872571408:16082771918683144725",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "left",
+      "policy": "candidate",
+      "route_id": "heldout:14335719676872571408:17346985259630670897",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "turn",
+      "policy": "candidate",
+      "route_id": "heldout:17843085584433959458:8981245619524112079",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "clear",
+      "policy": "candidate",
+      "route_id": "heldout:8609243555562322251:6893049740187721589",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 102,
+      "case_id": "trip",
+      "policy": "candidate",
+      "route_id": "heldout:18353354934416032283:5678142788876304865",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "pedestrian",
+      "policy": "candidate",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "pedestrian-delayed",
+      "policy": "candidate",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "lead",
+      "policy": "candidate",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "braking",
+      "policy": "candidate",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "occluded",
+      "policy": "candidate",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "signal",
+      "policy": "candidate",
+      "route_id": "heldout:6305078056545050282:16772634573074031688",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "left",
+      "policy": "candidate",
+      "route_id": "heldout:2394027140967327237:11206238115112060158",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "turn",
+      "policy": "candidate",
+      "route_id": "heldout:10968479669724531040:6291452129380791442",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "clear",
+      "policy": "candidate",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 103,
+      "case_id": "trip",
+      "policy": "candidate",
+      "route_id": "heldout:6123726579003061302:4225981044877295467",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "pedestrian",
+      "policy": "candidate",
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "pedestrian-delayed",
+      "policy": "candidate",
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "outcome": "collision",
+      "collision_events": 1,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 104,
+      "case_id": "lead",
+      "policy": "candidate",
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "braking",
+      "policy": "candidate",
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "occluded",
+      "policy": "candidate",
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "signal",
+      "policy": "candidate",
+      "route_id": "heldout:13290280297253767684:12152096039829774728",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "left",
+      "policy": "candidate",
+      "route_id": "heldout:13290280297253767684:9027554915029637620",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "turn",
+      "policy": "candidate",
+      "route_id": "heldout:3775805030958742715:5229681167277143984",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "clear",
+      "policy": "candidate",
+      "route_id": "heldout:15392546864345945027:7108457441938512353",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 104,
+      "case_id": "trip",
+      "policy": "candidate",
+      "route_id": "heldout:18353354934416032283:5678142788876304865",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "pedestrian",
+      "policy": "candidate",
+      "route_id": "heldout:18122705760349346704:6954154144916523120",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "pedestrian-delayed",
+      "policy": "candidate",
+      "route_id": "heldout:18122705760349346704:6954154144916523120",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "lead",
+      "policy": "candidate",
+      "route_id": "heldout:18122705760349346704:6954154144916523120",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "braking",
+      "policy": "candidate",
+      "route_id": "heldout:18122705760349346704:6954154144916523120",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "occluded",
+      "policy": "candidate",
+      "route_id": "heldout:18122705760349346704:6954154144916523120",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "signal",
+      "policy": "candidate",
+      "route_id": "heldout:18012748355327883017:13763684751430640580",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "left",
+      "policy": "candidate",
+      "route_id": "heldout:8972579032256376029:60680105972043958",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 1,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 105,
+      "case_id": "turn",
+      "policy": "candidate",
+      "route_id": "heldout:16363445569783200988:3509223860528515696",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "clear",
+      "policy": "candidate",
+      "route_id": "heldout:18122705760349346704:6954154144916523120",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 105,
+      "case_id": "trip",
+      "policy": "candidate",
+      "route_id": "heldout:6123726579003061302:4225981044877295467",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "pedestrian",
+      "policy": "candidate",
+      "route_id": "heldout:2394608048043951155:15802686155651923900",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "pedestrian-delayed",
+      "policy": "candidate",
+      "route_id": "heldout:2394608048043951155:15802686155651923900",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "lead",
+      "policy": "candidate",
+      "route_id": "heldout:2394608048043951155:15802686155651923900",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "braking",
+      "policy": "candidate",
+      "route_id": "heldout:2394608048043951155:15802686155651923900",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "occluded",
+      "policy": "candidate",
+      "route_id": "heldout:2394608048043951155:15802686155651923900",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "signal",
+      "policy": "candidate",
+      "route_id": "heldout:8771244164543662497:6726054496240402774",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "left",
+      "policy": "candidate",
+      "route_id": "heldout:15165477045396695810:11051458094771975564",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "turn",
+      "policy": "candidate",
+      "route_id": "heldout:15165477045396695810:11051458094771975564",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "clear",
+      "policy": "candidate",
+      "route_id": "heldout:2394608048043951155:15802686155651923900",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 106,
+      "case_id": "trip",
+      "policy": "candidate",
+      "route_id": "heldout:18353354934416032283:5678142788876304865",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "pedestrian",
+      "policy": "candidate",
+      "route_id": "heldout:17484804139041673086:9321886293265984588",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "pedestrian-delayed",
+      "policy": "candidate",
+      "route_id": "heldout:17484804139041673086:9321886293265984588",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "lead",
+      "policy": "candidate",
+      "route_id": "heldout:17484804139041673086:9321886293265984588",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "braking",
+      "policy": "candidate",
+      "route_id": "heldout:17484804139041673086:9321886293265984588",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "occluded",
+      "policy": "candidate",
+      "route_id": "heldout:5210720291671832597:9520244292474982757",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "signal",
+      "policy": "candidate",
+      "route_id": "heldout:15165477045396695810:1922814357302797920",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "left",
+      "policy": "candidate",
+      "route_id": "heldout:2394027140967327237:11206238115112060158",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 1,
+      "red_light_violations": 0,
+      "clean": false
+    },
+    {
+      "seed": 107,
+      "case_id": "turn",
+      "policy": "candidate",
+      "route_id": "heldout:8771244164543662497:15019529574963224255",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "clear",
+      "policy": "candidate",
+      "route_id": "heldout:17484804139041673086:9321886293265984588",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 107,
+      "case_id": "trip",
+      "policy": "candidate",
+      "route_id": "heldout:6123726579003061302:4225981044877295467",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 108,
+      "case_id": "pedestrian",
+      "policy": "candidate",
+      "route_id": "heldout:2065198176024312391:9974083575976548771",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 108,
+      "case_id": "pedestrian-delayed",
+      "policy": "candidate",
+      "route_id": "heldout:2065198176024312391:9974083575976548771",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 108,
+      "case_id": "lead",
+      "policy": "candidate",
+      "route_id": "heldout:2065198176024312391:9974083575976548771",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 108,
+      "case_id": "braking",
+      "policy": "candidate",
+      "route_id": "heldout:2065198176024312391:9974083575976548771",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 108,
+      "case_id": "occluded",
+      "policy": "candidate",
+      "route_id": "heldout:2065198176024312391:9974083575976548771",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 108,
+      "case_id": "signal",
+      "policy": "candidate",
+      "route_id": "heldout:491216374199558771:2639384597782376362",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 108,
+      "case_id": "left",
+      "policy": "candidate",
+      "route_id": "heldout:12125715988933359065:17411185313824829609",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 108,
+      "case_id": "turn",
+      "policy": "candidate",
+      "route_id": "heldout:15573733801603797834:6190565125907172400",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 108,
+      "case_id": "clear",
+      "policy": "candidate",
+      "route_id": "heldout:2065198176024312391:9974083575976548771",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 108,
+      "case_id": "trip",
+      "policy": "candidate",
+      "route_id": "heldout:18353354934416032283:5678142788876304865",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "pedestrian",
+      "policy": "candidate",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "pedestrian-delayed",
+      "policy": "candidate",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "lead",
+      "policy": "candidate",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "braking",
+      "policy": "candidate",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "occluded",
+      "policy": "candidate",
+      "route_id": "heldout:8096331322560460820:9692536227543461709",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "signal",
+      "policy": "candidate",
+      "route_id": "heldout:16863333859041109800:13995159303536466607",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "left",
+      "policy": "candidate",
+      "route_id": "heldout:14335719676872571408:17346985259630670897",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "turn",
+      "policy": "candidate",
+      "route_id": "heldout:15884356742231034971:4720167944692428395",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "clear",
+      "policy": "candidate",
+      "route_id": "heldout:18112650545601347661:1433268689939991849",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 109,
+      "case_id": "trip",
+      "policy": "candidate",
+      "route_id": "heldout:6123726579003061302:4225981044877295467",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "pedestrian",
+      "policy": "candidate",
+      "route_id": "heldout:8309095434328558842:14071849576853708039",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "pedestrian-delayed",
+      "policy": "candidate",
+      "route_id": "heldout:8309095434328558842:14071849576853708039",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "lead",
+      "policy": "candidate",
+      "route_id": "heldout:8309095434328558842:14071849576853708039",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "braking",
+      "policy": "candidate",
+      "route_id": "heldout:8309095434328558842:14071849576853708039",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "occluded",
+      "policy": "candidate",
+      "route_id": "heldout:9157542818916884082:10811674003347673886",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "signal",
+      "policy": "candidate",
+      "route_id": "heldout:7080054139037399124:17775089527777448205",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "left",
+      "policy": "candidate",
+      "route_id": "heldout:6027282564854638798:10541787014292903516",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "turn",
+      "policy": "candidate",
+      "route_id": "heldout:6027282564854638798:10541787014292903516",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "clear",
+      "policy": "candidate",
+      "route_id": "heldout:8309095434328558842:14071849576853708039",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    },
+    {
+      "seed": 110,
+      "case_id": "trip",
+      "policy": "candidate",
+      "route_id": "heldout:18353354934416032283:5678142788876304865",
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "clean": true
+    }
+  ]
+}
