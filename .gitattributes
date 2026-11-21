@@ -1,3 +1,6 @@
-# Checksummed signal evidence is distributed byte-for-byte, including on Windows.
-data/signals/** -text
-results/signal-development/** -text
+# Preserve the exact bytes that the simulator, trainers and evidence publisher hashed.
+data/** -text
+models/** -text
+results/** -text
+web/logs/** -text
+web/media/** -text

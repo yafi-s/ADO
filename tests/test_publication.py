@@ -4,6 +4,7 @@ import gzip
 import json
 from pathlib import Path
 import shutil
+import struct
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
@@ -54,6 +55,83 @@ class PublicationTest(unittest.TestCase):
         self.assertEqual((build["runs"], build["checkpoints"]), ([], {}))
         for entry, (_, rel) in zip(build["evidence"], pub.COMMISSIONING_FILES):
             self.assertEqual((self.root / "web" / entry["url"]).read_bytes(), (self.root / rel).read_bytes())
+
+    def test_native_recording_matches_scored_interval(self):
+        key = "103-trip-fusion"
+        dest = self.root / "results/native-replays"
+        dest.mkdir(parents=True)
+        path = dest / f"{key}.rec"
+        town = self.producer["map"].encode()
+        with path.open("wb") as output:
+            output.write(b"\x01\x00\x0e\x00CARLA_RECORDER" + bytes(8) + struct.pack("<H", len(town)) + town)
+            for number, duration in ((1, .1), (2, -1.)):
+                output.write(struct.pack("<BIQdd", 0, 24, number, duration, (number - 1)*.1))
+                output.write(struct.pack("<BId", 20, 8, 7 + number*.1))
+        meta = dict(trial_id=key, filename=path.name, sha256=pub.fingerprint(path), bytes=path.stat().st_size,
+                    producer=self.producer, observed_start_frame=90, observed_stop_frame=92, start_elapsed_s=7,
+                    stop_elapsed_s=7.2, recorder_summary="Frames: 2\nDuration: 0.1 seconds\n")
+        pub.write_json(path.with_suffix(".json"), meta)
+        episodes = {key: dict(cohort="primary", district="heldout", producer=self.producer)}
+        links = pub.native_evidence(self.root, "v0.1.0", episodes, {key: [91, 92]}, .1)
+        self.assertEqual(len(links), 2)
+        self.assertTrue(links[0]["url"].endswith("/v0.1.0/results/native-replays/103-trip-fusion.rec"))
+        with self.assertRaisesRegex(ValueError, "misses scored"):
+            pub.native_evidence(self.root, "v0.1.0", episodes, {key: [90, 91]}, .1)
+        for change in (dict(bytes=0), dict(sha256="0"*64), dict(observed_stop_frame=99), dict(start_elapsed_s=9)):
+            pub.write_json(path.with_suffix(".json"), dict(meta, **change))
+            with self.assertRaises(ValueError):
+                pub.native_evidence(self.root, "v0.1.0", episodes, {key: [91, 92]}, .1)
+
+    def test_native_film_frame_matching_and_viewer_eligibility(self):
+        key = "103-trip-fusion"
+        logs = self.root / "logs"
+        logs.mkdir()
+        film = self.root / "web/media/recorded-trip"
+        film.mkdir(parents=True)
+        row = dict(frame=44, seed=103, policy="fusion", trial_id=key, steer=0.1)
+        with gzip.open(logs / f"{key}.jsonl.gz", "wt") as stream:
+            stream.write(json.dumps(row) + "\n")
+        shutil.copyfile(logs / f"{key}.jsonl.gz", film / "original-trace.jsonl.gz")
+        origin = dict(trial_id=key, cohort="primary", model_sha256="d"*64)
+        summary = dict(trial_id=key, policy_version=origin["model_sha256"])
+        pub.write_json(film / "original-summary.json", summary)
+        self.put("results/episodes.json", [summary])
+        meta = self.root / f"results/native-replays/{key}.json"
+        pub.write_json(meta, dict(producer=self.producer, sha256="a"*64, filename=f"{key}.rec", observed_start_frame=42))
+        video = dict(width=1920, height=1080, r_frame_rate="10/1")
+        build = dict(checkpoints={"fusion": {"sha256": origin["model_sha256"]}}, simulator=self.producer,
+                     runs=[origin], evidence=[])
+        replay = dict(row, video_index=0, video_time=0, original_frame=44, native_frame=2,
+                      tracks=[], detections=[], radar=[], lidar=[], observer_map={"ego": [1, 2, 0]})
+        pub.write_json(film / "replay.json", [replay])
+        alignment = dict(status="pose_verified", passing_windows=1, max_ego_error_m=.01,
+                         max_observer_error_m=.01, max_rotation_error_deg=.01)
+        manifest = dict(trial_id=key, additional_scored_drive=False, cohort="native_replay", original_cohort="primary",
+                        district="heldout", producer=self.producer, summary=summary, quality_requested="High",
+                        frame_period_s=.1, frames=1, first_frame=44, last_frame=44, alignment=alignment,
+                        native_recorder=dict(sha256="a"*64, metadata_sha256=pub.fingerprint(meta), filename=f"{key}.rec"))
+        (film / "poster.jpg").write_bytes(b"poster")
+        with patch.object(pub, "check_video", return_value=video):
+            for cameras in (["chase"], ["chase", "front"]):
+                for name in cameras:
+                    for ext in ("mp4", "jpg"):
+                        (film / f"{name}.{ext}").write_bytes(name.encode())
+                manifest.update(cameras=cameras, videos={name: video for name in cameras},
+                                sha256={p.name: pub.fingerprint(p) for p in film.iterdir() if p.name != "manifest.json"})
+                pub.write_json(film / "manifest.json", manifest)
+                entry = pub.native_film_entry(self.root, build, logs)
+                if len(cameras) == 1:
+                    self.assertIsNone(entry)
+                else:
+                    self.assertEqual(entry["origin_trial_id"], key)
+                    self.assertEqual(entry["trial_id"], "native-" + key)
+                    self.assertFalse(entry["benchmark_member"])
+            self.assertEqual(build["runs"], [origin])
+            pub.write_json(film / "replay.json", [dict(replay, steer=.9)])
+            manifest["sha256"]["replay.json"] = pub.fingerprint(film / "replay.json")
+            pub.write_json(film / "manifest.json", manifest)
+            with self.assertRaisesRegex(ValueError, "scored frames"):
+                pub.native_film_entry(self.root, build, logs)
 
     def fixture(self):
         digests = {}
@@ -199,16 +277,21 @@ class PublicationTest(unittest.TestCase):
         self.commissioning_files()
         _, summary, _ = self.fixture()
         media = self.root / "web/media"
+        locked_catalog = pub.read_json(media / "catalog.json")
+        locked_replay = pub.read_json(media / "replay.json")
         dest = media / "dev-crossing"
         dest.mkdir()
         for path in [*media.glob("*.mp4"), *media.glob("*.jpg")]:
-            path.rename(dest / path.name)
+            shutil.copyfile(path, dest / path.name)
         key = "dev31-crossing"
         self.put("web/media/catalog.json", [dict(trial_id=key, path="dev-crossing", cameras=list(pub.CAMERAS))])
         (self.root / "web/logs").mkdir()
-        shutil.copyfile(self.root / "models/fusion.npz", self.root / "web/logs/dev31-fusion.npz")
+        checkpoint = self.root / "web/logs/dev31-fusion.npz"
+        earlier = pub.Model.load(self.root / "models/fusion.npz")
+        earlier.mean += 1.
+        earlier.save(checkpoint)
         summary.update(seed=31, scenario="pedestrian", district="train", cohort="development",
-                       model_sha256=summary["policy_version"])
+                       model_sha256=pub.fingerprint(checkpoint))
         row = dict(frame=44, seed=31, scenario="pedestrian", policy="fusion", map="Town01_Opt", sim_time=0.0,
                    steer=0.1, throttle=0.4, brake=0, speed_mps=0.5, progress_m=summary["progress_m"])
         self.put("web/logs/dev31-crossing.json", dict(summary=summary, trace=[row]))
@@ -234,3 +317,12 @@ class PublicationTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "controls"):
             pub.publish(self.root, "v0.1.0", self.sha, development_only=True)
         self.assertEqual(build, pub.read_json(media / "build.json"))
+        self.put("web/media/dev-crossing/replay.json", [dict(row, run_id=key)])
+        self.put("web/media/replay.json", locked_replay)
+        self.put("web/media/catalog.json", locked_catalog)
+        final = self.publish()
+        self.assertEqual([r["trial_id"] for r in final["runs"]], [self.trial.trial_id])
+        self.assertEqual(final["development_runs"], build["runs"])
+        self.assertNotEqual(final["development_runs"][0]["model_sha256"], final["checkpoints"]["fusion"]["sha256"])
+        self.assertEqual([r["trial_id"] for r in pub.read_json(media / "viewer-catalog.json")],
+                         [self.trial.trial_id, key])

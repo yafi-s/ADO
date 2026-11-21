@@ -1,0 +1,338 @@
+{
+  "purpose": "Native CARLA visualization rerender of the original locked trajectory",
+  "trial_id": "103-trip-fusion",
+  "cohort": "native_replay",
+  "original_cohort": "primary",
+  "district": "heldout",
+  "additional_scored_drive": false,
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town01_Opt"
+  },
+  "quality_requested": "High",
+  "weather": "ClearSunset",
+  "original_weather": "ClearSunset",
+  "frame_period_s": 0.1,
+  "selection_note": "Selected after evaluation because the original held-out Market trip completed.",
+  "observer": {
+    "requested": {
+      "image_size_x": "1920",
+      "image_size_y": "1080",
+      "fov": "78",
+      "sensor_tick": "0",
+      "enable_postprocess_effects": "true",
+      "use_ray_tracing": "false",
+      "enable_dlss": "true",
+      "dlss_screen_percentage": "67"
+    },
+    "actor_attributes": {
+      "image_size_x": "1920",
+      "image_size_y": "1080",
+      "fov": "78",
+      "sensor_tick": "0",
+      "enable_postprocess_effects": "true",
+      "use_ray_tracing": "false",
+      "enable_dlss": "true",
+      "dlss_screen_percentage": "67"
+    },
+    "dlss_gpu_active": null,
+    "mount_vehicle_local": {
+      "x": -7.8,
+      "y": 0.55,
+      "z": 3.4,
+      "pitch": -10.5,
+      "yaw": -2.0
+    },
+    "blueprint": "sensor.camera.rgb"
+  },
+  "video": {
+    "codec_name": "h264",
+    "width": 1920,
+    "height": 1080,
+    "pix_fmt": "yuv420p",
+    "r_frame_rate": "10/1",
+    "nb_read_frames": "358"
+  },
+  "videos": {
+    "chase": {
+      "codec_name": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "10/1",
+      "nb_read_frames": "358"
+    },
+    "front": {
+      "codec_name": "h264",
+      "width": 640,
+      "height": 360,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "10/1",
+      "nb_read_frames": "358"
+    }
+  },
+  "cameras": [
+    "chase",
+    "front"
+  ],
+  "first_frame": 59369,
+  "last_frame": 59726,
+  "frames": 358,
+  "summary": {
+    "scenario": "trip",
+    "seed": 103,
+    "policy": "fusion",
+    "weather": "ClearSunset",
+    "road_id": 6,
+    "lane_id": 1,
+    "start_xy": [
+      127.62,
+      326.59
+    ],
+    "outcome": "complete",
+    "frames": 358,
+    "duration_s": 35.8,
+    "progress_m": 184.424,
+    "route_length_m": 184.707,
+    "contacts": [],
+    "collision_events": 0,
+    "max_lateral_error_m": 2.231,
+    "spawn_lateral_m": 0.3141656208483854,
+    "spawn_yaw_deg": 2.571583807830574,
+    "min_hazard_gap_m": 3.329,
+    "moving_within_1m_frames": 0,
+    "turn_direction": null,
+    "district": "heldout",
+    "destination": "market",
+    "crossing_delay_s": 0.0,
+    "camera_rendering": {
+      "requested": {
+        "rgb": "mixed",
+        "rgb_screen_percentage": 50.0,
+        "camera_ray_tracing": false,
+        "ground_truth": "native"
+      },
+      "cameras": {
+        "front": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "false",
+            "dlss_screen_percentage": "100.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "left": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        },
+        "right": {
+          "requested_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "available_attributes": [
+            "dlss_screen_percentage",
+            "enable_dlss",
+            "enable_postprocess_effects",
+            "use_ray_tracing"
+          ],
+          "actor_attributes": {
+            "use_ray_tracing": "false",
+            "enable_dlss": "true",
+            "dlss_screen_percentage": "50.0",
+            "enable_postprocess_effects": "true"
+          },
+          "attributes_match_request": true,
+          "dlss_gpu_active": null
+        }
+      }
+    },
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "background_actors": {
+      "walkers": 3,
+      "vehicles": 1
+    },
+    "sensor_configuration": "three-camera-lidar-radar",
+    "route_id": "heldout:6123726579003061302:4225981044877295467",
+    "road_ids": [
+      6,
+      24,
+      12
+    ],
+    "junction_ids": [
+      87,
+      255
+    ],
+    "event_triggered": true,
+    "event_cleared": true,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "stopped_for_hazard": true,
+    "closest_in_path_speed_mps": 0.004,
+    "wall_seconds": 24.002,
+    "case_id": "trip",
+    "trial_id": "103-trip-fusion",
+    "cohort": "primary",
+    "policy_version": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "map": "Town01_Opt",
+    "simulator_version": "1.0",
+    "producer": {
+      "server_version": "1.0",
+      "client_version": "1.0",
+      "map": "Town01_Opt"
+    },
+    "render_profile": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "data_format": 3
+  },
+  "outcome": "complete",
+  "alignment": {
+    "status": "pose_verified",
+    "position_tolerance_m": 0.035,
+    "rotation_tolerance_deg": 0.15,
+    "passing_windows": 1,
+    "best_window": 6,
+    "max_ego_error_m": 9.918216200223197e-05,
+    "max_observer_error_m": 0.0001223159736714912,
+    "max_rotation_error_deg": 0.033484319834840584,
+    "road_users": {
+      "12777": {
+        "blueprint": "vehicle.lincoln.mkz",
+        "role": "hero",
+        "frames_checked": 358,
+        "max_position_error_m": 9.679311141681572e-05
+      },
+      "12778": {
+        "blueprint": "vehicle.mini.cooper",
+        "role": "oncoming",
+        "frames_checked": 358,
+        "max_position_error_m": 7.932021005964011e-05
+      },
+      "12779": {
+        "blueprint": "walker.pedestrian.0045",
+        "role": "pedestrian",
+        "frames_checked": 358,
+        "max_position_error_m": 2.344185906072515e-05
+      },
+      "12780": {
+        "blueprint": "walker.pedestrian.0047",
+        "role": "pedestrian",
+        "frames_checked": 358,
+        "max_position_error_m": 2.517325134501038e-05
+      },
+      "12781": {
+        "blueprint": "walker.pedestrian.0032",
+        "role": "pedestrian",
+        "frames_checked": 358,
+        "max_position_error_m": 1.840593968124159e-05
+      },
+      "12782": {
+        "blueprint": "walker.pedestrian.0027",
+        "role": "pedestrian",
+        "frames_checked": 358,
+        "max_position_error_m": 2.06248327478599e-05
+      },
+      "12783": {
+        "blueprint": "vehicle.lincoln.mkz",
+        "role": "background",
+        "frames_checked": 358,
+        "max_position_error_m": 1.1429109299525068e-05
+      }
+    }
+  },
+  "replay": "replay.json",
+  "original_trace": "original-trace.jsonl.gz",
+  "original_summary": "original-summary.json",
+  "geometry": {
+    "ego_blueprint": "vehicle.lincoln.mkz",
+    "ego_box_center_extent_m": [
+      -0.006215515136722626,
+      -6.06889538623534e-15,
+      0.7632452571764589,
+      2.445985107421875,
+      0.9178230285644531,
+      0.7620594608411193
+    ],
+    "body": {
+      "expected_parts": 48,
+      "restored_parts": 48,
+      "missing_roles": []
+    }
+  },
+  "sensor_provenance": "New observations from the CARLA playback. Tracks use playback RGB, lidar and radar.",
+  "range_columns": {
+    "lidar": [
+      "ego_x_m",
+      "ego_y_m",
+      "ego_z_m"
+    ],
+    "radar": [
+      "ego_x_m",
+      "ego_y_m",
+      "radial_velocity_mps",
+      "ego_z_m"
+    ]
+  },
+  "observer_map_provenance": "Original recorded road-user positions and Town01 route waypoints.",
+  "controls": "Original trace commands at frame t were applied on tick t+1; all commands and speeds checked against native packets.",
+  "native_recorder": {
+    "filename": "103-trip-fusion.rec",
+    "sha256": "b50c31cbe13fc9a183b5a6f1098473339855fd0217d2c28a76f0ff3cf19841e8",
+    "metadata_sha256": "206562abf5f16978e064aff822bea34a84f839addbc80c71dd5b7db7a2691ae6",
+    "observed_start_frame": 59360,
+    "observed_stop_frame": 59727,
+    "replay_start_s": 0.09999000000000001,
+    "first_scored_packet": 9,
+    "last_scored_packet": 366,
+    "playback_response": "Replaying File: A:\\Waymo FSD Omniverse\\results\\native-replays\\103-trip-fusion.rec\nTotal time recorded: 36.6\nReplaying from 0.09999 s - 36.6 s (36.6 s) at 1.0x\nIgnoring Spectator camera"
+  },
+  "sha256": {
+    "chase.mp4": "ea3470ed160689f2db8e753eb1554aa5c86273a0ffeed6470c1471ca022324fd",
+    "chase.jpg": "8953508f07d872eb23a53e2b164d006e9298d78702151183fbd912345c1d6117",
+    "poster.jpg": "8953508f07d872eb23a53e2b164d006e9298d78702151183fbd912345c1d6117",
+    "replay.json": "fcbd7869c630edee1cde60f6df639f5c39784efb05fd7fdb9290aacf31accb62",
+    "original-summary.json": "4970b823137d68451dcce6a17bdf8367f39819ecb2c9b66498ffb284b6042a0e",
+    "original-trace.jsonl.gz": "c4be768fa64ffc7e5fe03290dc2595a3046d149024d4e367cb3db21f801ff90c",
+    "front.mp4": "54c6035e24720acffc9bc68b772b173410aea043b204c1db0abbdb3e5ee57fe9",
+    "front.jpg": "e5b353156cd7cdbd9e3b6ff9f121af0a5afb5eec8723f56e654ab4c0196c9f79"
+  }
+}

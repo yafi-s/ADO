@@ -1,14 +1,80 @@
 [
   {
-    "trial_id": "dev31-crossing",
-    "label": "Development \u00b7 pedestrian crossing",
-    "path": "dev-crossing",
+    "label": "Pedestrian crossing",
+    "path": "",
     "cameras": [
       "front",
       "chase",
+      "infrared",
       "left",
-      "right",
-      "infrared"
-    ]
+      "right"
+    ],
+    "trial_id": "101-pedestrian-fusion",
+    "evaluation_id": "9049ea6a3ddf7fb85f59"
+  },
+  {
+    "label": "Occluded pedestrian",
+    "path": "occluded",
+    "cameras": [
+      "front",
+      "chase",
+      "infrared",
+      "left",
+      "right"
+    ],
+    "trial_id": "101-occluded-fusion",
+    "evaluation_id": "9049ea6a3ddf7fb85f59"
+  },
+  {
+    "label": "Traffic signal",
+    "path": "signal",
+    "cameras": [
+      "front",
+      "chase",
+      "infrared",
+      "left",
+      "right"
+    ],
+    "trial_id": "101-signal-fusion",
+    "evaluation_id": "9049ea6a3ddf7fb85f59"
+  },
+  {
+    "label": "Unprotected left turn",
+    "path": "left",
+    "cameras": [
+      "front",
+      "chase",
+      "infrared",
+      "left",
+      "right"
+    ],
+    "trial_id": "101-left-fusion",
+    "evaluation_id": "9049ea6a3ddf7fb85f59"
+  },
+  {
+    "label": "Destination trip",
+    "path": "trip",
+    "cameras": [
+      "front",
+      "chase",
+      "infrared",
+      "left",
+      "right"
+    ],
+    "trial_id": "101-trip-fusion",
+    "evaluation_id": "9049ea6a3ddf7fb85f59"
+  },
+  {
+    "label": "Destination trip \u00b7 delayed crossing",
+    "path": "trip-delayed",
+    "cameras": [
+      "front",
+      "chase",
+      "infrared",
+      "left",
+      "right"
+    ],
+    "trial_id": "101-trip-delayed-fusion",
+    "evaluation_id": "9049ea6a3ddf7fb85f59"
   }
 ]

@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import re
 import shutil
+import struct
 import subprocess
 from tempfile import TemporaryDirectory
 
@@ -232,16 +233,14 @@ def recordings(media, trials, evaluation_id, frames):
     return paths
 
 
-def development(root, logs):
+def development_run(web, producer):
     key, path = "dev31-crossing", "dev-crossing"
-    web = root / "web"
     media = web / "media"
-    build = commissioning(root, logs)
     data = read_json(web / f"logs/{key}.json")
     episode, trace = data["summary"], data["trace"]
     expected = dict(seed=31, policy="fusion", scenario="pedestrian")
     require(all(episode[k] == v for k, v in expected.items()) and episode["district"] == "train"
-            and episode["cohort"] == "development" and validate_producer(episode["producer"]) == build["simulator"],
+            and episode["cohort"] == "development" and validate_producer(episode["producer"]) == producer,
             "Unexpected development drive, cohort or producer")
     digest = episode["model_sha256"]
     weights = web / "logs/dev31-fusion.npz"
@@ -250,12 +249,9 @@ def development(root, logs):
     require(frames and all(type(f) is int for f in frames) and frames == sorted(set(frames))
             and len(frames) == episode["frames"] and round(len(frames) * 0.1, 2) == episode["duration_s"]
             and trace[-1]["progress_m"] == episode["progress_m"], "Development trace and summary disagree")
-    entry = indexed(read_json(media / "catalog.json"))[key]
-    require(entry["path"] == path and sorted(entry["cameras"]) == sorted(CAMERAS),
-            "Development recording catalog mismatch")
     replay = check_recording(media / path, key, frames)
     for index, (row, recorded) in enumerate(zip(trace, replay)):
-        require(all(row[k] == v for k, v in expected.items()) and row["map"] == build["simulator"]["map"]
+        require(all(row[k] == v for k, v in expected.items()) and row["map"] == producer["map"]
                 and row["sim_time"] == round(index * 0.1, 2)
                 and -1 <= row["steer"] <= 1 and 0 <= row["throttle"] <= 1 and 0 <= row["brake"] <= 1
                 and all(recorded[k] == row[k] for k in (*expected, "map", "steer", "throttle", "brake",
@@ -263,14 +259,151 @@ def development(root, logs):
                 f"Development controls or telemetry disagree at frame {row['frame']}")
     run = {k: episode[k] for k in ("seed", "policy", "cohort", "district", "outcome", "progress_m", "duration_s")}
     run.update(trial_id=key, case_id=episode["scenario"], model_sha256=digest,
+               checkpoint_url="./logs/dev31-fusion.npz", benchmark_member=False,
                log_url=f"./logs/{key}.json", recording_path=path)
+    return run
+
+
+def development(root, logs):
+    build = commissioning(root, logs)
+    run = development_run(root / "web", build["simulator"])
+    path = run["recording_path"]
+    entry = indexed(read_json(root / "web/media/catalog.json"))[run["trial_id"]]
+    require(entry["path"] == path and sorted(entry["cameras"]) == sorted(CAMERAS),
+            "Development recording catalog mismatch")
     for name in CAMERAS:
         build["evidence"].append(dict(label=f"Development drive · {name} camera", url=f"./media/{path}/{name}.mp4"))
     build.update(status="development", title="Learned development drive", release=None,
-                 checkpoints=dict(fusion=dict(sha256=digest, url="./logs/dev31-fusion.npz")), runs=[run],
+                 checkpoints=dict(fusion=dict(sha256=run["model_sha256"], url=run["checkpoint_url"])), runs=[run],
                  preview_video=f"./media/{path}/chase.mp4", preview_image=f"./media/{path}/chase.jpg",
                  preview_label="Learned development drive · CARLA 1.0", preview_log=run["log_url"])
     return build
+
+
+def native_interval(path, meta, dt):
+    """Read the native v1 frame and simulation-clock packets, independent of actor IDs."""
+    start = meta["observed_start_frame"]
+    count = meta["observed_stop_frame"] - start
+    size = path.stat().st_size
+    text = meta["recorder_summary"]
+    require(size == meta["bytes"] and fingerprint(path) == meta["sha256"] and count > 0
+            and re.search(rf"^Frames: {count}\s*$", text, re.M), f"Native recorder metadata mismatch for {path}")
+    duration = re.search(r"^Duration: ([0-9.]+) seconds\s*$", text, re.M)
+    require(duration and abs(float(duration[1]) - (count - 1) * dt) < 1e-4, f"Invalid recorder duration for {path}")
+    frame = clocks = 0
+    with path.open("rb") as stream:
+        require(stream.read(18) == b"\x01\x00\x0e\x00CARLA_RECORDER", f"Invalid recorder header for {path}")
+        stream.seek(26)
+        length, = struct.unpack("<H", stream.read(2))
+        require(stream.read(length).decode() == meta["producer"]["map"], f"Recorder map mismatch for {path}")
+        while stream.tell() < size:
+            kind, length = struct.unpack("<BI", stream.read(5))
+            require(stream.tell() + length <= size, f"Incomplete recorder packet in {path}")
+            if kind == 0:
+                number, period, elapsed = struct.unpack("<Qdd", stream.read(length))
+                valid_period = abs(period - dt) < 1e-6 or (number == count and period == -1.)
+                require(number == frame + 1 and clocks == frame and valid_period
+                        and abs(elapsed - frame * dt) < 1e-5, f"Invalid native frame in {path}")
+                frame = number
+            elif kind == 20:
+                clock, = struct.unpack("<d", stream.read(length))
+                require(clocks + 1 == frame and abs(clock - meta["start_elapsed_s"] - frame * dt) < 1e-5,
+                        f"Invalid native simulation clock in {path}")
+                clocks += 1
+            else:
+                stream.seek(length, 1)
+    require(count == frame == clocks and abs(clock - meta["stop_elapsed_s"]) < 1e-5,
+            f"Incomplete native recording in {path}")
+
+
+def native_evidence(root, tag, episodes, frames, dt):
+    links = []
+    for key in ("103-trip-fusion", "104-pedestrian-fusion"):
+        path = root / "results/native-replays" / f"{key}.rec"
+        sidecar = path.with_suffix(".json")
+        if not (path.exists() or sidecar.exists()):
+            continue
+        meta = read_json(sidecar)
+        episode = episodes.get(key)
+        require(episode and episode["cohort"] == "primary" and episode["district"] == "heldout"
+                and meta["trial_id"] == key and meta["filename"] == path.name
+                and validate_producer(meta["producer"]) == episode["producer"], f"Unexpected native recording for {key}")
+        native_interval(path, meta, dt)
+        require(meta["observed_start_frame"] < frames[key][0] <= frames[key][-1] <= meta["observed_stop_frame"],
+                f"Native recording misses scored frames of {key}")
+        base = f"{RAW}/{tag}/results/native-replays/{key}"
+        links.extend([dict(label=f"{key} · original CARLA recorder file", url=f"{base}.rec"),
+                      dict(label=f"{key} · recorder metadata and SHA-256", url=f"{base}.json")])
+    return links
+
+
+def native_film_entry(root, build, logs):
+    directory = root / "web/media/recorded-trip"
+    if not directory.exists():
+        return None
+    key = "103-trip-fusion"
+    manifest = read_json(directory / "manifest.json")
+    origin = next(run for run in build["runs"] if run["trial_id"] == key)
+    metadata = root / f"results/native-replays/{key}.json"
+    meta = read_json(metadata)
+    native = manifest["native_recorder"]
+    summary = read_json(directory / "original-summary.json")
+    cameras = manifest["cameras"]
+    n = manifest["frames"]
+    require(manifest["trial_id"] == key and manifest["cohort"] == "native_replay" and
+            manifest["additional_scored_drive"] is False and origin["cohort"] == manifest["original_cohort"] == "primary"
+            and manifest["district"] == "heldout" and manifest["producer"] == build["simulator"] == meta["producer"]
+            and native["filename"] == meta["filename"] and native["sha256"] == meta["sha256"]
+            and native["metadata_sha256"] == fingerprint(metadata) and manifest["summary"] == summary
+            and summary == indexed(read_json(root / "results/episodes.json"))[key]
+            and summary["policy_version"] == origin["model_sha256"] == build["checkpoints"]["fusion"]["sha256"]
+            and manifest["quality_requested"] == "High" and manifest["frame_period_s"] == 0.1
+            and cameras in (["chase"], ["chase", "front"]) and n > 0, "Unexpected native film provenance")
+    expected = {"poster.jpg", "replay.json", "original-trace.jsonl.gz", "original-summary.json"}
+    expected.update(f"{camera}.{ext}" for camera in cameras for ext in ("mp4", "jpg"))
+    require(expected == manifest["sha256"].keys()
+            and all(fingerprint(directory / name) == sha for name, sha in manifest["sha256"].items()),
+            "Native film artifact digest mismatch")
+    for camera in cameras:
+        video = check_video(directory / f"{camera}.mp4", n)
+        require(video == manifest["videos"][camera] and video["r_frame_rate"] == "10/1"
+                and (camera != "chase" or (video["width"], video["height"]) == (1920, 1080)),
+                "Native film resolution, FPS or length differs")
+    with gzip.open(directory / "original-trace.jsonl.gz", "rb") as copy, gzip.open(logs / f"{key}.jsonl.gz") as scored:
+        original = [json.loads(line) for line in scored]
+        require([json.loads(line) for line in copy] == original, "Native film source trace differs")
+    replay = read_json(directory / "replay.json")
+    require(len(replay) == n and all(row["video_index"] == i and row["video_time"] == i / 10
+                                      for i, row in enumerate(replay)), "Native film replay timing differs")
+    alignment = manifest["alignment"]
+    aligned = alignment["status"] == "pose_verified"
+    require(aligned or alignment["status"] == "unverified", "Unknown native film alignment")
+    if aligned:
+        require(n == len(original) and manifest["first_frame"] == original[0]["frame"]
+                and manifest["last_frame"] == original[-1]["frame"] and alignment["passing_windows"] == 1
+                and max(alignment["max_ego_error_m"], alignment["max_observer_error_m"]) <= 0.035
+                and alignment["max_rotation_error_deg"] <= 0.15
+                and all(row["original_frame"] == score["frame"]
+                        and row["native_frame"] + meta["observed_start_frame"] == score["frame"]
+                        and all(row[k] == v for k, v in score.items()) for row, score in zip(replay, original)),
+                "Native film scored frames or pose alignment differ")
+    if aligned and "front" in cameras:
+        require(all("ego" in row["observer_map"] and
+                    all(isinstance(row[field], list) for field in ("lidar", "radar", "tracks", "detections"))
+                    for row in replay), "Missing native film perception")
+    label = "High-quality replay of scored Market drive · captured trajectory" if aligned else "Native Market playback · alignment unverified"
+    base = "./media/recorded-trip"
+    for suffix, filename in [("capture manifest", "manifest.json"), *((f"{c} camera", f"{c}.mp4") for c in cameras)]:
+        build["evidence"].append(dict(label=f"{label} · {suffix}", url=f"{base}/{filename}"))
+    if aligned and "front" in cameras:
+        entry = dict(label=label, path="recorded-trip", cameras=cameras, trial_id=f"native-{key}",
+                     origin_trial_id=key, cohort="native_replay", benchmark_member=False,
+                     manifest=f"{base}/manifest.json")
+        build["native_replays"] = [dict(origin, trial_id=entry["trial_id"], origin_trial_id=key,
+                                         cohort="native_replay", benchmark_member=False, recording_path=entry["path"],
+                                         label=label, manifest_url=entry["manifest"])]
+        return entry
+    return None
 
 
 def evaluated(root, logs, tag):
@@ -297,6 +430,7 @@ def evaluated(root, logs, tag):
     evidence = [dict(label=label, url=f"{RAW}/{tag}/{rel}") for label, rel in (
         ("Held-out evaluation protocol", "results/manifest.json"), ("Episode summaries", "results/episodes.json"),
         ("All held-out frame logs", "results/traces.jsonl.gz"), ("Recording catalog", "web/media/catalog.json"))]
+    evidence.extend(native_evidence(root, tag, episodes, frames, manifest["dt_seconds"]))
     return dict(status="evaluated", title="Held-out evaluation", simulator=manifest["evaluation_producer"],
                 release=release, checkpoints=checkpoints, evidence=evidence, runs=runs)
 
@@ -325,9 +459,22 @@ def publish(root, tag, source_commit, commissioning_only=False, development_only
                 directory = web / "media/showcase" / scenario
                 if directory.exists():
                     catalog.append(showcase_entry(directory, build))
+            native = native_film_entry(root, build, logs)
+            if native:
+                catalog.append(native)
         if not commissioning_only:
             runs = {run["trial_id"] for run in build["runs"]}
             catalog.extend(entry for entry in read_json(web / "media/catalog.json") if entry["trial_id"] in runs)
+        if build["status"] == "evaluated" and any((web / p).exists() for p in
+                ("media/dev-crossing", "logs/dev31-crossing.json", "logs/dev31-fusion.npz")):
+            archived = development_run(web, build["simulator"])
+            build["development_runs"] = [archived]
+            catalog.append(dict(trial_id=archived["trial_id"], path=archived["recording_path"],
+                                label="Development · pedestrian crossing (training district)", cameras=list(CAMERAS),
+                                cohort="development", benchmark_member=False))
+            build["evidence"].extend([
+                dict(label="Earlier development drive · telemetry", url=archived["log_url"]),
+                dict(label="Earlier development drive · fusion checkpoint", url=archived["checkpoint_url"])])
         write_json(stage / "viewer-catalog.json", catalog)
         training_clip(web, build)
         preview = "commissioning-chase.jpg" if commissioning_only else "chase.jpg"

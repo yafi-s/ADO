@@ -1,0 +1,1895 @@
+{
+  "dataset_id": "e54c1bf322f2100ef1c5",
+  "fit_id": "1a0e8481f874239f901d",
+  "training_seeds": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+  ],
+  "training_sources": {
+    "policy": "609dc843d6ea52f66301c441b943e75f691702ca502e64d390d95c613d45a907",
+    "train": "3e1918574c3814b8b3ed1fb842798d217fad60a81870c2cf3f5038b3ce2d3d9b",
+    "steering_search": "027657cc773aa10368be6f1bfcb68b76ea71999506eb65de6570971034bae7e6"
+  },
+  "signal_specialist": {
+    "source": "data/signals/lamp.npz",
+    "sha256": "5d8479b212c386af7fa5df8128f468727b4a55abb1f8abd7c68fd40ac5d09d33",
+    "fit_seeds": [
+      11,
+      12,
+      13,
+      14
+    ],
+    "lessons": 8,
+    "demonstrated_controls": 486,
+    "static_pairs": 16,
+    "fit_report_sha256": "7c06f5f114f608f3e55b6f71d5b9c555526dd17fefecf82d35b5266f2c55cd21"
+  },
+  "training_producer": {
+    "client_version": "1.0",
+    "map": "Town01_Opt",
+    "server_version": "1.0"
+  },
+  "render_profile": {
+    "camera_ray_tracing": false,
+    "ground_truth": "native",
+    "rgb": "mixed",
+    "rgb_screen_percentage": 50.0
+  },
+  "data_format": 3,
+  "training_samples": {
+    "11-pedestrian-demonstrator": "2fe11e1521a2966fccacd4f20939dfaf0024b3e0a8f4127bc88b2ab0c8dafc22",
+    "11-lead-demonstrator": "82f9ed09fc8d1046a8c47cd9d86879efee425305bd85dc64c6a16480025b9613",
+    "11-occluded-demonstrator": "2182964c04caf6c0a64265c6d11528a9de6e04018f3069aa059e0a884549c2f0",
+    "11-signal-demonstrator": "b4930fb58f840732235032dd4c75e9d880ae993ab7f2d6b7324a84a702bd0d2c",
+    "11-left-demonstrator": "3b8cd715233ba7529b9de33e1384fa01954bfb717d23fb08e7aeb65edb722ebc",
+    "11-turn-demonstrator": "0d6ea1202ad98697c9aee6453672d75fa98bb3d74582c2a4734f80f52ff7c0af",
+    "11-clear-demonstrator": "fbc6d996f409885db01cac4c828c0d48c3ce3e928a9e1b763405fe1bb83e25da",
+    "11-trip-demonstrator": "5e2e6d8443a4868ecba170b919f91862dadeaf1c3162b74233486a87c4d27a19",
+    "12-pedestrian-demonstrator": "48401223732b184339e4265a82c8d1153eb4352096c94cf26fc27d21ea9ea3ec",
+    "12-lead-demonstrator": "f0578671e666c307194c58e17e65fca97fabdd432d8a4d9ae93f390d409c7f9c",
+    "12-occluded-demonstrator": "f8fb6fe363d2384eaf70ce81083cd862622cb9b3115eecf3dc669562d4ad30b1",
+    "12-signal-demonstrator": "6740ca66901eaf284ccfb3f3038c07eaa86f352549675f5f82035a6ee309e96d",
+    "12-left-demonstrator": "cb88025cfd4f1ba29714cdcb7280317df03f7f5869d8fdbd53d869730493d375",
+    "12-turn-demonstrator": "f1a5cfac24f7fd1b7a4a88f6b2c0112fcba25f8bdf31501344fbd6a738e4e456",
+    "12-clear-demonstrator": "7cf18677cef9596e9375bfa3957b70bc5e839c6dcdf96994cc90606761ad410a",
+    "12-trip-demonstrator": "9b5ae3a4a6f70df4bae7577c01b40be813369f98fdb689fb51c7838ba55972e2",
+    "13-pedestrian-demonstrator": "34d47848dd0af175461987ff2f1a45919c7c49cef7aec3dd5a3aeff13af9ce20",
+    "13-lead-demonstrator": "0d66c7138c3fa3b7bdabd508ebfa224d8bdfeed7ec0bfdad4ee04e5fc2817fad",
+    "13-occluded-demonstrator": "4e6ebdce57d6884d36a4120a165f24f0f7c57cf5297666213ce2823952632c37",
+    "13-signal-demonstrator": "8df9fc94d08e71f015646675004f922c90d4accd4fb13c0ce5540b05125f3f6b",
+    "13-left-demonstrator": "49cf343b8f0506c036044025d604303d488dd5697e3695e25e07bc05e3770ac9",
+    "13-turn-demonstrator": "b1366b8783be75ff9d29411e7a76d0caf07745877f5a27ada408118766b6eeb0",
+    "13-clear-demonstrator": "e24be92403fdd07277a787eb51eb1718409d6b0a62957b3e0e49f21386426389",
+    "13-trip-demonstrator": "f9bcb67e0392dcf7cca7b21a1d4fab0708ccffe3e493ec4abe0644d3789e1d14",
+    "14-pedestrian-demonstrator": "fd900401dc91ce3e964481b98a6662fdb39be0f33a05e404243485ccb83b2070",
+    "14-lead-demonstrator": "7b45a321ddf41c7804e616eea35eeff8d1ac949ae5540e09f925691bc92006da",
+    "14-occluded-demonstrator": "aa1acd826e4e22e428489226b73b4b2dfa4ed1ff475dfb762e609748a0f4b47c",
+    "14-signal-demonstrator": "7bd2eafd442233a7f582bc15430587fdc62e9b379d2d9e9f5843e46fbf4ee0ce",
+    "14-left-demonstrator": "3eeff9a4b5189c4869e872d35fc839b31fc1126aa966dbe3c572ef946ae47bc3",
+    "14-turn-demonstrator": "26586fbe796ce156bc6c5c6f2669ebcf48ea75f390ab9f92c20aa2e1b8f72880",
+    "14-clear-demonstrator": "5ab4c1115d6c2ae8afa2302ac5994a8bf08a7de910f7d4be3cef7a9735883d13",
+    "14-trip-demonstrator": "d3809fb5538b44f60949dd970d277cc247d0115b00d530946121c157be1f19c8",
+    "15-pedestrian-demonstrator": "cc35cbd6283d6d13222ff3a048687920c56df072eafc06b6293a56cd8f5cbfff",
+    "15-lead-demonstrator": "d8176474247c7ae3270343164ee100263b41fcbbaa210939efdb04ea40947fc2",
+    "15-occluded-demonstrator": "469353356dfedd49e384e7ea8c8a38f58bce05b228e78d4cf2fec27a4a1682d9",
+    "15-signal-demonstrator": "0f7a8edccbf972be1d179e98d3816adafdd43d79ec1f28cf7ee6d1ead8c113c2",
+    "15-left-demonstrator": "0baff142d149b105098bdb274d3b6a5a97a13254324e21a2beeb532803211d6e",
+    "15-turn-demonstrator": "190c23ffce6edec6944814f08f0eb21fde85b6763350766bbbf97653196de884",
+    "15-clear-demonstrator": "ef8fe780f0f362f98761b9e42f3a5b6986f39d8e59c1e6c714d0e1d880c689a0",
+    "15-trip-demonstrator": "5e02b042726393426d04214f4929076842f4417f65bd742287d5a73267c5a659",
+    "16-pedestrian-demonstrator": "c326dc8863aed920338867aadcec90ff5d120848540a52c64b611763f63e3ccb",
+    "16-lead-demonstrator": "018f324b67ad152d50924078170fb53a28c7511029582d90b59092054959c7fd",
+    "16-occluded-demonstrator": "7a990d2c3e74fbd80aabe69f332a8431f691ed5061d54bd578e90af90d0abf2c",
+    "16-signal-demonstrator": "7dc1f4dfd9ad9da613af7869c11f84b979705e61f4597ea26264cbff449699c6",
+    "16-left-demonstrator": "ef9947b7429c7d3f1dd2fbc187246c5e672ee8f57c6f75bc708286dd885adf71",
+    "16-turn-demonstrator": "5496d88ddc4c24d93f5868bc621b89c52ac75bbf4c9709b5d9b192ef852eec6b",
+    "16-clear-demonstrator": "b6bec5dbf899a2e8189f5943e5af2291e400c24ee5cea81473b53137833ffeb2",
+    "16-trip-demonstrator": "a624b323b1756cb19ac0b7c606232bf354849b8be1ea96f9548ed9ab2f08086d"
+  },
+  "training_data_sha256": "97f37276ff5adde351e3c480ebc17101251e3e02659ed2a2b63fc553232ba6d7",
+  "model_sha256": {
+    "fusion": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "camera": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf"
+  },
+  "imitation_sha256": {
+    "fusion": "2698ae3947b015801aa57c9e07e0092c1437ce23f448787e7549dc497c2da85c",
+    "camera": "8c883a79b21d69a28dcb7c1d3a9bdf216cc407d809b5f2052ce82fa6e61b2426"
+  },
+  "simulator": "CARLA 1.0",
+  "map": "Town01_Opt",
+  "dt_seconds": 0.1,
+  "evaluation_producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town01_Opt"
+  },
+  "signal_gate": {
+    "path": "data/signals/approach-gate.json",
+    "sha256": "59683cd2f611ba51372adb948233dc746d8de703fbe2edafd3555d4952d30d0e"
+  },
+  "scoring_revision": "9ef24c1448ccecd6256b1b4af41b506948652d82",
+  "normalized_source_sha256": {
+    "drive": "9556881a0b4ef666f7f6fa8d1569ad6e519d5c669c6853cc318c62b9e5aeb7a7",
+    "world": "184d0fdb87420bad5040cc03cc70649337b01530ebed9eb898e7d8723560208e",
+    "district": "6033c080b786ec8141a3b4ccdd9bcb874fc700f47d9710384ce806da052f5a2e",
+    "policy": "addeeb63d55419089c6ffdd05035f0d84b4243c074850f5a54a4c9ff96e8dcc0",
+    "sensors": "f47a58c99e14a94461d9c6e47b2fd88a867ef1f4fe77e11e1907220f11bf3cc8",
+    "control": "f6c581cb8daae985b98ba003db34ab856d8880baa7006e7f156aedabe1e282f0",
+    "vision": "0075f835d27f52147cb521feebbbbd3f65be1a2d2516d68910a94a316a6816a8",
+    "signal_vision": "8bf60e3a411a258096b549311d343d540996f3f210a1f4064f62a7df833a46b4",
+    "robotaxi": "42bf4a8a5aba3e8b338d7ba1af992f3e625f511e1580d8ce9f9e15ae58701a55",
+    "thermal": "cb3f2e421bc804d768ec6a6988071952f28c0274d8dae540d55118ac17c63be0",
+    "runtime": "229a3aa594af4b33d43300947bab7cdbfea04fb882c9e58d0db67bf2c271bdde",
+    "viewio": "092bdf808fca85514955b6ba6e856005a0b8cf0e558714c2e7c873e93220ec79",
+    "lamp": "90a551a1e7587d8df46b8b99603ac6c3a670d9673c326e14cb1da7e7c26e934e",
+    "tracking": "8e069911464d6fa54f8a0a9a42ddf1345f4a0021c8d0f410d0d62f3132b569f5"
+  },
+  "evaluation_id": "9049ea6a3ddf7fb85f59",
+  "source_sha256": {
+    "drive": "9556881a0b4ef666f7f6fa8d1569ad6e519d5c669c6853cc318c62b9e5aeb7a7",
+    "world": "184d0fdb87420bad5040cc03cc70649337b01530ebed9eb898e7d8723560208e",
+    "district": "6a9f2e0af74562b178436a8c7f96b8b661bdfd1fe5df40f10b285532412d5101",
+    "policy": "609dc843d6ea52f66301c441b943e75f691702ca502e64d390d95c613d45a907",
+    "sensors": "f47a58c99e14a94461d9c6e47b2fd88a867ef1f4fe77e11e1907220f11bf3cc8",
+    "control": "e32056d1fda0bf42575f2a721a74cebd057498b46ed66861efba152b34472ddb",
+    "vision": "0075f835d27f52147cb521feebbbbd3f65be1a2d2516d68910a94a316a6816a8",
+    "signal_vision": "f03f29ff1a32c1bb28f12a78cba1a3ba4d92a31d42e1e65a5fdf448edea901b3",
+    "robotaxi": "02c5fdf354827aef8a30d4216f9238834a540872923a5c5faf0405c24e0f1802",
+    "thermal": "cb3f2e421bc804d768ec6a6988071952f28c0274d8dae540d55118ac17c63be0",
+    "runtime": "7dd0344c0f9ba59bb8dcd21da4b94b963328fc7c4571611c75b0a73d382d2726",
+    "viewio": "092bdf808fca85514955b6ba6e856005a0b8cf0e558714c2e7c873e93220ec79",
+    "lamp": "90a551a1e7587d8df46b8b99603ac6c3a670d9673c326e14cb1da7e7c26e934e",
+    "tracking": "dd973057242698125122fbdb120b8ec2957638dc1a1d939ee1d187b1cf5c04cb"
+  },
+  "python_version": "3.12.10",
+  "numpy_version": "2.4.2",
+  "opencv_version": "4.13.0",
+  "demonstration_seeds": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+  ],
+  "test_seeds": [
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110
+  ],
+  "training_encounters": [
+    "pedestrian",
+    "lead",
+    "occluded",
+    "signal",
+    "left",
+    "turn",
+    "clear",
+    "trip"
+  ],
+  "held_out_encounter_family": "braking",
+  "test_encounters": [
+    "pedestrian",
+    "pedestrian-delayed",
+    "lead",
+    "braking",
+    "occluded",
+    "signal",
+    "left",
+    "turn",
+    "clear",
+    "trip"
+  ],
+  "policies": [
+    "fusion",
+    "camera"
+  ],
+  "stage": "evaluate",
+  "plan": [
+    {
+      "seed": 101,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "101-pedestrian-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": true
+    },
+    {
+      "seed": 101,
+      "case_id": "pedestrian",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "101-pedestrian-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "101-pedestrian-delayed-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 1.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "pedestrian-delayed",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "101-pedestrian-delayed-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 1.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "lead",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "101-lead-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "lead",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "101-lead-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "braking",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "101-braking-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "braking",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "101-braking-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "101-occluded-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": true
+    },
+    {
+      "seed": 101,
+      "case_id": "occluded",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "101-occluded-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "signal",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "101-signal-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": true
+    },
+    {
+      "seed": 101,
+      "case_id": "signal",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "101-signal-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "left",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "101-left-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": true
+    },
+    {
+      "seed": 101,
+      "case_id": "left",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "101-left-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "turn",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "101-turn-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "turn",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "101-turn-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "clear",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "101-clear-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "clear",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "101-clear-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "trip",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "101-trip-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": "market"
+      },
+      "replay": true
+    },
+    {
+      "seed": 101,
+      "case_id": "trip",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "101-trip-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": "market"
+      },
+      "replay": false
+    },
+    {
+      "seed": 101,
+      "case_id": "trip-delayed",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "supplemental",
+      "trial_id": "101-trip-delayed-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 1.0,
+        "destination": "market"
+      },
+      "replay": true
+    },
+    {
+      "seed": 102,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "102-pedestrian-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "pedestrian",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "102-pedestrian-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "102-pedestrian-delayed-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 1.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "pedestrian-delayed",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "102-pedestrian-delayed-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 1.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "lead",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "102-lead-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "lead",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "102-lead-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "braking",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "102-braking-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "braking",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "102-braking-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "102-occluded-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "occluded",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "102-occluded-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "signal",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "102-signal-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "signal",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "102-signal-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "left",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "102-left-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "left",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "102-left-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "turn",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "102-turn-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "turn",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "102-turn-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "clear",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "102-clear-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "clear",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "102-clear-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "trip",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "102-trip-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": "station"
+      },
+      "replay": false
+    },
+    {
+      "seed": 102,
+      "case_id": "trip",
+      "policy": "camera",
+      "district": "heldout",
+      "cohort": "camera_ablation",
+      "trial_id": "102-trip-camera",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": "station"
+      },
+      "replay": false
+    },
+    {
+      "seed": 103,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "103-pedestrian-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 103,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "103-pedestrian-delayed-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 1.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 103,
+      "case_id": "lead",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "103-lead-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 103,
+      "case_id": "braking",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "103-braking-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 103,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "103-occluded-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 103,
+      "case_id": "signal",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "103-signal-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 103,
+      "case_id": "left",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "103-left-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 103,
+      "case_id": "turn",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "103-turn-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 103,
+      "case_id": "clear",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "103-clear-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 103,
+      "case_id": "trip",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "103-trip-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": "market"
+      },
+      "replay": false
+    },
+    {
+      "seed": 104,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "104-pedestrian-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 104,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "104-pedestrian-delayed-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 1.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 104,
+      "case_id": "lead",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "104-lead-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 104,
+      "case_id": "braking",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "104-braking-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 104,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "104-occluded-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 104,
+      "case_id": "signal",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "104-signal-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 104,
+      "case_id": "left",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "104-left-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 104,
+      "case_id": "turn",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "104-turn-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 104,
+      "case_id": "clear",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "104-clear-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 104,
+      "case_id": "trip",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "104-trip-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": "station"
+      },
+      "replay": false
+    },
+    {
+      "seed": 105,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "105-pedestrian-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 105,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "105-pedestrian-delayed-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 1.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 105,
+      "case_id": "lead",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "105-lead-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 105,
+      "case_id": "braking",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "105-braking-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 105,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "105-occluded-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 105,
+      "case_id": "signal",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "105-signal-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 105,
+      "case_id": "left",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "105-left-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 105,
+      "case_id": "turn",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "105-turn-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 105,
+      "case_id": "clear",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "105-clear-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 105,
+      "case_id": "trip",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "105-trip-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": "market"
+      },
+      "replay": false
+    },
+    {
+      "seed": 106,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "106-pedestrian-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 106,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "106-pedestrian-delayed-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 1.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 106,
+      "case_id": "lead",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "106-lead-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 106,
+      "case_id": "braking",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "106-braking-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 106,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "106-occluded-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 106,
+      "case_id": "signal",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "106-signal-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 106,
+      "case_id": "left",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "106-left-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 106,
+      "case_id": "turn",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "106-turn-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 106,
+      "case_id": "clear",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "106-clear-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 106,
+      "case_id": "trip",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "106-trip-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": "station"
+      },
+      "replay": false
+    },
+    {
+      "seed": 107,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "107-pedestrian-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 107,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "107-pedestrian-delayed-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 1.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 107,
+      "case_id": "lead",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "107-lead-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 107,
+      "case_id": "braking",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "107-braking-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 107,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "107-occluded-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 107,
+      "case_id": "signal",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "107-signal-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 107,
+      "case_id": "left",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "107-left-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 107,
+      "case_id": "turn",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "107-turn-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 107,
+      "case_id": "clear",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "107-clear-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 107,
+      "case_id": "trip",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "107-trip-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": "market"
+      },
+      "replay": false
+    },
+    {
+      "seed": 108,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "108-pedestrian-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 108,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "108-pedestrian-delayed-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 1.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 108,
+      "case_id": "lead",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "108-lead-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 108,
+      "case_id": "braking",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "108-braking-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 108,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "108-occluded-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 108,
+      "case_id": "signal",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "108-signal-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 108,
+      "case_id": "left",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "108-left-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 108,
+      "case_id": "turn",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "108-turn-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 108,
+      "case_id": "clear",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "108-clear-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 108,
+      "case_id": "trip",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "108-trip-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": "station"
+      },
+      "replay": false
+    },
+    {
+      "seed": 109,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "109-pedestrian-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 109,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "109-pedestrian-delayed-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 1.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 109,
+      "case_id": "lead",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "109-lead-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 109,
+      "case_id": "braking",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "109-braking-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 109,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "109-occluded-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 109,
+      "case_id": "signal",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "109-signal-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 109,
+      "case_id": "left",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "109-left-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 109,
+      "case_id": "turn",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "109-turn-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 109,
+      "case_id": "clear",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "109-clear-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 109,
+      "case_id": "trip",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "109-trip-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": "market"
+      },
+      "replay": false
+    },
+    {
+      "seed": 110,
+      "case_id": "pedestrian",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "110-pedestrian-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 110,
+      "case_id": "pedestrian-delayed",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "110-pedestrian-delayed-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 1.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 110,
+      "case_id": "lead",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "110-lead-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 110,
+      "case_id": "braking",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "110-braking-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 110,
+      "case_id": "occluded",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "110-occluded-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 110,
+      "case_id": "signal",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "110-signal-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 110,
+      "case_id": "left",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "110-left-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 110,
+      "case_id": "turn",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "110-turn-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 110,
+      "case_id": "clear",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "110-clear-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": null
+      },
+      "replay": false
+    },
+    {
+      "seed": 110,
+      "case_id": "trip",
+      "policy": "fusion",
+      "district": "heldout",
+      "cohort": "primary",
+      "trial_id": "110-trip-fusion",
+      "settings": {
+        "district": "heldout",
+        "crossing_delay": 0.0,
+        "destination": "station"
+      },
+      "replay": false
+    }
+  ]
+}

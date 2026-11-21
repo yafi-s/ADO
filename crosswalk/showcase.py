@@ -10,8 +10,9 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
-from tempfile import TemporaryDirectory
+from tempfile import NamedTemporaryFile, TemporaryDirectory, mkdtemp
 from threading import Condition
+from time import sleep
 
 import cv2
 import numpy as np
@@ -30,6 +31,7 @@ FPS = round(1 / DT)
 FRONT_SIZE = (640, 360)
 CASES = ("trip", "pedestrian", "market-demo")
 CURATED_NOTE = "The training-district Market route was selected because the learned driver completed it during development."
+ARTIFACTS = ("chase.mp4", "front.mp4", "chase.jpg", "front.jpg", "poster.jpg", "telemetry.json", "replay.json")
 
 
 def transform_fields(transform):
@@ -223,6 +225,79 @@ def encode_and_check(raw, output, size, start, count):
     return video
 
 
+def _retry_lock(operation, *args):
+    for delay in (.15, .35, .75, 1.5, None):
+        try:
+            return operation(*args)
+        except OSError as error:
+            if delay is None or (not isinstance(error, PermissionError)
+                                 and getattr(error, "winerror", None) not in (5, 32, 33)):
+                raise
+            sleep(delay)
+
+
+def _commit_file(source, target):
+    # Both operations expose a complete file and refuse to overwrite an existing name.
+    # The temporary file and target are on the same volume.
+    if os.name == "nt":
+        os.rename(source, target)
+    else:
+        os.link(source, target)
+
+
+def _install_file(source, target, digest):
+    if target.exists() or target.is_symlink():
+        if target.is_symlink() or not target.is_file() or fingerprint(target) != digest:
+            raise FileExistsError(f"An existing file differs from the saved capture: {target}")
+        return
+    with NamedTemporaryFile(prefix=".showcase-copy-", suffix=".part", dir=target.parent.parent,
+                            delete=False) as stream:
+        temporary = Path(stream.name)
+    try:
+        shutil.copyfile(source, temporary)
+        if fingerprint(temporary) != digest:
+            raise OSError(f"Copy verification failed for {source.name}")
+        try:
+            _retry_lock(_commit_file, temporary, target)
+        except FileExistsError:
+            if target.is_symlink() or not target.is_file() or fingerprint(target) != digest:
+                raise
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def install_staged(stage, *, artifacts=ARTIFACTS, retry_module="crosswalk.showcase"):
+    """Resume a validated capture at its original destination, installing the manifest last."""
+    stage = Path(stage).resolve(strict=True)
+    checkpoint = read_json(stage / "install.json")
+    output = Path(checkpoint["output"])
+    manifest_path = stage / "manifest.json"
+    if not output.is_absolute() or fingerprint(manifest_path) != checkpoint["manifest_sha256"]:
+        raise ValueError(f"Invalid showcase installation checkpoint at {stage}")
+    manifest = read_json(manifest_path)
+    hashes = manifest["sha256"]
+    if set(hashes) != set(artifacts) or any(fingerprint(stage / name) != hashes[name] for name in artifacts):
+        raise ValueError(f"Showcase artifact hashes disagree with the saved manifest at {stage}")
+    files = {**{name: hashes[name] for name in artifacts}, "manifest.json": checkpoint["manifest_sha256"]}
+    try:
+        _retry_lock(partial(output.mkdir, parents=True, exist_ok=True))
+        if output.is_symlink():
+            raise FileExistsError(f"The recording destination is a symbolic link: {output}")
+        # Check for conflicts before adding any files. A partial installation can continue
+        # only if every existing file belongs to precisely this recording.
+        for path in output.iterdir():
+            if (path.name not in files or path.is_symlink() or not path.is_file()
+                    or _retry_lock(fingerprint, path) != files[path.name]):
+                raise FileExistsError(f"The output contains unrelated or modified data: {path}")
+        for name, digest in files.items():
+            _install_file(stage / name, output / name, digest)
+    except OSError as error:
+        raise RuntimeError(f"Could not install the showcase in {output}. The verified recording is saved in {stage}. "
+                           f'Retry without CARLA using python -m {retry_module} --install-staged "{stage}". '
+                           f"{error}") from error
+    return manifest
+
+
 def capture(case, quality, resolution, percentage, port, output):
     """Record one viewing drive on a fresh, graphics-capable CARLA host."""
     return _record(partial(simulator, port, attach=False, quality=quality), case, quality, resolution, percentage, output)
@@ -257,10 +332,12 @@ def _record(world_session, case, quality, resolution, percentage, output):
     if model.inputs != "fusion":
         raise ValueError("The showcase requires the shipped fusion policy")
     output.parent.mkdir(parents=True, exist_ok=True)
-    with TemporaryDirectory(prefix=".showcase-", dir=output.parent) as work:
+    checkpoint_root = PROJECT / "out/showcase-captures"
+    checkpoint_root.mkdir(exist_ok=True, parents=True)
+    stage = Path(mkdtemp(prefix=f"{case}-", dir=checkpoint_root))
+    print(f"Showcase capture checkpoint: {stage}", flush=True)
+    with TemporaryDirectory(prefix=".sensors-", dir=stage, ignore_cleanup_errors=True) as work:
         work = Path(work)
-        stage = work / "publish"
-        stage.mkdir()
         raw, front_raw, rows = work / "chase.mjpeg", work / "front.mjpeg", work / "perception.jsonl"
         size = RESOLUTIONS[resolution]
         trial_id = f"showcase-{seed}-{case}-fusion"
@@ -313,7 +390,7 @@ def _record(world_session, case, quality, resolution, percentage, output):
         write_replay(stage / "replay.json", rows, telemetry)
         video = encode_and_check(raw, stage / "chase.mp4", size, start, len(trace))
         front_video = encode_and_check(front_raw, stage / "front.mp4", FRONT_SIZE, 0, len(trace))
-        files = {p.name: fingerprint(p) for p in sorted(stage.iterdir())}
+        files = {name: fingerprint(stage / name) for name in ARTIFACTS}
         media_root = (PROJECT / "web/media").resolve()
         entry = None
         if output.is_relative_to(media_root):
@@ -332,8 +409,8 @@ def _record(world_session, case, quality, resolution, percentage, output):
                         poster_frame=poster["camera_frame"], policy_render_profile=fit["render_profile"],
                         outcome=result["outcome"], summary=result, sha256=files)
         write_json(stage / "manifest.json", manifest)
-        stage.rename(output)
-    return manifest
+        write_json(stage / "install.json", dict(output=str(output), manifest_sha256=fingerprint(stage / "manifest.json")))
+    return install_staged(stage)
 
 
 def main():
@@ -342,12 +419,20 @@ def main():
     group.add_argument("--scenario", choices=("trip", "pedestrian"), help="Prespecified seed-211 held-out drive")
     group.add_argument("--development-demo", action="store_true", help="Curated seed-31 Market drive in the training district")
     group.add_argument("--all", action="store_true", help="Record all three viewing drives sequentially on one fresh host")
+    group.add_argument("--install-staged", type=Path, metavar="CHECKPOINT",
+                       help="Verify and install a saved recording without starting CARLA")
     parser.add_argument("--quality", choices=("Medium", "High", "Epic"), default="High")
     parser.add_argument("--resolution", choices=RESOLUTIONS)
     parser.add_argument("--dlss-percent", "--dlss-percentage", choices=(67, 75), type=int)
     parser.add_argument("--port", type=int, default=2668)
     parser.add_argument("--output", type=Path, help="Fresh recording directory, or parent directory for --all")
     args = parser.parse_args()
+    if args.install_staged is not None:
+        if args.output is not None:
+            parser.error("--install-staged uses the destination saved in the checkpoint")
+        manifest = install_staged(args.install_staged)
+        print(f"Installed {manifest['trial_id']} from {args.install_staged.resolve()}", flush=True)
+        return
     if not 1 <= args.port <= 65533:
         parser.error("Choose a port between 1 and 65533")
     case = "market-demo" if args.development_demo else args.scenario or "trip"
