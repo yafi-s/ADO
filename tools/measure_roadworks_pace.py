@@ -23,7 +23,7 @@ def measure(folder):
     if events:
         result["encounters_handled"] = sum(e["handled"] for e in events.values())
         result["junctions_completed"] = sum(summary["turns_completed"].values())
-    for key in ("longest_stop_s", "minimum_stopped_gap_m", "intersects_board"):
+    for key in ("longest_stop_s", "minimum_stopped_gap_m", "intersects_board", "left_markers"):
         if key in summary:
             result[key] = summary[key]
     if not events or "roadworks" not in result:

@@ -1,6 +1,7 @@
 """Verify native lane direction, sidewalk occupancy bounds and per-frame movement scoring."""
 import gzip
 import json
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
@@ -14,8 +15,10 @@ from crosswalk.population_score import score_population
 class CityPopulationTests(unittest.TestCase):
     def test_native_town03_population_geometry(self):
         root = Path(__file__).resolve().parents[1] / ".local" / "carla-1.0"
-        path = next(root.glob("*/Packs/AdditionalMaps/Content/Maps/OpenDrive/Town03_Opt.xodr"), None)
-        if path is None:
+        configured = os.environ.get("CARLA_TOWN03_XODR")
+        path = (Path(configured) if configured else
+                next(root.glob("*/Packs/AdditionalMaps/Content/Maps/OpenDrive/Town03_Opt.xodr"), None))
+        if path is None or not path.is_file():
             self.skipTest("Requires the local native Town03 OpenDRIVE installation")
         road_map = carla.Map("Town03_Opt", path.read_text())
         for road, lane, start, end, *_ in CARS:

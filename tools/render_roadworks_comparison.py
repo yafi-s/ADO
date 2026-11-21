@@ -36,7 +36,9 @@ def main():
     cv2.setNumThreads(1)
     sources = [read_run(folder) for folder in (a.before, a.after)]
     width, height = (int(sources[0][0].get(k)) for k in (cv2.CAP_PROP_FRAME_WIDTH, cv2.CAP_PROP_FRAME_HEIGHT))
-    frame_count = min(len(r) for _, r, _ in sources)
+    frame_count = max(min(len(rows), next(i for i, r in enumerate(rows)
+                      if r["progress_m"] >= station+24.) + 10) for _, rows, station in sources)
+    final_frames = {}
     a.output.parent.mkdir(parents=True, exist_ok=True)
     cmd = ["ffmpeg","-hide_banner","-loglevel","error","-y","-f","rawvideo","-pix_fmt","bgr24",
            "-s",f"{width*2}x{height+78}","-r","10","-i","-","-an","-c:v","libx264","-threads","2",
@@ -45,16 +47,21 @@ def main():
         for index in range(frame_count):
             panels = []
             for (capture, rows, station), name in zip(sources, ("v0.4 city pace", "Clearance-aware city pace")):
-                ok, frame = capture.read()
-                if not ok or frame.shape[:2] != (height, width):
-                    raise RuntimeError("Native frame count or geometry differs")
+                finished = index >= len(rows)
+                if finished:
+                    frame = final_frames[name]
+                else:
+                    ok, frame = capture.read()
+                    if not ok or frame.shape[:2] != (height, width):
+                        raise RuntimeError("Native frame count or geometry differs")
+                    final_frames[name] = frame
                 canvas = np.full((height+78, width, 3), (28, 24, 21), dtype=np.uint8)
                 canvas[33:height+33] = frame
-                row = rows[index]
+                row = rows[min(index, len(rows)-1)]
                 title(canvas, name, (12,23), .64)
                 along = row["progress_m"] - station
                 speed = row["speed_mps"] * 3.6
-                title(canvas, f"{speed:4.1f} km/h", (12,height+63), .76, (166,238,209))
+                title(canvas, "Finished" if finished else f"{speed:4.1f} km/h", (12,height+63), .76, (166,238,209))
                 title(canvas, f"{along:+.1f} m from first cone", (width//3,height+62), .53)
                 panels.append(canvas)
             encoder.stdin.write(np.concatenate(panels, axis=1).tobytes())

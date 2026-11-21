@@ -21,16 +21,16 @@ class LeftMarkerLane(WorkZone):
         super().__init__(world, False, "ClearNoon", start_station=25)
         self.markers = []
         try:
-            # The existing board remains outside the lane, 25 m beyond the last marker.
-            self.hazard.set_transform(self.board_pose(self.width*3.))
+            # Move the original fixture board away from both the lane and the markers.
+            self.hazard.set_transform(self.board_pose(self.width * 3.))
             library = world.get_blueprint_library()
-            for station, offset in ((49,1.9),(53,1.8),(58,1.83),(64,1.92),(69,1.9)):
-                waypoint = world.get_map().get_waypoint_xodr(self.road_id,self.lane_id,float(station))
-                pose = _raised(waypoint.transform,.04)
-                pose.location -= pose.get_right_vector()*offset
-                marker = world.spawn_actor(library.find("static.prop.trafficcone01"),pose)
+            for station, offset in ((49, 1.9), (53, 1.8), (58, 1.83), (64, 1.92), (69, 1.9)):
+                waypoint = world.get_map().get_waypoint_xodr(self.road_id, self.lane_id, float(station))
+                pose = _raised(waypoint.transform, .04)
+                pose.location -= pose.get_right_vector() * offset
+                marker = world.spawn_actor(library.find("static.prop.trafficcone01"), pose)
                 self.stack.callback(marker.destroy)
-                self.markers.append((marker, marker.get_location()))
+                self.markers.append((marker, pose.location))
         except BaseException:
             self.close()
             raise
@@ -42,20 +42,21 @@ class LeftMarkerLane(WorkZone):
         state = super().metrics()
         frame = self.world.get_snapshot().frame
         ego = [self._coordinates(v) for v in self.ego.bounding_box.get_world_vertices(self.ego.get_transform())]
-        first = last = None
+        stations = []
         gaps = []
+        rear, front = min(v[0] for v in ego), max(v[0] for v in ego)
+        left = min(v[1] for v in ego)
         for actor, original in self.markers:
-            s, _ = self._coordinates(original)
-            first = s if first is None else min(first,s)
-            last = s if last is None else max(last,s)
+            stations.append(self._coordinates(original)[0])
             footprint = [self._coordinates(v) for v in actor.bounding_box.get_world_vertices(actor.get_transform())]
-            if min(v[0] for v in ego) <= max(v[0] for v in footprint) and max(v[0] for v in ego) >= min(v[0] for v in footprint):
-                gaps.append(min(v[1] for v in ego)-max(v[1] for v in footprint))
-        self.rows[frame] = dict(marker_start_m=first, marker_end_m=last, marker_count=len(self.markers),
-                lateral_gap_m=min(gaps) if gaps else None,
-                marker_displacement_m=max(actor.get_location().distance(loc) for actor,loc in self.markers))
+            if rear <= max(v[0] for v in footprint) and front >= min(v[0] for v in footprint):
+                gaps.append(left - max(v[1] for v in footprint))
+        self.rows[frame] = dict(marker_start_m=min(stations), marker_end_m=max(stations),
+                                marker_count=len(self.markers), lateral_gap_m=min(gaps) if gaps else None,
+                                marker_displacement_m=max(math.hypot(actor.get_location().x - loc.x,
+                                                                  actor.get_location().y - loc.y)
+                                                          for actor, loc in self.markers))
         return state
-
 
 
 class FrontWitness:
@@ -131,8 +132,8 @@ def run(world, checkpoint, folder, case, seed, raw=False):
             row.update(scenes[0].rows[row["frame"]])
     if case == "left-markers":
         alongside = [r for r in trace if r["marker_start_m"] <= r["progress_m"] < r["marker_end_m"]]
-        summary["left_markers"] = dict(seconds=.1*len(alongside), median_kmh=float(np.median([r["speed_mps"]*3.6 for r in alongside])),
-                                  minimum_gap_m=min(r["lateral_gap_m"] for r in trace if r["lateral_gap_m"] is not None),
+        summary["left_markers"] = dict(seconds=.1*len(alongside), median_kmh=(float(np.median([r["speed_mps"]*3.6 for r in alongside])) if alongside else None),
+                                  minimum_gap_m=min((r["lateral_gap_m"] for r in trace if r["lateral_gap_m"] is not None),default=None),
                                   max_displacement_m=max(r["marker_displacement_m"] for r in trace))
     if case == "blocked":
         summary["longest_stop_s"] = longest_stop(trace)

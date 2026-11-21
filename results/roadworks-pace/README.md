@@ -1,0 +1,30 @@
+# Roadside pace
+
+On the original High seed 212 recording, the car drove the 20 m from the first to the last roadside marker in 13.7 s. Its median measured speed was 5.14 km/h and its median request was 5.41 km/h. The posted limit was 90 km/h. A matched restart measured a median lateral LiDAR return just 1.54 m ahead of the bumper. The body corridor remained at the 36 m no-return value on the median frame. The old planner treated these separate, narrow objects like a continuous sight obstruction. It used the same close-object speed cap beside the van concealing a pedestrian. [Archived High trace](../city-pace/seed-212/) · [Matched baseline observations](right-taper-v04/observations.npz)
+
+The new checkpoint uses measured roadside visibility and a stopping response fitted from four native development runs. A separate three-speed test measured the stopping-distance prediction error before the checkpoint went into route evaluation. The geometric checks and their tolerances are engineered. [Fit, holdout and reproduction](../../models/city-clearance/README.md) · [Native calibration traces](stopping-calibration.json)
+
+## Matched native drives
+
+Both drivers started from rest at route station 346 m and drove to 429 m on the same High CARLA server. The three policy cameras, LiDAR, radar, crossing delay and starting pose were matched. Their median speeds across the first-to-last marker span were **5.14 and 14.66 km/h**. Traversal fell from **13.7 to 5.3 s**. Both passed all six native markers with 0.269 m minimum footprint clearance, zero measured displacement and zero contacts. Braking above 0.05 occupied 0.8 s on the revised pass. The two front cameras in the film play at their native 10 Hz and share a time origin two seconds before each car reaches the first marker. The completed camera panel holds its final frame. [Watch the matched film](https://yafi-s.github.io/ADO/media/roadworks-pace/roadside-comparison.mp4) · [Baseline](right-taper-v04/) · [Revised driver](right-taper/)
+
+On a separately placed row of five irregularly spaced markers to the car's left, the median rose from **5.16 to 7.32 km/h**. Passage time fell from 12.5 to 8.8 s. Minimum side clearance was 0.263 and 0.262 m. Both cars finished without collision. This transfer case uses a different lane layout and marker spacing. It offers a smaller gain than the original right-side taper. [Baseline left-side trial](left-markers-v04/) · [Revised left-side trial](left-markers/)
+
+With a striped board physically blocking the lane, both stopped for 9.9 s and maintained a minimum stopped bumper gap of 3.19 m. Both continued once the lane reopened. When a pedestrian emerged from behind a van, both stopped. The minimum reference gaps were 3.30 and 3.70 m. Both controls finished their target exposure without collision. The focused journey segments end at the prescribed station and inherit the simulator's `restarted` status. Exposure scores and frames identify the actual outcome. [Blocked baseline](blocked-v04/) · [Blocked revised](blocked/) · [Crossing baseline](occluded-v04/) · [Crossing revised](occluded/)
+
+## Full original route
+
+The revised High seed 212 driver covered 1,416.32 m in **328.4 simulated seconds** and passed all eleven encounters and eleven junctions. CARLA recorded zero collisions, red-light violations, yield violations and moving frames within one metre of a reference hazard. The six-marker interval took 4.9 s with a **15.38 km/h** median and 0.269 m minimum clearance. The original six-camera recording took 335.4 s for the whole route, with a 5.14 km/h marker median. The revised full regression used the three native policy cameras and tactical planner. The paired short runs above used the same camera configuration for both drivers. Every speed request on the revised route stayed within the posted limit. The largest measured excess was 0.557 km/h. [Full route, events and controls](seed-212/) · [Original surround recording](../city-pace/seed-212/) · [All comparison metrics](comparison.json)
+
+Several slow sections remained. Median speeds at the junction after the stopline were 12.79 and 12.80 km/h, beside the striped boards 6.37 and 6.20, through the bus pass 26.85 and 26.68, and at the delayed crossing 5.15 and 5.15. Immediately after the markers the median rose from 22.05 to 22.60 km/h. [Matched route stations, native limits and requests](matched-route-intervals.json)
+
+Over the full 81.49 m shared boulevard, median speed fell from **37.74 to 31.57 km/h**. At 433.55 m and 104.4 s, the front camera reported a centered person occupying 18.4% of the image height with 0.482 confidence. Both body-range sensors observed no return within their 36 m corridor. The posted limit was 90 km/h, actual speed was 33.89 km/h and requested speed was 6.74 km/h. The car reached 16.52 km/h at 444.08 m before accelerating. The roadside clearance relaxation was inactive throughout that pulse. The regression saved the camera features and controls. It did not retain RGB for this interval, so the person's identity and location remain unverified. Across the full drive, 0.9 s of clear-straight braking exceeded 3 m/s², compared with zero in the prior recording. [Timed camera, range and pedal measurements](optical-slowdown-434m.json) · [Full speed and comfort measures](seed-212/speeds.json)
+
+The v0.4 checkpoint remains selectable. Feeding both the tagged v0.4 implementation and the current v0.4 loader the same 3,351 seed 211 observations produced identical speed requests, steering and pedals. [Regression result](v04-regression.json)
+
+To repeat a matched short run, supply the desired checkpoint and a new output folder. The other study cases are `occluded`, `blocked`, `left-markers` and `full-route`. The pack includes the native frame index, controls, physical scores and measured model inputs. The absolute CARLA frame counter depends on prior sessions.
+
+```sh
+python -m crosswalk.roadworks_pace_study --case cone-taper --model models/city-clearance/candidate.npz --output out/clearance-repeat
+python tools/measure_roadworks_pace.py out/clearance-repeat
+```
