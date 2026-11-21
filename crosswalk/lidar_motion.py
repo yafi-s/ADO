@@ -52,6 +52,9 @@ class Sweep:
             return
         xy = np.floor((points[good, :2] + RADIUS) / CELL).astype(int)
         n = int(2 * RADIUS / CELL)
+        # A float32 return just inside +RADIUS can round to the upper edge
+        # when translated to grid coordinates. It belongs to the last cell.
+        np.minimum(xy, n - 1, out=xy)
         mask = np.zeros((n, n), np.uint8)
         mask[xy[:, 0], xy[:, 1]] = 1
         _, labels = cv2.connectedComponents(cv2.dilate(mask, np.ones((3, 3), np.uint8)), connectivity=8)
