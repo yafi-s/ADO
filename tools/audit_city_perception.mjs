@@ -69,13 +69,13 @@ function localPose(x,y,ego) {
   return {x:dx*Math.cos(yaw)+dy*Math.sin(yaw),y:-dx*Math.sin(yaw)+dy*Math.cos(yaw)};
 }
 function inRange(p) { return Math.hypot(p.x,p.y)<=limit; }
-function observerActors(frame,others=frame.observer_map.others) {
+function observerActors(frame,others=frame.observer_map.others,sensorRadius=limit) {
   const {ego}=frame.observer_map;
   return others.filter(a => Object.hasOwn(truthLabels,a.type)).map(a => {
     const {x,y}=localPose(a.x,a.y,ego), h=(a.yaw-ego[2])*rad;
     const [length,,width]=a.dimensions_m;
     let points=0;
-    if (Math.hypot(x,y)<=limit) {
+    if (Math.hypot(x,y)<=sensorRadius) {
       for (const [px,py] of frame.lidar ?? []) {
         if (Math.abs(px)<2.5 && Math.abs(py)<1.1) continue;
         const dx=px-x, dy=py-y;
@@ -83,7 +83,8 @@ function observerActors(frame,others=frame.observer_map.others) {
             Math.abs(dy*Math.cos(h)-dx*Math.sin(h))<=width/2+.25) points++;
       }
     }
-    return {id:a.actor_id, label:truthLabels[a.type], type:a.type, role:a.role, x,y, points, sector:sector(x,y)};
+    return {id:a.actor_id, label:truthLabels[a.type], type:a.type, role:a.role,blueprint:a.blueprint, x,y, world:[a.x,a.y], z:a.z,
+      yaw:a.yaw,dimensions:a.dimensions_m, points, sector:sector(x,y)};
   });
 }
 const bucket = () => ({actors:0,hits:0,predictions:0,unmatched_predictions:0,exact_label_hits:0});
@@ -141,8 +142,15 @@ function evaluate(s, actors, predictions, frameNumber) {
     return {id:a.id,type:a.type,role:a.role,sector:a.sector,x:rounded(a.x),y:rounded(a.y),range_m:rounded(Math.hypot(a.x,a.y)),
       sampled_xy_returns:a.points,match:m?{id:m.prediction.id,label:m.prediction.label,
         status:m.prediction.status,error_m:rounded(m.distance),cameras:m.prediction.cameras}:null};
-  }),unmatched:predictions.filter(p=>inRange(p)&&!byPrediction.has(p)).map(p=>({id:p.id,label:p.label,
-    sector:sector(p.x,p.y),range_m:rounded(Math.hypot(p.x,p.y)),status:p.status}))};
+  }),unmatched:predictions.filter(p=>inRange(p)&&!byPrediction.has(p)).map(p=>{
+    const closest=actors.reduce((best,a)=>{
+      const distance=Math.hypot(p.x-a.x,p.y-a.y);
+      return !best||distance<best.distance?{id:a.id,role:a.role,distance}:best;
+    },null);
+    return {id:p.id,label:p.label,x:rounded(p.x),y:rounded(p.y),sector:sector(p.x,p.y),
+      range_m:rounded(Math.hypot(p.x,p.y)),status:p.status,nearest:closest?{
+        id:closest.id,role:closest.role,error_m:rounded(closest.distance)}:null};
+  })};
 }
 function summarize(s) {
   const percentile = q => s.residuals.length ? rounded(s.residuals[Math.ceil(s.residuals.length*q)-1]) : null;
@@ -193,9 +201,10 @@ function recording(directory) {
   return {frames:readFrames(),info};
 }
 
-export async function audit(directory,{memoryRevision,frameFile,townFile,staticFile,probes=[]}={}) {
+export async function audit(directory,{memoryRevision,memoryFile:sourceFile,frameFile,townFile,staticFile,probes=[],onFrame}={}) {
   const {frames,info}=recording(directory);
-  const memoryFile=path.join(root,'web/object-memory.mjs');
+  if(memoryRevision&&sourceFile)throw new Error('Choose one display source');
+  const memoryFile=sourceFile?path.resolve(sourceFile):path.join(root,'web/object-memory.mjs');
   const source=memoryRevision
     ? execFileSync('git',['show',memoryRevision+':web/object-memory.mjs'],{cwd:root})
     : fs.readFileSync(memoryFile);
@@ -229,26 +238,28 @@ export async function audit(directory,{memoryRevision,frameFile,townFile,staticF
       first??=prior;
       count++;
       const {ego,ego_z}=frame.observer_map;
-      const {sim_time,video_time,seed,run_id,scenario,tracks,detections,camera_detections,lidar,perception_version}=frame;
+      const {sim_time,video_time,seed,run_id,scenario,tracks,detections,camera_detections,lidar,radar,corner_radar,perception_version}=frame;
       const input={frame:frame.frame,sim_time,video_time,seed,run_id,scenario,tracks,detections,
-        camera_detections,lidar,perception_version,observer_map:{ego,ego_z}};
+        camera_detections,lidar,radar,corner_radar,perception_version,observer_map:{ego,ego_z}};
       context=contextOf(input,context);
       const display=advance(state,context,deps).map(p=>({id:p.key,label:p.label,...localPose(p.x,p.z,ego),
+        world:[p.x,p.z],foot:p.y,heading:p.heading,dimensions:[p.length,p.height,p.width],opacity:p.opacity,
         status:p.held?'remembered':'current'}));
-      const actors=observerActors(frame);
+      const actors=observerActors(frame,frame.observer_map.others,onFrame?60:limit);
       const tracker=frame.tracks.map(p=>({...p,status:p.coasting?'coasting':'measured'}));
-      const record={frame:frame.frame,sim_time:frame.sim_time,ego,progress_m:frame.progress_m,
+      const record={frame:frame.frame,sim_time:frame.sim_time,ego,progress_m:frame.progress_m,active_event:frame.active_event,
         event_stations:Object.fromEntries((frame.events??[]).map(e=>[e.kind,e.station_m])),
         tracker:evaluate(layers.tracker,actors,tracker,frame.frame),
         display:evaluate(layers.display,actors,display,frame.frame)};
+      const all=parked?[...actors,...observerActors(frame,parked.actors,onFrame?60:limit).filter(a=>Math.hypot(a.x,a.y)<=100)]:actors;
       if (parked) {
-        const all=[...actors,...observerActors(frame,parked.actors).filter(a=>Math.hypot(a.x,a.y)<=100)];
         const trackRows=evaluate(supplemented.tracker,all,tracker,frame.frame);
         const displayRows=evaluate(supplemented.display,all,display,frame.frame);
         record.with_parked={tracker:trackRows.unmatched,display:displayRows.unmatched};
         record.parked={tracker:trackRows.actors.filter(a=>a.role==='parked-map-vehicle'),
           display:displayRows.actors.filter(a=>a.role==='parked-map-vehicle')};
       }
+      if (onFrame) onFrame({frame,actors:all,tracker,display});
       if (fd!==null) fs.writeSync(fd,JSON.stringify(record)+'\n');
       if (target.has(frame.frame)) samples.push({...record,detection_labels:(frame.detections??[]).map(d=>d.label),
         detection_age_s:frame.detection_age_s});
@@ -265,9 +276,9 @@ export async function audit(directory,{memoryRevision,frameFile,townFile,staticF
 if (path.resolve(process.argv[1]??'')===fileURLToPath(import.meta.url)) {
   const {values,positionals}=parseArgs({allowPositionals:true,options:{
     output:{type:'string'},frames:{type:'string'},town:{type:'string'},'static-map':{type:'string'},
-    'memory-revision':{type:'string'},probe:{type:'string',multiple:true}}});
+    'memory-revision':{type:'string'},'memory-file':{type:'string'},probe:{type:'string',multiple:true}}});
   if (positionals.length!==1) throw new Error('Pass one recording directory and optional --output summary.json --frames frame-matches.jsonl --probe FRAME --memory-revision COMMIT');
-  const result=await audit(positionals[0],{memoryRevision:values['memory-revision'],frameFile:values.frames,
+  const result=await audit(positionals[0],{memoryRevision:values['memory-revision'],memoryFile:values['memory-file'],frameFile:values.frames,
     townFile:values.town,staticFile:values['static-map'],probes:values.probe?.map(Number)});
   const json=JSON.stringify(result,null,2)+'\n';
   if (values.output) fs.writeFileSync(values.output,json); else process.stdout.write(json);

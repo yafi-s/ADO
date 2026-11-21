@@ -5,6 +5,7 @@ import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {audit,match,sector} from '../tools/audit_city_perception.mjs';
 import {align} from '../tools/compare_city_encounters.mjs';
+import {layerStats} from '../tools/audit_city_motion.mjs';
 
 const at=(id,x,label='car')=>({id,x,y:0,label});
 const ids=pairs=>pairs.map(p=>[p.actor.id,p.prediction.id]);
@@ -67,4 +68,17 @@ test('encounter pairing is chronological, one-to-one, and excludes different veh
   next[0].ego[2]=1;
   next[3].actor.x=14;
   assert.deepEqual(align(base,next).map(([a,b])=>[a.frame,b.frame]),[[2,10],[3,11]]);
+});
+
+test('jitter subtracts true travel and yaw, reports ID swaps separately, and never bridges a lost frame',()=>{
+  const row=(frame,actual,estimated,id,heading,yaw)=>({frame,time_s:frame/10,world:[actual,0],yaw,dimensions:[4,2,2],
+    display:id===null?null:{id,world:[estimated,0],heading,dimensions:[4,2,2]},display_duplicates:[]});
+  const samples=[row(1,0,0,1,179,179),row(2,1,1,1,-179,-179),row(3,2,3,2,-179,-179),
+    row(4,3,4,null,-179,-179),row(5,4,6,2,-179,-179)];
+  const s=layerStats(samples,'display');
+  assert.equal(s.translation_m.n,2);
+  assert.equal(s.translation_m.max,1);
+  assert.equal(s.same_id.translation_m.max,0);
+  assert.equal(s.heading_degrees.max,0);
+  assert.deepEqual(s.id_changes,[{frame:3,time_s:.3,from:1,to:2}]);
 });

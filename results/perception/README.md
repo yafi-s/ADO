@@ -30,7 +30,7 @@ In a separate seed-212 commissioning run, the rear-right camera labeled the edge
 
 ![A long hedge in the right camera at the projected position, paired with the clipped rear-right car box](seed212-hedge.jpg)
 
-The encounter comparison pairs frames chronologically, maximizes the number of legal pairs and then minimizes pose error. A pair must have the same actor role and bearing sector, ego centers within 1 m, ego headings within 4°, route stations within 1.5 m and actor centers within 1.5 m in ego coordinates. Both recordings must be within 35 m of the event station and actor. For this crossing, every commissioning frame paired with a separate v0.2 frame, and the maximum ego-center displacement was 0.09 m. All paired frame numbers are in `native-preflight-aligned.json`.
+The encounter comparison pairs frames chronologically, maximizes the number of legal pairs and then minimizes pose error. A pair must have the same actor role and bearing sector, ego centers within 1 m, ego headings within 4°, route stations within 1.5 m and actor centers within 1.5 m in ego coordinates. Both recordings must be within 35 m of the actor. When a route passes the same actor more than once, the comparison selects the continuous nearby visit with the most frames during its scripted event. The nominal event station breaks ties. For this crossing, every commissioning frame paired with a separate v0.2 frame, and the maximum ego-center displacement was 0.09 m. All paired frame numbers are in `native-preflight-aligned.json`.
 
 ## Identical recording, two display versions
 

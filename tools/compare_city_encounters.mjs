@@ -13,12 +13,27 @@ async function encounters(file) {
     for(const a of f.tracker.actors) {
       // Background actors can have identical roles. Named event actors are unique.
       const station=f.event_stations[eventOf[a.role]??a.role];
-      if (!Number.isFinite(station)||Math.abs(f.progress_m-station)>35) continue;
+      if (!Number.isFinite(station)) continue;
       const entry={frame:f.frame,t:f.sim_time,progress:f.progress_m,ego:f.ego,actor:a,parked:f.parked,
+        nearestCue:Math.abs(f.progress_m-station),active:f.active_event===(eventOf[a.role]??a.role),
         tracker:a.match,display:f.display.actors.find(d=>d.id===a.id)?.match};
       if (!groups.has(a.role)) groups.set(a.role,[]);
       groups.get(a.role).push(entry);
     }
+  }
+  // Scripted events can activate well before their physical actor. Select the continuous
+  // in-range visit with most active-event frames; use proximity to the cue only as a tie-break.
+  for (const [role,rows] of groups) {
+    const visits=[];
+    for (const row of rows) {
+      let visit=visits.at(-1);
+      if (!visit||visit.rows.at(-1).frame+1!==row.frame) {
+        visit={rows:[],active:0,cue:Infinity};visits.push(visit);
+      }
+      visit.rows.push(row);visit.active+=Number(row.active);visit.cue=Math.min(visit.cue,row.nearestCue);
+    }
+    visits.sort((a,b)=>b.active-a.active||a.cue-b.cue||b.rows.length-a.rows.length);
+    groups.set(role,visits[0].rows);
   }
   return groups;
 }
