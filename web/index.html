@@ -152,7 +152,10 @@
 
         <div class="brief" id="brief" tabindex="-1">
           <section class="block card" id="sensing" aria-labelledby="sensing-h" hidden>
-            <h2 class="label" id="sensing-h">Sensor tracks <span id="track-count"></span></h2>
+              <div class="tracks-heading">
+                <h2 class="label" id="sensing-h">Sensor tracks <span id="track-count"></span></h2>
+                <button id="all-tracks" type="button" aria-expanded="false" aria-controls="tracks" hidden>Show all</button>
+              </div>
             <ul class="tracks" id="tracks"></ul>
             <p class="quiet" id="tracks-empty" hidden></p>
             <ul id="bearing-observations" aria-label="Camera-only observations" hidden></ul>

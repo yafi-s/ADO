@@ -66,6 +66,7 @@ const state = {
   liveRun: undefined,
   frame: null,
   selectedTrack: null,
+  allTracks: false,
   requestedTrack: null,
   riders: new Map(),
   riderFrames: [],
@@ -606,7 +607,10 @@ function renderSensing(frame) {
   }
 
   const groups=[...objects.values()];
-  const visibleTracks=groups.slice(0,TRACK_ROWS);
+  show('all-tracks', groups.length > TRACK_ROWS);
+  attr($('all-tracks'), 'aria-expanded', String(state.allTracks));
+  text('all-tracks', state.allTracks ? 'Show fewer' : `Show all ${groups.length}`);
+  const visibleTracks=state.allTracks ? groups : groups.slice(0,TRACK_ROWS);
   const selected=groups.find(group=>group.members.some(({track})=>track.id===state.selectedTrack));
   if(selected && !visibleTracks.includes(selected))visibleTracks[visibleTracks.length-1]=selected;
   const rows = visibleTracks.map(({key,group,members}) => {
@@ -1407,6 +1411,7 @@ function beginSource(source) {
   clearBearings();
   state.source = source;
   state.entry = null;
+  state.allTracks = false;
   state.requestedTrack = null;
   state.run = null;
   state.replay = null;
@@ -1818,6 +1823,10 @@ function closeMenu() {
 }
 
 function bind() {
+  $('all-tracks').addEventListener('click', () => {
+    state.allTracks = !state.allTracks;
+    renderSensing(state.frame);
+  });
   for (const button of sourceButtons) {
     button.addEventListener('click', () => {
       if (button.dataset.source === 'live') {
