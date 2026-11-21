@@ -210,7 +210,11 @@ class Encounter:
 
 class JourneyScenario(Scenario):
     """All movement commands target NPCs. The caller drives and samples the single ego."""
-    def __init__(self, world, kind, seed, perturb=False, district=None, crossing_delay=0., destination=None, *, barriers=False):
+    def __init__(self, world, kind, seed, perturb=False, district=None, crossing_delay=0., destination=None, *,
+                 barriers=False, population_profile="standard"):
+        if population_profile not in ("standard", "city-life"):
+            raise ValueError(f"Unknown journey population profile: {population_profile}")
+        self.population_profile = population_profile
         if kind != "journey":
             raise ValueError("JourneyScenario expects kind='journey'")
         self.kind = self.name = kind
@@ -336,8 +340,12 @@ class JourneyScenario(Scenario):
             self.events.sort(key=lambda e:e.s)
             if sorted(e.kind for e in self.events) != sorted(required):
                 raise RuntimeError("Journey setup does not match the course encounter contract")
-            from .journey_ambient import JourneyAmbient
-            self.ambient = JourneyAmbient(self)
+            if population_profile == "city-life":
+                from .city_population import CityPopulation
+                self.ambient = CityPopulation(self)
+            else:
+                from .journey_ambient import JourneyAmbient
+                self.ambient = JourneyAmbient(self)
             self.world.set_weather(getattr(carla.WeatherParameters, self.weather))
         except BaseException:
             self.close()
@@ -1018,11 +1026,18 @@ class JourneyScenario(Scenario):
             pose = actor.get_transform()
             p = pose.location
             if math.hypot(p.x-center.x,p.y-center.y) <= radius:
-                box = actor.bounding_box.extent
+                bounds = actor.bounding_box
+                box = bounds.extent
                 positions.append(dict(actor_id=actor.id, type=kind, role=role, blueprint=actor.type_id,
                                       dimensions_m=[round(2*box.x, 2), round(2*box.z, 2), round(2*box.y, 2)],
                                       x=round(p.x,2),y=round(p.y,2),z=round(p.z,2),
                                       yaw=round(pose.rotation.yaw,2)))
+                if getattr(self, "population_profile", None) == "city-life":
+                    center = bounds.location
+                    local = bounds.rotation
+                    positions[-1].update(bbox_offset_m=[round(v, 3) for v in (center.x, center.y, center.z)],
+                                         bbox_rotation_deg=[round(v, 2) for v in (local.pitch, local.yaw, local.roll)],
+                                         pitch=round(pose.rotation.pitch, 2), roll=round(pose.rotation.roll, 2))
         return positions
 
     def metrics(self):

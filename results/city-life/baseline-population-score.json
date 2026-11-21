@@ -1,0 +1,243 @@
+{
+  "schema": "ado-city-population-score-v1",
+  "first_frame": 2212,
+  "last_frame": 5565,
+  "speed_threshold_mps": {
+    "car": 1.0,
+    "pedestrian": 0.5
+  },
+  "motion_window_s": 0.5,
+  "capture_frames": 3354,
+  "source": "native actor centre displacement across six consecutive 10 Hz frames",
+  "includes": "staged and background road users; cyclists excluded",
+  "radii_m": {
+    "35": {
+      "scored_frames": 3349,
+      "moving_car_frames": 633,
+      "moving_pedestrian_frames": 616,
+      "both_frames": 95,
+      "two_of_each_frames": 0,
+      "peak": {
+        "cars": 1,
+        "pedestrians": 1,
+        "simultaneous_frame": 2717,
+        "simultaneous_cars": 1,
+        "simultaneous_pedestrians": 1
+      }
+    },
+    "50": {
+      "scored_frames": 3349,
+      "moving_car_frames": 876,
+      "moving_pedestrian_frames": 616,
+      "both_frames": 113,
+      "two_of_each_frames": 0,
+      "peak": {
+        "cars": 2,
+        "pedestrians": 1,
+        "simultaneous_frame": 2717,
+        "simultaneous_cars": 1,
+        "simultaneous_pedestrians": 1
+      }
+    },
+    "65": {
+      "scored_frames": 3349,
+      "moving_car_frames": 920,
+      "moving_pedestrian_frames": 616,
+      "both_frames": 123,
+      "two_of_each_frames": 0,
+      "peak": {
+        "cars": 2,
+        "pedestrians": 1,
+        "simultaneous_frame": 2717,
+        "simultaneous_cars": 1,
+        "simultaneous_pedestrians": 1
+      }
+    },
+    "100": {
+      "scored_frames": 3349,
+      "moving_car_frames": 954,
+      "moving_pedestrian_frames": 616,
+      "both_frames": 148,
+      "two_of_each_frames": 0,
+      "peak": {
+        "cars": 2,
+        "pedestrians": 1,
+        "simultaneous_frame": 2717,
+        "simultaneous_cars": 1,
+        "simultaneous_pedestrians": 1
+      }
+    }
+  },
+  "actors": [
+    {
+      "actor_id": 601,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "signal_queue",
+      "frames": 560,
+      "moving_frames": 106,
+      "observed_distance_m": 68.612,
+      "max_step_m": 0.73
+    },
+    {
+      "actor_id": 602,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0051",
+      "role": "pedestrian",
+      "frames": 989,
+      "moving_frames": 145,
+      "observed_distance_m": 17.656,
+      "max_step_m": 0.13
+    },
+    {
+      "actor_id": 603,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0029",
+      "role": "pedestrian-delayed",
+      "frames": 867,
+      "moving_frames": 138,
+      "observed_distance_m": 16.8,
+      "max_step_m": 0.13
+    },
+    {
+      "actor_id": 604,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "lead",
+      "frames": 1072,
+      "moving_frames": 200,
+      "observed_distance_m": 117.637,
+      "max_step_m": 0.85
+    },
+    {
+      "actor_id": 605,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "braking",
+      "frames": 607,
+      "moving_frames": 179,
+      "observed_distance_m": 116.164,
+      "max_step_m": 0.821
+    },
+    {
+      "actor_id": 606,
+      "kind": "car",
+      "blueprint": "vehicle.sprinter.mercedes",
+      "role": "occluder",
+      "frames": 801,
+      "moving_frames": 0,
+      "observed_distance_m": 0.0,
+      "max_step_m": 0.0
+    },
+    {
+      "actor_id": 607,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0045",
+      "role": "occluded",
+      "frames": 785,
+      "moving_frames": 137,
+      "observed_distance_m": 16.649,
+      "max_step_m": 0.13
+    },
+    {
+      "actor_id": 608,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "oncoming",
+      "frames": 484,
+      "moving_frames": 123,
+      "observed_distance_m": 63.57,
+      "max_step_m": 0.58
+    },
+    {
+      "actor_id": 616,
+      "kind": "car",
+      "blueprint": "vehicle.fuso.mitsubishi",
+      "role": "stopped_bus",
+      "frames": 1066,
+      "moving_frames": 0,
+      "observed_distance_m": 0.04,
+      "max_step_m": 0.01
+    },
+    {
+      "actor_id": 619,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0026",
+      "role": "background",
+      "frames": 1089,
+      "moving_frames": 36,
+      "observed_distance_m": 3.833,
+      "max_step_m": 0.114
+    },
+    {
+      "actor_id": 620,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0046",
+      "role": "background",
+      "frames": 607,
+      "moving_frames": 35,
+      "observed_distance_m": 3.668,
+      "max_step_m": 0.108
+    },
+    {
+      "actor_id": 621,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0046",
+      "role": "background",
+      "frames": 902,
+      "moving_frames": 33,
+      "observed_distance_m": 3.406,
+      "max_step_m": 0.11
+    },
+    {
+      "actor_id": 622,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0036",
+      "role": "background",
+      "frames": 592,
+      "moving_frames": 47,
+      "observed_distance_m": 4.881,
+      "max_step_m": 0.11
+    },
+    {
+      "actor_id": 623,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0022",
+      "role": "background",
+      "frames": 783,
+      "moving_frames": 45,
+      "observed_distance_m": 4.83,
+      "max_step_m": 0.11
+    },
+    {
+      "actor_id": 624,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "background",
+      "frames": 689,
+      "moving_frames": 116,
+      "observed_distance_m": 53.417,
+      "max_step_m": 0.528
+    },
+    {
+      "actor_id": 625,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "background",
+      "frames": 770,
+      "moving_frames": 148,
+      "observed_distance_m": 85.052,
+      "max_step_m": 0.665
+    },
+    {
+      "actor_id": 626,
+      "kind": "car",
+      "blueprint": "vehicle.lincoln.mkz",
+      "role": "background",
+      "frames": 681,
+      "moving_frames": 126,
+      "observed_distance_m": 59.494,
+      "max_step_m": 0.522
+    }
+  ]
+}
