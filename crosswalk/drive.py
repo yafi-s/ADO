@@ -92,7 +92,8 @@ def update_instructor(scene, teacher):
 def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             recording=None, realtime=False, max_steps=None, district=None, crossing_delay=0.,
             destination=None, run_id=None, change_request=None, weather="seeded", grip=1.0,
-            range_only=False, scene_factory=Scenario, observation_factory=None):
+            range_only=False, scene_factory=Scenario, observation_factory=None, surround=False, tactical=False,
+            evidence_dir=None):
     """Apply t's observation to t+1. Oracle labels and metrics are isolated from inference."""
     cv2.setNumThreads(2)
     data, targets = [], []
@@ -120,14 +121,25 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             stack.callback(body.close)
         visuals = live is not None or recording is not None
         display_path = [_xy(p) for p in scene.route[:-1:4]] + [_xy(scene.route[-1])] if visuals else []
-        if visuals:
+        surround_perception = surround_detector = signals = tactical_pass = None
+        if surround:
+            if range_only:
+                raise ValueError("Surround tracking needs RGB views")
+            from .surround import SurroundPerception
+            from .surround_vision import SurroundDetector
+            from .signal_observer import SignalObserver
+            surround_perception = SurroundPerception(evidence_dir=evidence_dir)
+            surround_detector = SurroundDetector()
+            signals = SignalObserver(world) if visuals else None
+        elif visuals:
             from .tracking import Tracker
             spatial_tracker = Tracker()
-        if visuals:
-            include_aux = live is not None or not getattr(recording, "primary_rig_only", False)
-            rig = Rig(world, scene.ego, visuals=include_aux, range_only=range_only)
-        else:
-            rig = Rig(world, scene.ego, visuals=visuals, range_only=range_only)
+        if tactical:
+            from .overtake import TacticalPass
+            tactical_pass = TacticalPass.from_scene_map(scene)
+        include_aux = live is not None or recording is not None and not getattr(recording, "primary_rig_only", False)
+        rig_options = {"surround": True} if surround else {}
+        rig = Rig(world, scene.ego, visuals=include_aux, range_only=range_only, **rig_options)
         stack.callback(rig.close)
         # Settle the suspension and prime the GPU cameras while all actors wait.
         for _ in range(8):
@@ -183,6 +195,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 local_route = navigation.read(scene.ego)
             else:
                 points = navigation.read(scene.ego, (3., 7., 13., 18., 25., 32., 40.))
+                if tactical_pass is not None:
+                    points = tactical_pass.preview(scene.ego, obs["lidar"], points, speed)
                 local_route = points[:6]
             if range_only:
                 from .policy import range_features
@@ -190,6 +204,12 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             else:
                 if step % 2 == 0:
                     detections = detector.detect(obs["front"])
+                if surround_perception is not None:
+                    pose = scene.ego.get_transform()
+                    measured_front = surround_detector.detect(obs["front"]) if step % 2 == 0 else []
+                    obs["surround_tracks"] = surround_perception.update(
+                        surround_detector, obs, measured_front, (pose.location.x, pose.location.y, pose.rotation.yaw),
+                        step * DT, step)
                 if observer is None:
                     x = features(obs["front"], obs["lidar"], obs["radar"], speed, detections,
                                  navigation=local_route, side_views=(obs["left"], obs["right"]))
@@ -211,6 +231,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                     targets.append((steer, throttle, brake))
                 pending = x
             else:
+                if getattr(model, "uses_posted_limit", False):
+                    model.posted_limit_kmh = scene.ego.get_speed_limit()
                 if observer is not None and hasattr(observer, "observe_and_predict"):
                     pose = scene.ego.get_transform()
                     predicted = observer.observe_and_predict(obs, detections, local_route, speed,
@@ -220,6 +242,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                     predicted = model.predict_range(x) if range_only else model.predict(x)
                 if lamp_expert is not None and route_lamps is not None:
                     predicted = lamp_expert.apply(route_lamps.observe(scene.ego, obs), speed, predicted)
+                if tactical_pass is not None:
+                    predicted = tactical_pass.apply(predicted, speed)
                 steer, throttle, brake = (float(v) for v in predicted)
                 scene.ego.apply_control(carla.VehicleControl(steer=steer, throttle=throttle, brake=brake))
             # Actor geometry below this line is only consulted for scoring.
@@ -241,6 +265,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 "yield_violations": state["yield_violations"],
                 "event_triggered": state["event_triggered"], "event_cleared": state["event_cleared"],
             }
+            if getattr(model, "uses_posted_limit", False):
+                row["posted_limit_kmh"] = round(float(model.posted_limit_kmh), 2)
             if teacher is not None:
                 row["instructor_speed_mps"] = teacher_speed
             if "events" in state:
@@ -248,15 +274,35 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 row["events"] = state["events"]
             if observer is not None and hasattr(observer,"last_info"):
                 row["planner"] = observer.last_info
+            if tactical_pass is not None:
+                row["tactical_pass"] = dict(tactical_pass.info)
             trace.append(row)
             if visuals:
                 lp, rp = _sensor_plot(obs["lidar"], obs["radar"])
                 pose = scene.ego.get_transform()
-                tracks = spatial_tracker.update(obs["lidar"], obs["radar"], detections if step % 2 == 0 else [],
-                                                (pose.location.x, pose.location.y, pose.rotation.yaw), step*DT)
-                telemetry = dict(row, lidar=lp, radar=rp, detections=detections, detection_age_s=(step % 2)*DT,
+                measured = {}
+                observer_map = _observer_map(scene, display_path)
+                if surround_perception is not None:
+                    tracks = obs["surround_tracks"]
+                    signal_reads = signals.read(pose, obs, step * DT)
+                    surface = obs["lidar"][:, :3].copy()
+                    surface[:, 2] += 2.30
+                    surface = surface[(surface[:, 2] > .20) & (surface[:, 2] < 5.0)]
+                    sparse = surface[::max(1, math.ceil(len(surface) / 180))]
+                    measured.update(perception_version="surround-v1", signals=signal_reads,
+                                    lidar_xyz=sparse.astype(float).round(2).tolist(),
+                                    corner_radar=surround_perception.radar_points,
+                                    camera_detections=surround_perception.view_detections,
+                                    camera_inference_age_s=surround_perception.view_ages.copy())
+                    observer_map["signal_reference"] = signals.score_reference(signal_reads)
+                else:
+                    tracks = spatial_tracker.update(obs["lidar"], obs["radar"], detections if step % 2 == 0 else [],
+                                                    (pose.location.x, pose.location.y, pose.rotation.yaw), step*DT)
+                display_boxes = (surround_perception.view_detections.get("front", []) if surround_perception is not None
+                                 else detections)
+                telemetry = dict(row, lidar=lp, radar=rp, detections=display_boxes, detection_age_s=(step % 2)*DT,
                                  run_id=run_id, destination=state["destination"], crossing_delay=crossing_delay,
-                                 observer_map=_observer_map(scene, display_path), tracks=tracks)
+                                 observer_map=observer_map, tracks=tracks, **measured)
                 if recording:
                     recording.append(telemetry, obs)
                 if live:
@@ -313,7 +359,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                        district=district, destination=state["destination"], crossing_delay_s=crossing_delay,
                        camera_rendering=rig.rendering, ego_blueprint=scene.ego.type_id,
                        background_actors=scene.ambient.counts if scene.ambient else {"walkers":0,"vehicles":0},
-                       sensor_configuration="lidar-radar" if range_only else "three-camera-lidar-radar",
+                       sensor_configuration=("five-camera-360-lidar-five-radar" if surround else
+                                             "lidar-radar" if range_only else "three-camera-lidar-radar"),
                        route_id=state["route_id"], road_ids=state["road_ids"], junction_ids=state["junction_ids"],
                        event_triggered=state["event_triggered"], event_cleared=state["event_cleared"],
                        red_light_violations=state["red_light_violations"],

@@ -1,5 +1,6 @@
 """Record and publish one continuous, closed-loop CARLA city drive."""
 import argparse
+from contextlib import ExitStack
 from functools import partial
 import json
 import math
@@ -10,6 +11,8 @@ import subprocess
 from tempfile import mkdtemp
 
 from . import city_map
+import cv2
+
 from .drive import episode
 from .experiment import PROJECT, fingerprint, read_json, write_json
 from .runtime import MAP_NAME, producer_info, simulator
@@ -68,6 +71,32 @@ class JourneyWorld(ObservedWorld):
 
     def spawn_actor(self, *args, **kwargs):
         return self._remember_ego(self.world.spawn_actor(*args, **kwargs))
+
+
+PERIMETER_VIEWS = ("left", "right", "rear_left", "rear_right")
+
+
+class PerimeterCapture(PerceptionCapture):
+    def __init__(self, camera, front, rows, streams):
+        super().__init__(camera, front, rows)
+        self.streams = streams
+
+    def append(self, telemetry, observations):
+        super().append(telemetry, observations)
+        for name, stream in self.streams.items():
+            rgb = observations[name]
+            if rgb.shape != (180, 320, 3) or rgb.dtype.name != "uint8":
+                raise ValueError(f"Unexpected {name} perimeter camera at frame {telemetry['frame']}")
+            ok, data = cv2.imencode(".jpg", rgb[:, :, ::-1], [cv2.IMWRITE_JPEG_QUALITY, 94])
+            if not ok: raise RuntimeError(f"Failed to encode {name} camera")
+            stream.write(data.tobytes())
+
+
+def perimeter_artifacts(source):
+    views = tuple(source.get("perimeter_views", ()))
+    if views and views != PERIMETER_VIEWS:
+        raise ValueError("Unexpected perimeter camera names")
+    return tuple(name + ".mp4" for name in views)
 
 
 def _new_scene(scene_factory, observed_world, *args, **kwargs):
@@ -210,6 +239,16 @@ def _load_inputs(model_path):
     policy = dict(path=path.name, sha256=saved_sha, schema=schema,
                   camera_profile=fit["render_profile"], camera_profile_source_sha256=fingerprint(fit_path),
                   code_sha256=_source_checksums(JourneyScenario, type(model)))
+    if schema == "ado-city-cruise-v1":
+        from . import camera_geometry, overtake, radar_geometry, signal_observer, surround, surround_vision, tracking
+        for module in (camera_geometry, overtake, radar_geometry, signal_observer, surround, surround_vision, tracking):
+            source = Path(module.__file__)
+            policy["code_sha256"][source.name] = fingerprint(source)
+        policy["tactical_sha256"] = fingerprint(overtake.MODEL)
+        policy["surround_detector_sha256"] = fingerprint(surround_vision.MODEL_PATH)
+        policy["signal_classifier_sha256"] = fingerprint(signal_observer.CALIBRATION)
+        policy["control_inputs"] = "Navigation, NanoDet front RGB, camera-measured signal color, lidar and forward radar. The pass planner also measures both lanes in 360-degree lidar."
+        policy["display_inputs"] = "Five registered RGB cameras, 360-degree lidar and five Doppler radars."
     return model, JourneyScenario, model.new_observer, policy
 
 
@@ -228,22 +267,26 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
     town = read_json(raw / MAP_ASSET)
     if town["producer"] != producer or not town["roads"]:
         raise ValueError("Viewer road geometry must come from the recording world")
-    trial_id = NAME if output.name == NAME else f"city-{seed}-{policy['sha256'][:8]}"
+    trial_id = output.name if output.name in (NAME, "surround-city") else f"city-{seed}-{policy['sha256'][:8]}"
     with ((raw / "chase.mjpeg").open("wb") as chase, (raw / "front.mjpeg").open("wb") as front,
           (raw / "perception.jsonl").open("w", encoding="utf-8", newline="\n") as rows,
-          policy_profile(policy["camera_profile"])):
+          policy_profile(policy["camera_profile"]), ExitStack() as extras):
         camera = JourneyCamera(*CHASE_SIZE, DLSS_PERCENTAGE, chase)
-        perception = PerceptionCapture(camera, front, rows)
+        surround = policy.get("schema") == "ado-city-cruise-v1"
+        views = PERIMETER_VIEWS if surround else ()
+        streams = {name: extras.enter_context((raw / f"{name}.mjpeg").open("wb")) for name in views}
+        perception = PerimeterCapture(camera, front, rows, streams) if surround else PerceptionCapture(camera, front, rows)
+        episode_options = dict(surround=True, tactical=True, evidence_dir=stage / "surround-evidence") if surround else {}
         observed = JourneyWorld(world, camera)
         try:
             summary, trace, *_ = episode(
                 observed, KIND, seed, policy.get("schema", "ado-behavior-v2"), model, weather="ClearNoon", district="townwide",
                 recording=perception, run_id=trial_id, max_steps=max_steps, destination=destination,
-                scene_factory=partial(_new_scene, scene_factory), observation_factory=observer_factory,
+                scene_factory=partial(_new_scene, scene_factory), observation_factory=observer_factory, **episode_options,
             )
         finally:
             camera.close()
-        for stream in (chase, front, rows):
+        for stream in (chase, front, rows, *streams.values()):
             _journal(stream)
     start, frames, telemetry = _camera_interval(summary, trace, camera, perception)
     if any(row["map"].split(".", 1)[0] != producer["map"] for row in trace):
@@ -261,14 +304,16 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
                   chase_source_frames=len(camera.rows), front_source_frames=len(perception.front_offsets),
                   map_asset=MAP_ASSET, required_event_kinds=list(expected_events), summary=summary,
                   **_result(summary, expected_events))
-    source["raw_sha256"] = {name: fingerprint(raw / name) for name in (*RAW_FILES, MAP_ASSET)}
+    source["perimeter_views"] = list(views)
+    source["raw_sha256"] = {name: fingerprint(raw / name) for name in
+                            (*RAW_FILES, MAP_ASSET, *(v + ".mjpeg" for v in views))}
     write_json(stage / "capture.json", source)
 
 
 def _install_delivery(stage):
     manifest = read_json(Path(stage) / "manifest.json")
     artifacts = (*ARTIFACTS, MAP_ASSET) if manifest.get("map_asset") == MAP_ASSET else ARTIFACTS
-    return install_staged(stage, artifacts=artifacts, retry_module=MODULE)
+    return install_staged(stage, artifacts=artifacts + perimeter_artifacts(manifest), retry_module=MODULE)
 
 
 def finalize_staged(stage, *, include_attempt=False):
@@ -280,6 +325,8 @@ def finalize_staged(stage, *, include_attempt=False):
     raw = stage / "raw"
     map_asset = source.get("map_asset")
     raw_files = (*RAW_FILES, MAP_ASSET) if map_asset == MAP_ASSET else RAW_FILES
+    perimeter_artifacts(source)
+    raw_files += tuple(v + ".mjpeg" for v in source.get("perimeter_views", []))
     if (map_asset not in (None, MAP_ASSET) or not output.is_absolute() or source["capture_id"] != stage.name
             or set(source["raw_sha256"]) != set(raw_files)
             or any(fingerprint(raw / name) != sha for name, sha in source["raw_sha256"].items())):
@@ -297,6 +344,9 @@ def finalize_staged(stage, *, include_attempt=False):
         masters[name] = dict(path=f"master/{name}.mp4", sha256=fingerprint(path), file_bytes=path.stat().st_size,
                              **info)
         video[name] = _web_video(path, info, final / f"{name}.mp4", count)
+    views = source.get("perimeter_views", [])
+    for name in views:
+        video[name] = encode_and_check(raw / f"{name}.mjpeg", final / f"{name}.mp4", (320, 180), 0, count)
     copied = ("poster.jpg", "front.jpg", "telemetry.json", "replay.json")
     if map_asset:
         copied += (MAP_ASSET,)
@@ -310,18 +360,18 @@ def finalize_staged(stage, *, include_attempt=False):
     directory = output.relative_to(media).as_posix() if output.is_relative_to(media) else None
     map_name = source["producer"]["map"]
     map_url = None
-    artifacts = ARTIFACTS
+    artifacts = ARTIFACTS + perimeter_artifacts(source)
     if map_asset:
         map_url = f"./media/{directory}/{map_asset}" if directory is not None else f"./{map_asset}"
         artifacts += (MAP_ASSET,)
     if (source["passed"] or include_attempt) and directory is not None:
-        label = "Long city drive" if source["passed"] else f'City development drive · {source["summary"]["outcome"]}'
-        catalog = dict(label=label, path=directory, cameras=["chase", "front"], trial_id=source["trial_id"],
+        label = ("Surround city drive" if views else "Long city drive") if source["passed"] else f'City development drive · {source["summary"]["outcome"]}'
+        catalog = dict(label=label, path=directory, cameras=["chase", "front", *views], trial_id=source["trial_id"],
                        manifest=f"./media/{directory}/manifest.json", **disclosure)
         if map_url:
             catalog.update(map_url=map_url, map=map_name)
     manifest = {key: value for key, value in source.items() if key != "original_output"}
-    manifest.update(purpose="Continuous CARLA city drive", **disclosure, catalog_entry=catalog,
+    manifest.update(camera_videos=video, purpose="Continuous CARLA city drive", **disclosure, catalog_entry=catalog,
                     frame_period_s=DT, video=video["chase"], front_video=video["front"], replay="replay.json",
                     telemetry="telemetry.json", outcome=source["summary"]["outcome"], master=masters,
                     source_mode="one closed-loop simulation with simultaneous camera capture", teacher=False,

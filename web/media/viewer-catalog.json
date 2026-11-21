@@ -1,5 +1,27 @@
 [
   {
+    "label": "Yield before overtaking",
+    "path": "overtake-yield",
+    "trial_id": "overtake-yield",
+    "cameras": [
+      "chase",
+      "front",
+      "left",
+      "right",
+      "rear_left",
+      "rear_right"
+    ],
+    "cohort": "tactical-study",
+    "benchmark_member": false,
+    "selection_note": "Supplemental Town03 moving-lead study. The city driver selects its pass from onboard range measurements.",
+    "district": "Boulevard",
+    "map": "Town03_Opt",
+    "map_url": "./media/overtake-yield/town.json",
+    "manifest": "./media/overtake-yield/manifest.json",
+    "replay_pack_url": "./media/overtake-yield/replay-pack.json.gz",
+    "replay_pack_sha256": "e071b8633a00606f5563c602d01bb3f971e04415d88f9595b111ae2857c53c24"
+  },
+  {
     "label": "Long city drive",
     "path": "long-city-drive",
     "cameras": [
@@ -144,5 +166,27 @@
       "front",
       "chase"
     ]
+  },
+  {
+    "label": "Pass a moving car",
+    "path": "overtake-clear",
+    "trial_id": "overtake-clear",
+    "cameras": [
+      "chase",
+      "front",
+      "left",
+      "right",
+      "rear_left",
+      "rear_right"
+    ],
+    "cohort": "tactical-study",
+    "benchmark_member": false,
+    "selection_note": "Supplemental Town03 moving-lead study. The city driver selects its pass from onboard range measurements.",
+    "district": "Boulevard",
+    "map": "Town03_Opt",
+    "map_url": "./media/overtake-clear/town.json",
+    "manifest": "./media/overtake-clear/manifest.json",
+    "replay_pack_url": "./media/overtake-clear/replay-pack.json.gz",
+    "replay_pack_sha256": "9ec40e49adde74c10367458eea47f99bb17ae85b575937949933b9851ede1b42"
   }
 ]

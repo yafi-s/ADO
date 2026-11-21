@@ -33,6 +33,10 @@ def publish(web, directory, *, feature=False, source_revision=None):
     if manifest["policy"]["schema"] == "ado-city-policy-v1":
         entry["selection_note"] = ("One continuous Town03 development drive on the city training course. "
                                    "Navigation supplied the lane-change path around the bus.")
+    tactical = manifest.get("cohort") == "tactical-study"
+    if manifest["policy"]["schema"] == "ado-city-cruise-v1" and not tactical:
+        entry["selection_note"] = ("Town03 development course with staged traffic. The fitted pass planner "
+                                   "uses measured clearance in the current and neighboring lanes.")
     base = f"./media/{folder}"
     summary = manifest["summary"]
     show = {key: summary[key] for key in ("scenario", "policy", "seed", "destination", "district", "outcome",
@@ -44,8 +48,12 @@ def publish(web, directory, *, feature=False, source_revision=None):
                 quality_requested=manifest["quality_requested"], map=entry["map"], map_url=entry["map_url"],
                 width=manifest["video"]["width"], height=manifest["video"]["height"],
                 manifest_url=entry["manifest"], log_url=f"{base}/telemetry.json", video_url=f"{base}/chase.mp4",
-                encounters_handled=sum(e["handled"] for e in summary["events"]),
-                encounters_planned=len(manifest["required_event_kinds"]))
+                cameras=entry["cameras"])
+    if tactical:
+        show["tactical_score"] = manifest["score"]
+    else:
+        show.update(encounters_handled=sum(e["handled"] for e in summary["events"]),
+                    encounters_planned=len(manifest["required_event_kinds"]))
     if source_revision:
         source_root = web.resolve().parent
         commit = subprocess.check_output(["git", "rev-parse", "--verify", f"{source_revision}^{{commit}}"],
@@ -58,6 +66,9 @@ def publish(web, directory, *, feature=False, source_revision=None):
             if blob.replace(b"\r\n", b"\n") != (source_root / path).read_bytes().replace(b"\r\n", b"\n"):
                 raise ValueError(f"Source revision differs from the recorded capture: {name}")
         show["source"] = {"commit": commit, "url": f"https://github.com/yafi-s/ADO/tree/{commit}"}
+    else:
+        canonical = json.dumps(manifest["policy"]["code_sha256"], sort_keys=True).encode()
+        show["source"] = {"fingerprint": hashlib.sha256(canonical).hexdigest(), "url": entry["manifest"]}
     pack = recording / "replay-pack.json.gz"
     if pack.is_file():
         entry["replay_pack_url"] = show["replay_pack_url"] = f"{base}/{pack.name}"
@@ -65,7 +76,8 @@ def publish(web, directory, *, feature=False, source_revision=None):
     build_path = media / "build.json"
     catalog_path = media / "viewer-catalog.json"
     build = json.loads(build_path.read_bytes())
-    build["showcases"] = [show, *(r for r in build["showcases"] if r["trial_id"] != show["trial_id"])]
+    section = "development_runs" if tactical else "showcases"
+    build[section] = [show, *(r for r in build[section] if r["trial_id"] != show["trial_id"])]
     catalog = [e for e in json.loads(catalog_path.read_bytes()) if e["trial_id"] != entry["trial_id"]]
     catalog.insert(0 if feature else len(catalog), entry)
     write_json(build_path, build)
