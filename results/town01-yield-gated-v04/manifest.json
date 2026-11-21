@@ -1,0 +1,126 @@
+{
+  "policy": "interaction-gated-v04",
+  "schedule": {
+    "known_failure": [
+      [
+        105,
+        "left"
+      ],
+      [
+        104,
+        "pedestrian-delayed"
+      ],
+      [
+        107,
+        "left"
+      ],
+      [
+        2111,
+        "left"
+      ],
+      [
+        2112,
+        "left"
+      ],
+      [
+        2113,
+        "left"
+      ]
+    ],
+    "known_control": [
+      [
+        104,
+        "left"
+      ],
+      [
+        103,
+        "pedestrian-delayed"
+      ],
+      [
+        104,
+        "turn"
+      ],
+      [
+        104,
+        "clear"
+      ]
+    ],
+    "fresh_challenge": [
+      [
+        5261,
+        "left"
+      ],
+      [
+        5262,
+        "left"
+      ],
+      [
+        5261,
+        "pedestrian-delayed"
+      ],
+      [
+        5262,
+        "pedestrian-delayed"
+      ],
+      [
+        5262,
+        "turn"
+      ],
+      [
+        5262,
+        "clear"
+      ]
+    ]
+  },
+  "hashes": {
+    "crosswalk/__init__.py": "cbb3015e9518f7c3b9079b14001455b026da244cdfb36547c8f15ccbba618c64",
+    "crosswalk/ambient.py": "e7c8a6382338ab0968449eb139a2e4e2501539acb98f019ccd971e6b681d9089",
+    "crosswalk/barrier.py": "ab0eb400ac48f0d0f012a6e09422505eb51d5aeae22fb78759e485d92858f02e",
+    "crosswalk/barrier_chain.py": "f3b3f4ee3c29f4713555adda05497d2737722464ef05cb4cefe25af1e9a2ef4c",
+    "crosswalk/behavior_v2.py": "a996e4f630912183e7af728ff64b7e1951a3f404660663f6b7f9c80b5769f06f",
+    "crosswalk/camera_geometry.py": "f60f1ecd64a973d53bc33137a63a31136ecd3b56711449ea80bef75007d69e41",
+    "crosswalk/control.py": "dbbdc96268e8450f29a04f42b9b418bfdb2190e262e0d6e889fb31c893eee5c1",
+    "crosswalk/cycle_association.py": "1b89fc5ca7ed383ffa06a36fd6bf8a895f72e0ac38cc22e3291fb6c6983e5667",
+    "crosswalk/district.py": "6a9f2e0af74562b178436a8c7f96b8b661bdfd1fe5df40f10b285532412d5101",
+    "crosswalk/drive.py": "76af2c2bdc4a3af5e1f7137df696d99d9c42591e375c71ab00bc25623ca93a66",
+    "crosswalk/experiment.py": "447c7629bdec262f8cbbeacbf286180f20f876eb8a0915c7a4cb0040b699a27d",
+    "crosswalk/lamp.py": "90a551a1e7587d8df46b8b99603ac6c3a670d9673c326e14cb1da7e7c26e934e",
+    "crosswalk/lidar_motion.py": "fd277aa2bab6a1261b4ef8a78b9e573a2487abf36b5feeec21f51b421e5b4ec8",
+    "crosswalk/overtake.py": "4bd0ea08828c68894a0cedb888d59f14cd5ca396a03394bd5c153baf31d1a632",
+    "crosswalk/policy.py": "609dc843d6ea52f66301c441b943e75f691702ca502e64d390d95c613d45a907",
+    "crosswalk/radar_geometry.py": "0def267b7eebef4d434cf82d77ede29100adcad647643ba58f12bd2677aef642",
+    "crosswalk/report.py": "2acaa548084f52f39f73a54f3becf443e49662d8d7362005b074cdc6292d9773",
+    "crosswalk/revision_benchmark.py": "d4c57bf5d0dfa69d0cc7461a369cb917248c3dbb5a1871ce52c19538437f411f",
+    "crosswalk/robotaxi.py": "34854a06688c080cd91c3d02e1319d79f7ffd5300fcf0ee1b81123a3311fcc19",
+    "crosswalk/runtime.py": "4adfe36c062fb47ef278dd2a5631bf64e67631577282dcacbab99cbecb76a4f9",
+    "crosswalk/sensors.py": "e5b6de1ffe0ee537666914a956f085c1a7adf9d4191edfbbb6339c6523a6f5d3",
+    "crosswalk/signal_observer.py": "9261d4ff8296c57d75f6266664d07b71d620e88249dcc37d31e98e666fdfddb9",
+    "crosswalk/signal_vision.py": "f03f29ff1a32c1bb28f12a78cba1a3ba4d92a31d42e1e65a5fdf448edea901b3",
+    "crosswalk/speed_signs.py": "92819bd8083bb2038c04ef1432541d96410a397424239e14fb441d89eb4bdf7b",
+    "crosswalk/steering_search.py": "027657cc773aa10368be6f1bfcb68b76ea71999506eb65de6570971034bae7e6",
+    "crosswalk/surround.py": "1e9c455cef67d07dda04db83ad85a71fa8ce0b7e39e9f41343d82f4869fa37aa",
+    "crosswalk/surround_vision.py": "f3efcc4f02f95f8b1414f9ba5984d5f9e5b792eeae676d28386067a6b80b2374",
+    "crosswalk/thermal.py": "cb3f2e421bc804d768ec6a6988071952f28c0274d8dae540d55118ac17c63be0",
+    "crosswalk/town01_interaction.py": "772559dd439c341c8ff8349acb6ac670f58f49c5ebaaac46d1fe07ed658e5e96",
+    "crosswalk/town01_interaction_gate.py": "2cf64a04743254b90c80dcf4454c03c10e005ca7bb6d214ef4f59920cb4263a0",
+    "crosswalk/town01_interaction_study.py": "6b87f3025d9102b38ea6a2be934006f1432f98f0268601149d3873ded7b77839",
+    "crosswalk/tracking.py": "17ecfa07d65ee1099d1484b44f16a738c2c9d4343f18e923f347e6fe4126c656",
+    "crosswalk/train.py": "3e1918574c3814b8b3ed1fb842798d217fad60a81870c2cf3f5038b3ce2d3d9b",
+    "crosswalk/urban_map.py": "bc074ac2fee8a70dd893dbd659f9fd284c933034b57f6afeb9713765396544a8",
+    "crosswalk/viewio.py": "485d03dfb5bc5d0bd71bac2c1a886ff7d9f3eec07b77479a25632fe72ab5c21b",
+    "crosswalk/vision.py": "0075f835d27f52147cb521feebbbbd3f65be1a2d2516d68910a94a316a6816a8",
+    "crosswalk/world.py": "184d0fdb87420bad5040cc03cc70649337b01530ebed9eb898e7d8723560208e",
+    "models/behavior-v2/candidate.npz": "25b7059a6a559ece65e2c8c64ddc1197d95c763f008be9bb31797d69617b1a6c",
+    "models/town01-yield-gated-v04/calibration.json": "afe8a3c2ffeb811bd30d7689941c7fb50cc3c4f7748b4e7e843cb6cb9a3a4746",
+    "data/signals/approach-gate.json": "59683cd2f611ba51372adb948233dc746d8de703fbe2edafd3555d4952d30d0e",
+    "vendor/nanodet/object_detection_nanodet_2022nov.onnx": "4b82da9944b88577175ee23a459dce2e26e6e4be573def65b1055dc2d9720186"
+  },
+  "rgb": {
+    "rgb": "mixed",
+    "rgb_screen_percentage": 50.0,
+    "camera_ray_tracing": false,
+    "ground_truth": "native"
+  },
+  "map": "Town01_Opt",
+  "timestep_s": 0.1
+}

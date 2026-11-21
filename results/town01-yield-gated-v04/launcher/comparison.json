@@ -1,0 +1,92 @@
+[
+  {
+    "seed": 32,
+    "destination": "station",
+    "district": "train",
+    "matched": true,
+    "clean": true,
+    "baseline_clean": true,
+    "gated": {
+      "outcome": "complete",
+      "frames": 601,
+      "duration_s": 60.1,
+      "progress_m": 246.748,
+      "route_length_m": 247.262,
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    "v02": {
+      "outcome": "complete",
+      "frames": 579,
+      "duration_s": 57.9,
+      "progress_m": 247.187,
+      "route_length_m": 247.262,
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    "published_final_frame": true,
+    "model_sha256": "afe8a3c2ffeb811bd30d7689941c7fb50cc3c4f7748b4e7e843cb6cb9a3a4746",
+    "trace_sha256": "193b281d0480520fdafde6b4023cae06bba096205f4bc869565a42816257f279",
+    "summary_sha256": "1abc4ca3ef82c924b5a85e9cb8079349b7ce327cd9e091763105e48813b3720e",
+    "older_fusion": {
+      "source": "results/development-baseline/episodes.json",
+      "matched": true,
+      "clean": false,
+      "outcome": "timeout",
+      "frames": 1000,
+      "duration_s": 100.0,
+      "progress_m": 31.251,
+      "route_length_m": 247.262,
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    }
+  },
+  {
+    "seed": 103,
+    "destination": "market",
+    "district": "heldout",
+    "matched": true,
+    "clean": true,
+    "baseline_clean": true,
+    "gated": {
+      "outcome": "complete",
+      "frames": 469,
+      "duration_s": 46.9,
+      "progress_m": 184.402,
+      "route_length_m": 184.707,
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    "v02": {
+      "outcome": "complete",
+      "frames": 461,
+      "duration_s": 46.1,
+      "progress_m": 184.478,
+      "route_length_m": 184.707,
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    "published_final_frame": true,
+    "model_sha256": "afe8a3c2ffeb811bd30d7689941c7fb50cc3c4f7748b4e7e843cb6cb9a3a4746",
+    "trace_sha256": "d05a7cf6be615adcdff8f996f578e5ae4cd50f54f1fe77ab69c1a4fe8dcf8eec",
+    "summary_sha256": "b218b8dd551ad9f88abedb23761096aec05b19db8fa8db5bb0ca0d816e0841ab",
+    "older_fusion": {
+      "source": "results/primary.json",
+      "matched": true,
+      "clean": true,
+      "outcome": "complete",
+      "frames": 358,
+      "duration_s": 35.8,
+      "progress_m": 184.424,
+      "route_length_m": 184.707,
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    }
+  }
+]
