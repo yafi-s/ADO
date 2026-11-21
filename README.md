@@ -2,7 +2,7 @@
 
 A learned robotaxi driving through an interactive CARLA 1.0 city. Select a destination, watch the sensor feeds, then drive the same route with a pedestrian stepping into the street a second later. The study focuses on ordinary urban interactions including crossings, stopped vehicles, signals, following traffic and left turns.
 
-[Driving console](https://yafi-s.github.io/crosswalk-lab/) · [Explore the Meridian robotaxi in 3D](https://yafi-s.github.io/crosswalk-lab/vehicle.html) · [Benchmark design](docs/city-study.md) · [Research and asset credits](docs/research.md)
+[Driving console](https://yafi-s.github.io/crosswalk-lab/) · [3D city observer](https://yafi-s.github.io/crosswalk-lab/city.html) · [Waymo Jaguar I-PACE model](https://yafi-s.github.io/crosswalk-lab/vehicle.html?model=ipace) · [Benchmark design](docs/city-study.md) · [Research and asset credits](docs/research.md)
 
 [![Original Meridian robotaxi designed in Blender](assets/robotaxi/vehicle/meridian-studio.png)](https://yafi-s.github.io/crosswalk-lab/vehicle.html)
 
@@ -16,7 +16,7 @@ powershell -ExecutionPolicy Bypass -File .\setup.ps1
 
 **Watch-Live.cmd** starts an offscreen simulator and opens the driving console after local setup and model fitting. Choose Market or Station for a two-intersection trip, or select an individual encounter. Choose a weather preset or a wheel grip setting, keep the seed fixed and change pedestrian entry timing. Press Ctrl+C in the launcher window to stop the simulator. The public site hosts synchronized recordings. The local program runs new drives.
 
-The Windows profile uses Direct3D 12 and low graphics settings. RGB camera DLSS Super Resolution can be requested independently of the output image dimensions. Depth and segmentation feed an uncalibrated long-wave infrared observer and require native pixels. The rig also includes a 32-channel roof lidar and forward Doppler radar. [Rendering controls](https://carla-ue5.readthedocs.io/en/latest/core_dlss/) · [Thermal model](docs/thermal.md)
+The Windows profile uses Direct3D 12 and low graphics settings. Forward RGB stays at native 640×360 for small traffic lights. The side and chase cameras request DLSS Super Resolution at a 50% internal scale. Native depth and segmentation feed an uncalibrated long-wave infrared observer. The rig also includes a 32-channel roof lidar and forward Doppler radar. In a stationary signal-approach benchmark on an 8 GB RTX 3070, this five-view profile processed 10.65 updates per wall-clock second, including perception and JPEG encoding. The benchmark records actor settings and timings. [Measurements](results/rendering.json) · [CARLA rendering controls](https://carla-ue5.readthedocs.io/en/latest/core_dlss/) · [Thermal model](docs/thermal.md)
 
 ## What the vehicle learns
 
@@ -24,7 +24,7 @@ NanoDet detects road users in forward RGB images. The model also receives side-c
 
 Traffic Manager provides training demonstrations. During demonstrations of red lights and unprotected left turns, an instructor can give Traffic Manager a stopping point. The steering head first learns the demonstrated controls. Cross-entropy search then tunes its final layer by scoring how well it follows training routes in a low-speed bicycle simulation. The evaluated policy sees sensors and navigation, and it has no interface for reading traffic-light state, actor coordinates or the scenario script. Navigation assumes accurate ego localization and a known route.
 
-The full Meridian car is an original Blender asset with editable bodywork, a roof carrier, a skeletal FBX and a portable GLB. The runtime vehicle uses CARLA's Lincoln physics and an attached sensor assembly. [Vehicle files and dimensions](assets/robotaxi/vehicle/README.md)
+Two editable Blender vehicles are included. Meridian is an original design. The Jaguar I-PACE is an independently modeled interpretation of Waymo's fifth-generation robotaxi, based on public exterior references. Each comes with a GLB and a skeletal FBX. The 3D city observer displays a chosen exterior at the measured CARLA pose. The native camera views show CARLA's Lincoln with a physically attached sensor carrier. [Meridian files](assets/robotaxi/vehicle/README.md) · [Waymo I-PACE files](assets/waymo-ipace/) · [Native attachment measurements](assets/robotaxi/simulator-verification.json)
 
 ## Reproduce the study
 

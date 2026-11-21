@@ -14,23 +14,50 @@
     <a href="./">Crosswalk Lab</a><a href="./benchmarks.html">Driving trials</a>
   </div></header>
   <main class="shell">
-    <section class="intro"><div><div class="eyebrow">Blender vehicle design</div><h1>Meridian</h1></div></section>
+    <section class="intro"><div><div class="eyebrow">Blender vehicle design</div><h1 id="model-name">Meridian</h1></div>
+      <div class="source-picker"><label for="asset">Vehicle</label>
+      <select id="asset"><option value="meridian">Meridian research sedan</option><option value="ipace">Waymo Jaguar I-PACE</option></select></div></section>
     <model-viewer id="car" camera-controls touch-action="pan-y" interaction-prompt="none"
       shadow-intensity="0.85" environment-image="neutral" exposure="1.05"
       src="./vehicle-assets/meridian.glb" poster="./vehicle-assets/meridian-studio.png"
       camera-orbit="54deg 72deg 8.6m" camera-target="0m 0.95m 0m" field-of-view="31deg" min-camera-orbit="auto 4deg 2.9m"
       max-camera-orbit="auto 91deg 11m" alt="White four-door Meridian robotaxi with roof lidar and three camera housings">
-      <img src="./vehicle-assets/meridian-studio.png" slot="poster" alt="Studio render of the Meridian">
+      <img id="poster" src="./vehicle-assets/meridian-studio.png" slot="poster" alt="Vehicle studio render">
     </model-viewer>
     <div class="viewer-tools"><span>Drag to orbit · Scroll or pinch to zoom</span>
       <button id="home" type="button">Reset view</button></div>
     <article class="asset-notes">
-      <div><h2>Vehicle design</h2><p>The editable Blender scene contains the original bodywork, glass, wheels and sensor carrier. The CARLA driving simulation uses a Lincoln chassis with a rigidly mounted sensor assembly. The exported model lets you inspect the designed exterior and its mount locations in detail.</p></div>
-      <div><h2>Files</h2><p><a href="https://github.com/yafi-s/crosswalk-lab/tree/main/assets/robotaxi/vehicle">Blender source and exports</a><br><a href="./vehicle-assets/meridian.glb" download>Download the GLB</a><br><a href="./">Open the driving console</a></p></div>
+      <div><h2>Vehicle design</h2><p id="description"></p><p>The 3D city observer places either exterior at the simulation’s measured pose. CARLA runs the vehicle physics on a Lincoln chassis with a rigid sensor assembly.</p></div>
+      <div><h2>Files</h2><p><a id="files" href="https://github.com/yafi-s/crosswalk-lab/tree/main/assets/robotaxi/vehicle">Blender source and exports</a><br><a id="glb" href="./vehicle-assets/meridian.glb" download>Download the GLB</a><br><a href="https://github.com/yafi-s/crosswalk-lab/blob/main/assets/robotaxi/simulator-comparison.jpg">View the native CARLA vehicle</a><br><a href="./city.html">Open the 3D city observer</a></p></div>
     </article>
   </main>
   <script>
     const car = document.querySelector('#car');
+    const assets = {
+      meridian: {name:'Meridian',file:'meridian.glb',poster:'meridian-studio.png',path:'robotaxi/vehicle',description:'An original four-door research sedan designed in Blender around the project’s camera and range sensor mounts.'},
+      ipace: {name:'Waymo Jaguar I-PACE',file:'waymo-ipace.glb',poster:'ipace-studio.png',path:'waymo-ipace',description:'An independently modeled interpretation of Waymo’s Jaguar I-PACE from public photographs. The editable scene includes the crossover body, roof lidar and exterior sensor pods.'}
+    };
+    const picker = document.querySelector('#asset');
+    function showVehicle(id) {
+      const asset = assets[id] ?? assets.meridian;
+      picker.value = assets[id] ? id : 'meridian';
+      car.src = './vehicle-assets/' + asset.file;
+      car.poster = './vehicle-assets/' + asset.poster;
+      car.alt = 'Interactive ' + asset.name + ' research vehicle model';
+      document.querySelector('#poster').src = car.poster;
+      document.querySelector('#model-name').textContent = asset.name;
+      document.querySelector('#description').textContent = asset.description;
+      document.querySelector('#files').href = 'https://github.com/yafi-s/crosswalk-lab/tree/main/assets/' + asset.path;
+      document.querySelector('#glb').href = car.src;
+      document.title = asset.name + ' · Crosswalk Lab';
+    }
+    showVehicle(new URLSearchParams(location.search).get('model') || 'meridian');
+    picker.addEventListener('change', () => {
+      showVehicle(picker.value);
+      const url = new URL(location.href);
+      url.searchParams.set('model',picker.value);
+      history.replaceState(null,'',url);
+    });
     document.querySelector('#home').onclick = () => {
       car.cameraOrbit = '54deg 72deg 8.6m';
       car.cameraTarget = '0m 0.95m 0m';

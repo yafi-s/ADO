@@ -24,9 +24,12 @@ POSTERS = ("front", "chase", "left", "right")
 FPS = 10
 WEB_ROOT = Path(__file__).resolve().parent.parent / "web"
 VEHICLE_ROOT = WEB_ROOT.parent / "assets" / "robotaxi" / "vehicle"
+IPACE_ROOT = WEB_ROOT.parent / "assets" / "waymo-ipace"
 VEHICLE_ASSETS = {
     "/vehicle-assets/meridian.glb": "meridian.glb",
     "/vehicle-assets/meridian-studio.png": "meridian-studio.png",
+    "/vehicle-assets/waymo-ipace.glb": "waymo-ipace.glb",
+    "/vehicle-assets/ipace-studio.png": "studio.png",
 }
 DRIVE_FIELDS = {"scenario", "destination", "seed", "crossing_delay"}
 OPTIONAL_DRIVE_FIELDS = {"weather", "grip"}
@@ -71,7 +74,8 @@ class _ConsoleHandler(SimpleHTTPRequestHandler):
     def translate_path(self, path):
         asset = VEHICLE_ASSETS.get(urlsplit(path).path)
         if asset is not None:
-            return str(VEHICLE_ROOT / asset)
+            root = IPACE_ROOT if asset in ("waymo-ipace.glb", "studio.png") else VEHICLE_ROOT
+            return str(root / asset)
         return super().translate_path(path)
 
     def _get_or_head(self, write_body):

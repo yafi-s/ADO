@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#192420">
+  <title>City observer · Crosswalk Lab</title>
+  <link rel="stylesheet" href="./console.css">
+  <link rel="stylesheet" href="./city.css">
+  <script type="module" src="./city-view.js"></script>
+</head>
+<body>
+  <header class="masthead"><div class="mast-inner">
+    <a class="brand" href="./"><i class="brand-mark" aria-hidden="true"></i>Crosswalk<span>Lab</span></a>
+    <span class="mast-rule" aria-hidden="true"></span><span class="mast-type">City observer</span>
+    <a class="console-link" href="./">Drive monitor ↗</a>
+  </div></header>
+  <main class="shell">
+    <div class="city-intro"><div><div class="eyebrow"><i class="small-rule"></i> Simulator telemetry</div><h1>City observer</h1></div>
+      <div class="choices">
+        <label>Drive source<select id="source"><option value="auto">Auto · live / recorded</option><option value="recorded">Recorded drive</option></select></label>
+        <label id="case-label" hidden>Recording<select id="case"></select></label>
+        <label>Vehicle design<select id="design"><option value="waymo-ipace">Waymo I-PACE</option><option value="meridian">Meridian</option></select></label>
+      </div>
+    </div>
+    <section class="observer" aria-label="Interactive city scene">
+      <div class="viewport" id="viewport">
+        <canvas id="scene" aria-label="3D city and vehicle. Drag to orbit and scroll or pinch to zoom." tabindex="0"></canvas>
+        <div class="map-tag"><span id="mode" data-mode="waiting" role="status">Connecting</span><span id="map">CARLA</span></div>
+        <div class="camera-toggle" aria-label="Camera position"><button id="follow" aria-pressed="true">Follow car</button><button id="overview" aria-pressed="false">Overview</button></div>
+        <div class="issues" aria-live="polite"><p id="renderer-issue" hidden></p><p id="map-issue" hidden></p><p id="model-issue" hidden></p><p id="data-issue" hidden></p></div>
+        <div class="legend"><span><i></i>Route</span><span><i></i>Vehicle</span><span><i></i>Pedestrian</span></div>
+      </div>
+      <div class="transport">
+        <button id="play" disabled aria-label="Play recording">Play</button>
+        <label class="time" for="seek" id="clock">0:00</label><input id="seek" type="range" aria-label="Recording position" min="0" max="1" step="0.01" value="0" disabled><span class="time" id="end">–:––</span>
+        <div class="gesture">Drag to orbit · Scroll to zoom</div>
+      </div>
+    </section>
+    <section class="metrics" aria-label="Drive telemetry">
+      <div><h2>Speed</h2><p><strong id="speed">—</strong> <small>km/h</small></p></div>
+      <div><h2>Route progress</h2><p><strong id="progress">—</strong> <small id="length">m</small></p></div>
+      <div><h2>Steering</h2><p><strong id="steer">—</strong> <small>%</small></p></div>
+      <div><h2>Simulation frame</h2><p><strong id="frame">—</strong></p></div>
+    </section>
+    <p class="scene-note">Vehicle position and heading come from CARLA. The selected Blender design follows the simulated vehicle. Map buildings are shown as bounding boxes.</p>
+  </main>
+</body>
+</html>

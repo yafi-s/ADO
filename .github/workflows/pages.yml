@@ -6,6 +6,8 @@ on:
       - 'web/**'
       - 'assets/robotaxi/vehicle/meridian.glb'
       - 'assets/robotaxi/vehicle/meridian-studio.png'
+      - 'assets/waymo-ipace/waymo-ipace.glb'
+      - 'assets/waymo-ipace/studio.png'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 permissions:
@@ -29,6 +31,8 @@ jobs:
         run: |
           mkdir -p web/vehicle-assets
           cp assets/robotaxi/vehicle/meridian.glb assets/robotaxi/vehicle/meridian-studio.png web/vehicle-assets/
+          cp assets/waymo-ipace/waymo-ipace.glb web/vehicle-assets/
+          cp assets/waymo-ipace/studio.png web/vehicle-assets/ipace-studio.png
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web

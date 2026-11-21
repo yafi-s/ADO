@@ -18,3 +18,13 @@ Coordinates below use CARLA metres, with X forward, Y right and Z up. The four v
 - Radar `(2.00, 0.00, 0.90, 0)`
 
 Blender uses `(x, -y, z)` in metres. The GLB uses `(x, z, y)`. The right-handed model markers point along local +X. An asset-registration test compares the exported GLB origins and headings with the transforms passed to CARLA's sensor actors.
+
+## Simulator verification
+
+![CARLA 1.0 simulation capture beside the detailed Blender vehicle](simulator-comparison.jpg)
+
+The shipping simulator drives its Lincoln MKZ with an original 48-piece rigid carrier assembled from cooked assets. A pair of pale pillars supports a closed, nine-sided scanner. Three camera housings face the actual camera headings. The Blender render shows the detailed Meridian exterior.
+
+A paired test in CARLA 1.0 on Town01_Opt used the same stationary car and camera poses before and after installation. Both LiDAR captures contained 11,836 positions, identical at one-millimetre resolution. The nearest point was 2.451 m away. Each radar frame contained 1,200 returns and none fell within one metre. Across the front and both side-camera frames, the mean absolute channel difference ranged from 1.88 to 1.94 on a 0–255 scale. No pixel in these frames exceeded a 64-level difference in any channel. These measurements apply to this test pose and lighting.
+
+A powered 1.391 m maneuver measured less than 0.033 mm of relative drift among the mounted components. The step that teleported and turned the car measured less than 0.061 mm. [Recorded measurements](simulator-verification.json)
