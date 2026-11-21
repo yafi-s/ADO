@@ -1,10 +1,11 @@
 import {SensorView} from './sensor.js';
+import {artifactUrl, previewImage, setArtifactLink, validRecordingPath} from './build-data.js';
 
 const ids = [
   'source', 'source-picker', 'source-state', 'encounter-picker', 'encounter', 'viewport', 'film', 'stream',
   'detections', 'camera-empty', 'view-label', 'frame-label',
   'playback', 'play', 'clock', 'seek', 'end-clock', 'loop', 'live-strip', 'live-clock', 'ir-note', 'front-note',
-  'sensor', 'radar-reading', 'lidar-count', 'radar-count', 'map', 'frame', 'speed',
+  'sensor-panel', 'data-panel', 'sensor', 'radar-reading', 'lidar-count', 'radar-count', 'map', 'frame', 'speed',
   'sensor-unit', 'sensor-controls', 'plot-scale', 'route-source', 'returns-legend', 'route-legend',
   'route-traffic', 'route-hazard', 'route-hazard-label',
   'steer', 'steer-direction', 'throttle', 'brake',
@@ -13,7 +14,10 @@ const ids = [
   'run-repeat', 'run-stop', 'run-status', 'run-request-error', 'destination-field', 'delay-field',
   'weather-field', 'grip-field', 'run-weather', 'run-grip', 'telemetry-grip', 'grip',
   'telemetry-destination', 'destination', 'telemetry-delay', 'crossing-delay',
-  'telemetry-red-light', 'red-light-count', 'telemetry-yield', 'yield-count'
+  'telemetry-red-light', 'red-light-count', 'telemetry-yield', 'yield-count',
+  'preview-video', 'preview-still', 'camera-evidence', 'capture-caption', 'archive-trial-row', 'archive-trial',
+  'archive-source-row', 'archive-source-link', 'archive-source-text', 'archive-model-row', 'archive-model-link',
+  'archive-model-text', 'archive-mp4', 'archive-replay', 'archive-log'
 ];
 const ui = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 const cameraButtons = [...document.querySelectorAll('[data-camera]')];
@@ -46,6 +50,7 @@ let pendingPosition = 0;
 let pendingPlay = false;
 let animation;
 let catalog;
+let buildRequest;
 let options;
 let runStatus;
 let runError;
@@ -550,7 +555,100 @@ function loadCamera(position, resume) {
   showMessage('Loading ' + cameraLabels[selectedCamera].toLowerCase() + '…');
   ui.film.hidden = true;
   ui.film.setAttribute('aria-label', `${ui.encounter.selectedOptions[0].textContent} · ${cameraLabels[selectedCamera]}`);
-  ui.film.src = `${replay.directory}/${selectedCamera}.mp4`;
+  const movie = `${replay.directory}/${selectedCamera}.mp4`;
+  ui.film.src = movie;
+  setArtifactLink(ui['archive-mp4'], movie);
+}
+
+function loadBuild() {
+  buildRequest ??= readJson('./media/build.json', new AbortController().signal, 4000).catch(() => null);
+  return buildRequest;
+}
+
+function archiveHash(field, value, url) {
+  const label = typeof value === 'string' ? value : '';
+  const link = ui[`archive-${field}-link`];
+  const code = ui[`archive-${field}-text`];
+  ui[`archive-${field}-row`].hidden = !label;
+  setArtifactLink(link, url);
+  code.hidden = !link.hidden;
+  link.textContent = code.textContent = label.slice(0, 12);
+  link.title = code.title = label;
+}
+
+function clearCameraEvidence() {
+  const video = ui['preview-video'];
+  if (video.hasAttribute('src')) {
+    video.pause();
+    video.removeAttribute('src');
+    video.removeAttribute('poster');
+    video.load();
+  }
+  video.hidden = true;
+  ui['preview-still'].hidden = true;
+  ui['preview-still'].removeAttribute('src');
+  ui['camera-evidence'].hidden = true;
+  ui['sensor-panel'].hidden = false;
+  ui['data-panel'].hidden = false;
+  ui['capture-caption'].hidden = true;
+  ui['archive-trial-row'].hidden = true;
+  archiveHash('source');
+  archiveHash('model');
+  for (const id of ['archive-mp4', 'archive-replay', 'archive-log']) setArtifactLink(ui[id]);
+  setText('archive-log', 'Run log');
+}
+
+function renderArchiveRun(build, entry, directory) {
+  const run = Array.isArray(build?.runs) && build.runs.find(item => item?.recording_path === entry.path &&
+    (!entry.trial_id || item.trial_id === entry.trial_id));
+  const trialId = entry.trial_id || run?.trial_id;
+  ui['camera-evidence'].hidden = false;
+  ui['archive-trial-row'].hidden = !trialId;
+  setText('archive-trial', trialId);
+  archiveHash('source', run && build.source?.commit, run && build.source?.url);
+  const checkpoint = build?.checkpoints?.[run?.policy];
+  archiveHash('model', run?.model_sha256, checkpoint?.sha256 === run?.model_sha256 ? checkpoint?.url : undefined);
+  setArtifactLink(ui['archive-replay'], directory + '/replay.json');
+  setArtifactLink(ui['archive-log'], run?.log_url);
+}
+
+function showPreview(build) {
+  const videoUrl = artifactUrl(build?.preview_video);
+  const imageUrl = previewImage(build);
+  if (!videoUrl && !imageUrl) return false;
+  const simulator = build.simulator?.server_version ? 'CARLA ' + build.simulator.server_version : 'CARLA';
+  const title = build.preview_label || (videoUrl ? 'Training demonstration' : 'Simulator camera capture') + ' · ' + simulator;
+  ui['camera-evidence'].hidden = false;
+  ui['sensor-panel'].hidden = true;
+  ui['data-panel'].hidden = true;
+  ui['capture-caption'].hidden = false;
+  const description = videoUrl ? 'Training instructor at the controls' : 'Still frame';
+  setText('capture-caption', build.preview_caption || title + ' · ' + description);
+  setMode('replay', videoUrl ? 'Recorded CARLA demo' : 'CARLA camera capture');
+  ui.playback.hidden = true;
+  showMessage('');
+  ui['view-label'].hidden = true;
+  ui['frame-label'].hidden = true;
+  archiveHash('source', build.source?.commit, build.source?.url);
+  if (build.preview_log) {
+    setText('archive-log', 'Demonstration log');
+    setArtifactLink(ui['archive-log'], build.preview_log);
+  }
+  const still = ui['preview-still'];
+  if (imageUrl) {
+    still.src = imageUrl;
+    still.alt = build.preview_image?.alt || 'Camera frame captured inside CARLA';
+  }
+  if (videoUrl) {
+    const video = ui['preview-video'];
+    if (imageUrl) video.poster = imageUrl;
+    video.src = videoUrl;
+    video.hidden = false;
+    setArtifactLink(ui['archive-mp4'], videoUrl);
+  } else {
+    still.hidden = false;
+  }
+  return true;
 }
 
 async function loadCatalog(signal) {
@@ -589,34 +687,41 @@ async function loadCatalog(signal) {
   if (signal.aborted || !Array.isArray(entries)) return [];
   const paths = new Set();
   catalog = entries.flatMap(entry => {
-    if (typeof entry?.label !== 'string' || !entry.label.trim() || typeof entry.path !== 'string' ||
-        (entry.path && !/^[a-z0-9_-]+(?:\/[a-z0-9_-]+)*$/i.test(entry.path)) || paths.has(entry.path)) return [];
+    if (typeof entry?.label !== 'string' || !entry.label.trim() || !validRecordingPath(entry.path) || paths.has(entry.path)) return [];
     paths.add(entry.path);
     return [entry];
   });
   return catalog;
 }
 
-async function openReplay(signal) {
+async function openReplay(signal, trialId) {
   ui.stream.hidden = true;
   ui.stream.removeAttribute('src');
-  setMode('replay', 'Loading replay');
+  clearCameraEvidence();
+  setMode('replay', 'Loading CARLA replay');
   replay = undefined;
   resetPlayback();
   setCameras([]);
   renderTelemetry();
   showMessage('Loading recorded drive…');
-  const entries = await loadCatalog(signal);
+  const [entries, build] = await Promise.all([loadCatalog(signal), loadBuild()]);
   if (signal.aborted) return;
-  const entry = entries.find(item => item.path === ui.encounter.value) ?? entries[0];
+  const selectedPath = ui.encounter.value;
+  const requested = trialId && Array.isArray(build?.runs) && build.runs.find(run => run?.trial_id === trialId);
+  const entry = trialId
+    ? entries.find(item => item.trial_id === trialId || (!item.trial_id && item.path === requested?.recording_path))
+    : entries.find(item => item.path === selectedPath) ?? entries[0];
+  ui.encounter.replaceChildren(...entries.map(item => new Option(item.label, item.path)));
+  ui['encounter-picker'].hidden = !entries.length;
   if (!entry) {
+    ui.encounter.selectedIndex = -1;
+    if (!trialId && showPreview(build)) return;
     setMode('replay', 'Replay unavailable');
-    showMessage('No recorded drives are available.');
+    ui.playback.hidden = true;
+    showMessage(trialId ? 'The requested CARLA replay is unavailable.' : 'CARLA recordings are awaiting publication.');
     return;
   }
-  ui.encounter.replaceChildren(...entries.map(item => new Option(item.label, item.path)));
   ui.encounter.value = entry.path;
-  ui['encounter-picker'].hidden = false;
   const directory = entry.path ? `./media/${entry.path}` : './media';
   try {
     const recording = recordings.get(directory) ??
@@ -630,7 +735,8 @@ async function openReplay(signal) {
     showMessage('Recorded telemetry for this encounter is unavailable.');
     return;
   }
-  setMode('replay', 'Recorded drive');
+  setMode('replay', 'Recorded CARLA drive');
+  renderArchiveRun(build, entry, directory);
   const cameras = entry.cameras ?? replay.cameras;
   setCameras(Array.isArray(cameras) ? Object.keys(cameraLabels).filter(camera => cameras.includes(camera)) : Object.keys(cameraLabels));
   if (!availableCameras.length) {
@@ -666,6 +772,7 @@ async function connect() {
     openReplay(signal);
   } else {
     setMode('', 'Connecting');
+    clearCameraEvidence();
     resetPlayback();
     ui.stream.hidden = true;
     ui.stream.removeAttribute('src');
@@ -708,7 +815,14 @@ for (const button of cameraButtons) {
 }
 
 ui.source.addEventListener('change', connect);
-ui.encounter.addEventListener('change', () => openReplay(connectionSignal()));
+ui.encounter.addEventListener('change', () => {
+  const entry = catalog?.find(item => item.path === ui.encounter.value);
+  const url = new URL(location.href);
+  if (entry?.trial_id) url.searchParams.set('run', entry.trial_id);
+  else url.searchParams.delete('run');
+  history.replaceState(history.state, '', url);
+  openReplay(connectionSignal());
+});
 ui['run-stop'].addEventListener('click', stopSimulator);
 for (const button of sensorButtons) {
   button.addEventListener('click', () => {
@@ -767,9 +881,36 @@ ui.film.addEventListener('error', () => {
     return;
   }
   resetPlayback();
+  setArtifactLink(ui['archive-mp4']);
   renderTelemetry();
   setMode('replay', 'Replay unavailable');
   showMessage('The recorded camera files could not be played.');
+});
+ui['preview-video'].addEventListener('error', () => {
+  const video = ui['preview-video'];
+  if (video.hidden || !video.hasAttribute('src')) return;
+  video.hidden = true;
+  setArtifactLink(ui['archive-mp4']);
+  const still = ui['preview-still'];
+  ui['capture-caption'].hidden = true;
+  if (still.hasAttribute('src')) {
+    still.hidden = false;
+    setText('capture-caption', 'CARLA camera capture · Still frame');
+    ui['capture-caption'].hidden = false;
+    setMode('replay', 'CARLA camera capture');
+  } else {
+    setMode('replay', 'Replay unavailable');
+    showMessage('The demonstration video could not be played.');
+  }
+  ui.playback.hidden = true;
+});
+ui['preview-still'].addEventListener('error', () => {
+  if (ui['preview-still'].hidden) return;
+  ui['preview-still'].hidden = true;
+  ui['capture-caption'].hidden = true;
+  setMode('replay', 'Capture unavailable');
+  ui.playback.hidden = true;
+  showMessage('The CARLA camera capture could not be displayed.');
 });
 for (const event of ['play', 'pause', 'ended', 'durationchange']) {
   ui.film.addEventListener(event, () => {
@@ -795,4 +936,16 @@ ui.seek.addEventListener('input', () => {
   ui.film.currentTime = Number(ui.seek.value);
   syncFrame();
 });
-connect();
+const trialId = new URLSearchParams(location.search).get('run');
+if (trialId) {
+  ui.source.value = 'replay';
+  const signal = connectionSignal();
+  openReplay(signal, trialId);
+  readJson('/api/options', signal, 1800).then(settings => {
+    if (signal.aborted) return;
+    installOptions(settings);
+    if (options) ui['source-picker'].hidden = false;
+  }).catch(() => {});
+} else {
+  connect();
+}

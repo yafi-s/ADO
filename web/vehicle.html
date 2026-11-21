@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#121a22">
-  <title>Meridian robotaxi · Crosswalk Lab</title>
+  <title>Meridian robotaxi · ADO</title>
   <link rel="stylesheet" href="console.css">
   <link rel="stylesheet" href="vehicle.css">
   <script type="module" src="vendor/model-viewer/model-viewer.min.js"></script>
 </head>
 <body>
   <header class="masthead"><div class="shell vehicle-nav">
-    <a href="./">Crosswalk Lab</a><a href="./benchmarks.html">Driving trials</a>
+    <a href="./">ADO</a><a href="./benchmarks.html">Driving trials</a>
   </div></header>
   <main class="shell">
     <section class="intro"><div><div class="eyebrow">Blender vehicle design</div><h1 id="model-name">Meridian</h1></div>
@@ -28,7 +28,7 @@
       <button id="home" type="button">Reset view</button></div>
     <article class="asset-notes">
       <div><h2>Vehicle design</h2><p id="description"></p><p>The 3D city observer places either exterior at the simulation’s measured pose. CARLA runs the vehicle physics on a Lincoln chassis with a rigid sensor assembly.</p></div>
-      <div><h2>Files</h2><p><a id="files" href="https://github.com/yafi-s/crosswalk-lab/tree/main/assets/robotaxi/vehicle">Blender source and exports</a><br><a id="glb" href="./vehicle-assets/meridian.glb" download>Download the GLB</a><br><a href="https://github.com/yafi-s/crosswalk-lab/blob/main/assets/robotaxi/simulator-comparison.jpg">View the native CARLA vehicle</a><br><a href="./city.html">Open the 3D city observer</a></p></div>
+      <div><h2>Files</h2><p><a id="files" href="https://github.com/yafi-s/ADO/tree/main/assets/robotaxi/vehicle">Blender source and exports</a><br><a id="glb" href="./vehicle-assets/meridian.glb" download>Download the GLB</a><br><a href="https://github.com/yafi-s/ADO/blob/main/assets/robotaxi/simulator-comparison.jpg">View the native CARLA vehicle</a><br><a href="./city.html">Open the 3D city observer</a></p></div>
     </article>
   </main>
   <script>
@@ -47,9 +47,9 @@
       document.querySelector('#poster').src = car.poster;
       document.querySelector('#model-name').textContent = asset.name;
       document.querySelector('#description').textContent = asset.description;
-      document.querySelector('#files').href = 'https://github.com/yafi-s/crosswalk-lab/tree/main/assets/' + asset.path;
+      document.querySelector('#files').href = 'https://github.com/yafi-s/ADO/tree/main/assets/' + asset.path;
       document.querySelector('#glb').href = car.src;
-      document.title = asset.name + ' · Crosswalk Lab';
+      document.title = asset.name + ' · ADO';
     }
     showVehicle(new URLSearchParams(location.search).get('model') || 'meridian');
     picker.addEventListener('change', () => {

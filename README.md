@@ -1,10 +1,10 @@
-# Crosswalk Lab
+# ADO — Autonomous Driver Omniverse
 
 A learned robotaxi driving through an interactive CARLA 1.0 city. Select a destination, watch the sensor feeds, then drive the same route with a pedestrian stepping into the street a second later. The study focuses on ordinary urban interactions including crossings, stopped vehicles, signals, following traffic and left turns.
 
-[Driving console](https://yafi-s.github.io/crosswalk-lab/) · [3D city observer](https://yafi-s.github.io/crosswalk-lab/city.html) · [Waymo Jaguar I-PACE model](https://yafi-s.github.io/crosswalk-lab/vehicle.html?model=ipace) · [Benchmark design](docs/city-study.md) · [Research and asset credits](docs/research.md)
+[Driving console](https://yafi-s.github.io/ADO/) · [3D city observer](https://yafi-s.github.io/ADO/city.html) · [Waymo Jaguar I-PACE model](https://yafi-s.github.io/ADO/vehicle.html?model=ipace) · [Benchmark design](docs/city-study.md) · [Research and asset credits](docs/research.md)
 
-[![Original Meridian robotaxi designed in Blender](assets/robotaxi/vehicle/meridian-studio.png)](https://yafi-s.github.io/crosswalk-lab/vehicle.html)
+[![Original Meridian robotaxi designed in Blender](assets/robotaxi/vehicle/meridian-studio.png)](https://yafi-s.github.io/ADO/vehicle.html)
 
 ## Drive a route
 

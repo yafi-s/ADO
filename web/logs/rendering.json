@@ -1,0 +1,603 @@
+{
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town01_Opt"
+  },
+  "hardware": "NVIDIA GeForce RTX 3070, 621.01, 8192 MiB, 6101 MiB",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "measurements": "Stationary signal approach, five encoded views, lidar, radar, thermal, feature extraction and NanoDet every other frame. Sixteen warmup ticks per profile.",
+  "profiles": [
+    {
+      "mode": "native",
+      "requested_percent": 100,
+      "frames": 32,
+      "median_tick_ms": 54.59,
+      "p95_tick_ms": 57.98,
+      "combined_hz": 10.65,
+      "p95_combined_ms": 130.11,
+      "front_std": 26.049905845614898,
+      "camera_readback": {
+        "requested": {
+          "rgb": "native",
+          "rgb_screen_percentage": 100.0,
+          "camera_ray_tracing": false,
+          "ground_truth": "native"
+        },
+        "cameras": {
+          "front": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "left": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "right": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "chase": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "tags": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "depth": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          }
+        }
+      },
+      "gpu_sample": "NVIDIA GeForce RTX 3070, 621.01, 8192 MiB, 6157 MiB"
+    },
+    {
+      "mode": "dlss",
+      "requested_percent": 58,
+      "frames": 32,
+      "median_tick_ms": 54.48,
+      "p95_tick_ms": 57.57,
+      "combined_hz": 10.69,
+      "p95_combined_ms": 128.5,
+      "front_std": 25.287827525793084,
+      "camera_readback": {
+        "requested": {
+          "rgb": "dlss",
+          "rgb_screen_percentage": 58.0,
+          "camera_ray_tracing": false,
+          "ground_truth": "native"
+        },
+        "cameras": {
+          "front": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "58.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "58.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "left": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "58.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "58.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "right": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "58.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "58.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "chase": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "58.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "58.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "tags": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "depth": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          }
+        }
+      },
+      "gpu_sample": "NVIDIA GeForce RTX 3070, 621.01, 8192 MiB, 6060 MiB"
+    },
+    {
+      "mode": "dlss",
+      "requested_percent": 50,
+      "frames": 32,
+      "median_tick_ms": 55.3,
+      "p95_tick_ms": 58.71,
+      "combined_hz": 10.35,
+      "p95_combined_ms": 135.34,
+      "front_std": 25.554115563662304,
+      "camera_readback": {
+        "requested": {
+          "rgb": "dlss",
+          "rgb_screen_percentage": 50.0,
+          "camera_ray_tracing": false,
+          "ground_truth": "native"
+        },
+        "cameras": {
+          "front": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "left": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "right": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "chase": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "tags": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "depth": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          }
+        }
+      },
+      "gpu_sample": "NVIDIA GeForce RTX 3070, 621.01, 8192 MiB, 6136 MiB"
+    },
+    {
+      "mode": "mixed",
+      "requested_percent": 100,
+      "frames": 32,
+      "median_tick_ms": 54.12,
+      "p95_tick_ms": 57.82,
+      "combined_hz": 10.65,
+      "p95_combined_ms": 130.1,
+      "front_std": 26.253542902040937,
+      "camera_readback": {
+        "requested": {
+          "rgb": "mixed",
+          "rgb_screen_percentage": 50.0,
+          "camera_ray_tracing": false,
+          "ground_truth": "native"
+        },
+        "cameras": {
+          "front": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "left": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "right": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "chase": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "enable_postprocess_effects",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "true",
+              "dlss_screen_percentage": "50.0",
+              "enable_postprocess_effects": "true"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "tags": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          },
+          "depth": {
+            "requested_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "available_attributes": [
+              "dlss_screen_percentage",
+              "enable_dlss",
+              "use_ray_tracing"
+            ],
+            "actor_attributes": {
+              "use_ray_tracing": "false",
+              "enable_dlss": "false",
+              "dlss_screen_percentage": "100.0"
+            },
+            "attributes_match_request": true,
+            "dlss_gpu_active": null
+          }
+        }
+      },
+      "gpu_sample": "NVIDIA GeForce RTX 3070, 621.01, 8192 MiB, 6137 MiB"
+    }
+  ],
+  "selected_mode": "mixed",
+  "selected_percent": 50,
+  "selection_reason": "Retain native front RGB for small signal lamps and request upscaling on auxiliary RGB views."
+}

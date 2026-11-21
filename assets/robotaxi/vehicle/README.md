@@ -35,4 +35,4 @@ blender -b -t 2 --factory-startup --python-exit-code 2 --python assets/robotaxi/
 
 ## Credits
 
-Original Meridian body, optics, running gear, sensor carrier and studio scene created for Crosswalk Lab. The design draws inspiration from research robotaxis. The geometry, materials and render use project-authored assets and carry no manufacturer marks. Distributed under the [repository MIT license](../../../LICENSE).
+Original Meridian body, optics, running gear, sensor carrier and studio scene created for ADO. The design draws inspiration from research robotaxis. The geometry, materials and render use project-authored assets and carry no manufacturer marks. Distributed under the [repository MIT license](../../../LICENSE).

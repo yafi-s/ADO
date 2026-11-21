@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   deploy:
-    if: github.repository == 'yafi-s/crosswalk-lab'
+    if: github.repository == 'yafi-s/ADO'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

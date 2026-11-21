@@ -4,16 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#192420">
-  <title>Crosswalk Lab · Drive monitor</title>
+  <title>ADO · Drive monitor</title>
   <link rel="stylesheet" href="console.css">
   <script type="module" src="console.js"></script>
 </head>
 <body>
   <header class="masthead">
     <div class="mast-inner">
-      <div class="brand"><i class="brand-mark" aria-hidden="true"></i>Crosswalk<span>Lab</span></div>
+      <div class="brand"><i class="brand-mark" aria-hidden="true"></i>ADO</div>
       <span class="mast-rule" aria-hidden="true"></span>
       <span class="mast-type">Autonomous driving research</span>
+      <nav class="mast-nav" aria-label="Project navigation"><a href="./builds.html">Builds &amp; logs</a></nav>
       <span class="connection" id="source-state" role="status">Connecting</span>
     </div>
   </header>
@@ -68,6 +69,8 @@
         </header>
         <div class="viewport" id="viewport">
           <video id="film" muted playsinline preload="auto" aria-label="Recorded drive" hidden></video>
+          <video id="preview-video" controls playsinline preload="metadata" aria-label="Recorded CARLA training demonstration" hidden></video>
+          <img id="preview-still" alt="Camera frame captured inside CARLA" hidden>
           <img id="stream" alt="Live simulation camera" hidden>
           <div class="detections" id="detections" aria-hidden="true" hidden></div>
           <div class="empty" id="camera-empty"><span class="lens-mark" aria-hidden="true"></span><p role="status">Connecting to the drive…</p></div>
@@ -84,8 +87,22 @@
         <div class="live-strip" id="live-strip" hidden>Simulation elapsed <span id="live-clock">0:00</span></div>
         <p class="ir-note" id="ir-note" hidden>Simulated long-wave infrared. Material temperatures are assumed.</p>
         <p class="ir-note" id="front-note" hidden>Object detections from the front RGB camera.</p>
+        <section class="camera-evidence" id="camera-evidence" aria-label="Camera source and evidence" hidden>
+          <p class="capture-caption" id="capture-caption" hidden></p>
+          <dl>
+            <div id="archive-trial-row" hidden><dt>Run</dt><dd id="archive-trial"></dd></div>
+            <div id="archive-source-row" hidden><dt>Source revision</dt><dd><a id="archive-source-link" hidden></a><code id="archive-source-text" hidden></code></dd></div>
+            <div id="archive-model-row" hidden><dt>Checkpoint SHA-256</dt><dd><a id="archive-model-link" hidden></a><code id="archive-model-text" hidden></code></dd></div>
+          </dl>
+          <div class="camera-evidence-links">
+            <a id="archive-mp4" download hidden>Download MP4</a>
+            <a id="archive-replay" hidden>Replay telemetry</a>
+            <a id="archive-log" hidden>Run log</a>
+            <a id="archive-build" href="./builds.html">Builds &amp; logs</a>
+          </div>
+        </section>
       </section>
-      <section class="panel sensor-panel" aria-labelledby="sensor-heading">
+      <section class="panel sensor-panel" id="sensor-panel" aria-labelledby="sensor-heading">
         <header class="panel-head">
           <h2 id="sensor-heading">Sensor view</h2>
           <span class="unit-tag" id="sensor-unit">Top down</span>
@@ -113,7 +130,7 @@
         </div>
       </section>
     </div>
-    <section class="data-panel" aria-labelledby="data-heading">
+    <section class="data-panel" id="data-panel" aria-labelledby="data-heading">
       <header class="data-head"><h2 id="data-heading">Drive telemetry</h2><span id="map">CARLA</span></header>
       <dl class="readouts">
         <div><dt>Speed</dt><dd><span id="speed">—</span><small>km/h</small></dd></div>
@@ -140,11 +157,12 @@
     <footer>
       <span>Simulation imagery by CARLA and its contributors</span>
       <nav aria-label="Project links">
+        <a href="./builds.html">Builds &amp; logs</a>
         <a href="./benchmarks.html">Benchmark results</a>
         <a href="./city.html">3D city observer</a>
         <a href="./vehicle.html">3D vehicle view</a>
-        <a href="https://github.com/yafi-s/crosswalk-lab/blob/main/docs/research.md">Research &amp; credits</a>
-        <a href="https://github.com/yafi-s/crosswalk-lab">Source code</a>
+        <a href="https://github.com/yafi-s/ADO/blob/main/docs/research.md">Research &amp; credits</a>
+        <a href="https://github.com/yafi-s/ADO">Source code</a>
       </nav>
     </footer>
   </main>

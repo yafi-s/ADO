@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#192420">
+  <title>ADO · Drive monitor</title>
+  <link rel="stylesheet" href="console.css">
+  <script type="module" src="console.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="mast-inner">
+      <div class="brand"><i class="brand-mark" aria-hidden="true"></i>ADO</div>
+      <span class="mast-rule" aria-hidden="true"></span>
+      <span class="mast-type">Autonomous driving research</span>
+      <nav class="mast-nav" aria-label="Project navigation"><a href="./builds.html">Builds &amp; logs</a></nav>
+      <span class="connection" id="source-state" role="status">Connecting</span>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="intro" aria-label="Monitor settings">
+      <div>
+        <div class="eyebrow"><i class="small-rule"></i> Simulator console</div>
+        <h1>Drive monitor</h1>
+      </div>
+      <div class="monitor-settings">
+        <div class="source-picker" id="source-picker" hidden>
+          <label for="source">Data source</label>
+          <select id="source"><option value="auto">Live simulator</option><option value="replay">Recorded drive</option></select>
+        </div>
+        <div class="source-picker" id="encounter-picker" hidden>
+          <label for="encounter">Recording</label>
+          <select id="encounter"></select>
+        </div>
+      </div>
+    </section>
+    <section class="panel run-panel" id="run-panel" aria-labelledby="run-heading" hidden>
+      <div class="run-heading">
+        <h2 id="run-heading">New simulation run</h2>
+        <p id="run-status" role="status">Checking simulator status…</p>
+      </div>
+      <p id="run-request-error" role="alert" hidden></p>
+      <form class="run-form" id="run-form">
+        <label>Scenario <select id="run-scenario" name="scenario"></select></label>
+        <label id="destination-field" hidden>Destination <select id="run-destination" name="destination"></select></label>
+        <label>Seed <input id="run-seed" name="seed" type="number" min="0" max="2147483647" step="1" required></label>
+        <label id="delay-field" hidden>Crossing delay (s) <input id="run-delay" name="crossing_delay" type="number" min="0" max="5" step="any" required></label>
+        <label id="weather-field" hidden>Weather <select id="run-weather" name="weather"></select></label>
+        <label id="grip-field" hidden>Wheel grip <select id="run-grip" name="grip"></select></label>
+        <div class="run-actions">
+          <button class="action-button action-primary" id="run-start" type="submit" disabled>Start run</button>
+          <button class="action-button" id="run-repeat" type="button" hidden>Rerun with +1 s delay</button>
+          <button class="action-button" id="run-stop" type="button" disabled>Stop simulator</button>
+        </div>
+      </form>
+    </section>
+    <div class="workspace">
+      <section class="panel camera-panel" aria-labelledby="camera-heading">
+        <header class="panel-head">
+          <h2 id="camera-heading">Camera feed</h2>
+          <div class="camera-controls" aria-label="Camera angle" role="group">
+            <button data-camera="chase" aria-pressed="true" disabled>Chase</button>
+            <button data-camera="front" aria-pressed="false" disabled>Front</button>
+            <button data-camera="infrared" aria-pressed="false" disabled>Thermal</button>
+            <button data-camera="left" aria-pressed="false" disabled>Left</button>
+            <button data-camera="right" aria-pressed="false" disabled>Right</button>
+          </div>
+        </header>
+        <div class="viewport" id="viewport">
+          <video id="film" muted playsinline preload="auto" aria-label="Recorded drive" hidden></video>
+          <video id="preview-video" controls playsinline preload="metadata" aria-label="Recorded CARLA training demonstration" hidden></video>
+          <img id="preview-still" alt="Camera frame captured inside CARLA" hidden>
+          <img id="stream" alt="Live simulation camera" hidden>
+          <div class="detections" id="detections" aria-hidden="true" hidden></div>
+          <div class="empty" id="camera-empty"><span class="lens-mark" aria-hidden="true"></span><p role="status">Connecting to the drive…</p></div>
+          <div class="view-label" id="view-label" hidden>Chase camera</div>
+          <div class="frame-label" id="frame-label" hidden>FRAME <span id="frame">—</span></div>
+        </div>
+        <div class="playback" id="playback">
+          <button id="play" disabled aria-label="Play replay" title="Play replay"><i class="play-icon" aria-hidden="true"></i></button>
+          <span id="clock">0:00</span>
+          <input id="seek" type="range" min="0" max="1" step="0.01" value="0" aria-label="Replay position" disabled>
+          <span id="end-clock">–:––</span>
+          <button class="action-button" id="loop" type="button" aria-pressed="false" disabled>Loop</button>
+        </div>
+        <div class="live-strip" id="live-strip" hidden>Simulation elapsed <span id="live-clock">0:00</span></div>
+        <p class="ir-note" id="ir-note" hidden>Simulated long-wave infrared. Material temperatures are assumed.</p>
+        <p class="ir-note" id="front-note" hidden>Object detections from the front RGB camera.</p>
+        <section class="camera-evidence" id="camera-evidence" aria-label="Camera source and evidence" hidden>
+          <p class="capture-caption" id="capture-caption" hidden></p>
+          <dl>
+            <div id="archive-trial-row" hidden><dt>Run</dt><dd id="archive-trial"></dd></div>
+            <div id="archive-source-row" hidden><dt>Source revision</dt><dd><a id="archive-source-link" hidden></a><code id="archive-source-text" hidden></code></dd></div>
+            <div id="archive-model-row" hidden><dt>Checkpoint SHA-256</dt><dd><a id="archive-model-link" hidden></a><code id="archive-model-text" hidden></code></dd></div>
+          </dl>
+          <div class="camera-evidence-links">
+            <a id="archive-mp4" download hidden>Download MP4</a>
+            <a id="archive-replay" hidden>Replay telemetry</a>
+            <a id="archive-log" hidden>Run log</a>
+            <a id="archive-build" href="./builds.html">Builds &amp; logs</a>
+          </div>
+        </section>
+      </section>
+      <section class="panel sensor-panel" id="sensor-panel" aria-labelledby="sensor-heading">
+        <header class="panel-head">
+          <h2 id="sensor-heading">Sensor view</h2>
+          <span class="unit-tag" id="sensor-unit">Top down</span>
+          <div class="camera-controls" id="sensor-controls" aria-label="Sensor display" role="group" hidden>
+            <button type="button" data-sensor-view="returns" aria-pressed="true" aria-controls="sensor">Returns</button>
+            <button type="button" data-sensor-view="route" aria-pressed="false" aria-controls="sensor">Route</button>
+          </div>
+        </header>
+        <div class="sensor-stage">
+          <canvas id="sensor" role="img" aria-label="Top-down lidar returns and radar detections around the vehicle"></canvas>
+          <span class="plot-scale" id="plot-scale">10 m rings</span>
+          <span class="plot-scale" id="route-source" hidden>Map ground truth</span>
+          <span id="radar-reading" class="radar-reading" hidden></span>
+        </div>
+        <div class="legend" id="returns-legend">
+          <span><i class="dot lidar-dot"></i>Lidar <b id="lidar-count">—</b></span>
+          <span><i class="dot radar-dot"></i>Radar <b id="radar-count">—</b></span>
+        </div>
+        <div class="legend route-legend" id="route-legend" hidden>
+          <span><i class="dot ego-dot"></i>Ego</span>
+          <span><i class="dot start-dot"></i>Start</span>
+          <span><i class="dot destination-dot"></i>Destination</span>
+          <span id="route-traffic" hidden><i class="dot traffic-dot"></i>Traffic</span>
+          <span id="route-hazard" hidden><i class="dot hazard-dot"></i><span id="route-hazard-label">Hazard</span></span>
+        </div>
+      </section>
+    </div>
+    <section class="data-panel" id="data-panel" aria-labelledby="data-heading">
+      <header class="data-head"><h2 id="data-heading">Drive telemetry</h2><span id="map">CARLA</span></header>
+      <dl class="readouts">
+        <div><dt>Speed</dt><dd><span id="speed">—</span><small>km/h</small></dd></div>
+        <div><dt>Steering</dt><dd><span id="steer">—</span><small id="steer-direction"></small></dd></div>
+        <div><dt>Throttle</dt><dd id="throttle">—</dd></div>
+        <div><dt>Brake</dt><dd id="brake">—</dd></div>
+        <div><dt>Route progress</dt><dd><span id="progress">—</span><small id="route-total">m</small></dd></div>
+        <div><dt>Lateral error</dt><dd><span id="lateral">—</span><small>m</small></dd></div>
+        <div><dt>Collisions</dt><dd id="collisions">—</dd></div>
+      </dl>
+      <dl class="metadata">
+        <div><dt>Scenario</dt><dd id="scenario">—</dd></div>
+        <div><dt>Controller</dt><dd id="policy">—</dd></div>
+        <div><dt>Seed</dt><dd id="seed">—</dd></div>
+        <div><dt>Phase</dt><dd id="phase">—</dd></div>
+        <div><dt>Weather</dt><dd id="weather">—</dd></div>
+        <div id="telemetry-grip" hidden><dt>Wheel grip</dt><dd id="grip">—</dd></div>
+        <div id="telemetry-destination" hidden><dt>Destination</dt><dd id="destination">—</dd></div>
+        <div id="telemetry-delay" hidden><dt>Crossing delay</dt><dd id="crossing-delay">—</dd></div>
+        <div id="telemetry-red-light" hidden><dt>Red-light violations</dt><dd id="red-light-count">—</dd></div>
+        <div id="telemetry-yield" hidden><dt>Yield violations</dt><dd id="yield-count">—</dd></div>
+      </dl>
+    </section>
+    <footer>
+      <span>Simulation imagery by CARLA and its contributors</span>
+      <nav aria-label="Project links">
+        <a href="./builds.html">Builds &amp; logs</a>
+        <a href="./benchmarks.html">Benchmark results</a>
+        <a href="./city.html">3D city observer</a>
+        <a href="./vehicle.html">3D vehicle view</a>
+        <a href="https://github.com/yafi-s/ADO/blob/main/docs/research.md">Research &amp; credits</a>
+        <a href="https://github.com/yafi-s/ADO">Source code</a>
+      </nav>
+    </footer>
+  </main>
+</body>
+</html>

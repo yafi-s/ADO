@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#192420">
+  <title>ADO · Builds &amp; logs</title>
+  <link rel="stylesheet" href="console.css">
+  <link rel="stylesheet" href="builds.css">
+  <script type="module" src="builds.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="mast-inner">
+      <div class="brand"><i class="brand-mark" aria-hidden="true"></i>ADO</div>
+      <span class="mast-rule" aria-hidden="true"></span>
+      <span class="mast-type">Autonomous driving research</span>
+      <nav class="mast-nav" aria-label="Project navigation"><a href="./">Drive monitor</a></nav>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="intro builds-intro" aria-labelledby="builds-title">
+      <div>
+        <div class="eyebrow"><i class="small-rule" aria-hidden="true"></i> CARLA simulation archive</div>
+        <h1 id="builds-title">Builds &amp; logs</h1>
+        <p>Source revisions, policy checkpoints, and the logs behind the drives.</p>
+      </div>
+    </section>
+    <p class="archive-state" id="archive-state" role="status">Loading the build archive…</p>
+    <div class="build-archive" id="build-archive" hidden>
+      <div class="build-overview">
+        <section class="panel" aria-labelledby="build-title">
+          <header class="panel-head archive-head">
+            <h2 id="build-title">Build information</h2>
+            <span class="unit-tag" id="build-status"></span>
+          </header>
+          <div class="build-content">
+            <p class="build-name" id="build-name"></p>
+            <dl class="build-meta">
+              <div id="source-info" hidden><dt>Source revision</dt><dd><a id="source-commit-link" hidden></a><code id="source-commit-text" hidden></code></dd></div>
+              <div id="server-info" hidden><dt>CARLA server</dt><dd id="server-version"></dd></div>
+              <div id="client-info" hidden><dt>CARLA Python API</dt><dd id="client-version"></dd></div>
+              <div id="map-info" hidden><dt>Map</dt><dd id="simulator-map"></dd></div>
+            </dl>
+            <div class="archive-links">
+              <a class="archive-download" id="release-zip" hidden>Download build ZIP</a>
+              <a id="release-link" hidden>Release page</a>
+              <a id="release-checksum" hidden>ZIP checksum</a>
+            </div>
+            <p class="build-note" id="release-note" hidden>Release package pending.</p>
+          </div>
+        </section>
+        <section class="panel" aria-labelledby="evidence-title" id="evidence-panel" hidden>
+          <header class="panel-head archive-head"><h2 id="evidence-title">Evidence files</h2></header>
+          <ul class="evidence-list" id="evidence-list"></ul>
+        </section>
+      </div>
+      <section class="panel" id="checkpoint-panel" aria-labelledby="checkpoint-title" hidden>
+        <header class="panel-head archive-head"><h2 id="checkpoint-title">Policy checkpoints</h2></header>
+        <dl class="checkpoints" id="checkpoints"></dl>
+      </section>
+      <section class="panel" aria-labelledby="runs-title">
+        <header class="panel-head archive-head trials-head">
+          <h2 id="runs-title">Simulation runs</h2>
+          <a id="runs-csv" hidden>Download runs CSV</a>
+        </header>
+        <p class="build-content" id="trials-empty">Awaiting archived evaluation runs.</p>
+        <div id="trials" hidden>
+          <div class="trial-filters">
+            <label for="trial-search">Search runs <input type="search" id="trial-search" placeholder="Run, case, seed, or cohort"></label>
+            <label for="trial-policy">Controller <select id="trial-policy"></select></label>
+            <label for="trial-outcome">Outcome <select id="trial-outcome"></select></label>
+            <p id="trial-count" role="status"></p>
+          </div>
+          <div class="trial-scroll" role="region" aria-labelledby="runs-title" tabindex="0">
+            <table>
+              <thead>
+                <tr><th scope="col">Run</th><th scope="col">Seed</th><th scope="col">Controller</th><th scope="col">Outcome</th>
+                  <th scope="col">Progress</th><th scope="col">Duration</th><th scope="col">Evidence</th></tr>
+              </thead>
+              <tbody id="trial-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+    <footer>
+      <span>Simulation by CARLA and its contributors</span>
+      <nav aria-label="Project links">
+        <a href="./benchmarks.html">Benchmark results</a>
+        <a href="https://github.com/yafi-s/ADO">Source code</a>
+      </nav>
+    </footer>
+  </main>
+</body>
+</html>

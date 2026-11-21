@@ -1,0 +1,52 @@
+{
+  "status": "commissioning",
+  "title": "Simulator commissioning",
+  "release": null,
+  "checkpoints": {},
+  "runs": [],
+  "simulator": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town01_Opt"
+  },
+  "evidence": [
+    {
+      "label": "Initial scenario commissioning",
+      "url": "./logs/commissioning-initial.json"
+    },
+    {
+      "label": "Scenario commissioning",
+      "url": "./logs/commissioning.json"
+    },
+    {
+      "label": "Native rendering measurements",
+      "url": "./logs/rendering.json"
+    },
+    {
+      "label": "Traction measurements",
+      "url": "./logs/traction.json"
+    },
+    {
+      "label": "Simulator vehicle verification",
+      "url": "./logs/simulator-verification.json"
+    },
+    {
+      "label": "Traffic Manager training demonstration",
+      "url": "./logs/training-drive.json",
+      "producer": {
+        "server_version": "1.0",
+        "client_version": "1.0",
+        "map": "Town01_Opt"
+      },
+      "subject": "Traffic Manager training demonstration"
+    }
+  ],
+  "preview_video": "./media/training-drive.mp4",
+  "preview_log": "./logs/training-drive.json",
+  "preview_label": "Training demonstration \u00b7 CARLA 1.0",
+  "source": {
+    "commit": "f3b9b04909605d866478e3ef3dc82acb579c5bbd",
+    "url": "https://github.com/yafi-s/ADO/tree/f3b9b04909605d866478e3ef3dc82acb579c5bbd"
+  },
+  "preview_image": "./media/commissioning-chase.jpg"
+}

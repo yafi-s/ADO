@@ -1,6 +1,6 @@
 # Experimental long-wave infrared view
 
-Crosswalk Lab synthesizes a white-hot view for the drive monitor. A nearby pedestrian usually appears brighter than the road because the model assigns the pedestrian class a warmer surface. At greater distance the atmosphere reduces that contrast. These are assumed scene temperatures. The view has no camera calibration and supplies no temperature ground truth. It is a Crosswalk Lab experiment, independent of Waymo's sensor suite.
+ADO synthesizes a white-hot view for the drive monitor. A nearby pedestrian usually appears brighter than the road because the model assigns the pedestrian class a warmer surface. At greater distance the atmosphere reduces that contrast. These are assumed scene temperatures. The view has no camera calibration and supplies no temperature ground truth. It is a ADO experiment, independent of Waymo's sensor suite.
 
 ## Inputs
 
