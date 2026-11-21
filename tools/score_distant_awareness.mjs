@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {parseArgs} from 'node:util';
 import {audit,match} from './audit_city_perception.mjs';
 import {bearingObservations,frontBearingCue} from '../web/lamp-observations.mjs';
+import {bicycleAssociations,RIDER_HISTORY_FRAMES} from '../web/rider-association.mjs';
 
 const {positionals:[directory,output],values}=parseArgs({allowPositionals:true,options:{
   paired:{type:'string'},reference:{type:'string'},review:{type:'string'},examples:{type:'string'},
@@ -85,8 +86,12 @@ function scoreBoxes(stage,boxes,actors,frame){
   for(const box of observations)if(!used.has(box))unmatched(stage,box,frame);
 }
 let acquisitions=0;
+const riderHistory=[];
 const result=await audit(directory,{staticFile:reference,memoryRevision:values['memory-revision'],memoryFile:values['memory-file'],
-  barrierReviewFile:values.review,onFrame({frame,actors,display}){
+  barrierReviewFile:values.review,onFrame({frame,riderFrame,actors,display}){
+  riderHistory.push(riderFrame);
+  if(riderHistory.length>RIDER_HISTORY_FRAMES)riderHistory.shift();
+  const mounted=bicycleAssociations(riderHistory);
   const registered=projections?.get(frame.frame);
   if(projections&&!registered)throw Error('Missing frame-synchronized reference projection '+frame.frame);
   const eligible=actors.filter(a=>roadUser(a.label)&&ahead(a))
@@ -112,7 +117,7 @@ const result=await audit(directory,{staticFile:reference,memoryRevision:values['
       scoreBoxes('native_full_only',frame.camera_detections.front.filter(b=>b.inference_layout!=='front-horizon-2x'),eligible,frame);
     }
   }
-  const predictions=display.filter(p=>roadUser(p.label)&&p.opacity>=.5);
+  const predictions=display.filter(p=>roadUser(p.label)&&p.opacity>=.5 && !(p.label==='person'&&mounted.has(p.sourceId)));
   for(const a of eligible)count('display',a,'opportunities');
   const found=new Set();
   for(const label of ['person','car','truck','bus']){
