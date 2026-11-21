@@ -34,7 +34,8 @@ class RiderSceneBrowserTest(unittest.TestCase):
                   const track={id:31,label:'car',x:-10,y:3,z:.8,length:4,width:1.8,height:1.6,
                     heading:0,speed_mps:1,confidence:.8,sources:['rgb','lidar'],cameras:['rear_right']};
                   const frames=[0,1,2].map(i=>({perception_version:'surround-v1',frame:i,sim_time:i*.1,
-                    observer_map:{ego:[i,0,0],ego_z:0,others:[{type:'walker',x:2,y:1}]},
+                    observer_map:{ego:[i,0,0],ego_z:0,path:[[0,0],[45,0]],others:[{type:'walker',x:2,y:1}]},
+                    plan_xy:i<2?[[i,0],[i+5,-.5],[i+18,-3.3],[i+40,-3.5]]:undefined,
                     tracks:[{...track,x:-10-i}],lidar_xyz:[[4,2,.9]],lidar:[[4,2]],
                     corner_radar:{radar_rear_right:[[-5,2,1.4,-3.2]]},
                     signals:[{id:'head/a',map_id:'same',x:12,y:2,z:5,state:'red',source:'camera'},
@@ -49,9 +50,17 @@ class RiderSceneBrowserTest(unittest.TestCase):
                     masts:scene.measuredSignals.masts.size,
                     colors:heads.map(head=>head.material.uniforms.uLamp.value),
                     positions:heads.map(head=>head.position.toArray())};
+                  const p=scene.preview.geometry.attributes.position;
+                  result.selectedPath=scene.preview.visible&&!scene.path.visible&&
+                    Math.abs((p.getZ(p.count-2)+p.getZ(p.count-1))/2+3.5)<.001;
                   for (const view of ['follow','overview']){
                     scene.setView(view);scene.placeCamera();scene.renderer.render(scene.scene,scene.camera);
                   }
+                  result.overview=scene.preview.visible&&scene.path.visible&&scene.path.material.uniforms.uPreviewSpan.value>39;
+                  scene.setLayer('path',false);result.toggle=!scene.preview.visible&&!scene.path.visible;
+                  scene.setLayer('path',true);scene.setView('follow');
+                  scene.updateReplay(frames,2,0);
+                  result.legacyPath=scene.path.visible&&!scene.preview.visible&&scene.path.material.uniforms.uPreviewSpan.value===0;
                   scene.update(null);
                   result.cleared=!scene.returnGroup.visible&&!scene.measuredSignals.heads.size;
                   scene.dispose();
@@ -67,6 +76,7 @@ class RiderSceneBrowserTest(unittest.TestCase):
                 self.assertEqual(measured["masts"], 1)
                 self.assertEqual(measured["colors"], [0, -1])
                 self.assertEqual(measured["positions"], [[12, 5, 2], [12, 5, 6]])
+                self.assertTrue(all(measured[key] for key in ("selectedPath","overview","toggle","legacyPath")))
                 self.assertTrue(measured["cleared"])
             finally:
                 browser.close()

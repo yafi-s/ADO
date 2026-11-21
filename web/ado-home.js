@@ -277,7 +277,7 @@ function setLayer(layer, visible) {
 
 function renderLayers(frame) {
   const available = {
-    path: !frame || (Array.isArray(frame.observer_map?.path) && frame.observer_map.path.length > 1),
+    path: !frame || [frame.plan_xy,frame.observer_map?.path].some(points=>Array.isArray(points)&&points.length>1),
     tracks: !frame || Array.isArray(frame.tracks),
     returns: !frame || Array.isArray(frame.lidar_xyz) || Array.isArray(frame.lidar) || Array.isArray(frame.radar) || Boolean(frame.corner_radar)
   };
@@ -301,6 +301,14 @@ function activityOf(frame) {
   const speed = frame?.speed_mps;
   if (!finite(speed)) {
     return {state: 'idle', label: state.source === 'training' ? 'Training demonstration' : 'Standing by'};
+  }
+  const pass = frame.tactical_pass;
+  if (finite(pass?.corridor_station_m)) {
+    if (pass.maneuver === 'yield' && pass.committed === false) return {state:'waiting', label:'Waiting for a gap'};
+    if (pass.maneuver === 'passing' && pass.committed === true) {
+      if (frame.physically_overtaken === true) return {state:'moving', label:'Pass complete'};
+      return {state:'passing', label:'Passing'};
+    }
   }
   const {brake, throttle, steer} = frame;
   if (![brake, throttle, steer].some(finite)) {
@@ -328,7 +336,10 @@ function renderActivity(frame) {
   }
   // While time is running, a new activity must hold for two frames before it replaces the label.
   const running = state.source === 'live' || isPlaying();
-  if (running && frame && shownActivity && candidateActivity !== key) {
+  // A logged planner transition, including leaving its corridor, takes effect on its recorded frame.
+  const plannerState = next.state === 'waiting' || next.state === 'passing' || next.label === 'Pass complete' ||
+    /^(waiting|passing)\|/.test(shownActivity);
+  if (running && frame && shownActivity && !plannerState && candidateActivity !== key) {
     candidateActivity = key;
     return;
   }

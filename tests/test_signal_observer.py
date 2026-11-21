@@ -13,11 +13,13 @@ class SignalObserverTests(unittest.TestCase):
         observer=object.__new__(SignalObserver)
         observer.mounts={"front":np.eye(4)}
         observer.recent={}
+        observer.candidates={}
         center=np.array([18.,0.,2.8])
         verts=np.array([[x,y,z] for x in (-.1,.1) for y in (-.25,.25) for z in (-.5,.5)])+center
         observer.heads=[Head("signal","7",verts,center,0.)]
         sample=np.full((360,640,3),130,np.uint8)
         observer.classifier=SimpleNamespace(read=lambda crop:("red", .97))
+        self.assertEqual(observer.read(carla.Transform(),{"front":sample},2.9)[0]["state"],"unknown")
         row=observer.read(carla.Transform(),{"front":sample},3.)[0]
         self.assertEqual((row["source"],row["view"],row["state"]),("camera","front","red"))
         self.assertEqual(row["pixel_size"],[640,360])

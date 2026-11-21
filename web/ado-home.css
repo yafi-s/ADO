@@ -228,7 +228,9 @@
 .hud[data-state="idle"] .activity { color: var(--ink-2); }
 .hud[data-state="idle"] .activity::before { background: none; border: 2px solid var(--ink-3); }
 .hud[data-state="cruising"] .activity::before,
+.hud[data-state="passing"] .activity::before,
 .hud[data-state="moving"] .activity::before { background: var(--accent); }
+.hud[data-state="waiting"] .activity::before { background: var(--caution); }
 .hud[data-state="accelerating"] .activity::before { background: var(--go); }
 .hud[data-state="left"] .activity::before,
 .hud[data-state="right"] .activity::before { background: var(--accent); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 24%, transparent); }

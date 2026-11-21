@@ -107,6 +107,7 @@ class SignalObserver:
         self.heads = fixtures(world)
         self.reference_actors = {str(a.get_opendrive_id()): a for a in world.get_actors().filter("traffic.traffic_light")}
         self.recent = {}
+        self.candidates = {}
         self.mounts = {}
         import carla
         for name, cam in CAMERAS.items():
@@ -155,6 +156,15 @@ class SignalObserver:
             if votes:
                 strength, view, box, color = max(votes)
                 if all(v[3] == color for v in votes):
+                    if sim_time is not None:
+                        prior = self.candidates.get(head.key)
+                        count = prior[2] + 1 if prior and prior[0]==color and 0 < sim_time-prior[1] <= .25 else 1
+                        self.candidates[head.key] = (color, sim_time, count)
+                        if count < 2:
+                            # A conflicting isolated flash should not recolor a mapped head.
+                            if head.key in self.recent and self.recent[head.key][1] != color:
+                                del self.recent[head.key]
+                            continue
                     row.update(state=color, view=view, source="camera", pixel_box=list(box),
                                pixel_size=[images[view].shape[1], images[view].shape[0]],
                                confidence=round(strength, 4) if self.classifier else None, age_s=0.)

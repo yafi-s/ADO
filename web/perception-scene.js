@@ -242,14 +242,15 @@ function crossingMaterial(tones) {
 }
 function pathMaterial(tones) {
   return new T.ShaderMaterial({
-    uniforms:{uSky:{value:tones.sky},uStation:{value:0},uOverview:{value:0},uFar:{value:tones.pathFar},uNear:{value:tones.pathNear}},
+    uniforms:{uSky:{value:tones.sky},uStation:{value:0},uOverview:{value:0},uPreviewSpan:{value:0},uFar:{value:tones.pathFar},uNear:{value:tones.pathNear}},
     transparent:true,side:T.DoubleSide,depthWrite:false,vertexShader:ribbonVertex,
-    fragmentShader:`uniform vec3 uSky,uFar,uNear; uniform float uStation,uOverview;
+    fragmentShader:`uniform vec3 uSky,uFar,uNear; uniform float uStation,uOverview,uPreviewSpan;
       varying vec2 vLane; varying vec3 vWorld;
       ${haze}
       void main() {
         float along=vLane.y-uStation, a=abs(vLane.x);
         float width=mix(.97,.58,smoothstep(2.,72.,along));
+        if(uPreviewSpan>0.)width*=.37;
         float aa=clamp(fwidth(a),.005,.13);
         float mask=1.-smoothstep(width-.115-aa,width+aa,a);
         float edge=smoothstep(width-.18-aa,width-.035+aa,a);
@@ -259,6 +260,8 @@ function pathMaterial(tones) {
         float ahead=smoothstep(-4.,-.4,along)*(1.-smoothstep(65.,108.,along));
         float energy=mix(ahead*(.18+.82*nearEgo),.32+.68*exp(-abs(along)/42.),uOverview);
         float opacity=energy*mask*(.52+.29*edge+.17*chevron);
+        // The surrounding destination route resumes beyond the selected maneuver.
+        if(uPreviewSpan>0.)opacity*=.58*max(1.-smoothstep(-6.,-2.,along),smoothstep(uPreviewSpan-1.,uPreviewSpan+3.,along));
         vec3 color=mix(uFar,uNear,.17*nearEgo+max(edge,chevron)*.81);
         gl_FragColor=vec4(aerial(color,vWorld),opacity);${endColor}
       }`
@@ -498,6 +501,15 @@ export class PerceptionScene {
     this.returnGroup.add(this.surfaces,this.cornerRadar);
     this.trackGroup=new T.Group();this.scene.add(this.trackGroup);
     this.measuredSignals=new SignalHeads(this.scene);
+    // The planner supplies a new short preview each tick. Refill one ribbon so
+    // video playback never has to compile a new material or allocate a GPU buffer.
+    const strip=Array.from({length:43},(_,i)=>[i,0,0]);
+    this.preview=new T.Mesh(surfaceGeometry([strip],1.22),pathMaterial(this.tones));
+    this.preview.frustumCulled=false;this.preview.renderOrder=1;this.preview.visible=false;
+    this.preview.material.uniforms.uOverview.value=.72;
+    this.preview.geometry.attributes.position.setUsage(T.DynamicDrawUsage);
+    this.preview.geometry.attributes.uv.setUsage(T.DynamicDrawUsage);
+    this.previewSpan=0;this.scene.add(this.preview);
     this.layers={returns:true,tracks:true,path:true};
     this.tracks=new Map();
     // Which objects to draw, and where, is decided by the object memory from the recorded tracks.
@@ -750,6 +762,40 @@ export class PerceptionScene {
     this.path.material.uniforms.uOverview.value=Number(this.view==='overview');
   }
 
+  setPreview(points) {
+    this.previewSpan=0;
+    if(Array.isArray(points)&&points.length>1&&points.every(p=>coord(p))){
+      const waypoints=[];
+      for(const [x,y] of points){
+        const p=V(x,this.height(x,y),y);
+        if(!waypoints.length||p.distanceToSquared(waypoints.at(-1))>.0001)waypoints.push(p);
+      }
+      if(waypoints.length>1){
+        const {position,uv}=this.preview.geometry.attributes;
+        const samples=new T.CatmullRomCurve3(waypoints).getPoints(position.count/2-1);
+        for(let i=0;i<samples.length;i++){
+          const p=samples[i],a=samples[Math.max(0,i-1)],b=samples[Math.min(samples.length-1,i+1)];
+          const dx=b.x-a.x,dz=b.z-a.z,length=Math.hypot(dx,dz)||1;
+          this.previewSpan+=Math.hypot(p.x-a.x,p.z-a.z);
+          for(const [side,sign] of [[0,-1],[1,1]]){
+            position.setXYZ(i*2+side,p.x-sign*1.22*dz/length,p.y+.075,p.z+sign*1.22*dx/length);
+            uv.setXY(i*2+side,sign,this.previewSpan);
+          }
+        }
+        position.needsUpdate=true;uv.needsUpdate=true;
+      }
+    }
+    this.showPaths();
+  }
+
+  showPaths() {
+    this.preview.visible=this.layers.path&&this.previewSpan>0;
+    if(this.path){
+      this.path.visible=this.layers.path&&(this.view==='overview'||!this.previewSpan);
+      this.path.material.uniforms.uPreviewSpan.value=this.previewSpan;
+    }
+  }
+
   station(x,z) {
     let dist=Infinity,station=0;
     for(let i=1;i<(this.stations?.length||0);i++){
@@ -810,7 +856,7 @@ export class PerceptionScene {
       this.frame=null;this.ego.visible=false;this.returnGroup.visible=false;this.localized=false;
       this.measuredSignals.update(null);
       if(this.map)this.map.visible=false;
-      this.setPath(null);this.clearTracks();this.duration=0;this.memory.ctx=null;
+      this.setPath(null);this.setPreview(null);this.clearTracks();this.duration=0;this.memory.ctx=null;
       this.dirty=true;return;
     }
     const previous=this.frame;
@@ -837,6 +883,7 @@ export class PerceptionScene {
       this.to.set(next.x,next.h,next.z);this.toYaw=-next.degrees*rad;
     }
     this.setPath(located?m.path:null);
+    this.setPreview(located?frame.plan_xy:null);
     this.stationFrom=reset?this.station(x,z):(this.path?.material.uniforms.uStation.value||0);
     this.stationTo=this.station(x,z);
     if(replay){this.stationFrom=this.stationTo;this.stationTo=this.station(this.to.x,this.to.z);}
@@ -944,6 +991,7 @@ export class PerceptionScene {
   setView(view){
     if(view!=='follow'&&view!=='overview')return;
     this.view=view;this.orbit=this.pitch=0;this.zoom=1;this.snapCamera=true;
+    this.showPaths();
     if(this.path)this.path.material.uniforms.uOverview.value=Number(view==='overview');
     if(this.buildings)this.buildings.material.uniforms.uOverview.value=Number(view==='overview');
     if(this.frame&&this.currentCtx)this.lightSignals(this.frame,this.currentCtx);
@@ -954,6 +1002,7 @@ export class PerceptionScene {
     this.layers[layer]=Boolean(enabled);
     const group={returns:this.returnGroup,tracks:this.trackGroup,path:this.path}[layer];
     if(group)group.visible=this.layers[layer];
+    if(layer==='path')this.showPaths();
     this.dirty=true;
   }
   resize(){
