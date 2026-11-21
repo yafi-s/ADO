@@ -151,7 +151,9 @@ def generate():
     add("Object continuity", 'On the identical v0.3 tape including registered parked vehicles, matched drawings '
         f'increased from {first["hits"]:,} to {last["hits"]:,}. Unmatched drawings fell from '
         f'{first["unmatched"]:,} to {last["unmatched"]:,}. The featured drive matched '
-        f'{displayed["matched"]:,} of {displayed["actor_frames"]:,} nearby actor-frames, including registered parked vehicles.',
+        f'{displayed["matched"]:,}/{displayed["actor_frames"]:,} nearby actor-frames, including parked vehicles. '
+        f'{displayed["unmatched_predictions"]:,}/{displayed["prediction_frames"]:,} drawings had no reference match. '
+        'The reference omits some roadside objects.',
         ("Same-tape comparison", BASE + "results/perception/object-continuity/README.md"),
         ("Featured drive audit", BASE + PERCEPTION))
     add("Cyclist display", f'The featured drive drew the bicycle correctly in {cyclist["bicycle_frames"]}/'
