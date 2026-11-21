@@ -61,6 +61,14 @@ class RiderSceneBrowserTest(unittest.TestCase):
                   scene.setLayer('path',true);scene.setView('follow');
                   scene.updateReplay(frames,2,0);
                   result.legacyPath=scene.path.visible&&!scene.preview.visible&&scene.path.material.uniforms.uPreviewSpan.value===0;
+                  const boards=frames.map((f,i)=>({...f,observer_map:{...f.observer_map,ego:[0,0,0]},
+                    tracks:[{...track,id:102,label:'barrier',x:8,y:0,z:.55,length:1.19,width:.4,height:1.09,
+                      heading:0,speed_mps:0,confidence:.95,cameras:['front'],sources:['rgb','lidar']}]}));
+                  scene.updateReplay(boards,1,0);scene.sample(performance.now());scene.placeCamera();
+                  scene.renderer.render(scene.scene,scene.camera);
+                  const board=[...scene.tracks.values()].find(tr=>tr.label==='barrier');
+                  const expectedTint=scene.look.barrier;
+                  result.barrier=board?.materials[0].color.getHexString()===expectedTint.slice(1);
                   scene.update(null);
                   result.cleared=!scene.returnGroup.visible&&!scene.measuredSignals.heads.size;
                   scene.dispose();
@@ -78,5 +86,6 @@ class RiderSceneBrowserTest(unittest.TestCase):
                 self.assertEqual(measured["positions"], [[12, 5, 2], [12, 5, 6]])
                 self.assertTrue(all(measured[key] for key in ("selectedPath","overview","toggle","legacyPath")))
                 self.assertTrue(measured["cleared"])
+                self.assertTrue(measured["barrier"])
             finally:
                 browser.close()

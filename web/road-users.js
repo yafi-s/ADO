@@ -9,7 +9,8 @@ const V = (x = 0, y = 0, z = 0) => new T.Vector3(x, y, z);
 const UP = V(0, 1, 0);
 
 export const TRACK_TONE = {
-  car: 'vehicle', bus: 'vehicle', truck: 'vehicle', motorcycle: 'rider', bicycle: 'rider', person: 'person', unknown: 'unknown'
+  car: 'vehicle', bus: 'vehicle', truck: 'vehicle', motorcycle: 'rider', bicycle: 'rider', person: 'person',
+  barrier: 'barrier', chain_barrier: 'barrier', unknown: 'unknown'
 };
 
 // The range of sizes, in metres, over which each symbol still looks like its class: [min, max] for
@@ -305,7 +306,51 @@ function unknown(b) {
   return b.finish(1, 1, 1);
 }
 
-const SHAPES = {car, truck, bus, person, bicycle, motorcycle, unknown};
+// Two striped boards on low feet. Scale the entire symbol to its measured box.
+function barrier(b) {
+  const {body, hub, lamp} = b.paints;
+  for (const x of [-.43, .43]) {
+    b.box(.19, .07, .40, .02, hub, x, .035, 0);
+    b.box(.055, 1, .055, .01, hub, x, .55, 0);
+  }
+  const stripes = shared('barricade-stripes', () => {
+    const positions = [];
+    for (const z of [-.035, .035]) {
+      for (const x of [-.55, -.28, -.01, .26]) {
+        const a = [x, -.11, z], b = [x+.13, -.11, z], c = [x+.27, .11, z], d = [x+.14, .11, z];
+        positions.push(...(z > 0 ? [...a, ...b, ...c, ...a, ...c, ...d] : [...a, ...c, ...b, ...a, ...d, ...c]));
+      }
+    }
+    const geometry = new T.BufferGeometry();
+    geometry.setAttribute('position', new T.Float32BufferAttribute(positions, 3));
+    return geometry;
+  });
+  for (const y of [.58, .98]) {
+    b.box(1.19, .22, .064, .008, body, 0, y, 0);
+    b.part(stripes, lamp, 0, y, 0);
+  }
+  return b.finish(1.19, 1.09, .40);
+}
+
+// Two measured metal bollards. The shallow sag is a symbol for a confirmed
+// suspended span, whose range returns are shown separately in the lidar layer.
+function chainBarrier(b) {
+  const {hub, tyre} = b.paints;
+  for (const x of [-.72, .72]) {
+    b.limb([x,.01,0], [x,.70,0], .10, hub);
+    b.limb([x,.01,0], [x,.045,0], .12, tyre);
+  }
+  let previous = [-.72, .57, 0];
+  for (let i = 1; i <= 8; i++) {
+    const t = i / 8;
+    const next = [-.72 + 1.44*t, .57 - .92*t*(1-t), 0];
+    b.limb(previous, next, .015, tyre);
+    previous = next;
+  }
+  return b.finish(1.68, .70, .24);
+}
+
+const SHAPES = {car, truck, bus, person, bicycle, motorcycle, barrier, chain_barrier:chainBarrier, unknown};
 
 // Returns {group, materials}. The materials belong to this instance: fade and dispose them with it.
 export function buildRoadUser(label, look) {
