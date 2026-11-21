@@ -76,12 +76,50 @@ def interval(trace, a, b):
                 seconds_below_10_kmh=round(.1 * sum(r["speed_mps"] * 3.6 < 10 for r in rows), 1))
 
 
+def audited_observer(model, folder, case, release_checks):
+    """Observe numerical edges and the crossing release gate independently of commands."""
+    observer = model.new_observer()
+    observe = observer.observe
+    saved = False
+
+    def measured(obs, *args, **kwargs):
+        nonlocal saved
+        scan = obs["lidar"]
+        if case == "signal" and not saved:
+            from .lidar_motion import CELL, RADIUS
+            xy = scan[:, :2]
+            # Reproduce the superseded arithmetic exactly; this mask is evaluation-only.
+            edge = (np.abs(xy) < RADIUS).all(axis=1) & (scan[:, 2] + 2.3 > .23) & (scan[:, 2] + 2.3 < 3.6)
+            edge &= np.any((xy + np.float32(RADIUS)) / np.float32(CELL) >= 2 * RADIUS / CELL, axis=1)
+            if np.any(edge):
+                save_arrays(folder / "native-upper-edge.npz", frame=obs["progress_frame"], lidar=scan,
+                            radar=obs["radar"], ego_xy_yaw=obs["progress_ego_pose"],
+                            old_invalid_point_indices=np.flatnonzero(edge))
+                saved = True
+        result = observe(obs, *args, **kwargs)
+        if case == "bus-crossing" and observer.crossing.anchor is not None and observer.crossing.sweeps:
+            from .behavior_v2 import _checked_route
+            crossing = observer.crossing
+            current = crossing.sweeps[-1]
+            path = _checked_route(args[1], kwargs.get("route_preview"))
+            local = (crossing.anchor - current.origin) @ current.rotation
+            frame = int(obs["progress_frame"])
+            release_checks[frame] = dict(prediction_wait_remaining_s=round(max(0., crossing.release_after - frame*.1), 3),
+                old_conflict_ground_observed=bool(crossing._open_at(scan, local, path)),
+                consecutive_clear_scans=crossing.clear_frames)
+        return result
+
+    observer.observe = measured
+    return observer
+
+
 def route_trial(world, checkpoint, folder, raw, case):
     start, finish, windows, target, seed = WINDOWS[case]
     driver, names, schema = load_driver(checkpoint)
     model = LoggedDriver(driver)
     folder.mkdir(parents=True, exist_ok=False)
     raw.mkdir(parents=True, exist_ok=False)
+    release_checks = {}
     with (raw / "front.mjpeg").open("xb") as stream, gzip.open(
             folder / "reference.jsonl.gz", "xt", encoding="utf-8") as reference:
         witness = Witness(stream, reference, target)
@@ -100,10 +138,14 @@ def route_trial(world, checkpoint, folder, raw, case):
 
         summary, trace, _, _ = episode(world, "journey", seed, schema, model, scene_factory=factory,
             destination="market", weather="ClearNoon", crossing_delay=.5, recording=witness, tactical=True,
-            change_request=finished, max_steps=700)
+            change_request=finished, max_steps=700,
+            observation_factory=(lambda: audited_observer(model, folder, case, release_checks)) if case in ("signal", "bus-crossing") and
+                                getattr(driver, "confirmed_tactical_release", False) else None)
     if case == "bus-crossing":
         for row in trace:
             row.update(witness.scene.walk_rows[row["frame"]])
+            if row["frame"] in release_checks:
+                row["crossing_release_check"] = release_checks[row["frame"]]
         summary["crossing"] = crossing_score(trace)
     write_trace(folder / "trace.jsonl.gz", trace)
     save_arrays(folder / "observations.npz", frame=[r["frame"] for r in trace], features=model.observations,

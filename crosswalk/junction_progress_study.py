@@ -24,7 +24,7 @@ class SealedSource(importlib.abc.MetaPathFinder, importlib.abc.Loader):
 
     def find_spec(self, fullname, path, target=None):
         key = fullname.replace(".", "/") + ".py"
-        if key in self.files:
+        if key in self.files and key not in {"crosswalk/junction_progress_study.py", "crosswalk/grade_transfer_study.py"}:
             return importlib.util.spec_from_loader(fullname, self)
 
     def exec_module(self, module):
@@ -34,7 +34,13 @@ class SealedSource(importlib.abc.MetaPathFinder, importlib.abc.Loader):
 
 
 sealed = None
-if __name__ == "__main__" and "--reproduce" in sys.argv:
+if __name__ == "__main__" and "--production-source" in sys.argv:
+    initial = argparse.ArgumentParser(add_help=False)
+    initial.add_argument("--production-source", type=Path, required=True)
+    opts, _ = initial.parse_known_args()
+    sealed = SealedSource(opts.production_source)
+    sys.meta_path.insert(0, sealed)
+elif __name__ == "__main__" and "--reproduce" in sys.argv:
     initial = argparse.ArgumentParser(add_help=False)
     initial.add_argument("--reuse-schedule", type=Path, required=True)
     opts, _ = initial.parse_known_args()
@@ -132,15 +138,23 @@ class Junction(Scenario):
 
     def initialize(self):
         points, self.center, self.axes, cross_spawn, target, entry, self.market = geometry(self._map, self.site)
+        self.set_guide(points)
+        self.target = (entry if self.stops_short else target).transform.location
+        self.spawn_cars(points[0], cross_spawn)
+        self.set_lights(points)
+
+    def set_guide(self, points):
         self._set_route([w.transform.location for w in points])
         self.road_id, self.lane_id = points[0].road_id, points[0].lane_id
         self.roads = list(dict.fromkeys(p.road_id for p in points))
         junction_indices = [i for i, p in enumerate(points) if p.is_junction]
+        groups = np.split(junction_indices, np.flatnonzero(np.diff(junction_indices) != 1) + 1)
         self._junction_ranges = [tuple(self._coordinates(points[i].transform.location)[0]
-                                       for i in (junction_indices[0], junction_indices[-1] + 1))]
-        self.target = (entry if self.stops_short else target).transform.location
-        library = self.world.get_blueprint_library()
+                                 for i in (group[0], min(group[-1] + 1, len(points) - 1)))
+                                 for group in groups if len(group)]
 
+    def spawn_cars(self, start, other):
+        library = self.world.get_blueprint_library()
         def spawn(preferred, legacy, role, pose):
             bp = _vehicle_blueprint(library, preferred, legacy)
             bp.set_attribute("role_name", role)
@@ -152,9 +166,11 @@ class Junction(Scenario):
             actor.apply_control(carla.VehicleControl(brake=1.))
             return actor
 
-        self.ego = spawn("vehicle.lincoln.mkz", "vehicle.lincoln.mkz_2020", "hero", points[0].transform)
+        self.ego = spawn("vehicle.lincoln.mkz", "vehicle.lincoln.mkz_2020", "hero", start.transform)
         if self.departure is not None:
-            self.traffic = spawn("vehicle.mini.cooper", "vehicle.audi.a2", "cross_traffic", cross_spawn.transform)
+            self.traffic = spawn("vehicle.mini.cooper", "vehicle.audi.a2", "cross_traffic", other.transform)
+
+    def set_lights(self, points):
         lamps = list(self.world.get_actors().filter("traffic.traffic_light"))
         route_lanes = {(p.road_id, p.lane_id) for p in points}
         self.ego_heads = []
@@ -248,10 +264,10 @@ def calibrate(world, folder, site):
         scene.close()
 
 
-def station_speeds(trace):
+def station_speeds(trace, stations=STATIONS):
     """Compare actual speed at identical coordinates, keeping the last applied discrete target."""
     result = {}
-    for station in STATIONS:
+    for station in stations:
         for previous, current in zip(trace, trace[1:]):
             start, end = previous["ego_station_m"], current["ego_station_m"]
             if not start < station <= end:
@@ -268,7 +284,8 @@ def station_speeds(trace):
     return result
 
 
-def run(world, checkpoint, folder, departure, site=SITES["original"], stops_short=False, raw=False):
+def run(world, checkpoint, folder, departure, site=SITES["original"], stops_short=False, raw=False,
+        scene_type=Junction, finish=None, max_steps=320):
     folder.mkdir(parents=True, exist_ok=False)
     images = folder / "cameras"
     images.mkdir()
@@ -276,14 +293,15 @@ def run(world, checkpoint, folder, departure, site=SITES["original"], stops_shor
     model = LoggedDriver(driver)
     scenes = []
     def make(*args, **kwargs):
-        scene = Junction(*args, **kwargs, departure=departure, site=site, stops_short=stops_short)
+        scene = scene_type(*args, **kwargs, departure=departure, site=site, stops_short=stops_short)
         scenes.append(scene)
         return scene
     archive = ZipFile(folder / "sensor-sweeps.zip", "x", ZIP_DEFLATED, compresslevel=1) if raw else None
     try:
         summary, trace, _, _ = episode(world, "journey", SEED, schema, model, weather="ClearNoon",
-            scene_factory=make, max_steps=320, recording=Samples(images, archive, "left" if site == SITES["original"]
-                                                                  else "right"), tactical=True)
+            scene_factory=make, max_steps=max_steps, recording=Samples(images, archive, "left" if site == SITES["original"]
+                                                                  else "right"), tactical=True,
+            change_request=(lambda: finish(scenes[0])) if finish else None)
     finally:
         if archive is not None:
             archive.close()
@@ -366,7 +384,8 @@ def main():
     parser.add_argument("--candidate", type=Path, default=PROJECT / "models/city-progress/candidate.npz")
     parser.add_argument("--port", type=int, default=3528)
     parser.add_argument("--attach", action="store_true")
-    parser.add_argument("--site", choices=SITES, default="original")
+    parser.add_argument("--site", choices=(*SITES, "hill"), default="original")
+    parser.add_argument("--production-source", type=Path, help="Use archived production modules with current scoring")
     parser.add_argument("--reuse-schedule", type=Path, help="Same-site first attempt providing frozen departure")
     parser.add_argument("--reproduce", action="store_true", help="Reuse the matched candidate clear trace and checkpoint")
     parser.add_argument("--raw", action="store_true", help="Archive 10 Hz RGB, lidar and radar for 3-20 s")
@@ -381,10 +400,13 @@ def main():
     with ZipFile(snapshot, "x", ZIP_DEFLATED) as archive:
         for path in sorted(Path(__file__).parent.glob("*.py")):
             name = f"crosswalk/{path.name}"
-            if sealed and path.name != Path(__file__).name and name in sealed.files:
+            if sealed and path.name not in (Path(__file__).name, "grade_transfer_study.py") and name in sealed.files:
                 archive.writestr(name, sealed.files[name])
             else:
                 archive.write(path, name)
+    if args.site == "hill":
+        from .grade_transfer_study import hill_runs
+        return hill_runs(args, checkpoints["candidate"], snapshot)
     site = SITES[args.site]
     anchor = "baseline" if args.site == "original" else "candidate"
     if args.candidate_only:

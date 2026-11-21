@@ -20,6 +20,7 @@ from .viewio import Live
 def load_driver(path):
     with np.load(path, allow_pickle=False) as data:
         version = str(data["version"].item())
+        revision = int(data["revision"].item()) if "revision" in data else None
     if version == "ado-behavior-v2":
         return BehaviorModel.load(path), FEATURE_NAMES, version
     if version == "ado-city-policy-v1":
@@ -35,6 +36,9 @@ def load_driver(path):
         from .city_clearance import ClearanceModel, FEATURE_NAMES as clearance_names
         return ClearanceModel.load(path), clearance_names, version
     if version == "ado-city-progress-v1":
+        if revision == 4:
+            from .city_grade import GradeModel, FEATURE_NAMES as grade_names
+            return GradeModel.load(path), grade_names, version
         from .city_progress import ProgressModel, FEATURE_NAMES as progress_names
         return ProgressModel.load(path), progress_names, version
     raise ValueError(f"Unknown driving model: {version}")

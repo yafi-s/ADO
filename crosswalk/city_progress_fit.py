@@ -56,9 +56,15 @@ def main():
     parser.add_argument("--lesson", type=Path, default=Path("data/city-cruise/lessons.zip"))
     parser.add_argument("--stops", type=Path, default=Path("results/roadworks-pace/stopping-calibration.json"))
     parser.add_argument("--output", type=Path, default=Path("models/city-progress"))
+    parser.add_argument("--grade", action="store_true", help="Fit revision 4 with measured local pavement confirmation")
     args = parser.parse_args()
     coeff, rows = fit(args.lesson)
-    model = ProgressModel(args.base.read_bytes(), coeff)
+    if args.grade:
+        from . import city_grade
+        model_type = city_grade.GradeModel
+    else:
+        model_type = ProgressModel
+    model = model_type(args.base.read_bytes(), coeff)
     tested = json.loads(args.stops.read_bytes())
     hold = [r for r in tested["trials"] if r["split"] == "held_out"]
     errors = [model.stopping[0]*r["cue_speed_mps"]**2 + model.stopping[1]*r["cue_speed_mps"] +
@@ -68,7 +74,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     checkpoint = args.output / "candidate.npz"
     model.save(checkpoint)
-    np.testing.assert_array_equal(ProgressModel.load(checkpoint).coefficients, coeff)
+    np.testing.assert_array_equal(model_type.load(checkpoint).coefficients, coeff)
     report = dict(schema=VERSION, checkpoint_sha256=digest(checkpoint), base_sha256=digest(args.base),
                   source_sha256=digest(Path(city_progress.__file__)), parameters=dict(zip(PARAMETERS, coeff)),
                   observed_frames=rows, braking_holdout_trials=len(hold),
@@ -79,6 +85,8 @@ def main():
                   crossing_source_sha256=digest(Path(city_crossing.__file__)))
     # Store the portable source path in the report regardless of the caller's checkout location.
     report["inputs"]["crosswalk/city_progress_fit.py"] = report["inputs"].pop(Path(__file__).as_posix())
+    if args.grade:
+        report.update(revision=4, grade_source_sha256=digest(Path(city_grade.__file__)))
     (args.output/"fit.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 
