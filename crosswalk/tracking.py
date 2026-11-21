@@ -3,6 +3,11 @@
 Positions describe estimated object centres in metres. Dimensions and heading are
 estimates. A fresh detection needs independent depth support. A coast extrapolates
 a previously measured world position for at most half a second.
+
+Heading starts parallel to the ego vehicle, or across it for a broadside view, and
+afterwards follows only sustained travel. A single view shows one or two faces of
+an object, so its apparent centre shifts as the viewpoint changes; that shift is
+not motion and must not turn the object. Dimensions settle per track for the same reason.
 """
 
 from dataclasses import dataclass
@@ -20,6 +25,11 @@ SIZE = {"car": (4.4, 1.85, 1.52), "truck": (7.0, 2.5, 3.2),
 CAMERA_X, _, CAMERA_Z, _ = MOUNTS["front"]
 VERTICAL_FOCAL = 320 / 360  # 90-degree horizontal FOV, 640 x 360, square pixels
 COAST_S = .50
+SIZE_SETTLE_S = .6      # a track's dimensions approach each new view over this long
+COURSE_WINDOW_S = 1.    # travel is judged over this much recent history
+COURSE_MIN_S = .45
+COURSE_MIN_M = {"person": .6}   # net travel needed before it sets the heading; 1 m otherwise
+COURSE_STRAIGHTNESS = .8        # net travel over path length; jitter scores low
 
 
 def _project(lidar):
@@ -103,8 +113,32 @@ def _measure(lidar, detections):
         center[2] = max(height / 2, hi[2] - height / 2)
         result.append(dict(label=label, center=center, length=length, width=width,
                            height=height, angle=math.degrees(bearing) + (90. if sideways else 0.),
-                           confidence=float(detection["score"]), radial_mps=None))
+                           confidence=float(detection["score"]), radial_mps=None,
+                           # The visible surface, so a track can place its centre with settled dimensions.
+                           bearing=bearing, near=float(lo[0]), lateral=float((lo[1] + hi[1]) / 2),
+                           seen=float(dx), top=float(hi[2]), sideways=bool(sideways)))
     return result
+
+
+def _centre(item, length, width):
+    """Ego-frame centre of an object whose near surface was seen, given its footprint."""
+    extent = width if item["sideways"] else length
+    along = item["near"] + max(item["seen"], extent) / 2
+    sin, cos = math.sin(item["bearing"]), math.cos(item["bearing"])
+    return np.array([cos * along - sin * item["lateral"], sin * along + cos * item["lateral"]])
+
+
+def _course(trail, label):
+    """World heading in degrees from sustained travel, or None while travel is unproven."""
+    (start_time, start), (end_time, end) = trail[0], trail[-1]
+    if end_time - start_time < COURSE_MIN_S:
+        return None
+    net = end - start
+    distance = float(np.linalg.norm(net))
+    path = sum(float(np.linalg.norm(b - a)) for (_, a), (_, b) in zip(trail, trail[1:]))
+    if distance < COURSE_MIN_M.get(label, 1.) or distance < COURSE_STRAIGHTNESS * path:
+        return None
+    return math.degrees(math.atan2(net[1], net[0]))
 
 
 def _match_radar(measurements, radar):
@@ -137,6 +171,8 @@ class _Track:
     last_seen: float
     measurement: dict
     heading_world: float
+    size: np.ndarray        # settled length, width, height
+    trail: list             # recent (time, world position) observations
     observations: int = 1
 
 
@@ -172,20 +208,30 @@ class Tracker:
             if idx in used or key in updated:
                 continue
             track = self._tracks[key]
-            item, pos = measurements[idx], positions[idx]
+            item = measurements[idx]
             dt = now - track.last_seen
+            # Each view measures different faces. Let the dimensions settle, then place the
+            # centre with them, so a changing view does not read as the object moving.
+            seen = np.array([item["length"], item["width"], item["height"]])
+            track.size += min(1., dt / SIZE_SETTLE_S) * (seen - track.size)
+            pos = origin + rotation @ _centre(item, track.size[0], track.size[1])
             if dt > .001:
                 weight = 1. if track.observations == 1 else min(1., dt / .4)
                 track.velocity += weight * ((pos - track.position) / dt - track.velocity)
                 track.observations += 1
-            if np.linalg.norm(track.velocity) > .9:
-                track.heading_world = math.degrees(math.atan2(*track.velocity[::-1]))
+            track.trail = [entry for entry in track.trail if now - entry[0] <= COURSE_WINDOW_S] + [(now, pos)]
+            course = _course(track.trail, item["label"])
+            if course is not None:
+                track.heading_world = course
             track.position, track.last_seen, track.measurement = pos, now, item
             used.add(idx)
             updated.add(key)
         for idx, (item, pos) in enumerate(zip(measurements, positions)):
             if idx not in used:
-                self._tracks[self._next_id] = _Track(pos, np.zeros(2), now, item, yaw + item["angle"])
+                size = np.array([item["length"], item["width"], item["height"]])
+                # Road users mostly travel along or across the ego vehicle's own heading.
+                facing = yaw + (90. if item["sideways"] else 0.)
+                self._tracks[self._next_id] = _Track(pos, np.zeros(2), now, item, facing, size, [(now, pos)])
                 self._next_id += 1
         result = []
         for key, track in self._tracks.items():
@@ -196,9 +242,10 @@ class Tracker:
             sources = ["rgb", "lidar"] if not age else []
             if radial is not None:
                 sources.append("radar")
+            length, width, height = (float(value) for value in track.size)
             result.append(dict(id=key, label=item["label"], x=float(x), y=float(y),
-                               z=float(item["center"][2]), length=float(item["length"]),
-                               width=float(item["width"]), height=float(item["height"]),
+                               z=max(height / 2, item["top"] - height / 2), length=length,
+                               width=width, height=height,
                                heading=(track.heading_world - yaw + 180) % 360 - 180,
                                speed_mps=float(np.linalg.norm(track.velocity)) if track.observations > 1 else None,
                                confidence=item["confidence"] * max(0., 1. - age / COAST_S),
