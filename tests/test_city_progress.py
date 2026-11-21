@@ -19,7 +19,7 @@ def pavement():
 
 
 def packet(frame, scan):
-    return dict(progress_frame=frame, progress_camera_age_s=.1, lidar=scan,
+    return dict(progress_frame=frame, progress_camera_age_s=.1, progress_ego_pose=(0.,0.,0.), lidar=scan,
                 radar=np.array([[0., 0., -.3, 1.]]),
                 front=np.repeat((np.arange(200, dtype=np.uint8)[None, :, None] + 20), 108, axis=0))
 
@@ -63,6 +63,10 @@ class ProgressTests(unittest.TestCase):
         stale = packet(8, scan)
         stale["progress_camera_age_s"] = 1.
         self.assertEqual(observe(stale)[-1], 0)
+        for pose in (None, [1., 2.], [0.,0.,np.nan], "missing"):
+            invalid = packet(8, scan)
+            invalid["progress_ego_pose"] = pose
+            self.assertEqual(observe(invalid)[-1],0)
         for i in range(9, 12):
             hidden = observe(packet(i, scan[scan[:,1] < 3.]))
         self.assertEqual((hidden[0], hidden[1]), (24., 0.))

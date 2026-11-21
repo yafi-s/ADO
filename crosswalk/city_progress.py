@@ -132,11 +132,22 @@ class ProgressObserver(EdgeObserver):
     def observe(self, obs, detections, local_route, speed, *, route_preview=None, stopline_gap=None):
         x = super().observe(obs, detections, local_route, speed, route_preview=route_preview, stopline_gap=stopline_gap)
         frame = obs.get("progress_frame")
+        if not isinstance(frame, (int, np.integer)) or frame < 0:
+            frame = None
+        try:
+            pose = np.asarray(obs.get("progress_ego_pose"), dtype=float)
+        except (TypeError, ValueError):
+            pose = None
+        if pose is None or pose.shape != (3,) or not np.isfinite(pose).all():
+            pose = None
         if frame is None or self.prior_frame is None or frame != self.prior_frame + 1:
             self.recent.clear()
         self.prior_frame = frame
         path = v2._checked_route(local_route, route_preview)
-        cross = self.crossing.observe(obs["lidar"], obs.get("progress_ego_pose"), frame, speed, path)
+        cross = self.crossing.observe(obs["lidar"], pose, frame, speed, path)
+        if frame is None and self.crossing.anchor is not None:
+            # Without a clock, the remaining distance to an established conflict is unknown.
+            cross = (0., 0., self.crossing.inward, 6.)
         image = obs.get("front")
         camera_ok = False
         if image is not None and image.ndim == 3 and image.size:
@@ -144,7 +155,7 @@ class ProgressObserver(EdgeObserver):
             camera_ok = bool(sample.size and np.quantile(sample, .75) > 24 and np.std(sample) > 7)
         near_person = any(d["label"] in ("person", "bicycle", "motorcycle") and
                           d["box"][3] - d["box"][1] > .055 for d in detections)
-        if (frame is None or not camera_ok or not 0. <= obs.get("progress_camera_age_s", np.inf) <= .15
+        if (frame is None or pose is None or not camera_ok or not 0. <= obs.get("progress_camera_age_s", np.inf) <= .15
                 or near_person or not len(_returns(obs["radar"]))):
             self.recent.clear()
         else:
