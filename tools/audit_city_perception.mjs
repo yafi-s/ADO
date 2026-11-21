@@ -229,7 +229,9 @@ export async function audit(directory,{memoryRevision,frameFile,townFile,staticF
       first??=prior;
       count++;
       const {ego,ego_z}=frame.observer_map;
-      const input={...frame,observer_map:{ego,ego_z}};
+      const {sim_time,video_time,seed,run_id,scenario,tracks,detections,camera_detections,lidar,perception_version}=frame;
+      const input={frame:frame.frame,sim_time,video_time,seed,run_id,scenario,tracks,detections,
+        camera_detections,lidar,perception_version,observer_map:{ego,ego_z}};
       context=contextOf(input,context);
       const display=advance(state,context,deps).map(p=>({id:p.key,label:p.label,...localPose(p.x,p.z,ego),
         status:p.held?'remembered':'current'}));

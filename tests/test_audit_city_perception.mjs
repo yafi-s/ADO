@@ -37,12 +37,16 @@ test('journal scoring handles rotated ego poses and separates missing, switched 
   const town={producer:{map:'test'},roads:[]};
   writeFileSync(path.join(dir,'town.json'),JSON.stringify(town));
   const rows=[1,null,2,3,null,4].map((id,index)=>({
-    frame:100+index,sim_time:index/10,tracks:id==null?[]:[{id,label:'person',x:0,y:-10}],
+    frame:100+index,sim_time:index/10,tracks:[{id:'parked-track',label:'car',x:10,y:0},
+      ...(id==null?[]:[{id,label:'person',x:0,y:-10}])],
     observer_map:{ego:[50,70,90],others:[{actor_id:10,type:'pedestrian',role:'crossing',x:index===4?95:60,
       y:70,yaw:0,dimensions_m:[.6,1.8,.4]}]},
   }));
   writeFileSync(path.join(dir,'perception.jsonl'),rows.map(JSON.stringify).join('\n')+'\n{"frame"');
-  const result=await audit(dir);
+  const staticFile=path.join(dir,'parked.json');
+  writeFileSync(staticFile,JSON.stringify({map:'test',actors:[{actor_id:'level-test',type:'car',x:50,y:80,
+    dimensions_m:[4,1.5,2],yaw:90,role:'parked-map-vehicle'}]}));
+  const result=await audit(dir,{staticFile});
   assert.equal(result.frames,6);
   assert.equal(result.partial_tail_ignored,true);
   assert.deepEqual(result.tracker.sector.left,{actor_frames:5,matched:4,exact_label_hits:4,
@@ -51,6 +55,9 @@ test('journal scoring handles rotated ego poses and separates missing, switched 
   assert.equal(result.tracker.direct_id_switches,1);
   assert.equal(result.tracker.actors[0].distinct_ids,4);
   assert.equal(result.display.overall.matched,0,'the observer list must never create display objects');
+  assert.equal(result.tracker.overall.unmatched_predictions,6,'scenario-only counts are preserved');
+  assert.equal(result.with_static_road_users.tracker.overall.unmatched_predictions,0);
+  assert.equal(result.with_static_road_users.display.overall.matched,0,'parked references must never create drawings');
 });
 
 test('encounter pairing is chronological, one-to-one, and excludes different vehicle or actor poses',()=>{
