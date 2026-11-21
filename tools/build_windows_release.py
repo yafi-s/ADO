@@ -68,6 +68,7 @@ PROGRESS_MEDIA = "web/media/city-progress"
 PROGRESS_MASTER = "ADO-City-Progress-1080p.mp4"
 PROGRESS_SCHEMA = "ado-city-progress-v1"
 PROGRESS_RESULTS = "results/city-progress"
+PROGRESS_CROSSING_SOURCE = "city_crossing.py"
 POPULATION_EVIDENCE = {
     "population-reference.jsonl.gz": "population_reference_sha256",
     "population-score.json": "population_score_sha256",
@@ -124,7 +125,8 @@ LIFE_REQUIRED = (
     LIFE_BASELINE, LIFE_CALIBRATION, *(f"{LIFE_RESULTS}/{name}" for name in POPULATION_EVIDENCE),
 )
 PROGRESS_REQUIRED = (
-    "crosswalk/city_progress.py", "models/city-progress/candidate.npz", "models/city-progress/fit.json",
+    "crosswalk/city_progress.py", f"crosswalk/{PROGRESS_CROSSING_SOURCE}", "crosswalk/city_progress_fit.py",
+    "models/city-progress/candidate.npz", "models/city-progress/fit.json",
     f"{PROGRESS_MEDIA}/manifest.json", f"{PROGRESS_MEDIA}/replay-pack.json.gz",
     *(f"{PROGRESS_RESULTS}/{name}" for name in POPULATION_EVIDENCE),
 )
@@ -413,6 +415,8 @@ def verify_city_film(archive, media, capture, scratch, tactical_case=None, *, po
             verify_digest(archive, LIFE_CALIBRATION, fit["calibration_sha256"])
         if policy["schema"] == PROGRESS_SCHEMA:
             verify_digest(archive, "models/city-clearance/candidate.npz", fit["base_sha256"])
+            require(fit["crossing_source_sha256"] == policy["code_sha256"][PROGRESS_CROSSING_SOURCE],
+                    f"The recording captured a different crossing observer at {media}")
         if populated:
             _, source = POPULATED_POLICIES[policy["schema"]]
             require(fit["source_sha256"] == policy["code_sha256"][source],
@@ -535,8 +539,12 @@ def verify_city_life_population(capture, archive_capture, baseline):
 def verify_population_sources(archive, capture, results, policy_source):
     source_hashes = {f"crosswalk/{name}": digest for name, digest in capture["policy"]["code_sha256"].items()
                      if re.fullmatch(r"[a-zA-Z0-9_]+\.py", name)}
-    required_sources = {"crosswalk/city_clearance.py", "crosswalk/city_population.py",
-                        "crosswalk/journey_capture.py", "crosswalk/population_score.py", f"crosswalk/{policy_source}"}
+    fitted_sources = {f"crosswalk/{policy_source}"}
+    progress = capture["policy"]["schema"] == PROGRESS_SCHEMA
+    if progress:
+        fitted_sources.add(f"crosswalk/{PROGRESS_CROSSING_SOURCE}")
+    required_sources = fitted_sources | {"crosswalk/city_clearance.py", "crosswalk/city_population.py",
+                                         "crosswalk/journey_capture.py", "crosswalk/population_score.py"}
     with archive.open(f"{PREFIX}{results}/capture-source.zip") as source_file, ZipFile(source_file) as source:
         require(required_sources <= source_hashes.keys()
                 and len(source.namelist()) == len(source_hashes) == len(capture["policy"]["code_sha256"])
@@ -544,7 +552,7 @@ def verify_population_sources(archive, capture, results, policy_source):
         for name, digest in source_hashes.items():
             recorded = source.read(name)
             require(hashlib.sha256(recorded).hexdigest() == digest, f"Wrong recorded execution source: {name}")
-            if capture["policy"]["schema"] == PROGRESS_SCHEMA and name == f"crosswalk/{policy_source}":
+            if progress and name in fitted_sources:
                 # Git archives use repository line endings. The simulator snapshot keeps checkout bytes.
                 committed = archive.read(PREFIX + name)
                 require(committed.replace(b"\r\n", b"\n") == recorded.replace(b"\r\n", b"\n"),
