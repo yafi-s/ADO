@@ -147,8 +147,11 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
         pace = getattr(model, "policy", model)
         if tactical:
             from .overtake import TacticalPass
-            tactical_pass = (TacticalPass.from_scene_map(scene, measured_hold=True) if hasattr(pace, "tactical_speed_limit")
-                             else TacticalPass.from_scene_map(scene))
+            if getattr(pace, "confirmed_tactical_release", False):
+                tactical_pass = TacticalPass.from_scene_map(scene, measured_hold=True, confirmed_release=True)
+            else:
+                tactical_pass = (TacticalPass.from_scene_map(scene, measured_hold=True) if hasattr(pace, "tactical_speed_limit")
+                                 else TacticalPass.from_scene_map(scene))
         include_aux = live is not None or recording is not None and not getattr(recording, "primary_rig_only", False)
         rig_options = {"surround": True} if surround else {}
         rig = Rig(world, scene.ego, visuals=include_aux, range_only=range_only, **rig_options)

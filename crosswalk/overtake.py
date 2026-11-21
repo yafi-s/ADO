@@ -91,7 +91,7 @@ def _nearest(distances):
 
 
 class TacticalPass:
-    def __init__(self, corridor, model=None, *, measured_hold=False):
+    def __init__(self, corridor, model=None, *, measured_hold=False, confirmed_release=False):
         self.corridor = corridor
         self.model = model or GapChoice()
         self.history = deque(maxlen=10)
@@ -102,6 +102,8 @@ class TacticalPass:
         self.info = {}
         self.yielding = False
         self.measured_hold = measured_hold
+        self.confirmed_release = confirmed_release
+        self.clear_votes = self.follow_votes = 0
         self.source_age = None
         self.source_speed = None
         self.raw_source_gap = 60.
@@ -112,13 +114,13 @@ class TacticalPass:
         return 0. if self.yielding else None
 
     @classmethod
-    def from_scene_map(cls, scene, *, measured_hold=False):
+    def from_scene_map(cls, scene, *, measured_hold=False, confirmed_release=False):
         urban = getattr(scene, '_urban', None)
         if urban is None:
             return None
         corridor = PassingCorridor.from_map(scene._map, urban.lane_change.source_lane)
         scene.tactical_lane_scoring = True
-        return cls(corridor, measured_hold=measured_hold)
+        return cls(corridor, measured_hold=measured_hold, confirmed_release=confirmed_release)
 
     def measure(self, pose, lidar, station):
         # CARLA's 360-degree ray-cast sensor is 2.30 m above the vehicle origin.
@@ -156,6 +158,8 @@ class TacticalPass:
         self.raw_source_gap = gap
         self.source_age = None
         self.source_clear = False
+        if gap < 60.:
+            self.clear_votes = 0
         if self.measured_hold and self.history:
             last_scan, last_surface = self.history[-1]
             age = self.scan - last_scan
@@ -175,6 +179,11 @@ class TacticalPass:
                 # Empty returns alone cannot release an established wait. A
                 # visible patch of source lane beyond the old bumper can.
                 self.source_clear = bool(np.count_nonzero((pavement > expected + 1.) & (pavement < expected + 15.)) >= 3)
+                if self.confirmed_release:
+                    # Keep the old range reference through isolated glimpses of pavement.
+                    # Only a sustained positive observation may erase an established lead.
+                    self.clear_votes = self.clear_votes + 1 if self.source_clear else 0
+                    self.source_clear = self.clear_votes >= 3
                 if not self.source_clear:
                     return 60., 30.
         if gap < 60.:
@@ -204,6 +213,7 @@ class TacticalPass:
                 self.history.clear()
                 self.source_speed = self.commit = None
                 self.pass_votes = 0
+                self.clear_votes = self.follow_votes = 0
             return defaults
         measured = self.measure(pose, lidar, station)
         action, probabilities = self.model.predict(measured)
@@ -215,11 +225,14 @@ class TacticalPass:
         if self.commit is None and self.pass_votes >= 3 and (not self.measured_hold or self.source_age == 0):
             self.commit = float(station)
         self.yielding = self.commit is None and action=='yield'
+        following = action == 'keep' and self.source_age == 0 and self.source_speed is not None
+        if self.confirmed_release:
+            self.follow_votes = self.follow_votes + 1 if following else 0
+            following = self.follow_votes >= 3
         if self.measured_hold and was_yielding and self.commit is None:
             # Maintain the stop through confirmation of the adjacent opening.
             # A freshly measured lead that gains enough speed (or distance)
             # to warrant ordinary following also releases the wait.
-            following = action == 'keep' and self.source_age == 0 and self.source_speed is not None
             self.yielding = not (following or self.source_clear)
         stations = station+np.asarray(lookaheads)
         # Use the learned trajectory choice as long as this road segment is in range.

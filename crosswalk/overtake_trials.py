@@ -69,6 +69,17 @@ def _score(rows, case):
     ok = not result['collisions'] and all(r['in_legal_lanes'] for r in rows)
     if case=='no-lead':
         ok &= not committed and result['ego_travel_m']>=45 and result['maximum_source_displacement_m'] < .8
+    elif case == 'departing-lead':
+        awaiting_release = [r for r in waiting if r['time_s'] < 4.]
+        moving = next((r for r in rows if r['time_s'] >= 4. and r['lead_speed_mps'] > 3.), None)
+        restart = next((r for r in rows if moving and r['time_s'] >= moving['time_s']
+                        and r['speed_mps'] > 1. and r['throttle'] > 0.), None)
+        premature = [r for r in rows if awaiting_release and
+                     awaiting_release[0]['time_s'] <= r['time_s'] < 4. and r['throttle'] > 0.]
+        result.update(lead_accelerated_s=moving and moving['time_s'], resumed_following_s=restart and restart['time_s'],
+                      premature_throttle_frames=len(premature), minimum_lead_gap_m=min(r['lead_bumper_gap_m'] for r in rows))
+        ok &= bool(awaiting_release and moving and restart and not premature and not committed
+                   and result['ego_travel_m'] >= 30. and result['maximum_source_displacement_m'] < .8)
     else:
         ok &= bool(clear and alongside and result['minimum_passing_clearance_m'] > .25 and result['lead_travel_m'] > 3.
                    and result['lead_speed_during_pass_mps'] > .4)
@@ -91,23 +102,31 @@ def _score(rows, case):
 
 
 def evaluate(world, case, model_path, folder, record=False, *,
-             source_lane=(4, 3), ego_s=86., corridor=None):
+             source_lane=(4, 3), ego_s=86., corridor=None, native_rgb=False):
     model, _, _ = load_driver(model_path)
     observer = model.new_observer()
     road_map = world.get_map()
     if corridor is None:
         corridor = PassingCorridor.from_map(road_map, source_lane)
-    planner = TacticalPass(corridor, measured_hold=hasattr(model, 'tactical_speed_limit'))
+    planner = TacticalPass(corridor, measured_hold=hasattr(model, 'tactical_speed_limit'),
+                           confirmed_release=getattr(model, 'confirmed_tactical_release', False))
     road, lane = source_lane
     direction = -1. if lane > 0 else 1.
     target = road_map.get_waypoint_xodr(road, lane, ego_s).get_left_lane().lane_id
     with ExitStack() as stack:
         ego = _spawn(world,road_map,stack,'vehicle.lincoln.mkz',lane,ego_s,road=road)
         lead = _spawn(world,road_map,stack,'vehicle.tesla.model3',lane,ego_s+direction*24.,road=road) if case!='no-lead' else None
-        other = _spawn(world,road_map,stack,'vehicle.mini.cooper',target,ego_s+direction*2.,road=road) if case=='occupied' else None
-        navigation = Navigation([road_map.get_waypoint_xodr(road,lane,ego_s+direction*i).transform.location for i in range(-3,86)])
-        rig = Rig(world,ego,range_only=True)
+        other = _spawn(world,road_map,stack,'vehicle.mini.cooper',target,ego_s+direction*2.,road=road) if case in ('occupied', 'departing-lead') else None
+        route = [road_map.get_waypoint_xodr(road,lane,ego_s+direction*i).transform.location for i in range(-3,86)]
+        navigation = Navigation(route)
+        rig = Rig(world,ego,range_only=not native_rgb)
         stack.callback(rig.close)
+        detections = []
+        if native_rgb:
+            from .lamp import RouteLamps
+            from .vision import Detector
+            detector = Detector()
+            lamps = RouteLamps(world, route)
         chase = None
         if record:
             from .robotaxi import BodyKit
@@ -126,9 +145,9 @@ def evaluate(world, case, model_path, folder, record=False, *,
         lead_start = _footprint(lead,corridor)[0] if lead is not None else None
         rows = []
         for step in range(420):
-            _npc(lead,1.45)
+            _npc(lead,8. if case == 'departing-lead' and step >= 40 else 1.45)
             # Scenario intervention on the other driver only.
-            _npc(other,9. if step >= 28 else 0.)
+            _npc(other,9. if case == 'occupied' and step >= 28 else 0.)
             frame = world.tick()
             obs = rig.read(frame)
             if chase:
@@ -136,12 +155,24 @@ def evaluate(world, case, model_path, folder, record=False, *,
             speed = vehicle_speed(ego)
             defaults = navigation.read(ego,LOOK)
             points = planner.preview(ego, obs['lidar'], defaults, speed,LOOK)
-            x = observer.observe(obs,[],points[:6],speed,route_preview=points[6:],stopline_gap=60.)
+            light = (0., 60.)
+            if native_rgb:
+                if step % 2 == 0:
+                    detections = detector.detect(obs['front'])
+                if getattr(observer, 'uses_conflict_profile', False):
+                    obs.update(progress_frame=frame, progress_camera_age_s=(step % 2) * .1,
+                               progress_tactical=planner.info)
+                reading = lamps.observe(ego, obs)
+                if reading is not None:
+                    light = (model.sensor_lamp_classifier.red_probability(reading[1]), reading[0])
+                elif getattr(observer, 'uses_conflict_profile', False) and lamps.governing_gap is not None:
+                    light = (0., lamps.governing_gap)
+            x = observer.observe(obs,detections,points[:6],speed,route_preview=points[6:],stopline_gap=60.)
             if getattr(model,'uses_posted_limit',False):
                 model.posted_limit_kmh = float(ego.get_speed_limit())
             if planner.measured_hold:
                 model.tactical_speed_limit = planner.speed_limit
-            result = model.predict(np.asarray([*x,0.,60.],dtype=np.float32))
+            result = model.predict(np.asarray([*x,*light],dtype=np.float32))
             steer, throttle, brake = planner.apply(result,speed)
             ego.apply_control(carla.VehicleControl(steer=steer,throttle=throttle,brake=brake))
 
@@ -151,6 +182,10 @@ def evaluate(world, case, model_path, folder, record=False, *,
                      ego_offset_m=round((left+right)/2,3),in_legal_lanes=left >= -1.5*corridor.width and right <= .5*corridor.width,
                      steer=round(steer,4),throttle=round(throttle,4),brake=round(brake,4),
                      tactical=planner.info,collisions=len(rig.collisions()))
+            if native_rgb:
+                row.update(posted_limit_kmh=float(model.posted_limit_kmh), speed_request_mps=float(model.last_speed_request),
+                           progress_evidence=dict(getattr(model, 'progress_evidence', {})),
+                           rgb_detection_count=len(detections))
             if lead is not None:
                 lr,lf,ll,_ = _footprint(lead,corridor)
                 row.update(lead_bumper_gap_m=round(lr-nose,3),lead_speed_mps=round(vehicle_speed(lead),3),
@@ -163,6 +198,8 @@ def evaluate(world, case, model_path, folder, record=False, *,
             if row.get('physically_overtaken') or row['collisions'] or rear > corridor.arc[-1]-3:
                 break
             if case=='no-lead' and rear-ego_start>=45.:
+                break
+            if case == 'departing-lead' and rear-ego_start >= 30.:
                 break
         # Flush any delayed physics collision callback.
         rig.read(world.tick())

@@ -1,6 +1,5 @@
 """Visibility-limited driving speed from native open-road, turning and braking measurements."""
 from collections import deque
-from pathlib import Path
 import io
 
 import numpy as np
@@ -33,7 +32,39 @@ def _pavement_horizon(station, mask):
     return CELL * (int(gaps[0]) if len(gaps) else len(cells))
 
 
-def _profile(scan, path, tactical):
+class FlankMotion:
+    """Track the far end of a continuous flank in ego-motion-compensated metres."""
+
+    def __init__(self):
+        self.ends = deque(maxlen=8)
+        self.last = None
+        self.anchored = False
+
+    def stationary(self, frame, travel, tip, margin, tactical):
+        current = (travel + tip, margin)
+        if (self.last != frame - 1 or self.ends and
+                (abs(current[0] - self.ends[-1][0]) > 1. or abs(margin-self.ends[-1][1]) > .25)):
+            self.ends.clear()
+            self.anchored = False
+        self.last = frame
+        self.ends.append(current)
+        # Alongside a long face, the nearest usable source beam rides at the
+        # scanner's exclusion boundary. Its apparent speed is then ego speed.
+        # Only continue a previous stationary identification at this boundary,
+        # using several fresh observations of the *far* physical end.
+        saturated = tactical.get("raw_source_gap_m", np.inf) < 3.05
+        direct = abs(tactical.get("source_speed_mps", np.inf)) < .8
+        if not saturated:
+            self.anchored = direct
+        if len(self.ends) >= 6:
+            values = np.asarray(self.ends)
+            drift = abs(np.median(values[-3:], axis=0) - np.median(values[:3], axis=0))
+            if drift[0] > .4 or drift[1] > .18:
+                self.anchored = False
+        return self.anchored and (direct or saturated and len(self.ends) >= 6)
+
+
+def _profile(scan, path, tactical, *, motion=None, frame=0, travel=0.):
     cloud = _returns(scan)
     x, y, z = cloud[:, 0], cloud[:, 1], cloud[:, 2] + LIDAR_Z
     ground = v2._ground_plane(x, y, z)
@@ -58,7 +89,6 @@ def _profile(scan, path, tactical):
     # It must be a continuous face; a pedestrian, posts, or a short return is insufficient.
     corner, margin = 0., 0.
     if (tactical.get("committed") and tactical.get("source_age_scans") == 0
-            and abs(tactical.get("source_speed_mps", np.inf)) < .8
             and tactical.get("adjacent_pavement_seen") == [True, True]
             and min(tactical.get("target_front_m", 0.), tactical.get("target_rear_m", 0.)) > 20.
             and abs(tactical.get("source_lateral_m", 0.)) > 2.6):
@@ -73,12 +103,17 @@ def _profile(scan, path, tactical):
             if len(points) >= 12:
                 sections = np.split(points, np.flatnonzero(np.diff(points) > 1.15) + 1)
                 first = sections[0]
-                if first[0] < 3. and np.ptp(first) >= 2. and np.ptp(h[plane]) > .8:
+                if first[0] < 8. and np.ptp(first) >= 2. and np.ptp(h[plane]) > .8:
+                    tip = float(first[-1])
+                    clearance = max(0., inner - BODY)
+                    stationary = (motion.stationary(frame, travel, tip, clearance, tactical) if motion is not None
+                                  else abs(tactical.get("source_speed_mps", np.inf)) < .8)
                     occupied = solid & (flank >= BODY) & (flank < inner - .25)
                     # A person or other surface between us and the measured wall cancels the pass.
                     nearer = v2._gap(s, occupied, support=2)
-                    corner = min(float(first[-1]), nearer, horizons[0 if sign > 0 else 1])
-                    margin = max(0., inner - BODY)
+                    if stationary and first[0] < 3.:
+                        corner = min(tip, nearer, horizons[0 if sign > 0 else 1])
+                        margin = clearance
     return corridor, min(horizons), corner, margin
 
 
@@ -89,6 +124,7 @@ class ProgressObserver(EdgeObserver):
         super().__init__()
         self.recent = deque(maxlen=3)
         self.prior_frame = None
+        self.flank = FlankMotion()
 
     def observe(self, obs, detections, local_route, speed, *, route_preview=None, stopline_gap=None):
         x = super().observe(obs, detections, local_route, speed, route_preview=route_preview, stopline_gap=stopline_gap)
@@ -108,13 +144,16 @@ class ProgressObserver(EdgeObserver):
             self.recent.clear()
         else:
             path = v2._checked_route(local_route, route_preview)
-            measured = _profile(obs["lidar"], path, obs.get("progress_tactical", {}))
+            measured = _profile(obs["lidar"], path, obs.get("progress_tactical", {}),
+                                motion=self.flank, frame=frame, travel=self.travel)
             self.recent.append(measured)
         profile = np.min(self.recent, axis=0) if len(self.recent) == self.recent.maxlen else np.zeros(4)
         return np.r_[x, profile, len(self.recent)].astype(np.float32)
 
 
 class ProgressModel(ClearanceModel):
+    confirmed_tactical_release = True
+
     def __init__(self, base, coefficients):
         prior = ClearanceModel.load(io.BytesIO(base))
         super().__init__(prior.base_bytes, prior.cruise_forest, prior.actuator, prior.side_speed, prior.stopping)
@@ -196,13 +235,14 @@ class ProgressModel(ClearanceModel):
         return float(max(frozen, proposal))
 
     def save(self, path):
-        np.savez_compressed(path, version=VERSION, feature_names=FEATURE_NAMES, parameters=PARAMETERS,
+        np.savez_compressed(path, version=VERSION, revision=2, feature_names=FEATURE_NAMES, parameters=PARAMETERS,
                             coefficients=self.coefficients, base=np.frombuffer(self.parent_checkpoint, dtype=np.uint8))
 
     @classmethod
     def load(cls, path):
         with np.load(path, allow_pickle=False) as d:
-            if (str(d["version"].item()) != VERSION or tuple(d["feature_names"]) != FEATURE_NAMES
+            if (str(d["version"].item()) != VERSION or "revision" not in d or int(d["revision"].item()) != 2
+                    or tuple(d["feature_names"]) != FEATURE_NAMES
                     or tuple(d["parameters"]) != PARAMETERS):
                 raise ValueError("Incompatible city progress checkpoint")
             return cls(d["base"].tobytes(), d["coefficients"])
