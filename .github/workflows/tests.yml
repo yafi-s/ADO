@@ -4,15 +4,15 @@ permissions:
   contents: read
 jobs:
   unit:
-    runs-on: ubuntu-24.04
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: pip
-      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
-      - run: python -m pip install -r requirements.txt
-      - run: python -m unittest discover -s tests -v
+      - run: choco install ffmpeg -y --no-progress
+      - run: .\setup.ps1 -ClientOnly
+      - run: .\.venv-city\Scripts\python.exe -m unittest discover -s tests -v
         env:
           OPENBLAS_NUM_THREADS: '1'

@@ -5,8 +5,10 @@ import random
 
 import carla
 
+from .district import DESTINATIONS, DISTRICTS, admits, connectors, trip_points
 
-KINDS = ("clear", "pedestrian", "lead", "braking", "turn")
+KINDS = ("clear", "pedestrian", "lead", "braking", "turn", "occluded", "signal", "left", "trip")
+_WALKING = ("pedestrian", "occluded", "trip")
 ROUTE_METERS = 64
 _EXTENSION = 18  # let the departing lead keep driving past the ego's finish
 
@@ -22,6 +24,15 @@ def _clip(value, low, high):
 def _raised(transform, height):
     p = transform.location
     return carla.Transform(carla.Location(p.x, p.y, p.z + height), transform.rotation)
+
+
+def _vehicle_blueprint(library, preferred, legacy):
+    """Resolve the released UE5 vehicle names and the UE4 reproductions."""
+    for name in (preferred, legacy):
+        matches = library.filter(name)
+        if matches:
+            return library.find(name)
+    raise RuntimeError(f"CARLA catalog contains neither {preferred} nor {legacy}")
 
 
 def _straight_lane(start):
@@ -73,7 +84,8 @@ def _turn_routes(road_map, seed, direction):
         if entry.is_junction:
             change = _angle(exit_wp.transform.rotation.yaw - entry.transform.rotation.yaw)
             # CARLA's positive yaw turns toward the right.
-            if 60 <= (change if direction == "right" else -change) <= 120:
+            if ((direction == "straight" and abs(change) <= 6)
+                or (direction != "straight" and 60 <= (change if direction == "right" else -change) <= 120)):
                 candidates.append(entry)
     candidates.sort(key=lambda w: (w.road_id, w.lane_id, w.s))
     rng = random.Random(seed)
@@ -105,23 +117,78 @@ def _turn_routes(road_map, seed, direction):
             yield points, near, far
 
 
+def _oncoming_pair(road_map, points, links):
+    """Find the through movement crossing this left turn, from the opposite arm."""
+    inbound = points[0].road_id
+    junction = next(w.junction_id for w in points if w.is_junction)
+    for (other, outbound), entry in links.items():
+        if outbound != inbound or entry.junction_id != junction:
+            continue
+        start = entry.previous(24.0)
+        if len(start) != 1 or start[0].road_id != other:
+            continue
+        yaw = start[0].transform.rotation.yaw
+        if abs(_angle(yaw - points[0].transform.rotation.yaw)) < 174:
+            continue
+        # Driving straight down this axis carries the actor through the conflict
+        # and into the opposing lane alongside the ego's original approach.
+        end = _opposite_lane(road_map, points[2])
+        if end:
+            return end, start[0]
+    return None
+
+
+def _scene_routes(road_map, seed, kind, district, destination, direction):
+    if kind == "trip":
+        points = trip_points(road_map, district, destination)
+        near, far = (_opposite_lane(road_map, points[i]) for i in (52, 105))
+        if near and far and admits(points, district):
+            yield points, near, far
+        return
+    routes = (_turn_routes(road_map, seed, direction) if kind in ("turn", "left", "signal")
+              else _routes(road_map, seed))
+    links = connectors(road_map) if kind == "left" else {}
+    for points, near, far in routes:
+        if kind == "left":
+            pair = _oncoming_pair(road_map, points, links)
+            if pair is None:
+                continue
+            near, far = pair
+        if admits([*points, near, far], district):
+            yield points, near, far
+
+
 class Scenario:
     """Spawn a scene in a synchronous world. The caller owns all world ticks."""
 
-    def __init__(self, world, kind, seed, perturb=False):
+    def __init__(self, world, kind, seed, perturb=False, district=None, crossing_delay=0.0, destination=None):
         kind = {"crossing": "pedestrian", "stopped_lead": "lead"}.get(kind, kind)
         if kind not in KINDS:
             raise ValueError(f"Unknown encounter {kind!r}, choose from {KINDS}")
         self.world = world
         self.name = self.kind = kind
         self.seed = int(seed)
+        if district is not None and district not in DISTRICTS:
+            raise ValueError(f"Unknown district {district!r}")
+        self.district = district or ("heldout" if kind == "trip" else None)
+        if kind == "trip":
+            destinations = DESTINATIONS[self.district]
+            self.destination = destination or tuple(destinations)[self.seed % len(destinations)]
+            if self.destination not in destinations:
+                raise ValueError(f"Unknown destination {self.destination!r}, choose from {tuple(destinations)}")
+        else:
+            self.destination = None
+        self.crossing_delay = float(crossing_delay)
+        if not math.isfinite(self.crossing_delay):
+            raise ValueError("crossing_delay must be finite")
         self._actors = []
+        self.occluder = self.signal = None
         self.ego = self.hazard = self.traffic = None
         self._previous_weather = world.get_weather()
         self._closed = False
         self._signal_states = []
         self._signals_were_frozen = None
-        self.turn_direction = ("right" if self.seed % 2 else "left") if kind == "turn" else None
+        self.turn_direction = ("right" if self.seed % 2 else "left") if kind == "turn" else ("left" if kind == "left" else None)
         self.spawn_lateral_m = self.spawn_yaw_deg = 0.0
         if perturb:
             pose_rng = random.Random(self.seed ^ 0x7A23)
@@ -134,9 +201,17 @@ class Scenario:
         self._time = 0.0
         self._release_at = None
         self._event_start = None
+        self._walk_at = None
+        self._cleared = False
+        self._line = None
+        self._last_line_distance = None
+        self.red_light_violations = 0
+        self.yield_violations = 0
         self.phase = {
             "clear": "clear road", "pedestrian": "waiting at curb",
             "lead": "lead stopped", "braking": "lead cruising", "turn": f"{self.turn_direction} turn",
+            "occluded": "waiting at curb", "trip": "waiting at curb",
+            "signal": "red signal", "left": "oncoming waiting",
         }[kind]
         rng = random.Random(self.seed ^ 0x2AF1)
         self._hazard_index = rng.randint(29, 39)
@@ -146,26 +221,38 @@ class Scenario:
         self.weather = rng.choice(("ClearNoon", "CloudyNoon", "WetNoon", "ClearSunset"))
         if kind == "braking":
             self._hazard_index = rng.randint(18, 24)
+        elif kind == "trip":
+            self._hazard_index = 76
         try:
-            road_map = world.get_map()
-            routes = (_turn_routes(road_map, self.seed, self.turn_direction) if kind == "turn"
-                      else _routes(road_map, self.seed))
+            road_map = self._map = world.get_map()
+            direction = "straight" if kind == "signal" else self.turn_direction
+            routes = _scene_routes(road_map, self.seed, kind, self.district, self.destination, direction)
+            if kind == "signal":
+                signals = world.get_actors().filter("traffic.traffic_light")
+                stop_lines = []
+                for signal in signals:
+                    movements = {(p.road_id, p.lane_id) for p in signal.get_affected_lane_waypoints() if p}
+                    for w in signal.get_stop_waypoints():
+                        stop_lines.append((signal, w, movements))
             for points, near, far in routes:
+                if kind == "signal" and not self._match_signal(points, stop_lines):
+                    continue
                 if self._populate(points, near, far):
                     break
                 self._destroy_actors()
             else:
                 raise RuntimeError(f"No unobstructed {kind} route available in {road_map.name}")
-            if kind == "turn":
-                # This isolated experiment has one approach and no cross traffic.
-                # Include signal actors associated with adjacent approach roads.
-                signals = world.get_actors().filter("traffic.traffic_light")
+            if kind in ("turn", "left", "trip", "signal"):
+                if kind != "signal":
+                    signals = world.get_actors().filter("traffic.traffic_light")
                 if signals:
                     self._signal_states = [(signal, signal.get_state()) for signal in signals]
                     self._signals_were_frozen = signals[0].is_frozen()
                     world.freeze_all_traffic_lights(True)
                     for signal in signals:
                         signal.set_state(carla.TrafficLightState.Green)
+                    if self.signal is not None:
+                        self.signal.set_state(carla.TrafficLightState.Red)
             self.world.set_weather(getattr(carla.WeatherParameters, self.weather))
         except BaseException:
             self.close()
@@ -177,9 +264,31 @@ class Scenario:
             self._actors.append(actor)
         return actor
 
+    def _match_signal(self, points, stop_lines):
+        junction_entry = next(i for i, w in enumerate(points) if w.is_junction)
+        route_lanes = {(w.road_id, w.lane_id) for w in points}
+        # CARLA's stop waypoints are derived from each real light's trigger
+        # volume. Some lie just inside the connector rather than on its approach.
+        candidates = []
+        for signal, stop, controlled_lanes in stop_lines:
+            if not controlled_lanes.intersection(route_lanes):
+                continue
+            pos = stop.transform.location
+            for i, w in enumerate(points[7:junction_entry + 6], 7):
+                if w.road_id != stop.road_id or w.lane_id != stop.lane_id:
+                    continue
+                distance = pos.distance(w.transform.location)
+                if distance <= 1.2:
+                    candidates.append((distance, signal.id, i, signal, stop))
+        if not candidates:
+            return False
+        _, _, _, self.signal, stop = min(candidates, key=lambda c: c[:3])
+        self._line = stop.transform
+        return True
+
     def _populate(self, points, near, far):
         library = self.world.get_blueprint_library()
-        ego_bp = library.find("vehicle.lincoln.mkz_2020")
+        ego_bp = _vehicle_blueprint(library, "vehicle.lincoln.mkz", "vehicle.lincoln.mkz_2020")
         ego_bp.set_attribute("role_name", "hero")
         if ego_bp.has_attribute("color"):
             ego_bp.set_attribute("color", "225,225,225")
@@ -190,33 +299,90 @@ class Scenario:
         self.ego = self._spawn(ego_bp, spawn)
         if self.ego is None:
             return False
-        traffic_bp = library.find("vehicle.audi.a2")
+        traffic_bp = _vehicle_blueprint(library, "vehicle.mini.cooper", "vehicle.audi.a2")
         traffic_bp.set_attribute("role_name", "oncoming")
         self.traffic = self._spawn(traffic_bp, _raised(far.transform, 0.35))
         if self.traffic is None:
             return False
         self._traffic_target = near.transform.location
-        self._set_route([w.transform.location for w in points[: ROUTE_METERS + 1]])
+        route_points = points if self.kind == "trip" else points[:ROUTE_METERS + 1]
+        self._set_route([w.transform.location for w in route_points])
         self.road_id, self.lane_id = points[0].road_id, points[0].lane_id
+        self.road_ids = tuple(dict.fromkeys(p.road_id for p in route_points if not p.is_junction))
+        self._route_lanes = {(p.road_id, p.lane_id) for p in route_points if not p.is_junction}
+        self.junction_ids = tuple(dict.fromkeys(p.junction_id for p in route_points if p.is_junction))
+        self.route_id = f"{self.district or 'town'}:{points[0].id}:{route_points[-1].id}"
+        self._junction_ranges = []
+        entry = None
+        for i, p in enumerate(route_points):
+            if p.is_junction and entry is None:
+                entry = i
+            elif not p.is_junction and entry is not None:
+                self._junction_ranges.append((self._segments[entry][5], self._segments[i-1][5] + self._segments[i-1][4]))
+                if self.kind == "left":
+                    self._line = route_points[entry-2].transform
+                entry = None
+        if self._line is not None:
+            self._stop_s = self._coordinates(self._line.location)[0]
+            self._last_line_distance = self._bumper_line_distance()
+            if self.kind == "left":
+                # The two lane centerlines actually intersect inside the turn.
+                direction = far.transform.get_forward_vector()
+                start = far.transform.location
+                def distance_to_oncoming_axis(w):
+                    delta = w.transform.location - start
+                    return abs(delta.x * direction.y - delta.y * direction.x)
+                conflict = min((w for w in route_points if w.is_junction), key=distance_to_oncoming_axis)
+                self._conflict = conflict.transform.location
+                self._oncoming_direction = direction
         self._lead_target = points[-1].transform.location
         hazard_transform = points[self._hazard_index].transform
-        if self.kind == "pedestrian":
+        if self.kind in _WALKING:
             people = sorted(library.filter("walker.pedestrian.*"), key=lambda bp: bp.id)
             walker_bp = random.Random(self.seed).choice(people)
             if walker_bp.has_attribute("is_invincible"):
                 walker_bp.set_attribute("is_invincible", "false")
-            offset = points[self._hazard_index].lane_width / 2 + 0.35
-            p = hazard_transform.location
+            offset = points[self._hazard_index].lane_width / 2 + (0.8 if self.kind == "occluded" else 0.35)
+            right = hazard_transform.get_right_vector()
+            self._walk_direction = carla.Vector3D(-right.x, -right.y, 0)
+            p = hazard_transform.location + right * offset
             at_curb = carla.Transform(
-                carla.Location(p.x - self._fy * offset, p.y + self._fx * offset, p.z + 1.0),
+                carla.Location(p.x, p.y, p.z + 1.0),
                 carla.Rotation(yaw=hazard_transform.rotation.yaw - 90),
             )
             self.hazard = self._spawn(walker_bp, at_curb)
+            if self.kind == "occluded":
+                van_wp = points[self._hazard_index - 5]
+                van = _raised(van_wp.transform, 0.65)
+                van.location = van.location + van.get_right_vector() * (van_wp.lane_width / 2 + 0.65)
+                van_bp = _vehicle_blueprint(library, "vehicle.sprinter.mercedes", "vehicle.mercedes.sprinter")
+                self.occluder = self._spawn(van_bp, van)
+                if self.occluder is None:
+                    return False
+                self.occluder.apply_control(carla.VehicleControl(hand_brake=True))
         elif self.kind in ("lead", "braking"):
             lead_bp = library.find("vehicle.tesla.model3")
             lead_bp.set_attribute("role_name", self.kind)
             self.hazard = self._spawn(lead_bp, _raised(hazard_transform, 0.35))
-        return self.kind in ("clear", "turn") or self.hazard is not None
+        return self.kind in ("clear", "turn", "left", "signal") or self.hazard is not None
+
+    def _bumper_line_distance(self):
+        pose, box = self.ego.get_transform(), self.ego.bounding_box
+        front = pose.transform(carla.Location(box.location.x + box.extent.x, box.location.y, box.location.z))
+        d = front - self._line.location
+        f = self._line.get_forward_vector()
+        return d.x * f.x + d.y * f.y
+
+    def _score_line(self):
+        if self._line is None:
+            return
+        distance = self._bumper_line_distance()
+        if self._last_line_distance < 0 <= distance:
+            if self.kind == "signal" and self.phase == "red signal":
+                self.red_light_violations += 1
+            elif self.kind == "left" and not self._cleared:
+                self.yield_violations += 1
+        self._last_line_distance = distance
 
     def _set_route(self, locations):
         self.route = locations
@@ -272,10 +438,15 @@ class Scenario:
         """Schedule the actors' controls for the upcoming fixed physics step."""
         self._time += self._dt
         oncoming_speed = 6.0
-        if self.kind == "pedestrian":
+        if self.kind in _WALKING:
             hazard_s, hazard_l = self._coordinates(self.hazard.get_location())
             ego_s, _ = self._coordinates(self.ego.get_location())
-            if self.phase == "waiting at curb" and hazard_s - ego_s <= self._trigger_gap + 2.5:
+            # Negative offsets trigger farther upstream at nominal cruise;
+            # positive offsets hold the walker at the curb for actual seconds.
+            trigger = self._trigger_gap + 2.5 - 6.0 * min(self.crossing_delay, 0.0)
+            if self._walk_at is None and hazard_s - ego_s <= trigger:
+                self._walk_at = self._time + max(self.crossing_delay, 0.0)
+            if self.phase == "waiting at curb" and self._walk_at is not None and self._time >= self._walk_at:
                 self.phase = "crossing"
                 self._event_start = self._time
             if self.phase == "crossing" and hazard_l <= 0.25:
@@ -285,9 +456,10 @@ class Scenario:
                 self.phase = "leaving lane"
             if self.phase == "leaving lane" and hazard_l <= -6.4:
                 self.phase = "across street"
+                self._cleared = True
             walking = self.phase in ("crossing", "leaving lane")
             self.hazard.apply_control(carla.WalkerControl(
-                direction=carla.Vector3D(self._fy, -self._fx, 0),
+                direction=self._walk_direction,
                 speed=self._walk_speed if walking else 0.0,
             ))
             other_s, _ = self._coordinates(self.traffic.get_location())
@@ -299,6 +471,7 @@ class Scenario:
                 self._event_start = self._time
                 self._release_at = self._time + 3.0
             moving = self._release_at is not None and self._time >= self._release_at
+            self._cleared = moving
             self.phase = "lead departing" if moving else "lead stopped"
             self._drive_to(self.hazard, self._lead_target, self._lead_speed if moving else 0.0)
         elif self.kind == "braking":
@@ -316,12 +489,34 @@ class Scenario:
                     self._release_at = self._time + 3.0
             if self.phase == "lead stopped" and self._time >= self._release_at:
                 self.phase = "lead departing"
+                self._cleared = True
             requested_speed = {"lead cruising": 2.7, "lead departing": self._lead_speed}.get(self.phase, 0.0)
             self._drive_to(self.hazard, self._lead_target, requested_speed)
+        elif self.kind == "signal":
+            if self._event_start is None and self._bumper_line_distance() >= -23.0:
+                self._event_start = self._time
+            if self._event_start is not None and not self._cleared and self._time >= self._event_start + 6.0:
+                self.signal.set_state(carla.TrafficLightState.Green)
+                self.phase = "green signal"
+                self._cleared = True
+        elif self.kind == "left":
+            if self._event_start is None and self._bumper_line_distance() >= -20.0:
+                self._event_start = self._time
+                self.phase = "yield to oncoming"
+            if self._event_start is None:
+                oncoming_speed = 0.0
+            else:
+                delta = self.traffic.get_location() - self._conflict
+                d = self._oncoming_direction
+                if delta.x * d.x + delta.y * d.y > self.traffic.bounding_box.extent.x + 1.0:
+                    self.phase = "oncoming cleared"
+                    self._cleared = True
         self._drive_to(self.traffic, self._traffic_target, oncoming_speed)
 
     def expert_gap(self):
         """Ground truth for scenario triggers and scoring. Bumper clearance caps at 60 m."""
+        if self.kind in ("signal", "left"):
+            return 60.0 if self._cleared else _clip(-self._bumper_line_distance(), 0.0, 60.0)
         if self.hazard is None:
             return 60.0
         hazard_s, hazard_l = self._coordinates(self.hazard.get_location())
@@ -329,7 +524,7 @@ class Scenario:
         ego_box, hazard_box = self.ego.bounding_box, self.hazard.bounding_box
         if hazard_s < ego_s - ego_box.extent.x:
             return 60.0
-        if self.kind == "pedestrian":
+        if self.kind in _WALKING:
             # Include a small lateral buffer for the moving walker.
             if abs(hazard_l - ego_l) > ego_box.extent.y + 0.60:
                 return 60.0
@@ -343,7 +538,17 @@ class Scenario:
 
     def metrics(self):
         progress, lateral = self._coordinates(self.ego.get_location())
+        self._score_line()
         gap = self.expert_gap()
+        tolerance = 1.85
+        if any(entry - 3 <= progress <= end + 3 for entry, end in self._junction_ranges):
+            # A legal wide arc can depart from one narrow connector model. A
+            # junction or the planned approach/exit driving surface is required.
+            pos = self.ego.get_location()
+            lane = self._map.get_waypoint(pos, project_to_road=False, lane_type=carla.LaneType.Driving)
+            if lane and ((lane.is_junction and lane.junction_id in self.junction_ids)
+                         or (lane.road_id, lane.lane_id) in self._route_lanes):
+                tolerance = 3.6
         return {
             "progress_m": _clip(progress, 0.0, self.length),
             "route_length_m": self.length,
@@ -355,6 +560,18 @@ class Scenario:
             "turn_direction": self.turn_direction,
             "spawn_lateral_m": self.spawn_lateral_m,
             "spawn_yaw_deg": self.spawn_yaw_deg,
+            "route_id": self.route_id,
+            "road_ids": self.road_ids,
+            "junction_ids": self.junction_ids,
+            "district": self.district,
+            "destination": self.destination,
+            "crossing_delay_s": self.crossing_delay,
+            "event_triggered": self._event_start is not None,
+            "event_cleared": self._cleared,
+            "red_light_violations": self.red_light_violations,
+            "yield_violations": self.yield_violations,
+            "route_departure": abs(lateral) > tolerance,
+            "lane_tolerance_m": tolerance,
         }
 
     def _destroy_actors(self):
@@ -362,6 +579,7 @@ class Scenario:
             if actor.is_alive:
                 actor.destroy()
         self._actors.clear()
+        self.occluder = None
         self.ego = self.traffic = self.hazard = None
 
     def close(self):

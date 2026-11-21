@@ -1,4 +1,4 @@
-"""Measure straight-line braking with three CARLA tire friction settings."""
+"""Measure straight-line braking with three CARLA Chaos wheel grip settings."""
 
 import argparse
 import json
@@ -7,13 +7,14 @@ from pathlib import Path
 
 import carla
 
-from .runtime import simulator
+from .runtime import MAP_NAME, producer_info, simulator
 from .world import Scenario
 
 
 SEEDS = (101, 102, 103)
 FRICTION_SCALES = (1.0, 0.5, 0.25)
 DT_SECONDS = 0.05
+INITIALIZATION_TICKS = 10
 SETTLE_TICKS = 20
 ACCELERATION_TICKS = 200
 BRAKING_TICKS = 200
@@ -34,7 +35,7 @@ def _speed(vehicle):
 
 
 def _coefficients(vehicle):
-    return [wheel.tire_friction for wheel in vehicle.get_physics_control().wheels]
+    return [wheel.friction_force_multiplier for wheel in vehicle.get_physics_control().wheels]
 
 
 def _matches(actual, requested):
@@ -54,22 +55,25 @@ def braking_trial(world, seed, scale):
 
 def _measure(world, scene, scale):
     ego = scene.ego
-    physics = ego.get_physics_control()
-    wheels = physics.wheels
-    original = [wheel.tire_friction for wheel in wheels]
-    if len(original) != 4 or any(not math.isfinite(value) or value <= 0 for value in original):
-        raise RuntimeError(f"Unexpected stock tire friction for {ego.type_id}: {original}")
-    requested = [value * scale for value in original]
-    for wheel, value in zip(wheels, requested):
-        wheel.tire_friction = value
-    # CARLA returns a copy of the wheel list. Send it back with the stock settings.
-    physics.wheels = wheels
-    ego.apply_physics_control(physics)
-
     brake = carla.VehicleControl(brake=1.0)
     ego.apply_control(brake)
     # Keep the opposing car parked throughout this controlled trial.
     scene.traffic.apply_control(brake)
+    # Chaos populates the runtime wheel array after the actor finishes spawning.
+    for _ in range(INITIALIZATION_TICKS):
+        world.tick()
+
+    physics = ego.get_physics_control()
+    wheels = physics.wheels
+    original = [wheel.friction_force_multiplier for wheel in wheels]
+    if len(original) != 4 or any(not math.isfinite(value) or value <= 0 for value in original):
+        raise RuntimeError(f"Unexpected stock wheel grip multipliers for {ego.type_id}: {original}")
+    requested = [value * scale for value in original]
+    for wheel, value in zip(wheels, requested):
+        wheel.friction_force_multiplier = value
+    # CARLA returns a copy of the wheel list. Reassign it to retain the other settings.
+    physics.wheels = wheels
+    ego.apply_physics_control(physics)
     for _ in range(SETTLE_TICKS):
         world.tick()
 
@@ -133,6 +137,7 @@ def _measure(world, scene, scale):
 
 
 def study(world):
+    producer = producer_info(world)
     original_settings = world.get_settings()
     settings = world.get_settings()
     settings.fixed_delta_seconds = DT_SECONDS
@@ -155,17 +160,20 @@ def study(world):
         world.apply_settings(original_settings)
 
     return dict(
-        simulator="CARLA 0.9.16", map=world.get_map().name.split("/")[-1],
+        simulator=f"CARLA {producer['server_version']}", map=producer["map"], producer=producer,
+        engine="Unreal Engine 5.8", physics_engine="Chaos Vehicles",
+        friction_parameter="WheelPhysicsControl.friction_force_multiplier",
         timestep_s=DT_SECONDS, seeds=SEEDS, friction_scales=FRICTION_SCALES,
         acceleration_throttle=THROTTLE, brake_command=1.0, steer_command=0.0,
         target_speed_mps=TARGET_SPEED_MPS, start_speed_tolerance_mps=SPEED_TOLERANCE_MPS,
         stop_speed_mps=STOP_SPEED_MPS, max_lateral_offset_m=MAX_LATERAL_M,
         acceleration_limit_s=ACCELERATION_TICKS * DT_SECONDS,
         braking_limit_s=BRAKING_TICKS * DT_SECONDS, settle_duration_s=SETTLE_TICKS * DT_SECONDS,
+        initialization_duration_s=INITIALIZATION_TICKS * DT_SECONDS,
         distance_definition="Horizontal distance projected along the route from brake command to first near-stop sample.",
-        comparison="Compare stopped trials with matching stock settings within each seed. The stock coefficients are reapplied at rest to match the scaled trials' physics initialization.",
+        comparison="Compare stopped trials with matching stock settings within each seed. All three trials apply wheel physics once at rest, including the stock grip multipliers at 1x.",
         limitations=[
-            "CARLA wheel settings are simulation parameters. These trials do not calibrate real pavement grip or weather effects.",
+            "The tire friction values are Chaos wheel grip multipliers and have no calibration to pavement grip or weather effects.",
             "Throttle ends at the first sample at or above the target speed, so actual brake-entry speeds and positions can vary slightly.",
             "The experiment samples the near-stop threshold at whole ticks and uses one vehicle model on straight routes.",
         ],
@@ -176,7 +184,7 @@ def study(world):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=2468)
-    parser.add_argument("--attach", action="store_true", help="Use an idle local Town01 server.")
+    parser.add_argument("--attach", action="store_true", help=f"Use an idle local {MAP_NAME} server.")
     parser.add_argument("--output", type=Path, default=Path("results/traction.json"))
     args = parser.parse_args()
     with simulator(args.port, args.attach) as world:

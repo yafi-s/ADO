@@ -8,7 +8,8 @@ from pathlib import Path
 
 import carla
 
-from crosswalk.world import ROUTE_METERS, Scenario, _angle, _routes
+from crosswalk.district import DESTINATIONS, DISTRICTS
+from crosswalk.world import ROUTE_METERS, Scenario, _angle, _routes, _scene_routes, _vehicle_blueprint
 
 
 TOWN01_MAP = Path(os.environ.get("CARLA_TOWN01_XODR",
@@ -36,11 +37,14 @@ def vehicle(x, y, length=4, width=2):
     )
 
 
-def fake_scene(seed, kind="braking", perturb=False, road_map=None, signals=()):
+def fake_scene(seed, kind="braking", perturb=False, road_map=None, signals=(), **kwargs):
     world = Mock()
     world.get_settings.return_value.fixed_delta_seconds = 0.25
     world.get_map.return_value = road_map or two_way_street()
     world.get_actors.return_value.filter.return_value = signals
+    person = Mock()
+    person.id = "walker.pedestrian.0001"
+    world.get_blueprint_library.return_value.filter.return_value = [person]
 
     def spawn(blueprint, transform):
         actor = Mock()
@@ -51,10 +55,17 @@ def fake_scene(seed, kind="braking", perturb=False, road_map=None, signals=()):
         return actor
 
     world.try_spawn_actor.side_effect = spawn
-    return Scenario(world, kind, seed, perturb=perturb)
+    return Scenario(world, kind, seed, perturb=perturb, **kwargs)
 
 
 class ScenarioTests(unittest.TestCase):
+    def test_vehicle_blueprints_resolve_released_catalog_names(self):
+        for available in ("vehicle.lincoln.mkz", "vehicle.lincoln.mkz_2020"):
+            catalog = Mock()
+            catalog.filter.side_effect = lambda name: [available] if name == available else []
+            catalog.find.side_effect = lambda name: name
+            self.assertEqual(_vehicle_blueprint(catalog, "vehicle.lincoln.mkz", "vehicle.lincoln.mkz_2020"), available)
+
     def test_route_follows_lane_and_oncoming_geometry_is_reversed(self):
         road_map = two_way_street()
         points, near, far = next(_routes(road_map, 23))
@@ -203,6 +214,146 @@ class ScenarioTests(unittest.TestCase):
             scene.world.freeze_all_traffic_lights.assert_called_with(frozen)
             for signal, state in zip(signals, states):
                 signal.set_state.assert_called_with(state)
+
+
+@unittest.skipUnless(TOWN01_MAP.is_file(), "Town01 OpenDRIVE is required")
+class DistrictScenarios(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.map = carla.Map("Town01", TOWN01_MAP.read_text(encoding="utf-8"))
+
+    def scene(self, kind, seed=11, **kwargs):
+        scene = fake_scene(seed, kind, road_map=self.map, **kwargs)
+        self.addCleanup(scene.close)
+        return scene
+
+    def test_districts_exclude_entire_corridors_and_intersections(self):
+        train, heldout = DISTRICTS.values()
+        self.assertTrue(train[0].isdisjoint(heldout[0]))
+        self.assertTrue(train[1].isdisjoint(heldout[1]))
+        bounds = {}
+        for district, (roads, junctions) in DISTRICTS.items():
+            coords = []
+            for kind, direction in (("trip", None), ("left", "left"), ("signal", "straight"),
+                                    ("turn", "right"), ("clear", None)):
+                for seed in (11, 12):
+                    destination = tuple(DESTINATIONS[district])[seed % 2]
+                    points, near, far = next(_scene_routes(self.map, seed, kind, district, destination, direction))
+                    for w in [*points, near, far]:
+                        self.assertTrue(w.junction_id in junctions if w.is_junction else w.road_id in roads)
+                        coords.append(w.transform.location.y)
+            bounds[district] = min(coords), max(coords)
+        self.assertGreater(bounds["heldout"][0] - bounds["train"][1], 100)
+
+    def test_named_destinations_span_two_intersections_and_have_fixed_endpoints(self):
+        for district in DISTRICTS:
+            ends = []
+            for destination in DESTINATIONS[district]:
+                scene = self.scene("trip", district=district, destination=destination)
+                repeat = self.scene("trip", seed=99, district=district, destination=destination)
+                self.assertEqual(scene.route, repeat.route)
+                self.assertEqual(scene.metrics()["destination"], destination)
+                self.assertEqual(len(scene.junction_ids), 2)
+                self.assertEqual(len(scene.road_ids), 3)
+                self.assertTrue(150 < scene.length < 300)
+                self.assertFalse(self.map.get_waypoint(scene.route[scene._hazard_index]).is_junction)
+                for a, b in zip(scene.route, scene.route[1:]):
+                    self.assertLess(a.distance(b), 1.6)
+                ends.append(scene.route[-1])
+            self.assertGreater(ends[0].distance(ends[1]), 100)
+
+    def test_physical_occluder_and_adjustable_walker_trigger(self):
+        early = self.scene("occluded", district="heldout")
+        late = self.scene("occluded", district="heldout", crossing_delay=1)
+        self.assertTrue(early.occluder.apply_control.call_args.args[0].hand_brake)
+        van_s, van_l = early._coordinates(early.occluder.get_location())
+        walk_s, walk_l = early._coordinates(early.hazard.get_location())
+        self.assertAlmostEqual(walk_s - van_s, 5, delta=.1)
+        self.assertGreater(walk_l, 2)
+        self.assertGreater(van_l, 2)
+        for scene in [early, late]:
+            scene.ego.get_location.return_value = scene.route[scene._hazard_index - 12]
+            scene.before_tick()
+        self.assertTrue(early.metrics()["event_triggered"])
+        self.assertFalse(late.metrics()["event_triggered"])
+        for _ in range(4):
+            late.before_tick()
+        self.assertEqual(late.metrics()["event_start_s"] - early.metrics()["event_start_s"], 1)
+        center = late.route[late._hazard_index]
+        late.hazard.get_location.return_value = center
+        late.before_tick()
+        self.assertEqual(late.phase, "paused in lane")
+        for _ in range(10):
+            late.before_tick()
+        self.assertEqual(late.phase, "leaving lane")
+        late.hazard.get_location.return_value = center + late._walk_direction * 7.0
+        late.before_tick()
+        self.assertTrue(late.metrics()["event_cleared"])
+        late.ego.apply_control.assert_not_called()
+
+    def test_signal_scores_bumper_crossing_once_and_restores_light(self):
+        points, _, _ = next(_scene_routes(self.map, 11, "signal", "heldout", None, "straight"))
+        stop = points[17]
+        signal = Mock()
+        signal.id = 15
+        signal.get_stop_waypoints.return_value = [stop]
+        signal.get_affected_lane_waypoints.return_value = [next(w for w in points if w.is_junction)]
+        signal.get_state.return_value = carla.TrafficLightState.Yellow
+        signal.is_frozen.return_value = False
+        other = Mock()
+        other.id = 3
+        # Overlapping trigger box on the same stop line, controlling another arm.
+        other.get_stop_waypoints.return_value = [stop]
+        other.get_affected_lane_waypoints.return_value = [SimpleNamespace(road_id=999, lane_id=1)]
+        for cross_on_red in (True, False):
+            scene = self.scene("signal", district="heldout", signals=[signal, other])
+            self.assertEqual(scene.signal, signal)
+            signal.set_state.assert_called_with(carla.TrafficLightState.Red)
+            scene.before_tick()
+            self.assertTrue(scene.metrics()["event_triggered"])
+            if not cross_on_red:
+                for _ in range(24):
+                    scene.before_tick()
+                signal.set_state.assert_called_with(carla.TrafficLightState.Green)
+            pose = stop.transform
+            # Nose is 2 m ahead of the actor origin.
+            pose.location = pose.location - pose.get_forward_vector() * 1.5
+            scene.ego.get_transform.return_value = pose
+            for _ in range(3):
+                self.assertEqual(scene.metrics()["red_light_violations"], int(cross_on_red))
+            scene.close()
+            signal.set_state.assert_called_with(carla.TrafficLightState.Yellow)
+
+    def test_unprotected_left_has_conflicting_through_traffic_and_releases(self):
+        scene = self.scene("left", district="heldout")
+        ego_yaw = scene.ego.get_transform().rotation.yaw
+        other_yaw = scene.traffic.get_transform().rotation.yaw
+        self.assertGreater(abs(_angle(ego_yaw - other_yaw)), 174)
+        conflict = scene._conflict
+        self.assertLess(abs(scene._coordinates(conflict)[1]), .05)
+        pose = scene._line
+        scene.ego.get_transform.return_value = carla.Transform(pose.location - pose.get_forward_vector()*6, pose.rotation)
+        scene.before_tick()
+        self.assertEqual(scene.phase, "yield to oncoming")
+        self.assertGreater(scene.traffic.apply_control.call_args.args[0].throttle, 0)
+        self.assertAlmostEqual(scene.expert_gap(), 4, delta=.05)
+        scene.traffic.get_location.return_value = conflict + scene._oncoming_direction * 5
+        scene.before_tick()
+        self.assertTrue(scene.metrics()["event_cleared"])
+        self.assertEqual(scene.expert_gap(), 60)
+        scene.ego.apply_control.assert_not_called()
+
+    def test_wide_arc_needs_intersection_driving_surface(self):
+        scene = self.scene("turn", seed=11, district="heldout")
+        def displace(index, lateral):
+            p = scene.route[index]
+            w = self.map.get_waypoint(p)
+            scene.ego.get_location.return_value = p + w.transform.get_right_vector() * lateral
+            return scene.metrics()
+        wide = displace(26, -2.3)
+        self.assertGreater(wide["lateral_error_m"], 1.85)
+        self.assertFalse(wide["route_departure"])
+        self.assertTrue(displace(5, -2.3)["route_departure"])
 
 
 if __name__ == "__main__":
