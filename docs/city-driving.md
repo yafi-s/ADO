@@ -1,5 +1,7 @@
 # City driving in ADO
 
+The v0.5 Town03 live launcher runs the fitted clearance driver through City Life. Start `Watch-City.cmd` for the populated streets or `Watch-City.cmd --population-profile standard` for the earlier traffic layout. The hosted film includes the five onboard cameras and a separate spectator view. [Watch City Life](https://yafi-s.github.io/ADO/?run=city-life) · [Route, model and traffic evaluation](../results/city-life/README.md)
+
 The Town03 Market route covers roughly 1.42 km and passes through 11 junctions. CARLA advances the car from its measured steering, throttle and brake inputs. Its cameras, roof lidar and forward radar observe the resulting world on the next simulation tick. A website recording can therefore be checked against what the sensors saw and what the driver commanded.
 
 ## Watch the v0.4 drive

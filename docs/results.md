@@ -1,5 +1,7 @@
 # Town01_Opt driving results
 
+The v0.5 City Life drive completed all 11 encounters and 11 junctions among 22 background vehicles and 30 walkers. On 41 exposures both a pedestrian and a vehicle had fresh camera and range evidence and a correctly located current 3D drawing. [Open the interactive pace and traffic timeline](https://yafi-s.github.io/ADO/benchmarks.html#traffic-study) · [Release evidence and remaining gaps](../results/city-life/README.md)
+
 The v0.4 Town01 policy passed all 16 targeted assessment drives and both additional interactive trips. Its matched clear-road control took 15.1 s. The v0.4 Town03 film separately passed 11/11 encounters and 11/11 junctions across 3,354 exposures. Both CARLA-calibrated Waymo research arms passed all four cases on one development seed, including the arm using only CARLA inputs. [Town01 assessment design and scores](../results/town01-yield-gated-v04/README.md) · [Town03 release review](../results/urban-pace/README.md) · [Watch the current film](https://yafi-s.github.io/ADO/?run=urban-pace) · [Waymo calibration results](../waymo_training/CARLA_SPEED_CALIBRATION.md)
 
 ## Archived Town01 evaluations

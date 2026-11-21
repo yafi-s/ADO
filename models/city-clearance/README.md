@@ -1,5 +1,7 @@
 # Clearance-aware city driver
 
+The Windows Town03 launcher uses this checkpoint and the populated City Life profile. Pass `--population-profile standard` to drive the earlier population layout.
+
 This checkpoint retains the City Pace cruise forest and pedal controller. It adds a fitted stopping-distance response for passing a row of stationary roadside objects. The input contains measured LiDAR shape, spacing and pavement visibility along the navigation path. A half-second of motion-compatible returns distinguishes a persistent roadside surface from a single scan. A pedestrian detection, a body-corridor return, a tall occluder, missing pavement evidence or an unconfirmed close return restores the original cautious approach.
 
 The new response uses native CARLA vehicle velocity and stopping distance. Four approaches at commanded speeds of 2, 4, 6 and 8 m/s trained the response. From a cue at the measured approach speed, the Lincoln coasted for 0.5 s and then applied 0.26 brake until speed fell to 0.15 m/s. The fit predicts stopping distance in metres as **0.185761v² + 0.595528v + 0.027066**, with speed in m/s. The intercept covers the largest training underprediction. It is a measured response for this dry simulation setting. [Training traces](../../results/roadworks-pace/stopping-calibration.json) · [Coefficients and fingerprints](fit.json)
