@@ -1,0 +1,143 @@
+{
+  "capture_id": "long-city-drive-nxksaiij",
+  "comparisons": {
+    "original": {
+      "by_camera": {
+        "front": 1671,
+        "left": 123,
+        "rear_left": 448,
+        "rear_right": 185,
+        "right": 146
+      },
+      "confusion": {
+        "green->green": 1324,
+        "red->green": 3,
+        "red->red": 1246
+      },
+      "counts": {
+        "correct": 2570,
+        "held_from_previous_frame": 380,
+        "mapped_head_frames": 18385,
+        "scored_camera_readings": 2573,
+        "unknown": 15812
+      },
+      "denominator": "All mapped heads within 60 m, including out-of-view, occluded and back-facing heads",
+      "evidence": {
+        "fresh_correct": 2192,
+        "fresh_wrong": 1,
+        "retained_correct": 378,
+        "retained_wrong": 2
+      },
+      "mismatches": [
+        {
+          "age_s": 0.0,
+          "confidence": 0.852,
+          "frame": 2950,
+          "id": "light/232.52/80.68/5.98",
+          "map_id": "2025",
+          "read": "green",
+          "reference": "red",
+          "source_frame": null,
+          "view": "front"
+        },
+        {
+          "age_s": 0.1,
+          "confidence": null,
+          "frame": 2951,
+          "id": "light/232.52/80.68/5.98",
+          "map_id": "2025",
+          "read": "green",
+          "reference": "red",
+          "source_frame": null,
+          "view": "front"
+        },
+        {
+          "age_s": 0.2,
+          "confidence": null,
+          "frame": 2952,
+          "id": "light/232.52/80.68/5.98",
+          "map_id": "2025",
+          "read": "green",
+          "reference": "red",
+          "source_frame": null,
+          "view": "front"
+        }
+      ],
+      "source": "RGB measurements compared to CARLA reference after control",
+      "target_junction": {
+        "green->green": 246
+      },
+      "transitions": [
+        {
+          "abstained_head_frames_before_agreement": 108,
+          "first_agreement_frames": 36,
+          "frame": 2948,
+          "from_state": "red",
+          "source_frame": null,
+          "to_state": "green",
+          "wrong_head_frames": 0
+        }
+      ],
+      "units": "head-frames; correlated views and nearby frames are not independent"
+    },
+    "revised": {
+      "by_camera": {
+        "front": 1464,
+        "left": 100,
+        "rear_left": 291,
+        "rear_right": 90,
+        "right": 112
+      },
+      "confusion": {
+        "green->green": 1146,
+        "red->red": 911
+      },
+      "counts": {
+        "correct": 2057,
+        "held_from_previous_frame": 117,
+        "mapped_head_frames": 18385,
+        "scored_camera_readings": 2057,
+        "unknown": 16328
+      },
+      "denominator": "All mapped heads within 60 m, including out-of-view, occluded and back-facing heads",
+      "evidence": {
+        "fresh_correct": 1940,
+        "retained_correct": 117
+      },
+      "mismatches": [],
+      "source": "RGB measurements compared to CARLA reference after control",
+      "target_junction": {
+        "green->green": 225
+      },
+      "transitions": [
+        {
+          "abstained_head_frames_before_agreement": 120,
+          "first_agreement_frames": 40,
+          "frame": 2948,
+          "from_state": "red",
+          "source_frame": null,
+          "to_state": "green",
+          "wrong_head_frames": 0
+        }
+      ],
+      "units": "head-frames; correlated views and nearby frames are not independent"
+    }
+  },
+  "compressed_journal_sha256": "ac75acf2fcb6ea4df9acd173a5cda13389b1246a368f5c5e3544532d20ec42c6",
+  "first_frame": 2212,
+  "frame_count": 3354,
+  "last_frame": 5565,
+  "mean_wall_time_ms_per_frame": {
+    "baseline_read": 0.6178745676803816,
+    "comparison_journal": 0.1096324090638044,
+    "selected_read": 0.7083874478234944
+  },
+  "native_journal_sha256": "4ac5683a37ac070dcbacaf0cb7ec734b0db8bc8af587b6595354cfbb9627b09b",
+  "producer": {
+    "classifier_sha256": "9e032da511086924a785106b1fc65223e8db6177b7d933c15054ad67d8d21058",
+    "extractor_sha256": "8ec1f3d17b0fb0d0c65e18ed7dc987ff4be78ce348c9ba72614788a8cc257373",
+    "original_reader_sha256": "c87dedb38af4288029e300eb8666b01550111f6df64fb60c06e02d486bb304f1",
+    "revised_reader_sha256": "6f361819d2089d30746c716f892b888a08f47e783ca4c76b82cbb7e5b63861c3"
+  },
+  "verified_recorded_signal_rows": 3354
+}
