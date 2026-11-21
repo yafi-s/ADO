@@ -857,7 +857,7 @@ function loadVideo(url, at, autoplay) {
 }
 
 function videoUrl() {
-  return `${state.dir}/${state.camera}.mp4`;
+  return artifactUrl(state.entry?.camera_urls?.[state.camera]) ?? `${state.dir}/${state.camera}.mp4`;
 }
 
 function setCameras(cameras) {

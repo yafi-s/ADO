@@ -5,6 +5,7 @@ on:
     paths:
       - 'web/**'
       - 'results/behavior-v2/**'
+      - 'tools/prepare_pages_film.py'
       - 'assets/robotaxi/vehicle/meridian.glb'
       - 'assets/robotaxi/vehicle/meridian-studio.png'
       - 'assets/waymo-ipace/waymo-ipace.glb'
@@ -37,6 +38,8 @@ jobs:
       - name: Include the verified driving comparison
         if: ${{ hashFiles('results/behavior-v2/study.json') != '' }}
         run: cp -r results/behavior-v2 web/media/behavior-v2
+      - name: Serve the full-quality city recording when published
+        run: python3 tools/prepare_pages_film.py
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web
