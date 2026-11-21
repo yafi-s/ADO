@@ -58,6 +58,15 @@ def sensor_face(name,cx,y,z,width,height,depth,s,mat):
     cap(name+" face",rows[-1][:-1],mat)
     return rows
 
+
+def end_window(name, end, x, y, z, width, height, mat, depth=.008, exponent=.5):
+    """A moulded, forward- or aft-facing optical window with a rounded edge."""
+    ring=[(.5*width*sp(cos(a),exponent),.5*height*sp(sin(a),exponent)) for a in steps(0,TAU,36)]
+    sections=[[(x+end*advance,y+w*scale,z+h*scale) for w,h in ring]
+              for advance,scale in ((-depth,.88),(0,1),(depth*.45,.94))]
+    patch(name+" | lip",sections,mat,end<0)
+    cap(name,sections[-1][:-1] if end>0 else sections[-1][-2::-1],mat)
+
 def ellipsoid(name,center,size,mat):
     x,y,z=center
     a,b,c=size
@@ -137,7 +146,18 @@ def fascia(end,u,z,offset=0):
     maxz=top(x,u)[2]
     t=max(0,min(1,(z-SILL)/(maxz-SILL)))
     width=abs(side(x,SILL+(fit(x,BELT)-SILL)*t,1)[1])
-    return (nose_x(x,u,t)+end*offset,u*width,z)
+    # Swages are part of the stamping. Their depth vanishes at the perimeter so
+    # each surface closes against the existing bonnet, rear deck and side skins.
+    a=abs(u)
+    fade=min(1,t*9,(1-t)*10,max(0,(1-a)*9))
+    if end>0:
+        pocket=fit(z,[(.27,0),(.34,.013),(.405,.047),(.48,.031),(.56,.026),(.65,0)])
+        span=fit(a,[(0,0),(.42,0),(.59,.65),(.80,1),(.94,.80),(1,0)])
+        stamp=-pocket*span
+    else:
+        step=fit(z,[(.28,0),(.39,.007),(.42,.028),(.49,.020),(.57,.037),(.608,.042),(.64,.016),(.69,0),(.82,.014),(.96,0)])
+        stamp=-step*(1-.44*a*a)
+    return (nose_x(x,u,t)+end*(offset+fade*stamp),u*width,z)
 
 
 def arch(x):
@@ -206,7 +226,7 @@ def body():
         strip(l+" | bonnet separation",points,.0023,joint)
     for sign,label in ((1,"nose"),(-1,"tail")):
         x=sign*FRONT
-        patch(label+" | bumper",[[fascia(sign,u,SILL+(top(x,u)[2]-SILL)*t) for u in us] for t in steps(0,1,17)],pearl,sign<0)
+        patch(label+" | bumper",[[fascia(sign,u,SILL+(top(x,u)[2]-SILL)*t) for u in steps(-1,1,80)] for t in steps(0,1,46)],pearl,sign<0)
     patch("Flat battery undertray",[[(nose_x(x,0,0),y,.165) for y in (-.68,.68)] for x in steps(-2.16,2.16,36)],black)
     for s,l in ((1,"L"),(-1,"R")):
         # Slender raised lower door tread sweeps into the rear haunch.
@@ -266,9 +286,36 @@ def wind(end,u,t,offset=0):
 def canopy():
     group("02 | Glass and roof")
     for end,title in ((1,"Laminated windscreen"),(-1,"Heated tailgate backlight")):
-        patch(title,[[wind(end,u,t) for u in steps(-1,1,42)] for t in steps(0,1,16)],glass,end<0)
+        def glass_limit(t):
+            if end>0:
+                return 1
+            return fit(t,[(0,.732),(.045,.777),(.13,.804),(.73,.943),(.93,.973),(1,.944)])
+        patch(title,[[wind(end,u*glass_limit(t),t) for u in steps(-1,1,42)] for t in steps(0,1,26)],glass if end>0 else roof,end<0)
         for t in (.016,.986):
-            strip(title+" | ceramic frit",[wind(end,u,t,.002) for u in steps(-1,1,48)],.009,trim)
+            strip(title+" | ceramic frit",[wind(end,u*glass_limit(t),t,.002) for u in steps(-1,1,48)],.009,trim)
+        if end<0:
+            # The top deck dips below the raked glass to leave cabin clearance.
+            # Close the exposed rear edge of that cutout with the liftgate skin.
+            shoulder=[]
+            for t in steps(0,1,18):
+                row=[]
+                for u in steps(-1,1,64):
+                    lip=Vector(wind(-1,u,0))
+                    deck=Vector(top(REAR,u))
+                    p=lip.lerp(deck,t)
+                    p.z+=.005*sin(pi*t)
+                    row.append(p)
+                shoulder.append(row)
+            patch("Liftgate | backlight-to-deck pressing",shoulder,pearl)
+            for s,l in ((1,"L"),(-1,"R")):
+                panel=[]
+                for t in steps(0,1,28):
+                    u=glass_limit(t)
+                    panel.append([wind(end,s*(u+(1-u)*v),t) for v in steps(0,1,9)])
+                patch(l+" | rear pillar return",panel,pearl,s>0)
+                strip(l+" | hatch glazing gasket",[row[0] for row in panel],.005,trim)
+            for t in (.14,.25,.36,.47,.58,.69,.80):
+                strip("Backlight | embedded heating element",[wind(-1,u*glass_limit(t),t,.0012) for u in steps(-.96,.96,40)],.0007,hexmat)
     for s,l in ((1,"L"),(-1,"R")):
         # Wrap the rear quarter with one continuous painted sail. A clipped,
         # tapered quarter-light and its weatherstrip sit in the sail panel.
@@ -302,6 +349,7 @@ def canopy():
     for s,l in ((1,"L"),(-1,"R")):
         strip(l+" | painted roof edge",[glazing(q,1,s,.001) for q in steps(0,1,84)],.017,pearl)
     spoiler=shell("Trailing roof spoiler",[(1.416,-1.438,0,.157,.599),(1.442,-1.46,0,.184,.653),(1.457,-1.465,0,.153,.638)],pearl,.47)
+    shell("Spoiler | dark underside",[(1.401,-1.458,0,.142,.522),(1.414,-1.467,0,.163,.584),(1.420,-1.469,0,.164,.603)],trim,.51)
     strip("High stop light",[(-1.622+.043*u*u,.55*u,1.439-.008*u*u) for u in steps(-1,1,45)],.007,redled)
 
 
@@ -333,54 +381,67 @@ def grille_ring(t):
     return u,z
 
 
+def honeycomb(name, rows, radius, lateral_scale, centre_z, clip, mat):
+    verts=[];faces=[]
+    for j in range(-rows,rows+1):
+        for i in range(-25,26):
+            y=(i+(j%2)*.5)*sqrt(3)*radius*lateral_scale
+            z=centre_z+j*1.5*radius
+            if not clip(y,z):
+                continue
+            base=len(verts)
+            for rr in (radius,radius*.84):
+                for k in range(6):
+                    a=k*pi/3+pi/2
+                    verts.append(fascia(1,(y+rr*lateral_scale*cos(a))/.838,z+rr*sin(a),.0175))
+            for k in range(6):
+                n=(k+1)%6
+                faces.append((base+k,base+n,base+6+n,base+6+k))
+    mesh(name,verts,faces,mat,False)
+
+
 def front_rear():
     group("04 | Lamps, grilles and bumpers")
     contour=[grille_ring(a) for a in steps(0,TAU,112)[:-1]]
     patch("Recessed oval grille",[[fascia(1,u*k,.613+(z-.613)*k,.010) for u,z in contour+[contour[0]]] for k in (.001,.35,.7,1)],trim)
     strip("Satin grille surround",[fascia(1,u,z,.012) for u,z in contour],.009,alloy,True)
-    # Build an open honeycomb lattice in a single editable mesh, clipped to the aperture.
-    verts=[];faces=[]
-    r=.021
-    for j in range(-6,7):
-        for i in range(-16,17):
-            y=(i+(j%2)*.5)*sqrt(3)*r
-            z=.62+j*1.5*r
-            if (abs(y)/.424)**3.5+(abs(z-.613)/.128)**3.2>.85:
-                continue
-            base=len(verts)
-            for rr in (r,r-.0020):
-                for k in range(6):
-                    a=k*pi/3+pi/2
-                    verts.append(fascia(1,(y+rr*cos(a))/.838,z+rr*sin(a),.0175))
-            for k in range(6):
-                n=(k+1)%6
-                faces.append((base+k,base+n,base+6+n,base+6+k))
-    mesh("Grille | hexagonal bright edges",verts,faces,hexmat,False)
+    honeycomb("Grille | flattened lozenges",8,.0145,1.74,.613,
+              lambda y,z: (abs(y)/.427)**3.7+(abs(z-.613)/.130)**3.4<.92,hexmat)
     ink("Nose | bonnet lettering",(2.304,0,.798),(0,1,0),(-.74,0,.67),"JAGUAR",.026,darkmetal,1.4)
-    face_band("Lower cooling grille",1,[(-1,.288,.289),(-.82,.275,.310),(-.61,.273,.324),(-.42,.277,.398),(0,.274,.40),(.42,.277,.398),(.61,.273,.324),(.82,.275,.310),(1,.288,.289)],trim,.009)
-    face_band("Front splitter edge",1,[(-1,.267,.278),(-.70,.252,.274),(0,.265,.278),(.70,.252,.274),(1,.267,.278)],trim,.013)
-    for j in range(3):
-        z=.300+.024*j
-        strip("Cooling grille horizontal vane",[fascia(1,u,z+.003*u*u,.011) for u in steps(-.45,.45,32)],.002,hexmat)
+    face_band("Lower cooling grille",1,[(-.975,.306,.311),(-.91,.286,.332),(-.61,.286,.329),(-.44,.277,.418),(0,.277,.420),(.44,.277,.418),(.61,.286,.329),(.91,.286,.332),(.975,.306,.311)],black,.009)
+    honeycomb("Lower cooling grille | expanded metal",5,.012,1.57,.349,
+              lambda y,z: .290<z<.405 and abs(y)<.475-(z-.29)*.88,hexmat)
+    face_band("Front | lower bumper return",1,[(-1,.247,.277),(-.93,.225,.281),(-.69,.217,.268),(0,.218,.260),(.69,.217,.268),(.93,.225,.281),(1,.247,.277)],trim,.005)
+    lower=[(-1,.275),(-.93,.276),(-.69,.268),(0,.264),(.69,.268),(.93,.276),(1,.275)]
+    strip("Front | pearl splitter lip",[fascia(1,u,fit(u,lower),.011) for u in steps(-1,1,72)],.008,pearl)
     for s,l in ((1,"L"),(-1,"R")):
         sym=lambda vals: sorted((u*s,lo,hi) for u,lo,hi in vals)
         face_band(l+" | outer bumper intake",1,sym([(.803,.608,.616),(.824,.472,.63),(.851,.389,.635),(.869,.380,.637),(.899,.405,.632),(.922,.49,.625),(.928,.573,.613)]),trim,.008)
         frame=[(.533,.719,.724),(.576,.680,.752),(.69,.677,.764),(.82,.679,.777),(.95,.713,.779),(1.0,.745,.776)]
         face_band(l+" | front jewel lamp",1,sym(frame),trim,.008)
-        for k,(u,z) in enumerate(((.624,.712),(.729,.722),(.823,.732))):
-            path=[fascia(1,s*(u+.046*cos(a)),z+.029*sin(a),.0132) for a in steps(0,TAU,28)]
-            strip(l+f" | projector bezel {k+1}",path,.0036,alloy,True)
-            p=fascia(1,s*u,z,.0137)
-            ellipsoid(l+" | projector optic",p,(.005,.019,.015),optic)
-        border=[(.561,.735),(.589,.703),(.617,.695),(.761,.704),(.895,.728),(.977,.756)]
-        strip(l+" | J-blade daytime running light",[fascia(1,s*u,z,.016) for u,z in border],.0038,led)
+        for k,(u,z,w,h) in enumerate(((.657,.715,.068,.023),(.819,.734,.063,.026))):
+            loop=[(w*sp(cos(a),.48),h*sp(sin(a),.48)) for a in steps(0,TAU,40)]
+            def jewel(v,d,f,offset):
+                return fascia(1,s*(u+v*f),z+(d+.13*v)*f,offset)
+            patch(l+f" | projector reflector cup {k+1}",
+                  [[jewel(v,d,f,off) for v,d in loop] for f,off in ((.02,.015),(.72,.015),(1,.021))],alloy)
+            patch(l+f" | flat beam optic {k+1}",[[jewel(v,d,f,.022) for v,d in loop] for f in (.002,.77)],optic)
+            strip(l+f" | rectangular projector seal {k+1}",[jewel(v,d,1,.022) for v,d in loop],.0024,graphite)
+            for v in (-.030,0,.030):
+                strip(l+" | refractor flute",[jewel(v,-.011,1,.023),jewel(v,.010,1,.023)],.0014,hexmat)
+        border=[(.558,.731),(.592,.700),(.632,.687),(.752,.695),(.887,.717),(.961,.737),(.978,.759)]
+        strip(l+" | J-blade daytime running light",[fascia(1,s*u,z,.021) for u,z in border],.0032,led)
+        cheek=[(.46,.418),(.61,.335),(.79,.333),(.92,.337),(.978,.346)]
+        strip(l+" | lower intake brow",[fascia(1,s*u,fit(u,cheek),.005) for u in steps(.46,.978,36)],.006,pearl)
+        for u,z in ((.335,.454),(.756,.621)):
+            strip(l+" | bumper transducer seal",[fascia(1,s*(u+.011*cos(a)),z+.009*sin(a),.005) for a in steps(0,TAU,24)],.0014,joint,True)
         side_panel(l+" | swept lamp housing",[(FRONT+.010,.745),(FRONT+.010,.776),(2.215,.814),(2.02,.867),(1.866,.890),(1.914,.837),(2.087,.778),(2.240,.744)],s,trim,.005)
         # Bridge both molded surfaces at the rounded corner, keeping the DRL uninterrupted.
         ue=.965
         seam_loop=[fascia(1,s*ue,.727,.010),fascia(1,s*ue,.777,.010),fascia(1,s,.776,.009),side(2.285,.797,s,.006),side(2.285,.759,s,.006),fascia(1,s,.745,.009)]
         cap(l+" | lamp corner transition",seam_loop,trim)
         strip(l+" | outer DRL joint",[fascia(1,s*.970,.754,.016),fascia(1,s*.993,.755,.013),side(FRONT,.752,s,.012)],.0052,led)
-        strip(l+" | swept lamp blade",[side(x,z,s,.012) for x,z in [(FRONT,.752),(2.24,.758),(2.11,.785),(1.99,.830),(1.911,.859)]],.0052,led)
+        strip(l+" | swept lamp blade",[side(x,z,s,.010) for x,z in [(FRONT,.752),(2.24,.758),(2.11,.785),(2.03,.813)]],.0034,alloy)
         strip(l+" | side amber marker",[side(x,z,s,.013) for x,z in [(1.884,.88),(1.937,.866),(1.984,.849)]],.006,amber)
         # The production lamps wrap as a single piece, rising onto the quarter.
         side_panel(l+" | tail lamp outer lens",[(REAR,.923),(REAR,.980),(-2.28,1.004),(-2.12,1.05),(-1.95,1.072),(-1.84,1.071),(-1.90,1.043),(-2.016,1.015),(-2.16,.976)],s,red,.007)
@@ -391,35 +452,41 @@ def front_rear():
         lower=[(.425,.95),(.496,.915),(.591,.914),(.656,.933),(.78,.938),(1,.943)]
         for line in (upper,lower):
             strip(l+" | rear LED blade",[fascia(-1,s*u,z,.017) for u,z in line],.0043,redled)
+        for k in range(16):
+            u=.47+k*.030
+            face_band(l+" | tail optic prism",-1,sym([(u,.960,.969),(u+.013,.960,.969)]),redled,.016)
         face_band(l+" | wrap transition",-1,sym([(.972,.920,.978),(1,.923,.980)]),red,.014)
         strip(l+" | lamp tip seal",[fascia(-1,s,.963,.009),side(REAR,.963,s,.012)],.008,red)
         face_band(l+" | rear bumper vertical vent",-1,sym([(.783,.592,.595),(.815,.577,.601),(.845,.550,.602),(.867,.510,.596),(.880,.498,.581),(.888,.519,.559)]),trim,.009)
     # Badge, full tailgate cut, broad lower triangular license recess and sculpted valance.
-    hatch=[(-.706,1.018),(-.705,.908),(-.694,.712),(-.684,.655),(-.658,.628),(-.583,.611),(0,.607),(.583,.611),(.658,.628),(.684,.655),(.694,.712),(.705,.908),(.706,1.018)]
-    for sgn,l in ((-1,"R"),(1,"L")):
-        start=[(abs(u)*sgn,z) for u,z in hatch[8:]]
+    for s,l in ((-1,"R"),(1,"L")):
+        outline=[(0,.626),(.65,.626),(.735,.628),(.776,.642),(.797,.671),(.803,.720),(.806,.924),(.806,1.0)]
         pts=[]
-        for (u,z),(v,h) in zip(start,start[1:]):
-            pts += [fascia(-1,u+(v-u)*t,z+(h-z)*t,.014) for t in steps(0,1,8)]
-        strip(l+" | tailgate reveal",pts,.003, joint)
-    strip("Tailgate | lower shut line",[fascia(-1,u,.607+.017*abs(u/.64)**6,.011) for u in steps(-.64,.64,72)],.003,joint)
-    face_band("Rear bumper | central license recess",-1,[(-.50,.402,.408),(-.44,.399,.470),(-.35,.400,.576),(-.31,.402,.593),(.31,.402,.593),(.35,.400,.576),(.44,.399,.470),(.50,.402,.408)],trim,.012)
-    face_band("Rear | dark graphite valance",-1,[(-1,.270,.303),(-.91,.249,.401),(-.75,.243,.406),(0,.239,.401),(.75,.243,.406),(.91,.249,.401),(1,.270,.303)],trim,.013)
+        for (u,z),(v,h) in zip(outline,outline[1:]):
+            pts.extend(fascia(-1,s*(u+(v-u)*t),z+(h-z)*t,.017) for t in steps(0,1,8))
+        strip(l+" | liftgate shutline",pts,.0025,joint)
+        for u in (.33,.77):
+            strip(l+" | rear park assist bezel",[fascia(-1,s*(u+.012*cos(a)),.391+.010*sin(a),.019) for a in steps(0,TAU,24)],.0013,hexmat,True)
+    face_band("Rear bumper | trapezoidal plate well",-1,[(-.595,.408,.410),(-.55,.406,.455),(-.386,.405,.613),(-.364,.405,.619),(.364,.405,.619),(.386,.405,.613),(.55,.406,.455),(.595,.408,.410)],graphite,.009)
+    face_band("Rear | full-width valance and waist",-1,[(-1,.390,.418),(-.975,.262,.418),(-.86,.227,.418),(-.65,.198,.418),(0,.201,.418),(.65,.198,.418),(.86,.227,.418),(.975,.262,.418),(1,.390,.418)],trim,.014)
     meshrows=[]
-    for u in steps(-.65,.65,55):
-        z=.246+.037*max(0,1-(abs(u)/.58)**6)
-        meshrows.append([fascia(-1,u,z,.015),fascia(-1,u,z-.055+.018*abs(u),.004)])
-    patch("Rear | diffuser blade",meshrows,graphite)
-    strip("Rear | diffuser bright edge",[row[0] for row in meshrows],.006,darkmetal)
-    for u in (-.48,-.18,.18,.48):
-        fin=box("Rear | undertray fin",(-2.23,u,.213),(.123,.014,.082),.005,trim)
-        fin.rotation_euler.y=.16
+    for u in steps(-.685,.685,64):
+        z=fit(abs(u),[(0,.306),(.51,.306),(.60,.292),(.66,.234),(.685,.207)])
+        meshrows.append([fascia(-1,u,.198,.007),fascia(-1,u,z-.017,.030),fascia(-1,u,z,.041)])
+    patch("Rear | raised diffuser apron",meshrows,graphite)
+    strip("Rear | moulded diffuser shoulder",[row[-1] for row in meshrows],.007,trim)
+    for y in (-.295,.295):
+        verts=[(-2.215,y-.010,.202),(-2.306,y-.010,.191),(-2.335,y-.010,.285),
+               (-2.215,y+.010,.202),(-2.306,y+.010,.191),(-2.335,y+.010,.285)]
+        mesh("Rear | diffuser strake",verts,[(0,1,2),(5,4,3),(0,3,4,1),(1,4,5,2),(2,5,3,0)],trim,False)
     for sign in (-1,1):
         face_band("Rear | red bumper reflector",-1,sorted((u*sign,z0,z1) for u,z0,z1 in [(.62,.319,.325),(.68,.313,.327),(.81,.320,.338),(.84,.331,.340)]),red,.018)
-    box("Rear fleet plate",(-2.352,0,.509),(.016,.290,.100),.008,white)
-    ink("Rear fleet number",(-2.361,0,.513),(0,-1,0),(0,0,1),"X590  05",.038,letter)
-    ink("Tailgate | marque script",(-2.329,0,.920),(0,-1,0),(0,0,1),"JAGUAR",.040,darkmetal,1.22)
-    ink("Tailgate | model script",(-2.309,-.50,.670),(0,-1,0),(0,0,1),"I - P A C E",.021,darkmetal,1.10)
+    box("Rear fleet plate",(-2.333,0,.511),(.016,.300,.118),.008,white)
+    ink("Rear fleet number",(-2.342,0,.503),(0,-1,0),(0,0,1),"X590  05",.043,letter)
+    ink("Rear fleet plate header",(-2.342,0,.548),(0,-1,0),(0,0,1),"California",.016,red)
+    for l,s,label in (("L",1,"I-PACE"),("R",-1,"JAGUAR")):
+        x,y,z=fascia(-1,.61*s,.848,.009)
+        ink("Tailgate | "+l+" marque script",(x,y,z),(0,-1,0),(0,0,1),label,.028,darkmetal,1.22)
 
 
 
@@ -507,19 +574,14 @@ def sensors():
             sensor_face(l+" "+title+" | large peripheral lens",cx-.064*outward,s*1.006,z-.007,.136,.093,.007,s,deepopt)
             sensor_face(l+" "+title+" | short range lens",cx+.106*outward,s*1.006,z-.019,.049,.044,.007,s,deepopt)
             sensor_face(l+" "+title+" | aperture index",cx+.109*outward,s*1.007,z+.034,.044,.009,.006,s,graphite)
-            # Terminal glass is visible head-on and from behind, as on the press car.
-            rim=[]
-            for a in steps(0,TAU,60):
-                h=.075*sp(cos(a),.56)
-                dz=.080*sp(sin(a),.53)
-                at=cx+outward*(.220+.007*(1-(abs(h)/.075)**2))
-                rim.append((at,s*(.902+h),z+dz))
-            mid=(cx+outward*.229,s*.902,z)
-            patch(l+" "+title+" | end-looking black optic",[[tuple(Vector(mid).lerp(Vector(pt),f)) for pt in rim] for f in (.001,.4,.75,1)],sensor,s*outward>0)
-            strip(l+" "+title+" | enclosure border",rim,.0026,trim)
-            frontx=cx+outward*.231
-            ellipsoid(l+" "+title+" | end-looking lens",(frontx,s*.914,z+.012),(.008,.032,.025),deepopt)
-            ellipsoid(l+" "+title+" | glint",(frontx+outward*.007,s*.924,z+.021),(.0018,.005,.003),optic)
+            if cx>0:
+                # The frontal optical aperture is a narrow upright stack, its
+                # visible end above the lamp is much narrower than its flank.
+                fx=cx+.224
+                end_window(l+" front | terminal surround",1,fx,s*.940,z,.122,.186,white,.013)
+                end_window(l+" front | upright terminal glass",1,fx+.009,s*.943,z-.009,.108,.153,sensor)
+                end_window(l+" front | forward window",1,fx+.015,s*.945,z+.020,.060,.050,deepopt)
+                ellipsoid(l+" front | receiver",(fx+.019,s*.948,z+.021),(.004,.015,.012),optic)
             if cx<0:
                 # Rear black sensor glass faces obliquely outward at the bumper corner.
                 for i in range(12):
@@ -530,9 +592,19 @@ def sensors():
                         sweep=[]
                     sweep.append(coords)
                 patch(l+" rear | swept corner glass",sweep,sensor,s<0)
-            bx=cx+(-.225 if cx>0 else -.173)
-            yy=s*(.928 if cx>0 else .850)
-            zz=z+(.030 if cx>0 else .078)
+                # Rear elevation shows a broad inner rectangular aperture and a
+                # smaller outboard aperture housed in one continuous horizontal end.
+                skin("aft-facing twin-port fairing",[(.089,.105,.099,.884,0),(.162,.125,.101,.868,0),
+                     (.215,.142,.097,.851,0),(.248,.150,.092,.848,0),(.264,.146,.087,.848,0)],pearl)
+                fx=cx-.266
+                end_window(l+" rear | terminal seal",-1,fx,s*.852,z,.288,.158,sensor,.009)
+                end_window(l+" rear | broad inner window",-1,fx-.007,s*.813,z,.155,.120,deepopt,.006)
+                end_window(l+" rear | outer optic recess",-1,fx-.007,s*.956,z+.001,.064,.066,black,.006)
+                ellipsoid(l+" rear | outer receiver",(fx-.012,s*.957,z+.002),(.004,.022,.021),optic)
+                continue
+            bx=cx-.225
+            yy=s*.928
+            zz=z+.030
             shell(l+" "+title+" | auxiliary sensor pedestal",[(zz-.100,bx,yy,.066,.047),(zz-.094,bx,yy,.071,.051),(zz+.072,bx,yy,.062,.052),(zz+.104,bx,yy,.066,.053),(zz+.114,bx,yy,.056,.049)],white,.59)
             sensor_face(l+" "+title+" | low auxiliary window",bx,yy+s*.052,zz-.068,.090,.040,.008,s,sensor)
             sensor_face(l+" "+title+" | vertical aperture",bx,yy+s*.052,zz+.007,.066,.094,.008,s,auxoptic)
@@ -549,6 +621,19 @@ def sensors():
     ellipsoid("Nose | nested return optic",(2.399,0,.641),(.003,.013,.011),optic)
     box("Nose | blue perimeter status strip",(2.393,0,.586),(.004,.063,.007),.0015,blue)
     shell("Nose | lower collar",[(.461,2.349,0,.033,.043),(.482,2.349,0,.038,.046),(.559,2.349,0,.038,.046),(.566,2.349,0,.035,.042)],sensor,.71)
+    end_window("Nose | recessed twin receiver",1,2.394,0,.646,.078,.055,black,.004)
+    for y in (-.021,.021):
+        ellipsoid("Nose | receiver element",(2.399,y,.646),(.0025,.011,.012),optic)
+    ink("Nose | instrument wordmark",(2.393,0,.607),(0,1,0),(0,0,1),"WAYMO",.013,white,1.21)
+    shell("Tailgate | central instrument stalk",[(.828,-2.334,0,.029,.036),(.836,-2.338,0,.035,.040),
+          (.922,-2.339,0,.039,.044),(.936,-2.333,0,.041,.045)],white,.58)
+    shell("Tailgate | central instrument housing",[(.916,-2.333,0,.039,.054),(.927,-2.342,0,.049,.071),
+          (.951,-2.344,0,.050,.079),(1.028,-2.340,0,.047,.078),(1.058,-2.331,0,.044,.069),
+          (1.065,-2.328,0,.037,.054)],white,.60)
+    end_window("Tailgate | twin camera window",-1,-2.393,0,.998,.094,.053,sensor,.005)
+    for y in (-.024,.024):
+        ellipsoid("Tailgate | camera glass",(-2.399,y,.998),(.004,.015,.015),optic)
+    ink("Tailgate | sensor wordmark",(-2.393,0,.951),(0,-1,0),(0,0,1),"WAYMO",.014,letter,1.23)
     # Carrier feet and the shallow aerodynamic pearl/black roof tray.
     for s,l in ((1,"L"),(-1,"R")):
         for x in (.115,-.788):
@@ -560,6 +645,19 @@ def sensors():
             ellipsoid(l+" | rounded rail end",tip,(.031,.029,.029),trim)
     shell("Roof | carrier shadow",[(1.578,-.239,0,.548,.394),(1.592,-.239,0,.606,.467),(1.613,-.239,0,.617,.486)],trim,.56)
     shell("Roof | broad faired carrier",[(1.592,-.239,0,.583,.441),(1.606,-.239,0,.618,.485),(1.667,-.239,0,.625,.494),(1.691,-.239,0,.604,.484),(1.706,-.239,0,.537,.442),(1.723,-.239,0,.414,.369)],pearl,.55)
+    # Aft cross-rail ties the longitudinal rails together. A rectangular
+    # instrument drops below its centre and faces through the rail opening.
+    beam=[]
+    for y in steps(-.574,.574,52):
+        x=-1.098+.041*(abs(y)/.574)**4
+        z=1.577-.018*(abs(y)/.574)**3
+        beam.append([(x+.032*sp(cos(a),.62),y,z+.024*sp(sin(a),.62)) for a in steps(0,TAU,24)])
+    patch("Roof | arched rear crossbar",beam,trim,True)
+    strip("Roof | forward crossbar",[(.233-.014*u*u,.579*u,1.584+.012*(1-u*u)) for u in steps(-1,1,40)],.019,trim)
+    box("Roof | centre aft camera cradle",(-1.096,0,1.553),(.118,.158,.120),.019,graphite)
+    end_window("Roof | aft camera window",-1,-1.155,0,1.543,.130,.065,sensor,.005)
+    for y in (-.032,.032):
+        ellipsoid("Roof | aft camera glass",(-1.162,y,1.544),(.004,.020,.017),optic)
     # Wide rounded black forward face extends onto the tray flanks.
     for s,l in ((1,"L"),(-1,"R")):
         rr=[]
@@ -601,8 +699,17 @@ def sensors():
     central("Roof | lidar cap",[(2.024,.128),(2.034,.126),(2.039,.118)],white)
     for i in range(4):
         a=i*pi/2
-        right=(-sin(a),cos(a),0)
-        ink("Roof | illuminated display "+str(i),(-.176+.142*cos(a),.142*sin(a),1.958),right,(0,0,1),"W",.108,teal,1)
+        # Four inclined, rounded bars follow the drum surface and make the
+        # two-colour rider-identification mark legible from either end.
+        for j,(v0,h0,v1,h1) in enumerate([(-.061,.027,-.032,-.023),(-.032,-.023,0,.024),
+                                           (0,.024,.032,-.023),(.032,-.023,.061,.027)]):
+            points=[]
+            for t in steps(0,1,8):
+                z=1.959+h0+(h1-h0)*t
+                angle=a+(v0+(v1-v0)*t)/.14
+                r=fit(z,[(1.891,.146),(1.996,.131)])+.002
+                points.append((-.176+r*cos(angle),r*sin(angle),z))
+            strip("Roof | rider display segment "+str(i)+"."+str(j),points,.010,teal if j%2==0 else blue)
     for key,xyz,yaw in [("roof_lidar",(-.176,0,1.958),0),("roof_camera_front",(.399,0,1.656),0),("perimeter_front_left",(1.688,1.006,.952),90),("perimeter_front_right",(1.688,-1.006,.952),-90),("perimeter_rear_left",(-2.075,1.006,.826),90),("perimeter_rear_right",(-2.075,-1.006,.826),-90)]:
         ob=bpy.data.objects.new("sensor_origin_"+key,None)
         util.assembly.objects.link(ob)

@@ -10,6 +10,7 @@ An independently modeled exterior of the electric Jaguar I-PACE with the fifth-g
 - **waymo-ipace.glb** contains five rigidly skinned meshes, the wheel skeleton, six sensor anchors and self-contained materials. Use it for the complete model in a glTF viewer or DCC.
 - **waymo-ipace.fbx** contains the chassis, four wheels and five-bone skeleton for Unreal/CARLA vehicle asset authoring.
 - **studio.png** is the CPU Cycles render of the native model.
+- [**front-rear.png**](front-rear.png) shows larger orthographic views of the headlights, grille, liftgate, front and rear instruments and valances.
 - [**inspection.png**](inspection.png) shows the rendered left profile, front, rear, roof, rear three-quarter and roof-carrier detail. **inspection_views.py** renders and assembles that sheet.
 - **build.py** regenerates the model and exchanges in Blender 5.2. It uses the repository's mesh, material, interpolation and studio helpers in [build_vehicle.py](../robotaxi/vehicle/build_vehicle.py). The body, closures, glass, wheels, lighting and sensor forms are defined here. **verify.py** reopens all three model files, checks bounds, skin weights and wheel centers and rotates every imported wheel independently.
 
@@ -17,7 +18,7 @@ An independently modeled exterior of the electric Jaguar I-PACE with the fifth-g
 
 The origin is on the ground midway between the axles. Native Blender coordinates use metres, +X forward, +Y to the vehicle's left, and +Z up. A CARLA vehicle-space point with the same origin uses (x, −y, z) in metres. A native Blender point (x, y, z) maps to (x, z, −y) in glTF's Y-up convention. Importers such as Blender apply that last conversion automatically.
 
-Jaguar lists a body length of **4.682 m**, a **2.990 m** wheelbase, a width of **2.139 m** with mirrors extended, and a stock height with antenna of **1.566 m**. The model's tires have a rolling radius of **0.365 m**. The modeled sensor-equipped roof reaches **2.039 m**. The independently reimported vehicle measures **4.7630 × 2.1390 × 2.0390 m** including the central front grille instrument and rear plate. The GLB contains 351,602 triangles across five meshes and 28 materials. Track and wheelbase follow Jaguar's technical data. Sensor and trim dimensions were estimated from public photos.
+Jaguar lists a body length of **4.682 m**, a **2.990 m** wheelbase, a width of **2.139 m** with mirrors extended, and a stock height with antenna of **1.566 m**. The model's tires have a rolling radius of **0.365 m**. The modeled sensor-equipped roof reaches **2.039 m**. The independently reimported vehicle measures **4.8050 × 2.1390 × 2.0390 m** including the central front grille and rear hatch instruments. The GLB contains 379,782 triangles across five meshes and 28 materials. Track and wheelbase follow Jaguar's technical data. Sensor and trim dimensions were estimated from public photos.
 
 | Bone | Blender wheel centre in m, X / Y / Z |
 | --- | --- |
@@ -57,6 +58,7 @@ Import the FBX as a skeletal mesh in the Unreal Editor used for the target CARLA
 ## References and licensing
 
 - Waymo's [media resources](https://waymo.com/media-resources/) include the fifth-generation I-PACE in side, head-on and front-left views and a roof-sensor detail. Those views informed the long black carrier band, pearl fairing, camera crown, illuminated upper display, blue collar, four perimeter pods, dark split-spoke wheels and door lettering.
+- Page 9 of Waymo's [March 2025 Jaguar I-PACE emergency response guide](https://storage.googleapis.com/waymo-uploads/files/first%20responder/Jaguar%20I-PACE%20California%20Emergency%20Response%20Guide%20and%20Law%20Enforcement%20Interaction%20Protocol%20March%202025.pdf#page=9) shows both ends of the equipped vehicle head-on. The model follows the two rectangular headlamp optics per side, flattened grille cells, upright front corner optics, dual-aperture rear bumper housings, white central hatch instrument, twin-window centre roof-rail camera and full-width lower rear trim. Lens depths and the precise positions inside each housing are visual estimates.
 - Waymo describes the [fifth-generation Driver](https://waymo.com/blog/2020/03/introducing-5th-generation-waymo-driver/) and its [industrial design](https://waymo.com/blog/2020/03/designing-5th-generation-waymo-driver/), including the roof-mounted 360° lidar and four perimeter lidars.
 - Waymo’s [overhead lidar illustration](https://lh3.googleusercontent.com/Kg6mPt8nNXpfh7VkcqksvPMMJhe2T-NH32JwCkhQ-JGH0OYIDBzbQY9T2DlH44Fan8ZdMjv25akaswrPrLrJzOVD4eXLixsU5bI=e365-s1000) and [open-hatch view](https://storage.googleapis.com/waymo-prod-cdn/uploads/f78f7b88f532a158af4209d3508610ee-Blog_Migrated_image1.gif) provide additional upper and rear angles.
 - Jaguar's [I-PACE dimensions sheet](https://www.jaguar.com/content/dam/jdx/pdfs/uk/wltp/Jaguar-I-PACE-TD-Insert-1X5902400000GBEN01P.pdf) gives exterior size, track and wheelbase.

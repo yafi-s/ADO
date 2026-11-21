@@ -58,6 +58,15 @@ def compose_sheet():
         draw.text((x+27,y+386),detail,font=font(19),fill=mute)
     draw.text((64,1556),"Original renders of the editable model. Views are framed individually. Manufacturer photographs and drawings are linked in the asset notes.",font=font(20),fill=mute)
     sheet.save(OUT/"inspection.png",optimize=True)
+    ends=Image.new("RGB",(1680,856),(230,235,235))
+    labels=ImageDraw.Draw(ends)
+    for i,key in enumerate(("front","rear")):
+        im=Image.open(DEST/(key+".png")).convert("RGBA")
+        im=im.crop(im.getchannel("A").getbbox())
+        im.thumbnail((790,747),Image.Resampling.LANCZOS)
+        ends.paste(im,(i*840+(840-im.width)//2,35+747-im.height),im)
+        labels.text((i*840+420,803),key.capitalize(),anchor="mt",font=font(23,True),fill=ink)
+    ends.save(OUT/"front-rear.png",optimize=True)
 
 if "--compose" in sys.argv:
     compose_sheet()
@@ -84,13 +93,21 @@ for ob in bpy.data.collections["90 | Photography studio"].objects:
 
 views=[
     ("profile",(0,10,0),(0,0,1.02),5.12),
-    ("front",(10,0,0),(0,0,1.02),4.40),
-    ("rear",(-10,0,0),(0,0,1.02),4.40),
+    ("front",(10,0,0),(0,0,1.02),2.47),
+    ("rear",(-10,0,0),(0,0,1.02),2.47),
     ("roof",(0,0,10),(0,0,0),5.12),
     ("rear_quarter",(-6.9,8,2.4),(0,0,1.02),5.22),
     ("carrier",(2.3,2.2,1.12),(-.15,0,1.72),1.78),
 ]
+rear_rim=bpy.data.lights["Strip • rear rim"]
+rim_energy=rear_rim.energy
 for name,vec,ctr,scale in views:
+    # A head-on windshield reflects the rear softbox straight into the camera.
+    rear_rim.energy=rim_energy*.19 if name=="front" else rim_energy
+    if name in ("front","rear"):
+        scene.render.resolution_x,scene.render.resolution_y=(700,632) if preview else (950,860)
+    else:
+        scene.render.resolution_x,scene.render.resolution_y=(700,390) if preview else (950,555)
     center=Vector(ctr)
     camera.location=center+Vector(vec)
     q=(-Vector(vec)).to_track_quat("-Z","Y")
