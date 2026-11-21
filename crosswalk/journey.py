@@ -559,7 +559,12 @@ class JourneyScenario(Scenario):
             e.state = "approaching stopped bus"
         if lane_key == tuple(change.target_lane) and e.release_pos is not None:
             displacement = abs(_offset(e.release_pos,ep,right))
-            if (self._station[change.start]-4 <= progress <= self._station[change.end]+6
+            legal_window = self._station[change.start]-4 <= progress <= self._station[change.end]+6
+            if getattr(self, "tactical_lane_scoring", False):
+                # A deferred merge can occur anywhere along the dashed approach
+                # before the bus. Lane identity and displacement remain measured.
+                legal_window = station_offset < -bus.bounding_box.extent.x
+            if (legal_window
                     and displacement >= 2.1):
                 e.mark("measured_lane_change_s", self._time)
                 e.observed.setdefault("measured_lane_change_m", round(displacement, 3))
@@ -1010,6 +1015,23 @@ class JourneyScenario(Scenario):
     def metrics(self):
         self._observe()
         state = super().metrics()
+        if getattr(self, "tactical_lane_scoring", False):
+            lane = self._map.get_waypoint(self.ego.get_location(), project_to_road=False,
+                                          lane_type=carla.LaneType.Driving)
+            change = self._urban.lane_change
+            alternatives = (change.source_lane, change.target_lane)
+            if lane and (lane.road_id, lane.lane_id) in alternatives:
+                pose = self.ego.get_transform()
+                displacement = abs(_offset(lane.transform.location, pose.location, lane.transform.get_right_vector()))
+                state["lateral_error_m"] = displacement
+                state["route_departure"] = displacement > state["lane_tolerance_m"]
+                # In the interior of the boulevard the whole car must stay in
+                # the two legal driving lanes, including during a delayed merge.
+                if 4. < lane.s < 88.:
+                    corners = self.ego.bounding_box.get_world_vertices(pose)
+                    lanes = [self._map.get_waypoint(v, project_to_road=False,
+                                                    lane_type=carla.LaneType.Driving) for v in corners]
+                    state["route_departure"] |= any(not w or (w.road_id,w.lane_id) not in alternatives for w in lanes)
         state.update(events=[e.record() for e in self.events],
                      turn_counts={k:sum(d==k for _,_,d in self.turns) for k in ("left","right","straight")},
                      junction_traversals=[dict(turn) for turn in self._turn_observations],
