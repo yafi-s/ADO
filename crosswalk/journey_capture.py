@@ -187,10 +187,11 @@ def _need_video_tools():
 
 def _source_checksums(scene_factory, model_type):
     from inspect import getfile
-    from . import control, lamp, runtime, sensors, showcase
+    from . import behavior_v2, control, journey_ambient, lamp, runtime, sensors, showcase, urban_map
 
     paths = [Path(getfile(source)) for source in (episode, scene_factory, model_type, city_map, control, lamp,
                                                  runtime, sensors, showcase)]
+    paths.extend(Path(getfile(source)) for source in (behavior_v2, journey_ambient, urban_map))
     paths.append(Path(__file__))
     return {path.name: fingerprint(path) for path in paths}
 

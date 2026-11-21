@@ -211,9 +211,10 @@ def verify_city_film(archive, media, capture, scratch):
         verify_digest(archive, f"{media}/{name}", digest)
 
     policy = capture["policy"]
-    require(policy["schema"] == "ado-behavior-v2" and re.fullmatch(r"[a-zA-Z0-9_-]+\.npz", policy["path"]),
+    folder = {"ado-behavior-v2": "behavior-v2", "ado-city-policy-v1": "city-v1"}.get(policy["schema"])
+    require(folder is not None and re.fullmatch(r"[a-zA-Z0-9_-]+\.npz", policy["path"]),
             f"Invalid Town03 policy path at {media}")
-    verify_digest(archive, f"models/behavior-v2/{policy['path']}", policy["sha256"])
+    verify_digest(archive, f"models/{folder}/{policy['path']}", policy["sha256"])
     town = read_json(archive, f"{media}/town.json")
     require(town["producer"] == CITY_PRODUCER and town["roads"], f"Wrong map geometry at {media}")
 
