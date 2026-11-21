@@ -1,0 +1,794 @@
+{
+  "r3": {
+    "source_sha256": "b5b8b901496839151f6d1f6e4f9a7f560d4d4f97f3a5a77f5794f4dd091b9c03",
+    "checkpoint_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+    "clear_hill_grade": {
+      "complete": true,
+      "contacts": 0,
+      "windows": [
+        {
+          "start_m": 0.0,
+          "end_m": 10.0,
+          "frames": 25,
+          "seconds": 2.5,
+          "median_actual_kmh": 15.293,
+          "median_request_kmh": 18.414,
+          "largest_request_drop_kmh": 0.109,
+          "drop_frame": 196,
+          "peak_half_second_decel_mps2": 0.199,
+          "below_10_kmh_seconds": 0.0
+        },
+        {
+          "start_m": 10.0,
+          "end_m": 25.0,
+          "frames": 31,
+          "seconds": 3.1,
+          "median_actual_kmh": 17.849,
+          "median_request_kmh": 23.209,
+          "largest_request_drop_kmh": 9.751,
+          "drop_frame": 231,
+          "peak_half_second_decel_mps2": 1.84,
+          "below_10_kmh_seconds": 0.0
+        },
+        {
+          "start_m": 25.0,
+          "end_m": 40.0,
+          "frames": 35,
+          "seconds": 3.5,
+          "median_actual_kmh": 15.754,
+          "median_request_kmh": 18.505,
+          "largest_request_drop_kmh": 4.89,
+          "drop_frame": 241,
+          "peak_half_second_decel_mps2": 1.35,
+          "below_10_kmh_seconds": 0.0
+        },
+        {
+          "start_m": 0.0,
+          "end_m": 40.0,
+          "frames": 91,
+          "seconds": 9.1,
+          "median_actual_kmh": 15.84,
+          "median_request_kmh": 18.414,
+          "largest_request_drop_kmh": 9.751,
+          "drop_frame": 231,
+          "peak_half_second_decel_mps2": 1.84,
+          "below_10_kmh_seconds": 0.0
+        }
+      ],
+      "same_station_speeds": {
+        "-10.0": {
+          "first_frame": 151,
+          "second_frame": 152,
+          "time_s": 9.0867,
+          "actual_kmh": 13.103,
+          "applied_target_kmh": 13.028,
+          "next_target_kmh": 13.022
+        },
+        "0.0": {
+          "first_frame": 180,
+          "second_frame": 181,
+          "time_s": 11.901,
+          "actual_kmh": 11.624,
+          "applied_target_kmh": 13.007,
+          "next_target_kmh": 13.673
+        },
+        "10.0": {
+          "first_frame": 205,
+          "second_frame": 206,
+          "time_s": 14.4157,
+          "actual_kmh": 15.837,
+          "applied_target_kmh": 18.414,
+          "next_target_kmh": 18.414
+        },
+        "15.0": {
+          "first_frame": 216,
+          "second_frame": 217,
+          "time_s": 15.5385,
+          "actual_kmh": 17.378,
+          "applied_target_kmh": 24.142,
+          "next_target_kmh": 25.075
+        },
+        "20.0": {
+          "first_frame": 226,
+          "second_frame": 227,
+          "time_s": 16.5208,
+          "actual_kmh": 19.344,
+          "applied_target_kmh": 27.841,
+          "next_target_kmh": 28.773
+        },
+        "25.0": {
+          "first_frame": 236,
+          "second_frame": 237,
+          "time_s": 17.5023,
+          "actual_kmh": 16.418,
+          "applied_target_kmh": 20.115,
+          "next_target_kmh": 21.048
+        },
+        "30.0": {
+          "first_frame": 247,
+          "second_frame": 248,
+          "time_s": 18.6211,
+          "actual_kmh": 16.245,
+          "applied_target_kmh": 22.421,
+          "next_target_kmh": 23.354
+        },
+        "40.0": {
+          "first_frame": 271,
+          "second_frame": 272,
+          "time_s": 21.0327,
+          "actual_kmh": 13.5,
+          "applied_target_kmh": 13.384,
+          "next_target_kmh": 13.141
+        }
+      },
+      "passed": true
+    },
+    "parked_hill_grade": {
+      "complete": false,
+      "contacts": 0,
+      "windows": [
+        {
+          "start_m": 0.0,
+          "end_m": 10.0,
+          "frames": 25,
+          "seconds": 2.5,
+          "median_actual_kmh": 15.293,
+          "median_request_kmh": 18.304,
+          "largest_request_drop_kmh": 0.314,
+          "drop_frame": 481,
+          "peak_half_second_decel_mps2": 0.2,
+          "below_10_kmh_seconds": 0.0
+        },
+        {
+          "start_m": 10.0,
+          "end_m": 25.0,
+          "frames": 53,
+          "seconds": 5.3,
+          "median_actual_kmh": 0.0,
+          "median_request_kmh": 0.0,
+          "largest_request_drop_kmh": 2.076,
+          "drop_frame": 502,
+          "peak_half_second_decel_mps2": 3.077,
+          "below_10_kmh_seconds": 4.0
+        },
+        {
+          "start_m": 0.0,
+          "end_m": 40.0,
+          "frames": 78,
+          "seconds": 7.8,
+          "median_actual_kmh": 9.578,
+          "median_request_kmh": 7.684,
+          "largest_request_drop_kmh": 2.076,
+          "drop_frame": 502,
+          "peak_half_second_decel_mps2": 3.077,
+          "below_10_kmh_seconds": 4.0
+        }
+      ],
+      "same_station_speeds": {
+        "-10.0": {
+          "first_frame": 427,
+          "second_frame": 428,
+          "time_s": 9.086,
+          "actual_kmh": 13.103,
+          "applied_target_kmh": 13.028,
+          "next_target_kmh": 13.022
+        },
+        "0.0": {
+          "first_frame": 456,
+          "second_frame": 457,
+          "time_s": 11.9004,
+          "actual_kmh": 11.624,
+          "applied_target_kmh": 13.007,
+          "next_target_kmh": 13.673
+        },
+        "10.0": {
+          "first_frame": 481,
+          "second_frame": 482,
+          "time_s": 14.4191,
+          "actual_kmh": 15.609,
+          "applied_target_kmh": 17.496,
+          "next_target_kmh": 16.983
+        },
+        "15.0": {
+          "first_frame": 494,
+          "second_frame": 495,
+          "time_s": 15.7728,
+          "actual_kmh": 10.098,
+          "applied_target_kmh": 8.923,
+          "next_target_kmh": 8.02
+        }
+      },
+      "parked_horizontal_drift_m": 0.001,
+      "min_body_gap_m": 3.4313,
+      "last_body_gap_m": 3.4319,
+      "last_speed_mps": 0.0,
+      "held_3s": true,
+      "final_ego_station_m": 16.600393430921343,
+      "observed_obstacle_station_m": 25.04550958386261,
+      "passed": true
+    },
+    "actual_grade_activation_on_clear_hill": {
+      "grade_extent_m": 0,
+      "confirmed_grade_extent_m": 0,
+      "grade_added_request_mps": 0
+    },
+    "actual_grade_activation_with_parked_car": {
+      "grade_extent_m": 0,
+      "confirmed_grade_extent_m": 0,
+      "grade_added_request_mps": 0
+    },
+    "counterfactual_clear_ego_overlaps_parked_car_times_s": [
+      16.6,
+      16.7,
+      16.8,
+      16.9,
+      17.0,
+      17.1,
+      17.2,
+      17.3,
+      17.4,
+      17.5,
+      17.6,
+      17.7,
+      17.8,
+      17.9,
+      18.0,
+      18.1,
+      18.2,
+      18.3,
+      18.4,
+      18.5,
+      18.6
+    ],
+    "j1221_clear": {
+      "seconds": 18.3,
+      "positive_pavement_fits": {
+        "grade_extent_m": 0,
+        "confirmed_grade_extent_m": 0,
+        "grade_added_request_mps": 0
+      },
+      "exact_stations": {
+        "-11.37845": {
+          "first_frame": 519,
+          "second_frame": 520,
+          "time_s": 11.5,
+          "actual_kmh": 26.136,
+          "applied_target_kmh": 29.07,
+          "next_target_kmh": 13.007
+        },
+        "-10.0": {
+          "first_frame": 521,
+          "second_frame": 522,
+          "time_s": 11.6989,
+          "actual_kmh": 23.99,
+          "applied_target_kmh": 13.007,
+          "next_target_kmh": 13.007
+        },
+        "-8.0": {
+          "first_frame": 525,
+          "second_frame": 526,
+          "time_s": 12.0192,
+          "actual_kmh": 21.118,
+          "applied_target_kmh": 13.007,
+          "next_target_kmh": 13.007
+        },
+        "-4.0": {
+          "first_frame": 533,
+          "second_frame": 534,
+          "time_s": 12.8253,
+          "actual_kmh": 15.392,
+          "applied_target_kmh": 13.007,
+          "next_target_kmh": 13.007
+        },
+        "0.0": {
+          "first_frame": 543,
+          "second_frame": 544,
+          "time_s": 13.8439,
+          "actual_kmh": 13.605,
+          "applied_target_kmh": 13.007,
+          "next_target_kmh": 13.007
+        },
+        "4.0": {
+          "first_frame": 554,
+          "second_frame": 555,
+          "time_s": 14.9081,
+          "actual_kmh": 13.471,
+          "applied_target_kmh": 13.007,
+          "next_target_kmh": 13.007
+        }
+      },
+      "largest_drop_in_minus12_to_plus4_m": {
+        "frame": 520,
+        "sim_time": 11.5,
+        "reason": "occupied_corridor",
+        "station_m": -11.378447102391377,
+        "before_kmh": 29.07,
+        "after_kmh": 13.007
+      },
+      "most_negative_half_second_acceleration_mps2": -2.693
+    },
+    "j356_crossing": {
+      "counterfactual_min_body_gap_m": 0.0,
+      "counterfactual_overlap_s": [
+        11.2,
+        11.3,
+        11.4,
+        11.5,
+        11.6,
+        11.7,
+        11.8,
+        11.9
+      ],
+      "physical_min_body_gap_m": 4.787896426144848,
+      "collision_events": 0,
+      "crossing_body_in_ego_path_s": [
+        11.2,
+        13.4
+      ],
+      "ego_body_in_cross_path_s": [
+        17.9,
+        19.0
+      ],
+      "crossing_order": "traffic_first",
+      "post_encroachment_s": 4.3,
+      "near_miss": false,
+      "passed": true
+    },
+    "j1221_crossing": {
+      "counterfactual_min_body_gap_m": 0.0,
+      "counterfactual_overlap_s": [
+        13.0,
+        13.1,
+        13.2,
+        13.3,
+        13.4,
+        13.5,
+        13.6,
+        13.7,
+        13.8,
+        13.9,
+        14.0,
+        14.1,
+        14.2,
+        14.3,
+        14.4,
+        14.5,
+        14.6,
+        14.7
+      ],
+      "physical_min_body_gap_m": 4.802218242898107,
+      "collision_events": 0,
+      "crossing_body_in_ego_path_s": [
+        12.9,
+        14.8
+      ],
+      "ego_body_in_cross_path_s": [
+        19.5,
+        21.4
+      ],
+      "crossing_order": "traffic_first",
+      "post_encroachment_s": 4.5,
+      "near_miss": false,
+      "passed": true
+    },
+    "j1221_stops_short": {
+      "min_body_gap_m": 8.590964861162139,
+      "counterfactual_min_body_gap_m": 8.591417773688864,
+      "traffic_displacement_m": 7.06967428846372,
+      "traffic_occupancy": [],
+      "near_center_min_speed_kmh": 12.9312,
+      "passed": true
+    }
+  },
+  "r4": {
+    "source_sha256": "743c36fd81f3d168001ac8e3602d8ea97e3506d72c003f9e6638497028eefabb",
+    "checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+    "clear_hill_grade": {
+      "complete": true,
+      "contacts": 0,
+      "windows": [
+        {
+          "start_m": 0.0,
+          "end_m": 10.0,
+          "frames": 25,
+          "seconds": 2.5,
+          "median_actual_kmh": 15.293,
+          "median_request_kmh": 18.414,
+          "largest_request_drop_kmh": 0.109,
+          "drop_frame": 199,
+          "peak_half_second_decel_mps2": 0.199,
+          "below_10_kmh_seconds": 0.0
+        },
+        {
+          "start_m": 10.0,
+          "end_m": 25.0,
+          "frames": 30,
+          "seconds": 3.0,
+          "median_actual_kmh": 18.063,
+          "median_request_kmh": 25.408,
+          "largest_request_drop_kmh": 4.445,
+          "drop_frame": 237,
+          "peak_half_second_decel_mps2": 0.121,
+          "below_10_kmh_seconds": 0.0
+        },
+        {
+          "start_m": 25.0,
+          "end_m": 40.0,
+          "frames": 33,
+          "seconds": 3.3,
+          "median_actual_kmh": 17.179,
+          "median_request_kmh": 18.81,
+          "largest_request_drop_kmh": 3.803,
+          "drop_frame": 252,
+          "peak_half_second_decel_mps2": 1.581,
+          "below_10_kmh_seconds": 0.0
+        },
+        {
+          "start_m": 0.0,
+          "end_m": 40.0,
+          "frames": 88,
+          "seconds": 8.8,
+          "median_actual_kmh": 15.854,
+          "median_request_kmh": 18.414,
+          "largest_request_drop_kmh": 4.445,
+          "drop_frame": 237,
+          "peak_half_second_decel_mps2": 1.581,
+          "below_10_kmh_seconds": 0.0
+        }
+      ],
+      "same_station_speeds": {
+        "-10.0": {
+          "first_frame": 154,
+          "second_frame": 155,
+          "time_s": 9.0872,
+          "actual_kmh": 13.103,
+          "applied_target_kmh": 13.028,
+          "next_target_kmh": 13.022
+        },
+        "0.0": {
+          "first_frame": 183,
+          "second_frame": 184,
+          "time_s": 11.9015,
+          "actual_kmh": 11.623,
+          "applied_target_kmh": 13.007,
+          "next_target_kmh": 13.673
+        },
+        "10.0": {
+          "first_frame": 208,
+          "second_frame": 209,
+          "time_s": 14.4166,
+          "actual_kmh": 15.833,
+          "applied_target_kmh": 18.414,
+          "next_target_kmh": 18.414
+        },
+        "15.0": {
+          "first_frame": 219,
+          "second_frame": 220,
+          "time_s": 15.552,
+          "actual_kmh": 16.968,
+          "applied_target_kmh": 23.077,
+          "next_target_kmh": 24.009
+        },
+        "20.0": {
+          "first_frame": 229,
+          "second_frame": 230,
+          "time_s": 16.5514,
+          "actual_kmh": 19.105,
+          "applied_target_kmh": 27.841,
+          "next_target_kmh": 28.773
+        },
+        "25.0": {
+          "first_frame": 238,
+          "second_frame": 239,
+          "time_s": 17.4922,
+          "actual_kmh": 19.369,
+          "applied_target_kmh": 23.395,
+          "next_target_kmh": 23.395
+        },
+        "30.0": {
+          "first_frame": 248,
+          "second_frame": 249,
+          "time_s": 18.4525,
+          "actual_kmh": 18.993,
+          "applied_target_kmh": 23.395,
+          "next_target_kmh": 23.395
+        },
+        "40.0": {
+          "first_frame": 271,
+          "second_frame": 272,
+          "time_s": 20.7924,
+          "actual_kmh": 11.911,
+          "applied_target_kmh": 13.407,
+          "next_target_kmh": 13.374
+        }
+      },
+      "passed": true
+    },
+    "parked_hill_grade": {
+      "complete": false,
+      "contacts": 0,
+      "windows": [
+        {
+          "start_m": 0.0,
+          "end_m": 10.0,
+          "frames": 25,
+          "seconds": 2.5,
+          "median_actual_kmh": 15.293,
+          "median_request_kmh": 18.304,
+          "largest_request_drop_kmh": 0.314,
+          "drop_frame": 493,
+          "peak_half_second_decel_mps2": 0.2,
+          "below_10_kmh_seconds": 0.0
+        },
+        {
+          "start_m": 10.0,
+          "end_m": 25.0,
+          "frames": 53,
+          "seconds": 5.3,
+          "median_actual_kmh": 0.0,
+          "median_request_kmh": 0.0,
+          "largest_request_drop_kmh": 2.076,
+          "drop_frame": 514,
+          "peak_half_second_decel_mps2": 3.077,
+          "below_10_kmh_seconds": 4.0
+        },
+        {
+          "start_m": 0.0,
+          "end_m": 40.0,
+          "frames": 78,
+          "seconds": 7.8,
+          "median_actual_kmh": 9.578,
+          "median_request_kmh": 7.684,
+          "largest_request_drop_kmh": 2.076,
+          "drop_frame": 514,
+          "peak_half_second_decel_mps2": 3.077,
+          "below_10_kmh_seconds": 4.0
+        }
+      ],
+      "same_station_speeds": {
+        "-10.0": {
+          "first_frame": 439,
+          "second_frame": 440,
+          "time_s": 9.086,
+          "actual_kmh": 13.103,
+          "applied_target_kmh": 13.028,
+          "next_target_kmh": 13.022
+        },
+        "0.0": {
+          "first_frame": 468,
+          "second_frame": 469,
+          "time_s": 11.9004,
+          "actual_kmh": 11.624,
+          "applied_target_kmh": 13.007,
+          "next_target_kmh": 13.673
+        },
+        "10.0": {
+          "first_frame": 493,
+          "second_frame": 494,
+          "time_s": 14.4191,
+          "actual_kmh": 15.609,
+          "applied_target_kmh": 17.496,
+          "next_target_kmh": 16.983
+        },
+        "15.0": {
+          "first_frame": 506,
+          "second_frame": 507,
+          "time_s": 15.7728,
+          "actual_kmh": 10.098,
+          "applied_target_kmh": 8.923,
+          "next_target_kmh": 8.02
+        }
+      },
+      "parked_horizontal_drift_m": 0.001,
+      "min_body_gap_m": 3.4313,
+      "last_body_gap_m": 3.4319,
+      "last_speed_mps": 0.0,
+      "held_3s": true,
+      "final_ego_station_m": 16.600393430921343,
+      "observed_obstacle_station_m": 25.04550958386261,
+      "passed": true
+    },
+    "actual_grade_activation_on_clear_hill": {
+      "grade_extent_m": 23,
+      "confirmed_grade_extent_m": 2,
+      "grade_added_request_mps": 0
+    },
+    "actual_grade_activation_with_parked_car": {
+      "grade_extent_m": 0,
+      "confirmed_grade_extent_m": 0,
+      "grade_added_request_mps": 0
+    },
+    "counterfactual_clear_ego_overlaps_parked_car_times_s": [
+      16.6,
+      16.7,
+      16.8,
+      16.9,
+      17.0,
+      17.1,
+      17.2,
+      17.3,
+      17.4,
+      17.5,
+      17.6,
+      17.7,
+      17.8,
+      17.9,
+      18.0,
+      18.1,
+      18.2,
+      18.3,
+      18.4
+    ],
+    "j1221_clear": {
+      "seconds": 17.2,
+      "positive_pavement_fits": {
+        "grade_extent_m": 54,
+        "confirmed_grade_extent_m": 43,
+        "grade_added_request_mps": 21
+      },
+      "exact_stations": {
+        "-11.37845": {
+          "first_frame": 1108,
+          "second_frame": 1109,
+          "time_s": 11.5543,
+          "actual_kmh": 25.194,
+          "applied_target_kmh": 29.07,
+          "next_target_kmh": 29.07
+        },
+        "-10.0": {
+          "first_frame": 1110,
+          "second_frame": 1111,
+          "time_s": 11.7479,
+          "actual_kmh": 25.99,
+          "applied_target_kmh": 29.07,
+          "next_target_kmh": 13.007
+        },
+        "-8.0": {
+          "first_frame": 1113,
+          "second_frame": 1114,
+          "time_s": 12.0363,
+          "actual_kmh": 23.676,
+          "applied_target_kmh": 13.007,
+          "next_target_kmh": 13.007
+        },
+        "-4.0": {
+          "first_frame": 1120,
+          "second_frame": 1121,
+          "time_s": 12.738,
+          "actual_kmh": 17.584,
+          "applied_target_kmh": 13.007,
+          "next_target_kmh": 13.94
+        },
+        "0.0": {
+          "first_frame": 1128,
+          "second_frame": 1129,
+          "time_s": 13.5995,
+          "actual_kmh": 17.541,
+          "applied_target_kmh": 20.468,
+          "next_target_kmh": 21.401
+        },
+        "4.0": {
+          "first_frame": 1136,
+          "second_frame": 1137,
+          "time_s": 14.3407,
+          "actual_kmh": 20.171,
+          "applied_target_kmh": 20.978,
+          "next_target_kmh": 21.42
+        }
+      },
+      "largest_drop_in_minus12_to_plus4_m": {
+        "frame": 1111,
+        "sim_time": 11.8,
+        "reason": "unconfirmed",
+        "station_m": -9.623917033032479,
+        "before_kmh": 29.07,
+        "after_kmh": 13.007
+      },
+      "most_negative_half_second_acceleration_mps2": -2.699
+    },
+    "j356_crossing": {
+      "counterfactual_min_body_gap_m": 0.0,
+      "counterfactual_overlap_s": [
+        11.2,
+        11.3,
+        11.4,
+        11.5,
+        11.6,
+        11.7,
+        11.8,
+        11.9
+      ],
+      "physical_min_body_gap_m": 4.666394802169614,
+      "collision_events": 0,
+      "crossing_body_in_ego_path_s": [
+        11.2,
+        13.4
+      ],
+      "ego_body_in_cross_path_s": [
+        18.0,
+        19.2
+      ],
+      "crossing_order": "traffic_first",
+      "post_encroachment_s": 4.4,
+      "near_miss": false,
+      "passed": true
+    },
+    "j1221_crossing": {
+      "counterfactual_min_body_gap_m": 0.0,
+      "counterfactual_overlap_s": [
+        12.9,
+        13.0,
+        13.1,
+        13.2,
+        13.3,
+        13.4,
+        13.5,
+        13.6,
+        13.7,
+        13.8,
+        13.9,
+        14.0,
+        14.1,
+        14.2
+      ],
+      "physical_min_body_gap_m": 4.809577509950568,
+      "collision_events": 0,
+      "crossing_body_in_ego_path_s": [
+        12.9,
+        14.8
+      ],
+      "ego_body_in_cross_path_s": [
+        19.5,
+        21.0
+      ],
+      "crossing_order": "traffic_first",
+      "post_encroachment_s": 4.5,
+      "near_miss": false,
+      "passed": true
+    },
+    "j1221_stops_short": {
+      "min_body_gap_m": 8.591486046819458,
+      "counterfactual_min_body_gap_m": 8.591474096469653,
+      "traffic_displacement_m": 7.06967428846372,
+      "traffic_occupancy": [],
+      "near_center_min_speed_kmh": 15.5268,
+      "passed": true
+    }
+  },
+  "r4_j1221_second_gate_camera_diagnosis": {
+    "raw_zip_key": "0118-1111/front.jpg",
+    "exported_jpeg_sha256": "a0eccbe7a12d50e5315e39e254aedb7b574ba3302acfdb3e57fc12cfd6c25688",
+    "native_binding": "unconfirmed",
+    "consecutive_confirmed_frames": [
+      3,
+      0,
+      0,
+      1,
+      2,
+      3
+    ],
+    "native_frames": [
+      1110,
+      1111,
+      1112,
+      1113,
+      1114,
+      1115
+    ],
+    "frozen_detector_replay_on_archived_jpeg": {
+      "score": 0.3896232843399048,
+      "label": "person",
+      "relative_xyxy": [
+        0.0795876532793045,
+        0.3762874901294708,
+        0.11875078082084656,
+        0.5821713805198669
+      ],
+      "adjacent_fresh_frames_with_no_boxes": [
+        1109,
+        1113
+      ]
+    },
+    "limitation": "The box covers a roadside pole and facade in the clear-scene camera. The stored JPEG was recompressed before detector replay; original per-frame detector boxes were not saved."
+  }
+}
