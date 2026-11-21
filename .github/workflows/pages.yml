@@ -5,6 +5,7 @@ on:
     paths:
       - 'web/**'
       - 'results/behavior-v2/**'
+      - 'results/perception/rider-motion/*.mp4'
       - 'tools/prepare_pages_film.py'
       - 'assets/robotaxi/vehicle/meridian.glb'
       - 'assets/robotaxi/vehicle/meridian-studio.png'
@@ -49,6 +50,9 @@ jobs:
             sudo apt-get install -y ffmpeg
           fi
           python3 tools/prepare_pages_film.py
+      - name: Include the measured frame-by-frame comparison
+        if: ${{ hashFiles('results/perception/rider-motion/high-occluded-pedestrian-and-van.mp4') != '' }}
+        run: cp results/perception/rider-motion/high-occluded-pedestrian-and-van.mp4 web/media/frame-comparison.mp4
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web

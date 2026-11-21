@@ -13,9 +13,11 @@ def measure(folder):
         with gzip.open(folder/"trace.jsonl.gz", "rt", encoding="utf-8") as f:
             trace = [json.loads(line) for line in f]
     else:
-        manifest = json.loads((folder/"manifest.json").read_bytes())
+        staged = (folder/"capture.json").is_file()
+        manifest = json.loads((folder/("capture.json" if staged else "manifest.json")).read_bytes())
         summary = manifest["summary"]
-        trace = json.loads((folder/"telemetry.json").read_bytes())
+        telemetry = folder/"raw/telemetry.json" if staged else folder/"telemetry.json"
+        trace = json.loads(telemetry.read_bytes())
     speed = np.array([r["speed_mps"]*3.6 for r in trace])
     station = np.array([r["progress_m"] for r in trace])
     open_road = np.array([not r.get("active_event") and r["reference_gap_m"] >= 35. for r in trace])
@@ -57,18 +59,23 @@ def measure(folder):
                   inside_left_and_right_turns=stats(turns), whole_drive=stats(np.ones(len(trace), bool)),
                   events={e["kind"]: dict(handled=e["handled"], stopped=e["stopped_for_event"])
                           for e in summary["events"]})
+    limits = None
+    if all("posted_limit_kmh" in r for r in trace):
+        limits = np.asarray([r["posted_limit_kmh"] for r in trace], dtype=float)
     archive = folder/"observations.npz"
     if archive.is_file():
         with np.load(archive, allow_pickle=False) as data:
             if "posted_limit_kmh" in data.files:
                 np.testing.assert_array_equal(data["frame"], [r["frame"] for r in trace])
+                if limits is not None:
+                    np.testing.assert_allclose(data["posted_limit_kmh"], limits, atol=.01)
                 limits = data["posted_limit_kmh"]
-                result["native_limit_frames"] = {str(k): int((limits==k).sum()) for k in np.unique(limits)}
-                result["permissive_clear_straights"] = stats(open_road & (limits >= 35.))
-                result["max_request_above_posted_kmh"] = round(float(np.max(
-                    data["speed_request_mps"]*3.6-limits)), 3)
-                result["seconds_measured_above_posted_plus_1_kmh"] = round(
-                    int(np.count_nonzero(speed > limits+1.))*duration, 1)
+                result["max_request_above_posted_kmh"] = round(float(np.max(data["speed_request_mps"]*3.6-limits)), 3)
+    if limits is not None:
+        result["native_limit_frames"] = {str(v): int(np.sum(limits == v)) for v in np.unique(limits)}
+        result["permissive_clear_straights"] = stats(open_road & (limits >= 35.))
+        result["seconds_measured_above_posted_plus_1_kmh"] = round(
+            int(np.count_nonzero(speed > limits+1.))*duration, 1)
     return result
 
 

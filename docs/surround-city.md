@@ -6,7 +6,7 @@ The rider display and camera movies share the same CARLA frame clock. Select **F
 
 [Open-lane pass](https://yafi-s.github.io/ADO/?run=overtake-clear) · [Wait for adjacent traffic](https://yafi-s.github.io/ADO/?run=overtake-yield) · [Physical measurements and no-lead control](../results/tactical-pass/paired-4fppmp4k/summary.json)
 
-Both recordings place a slower moving car in the original lane on a Town03 boulevard with a broken lane line. The tactical model measures the lead's distance and motion and the front and rear gap in the passing lane using the roof lidar. A supervised model selects keep, yield or pass. Its labels come from synthetic counterfactual traffic rollouts that score progress and collision risk. The underlying city policy steers along the chosen lane preview.
+Both recordings place a slower moving car in the original lane on a Town03 boulevard with a broken lane line. The tactical model measures the lead's distance and motion and the front and rear gap in the passing lane using the roof lidar. A supervised model selects keep, yield or pass. Its labels come from synthetic counterfactual traffic rollouts that score progress and collision risk. The car steers along the chosen lane preview. Ordinary steering and pedal feedback are fitted from demonstrations. When the tactical classifier selects yield, a brake hold keeps the car in its source lane until it accepts the gap.
 
 - With a clear adjacent lane, ADO completed the overtake at 7.8 seconds with 1.535 m minimum lateral clearance.
 - With a car alongside, ADO yielded for 4.7 seconds. It committed at 8.6 seconds after that car's rear was 33.0 m ahead, and completed its pass at 15.9 seconds with 1.535 m minimum clearance.
