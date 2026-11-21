@@ -1,4 +1,5 @@
 import {readRevisionReport, revisionCohorts} from './benchmarks-v2.mjs';
+import {loadTrafficStudy} from './city-traffic.mjs';
 
 const policies = new Map([
   ['fusion', 'Learned sensor fusion'],
@@ -392,3 +393,4 @@ async function loadCityReview() {
   document.getElementById('city-review').hidden = false;
 }
 void loadCityReview().catch(() => {});
+void loadTrafficStudy().catch(() => {});
