@@ -185,6 +185,97 @@ class ShowcaseTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "decode mismatch"):
                     showcase.capture("trip", "High", "tiny", 75, 2668, root / "failed")
                 self.assertFalse((root / "failed").exists())
+            interrupted = root / "interrupted"
+            commit = showcase._commit_file
+            def block_front(source, target):
+                if target.name == "front.mp4":
+                    raise PermissionError("sharing violation")
+                commit(source, target)
+            with patch.object(showcase, "_commit_file", side_effect=block_front), patch.object(showcase, "sleep") as waits:
+                with self.assertRaisesRegex(RuntimeError, "--install-staged"):
+                    showcase.capture("trip", "High", "tiny", 75, 2668, interrupted)
+                self.assertEqual(waits.call_count, 4)
+            checkpoints = root / "out/showcase-captures"
+            stage, = [p.parent for p in checkpoints.glob("*/install.json")
+                      if json.loads(p.read_text())["output"] == str(interrupted.resolve())]
+            self.assertTrue((interrupted / "chase.mp4").is_file())
+            self.assertFalse((interrupted / "manifest.json").exists())
+            saved = json.loads((stage / "manifest.json").read_text())
+            for name, expected in saved["sha256"].items():
+                self.assertEqual(showcase.fingerprint(stage / name), expected)
+            with patch.object(showcase, "simulator", side_effect=AssertionError("Recovery launched CARLA")):
+                with patch.object(sys, "argv", ["showcase", "--install-staged", str(stage)]):
+                    showcase.main()
+                self.assertEqual(showcase.install_staged(stage), saved)
+            self.assertEqual((interrupted / "manifest.json").read_bytes(), (stage / "manifest.json").read_bytes())
+            (interrupted / "front.jpg").write_bytes(b"existing user file")
+            with self.assertRaisesRegex(RuntimeError, "modified data"):
+                showcase.install_staged(stage)
+            self.assertEqual((interrupted / "front.jpg").read_bytes(), b"existing user file")
+            original_sha = saved["sha256"]["front.jpg"]
+            self.assertEqual(showcase.fingerprint(stage / "front.jpg"), original_sha)
+
+    def test_transient_file_lock_retries_without_recopying_or_overwriting(self):
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "clip"
+            source.write_bytes(b"verified recording")
+            output = root / "output"
+            output.mkdir()
+            target = output / "clip"
+            commit = showcase._commit_file
+            calls = []
+            def transient(src, dest):
+                calls.append(src)
+                if len(calls) < 3:
+                    raise PermissionError("sharing violation")
+                commit(src, dest)
+            with patch.object(showcase, "_commit_file", side_effect=transient), patch.object(showcase, "sleep"):
+                showcase._install_file(source, target, showcase.fingerprint(source))
+            self.assertEqual(len(calls), 3)
+            self.assertEqual(len(set(calls)), 1)
+            self.assertEqual(source.read_bytes(), target.read_bytes())
+            def competing_install(src, dest):
+                dest.write_bytes(b"user-owned")
+                commit(src, dest)
+            collision = output / "another"
+            with patch.object(showcase, "_commit_file", side_effect=competing_install):
+                with self.assertRaises(FileExistsError):
+                    showcase._install_file(source, collision, showcase.fingerprint(source))
+            self.assertEqual(collision.read_bytes(), b"user-owned")
+
+    @unittest.skipUnless(os.name == "nt", "Windows directory sharing semantics")
+    def test_windows_sharing_handle_blocks_directory_rename_but_allows_verified_install(self):
+        import ctypes
+        from ctypes import wintypes
+
+        windows = ctypes.WinDLL("kernel32", use_last_error=True)
+        windows.CreateFileW.argtypes = (wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD, wintypes.LPVOID,
+                                        wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE)
+        windows.CreateFileW.restype = wintypes.HANDLE
+        windows.CloseHandle.argtypes = (wintypes.HANDLE,)
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            stage = root / "completed"
+            stage.mkdir()
+            for name in showcase.ARTIFACTS:
+                (stage / name).write_bytes(name.encode())
+            hashes = {name: showcase.fingerprint(stage / name) for name in showcase.ARTIFACTS}
+            showcase.write_json(stage / "manifest.json", {"sha256": hashes})
+            output = root / "public"
+            showcase.write_json(stage / "install.json", dict(output=str(output.resolve()),
+                                manifest_sha256=showcase.fingerprint(stage / "manifest.json")))
+            # A reader holds the directory open with FILE_SHARE_READ|WRITE but no FILE_SHARE_DELETE.
+            handle = windows.CreateFileW(str(stage), 0x80000000, 3, None, 3, 0x02000000, None)
+            if handle == wintypes.HANDLE(-1).value:
+                raise ctypes.WinError(ctypes.get_last_error())
+            try:
+                with self.assertRaises(PermissionError):
+                    stage.rename(output)
+                self.assertEqual(showcase.install_staged(stage)["sha256"], hashes)
+                self.assertEqual((output / "manifest.json").read_bytes(), (stage / "manifest.json").read_bytes())
+            finally:
+                windows.CloseHandle(handle)
 
     def test_perception_sink_refuses_a_different_world_tick(self):
         observer = SimpleNamespace(rows=[{"camera_frame": 330}])

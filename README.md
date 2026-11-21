@@ -1,5 +1,11 @@
 # ADO — Autonomous Driver Omniverse
 
+[Windows build and checksums](https://github.com/yafi-s/ADO/releases/tag/v0.1.0) · [Scored results and résumé evidence](docs/results.md) · [Real Waymo training on Colab](https://github.com/yafi-s/ADO/tree/research/waymo-e2e/waymo_training)
+
+The CARLA-trained policy completed 72 of 100 held-out drives. Seventy finished cleanly. The other outcomes included 17 timeouts, nine lane departures and two collisions. The downloadable logs include all trials. The 1080p Market film re-renders a recorded 184 m drive that stopped for a pedestrian and reached its destination. A separate High-quality pedestrian drive ran the learned policy closed-loop.
+
+ADO also has a separate research track that trains original trajectory models on three camera views from the real Waymo Open Dataset using Google Colab. Its offline trajectory errors and simulator transfer checks are reported separately from this CARLA benchmark.
+
 A learned robotaxi driving through an interactive CARLA 1.0 city. Select a destination, watch the sensor feeds, then drive the same route with a pedestrian stepping into the street a second later. The study focuses on ordinary urban interactions including crossings, stopped vehicles, signals, following traffic and left turns.
 
 [Watch the perception display](https://yafi-s.github.io/ADO/) · [Builds and run logs](https://yafi-s.github.io/ADO/builds.html) · [3D city observer](https://yafi-s.github.io/ADO/city.html) · [Waymo Jaguar I-PACE model](https://yafi-s.github.io/ADO/vehicle.html?model=ipace) · [Benchmark design](docs/city-study.md) · [Research and asset credits](docs/research.md)
