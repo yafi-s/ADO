@@ -25,6 +25,7 @@ RELEASE_FILMS = {
 LARGE_RECORDINGS = ("urban-pace", "surround-city", "long-city-drive")
 SITE_LIMIT = 1_000_000_000
 SITE_RESERVE = 1_000_000
+MAX_RELEASE_ASSET_BYTES = 2 * 1024**3
 # Keep at least the bit budget of the previous Pages film for the archived Urban Pace chase.
 URBAN_CHASE_BUDGET = 108_000_000
 CITY_LIFE_CHASE_BUDGET = 125_000_000
@@ -277,7 +278,7 @@ def stage_chase(web, build, tag, *, budget=None, archive_revision=None, require_
     if sha256(compact) != compact_digest:
         raise ValueError("Committed chase film differs from its capture manifest")
     if require_1080 and ((master["width"], master["height"]) != (1920, 1080)
-                         or not 0 < master["file_bytes"] < 2_000_000_000
+                         or not 0 < master["file_bytes"] < MAX_RELEASE_ASSET_BYTES
                          or not re.fullmatch(r"[0-9a-f]{64}", master["sha256"])):
         raise ValueError(f"Wrong native 1080p chase master at {manifest_path}")
     if (master["sha256"] == compact_digest

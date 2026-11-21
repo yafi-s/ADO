@@ -208,6 +208,16 @@ class WindowsReleaseTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Wrong surround master SHA-256"):
                 release.stage_release_master(source, package.fp, target)
 
+    def test_master_size_limit_is_strictly_below_two_gibibytes(self):
+        limit = 2**31
+        master = dict(path="master/chase.mp4", width=1920, height=1080, file_bytes=limit - 1,
+                      sha256="a" * 64, nb_read_frames="1", codec_name="h264", pix_fmt="yuv420p", r_frame_rate="10/1")
+        capture = dict(summary=dict(frames=1), master=dict(chase=master))
+        release.verify_master_metadata(capture)
+        master["file_bytes"] = limit
+        with self.assertRaisesRegex(ValueError, "Wrong surround master metadata"):
+            release.verify_master_metadata(capture)
+
     @patch.object(release, "verify_video")
     def test_pace_film_verifies_eleven_events_and_an_exact_replay_pack(self, verify_video):
         media, manifest, members = city_film(True, pace=True)
