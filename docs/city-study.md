@@ -8,7 +8,7 @@ Seeds 101 through 110 each run ten multisensor drives. The suite includes a pede
 
 Two of those seeds repeat all ten drives with a camera-only learned policy. A supplemental run delays the first Market trip's pedestrian by one second. The primary denominator is 100, the paired ablation denominator is 20, and the supplemental trip is reported separately. Repeated seeds on the same path measure variation in encounters and driving conditions. They do not each represent a new street.
 
-Training routes and evaluation routes use different Town01 road and junction IDs. Training uses seeds 11–16. Development drives use the training district and separate seeds 31–32. Model revisions can use development outcomes. Save the model digest and test schedule before starting the held-out drives. Preserve the entirety of a test round, including failed drives and stalled cars.
+Training routes and evaluation routes use different Town01_Opt road and junction IDs. Training uses seeds 11–16. The training archive stores each demonstration’s mapped centerline in world metres with the corresponding seed. Each policy runs nine development cases on each of seeds 31 and 32 in the training district, for 36 development drives. Model revisions can use these outcomes. Abrupt lead-vehicle braking first appears in the locked evaluation. Save the model digest and test schedule before starting the held-out drives. Preserve the entirety of a test round, including failed drives and stalled cars.
 
 ## What to count
 

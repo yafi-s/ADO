@@ -13,7 +13,7 @@ from crosswalk.world import ROUTE_METERS, Scenario, _angle, _routes, _scene_rout
 
 
 TOWN01_MAP = Path(os.environ.get("CARLA_TOWN01_XODR",
-    ".local/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town01.xodr"))
+    ".local/Town01_Opt-1.0.xodr"))
 
 
 def two_way_street():

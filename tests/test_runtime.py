@@ -25,7 +25,7 @@ class RuntimeTests(unittest.TestCase):
             executable = Path(root) / "CARLA" / "CarlaUnreal" / "Binaries" / platform / name
             executable.parent.mkdir(parents=True)
             executable.touch()
-            self.assertEqual(runtime._server_executable(), executable)
+            self.assertTrue(runtime._server_executable().samefile(executable))
             args = runtime._launch_args(executable, 2468, runtime.DEFAULT_QUALITY)
         self.assertEqual(args[:2], [str(executable), "/Game/Carla/Maps/Town01_Opt"])
         self.assertIn("-RenderOffScreen", args)

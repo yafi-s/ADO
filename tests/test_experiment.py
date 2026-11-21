@@ -53,6 +53,9 @@ class ExperimentTests(unittest.TestCase):
         self.assertEqual(len(demos), 48)
         self.assertEqual({t.district for t in demos}, {"train"})
         self.assertNotIn("braking", {t.kind for t in demos})
+        dev = list(ex.schedule("dev"))
+        self.assertEqual(len(dev), 36)
+        self.assertNotIn("braking", {t.kind for t in dev})
         self.assertTrue(all(a.isdisjoint(b) for a, b in zip(DISTRICTS["train"], DISTRICTS["heldout"])))
 
     def test_no_leak_through_subset_options(self):
@@ -75,7 +78,8 @@ class ExperimentTests(unittest.TestCase):
     def test_resume_requires_intact_evidence_and_retains_trial_failure(self):
         trial = next(ex.schedule("collect", [11]))
         fake = (dict(frames=2, outcome="collision", seed=11, scenario="pedestrian",
-                     policy="demonstrator", road_ids=[1], junction_ids=[]), [{"speed": 0}, {"speed": 1}],
+                     policy="demonstrator", road_ids=[1], junction_ids=[], route_xy=[[0, 1], [2, 3]]),
+                [{"speed": 0}, {"speed": 1}],
                 np.zeros((1, len(ex.FEATURE_NAMES)), dtype=np.float32), np.zeros((1, 3), dtype=np.float32))
         with TemporaryDirectory() as temp, patch.object(ex, "episode", return_value=fake) as episode:
             folder = Path(temp)
@@ -91,6 +95,17 @@ class ExperimentTests(unittest.TestCase):
             self.assertEqual(episode.call_count, 2)
             with np.load(folder / "samples.npz") as sample:
                 self.assertEqual(sample["seed"].tolist(), [11])
+
+    def test_bundle_rejects_development_route_geometry(self):
+        with TemporaryDirectory() as temp:
+            folder = Path(temp)
+            sample = folder / "samples.npz"
+            np.savez(sample, X=np.zeros((1, len(ex.FEATURE_NAMES))), y=np.zeros((1, 3)),
+                     episode=["31-left-demonstrator"], seed=[31], route_seed=31, route_xy=[[0, 0], [1, 1]],
+                     data_format=ex.DATA_FORMAT, producer=json.dumps(self.producer),
+                     render_profile=json.dumps(ex.sensors.render_profile()))
+            with self.assertRaisesRegex(ValueError, "Unexpected route seed"):
+                ex.bundle([sample], folder / "training.npz")
 
     def test_partial_fit_dev_gate_and_full_publication(self):
         class FakeRecording:
@@ -113,16 +128,28 @@ class ExperimentTests(unittest.TestCase):
             roads, _ = DISTRICTS[district]
             summary = dict(frames=2, outcome="complete", seed=seed, policy=policy, scenario=kind,
                            progress_m=5, road_ids=[min(roads)], junction_ids=[], yield_violations=int(kind == "left"))
+            if policy == "demonstrator":
+                count = 4 if kind == "trip" else 2
+                summary["route_xy"] = [[seed, i] for i in range(count)]
             return (summary, [{"t": 0}, {"t": 1}], np.zeros((1, len(ex.FEATURE_NAMES))), np.zeros((1, 3)))
 
-        def fit(data, weights, report, *, inputs):
+        def fit(data, weights, report, *, inputs, imitation_path):
             weights.write_bytes(b"test model")
+            imitation_path.write_bytes(b"imitation test model")
             ex.write_json(report, {})
 
         with TemporaryDirectory() as temp, patch.object(ex, "episode", side_effect=drive) as driver, \
                 patch.object(ex, "train", side_effect=fit), patch.object(ex.Model, "load"), \
                 patch.object(ex, "Recording", FakeRecording), patch("builtins.print"):
             root = Path(temp)
+            # The end-to-end fixture supplies its own trainer, simulator and source fingerprints.
+            src = root / "crosswalk"
+            src.mkdir()
+            for name in ("policy", "train", "steering_search"):
+                (src / f"{name}.py").write_text("# fixture\n")
+            mocked_project = patch.object(ex, "PROJECT", root)
+            mocked_project.start()
+            self.addCleanup(mocked_project.stop)
             base = root / "out/city/dataset"
             ex.collect(None, object(), base, [11])
             ex.fit_archive(root, base)
@@ -146,6 +173,13 @@ class ExperimentTests(unittest.TestCase):
             self.assertEqual(manifest["map"], "Town01_Opt")
             with np.load(root / "data/training.npz") as sample:
                 self.assertEqual(json.loads(str(sample["producer"])), self.producer)
+                self.assertTrue(np.array_equal(sample["route_seeds"], np.repeat(ex.TRAIN, 8)))
+                self.assertEqual(sample["route_lengths"].tolist(), ([2] * 7 + [4]) * 6)
+                routes = np.split(sample["route_xy"], np.cumsum(sample["route_lengths"])[:-1])
+                for route, seed in zip(routes, sample["route_seeds"]):
+                    self.assertTrue(np.all(route[:, 0] == seed))
+                    self.assertEqual(route[:, 1].tolist(), list(range(len(route))))
+            self.assertTrue((root / "models/fusion-imitation.npz").is_file())
             self.assertTrue((root / "web/media/trip-delayed/right.mp4").is_file())
             with gzip.open(root / "results/traces.jsonl.gz", "rt") as trace:
                 self.assertEqual(sum(1 for row in trace), 242)

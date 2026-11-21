@@ -38,8 +38,14 @@ function Assert-Base([string]$Root) {
 }
 
 Push-Location -LiteralPath $PSScriptRoot
+$setupLock = $null
 try {
     New-Item -Path $local -ItemType Directory -Force | Out-Null
+    try {
+        $setupLock = [IO.File]::Open((Join-Path $local 'carla-1.0.setup.lock'), 'OpenOrCreate', 'ReadWrite', 'None')
+    } catch [IO.IOException] {
+        throw "Could not acquire the CARLA setup lock at $local. Another setup may be running. $($_.Exception.Message)"
+    }
     $python = Join-Path $PSScriptRoot '.venv-city/Scripts/python.exe'
     if (-not (Test-Path -LiteralPath $python -PathType Leaf)) {
         if (Test-Path -LiteralPath '.venv-city') { throw 'The existing .venv-city has no Python executable.' }
@@ -57,12 +63,12 @@ try {
     & $python -c 'import sys; sys.exit(sys.version_info[:2] != (3, 12) or sys.maxsize <= 2**32)'
     if ($LASTEXITCODE -ne 0) { throw 'The existing .venv-city must use 64-bit Python 3.12.' }
 
-    $root = if ($env:CARLA_ROOT) { (Resolve-Path -LiteralPath $env:CARLA_ROOT).Path } else { Join-Path $local 'carla-1.0' }
     if ($ClientOnly) {
         & $python tools/fetch_carla_client.py $local
         if ($LASTEXITCODE -ne 0) { throw 'Could not retrieve the CARLA 1.0 Python client.' }
         $wheel = Join-Path $local $wheelName
     } else {
+        $root = if ($env:CARLA_ROOT) { (Resolve-Path -LiteralPath $env:CARLA_ROOT).Path } else { Join-Path $local 'carla-1.0' }
         if (-not $env:CARLA_ROOT -and -not (Test-Path -LiteralPath $root)) {
             $archive = Get-ReleaseArchive $baseName 13919371161L
             $staging = Join-Path $local 'carla-1.0.staging'
@@ -97,5 +103,6 @@ try {
     if (-not $ClientOnly) { Write-Host "CARLA 1.0 and Town01_Opt are installed at $root." }
 }
 finally {
+    if ($setupLock) { $setupLock.Dispose() }
     Pop-Location
 }

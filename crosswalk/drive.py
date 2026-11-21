@@ -1,5 +1,6 @@
 """Drive an episode, stream synchronized cameras and optionally record a replay."""
 import argparse
+from collections import Counter
 from contextlib import ExitStack
 import json
 import math
@@ -67,7 +68,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
         stack.callback(rig.close)
         # Settle the suspension and prime the GPU cameras while all actors wait.
         for _ in range(8):
-            rig.read(world.tick())
+            warmup_frame = world.tick()
+            rig.read(warmup_frame)
         if grip != 1.0:
             if grip not in GRIP:
                 raise ValueError("Unknown wheel-grip factor")
@@ -80,7 +82,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 wheel.friction_force_multiplier = value
             physics.wheels = wheels
             scene.ego.apply_physics_control(physics)
-            rig.read(world.tick())
+            warmup_frame = world.tick()
+            rig.read(warmup_frame)
             measured = [w.friction_force_multiplier for w in scene.ego.get_physics_control().wheels]
             if not np.allclose(requested, measured):
                 raise RuntimeError("CARLA did not apply the requested wheel grip.")
@@ -127,7 +130,10 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             # Actor geometry below this line is only consulted for scoring.
             state = scene.metrics()
             gap = state["hazard_gap_m"]
-            contacts = rig.collisions()
+            received = rig.collisions()
+            if any(f <= warmup_frame for f, _ in received):
+                raise RuntimeError(f"Unscored spawn contact in {kind}/{seed}: {received}")
+            contacts = [(f, a) for f, a in received if warmup_frame < f <= frame]
             row = {
                 "frame": int(frame), "sim_time": round(step * DT, 2), "scenario": kind,
                 "seed": seed, "policy": policy, "map": map_name, "weather": scene.weather, "grip":grip,
@@ -169,9 +175,17 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
         # Read the next synchronized frame as a delivery barrier for asynchronous
         # collision notifications. Count events only through the final scored frame.
         rig.read(world.tick())
-        contacts = [(f, actor) for f, actor in rig.collisions() if f <= frame]
+        received = rig.collisions()
+        if any(f <= warmup_frame for f, _ in received):
+            raise RuntimeError(f"Late spawn contact in {kind}/{seed}: {received}")
+        contacts = [(f, actor) for f, actor in received if warmup_frame < f <= frame]
         if contacts:
             outcome = "collision"
+            by_frame = Counter(f for f, _ in contacts)
+            cumulative = 0
+            for record in trace:
+                cumulative += by_frame[record["frame"]]
+                record["collision_count"] = cumulative
         summary = dict(scenario=kind, seed=seed, policy=policy, weather=scene.weather, road_id=scene.road_id,
                        lane_id=scene.lane_id, start_xy=[round(scene.route[0].x, 2), round(scene.route[0].y, 2)],
                        outcome=outcome, frames=len(trace), duration_s=round(len(trace)*DT, 2),
@@ -193,6 +207,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                                               and r["progress_m"] > 2. for r in trace),
                        closest_in_path_speed_mps=min(trace, key=lambda r:r["reference_gap_m"])["speed_mps"],
                        wall_seconds=round(perf_counter()-start, 3))
+        if teacher is not None:
+            summary["route_xy"] = [[p.x, p.y] for p in scene.route]
         return summary, trace, np.asarray(data, np.float32), np.asarray(targets, np.float32)
 
 

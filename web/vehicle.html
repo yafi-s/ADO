@@ -18,7 +18,7 @@
     <model-viewer id="car" camera-controls touch-action="pan-y" interaction-prompt="none"
       shadow-intensity="0.85" environment-image="neutral" exposure="1.05"
       src="./vehicle-assets/meridian.glb" poster="./vehicle-assets/meridian-studio.png"
-      camera-orbit="54deg 72deg 7.1m" field-of-view="31deg" min-camera-orbit="auto 4deg 2.9m"
+      camera-orbit="54deg 72deg 8.6m" camera-target="0m 0.95m 0m" field-of-view="31deg" min-camera-orbit="auto 4deg 2.9m"
       max-camera-orbit="auto 91deg 11m" alt="White four-door Meridian robotaxi with roof lidar and three camera housings">
       <img src="./vehicle-assets/meridian-studio.png" slot="poster" alt="Studio render of the Meridian">
     </model-viewer>
@@ -32,8 +32,8 @@
   <script>
     const car = document.querySelector('#car');
     document.querySelector('#home').onclick = () => {
-      car.cameraOrbit = '54deg 72deg 7.1m';
-      car.cameraTarget = 'auto auto auto';
+      car.cameraOrbit = '54deg 72deg 8.6m';
+      car.cameraTarget = '0m 0.95m 0m';
       car.fieldOfView = '31deg';
     };
   </script>

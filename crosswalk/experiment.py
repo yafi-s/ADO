@@ -29,11 +29,12 @@ HELD_OUT = tuple(range(101, 111))
 TRAIN_KINDS = ("pedestrian", "lead", "occluded", "signal", "left", "turn", "clear", "trip")
 EVAL_KINDS = ("pedestrian", "pedestrian-delayed", "lead", "braking", "occluded",
               "signal", "left", "turn", "clear", "trip")
+DEV_KINDS = tuple(case for case in EVAL_KINDS if case != "braking")
 POLICIES = ("fusion", "camera")
 VIDEO_CASES = ("pedestrian", "occluded", "signal", "left", "trip", "trip-delayed")
 VIDEO_LABELS = dict(zip(VIDEO_CASES, ("Pedestrian crossing", "Occluded pedestrian", "Traffic signal",
                                       "Unprotected left turn", "Destination trip", "Destination trip · delayed crossing")))
-DATA_FORMAT = 2
+DATA_FORMAT = 3
 STAGES = ("collect", "fit", "dev", "evaluate", "all")
 
 
@@ -83,7 +84,7 @@ def schedule(stage, seeds=None):
     if not seeds or len(set(seeds)) != len(seeds) or not set(seeds) <= set(allowed):
         raise ValueError(f"Choose distinct {stage} seeds from {allowed}")
     for seed in seeds:
-        for case in TRAIN_KINDS if stage == "collect" else EVAL_KINDS:
+        for case in TRAIN_KINDS if stage == "collect" else DEV_KINDS:
             for policy in ("demonstrator",) if stage == "collect" else POLICIES:
                 yield Trial(seed, case, policy, "train", stage)
 
@@ -243,8 +244,13 @@ def run_trial(world, teacher, trial, folder, model=None, model_hash=None):
     if teacher is not None:
         if x.shape != (len(y), len(FEATURE_NAMES)) or y.shape != (len(x), len(ACTION_NAMES)) or not len(y):
             raise RuntimeError(f"Invalid demonstration arrays for {trial.trial_id}: {x.shape}, {y.shape}")
+        points = np.asarray(summary["route_xy"], dtype=np.float32)
+        if (points.ndim != 2 or points.shape[1] != 2 or len(points) < 2
+                or not np.isfinite(points).all() or not np.any(np.diff(points, axis=0))):
+            raise RuntimeError(f"Invalid demonstrated route geometry for {trial.trial_id}")
         save_arrays(folder / "samples.npz", X=x, y=y, episode=np.repeat(trial.trial_id, len(y)),
                     seed=np.full(len(y), trial.seed, dtype=np.int32), data_format=DATA_FORMAT,
+                    route_xy=points, route_seed=np.int32(trial.seed),
                     producer=json.dumps(producer, sort_keys=True), render_profile=json.dumps(profile, sort_keys=True))
         files.append("samples.npz")
     if trial.record:
@@ -267,6 +273,7 @@ def collect(world, tm, base, seeds):
 
 def bundle(files, path):
     arrays = {key: [] for key in ("X", "y", "episode", "seed")}
+    routes, seeds = [], []
     producer = None
     profile = sensors.render_profile()
     for file in files:
@@ -277,9 +284,17 @@ def bundle(files, path):
             if producer is not None and producer != observed:
                 raise ValueError(f"Mixed simulator producers in the demonstration set: {file}")
             producer = observed
+            route = records["route_xy"]
+            route_seed = int(records["route_seed"])
+            if route_seed not in TRAIN or not np.all(records["seed"] == route_seed):
+                raise ValueError(f"Unexpected route seed in training input: {file}")
+            routes.append(route)
+            seeds.append(route_seed)
             for key in arrays:
                 arrays[key].append(records[key])
     save_arrays(path, feature_names=FEATURE_NAMES, action_names=ACTION_NAMES,
+                route_xy=np.concatenate(routes), route_lengths=np.asarray([len(r) for r in routes], dtype=np.int32),
+                route_seeds=np.asarray(seeds, dtype=np.int32),
                 data_format=DATA_FORMAT, producer=json.dumps(producer, sort_keys=True),
                 render_profile=json.dumps(profile, sort_keys=True),
                 **{key: np.concatenate(values) for key, values in arrays.items()})
@@ -298,7 +313,7 @@ def fit_archive(root, base):
     if len(seeds) != len(TRAIN):
         print(f"Development fit on complete training seeds {seeds}; final evaluation requires all {TRAIN}", flush=True)
     src = PROJECT / "crosswalk"
-    source = {n: fingerprint(src / f"{n}.py") for n in ("policy", "train")}
+    source = {n: fingerprint(src / f"{n}.py") for n in ("policy", "train", "steering_search")}
     sample_hashes = {f.name: read_json(f / "checkpoint.json")["sha256"]["samples.npz"] for f in folders}
     fit_id = identity(dict(source=source, samples=sample_hashes, dataset_id=base.name))
     archive = base / "fits" / fit_id
@@ -308,8 +323,10 @@ def fit_archive(root, base):
         bundle([f / "samples.npz" for f in folders], combined)
         for policy in POLICIES:
             print(f"Fitting {policy} on {len(folders)} drives", flush=True)
-            train(combined, archive / f"{policy}.npz", archive / f"fit-{policy}.json", inputs=policy)
+            train(combined, archive / f"{policy}.npz", archive / f"fit-{policy}.json",
+                  inputs=policy, imitation_path=archive / f"{policy}-imitation.npz")
         files = ["training.npz"] + [f"{p}.npz" for p in POLICIES] + [f"fit-{p}.json" for p in POLICIES]
+        files.extend(f"{p}-imitation.npz" for p in POLICIES)
         write_json(archive / "checkpoint.json", {"sha256": {n: fingerprint(archive / n) for n in files}})
     hashes = read_json(archive / "checkpoint.json")["sha256"]
     with np.load(combined, allow_pickle=False) as records:
@@ -318,11 +335,13 @@ def fit_archive(root, base):
     provenance = dict(dataset_id=base.name, fit_id=fit_id, training_seeds=seeds, training_sources=source,
                       training_producer=producer, render_profile=profile, data_format=DATA_FORMAT,
                       training_samples=sample_hashes, training_data_sha256=hashes["training.npz"],
-                      model_sha256={p: hashes[f"{p}.npz"] for p in POLICIES})
+                      model_sha256={p: hashes[f"{p}.npz"] for p in POLICIES},
+                      imitation_sha256={p: hashes[f"{p}-imitation.npz"] for p in POLICIES})
     write_json(archive / "provenance.json", provenance)
     copy_atomic(combined, root / "data/training.npz")
     for p in POLICIES:
         copy_atomic(archive / f"{p}.npz", root / "models" / f"{p}.npz")
+        copy_atomic(archive / f"{p}-imitation.npz", root / "models" / f"{p}-imitation.npz")
         copy_atomic(archive / f"fit-{p}.json", root / "results" / f"fit-{p}.json")
     write_json(root / "results/collection.json", [read_json(f / "summary.json") for f in folders])
     write_json(root / "models/fit.json", provenance)
@@ -367,8 +386,8 @@ def evaluate(world, root, base, stage, seeds):
                     evaluation_id=version, source_sha256=source, python_version=platform.python_version(),
                     numpy_version=np.__version__, opencv_version=cv2.__version__, demonstration_seeds=fit["training_seeds"],
                     test_seeds=sorted({t.seed for t in trials}), training_encounters=TRAIN_KINDS,
-                    held_out_encounter_family="braking" if stage == "evaluate" else None,
-                    test_encounters=EVAL_KINDS, policies=POLICIES, stage=stage,
+                    held_out_encounter_family="braking",
+                    test_encounters=EVAL_KINDS if stage == "evaluate" else DEV_KINDS, policies=POLICIES, stage=stage,
                     plan=[dict(**asdict(t), trial_id=t.trial_id, settings=t.settings, replay=t.record) for t in trials])
     write_json(runs / "protocol.json", manifest)
     episodes, traces, recordings = [], [], []
