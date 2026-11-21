@@ -21,12 +21,20 @@ jobs:
       - name: Verify the town geometry for offline route tests
         shell: pwsh
         run: |
-          $fixture = '.local/Town01_Opt-1.0.xodr'
-          $source = 'https://raw.githubusercontent.com/BerkeleyLearnVerify/Scenic/979b09e10c2d119cd47f75115740b65f4f7e9999/assets/maps/CARLA/Town01.xodr'
-          Invoke-WebRequest $source -OutFile $fixture
-          if ((Get-FileHash $fixture).Hash -ne '97A7F6AC67812567E5C8EE0599CD823B23F80F30F3F97C502212E38B72E2B709') {
-            throw 'The road network differs from the CARLA 1.0 AdditionalMaps release.'
+          $hashes = @{
+            Town01 = '97A7F6AC67812567E5C8EE0599CD823B23F80F30F3F97C502212E38B72E2B709'
+            Town03 = 'ABF177BCD9B66CFEFB7AC4919F6456815F1384F4229F1343C8A6A90BBB7713C9'
+          }
+          foreach ($town in $hashes.Keys) {
+            $fixture = ".local/${town}_Opt-1.0.xodr"
+            $source = "https://raw.githubusercontent.com/BerkeleyLearnVerify/Scenic/979b09e10c2d119cd47f75115740b65f4f7e9999/assets/maps/CARLA/${town}.xodr"
+            Invoke-WebRequest $source -OutFile $fixture
+            if ((Get-FileHash $fixture).Hash -ne $hashes[$town]) {
+              throw "$town geometry differs from the CARLA 1.0 AdditionalMaps release."
+            }
           }
       - run: .\.venv-city\Scripts\python.exe -m unittest discover -s tests -v
         env:
           OPENBLAS_NUM_THREADS: '1'
+          CARLA_TOWN01_XODR: '.local/Town01_Opt-1.0.xodr'
+          CARLA_TOWN03_XODR: '.local/Town03_Opt-1.0.xodr'
