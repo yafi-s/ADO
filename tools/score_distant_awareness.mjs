@@ -52,12 +52,17 @@ const count=(stage,a,field)=>{
 const unmatched=(stage,box,frame,range=null)=>{
   (extras[stage]??={total:0,by_class:{}}).total++;
   const kinds=extras[stage].by_class;kinds[box.label]=(kinds[box.label]??0)+1;
-  if(values.examples)samples.push({stage,frame:frame.frame,label:box.label,box:box.box??null,range_m:range});
+  if(values.examples)samples.push({stage,frame:frame.frame,label:box.label,box:box.box??null,range_m:range,
+    ...(stage==='display'?{source_id:box.sourceId,id:box.id,xy:[box.x,box.y].map(v=>+v.toFixed(3)),status:box.status}: {})});
 };
 const stat=(a)=>actorsSeen.get(a.id);
 function hit(stage,a,frame,details){
   const row=stat(a), r=near(a);
   count(stage,a,'matched');
+  const interval=stage==='display'?1:2;
+  const runs=(row.match_runs[stage]??=[]);
+  if(runs.length&&runs.at(-1)[1]+interval===frame.frame)runs.at(-1)[1]=frame.frame;
+  else runs.push([frame.frame,frame.frame]);
   row.first[stage]??={frame:frame.frame,time_s:frame.sim_time,range_m:+r.toFixed(2),...details};
 }
 function scoreBoxes(stage,boxes,actors,frame){
@@ -86,7 +91,8 @@ const result=await audit(directory,{staticFile:reference,memoryRevision:values['
   const eligible=actors.filter(a=>roadUser(a.label)&&ahead(a))
     .map(a=>({...a,pixels:registered?registered[a.id]:projected(a,frame)})).filter(a=>a.pixels);
   for(const a of eligible){
-    if(!actorsSeen.has(a.id))actorsSeen.set(a.id,{id:a.id,role:a.role,label:a.label,first:{},first_reference_m:+near(a).toFixed(2),minimum_m:near(a)});
+    if(!actorsSeen.has(a.id))actorsSeen.set(a.id,{id:a.id,role:a.role,label:a.label,first:{},match_runs:{},
+      first_reference_m:+near(a).toFixed(2),minimum_m:near(a)});
     stat(a).minimum_m=Math.min(stat(a).minimum_m,near(a));
   }
   if(frame.camera_inference_age_s?.front===0){
@@ -119,7 +125,8 @@ const result=await audit(directory,{staticFile:reference,memoryRevision:values['
   for(const p of predictions)if(ahead(p)&&!found.has(p))unmatched('display',p,frame,+near(p).toFixed(2));
 }});
 const sha=path=>createHash('sha256').update(fs.readFileSync(path)).digest('hex');
-const report={schema:1,frames:result.frames,front_acquisitions:acquisitions,journal_sha256:result.sha256,
+const report={schema:1,frames:result.frames,first_frame:result.first_frame,last_frame:result.last_frame,
+  front_acquisitions:acquisitions,journal_sha256:result.sha256,
   registered_parked_sha256:sha(reference),memory_sha256_lf:result.memory_sha256_lf,paired_optics_sha256:values.paired?sha(values.paired):null,
   method:'Front camera sector, reference center within 100 m and projected body in image; geometric opportunities include occluded actors. Optical requires exact class and one-to-one projected-box IoU >= 0.25. Unmatched optical boxes have no assigned distance. 3D requires exact class, >=0.5 opacity and a unique center within 3 m. Distances are horizontal ego-to-reference-center range.',
   projection:registration?{sha256:sha(values.projection),telemetry_sha256:registration.telemetry_sha256,

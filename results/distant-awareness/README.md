@@ -32,7 +32,11 @@ On the corrected city drive, the first accurate van symbol at **76.66 m** remain
 
 ## Reproduction
 
-The complete rider screen was also exercised through its normal replay picker, video clock and default front camera. These screenshots have no evaluation overlay. [Van at 61.55 m](high-laptop/home-2471.jpg) · [Lead car at 49.83 m](high-laptop/home-3452.jpg) · [Sidewalk pedestrian at 26.81 m](high-laptop/home-3975.jpg)
+The complete rider screen was also exercised through its normal replay picker, video clock and default front camera. At frame 2424 the original detector sees the van **78.59 m** away. The inset labels the optical box **Car · camera only**, 4.7 seconds before the first correctly located 3D symbol. These screenshots have no evaluation overlay. [78.59 m camera-only cue](high-laptop/home-2424.jpg) · [Van at 61.55 m](high-laptop/home-2471.jpg) · [Lead car at 49.83 m](high-laptop/home-3452.jpg) · [Sidewalk pedestrian at 26.81 m](high-laptop/home-3975.jpg)
+
+The result files include consecutive frame intervals for every matched actor. Comparing those exact actor/frame pairs yields **41 optical gains and zero losses** and **18 accurate 3D gains and zero losses** on High.
+
+On a separate earlier High recording, the display gained 18 correctly matched object/frame pairs and lost one background-car pair at frame 1201. Unmatched forward symbols increased from 322 to 323. The clear and occupied adjacent-lane overtaking controls retained all 58 and 218 correct pairs respectively, with zero unmatched forward symbols on either recording. [Independent recording controls](control-recordings.json)
 
 The scorer runs the display on calibrated sensors, road geometry and ego odometry, then reads actor references. Optical matches need the correct class and one-to-one intersection-over-union of at least 0.25 with the projected reference body. The calibrated front mount and frame-synchronized six-axis ego pose register the image. This historical drive supplies actor yaw plus independently calibrated body offsets where available. Some historical actors lack a calibrated box, and the scorer uses their reported origin and extent. A marginal projection can miss a true image detection. For 3D, the symbol needs at least half opacity, the correct class, and a one-to-one reference center within 3 m on the ground plane. Distances are horizontal ego-to-reference-center distances. First sightings are chronological within the recorded encounter. This study has no human observer baseline. [Baseline results](high-before.json) · [Candidate results, per-class bands and every encounter](high-after.json)
 
@@ -41,6 +45,7 @@ The High journal SHA-256 is `035769ea010f15e5b89f4d1a376d5d009a8182ef7fa00fac559
 ```powershell
 $capture = 'out/journey-captures/long-city-drive-nxksaiij/raw'
 $review = 'web/media/urban-pace/barrier-review.json'
+New-Item -ItemType Directory -Force out/distant-awareness | Out-Null
 python tools/replay_distant_optics.py $capture out/distant-awareness/front-replay.jsonl
 python tools/project_distant_reference.py $capture out/distant-awareness/registration.json
 node tools/score_distant_awareness.mjs $capture out/distant-awareness/before.json --memory-revision 251ae057 --review $review --projection out/distant-awareness/registration.json
