@@ -5,12 +5,14 @@
 The city driver learned speed responses from CARLA sensor observations and training demonstrations. The Market route was used for development, and navigation supplied the path around the bus. The car steered and controlled its pedals throughout the recorded drive. Performance on unfamiliar streets is measured separately in the Town01 comparison. [City model and Colab fit](models/city-v1/README.md) · [Training failures and corrections](results/city-development/README.md) · [Held-out protocol](docs/behavior-v2-protocol.md)
 
 
+**Held-out Town01 comparison.** The revised sensor-fusion policy finished **47 of 50 fresh matched drives cleanly**, compared with **32 of 50** for the original policy. Both arms used the same 24 route layouts. The revised driver completed all 50 routes and recorded three yield breaches and zero contacts. On the original 100 published cases it achieved **97 clean finishes**, compared with 70 for v0.1. All 200 new drive traces are included. [Browse outcomes by case and seed](https://yafi-s.github.io/ADO/benchmarks.html) · [Verification, failures and résumé evidence](results/behavior-v2/README.md)
+
 **Real-data research track.** ADO's original three-camera trajectory model was trained on the Waymo Open Dataset using a Colab T4. It achieved 1.81 m mean open-loop displacement error, compared with 2.98 m for constant velocity and 1.78 m for history and route intent alone. The first two simulator transfer configurations did not complete a route. [Research results](waymo_training/RESULTS.md) · [Open the Colab notebook](https://colab.research.google.com/github/yafi-s/ADO/blob/main/waymo_training/ADO_Waymo_Colab.ipynb) · [Watch the labeled stopped-car trial](https://yafi-s.github.io/ADO/?run=waymo-research-v2-lead-seed41-start3)
 
 
 [Windows build and checksums](https://github.com/yafi-s/ADO/releases/latest) · [Windows setup and offline replay](docs/release.md) · [Scored results](docs/results.md) · [Real Waymo training on Colab](waymo_training/README.md)
 
-The CARLA-trained policy completed 72 of 100 held-out drives. Seventy finished cleanly. The other outcomes included 17 timeouts, nine lane departures and two collisions. The downloadable logs include all trials. The 1080p Market film re-renders a recorded 184 m drive that stopped for a pedestrian and reached its destination. A separate High-quality pedestrian drive ran the learned policy closed-loop.
+The original v0.1 CARLA-trained policy completed 72 of 100 held-out drives. Seventy finished cleanly. The other outcomes included 17 timeouts, nine lane departures and two collisions. The downloadable logs include all trials. The 1080p Market film re-renders a recorded 184 m drive that stopped for a pedestrian and reached its destination. A separate High-quality pedestrian drive ran the learned policy closed-loop.
 
 ADO also has a separate research track that trains original trajectory models on three camera views from the real Waymo Open Dataset using Google Colab. Its offline trajectory errors and simulator transfer checks are reported separately from this CARLA benchmark.
 
@@ -18,7 +20,7 @@ A learned robotaxi driving through an interactive CARLA 1.0 city. Select a desti
 
 [Watch the perception display](https://yafi-s.github.io/ADO/) · [Builds and run logs](https://yafi-s.github.io/ADO/builds.html) · [3D city observer](https://yafi-s.github.io/ADO/city.html) · [Waymo Jaguar I-PACE model](https://yafi-s.github.io/ADO/vehicle.html?model=ipace) · [Benchmark design](docs/city-study.md) · [Research and asset credits](docs/research.md)
 
-[![ADO showing a real recorded CARLA crossing, measured sensor tracks and the native camera feed](docs/media/ado-perception.png)](https://yafi-s.github.io/ADO/)
+[![ADO tracking a bus beside its planned route, with a synchronized native CARLA camera inset](docs/media/town03-perception.png)](https://yafi-s.github.io/ADO/?run=long-city-drive&at=212)
 
 ## Drive a route
 
@@ -28,7 +30,7 @@ On Windows, install Python 3.12 and extract the release ZIP or clone the reposit
 powershell -ExecutionPolicy Bypass -File .\setup.ps1
 ```
 
-**Start-ADO.cmd** verifies the installation. **Watch-Live.cmd** starts an offscreen simulator and opens the driving console after local setup and model fitting. Choose Market or Station for a two-intersection trip, or select an individual encounter. Choose a weather preset or a wheel grip setting, keep the seed fixed and change pedestrian entry timing. Press Ctrl+C in the launcher window to stop the simulator. The public site hosts synchronized recordings. The local program runs new drives.
+**Watch-City.cmd** opens the learned Town03 Market drive with a live perception display. **Start-ADO.cmd** verifies the installation. **Watch-Live.cmd** starts an offscreen simulator and opens the driving console after local setup and model fitting. Choose Market or Station for a two-intersection trip, or select an individual encounter. Choose a weather preset or a wheel grip setting, keep the seed fixed and change pedestrian entry timing. Press Ctrl+C in the launcher window to stop the simulator. The public site hosts synchronized recordings. The local program runs new drives.
 
 See the [Town03 city drive](docs/city-driving.md) for the longer route and its ten planned encounters. To watch recordings from the ZIP without running CARLA, use the [offline replay instructions](docs/release.md).
 

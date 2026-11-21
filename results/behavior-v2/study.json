@@ -1,0 +1,123 @@
+{
+  "study_id": "7443f94691e62373404f0915ef3020879a75e9e7ff25c023837cefe3c6653864",
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town01_Opt"
+  },
+  "physics": {
+    "synchronous_mode": true,
+    "no_rendering_mode": false,
+    "fixed_delta_seconds": 0.1,
+    "substepping": true,
+    "max_substeps": 10,
+    "max_substep_delta_time": 0.01,
+    "opendrive_sha256": "97a7f6ac67812567e5c8ee0599cd823b23f80f30f3f97c502212e38b72e2b709"
+  },
+  "render": {
+    "rgb": "mixed",
+    "rgb_screen_percentage": 50.0,
+    "camera_ray_tracing": false,
+    "ground_truth": "native"
+  },
+  "runtime": {
+    "python": "3.12.10",
+    "numpy": "2.4.2",
+    "opencv": "4.13.0"
+  },
+  "sources_sha256": {
+    "crosswalk/revision_benchmark.py": "b3b3c1376878e638bb9dcd17faa15e363c2ff4c7a84724cddd69bdc64fbbbb18",
+    "crosswalk/district.py": "9cda82c5f9e94337aa49d47c1203c9fe9e7f2c6743c678c09a45160ba2b145b9",
+    "crosswalk/sensors.py": "d19fbedf25f1b90ed064d097a25296c2c3bacd4aad5da8126afffb0188b211b7",
+    "crosswalk/drive.py": "fd176496c493ffed8328d246f8d3e208021fd051cfde2c29700cba13a754d61b",
+    "crosswalk/runtime.py": "4adfe36c062fb47ef278dd2a5631bf64e67631577282dcacbab99cbecb76a4f9",
+    "crosswalk/behavior_v2.py": "6a496b331b385eada2f0c2c0709914f2b856cb8bc97c0f1ea1128fbedf0b4c63",
+    "crosswalk/policy.py": "609dc843d6ea52f66301c441b943e75f691702ca502e64d390d95c613d45a907",
+    "crosswalk/robotaxi.py": "02c5fdf354827aef8a30d4216f9238834a540872923a5c5faf0405c24e0f1802",
+    "crosswalk/tracking.py": "044402169ddd34bb3e75ba391d2e171684d279f672009f8a17b5d37b3acb854e",
+    "crosswalk/thermal.py": "a97af4e9c2c56f33e92ccece01cc2d866ee60558c34601c56ef20f1a96621cc9",
+    "crosswalk/world.py": "d5ac4af996588e502b5222b0538e3cc7ebbce0da395fd8c53f81d25ecbe1790e",
+    "crosswalk/steering_search.py": "97840656afc5657d452a2dd3160151f1a7307b3438bd0fa5ddfc3d24ce218031",
+    "crosswalk/experiment.py": "b2a9f602464e157dd5ece6750dfe8e815e7dc26b097d8970e80450be86945ea0",
+    "crosswalk/report.py": "5d83b9fc3cf6ffaf7c04fea9b119893069fbefd403972ffb079c19ed0443e979",
+    "crosswalk/__init__.py": "590317093851e1344de8f7faa51a24f62685ee5f187f655a0aae308c9c773b05",
+    "crosswalk/train.py": "3e1918574c3814b8b3ed1fb842798d217fad60a81870c2cf3f5038b3ce2d3d9b",
+    "crosswalk/viewio.py": "abde90556dbbe31954e1ba0a138e203ef5540dbb1eefe550282f3bd974e65d8e",
+    "crosswalk/ambient.py": "bfd0b12adabd396dc9eed07ec02c39a34fcbe35e6ff419a8070f9eeea624aa65",
+    "crosswalk/lamp.py": "3110575e3eb89115fee4726556bb3aaaceba95d1587ea38643afec2c85e23ec7",
+    "crosswalk/signal_vision.py": "f03f29ff1a32c1bb28f12a78cba1a3ba4d92a31d42e1e65a5fdf448edea901b3",
+    "crosswalk/control.py": "dbbdc96268e8450f29a04f42b9b418bfdb2190e262e0d6e889fb31c893eee5c1",
+    "crosswalk/vision.py": "987ba3f37f7f49161bd41b761d21d5ad4e2fd9962ec0d0f54f7118a86bebed2b",
+    "data/signals/approach-gate.json": "59683cd2f611ba51372adb948233dc746d8de703fbe2edafd3555d4952d30d0e",
+    "vendor/nanodet/object_detection_nanodet_2022nov.onnx": "4b82da9944b88577175ee23a459dce2e26e6e4be573def65b1055dc2d9720186",
+    "models/fusion.npz": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "results/primary.json": "776d32b8d7167a368194e655e50292628e46dd4d67e509824e1fd7e69f1f7c2b",
+    "candidate/checkpoint.npz": "25b7059a6a559ece65e2c8c64ddc1197d95c763f008be9bb31797d69617b1a6c"
+  },
+  "cohorts": {
+    "fresh": {
+      "seeds": [
+        2111,
+        2112,
+        2113,
+        2114,
+        2115
+      ],
+      "verified_new_drives": 100,
+      "frame_counts": {
+        "candidate": 10468,
+        "baseline": 12329
+      },
+      "matched_pairs": 50,
+      "setup_mismatches": [],
+      "report_sha256": "498977657289304d113a8a6610b721942c5b6a6fb656a7f6734ce0370aa56867",
+      "case_file_digests_sha256": "dedf112d307f9c6104a25fc6b50b419919f9ebf2b71fd4ea72cafa62d83ad90e"
+    },
+    "regression": {
+      "seeds": [
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110
+      ],
+      "verified_new_drives": 100,
+      "frame_counts": {
+        "candidate": 21052
+      },
+      "matched_pairs": 100,
+      "setup_mismatches": [],
+      "report_sha256": "e55185dd4d907755595abbd351757c80381cce203f54c22ac98c6dc5b838bb49",
+      "case_file_digests_sha256": "e62aef8b79358b88a54c6ce090d987e9a1591e68172b96d7d5a167ac72ac6883"
+    }
+  },
+  "archive": {
+    "file": "closed-loop-evidence.zip",
+    "bytes": 6115585,
+    "sha256": "08b4288f26c4aaefca5b0522bbc093418d778d9f65a0b905f97fcd32c76ab0b5",
+    "verified_members": 643,
+    "new_trials": 200,
+    "historical_primary_trials": 100,
+    "new_frames": {
+      "regression": {
+        "new_drives": 100,
+        "frames": {
+          "candidate": 21052
+        }
+      },
+      "fresh": {
+        "new_drives": 100,
+        "frames": {
+          "candidate": 10468,
+          "baseline": 12329
+        }
+      }
+    },
+    "historical_primary_frames": 24199
+  }
+}

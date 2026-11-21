@@ -1,5 +1,8 @@
 # Town01_Opt driving results
 
+The following is the archived v0.1 evaluation. The v0.2 comparison reports 47/50 clean finishes against 32/50 on fresh matched cases, and 97/100 against the historical 70/100. The complete comparison archive includes every saved frame trace. [Read the v0.2 results](../results/behavior-v2/README.md) · [View comparisons by case](https://yafi-s.github.io/ADO/benchmarks.html)
+
+
 The fusion policy finished **70/100** primary trials cleanly in CARLA 1.0 on Town01_Opt. The primary suite exercised 10 cases across 10 seeds (101, 102, 103, 104, 105, 106, 107, 108, 109, 110). The scored ego vehicle made 6.35 km of route progress across 7.64 km of planned routes.
 
 The runtime recorded CARLA server version `1.0` and client version `1.0`. The training archive records server version `1.0`, client version `1.0` and map `Town01_Opt`.

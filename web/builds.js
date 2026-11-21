@@ -38,7 +38,7 @@ function renderBuild(build) {
   commitText.textContent = commit || '';
   detail('server-info', 'server-version', build.simulator?.server_version);
   detail('client-info', 'client-version', build.simulator?.client_version);
-  detail('map-info', 'simulator-map', build.simulator?.map);
+  detail('map-info', 'simulator-map', (Array.isArray(build.maps) ? build.maps.join(', ') : build.simulator?.map));
   setArtifactLink(byId('release-zip'), build.release?.zip_url);
   setArtifactLink(byId('release-link'), build.release?.url);
   setArtifactLink(byId('release-checksum'), build.release?.sha256_url);
