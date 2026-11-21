@@ -23,7 +23,7 @@ def exposure(x, camera_offset=0., rotation_offset=0.):
 
 class AlignmentTests(unittest.TestCase):
     def test_recover_install_with_original_data_preserved(self):
-        with TemporaryDirectory(dir=film.PROJECT/"out") as tmp:
+        with TemporaryDirectory() as tmp:
             stage, output = Path(tmp)/"staged", Path(tmp)/"published"
             stage.mkdir()
             output.mkdir()
