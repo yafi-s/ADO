@@ -6,18 +6,8 @@ from pathlib import Path
 
 import numpy as np
 
+from .steering_search import refine
 from .policy import ACTION_NAMES, FEATURE_NAMES, NAV_NAMES, Model, forward, head_columns, input_mask
-
-
-# CARLA's 1.0 ROS 2 bridge publishes steady-state measurements at ~3 m/s
-# for the UE5.8 Chaos MKZ. Use samples of this steering response as a prior.
-STEER_SOURCE = ("https://github.com/carla-simulator/carla/blob/1.0/LibCarla/source/"
-                "carla/ros2/AutowareSteeringCompensation.h")
-GEOMETRY_SOURCE = ("https://github.com/autowarefoundation/autoware_universe/blob/main/"
-                   "simulator/autoware_carla_interface/README.md")
-MKZ_WHEELBASE_M = 2.85
-MKZ_WHEEL_ANGLES_RAD = (0., .0495395, .188953, .381975, .559125, .628645)
-MKZ_NORMALIZED_STEER = (0., .05, .2, .4, .6, .7)
 
 
 def _balanced_weights(bins):
@@ -25,42 +15,6 @@ def _balanced_weights(bins):
     counts = np.bincount(bins)
     weights = 1.0 / np.sqrt(counts[bins])
     return (weights / weights.mean()).astype(np.float32)
-
-
-def _route_steering(route, speed):
-    """Training-only bicycle-model prior for the Chaos Lincoln MKZ.
-
-    The Autoware bridge's nominal wheelbase and midpoint convention locate the
-    rear axle. Convert curvature to a tire angle and interpolate CARLA's
-    published low-speed sweep; cap auxiliary targets at its measured range.
-    """
-    fraction = np.clip((3.8 + .28*speed - 3.) / 4., 0., 1.)
-    goal = route[:, 0, :] + (route[:, 1, :] - route[:, 0, :]) * fraction[:, None]
-    rear_to_goal = goal[:, 0] + MKZ_WHEELBASE_M / 2.
-    curvature = 2.*goal[:, 1] / np.maximum(rear_to_goal**2 + goal[:, 1]**2, .25)
-    angle = np.arctan(MKZ_WHEELBASE_M * curvature)
-    return np.sign(angle) * np.interp(np.abs(angle), MKZ_WHEEL_ANGLES_RAD, MKZ_NORMALIZED_STEER)
-
-
-def _augmented_steering(observations, actions, rng):
-    # Steering columns are ordered speed, x3, y3, x7, y7, x13, y13.
-    speed = observations[:, 0]
-    route = observations[:, 1:].reshape(-1, 3, 2)
-    reference = _route_steering(route, speed)
-    # TM can miss the intended intersection branch. Bound disagreement with
-    # its route, retaining its demonstrated control around attainable geometry.
-    measured = reference + np.clip(actions - reference, -.12, .12)
-    routes = [observations]
-    labels = [measured]
-    for _ in range(2):
-        lateral = rng.uniform(-1.7, 1.7, len(route))
-        yaw = np.deg2rad(rng.uniform(-16, 16, len(route)))
-        c, s = np.cos(yaw)[:, None], np.sin(yaw)[:, None]
-        dx, dy = route[:, :, 0], route[:, :, 1] - lateral[:, None]
-        moved = np.stack((dx*c + dy*s, -dx*s + dy*c), axis=2)
-        routes.append(np.column_stack((speed, moved.reshape(-1, 6))))
-        labels.append(_route_steering(moved, speed))
-    return np.concatenate(routes).astype(np.float32), np.concatenate(labels).astype(np.float32)
 
 
 def _drop_scenery(x, columns, rng):
@@ -104,7 +58,7 @@ def _fit_head(X, target, sample_weights, width, epochs, rng, scenery=()):
     return params
 
 
-def fit(X, y, *, inputs="fusion", epochs=100, seed=2026, route_augmentation=False):
+def fit(X, y, *, inputs="fusion", epochs=100, seed=2026):
     """Learn steering from local route and speed; learn pedal demand from perception and speed."""
     X = np.asarray(X, dtype=np.float32)
     y = np.asarray(y, dtype=np.float32)
@@ -119,8 +73,6 @@ def fit(X, y, *, inputs="fusion", epochs=100, seed=2026, route_augmentation=Fals
     steer_cols, drive_cols = head_columns(inputs)
     steer_x = X[:, steer_cols]
     steer_y = y[:, 0]
-    if route_augmentation:
-        steer_x, steer_y = _augmented_steering(steer_x, steer_y, np.random.default_rng(seed))
     # Reflection gives a paired example in the opposite direction. Only lateral
     # route coordinates and their steering labels change sign.
     mirror = np.asarray([-1 if FEATURE_NAMES[i] in NAV_NAMES and FEATURE_NAMES[i].endswith("_y_m")
@@ -191,7 +143,7 @@ def _holdout_report(model, X, y):
     return report
 
 
-def train(data_path, out_path, report_path=None, inputs="fusion", *, route_augmentation=True):
+def train(data_path, out_path, report_path=None, inputs="fusion", *, route_refinement=True, imitation_path=None):
     with np.load(data_path, allow_pickle=False) as records:
         X, y = records["X"], records["y"]
         if (X.ndim != 2 or X.shape[1] != len(FEATURE_NAMES)
@@ -201,20 +153,23 @@ def train(data_path, out_path, report_path=None, inputs="fusion", *, route_augme
         group_key = next((k for k in ("seed", "seeds", "episode", "episodes", "episode_ids", "episode_id")
                           if k in records), None)
         groups = records[group_key].reshape(-1) if group_key else None
+        routes, route_seeds = [], None
+        if route_refinement:
+            if not {"route_xy", "route_lengths", "route_seeds"} <= set(records.files):
+                raise ValueError("route search requires the recorded training route polylines, lengths and seeds")
+            points, lengths, route_seeds = (records[k] for k in ("route_xy", "route_lengths", "route_seeds"))
+            if (points.ndim != 2 or points.shape[1] != 2 or not np.isfinite(points).all()
+                    or lengths.ndim != 1 or lengths.dtype.kind not in "iu" or not lengths.size
+                    or np.any(lengths < 2) or lengths.sum() != len(points) or route_seeds.shape != lengths.shape
+                    or group_key not in ("seed", "seeds") or set(route_seeds) != set(groups)):
+                raise ValueError("training route polylines and observation seeds must agree")
+            routes = np.split(points, np.cumsum(lengths)[:-1])
     columns = head_columns(inputs)
     report = {"frames": len(y), "inputs": inputs, "outputs": list(ACTION_NAMES),
               "features": int(input_mask(inputs).sum()),
               "head_features": {head: [FEATURE_NAMES[i] for i in indices]
                                 for head, indices in zip(("steer", "drive"), columns)}}
-    report["steering_supervision"] = (
-        "Traffic Manager with bounded route disagreement, synthetic pose perturbations and bicycle-model "
-        "route targets (nominal MKZ geometry and published low-speed Chaos steering response)" if route_augmentation
-        else "Traffic Manager demonstrations and mirrored observations")
-    if route_augmentation:
-        report["steering_prior"] = {
-            "nominal_wheelbase_m": MKZ_WHEELBASE_M, "rear_axle_reference": "half wheelbase behind actor origin",
-            "geometry_source": GEOMETRY_SOURCE, "steering_response_source": STEER_SOURCE,
-            "upstream_calibration_speed_mps": 3., "maximum_auxiliary_steer": MKZ_NORMALIZED_STEER[-1]}
+    report["steering_supervision"] = "Original demonstrated steering and its left-right reflection"
     report["drive_supervision"] = "Traffic Manager throttle minus brake, weighted by action and stop state"
     if groups is not None:
         if len(groups) != len(y):
@@ -226,11 +181,21 @@ def train(data_path, out_path, report_path=None, inputs="fusion", *, route_augme
             held = np.random.default_rng(2026).permutation(unique)[:max(1, len(unique) // 5)]
             check = np.isin(groups, held)
             if (~check).sum() >= 2:
-                validation_model = fit(X[~check], y[~check], inputs=inputs, route_augmentation=route_augmentation)
+                validation_model = fit(X[~check], y[~check], inputs=inputs)
+                if route_refinement:
+                    withheld = np.isin(route_seeds, held)
+                    fit_routes = [r for r, keep in zip(routes, ~withheld) if keep]
+                    eval_routes = [r for r, keep in zip(routes, withheld) if keep]
+                    report["steering_search_seed_holdout"] = refine(
+                        validation_model, fit_routes, evaluation_routes=eval_routes)
                 report["development_holdout_before_final_refit"] = {
                     "held_groups": held.tolist(), **_holdout_report(validation_model, X[check], y[check]),
                 }
-    model = fit(X, y, inputs=inputs, route_augmentation=route_augmentation)
+    model = fit(X, y, inputs=inputs)
+    if imitation_path:
+        model.save(imitation_path)
+    if route_refinement:
+        report["steering_search_final_fit"] = refine(model, routes)
     model.save(out_path)
     report["final_model_fit_frames"] = len(y)
     report["training_action_ranges"] = {name: [float(y[:, i].min()), float(y[:, i].max())]
@@ -248,8 +213,11 @@ def main():
     parser.add_argument("--out", required=True, help="output neural policy NPZ")
     parser.add_argument("--inputs", choices=("fusion", "camera"), default="fusion")
     parser.add_argument("--report", help="optional training and development-holdout JSON")
+    parser.add_argument("--imitation-out", help="save the imitation-only control heads before steering search")
+    parser.add_argument("--imitation-only", action="store_true", help="fit only the demonstrated actions")
     args = parser.parse_args()
-    print(json.dumps(train(args.data, args.out, args.report, inputs=args.inputs), indent=2))
+    print(json.dumps(train(args.data, args.out, args.report, inputs=args.inputs,
+                           route_refinement=not args.imitation_only, imitation_path=args.imitation_out), indent=2))
 
 
 if __name__ == "__main__":

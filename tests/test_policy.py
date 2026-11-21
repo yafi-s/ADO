@@ -8,7 +8,10 @@ import numpy as np
 from crosswalk.policy import (BUMPER_X, FEATURE_NAMES, GRID_NAMES, LEGACY_FEATURE_NAMES, NAV_NAMES,
                               RADAR_X, Model, features, head_columns)
 from crosswalk.signal_vision import SIGNAL_NAMES, SIDE_NAMES, signal_candidates
-from crosswalk.train import _augmented_steering, _route_steering
+from unittest.mock import patch
+
+from crosswalk.steering_search import refine
+from crosswalk.train import _fit_head
 from crosswalk.train import fit, train
 from crosswalk.vision import VISION_NAMES
 
@@ -109,7 +112,7 @@ class LearningTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory)
             np.savez(path / "records.npz", X=X, y=y, seed=np.repeat(np.arange(6), n // 6))
-            report = train(path / "records.npz", path / "policy.npz", inputs="camera", route_augmentation=False)
+            report = train(path / "records.npz", path / "policy.npz", inputs="camera", route_refinement=False)
             model = Model.load(path / "policy.npz")
             self.assertEqual(model.inputs, "camera")
             held = report["development_holdout_before_final_refit"]
@@ -127,19 +130,55 @@ class LearningTest(unittest.TestCase):
             self.assertTrue(set(NAV_NAMES).issubset(report["head_features"]["steer"]))
             self.assertTrue(set(VISION_NAMES).issubset(report["head_features"]["drive"]))
 
-    def test_route_training_targets_recover_from_pose_errors(self):
-        route = np.tile(np.asarray(NAV).reshape(1, 3, 2), (3, 1, 1)).astype(float)
-        route[:, :, 1] += np.array([-1.2, 0., 1.2])[:, None]
-        speed = np.array([4., 4., 4.])
-        steering = _route_steering(route, speed)
-        self.assertLess(steering[0], -.08)
-        self.assertEqual(steering[1], 0.)
-        self.assertAlmostEqual(steering[0], -steering[2])
-        samples = np.column_stack((speed, route.reshape(3, -1)))
-        moved, actions = _augmented_steering(samples, -np.sign(steering), np.random.default_rng(1))
-        self.assertEqual(len(moved), 3*len(samples))
-        np.testing.assert_array_less(np.abs(actions[:3] - steering), .121)
-        self.assertGreater(np.abs(moved[3:] - np.tile(samples, (2, 1))).max(), 1)
+    def test_imitation_receives_exact_original_and_reflected_controls(self):
+        X = np.tile(features(IMAGE, EMPTY, EMPTY, 3., navigation=NAV, side_views=SIDES), (8, 1))
+        # Deliberately inconsistent with the straight centerline.
+        steer = np.array([-.9, .8, -.2, .75, -.6, .05, .3, -.09], dtype=np.float32)
+        y = np.column_stack((steer, np.ones(8), np.zeros(8))).astype(np.float32)
+        original = y.copy()
+        with patch("crosswalk.train._fit_head", wraps=_fit_head) as heads:
+            fit(X, y, epochs=1)
+        np.testing.assert_array_equal(heads.call_args_list[0].args[1], np.r_[steer, -steer])
+        np.testing.assert_array_equal(y, original)
+
+    def test_search_changes_only_neural_steering_and_scores_withheld_geometry(self):
+        X = np.tile(features(IMAGE, EMPTY, EMPTY, 3., navigation=NAV, side_views=SIDES), (8, 1))
+        X[:, NAV_COLS[1::2]] = np.arange(8)[:, None] / 10.
+        y = np.tile([.45, .6, 0.], (8, 1))
+        model = fit(X, y, epochs=2)
+        pedal = [v.copy() for v in model.heads[1]]
+        hidden = model.heads[0][0].copy()
+        t = np.arange(0., 75.)
+        paths = [np.column_stack((t, .007*t**2)), np.column_stack((t, -.007*t**2))]
+        dev = [np.column_stack((t, .01*t**2))]
+        with patch("crosswalk.steering_search.POPULATION", 12), patch("crosswalk.steering_search.GENERATIONS", 3):
+            report = refine(model, paths, evaluation_routes=dev)
+        self.assertEqual(report["demonstration_route_count"], 2)
+        training = report["training_kinematic_rollouts"]
+        self.assertLessEqual(training["after_search"]["objective"], training["imitation_only"]["objective"])
+        self.assertGreater(report["withheld_kinematic_rollouts"]["windows"], 0)
+        np.testing.assert_equal(hidden, model.heads[0][0])
+        for original, actual in zip(pedal, model.heads[1]):
+            np.testing.assert_equal(original, actual)
+
+    def test_route_split_keeps_validation_seeds_out_of_search_and_saves_baseline(self):
+        X = np.tile(features(IMAGE, EMPTY, EMPTY, 3., navigation=NAV, side_views=SIDES), (16, 1))
+        y = np.tile([.04, .6, 0.], (16, 1))
+        seeds = np.repeat([11, 12], 8)
+        t = np.arange(70.)
+        routes = [np.column_stack((t, t**2*k)) for k in (-.007, .007)]
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            data = folder / "data.npz"
+            np.savez(data, X=X, y=y, seed=seeds, route_xy=np.concatenate(routes),
+                     route_seeds=[11, 12], route_lengths=[70, 70])
+            with patch("crosswalk.steering_search.POPULATION", 12), patch("crosswalk.steering_search.GENERATIONS", 2):
+                report = train(data, folder / "final.npz", imitation_path=folder / "baseline.npz")
+            self.assertEqual(report["steering_search_seed_holdout"]["demonstration_route_count"], 1)
+            self.assertEqual(report["steering_search_final_fit"]["demonstration_route_count"], 2)
+            final = Model.load(folder / "final.npz")
+            baseline = Model.load(folder / "baseline.npz")
+            np.testing.assert_equal(final.predict_batch(X)[:, 1:], baseline.predict_batch(X)[:, 1:])
 
     def test_legacy_observations_are_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
