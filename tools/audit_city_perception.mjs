@@ -242,7 +242,7 @@ export async function audit(directory,{memoryRevision,memoryFile:sourceFile,fram
       const input={frame:frame.frame,sim_time,video_time,seed,run_id,scenario,tracks,detections,
         camera_detections,lidar,radar,corner_radar,perception_version,observer_map:{ego,ego_z}};
       context=contextOf(input,context);
-      const display=advance(state,context,deps).map(p=>({id:p.key,label:p.label,...localPose(p.x,p.z,ego),
+      const display=advance(state,context,deps).map(p=>({id:p.key,sourceId:p.sourceId,label:p.label,...localPose(p.x,p.z,ego),
         world:[p.x,p.z],foot:p.y,heading:p.heading,dimensions:[p.length,p.height,p.width],opacity:p.opacity,
         status:p.held?'remembered':'current'}));
       const actors=observerActors(frame,frame.observer_map.others,onFrame?60:limit);

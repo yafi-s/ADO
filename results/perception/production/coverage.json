@@ -1,0 +1,1561 @@
+{
+  "input": "perception.jsonl",
+  "source_bytes": 74308589,
+  "partial_tail_ignored": false,
+  "sha256": "279f73769def7acc602af9e5cffa664df4b0b23c23fcd563acdd284d86ca1813",
+  "town_sha256": "ad7db3ded5e31a8ffb463c1498625ac0a0e35e9f4746f8cbc9113134c6b31e63",
+  "memory_sha256_lf": "ab4afd7f1b069bbeb9aaa58ec4293f9ccd00f49b59a2f03e24c2026cd2ce6f91",
+  "frames": 3173,
+  "first_frame": 727,
+  "last_frame": 3899,
+  "radius_m": 35,
+  "match_gate_m": 3,
+  "tracker": {
+    "overall": {
+      "actor_frames": 2883,
+      "matched": 1717,
+      "exact_label_hits": 1650,
+      "prediction_frames": 3450,
+      "unmatched_predictions": 1730
+    },
+    "sector": {
+      "front": {
+        "actor_frames": 1447,
+        "matched": 998,
+        "exact_label_hits": 980,
+        "prediction_frames": 1477,
+        "unmatched_predictions": 482
+      },
+      "left": {
+        "actor_frames": 253,
+        "matched": 129,
+        "exact_label_hits": 129,
+        "prediction_frames": 405,
+        "unmatched_predictions": 279
+      },
+      "right": {
+        "actor_frames": 310,
+        "matched": 199,
+        "exact_label_hits": 195,
+        "prediction_frames": 791,
+        "unmatched_predictions": 595
+      },
+      "rear": {
+        "actor_frames": 873,
+        "matched": 391,
+        "exact_label_hits": 346,
+        "prediction_frames": 777,
+        "unmatched_predictions": 374
+      }
+    },
+    "by_class": {
+      "pedestrian": {
+        "actor_frames": 1374,
+        "matched": 684,
+        "exact_label_hits": 684
+      },
+      "van": {
+        "actor_frames": 158,
+        "matched": 158,
+        "exact_label_hits": 142
+      },
+      "car": {
+        "actor_frames": 962,
+        "matched": 748,
+        "exact_label_hits": 748
+      },
+      "bus": {
+        "actor_frames": 150,
+        "matched": 127,
+        "exact_label_hits": 76
+      },
+      "cyclist": {
+        "actor_frames": 239,
+        "matched": 0,
+        "exact_label_hits": 0
+      }
+    },
+    "by_status": {
+      "measured": {
+        "prediction_frames": 2021,
+        "unmatched_predictions": 735
+      },
+      "coasting": {
+        "prediction_frames": 1429,
+        "unmatched_predictions": 995
+      }
+    },
+    "by_measuring_camera": {
+      "front": {
+        "prediction_frames": 521,
+        "unmatched_predictions": 117
+      },
+      "right": {
+        "prediction_frames": 108,
+        "unmatched_predictions": 43
+      },
+      "left": {
+        "prediction_frames": 81,
+        "unmatched_predictions": 29
+      },
+      "rear_left": {
+        "prediction_frames": 69,
+        "unmatched_predictions": 16
+      },
+      "rear_right": {
+        "prediction_frames": 107,
+        "unmatched_predictions": 51
+      }
+    },
+    "by_sensor": {
+      "lidar+radar+rgb": {
+        "prediction_frames": 829,
+        "unmatched_predictions": 241
+      },
+      "lidar+radar": {
+        "prediction_frames": 1096,
+        "unmatched_predictions": 441
+      },
+      "lidar": {
+        "prediction_frames": 65,
+        "unmatched_predictions": 40
+      },
+      "lidar+rgb": {
+        "prediction_frames": 31,
+        "unmatched_predictions": 13
+      }
+    },
+    "position_only": {
+      "actor_frames": 2883,
+      "matched": 1927,
+      "prediction_frames": 3450,
+      "unmatched_predictions": 1520
+    },
+    "sampled_lidar_support": {
+      "actor_frames": 1670,
+      "matched": 1306,
+      "exact_label_hits": 1240
+    },
+    "matched_position_residual": {
+      "p50_m": 0.189,
+      "p95_m": 1.342
+    },
+    "reacquisitions": 11,
+    "direct_id_switches": 19,
+    "actors": [
+      {
+        "id": 113,
+        "type": "pedestrian",
+        "role": "pedestrian",
+        "frames": 203,
+        "hits": 127,
+        "runs": 2,
+        "reacquisitions": 1,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 46,
+        "distinct_ids": 1
+      },
+      {
+        "id": 130,
+        "type": "pedestrian",
+        "role": "background",
+        "frames": 219,
+        "hits": 94,
+        "runs": 3,
+        "reacquisitions": 2,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 59,
+        "distinct_ids": 1
+      },
+      {
+        "id": 117,
+        "type": "van",
+        "role": "occluder",
+        "frames": 158,
+        "hits": 158,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 7,
+        "longest_gap_frames": 0,
+        "distinct_ids": 7
+      },
+      {
+        "id": 118,
+        "type": "pedestrian",
+        "role": "occluded",
+        "frames": 156,
+        "hits": 101,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 31,
+        "distinct_ids": 1
+      },
+      {
+        "id": 128,
+        "type": "pedestrian",
+        "role": "background",
+        "frames": 99,
+        "hits": 0,
+        "runs": 0,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 99,
+        "distinct_ids": 0
+      },
+      {
+        "id": 133,
+        "type": "car",
+        "role": "background",
+        "frames": 55,
+        "hits": 53,
+        "runs": 2,
+        "reacquisitions": 1,
+        "direct_id_switches": 2,
+        "longest_gap_frames": 2,
+        "distinct_ids": 3
+      },
+      {
+        "id": 112,
+        "type": "car",
+        "role": "signal_queue",
+        "frames": 189,
+        "hits": 133,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 56,
+        "distinct_ids": 1
+      },
+      {
+        "id": 134,
+        "type": "car",
+        "role": "background",
+        "frames": 180,
+        "hits": 120,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 2,
+        "longest_gap_frames": 60,
+        "distinct_ids": 3
+      },
+      {
+        "id": 129,
+        "type": "pedestrian",
+        "role": "background",
+        "frames": 83,
+        "hits": 49,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 24,
+        "distinct_ids": 1
+      },
+      {
+        "id": 115,
+        "type": "car",
+        "role": "lead",
+        "frames": 225,
+        "hits": 168,
+        "runs": 2,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 39,
+        "distinct_ids": 2
+      },
+      {
+        "id": 127,
+        "type": "bus",
+        "role": "stopped_bus",
+        "frames": 150,
+        "hits": 127,
+        "runs": 4,
+        "reacquisitions": 3,
+        "direct_id_switches": 3,
+        "longest_gap_frames": 14,
+        "distinct_ids": 4
+      },
+      {
+        "id": 116,
+        "type": "car",
+        "role": "braking",
+        "frames": 140,
+        "hits": 129,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 11,
+        "distinct_ids": 1
+      },
+      {
+        "id": 131,
+        "type": "pedestrian",
+        "role": "background",
+        "frames": 218,
+        "hits": 80,
+        "runs": 2,
+        "reacquisitions": 1,
+        "direct_id_switches": 1,
+        "longest_gap_frames": 108,
+        "distinct_ids": 2
+      },
+      {
+        "id": 119,
+        "type": "car",
+        "role": "oncoming",
+        "frames": 112,
+        "hits": 93,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 3,
+        "longest_gap_frames": 19,
+        "distinct_ids": 4
+      },
+      {
+        "id": 135,
+        "type": "car",
+        "role": "background",
+        "frames": 61,
+        "hits": 52,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 1,
+        "longest_gap_frames": 9,
+        "distinct_ids": 2
+      },
+      {
+        "id": 126,
+        "type": "cyclist",
+        "role": "cyclist",
+        "frames": 239,
+        "hits": 0,
+        "runs": 0,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 239,
+        "distinct_ids": 0
+      },
+      {
+        "id": 132,
+        "type": "pedestrian",
+        "role": "background",
+        "frames": 187,
+        "hits": 117,
+        "runs": 3,
+        "reacquisitions": 2,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 46,
+        "distinct_ids": 3
+      },
+      {
+        "id": 114,
+        "type": "pedestrian",
+        "role": "pedestrian-delayed",
+        "frames": 209,
+        "hits": 116,
+        "runs": 2,
+        "reacquisitions": 1,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 52,
+        "distinct_ids": 1
+      }
+    ]
+  },
+  "display": {
+    "overall": {
+      "actor_frames": 2883,
+      "matched": 1841,
+      "exact_label_hits": 1831,
+      "prediction_frames": 4295,
+      "unmatched_predictions": 2438
+    },
+    "sector": {
+      "front": {
+        "actor_frames": 1447,
+        "matched": 961,
+        "exact_label_hits": 951,
+        "prediction_frames": 1376,
+        "unmatched_predictions": 413
+      },
+      "left": {
+        "actor_frames": 253,
+        "matched": 135,
+        "exact_label_hits": 135,
+        "prediction_frames": 540,
+        "unmatched_predictions": 399
+      },
+      "right": {
+        "actor_frames": 310,
+        "matched": 197,
+        "exact_label_hits": 197,
+        "prediction_frames": 1144,
+        "unmatched_predictions": 945
+      },
+      "rear": {
+        "actor_frames": 873,
+        "matched": 548,
+        "exact_label_hits": 548,
+        "prediction_frames": 1235,
+        "unmatched_predictions": 681
+      }
+    },
+    "by_class": {
+      "pedestrian": {
+        "actor_frames": 1374,
+        "matched": 811,
+        "exact_label_hits": 811
+      },
+      "van": {
+        "actor_frames": 158,
+        "matched": 158,
+        "exact_label_hits": 158
+      },
+      "car": {
+        "actor_frames": 962,
+        "matched": 722,
+        "exact_label_hits": 722
+      },
+      "bus": {
+        "actor_frames": 150,
+        "matched": 150,
+        "exact_label_hits": 140
+      },
+      "cyclist": {
+        "actor_frames": 239,
+        "matched": 0,
+        "exact_label_hits": 0
+      }
+    },
+    "by_status": {
+      "current": {
+        "prediction_frames": 2475,
+        "unmatched_predictions": 932
+      },
+      "remembered": {
+        "prediction_frames": 1820,
+        "unmatched_predictions": 1506
+      }
+    },
+    "by_measuring_camera": {},
+    "by_sensor": {},
+    "position_only": {
+      "actor_frames": 2883,
+      "matched": 2076,
+      "prediction_frames": 4295,
+      "unmatched_predictions": 2204
+    },
+    "sampled_lidar_support": {
+      "actor_frames": 1670,
+      "matched": 1360,
+      "exact_label_hits": 1354
+    },
+    "matched_position_residual": {
+      "p50_m": 0.231,
+      "p95_m": 1.354
+    },
+    "reacquisitions": 2,
+    "direct_id_switches": 2,
+    "actors": [
+      {
+        "id": 113,
+        "type": "pedestrian",
+        "role": "pedestrian",
+        "frames": 203,
+        "hits": 132,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 37,
+        "distinct_ids": 1
+      },
+      {
+        "id": 130,
+        "type": "pedestrian",
+        "role": "background",
+        "frames": 219,
+        "hits": 124,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 38,
+        "distinct_ids": 1
+      },
+      {
+        "id": 117,
+        "type": "van",
+        "role": "occluder",
+        "frames": 158,
+        "hits": 158,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 0,
+        "distinct_ids": 1
+      },
+      {
+        "id": 118,
+        "type": "pedestrian",
+        "role": "occluded",
+        "frames": 156,
+        "hits": 108,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 31,
+        "distinct_ids": 1
+      },
+      {
+        "id": 128,
+        "type": "pedestrian",
+        "role": "background",
+        "frames": 99,
+        "hits": 0,
+        "runs": 0,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 99,
+        "distinct_ids": 0
+      },
+      {
+        "id": 133,
+        "type": "car",
+        "role": "background",
+        "frames": 55,
+        "hits": 45,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 10,
+        "distinct_ids": 1
+      },
+      {
+        "id": 112,
+        "type": "car",
+        "role": "signal_queue",
+        "frames": 189,
+        "hits": 132,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 57,
+        "distinct_ids": 1
+      },
+      {
+        "id": 134,
+        "type": "car",
+        "role": "background",
+        "frames": 180,
+        "hits": 116,
+        "runs": 2,
+        "reacquisitions": 1,
+        "direct_id_switches": 1,
+        "longest_gap_frames": 60,
+        "distinct_ids": 3
+      },
+      {
+        "id": 129,
+        "type": "pedestrian",
+        "role": "background",
+        "frames": 83,
+        "hits": 69,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 14,
+        "distinct_ids": 1
+      },
+      {
+        "id": 115,
+        "type": "car",
+        "role": "lead",
+        "frames": 225,
+        "hits": 140,
+        "runs": 2,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 46,
+        "distinct_ids": 2
+      },
+      {
+        "id": 127,
+        "type": "bus",
+        "role": "stopped_bus",
+        "frames": 150,
+        "hits": 150,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 0,
+        "distinct_ids": 1
+      },
+      {
+        "id": 116,
+        "type": "car",
+        "role": "braking",
+        "frames": 140,
+        "hits": 127,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 13,
+        "distinct_ids": 1
+      },
+      {
+        "id": 131,
+        "type": "pedestrian",
+        "role": "background",
+        "frames": 218,
+        "hits": 112,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 80,
+        "distinct_ids": 1
+      },
+      {
+        "id": 119,
+        "type": "car",
+        "role": "oncoming",
+        "frames": 112,
+        "hits": 111,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 1,
+        "longest_gap_frames": 1,
+        "distinct_ids": 2
+      },
+      {
+        "id": 135,
+        "type": "car",
+        "role": "background",
+        "frames": 61,
+        "hits": 51,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 10,
+        "distinct_ids": 1
+      },
+      {
+        "id": 126,
+        "type": "cyclist",
+        "role": "cyclist",
+        "frames": 239,
+        "hits": 0,
+        "runs": 0,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 239,
+        "distinct_ids": 0
+      },
+      {
+        "id": 132,
+        "type": "pedestrian",
+        "role": "background",
+        "frames": 187,
+        "hits": 142,
+        "runs": 1,
+        "reacquisitions": 0,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 26,
+        "distinct_ids": 1
+      },
+      {
+        "id": 114,
+        "type": "pedestrian",
+        "role": "pedestrian-delayed",
+        "frames": 209,
+        "hits": 124,
+        "runs": 2,
+        "reacquisitions": 1,
+        "direct_id_switches": 0,
+        "longest_gap_frames": 42,
+        "distinct_ids": 1
+      }
+    ]
+  },
+  "with_static_road_users": {
+    "source_sha256": "453adee19ae15adc10c45f47db97177bd2cf4e8296bdb5ad9173ad7dc3eff77c",
+    "tracker": {
+      "overall": {
+        "actor_frames": 4198,
+        "matched": 1920,
+        "exact_label_hits": 1853,
+        "prediction_frames": 3450,
+        "unmatched_predictions": 1526
+      },
+      "sector": {
+        "front": {
+          "actor_frames": 1555,
+          "matched": 1023,
+          "exact_label_hits": 1005,
+          "prediction_frames": 1477,
+          "unmatched_predictions": 447
+        },
+        "left": {
+          "actor_frames": 582,
+          "matched": 179,
+          "exact_label_hits": 179,
+          "prediction_frames": 405,
+          "unmatched_predictions": 232
+        },
+        "right": {
+          "actor_frames": 1090,
+          "matched": 323,
+          "exact_label_hits": 319,
+          "prediction_frames": 791,
+          "unmatched_predictions": 477
+        },
+        "rear": {
+          "actor_frames": 971,
+          "matched": 395,
+          "exact_label_hits": 350,
+          "prediction_frames": 777,
+          "unmatched_predictions": 370
+        }
+      },
+      "by_class": {
+        "pedestrian": {
+          "actor_frames": 1374,
+          "matched": 684,
+          "exact_label_hits": 684
+        },
+        "car": {
+          "actor_frames": 2277,
+          "matched": 951,
+          "exact_label_hits": 951
+        },
+        "van": {
+          "actor_frames": 158,
+          "matched": 158,
+          "exact_label_hits": 142
+        },
+        "bus": {
+          "actor_frames": 150,
+          "matched": 127,
+          "exact_label_hits": 76
+        },
+        "cyclist": {
+          "actor_frames": 239,
+          "matched": 0,
+          "exact_label_hits": 0
+        }
+      },
+      "by_status": {
+        "measured": {
+          "prediction_frames": 2021,
+          "unmatched_predictions": 636
+        },
+        "coasting": {
+          "prediction_frames": 1429,
+          "unmatched_predictions": 890
+        }
+      },
+      "by_measuring_camera": {
+        "front": {
+          "prediction_frames": 521,
+          "unmatched_predictions": 105
+        },
+        "right": {
+          "prediction_frames": 108,
+          "unmatched_predictions": 39
+        },
+        "left": {
+          "prediction_frames": 81,
+          "unmatched_predictions": 23
+        },
+        "rear_left": {
+          "prediction_frames": 69,
+          "unmatched_predictions": 13
+        },
+        "rear_right": {
+          "prediction_frames": 107,
+          "unmatched_predictions": 48
+        }
+      },
+      "by_sensor": {
+        "lidar+radar+rgb": {
+          "prediction_frames": 829,
+          "unmatched_predictions": 213
+        },
+        "lidar+radar": {
+          "prediction_frames": 1096,
+          "unmatched_predictions": 370
+        },
+        "lidar": {
+          "prediction_frames": 65,
+          "unmatched_predictions": 40
+        },
+        "lidar+rgb": {
+          "prediction_frames": 31,
+          "unmatched_predictions": 13
+        }
+      },
+      "position_only": {
+        "actor_frames": 4198,
+        "matched": 2130,
+        "prediction_frames": 3450,
+        "unmatched_predictions": 1316
+      },
+      "sampled_lidar_support": {
+        "actor_frames": 2699,
+        "matched": 1475,
+        "exact_label_hits": 1409
+      },
+      "matched_position_residual": {
+        "p50_m": 0.213,
+        "p95_m": 1.494
+      },
+      "reacquisitions": 18,
+      "direct_id_switches": 19,
+      "actors": [
+        {
+          "id": 113,
+          "type": "pedestrian",
+          "role": "pedestrian",
+          "frames": 203,
+          "hits": 127,
+          "runs": 2,
+          "reacquisitions": 1,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 46,
+          "distinct_ids": 1
+        },
+        {
+          "id": 130,
+          "type": "pedestrian",
+          "role": "background",
+          "frames": 219,
+          "hits": 94,
+          "runs": 3,
+          "reacquisitions": 2,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 59,
+          "distinct_ids": 1
+        },
+        {
+          "id": "level-6183424760014961521",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 178,
+          "hits": 22,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 145,
+          "distinct_ids": 1
+        },
+        {
+          "id": "level-12166413250794706622",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 182,
+          "hits": 91,
+          "runs": 3,
+          "reacquisitions": 2,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 45,
+          "distinct_ids": 3
+        },
+        {
+          "id": "level-4955879825875038965",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 109,
+          "hits": 0,
+          "runs": 0,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 109,
+          "distinct_ids": 0
+        },
+        {
+          "id": 117,
+          "type": "van",
+          "role": "occluder",
+          "frames": 158,
+          "hits": 158,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 7,
+          "longest_gap_frames": 0,
+          "distinct_ids": 7
+        },
+        {
+          "id": 118,
+          "type": "pedestrian",
+          "role": "occluded",
+          "frames": 156,
+          "hits": 101,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 31,
+          "distinct_ids": 1
+        },
+        {
+          "id": "level-6664586185198452187",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 58,
+          "hits": 12,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 32,
+          "distinct_ids": 1
+        },
+        {
+          "id": 128,
+          "type": "pedestrian",
+          "role": "background",
+          "frames": 99,
+          "hits": 0,
+          "runs": 0,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 99,
+          "distinct_ids": 0
+        },
+        {
+          "id": 133,
+          "type": "car",
+          "role": "background",
+          "frames": 55,
+          "hits": 53,
+          "runs": 2,
+          "reacquisitions": 1,
+          "direct_id_switches": 2,
+          "longest_gap_frames": 2,
+          "distinct_ids": 3
+        },
+        {
+          "id": "level-4507162520621995511",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 262,
+          "hits": 0,
+          "runs": 0,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 262,
+          "distinct_ids": 0
+        },
+        {
+          "id": "level-11906624848723412420",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 272,
+          "hits": 28,
+          "runs": 3,
+          "reacquisitions": 2,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 131,
+          "distinct_ids": 3
+        },
+        {
+          "id": 112,
+          "type": "car",
+          "role": "signal_queue",
+          "frames": 189,
+          "hits": 133,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 56,
+          "distinct_ids": 1
+        },
+        {
+          "id": 134,
+          "type": "car",
+          "role": "background",
+          "frames": 180,
+          "hits": 120,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 2,
+          "longest_gap_frames": 60,
+          "distinct_ids": 3
+        },
+        {
+          "id": 129,
+          "type": "pedestrian",
+          "role": "background",
+          "frames": 83,
+          "hits": 49,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 24,
+          "distinct_ids": 1
+        },
+        {
+          "id": 115,
+          "type": "car",
+          "role": "lead",
+          "frames": 225,
+          "hits": 168,
+          "runs": 2,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 39,
+          "distinct_ids": 2
+        },
+        {
+          "id": 127,
+          "type": "bus",
+          "role": "stopped_bus",
+          "frames": 150,
+          "hits": 127,
+          "runs": 4,
+          "reacquisitions": 3,
+          "direct_id_switches": 3,
+          "longest_gap_frames": 14,
+          "distinct_ids": 4
+        },
+        {
+          "id": 116,
+          "type": "car",
+          "role": "braking",
+          "frames": 140,
+          "hits": 129,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 11,
+          "distinct_ids": 1
+        },
+        {
+          "id": 131,
+          "type": "pedestrian",
+          "role": "background",
+          "frames": 218,
+          "hits": 80,
+          "runs": 2,
+          "reacquisitions": 1,
+          "direct_id_switches": 1,
+          "longest_gap_frames": 108,
+          "distinct_ids": 2
+        },
+        {
+          "id": "level-12109274621266969479",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 141,
+          "hits": 40,
+          "runs": 3,
+          "reacquisitions": 2,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 54,
+          "distinct_ids": 3
+        },
+        {
+          "id": "level-9076146201990380525",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 33,
+          "hits": 0,
+          "runs": 0,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 33,
+          "distinct_ids": 0
+        },
+        {
+          "id": 119,
+          "type": "car",
+          "role": "oncoming",
+          "frames": 112,
+          "hits": 93,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 3,
+          "longest_gap_frames": 19,
+          "distinct_ids": 4
+        },
+        {
+          "id": "level-327314708892034233",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 80,
+          "hits": 10,
+          "runs": 2,
+          "reacquisitions": 1,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 33,
+          "distinct_ids": 2
+        },
+        {
+          "id": 135,
+          "type": "car",
+          "role": "background",
+          "frames": 61,
+          "hits": 52,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 1,
+          "longest_gap_frames": 9,
+          "distinct_ids": 2
+        },
+        {
+          "id": 126,
+          "type": "cyclist",
+          "role": "cyclist",
+          "frames": 239,
+          "hits": 0,
+          "runs": 0,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 239,
+          "distinct_ids": 0
+        },
+        {
+          "id": 132,
+          "type": "pedestrian",
+          "role": "background",
+          "frames": 187,
+          "hits": 117,
+          "runs": 3,
+          "reacquisitions": 2,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 46,
+          "distinct_ids": 3
+        },
+        {
+          "id": 114,
+          "type": "pedestrian",
+          "role": "pedestrian-delayed",
+          "frames": 209,
+          "hits": 116,
+          "runs": 2,
+          "reacquisitions": 1,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 52,
+          "distinct_ids": 1
+        }
+      ]
+    },
+    "display": {
+      "overall": {
+        "actor_frames": 4198,
+        "matched": 2250,
+        "exact_label_hits": 2240,
+        "prediction_frames": 4295,
+        "unmatched_predictions": 2048
+      },
+      "sector": {
+        "front": {
+          "actor_frames": 1555,
+          "matched": 984,
+          "exact_label_hits": 974,
+          "prediction_frames": 1376,
+          "unmatched_predictions": 387
+        },
+        "left": {
+          "actor_frames": 582,
+          "matched": 272,
+          "exact_label_hits": 272,
+          "prediction_frames": 540,
+          "unmatched_predictions": 281
+        },
+        "right": {
+          "actor_frames": 1090,
+          "matched": 433,
+          "exact_label_hits": 433,
+          "prediction_frames": 1144,
+          "unmatched_predictions": 715
+        },
+        "rear": {
+          "actor_frames": 971,
+          "matched": 561,
+          "exact_label_hits": 561,
+          "prediction_frames": 1235,
+          "unmatched_predictions": 665
+        }
+      },
+      "by_class": {
+        "pedestrian": {
+          "actor_frames": 1374,
+          "matched": 811,
+          "exact_label_hits": 811
+        },
+        "car": {
+          "actor_frames": 2277,
+          "matched": 1131,
+          "exact_label_hits": 1131
+        },
+        "van": {
+          "actor_frames": 158,
+          "matched": 158,
+          "exact_label_hits": 158
+        },
+        "bus": {
+          "actor_frames": 150,
+          "matched": 150,
+          "exact_label_hits": 140
+        },
+        "cyclist": {
+          "actor_frames": 239,
+          "matched": 0,
+          "exact_label_hits": 0
+        }
+      },
+      "by_status": {
+        "current": {
+          "prediction_frames": 2475,
+          "unmatched_predictions": 803
+        },
+        "remembered": {
+          "prediction_frames": 1820,
+          "unmatched_predictions": 1245
+        }
+      },
+      "by_measuring_camera": {},
+      "by_sensor": {},
+      "position_only": {
+        "actor_frames": 4198,
+        "matched": 2485,
+        "prediction_frames": 4295,
+        "unmatched_predictions": 1814
+      },
+      "sampled_lidar_support": {
+        "actor_frames": 2699,
+        "matched": 1679,
+        "exact_label_hits": 1673
+      },
+      "matched_position_residual": {
+        "p50_m": 0.319,
+        "p95_m": 1.532
+      },
+      "reacquisitions": 4,
+      "direct_id_switches": 2,
+      "actors": [
+        {
+          "id": 113,
+          "type": "pedestrian",
+          "role": "pedestrian",
+          "frames": 203,
+          "hits": 132,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 37,
+          "distinct_ids": 1
+        },
+        {
+          "id": 130,
+          "type": "pedestrian",
+          "role": "background",
+          "frames": 219,
+          "hits": 124,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 38,
+          "distinct_ids": 1
+        },
+        {
+          "id": "level-6183424760014961521",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 178,
+          "hits": 48,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 117,
+          "distinct_ids": 1
+        },
+        {
+          "id": "level-12166413250794706622",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 182,
+          "hits": 153,
+          "runs": 2,
+          "reacquisitions": 1,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 21,
+          "distinct_ids": 2
+        },
+        {
+          "id": "level-4955879825875038965",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 109,
+          "hits": 0,
+          "runs": 0,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 109,
+          "distinct_ids": 0
+        },
+        {
+          "id": 117,
+          "type": "van",
+          "role": "occluder",
+          "frames": 158,
+          "hits": 158,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 0,
+          "distinct_ids": 1
+        },
+        {
+          "id": 118,
+          "type": "pedestrian",
+          "role": "occluded",
+          "frames": 156,
+          "hits": 108,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 31,
+          "distinct_ids": 1
+        },
+        {
+          "id": "level-6664586185198452187",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 58,
+          "hits": 25,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 33,
+          "distinct_ids": 1
+        },
+        {
+          "id": 128,
+          "type": "pedestrian",
+          "role": "background",
+          "frames": 99,
+          "hits": 0,
+          "runs": 0,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 99,
+          "distinct_ids": 0
+        },
+        {
+          "id": 133,
+          "type": "car",
+          "role": "background",
+          "frames": 55,
+          "hits": 45,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 10,
+          "distinct_ids": 1
+        },
+        {
+          "id": "level-4507162520621995511",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 262,
+          "hits": 0,
+          "runs": 0,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 262,
+          "distinct_ids": 0
+        },
+        {
+          "id": "level-11906624848723412420",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 272,
+          "hits": 46,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 170,
+          "distinct_ids": 1
+        },
+        {
+          "id": 112,
+          "type": "car",
+          "role": "signal_queue",
+          "frames": 189,
+          "hits": 132,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 57,
+          "distinct_ids": 1
+        },
+        {
+          "id": 134,
+          "type": "car",
+          "role": "background",
+          "frames": 180,
+          "hits": 116,
+          "runs": 2,
+          "reacquisitions": 1,
+          "direct_id_switches": 1,
+          "longest_gap_frames": 60,
+          "distinct_ids": 3
+        },
+        {
+          "id": 129,
+          "type": "pedestrian",
+          "role": "background",
+          "frames": 83,
+          "hits": 69,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 14,
+          "distinct_ids": 1
+        },
+        {
+          "id": 115,
+          "type": "car",
+          "role": "lead",
+          "frames": 225,
+          "hits": 140,
+          "runs": 2,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 46,
+          "distinct_ids": 2
+        },
+        {
+          "id": 127,
+          "type": "bus",
+          "role": "stopped_bus",
+          "frames": 150,
+          "hits": 150,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 0,
+          "distinct_ids": 1
+        },
+        {
+          "id": 116,
+          "type": "car",
+          "role": "braking",
+          "frames": 140,
+          "hits": 127,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 13,
+          "distinct_ids": 1
+        },
+        {
+          "id": 131,
+          "type": "pedestrian",
+          "role": "background",
+          "frames": 218,
+          "hits": 112,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 80,
+          "distinct_ids": 1
+        },
+        {
+          "id": "level-12109274621266969479",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 141,
+          "hits": 92,
+          "runs": 2,
+          "reacquisitions": 1,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 26,
+          "distinct_ids": 2
+        },
+        {
+          "id": "level-9076146201990380525",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 33,
+          "hits": 0,
+          "runs": 0,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 33,
+          "distinct_ids": 0
+        },
+        {
+          "id": 119,
+          "type": "car",
+          "role": "oncoming",
+          "frames": 112,
+          "hits": 111,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 1,
+          "longest_gap_frames": 1,
+          "distinct_ids": 2
+        },
+        {
+          "id": "level-327314708892034233",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "frames": 80,
+          "hits": 45,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 35,
+          "distinct_ids": 1
+        },
+        {
+          "id": 135,
+          "type": "car",
+          "role": "background",
+          "frames": 61,
+          "hits": 51,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 10,
+          "distinct_ids": 1
+        },
+        {
+          "id": 126,
+          "type": "cyclist",
+          "role": "cyclist",
+          "frames": 239,
+          "hits": 0,
+          "runs": 0,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 239,
+          "distinct_ids": 0
+        },
+        {
+          "id": 132,
+          "type": "pedestrian",
+          "role": "background",
+          "frames": 187,
+          "hits": 142,
+          "runs": 1,
+          "reacquisitions": 0,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 26,
+          "distinct_ids": 1
+        },
+        {
+          "id": 114,
+          "type": "pedestrian",
+          "role": "pedestrian-delayed",
+          "frames": 209,
+          "hits": 124,
+          "runs": 2,
+          "reacquisitions": 1,
+          "direct_id_switches": 0,
+          "longest_gap_frames": 42,
+          "distinct_ids": 1
+        }
+      ]
+    }
+  },
+  "probes": []
+}
