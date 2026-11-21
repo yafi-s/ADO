@@ -4,6 +4,14 @@ The six Town03 roadworks props have the shape of orange channelizer drums. Each 
 
 ![Five simultaneously ranged drums in two native cameras](native-frame-3221.jpg)
 
+## Populated city-life recording
+
+Across the 3,320 frames of the completed High-quality populated drive, **all 237 fresh cone measurements** matched one of the six physical drums within 0.65 m. Every measurement included projected XYZ laser returns from the same exposure, with a median of 20 returns per observation. The drive produced zero unmatched cone calls, including while vehicles and pedestrians moved through the scene. [Native results and source fingerprints](city-life.json)
+
+Fresh measurements covered **236 of 621 drum-frames within 20 m** (38.0%), leaving 385 misses. Coverage varied substantially by distance. The detector measured 26 of 159 drum-frames within 5 m, 149 of 172 from 5 to 10 m, 55 of 149 from 10 to 15 m, and 6 of 141 from 15 to 20 m. One additional front observation matched at 36.31 m with a single laser return.
+
+The front camera supplied 150 measurements, rear-right supplied 85 and rear-left supplied two. They occurred on 122 frames between native frames 921 and 1102 (85.7–103.8 s). The median absolute horizontal range error was 0.023 m, its 95th percentile was 0.123 m and the largest was 0.198 m. The median horizontal center error was 0.036 m and the largest was 0.262 m.
+
 ## Original urban-pace recording
 
 All 3,354 synchronized exposures of seed 212 were processed in order, across the front, left, right, rear-left and rear-right cameras. Every camera stream and the sensor journal matched the original capture hashes.
@@ -38,5 +46,7 @@ python -m pytest tests/test_traffic_cones.py -q
 ```
 
 For a new surround capture, score the completed native measurements using `python -m crosswalk.cone_study <raw-folder> --live-measurements --metrics <output.json>`. The native journal must match its capture fingerprint. [Per-frame archive results and trip metrics](metrics.json)
+
+The populated drive uses `out/journey-captures/long-city-drive-dc3q_29s/raw` and `results/cone-perception/city-life.json`.
 
 For the sampled native trials, use `python -m crosswalk.cone_study <raw-folder> --sampled-packets --metrics <output.json>` with `out/roadworks-pace/fitted-cone-taper/raw` or `out/roadworks-pace/baseline-occluded/raw`.

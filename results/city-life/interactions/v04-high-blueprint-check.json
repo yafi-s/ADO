@@ -1,0 +1,5642 @@
+{
+  "schema": "ado-city-interaction-audit-v1",
+  "capture": "long-city-drive-nxksaiij",
+  "trial": "urban-pace",
+  "policy": "ado-city-pace-v1",
+  "passed": true,
+  "capture_failure_reasons": [],
+  "source_hashes": {
+    "perception.jsonl": "035769ea010f15e5b89f4d1a376d5d009a8182ef7fa00fac559de337e79bfb58",
+    "telemetry.json": "98027c41a9df43453987d896efe8c7b25b58ee69644a1a4160ba28143fa8283e",
+    "town03-body-offsets.json": "2c348180c0a2645ad8ce299cb9a52a9b07ff5bebdee09415fc17fc8083e526c7",
+    "town03-static-vehicles.json": "453adee19ae15adc10c45f47db97177bd2cf4e8296bdb5ad9173ad7dc3eff77c",
+    "capture.json": "5cc524e036faacaaa19038eb683ccb138f32774d5f026e20c4400e9dbd8e254b"
+  },
+  "frames": 3354,
+  "first_frame": 2212,
+  "last_frame": 5565,
+  "native_grade": {
+    "outcome": "complete",
+    "frames": 3354,
+    "duration_s": 335.4,
+    "progress_m": 1416.32,
+    "route_length_m": 1416.438,
+    "contacts": [],
+    "collision_events": 0,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "moving_within_1m_frames": 0,
+    "min_hazard_gap_m": 2.235,
+    "turns_completed": {
+      "left": 1,
+      "right": 2,
+      "straight": 8
+    },
+    "sidewalk_activity": {
+      "spawned": 5,
+      "moved_on_approach": 5,
+      "motion_on_approach_m": [
+        3.84,
+        3.22,
+        3.4,
+        4.88,
+        4.83
+      ]
+    },
+    "background_traffic_activity": {
+      "spawned": 3,
+      "moving_near_ego": 3,
+      "vehicles": [
+        {
+          "blueprint": "vehicle.mini.cooper",
+          "movement": "opposing",
+          "road": 76,
+          "lane": 1,
+          "traveled_m": 53.41,
+          "peak_speed_mps": 5.24,
+          "closest_while_moving_m": 3.73,
+          "left_corridor": false
+        },
+        {
+          "blueprint": "vehicle.tesla.model3",
+          "movement": "parallel",
+          "road": 67,
+          "lane": -1,
+          "traveled_m": 85.06,
+          "peak_speed_mps": 6.6,
+          "closest_while_moving_m": 3.52,
+          "left_corridor": false
+        },
+        {
+          "blueprint": "vehicle.lincoln.mkz",
+          "movement": "opposing",
+          "road": 20,
+          "lane": 1,
+          "traveled_m": 59.49,
+          "peak_speed_mps": 5.15,
+          "closest_while_moving_m": 3.52,
+          "left_corridor": false
+        }
+      ]
+    },
+    "events": [
+      {
+        "kind": "pedestrian",
+        "station_m": 29.0,
+        "phase": "across street",
+        "triggered": true,
+        "cleared": true,
+        "exposed": true,
+        "passed": true,
+        "handled": true,
+        "violation": false,
+        "stopped_for_event": true,
+        "minimum_gap_m": 3.62,
+        "curb_origin_lateral_m": 6.635,
+        "approach_s": 0.0,
+        "triggered_s": 0.5,
+        "exposed_s": 4.6,
+        "cleared_s": 9.8,
+        "passed_s": 13.7
+      },
+      {
+        "kind": "occluded",
+        "station_m": 146.99,
+        "phase": "across street",
+        "triggered": true,
+        "cleared": true,
+        "exposed": true,
+        "passed": true,
+        "handled": true,
+        "violation": false,
+        "stopped_for_event": true,
+        "minimum_gap_m": 3.71,
+        "curb_origin_lateral_m": 6.135,
+        "approach_s": 31.1,
+        "blocked_view_s": 31.6,
+        "triggered_s": 31.6,
+        "emerged_s": 34.1,
+        "exposed_s": 35.3,
+        "cleared_s": 40.4,
+        "passed_s": 44.7
+      },
+      {
+        "kind": "signal",
+        "station_m": 323.08,
+        "phase": "green",
+        "triggered": true,
+        "cleared": true,
+        "exposed": true,
+        "passed": true,
+        "handled": true,
+        "violation": false,
+        "stopped_for_event": true,
+        "minimum_gap_m": 3.74,
+        "queue_exposed_s": 64.8,
+        "triggered_s": 66.6,
+        "exposed_s": 66.6,
+        "cleared_s": 73.7,
+        "queue_departed_green_s": 75.2,
+        "crossed_green_s": 79.3,
+        "passed_s": 81.6
+      },
+      {
+        "kind": "roadworks",
+        "station_m": 375.16,
+        "phase": "cone taper cleared",
+        "triggered": true,
+        "cleared": true,
+        "exposed": true,
+        "passed": true,
+        "handled": true,
+        "violation": false,
+        "stopped_for_event": false,
+        "minimum_gap_m": 60.0,
+        "cone_count": 6,
+        "blueprint": "static.prop.trafficcone01",
+        "triggered_s": 86.1,
+        "max_cone_displacement_m": 0.0,
+        "exposed_s": 87.2,
+        "cones_alongside": 6,
+        "minimum_cone_clearance_m": 0.269,
+        "all_cones_passed_s": 110.6,
+        "cleared_s": 110.6,
+        "passed_s": 110.6
+      },
+      {
+        "kind": "barrier",
+        "station_m": 536.65,
+        "phase": "striped barricades cleared",
+        "triggered": true,
+        "cleared": true,
+        "exposed": true,
+        "passed": true,
+        "handled": true,
+        "violation": false,
+        "stopped_for_event": false,
+        "minimum_gap_m": 60.0,
+        "barrier_count": 2,
+        "blueprint": "static.prop.streetbarrier",
+        "triggered_s": 121.8,
+        "max_barrier_displacement_m": 0.0,
+        "barriers_alongside": 2,
+        "exposed_s": 122.3,
+        "minimum_barrier_clearance_m": 1.047,
+        "all_barriers_passed_s": 131.8,
+        "cleared_s": 131.8,
+        "passed_s": 131.8
+      },
+      {
+        "kind": "lead",
+        "station_m": 576.65,
+        "phase": "departing",
+        "triggered": true,
+        "cleared": true,
+        "exposed": true,
+        "passed": true,
+        "handled": true,
+        "violation": false,
+        "stopped_for_event": true,
+        "minimum_gap_m": 3.71,
+        "triggered_s": 132.5,
+        "exposed_s": 132.5,
+        "release_command_s": 136.6,
+        "restarted_s": 138.1,
+        "clearance_at_exit_m": 9.956,
+        "left_route_s": 152.9,
+        "cleared_s": 152.9,
+        "passed_s": 166.8
+      },
+      {
+        "kind": "bus",
+        "station_m": 811.91,
+        "phase": "bus cleared",
+        "triggered": true,
+        "cleared": true,
+        "exposed": true,
+        "passed": true,
+        "handled": true,
+        "violation": false,
+        "stopped_for_event": false,
+        "minimum_gap_m": 60.0,
+        "blueprint": "vehicle.fuso.mitsubishi",
+        "source_lane": [
+          4,
+          3
+        ],
+        "target_lane": [
+          4,
+          2
+        ],
+        "source_lane_seen_s": 191.8,
+        "triggered_s": 195.5,
+        "exposed_s": 195.5,
+        "measured_lane_change_s": 196.7,
+        "measured_lane_change_m": 2.283,
+        "minimum_bus_clearance_m": 0.927,
+        "bus_alongside_s": 203.8,
+        "cleared_s": 210.7,
+        "passed_s": 211.1
+      },
+      {
+        "kind": "braking",
+        "station_m": 977.17,
+        "phase": "departing",
+        "triggered": true,
+        "cleared": true,
+        "exposed": true,
+        "passed": true,
+        "handled": true,
+        "violation": false,
+        "stopped_for_event": false,
+        "minimum_gap_m": 4.37,
+        "triggered_s": 229.3,
+        "brake_entry_speed_mps": 2.488,
+        "exposed_s": 229.3,
+        "lead_stopped_s": 229.6,
+        "release_command_s": 232.7,
+        "restarted_s": 234.2,
+        "clearance_at_exit_m": 11.935,
+        "left_route_s": 245.0,
+        "cleared_s": 245.0,
+        "passed_s": 263.9,
+        "peak_lead_deceleration_mps2": 9.99
+      },
+      {
+        "kind": "left",
+        "station_m": 1044.17,
+        "phase": "oncoming cleared",
+        "triggered": true,
+        "cleared": true,
+        "exposed": true,
+        "passed": true,
+        "handled": true,
+        "violation": false,
+        "stopped_for_event": true,
+        "minimum_gap_m": 2.24,
+        "triggered_s": 244.1,
+        "exposed_s": 244.4,
+        "cleared_s": 250.8,
+        "passed_s": 257.3
+      },
+      {
+        "kind": "cyclist",
+        "station_m": 1200.65,
+        "phase": "cyclist departed",
+        "triggered": true,
+        "cleared": true,
+        "exposed": true,
+        "passed": true,
+        "handled": true,
+        "violation": false,
+        "stopped_for_event": false,
+        "minimum_gap_m": 5.83,
+        "blueprint": "vehicle.bh.crossbike",
+        "triggered_s": 275.4,
+        "peak_bicycle_speed_mps": 3.007,
+        "moving_ahead_s": 275.9,
+        "exposed_s": 275.9,
+        "left_route_s": 293.8,
+        "cleared_s": 293.8,
+        "passed_s": 296.9
+      },
+      {
+        "kind": "pedestrian-delayed",
+        "station_m": 1276.65,
+        "phase": "leaving",
+        "triggered": true,
+        "cleared": true,
+        "exposed": true,
+        "passed": true,
+        "handled": true,
+        "violation": false,
+        "stopped_for_event": true,
+        "minimum_gap_m": 3.75,
+        "curb_origin_lateral_m": 6.635,
+        "approach_s": 291.0,
+        "triggered_s": 293.1,
+        "exposed_s": 297.2,
+        "cleared_s": 302.3,
+        "passed_s": 306.5
+      }
+    ]
+  },
+  "supplementary_blueprint_calibration": {
+    "perception_journal_sha256": "44c96460a62213b93ce35400ec1f3e1c207862d14cbd54cf4962e8e64a97f47f",
+    "stable_blueprints": {
+      "walker.pedestrian.0019": {
+        "dimensions_m": [
+          0.7,
+          1.93,
+          0.4
+        ],
+        "offset_xyz": [
+          -0.037,
+          -0.014,
+          0.008
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 1766,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0048": {
+        "dimensions_m": [
+          0.9,
+          1.84,
+          0.64
+        ],
+        "offset_xyz": [
+          -0.013,
+          0.005,
+          -0.02
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 969,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0038": {
+        "dimensions_m": [
+          0.69,
+          1.85,
+          0.54
+        ],
+        "offset_xyz": [
+          -0.007,
+          0.004,
+          0.013
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 1051,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0049": {
+        "dimensions_m": [
+          0.47,
+          1.16,
+          0.3
+        ],
+        "offset_xyz": [
+          0.008,
+          0.006,
+          0.014
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 1448,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0045": {
+        "dimensions_m": [
+          0.71,
+          1.85,
+          0.38
+        ],
+        "offset_xyz": [
+          -0.021,
+          -0.017,
+          -0.033
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 1462,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0018": {
+        "dimensions_m": [
+          0.69,
+          1.93,
+          0.4
+        ],
+        "offset_xyz": [
+          -0.037,
+          -0.014,
+          0.008
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 646,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0023": {
+        "dimensions_m": [
+          0.9,
+          1.86,
+          0.87
+        ],
+        "offset_xyz": [
+          0.002,
+          -0.007,
+          0.01
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 854,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0016": {
+        "dimensions_m": [
+          0.87,
+          1.81,
+          0.33
+        ],
+        "offset_xyz": [
+          -0.018,
+          0.013,
+          -0.028
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 1494,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0029": {
+        "dimensions_m": [
+          0.78,
+          1.95,
+          0.42
+        ],
+        "offset_xyz": [
+          -0.009,
+          -0.01,
+          -0.028
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 1878,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0037": {
+        "dimensions_m": [
+          0.69,
+          1.85,
+          0.54
+        ],
+        "offset_xyz": [
+          -0.007,
+          0.004,
+          0.013
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 763,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0047": {
+        "dimensions_m": [
+          0.9,
+          1.84,
+          0.64
+        ],
+        "offset_xyz": [
+          -0.013,
+          0.005,
+          -0.02
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 1007,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0032": {
+        "dimensions_m": [
+          0.62,
+          1.85,
+          0.35
+        ],
+        "offset_xyz": [
+          -0.035,
+          -0.008,
+          -0.028
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 1762,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0042": {
+        "dimensions_m": [
+          0.63,
+          1.85,
+          0.33
+        ],
+        "offset_xyz": [
+          -0.02,
+          0.001,
+          -0.017
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 530,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0030": {
+        "dimensions_m": [
+          0.78,
+          1.95,
+          0.42
+        ],
+        "offset_xyz": [
+          -0.009,
+          -0.01,
+          -0.028
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 1204,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0052": {
+        "dimensions_m": [
+          0.57,
+          1.27,
+          0.33
+        ],
+        "offset_xyz": [
+          0.004,
+          0.005,
+          -0.365
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 965,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0034": {
+        "dimensions_m": [
+          0.7,
+          1.84,
+          0.43
+        ],
+        "offset_xyz": [
+          -0.034,
+          -0.014,
+          -0.034
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 755,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0026": {
+        "dimensions_m": [
+          0.72,
+          1.84,
+          0.37
+        ],
+        "offset_xyz": [
+          -0.016,
+          -0.016,
+          -0.025
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 680,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      },
+      "walker.pedestrian.0015": {
+        "dimensions_m": [
+          0.87,
+          1.81,
+          0.33
+        ],
+        "offset_xyz": [
+          -0.018,
+          0.013,
+          -0.028
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "native_observations": 429,
+        "matched_capture": "long-city-drive-dc3q_29s"
+      }
+    }
+  },
+  "front_camera": {
+    "fresh_frames": 1677,
+    "simultaneous_ranged_matches": {
+      "any": 469,
+      "vehicle_and_pedestrian": 3,
+      "two_of_each": 0
+    }
+  },
+  "by_actor": [
+    {
+      "actor_id": 601,
+      "type": "car",
+      "role": "signal_queue",
+      "blueprint": "vehicle.tesla.model3",
+      "x": 208.16,
+      "y": 62.29,
+      "z": 0.0,
+      "yaw": -0.15,
+      "dimensions_m": [
+        4.69,
+        1.44,
+        2.09
+      ],
+      "samples": {
+        "calibrated_actor_yaw_only": 560,
+        "vertical_overlap": 560
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 2920,
+        "time_s": 70.8,
+        "progress_m": 307.427,
+        "ego_speed_mps": 0.004,
+        "active_event": "signal",
+        "inspector": "./inspect.html?run=urban-pace&frame=2920&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2920&camera=chase",
+        "ego_pose": {
+          "x": 199.62510681152344,
+          "y": 62.313880920410156,
+          "z": 0.005685759708285332,
+          "pitch": -0.2615113854408264,
+          "yaw": -0.16632214188575745,
+          "roll": 0.0031748299952596426
+        },
+        "actor": {
+          "actor_id": 601,
+          "type": "car",
+          "role": "signal_queue",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 208.16,
+          "y": 62.29,
+          "z": 0.0,
+          "yaw": -0.15,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "actor_origin_distance_m": 8.5349
+      },
+      "closest_overlapping_elevation": {
+        "frame": 2918,
+        "time_s": 70.6,
+        "progress_m": 307.425,
+        "ego_speed_mps": 0.006,
+        "active_event": "signal",
+        "inspector": "./inspect.html?run=urban-pace&frame=2918&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2918&camera=chase",
+        "ego_pose": {
+          "x": 199.62301635742188,
+          "y": 62.31389236450195,
+          "z": 0.006067641545087099,
+          "pitch": -0.5741275548934937,
+          "yaw": -0.1659102439880371,
+          "roll": 0.003081223228946328
+        },
+        "actor": {
+          "actor_id": 601,
+          "type": "car",
+          "role": "signal_queue",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 208.16,
+          "y": 62.29,
+          "z": 0.0,
+          "yaw": -0.15,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 3.6683,
+        "vertical_overlap_m": 1.44,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 2954,
+        "time_s": 74.2,
+        "progress_m": 307.427,
+        "ego_speed_mps": 0.0,
+        "active_event": "signal",
+        "inspector": "./inspect.html?run=urban-pace&frame=2954&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2954&camera=chase",
+        "ego_pose": {
+          "x": 199.62510681152344,
+          "y": 62.313880920410156,
+          "z": 0.005685759708285332,
+          "pitch": -0.2615113854408264,
+          "yaw": -0.16632214188575745,
+          "roll": 0.0031748299952596426
+        },
+        "actor": {
+          "actor_id": 601,
+          "type": "car",
+          "role": "signal_queue",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 208.82,
+          "y": 62.29,
+          "z": 0.0,
+          "yaw": -0.15,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 1.3,
+        "actor_moving": true,
+        "ground_projection_gap_m": 4.3345,
+        "vertical_overlap_m": 1.44,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 602,
+      "type": "pedestrian",
+      "role": "pedestrian",
+      "blueprint": "walker.pedestrian.0051",
+      "x": -29.67,
+      "y": 141.28,
+      "z": 1.13,
+      "yaw": -91.3,
+      "dimensions_m": [
+        0.57,
+        1.29,
+        0.31
+      ],
+      "samples": {
+        "calibrated_actor_yaw_only": 989,
+        "vertical_overlap": 989
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 2330,
+        "time_s": 11.8,
+        "progress_m": 27.297,
+        "ego_speed_mps": 3.987,
+        "active_event": "pedestrian",
+        "inspector": "./inspect.html?run=urban-pace&frame=2330&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2330&camera=chase",
+        "ego_pose": {
+          "x": -31.52583122253418,
+          "y": 134.682861328125,
+          "z": 0.005640330258756876,
+          "pitch": -0.10554072260856628,
+          "yaw": -1.3088264465332031,
+          "roll": -0.017865309491753578
+        },
+        "actor": {
+          "actor_id": 602,
+          "type": "pedestrian",
+          "role": "pedestrian",
+          "blueprint": "walker.pedestrian.0051",
+          "x": -29.94,
+          "y": 129.63,
+          "z": 0.97,
+          "yaw": -91.3,
+          "dimensions_m": [
+            0.57,
+            1.29,
+            0.31
+          ]
+        },
+        "actor_origin_speed_mps": 1.2406,
+        "actor_moving": true,
+        "actor_origin_distance_m": 5.2959
+      },
+      "closest_overlapping_elevation": {
+        "frame": 2323,
+        "time_s": 11.1,
+        "progress_m": 24.96,
+        "ego_speed_mps": 2.708,
+        "active_event": "pedestrian",
+        "inspector": "./inspect.html?run=urban-pace&frame=2323&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2323&camera=chase",
+        "ego_pose": {
+          "x": -33.86296081542969,
+          "y": 134.7359619140625,
+          "z": 0.00568776112049818,
+          "pitch": -0.12332510203123093,
+          "yaw": -1.3083471059799194,
+          "roll": -0.017706522718071938
+        },
+        "actor": {
+          "actor_id": 602,
+          "type": "pedestrian",
+          "role": "pedestrian",
+          "blueprint": "walker.pedestrian.0051",
+          "x": -29.92,
+          "y": 130.5,
+          "z": 0.97,
+          "yaw": -91.3,
+          "dimensions_m": [
+            0.57,
+            1.29,
+            0.31
+          ]
+        },
+        "actor_origin_speed_mps": 1.2406,
+        "actor_moving": true,
+        "ground_projection_gap_m": 3.3351,
+        "vertical_overlap_m": 1.2578,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 2323,
+        "time_s": 11.1,
+        "progress_m": 24.96,
+        "ego_speed_mps": 2.708,
+        "active_event": "pedestrian",
+        "inspector": "./inspect.html?run=urban-pace&frame=2323&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2323&camera=chase",
+        "ego_pose": {
+          "x": -33.86296081542969,
+          "y": 134.7359619140625,
+          "z": 0.00568776112049818,
+          "pitch": -0.12332510203123093,
+          "yaw": -1.3083471059799194,
+          "roll": -0.017706522718071938
+        },
+        "actor": {
+          "actor_id": 602,
+          "type": "pedestrian",
+          "role": "pedestrian",
+          "blueprint": "walker.pedestrian.0051",
+          "x": -29.92,
+          "y": 130.5,
+          "z": 0.97,
+          "yaw": -91.3,
+          "dimensions_m": [
+            0.57,
+            1.29,
+            0.31
+          ]
+        },
+        "actor_origin_speed_mps": 1.2406,
+        "actor_moving": true,
+        "ground_projection_gap_m": 3.3351,
+        "vertical_overlap_m": 1.2578,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 603,
+      "type": "pedestrian",
+      "role": "pedestrian-delayed",
+      "blueprint": "walker.pedestrian.0029",
+      "x": -155.66,
+      "y": 31.03,
+      "z": 1.09,
+      "yaw": 0.03,
+      "dimensions_m": [
+        0.78,
+        1.95,
+        0.42
+      ],
+      "samples": {
+        "matched_capture_blueprint_yaw_only": 867,
+        "vertical_overlap": 867
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 5256,
+        "time_s": 304.4,
+        "progress_m": 1274.809,
+        "ego_speed_mps": 3.955,
+        "active_event": "pedestrian-delayed",
+        "inspector": "./inspect.html?run=urban-pace&frame=5256&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=5256&camera=chase",
+        "ego_pose": {
+          "x": -149.0234375,
+          "y": 29.19001579284668,
+          "z": 0.005662915762513876,
+          "pitch": -0.12000089138746262,
+          "yaw": 90.02632141113281,
+          "roll": 0.0016947543481364846
+        },
+        "actor": {
+          "actor_id": 603,
+          "type": "pedestrian",
+          "role": "pedestrian-delayed",
+          "blueprint": "walker.pedestrian.0029",
+          "x": -143.88,
+          "y": 31.04,
+          "z": 0.94,
+          "yaw": 0.03,
+          "dimensions_m": [
+            0.78,
+            1.95,
+            0.42
+          ]
+        },
+        "actor_origin_speed_mps": 1.2402,
+        "actor_moving": true,
+        "actor_origin_distance_m": 5.466
+      },
+      "closest_overlapping_elevation": {
+        "frame": 5248,
+        "time_s": 303.6,
+        "progress_m": 1272.21,
+        "ego_speed_mps": 2.534,
+        "active_event": "pedestrian-delayed",
+        "inspector": "./inspect.html?run=urban-pace&frame=5248&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=5248&camera=chase",
+        "ego_pose": {
+          "x": -149.02206420898438,
+          "y": 26.591096878051758,
+          "z": 0.00569874094799161,
+          "pitch": -0.12592807412147522,
+          "yaw": 90.02885437011719,
+          "roll": 0.0016948949778452516
+        },
+        "actor": {
+          "actor_id": 603,
+          "type": "pedestrian",
+          "role": "pedestrian-delayed",
+          "blueprint": "walker.pedestrian.0029",
+          "x": -144.88,
+          "y": 31.03,
+          "z": 0.94,
+          "yaw": 0.03,
+          "dimensions_m": [
+            0.78,
+            1.95,
+            0.42
+          ]
+        },
+        "actor_origin_speed_mps": 1.24,
+        "actor_moving": true,
+        "ground_projection_gap_m": 3.4037,
+        "vertical_overlap_m": 1.5349,
+        "geometry": "matched_capture_blueprint_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 5248,
+        "time_s": 303.6,
+        "progress_m": 1272.21,
+        "ego_speed_mps": 2.534,
+        "active_event": "pedestrian-delayed",
+        "inspector": "./inspect.html?run=urban-pace&frame=5248&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=5248&camera=chase",
+        "ego_pose": {
+          "x": -149.02206420898438,
+          "y": 26.591096878051758,
+          "z": 0.00569874094799161,
+          "pitch": -0.12592807412147522,
+          "yaw": 90.02885437011719,
+          "roll": 0.0016948949778452516
+        },
+        "actor": {
+          "actor_id": 603,
+          "type": "pedestrian",
+          "role": "pedestrian-delayed",
+          "blueprint": "walker.pedestrian.0029",
+          "x": -144.88,
+          "y": 31.03,
+          "z": 0.94,
+          "yaw": 0.03,
+          "dimensions_m": [
+            0.78,
+            1.95,
+            0.42
+          ]
+        },
+        "actor_origin_speed_mps": 1.24,
+        "actor_moving": true,
+        "ground_projection_gap_m": 3.4037,
+        "vertical_overlap_m": 1.5349,
+        "geometry": "matched_capture_blueprint_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 604,
+      "type": "car",
+      "role": "lead",
+      "blueprint": "vehicle.tesla.model3",
+      "x": 90.08,
+      "y": 193.31,
+      "z": 1.08,
+      "yaw": 179.86,
+      "dimensions_m": [
+        4.69,
+        1.44,
+        2.09
+      ],
+      "samples": {
+        "calibrated_actor_yaw_only": 1072,
+        "vertical_overlap": 1040,
+        "vertical_disjoint": 32
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 3576,
+        "time_s": 136.4,
+        "progress_m": 568.144,
+        "ego_speed_mps": 0.004,
+        "active_event": "lead",
+        "inspector": "./inspect.html?run=urban-pace&frame=3576&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3576&camera=chase",
+        "ego_pose": {
+          "x": 98.5748519897461,
+          "y": 193.28515625,
+          "z": 1.2766069173812866,
+          "pitch": -1.5564252138137817,
+          "yaw": 179.85452270507812,
+          "roll": -0.0034930568654090166
+        },
+        "actor": {
+          "actor_id": 604,
+          "type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 90.08,
+          "y": 193.31,
+          "z": 1.08,
+          "yaw": 179.86,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "actor_origin_distance_m": 8.4949
+      },
+      "closest_overlapping_elevation": {
+        "frame": 3574,
+        "time_s": 136.2,
+        "progress_m": 568.142,
+        "ego_speed_mps": 0.017,
+        "active_event": "lead",
+        "inspector": "./inspect.html?run=urban-pace&frame=3574&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3574&camera=chase",
+        "ego_pose": {
+          "x": 98.57695007324219,
+          "y": 193.28514099121094,
+          "z": 1.277967095375061,
+          "pitch": -1.8551454544067383,
+          "yaw": 179.8545684814453,
+          "roll": -0.0032312083058059216
+        },
+        "actor": {
+          "actor_id": 604,
+          "type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 90.08,
+          "y": 193.31,
+          "z": 1.08,
+          "yaw": 179.86,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 3.5955,
+        "vertical_overlap_m": 1.3214,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 3583,
+        "time_s": 137.1,
+        "progress_m": 568.144,
+        "ego_speed_mps": 0.0,
+        "active_event": "lead",
+        "inspector": "./inspect.html?run=urban-pace&frame=3583&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3583&camera=chase",
+        "ego_pose": {
+          "x": 98.5748519897461,
+          "y": 193.28515625,
+          "z": 1.2766069173812866,
+          "pitch": -1.5564252138137817,
+          "yaw": 179.85452270507812,
+          "roll": -0.0034930568654090166
+        },
+        "actor": {
+          "actor_id": 604,
+          "type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 89.42,
+          "y": 193.31,
+          "z": 1.07,
+          "yaw": 179.86,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 1.28,
+        "actor_moving": true,
+        "ground_projection_gap_m": 4.261,
+        "vertical_overlap_m": 1.3,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": {
+        "frame": 3432,
+        "time_s": 122.0,
+        "progress_m": 508.11,
+        "ego_speed_mps": 10.995,
+        "active_event": "barrier",
+        "inspector": "./inspect.html?run=urban-pace&frame=3432&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3432&camera=chase",
+        "ego_pose": {
+          "x": 158.60694885253906,
+          "y": 193.04002380371094,
+          "z": 2.6211843490600586,
+          "pitch": -1.6556775569915771,
+          "yaw": 176.76698303222656,
+          "roll": -0.2598739266395569
+        },
+        "actor": {
+          "actor_id": 604,
+          "type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 90.08,
+          "y": 193.31,
+          "z": 1.08,
+          "yaw": 179.86,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 63.5854,
+        "vertical_gap_m": 0.0262
+      },
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 605,
+      "type": "car",
+      "role": "braking",
+      "blueprint": "vehicle.tesla.model3",
+      "x": -78.02,
+      "y": -56.72,
+      "z": -0.67,
+      "yaw": -90.16,
+      "dimensions_m": [
+        4.69,
+        1.44,
+        2.09
+      ],
+      "samples": {
+        "calibrated_actor_yaw_only": 607,
+        "vertical_overlap": 607
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 4542,
+        "time_s": 233.0,
+        "progress_m": 972.638,
+        "ego_speed_mps": 1.678,
+        "active_event": "braking",
+        "inspector": "./inspect.html?run=urban-pace&frame=4542&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4542&camera=chase",
+        "ego_pose": {
+          "x": -78.0073471069336,
+          "y": -52.1930046081543,
+          "z": -0.6010403037071228,
+          "pitch": -1.4829031229019165,
+          "yaw": -90.1485824584961,
+          "roll": 0.0027367123402655125
+        },
+        "actor": {
+          "actor_id": 605,
+          "type": "car",
+          "role": "braking",
+          "blueprint": "vehicle.tesla.model3",
+          "x": -78.03,
+          "y": -61.35,
+          "z": -0.74,
+          "yaw": -90.16,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 0.56,
+        "actor_moving": false,
+        "actor_origin_distance_m": 9.157
+      },
+      "closest_overlapping_elevation": {
+        "frame": 4542,
+        "time_s": 233.0,
+        "progress_m": 972.638,
+        "ego_speed_mps": 1.678,
+        "active_event": "braking",
+        "inspector": "./inspect.html?run=urban-pace&frame=4542&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4542&camera=chase",
+        "ego_pose": {
+          "x": -78.0073471069336,
+          "y": -52.1930046081543,
+          "z": -0.6010403037071228,
+          "pitch": -1.4829031229019165,
+          "yaw": -90.1485824584961,
+          "roll": 0.0027367123402655125
+        },
+        "actor": {
+          "actor_id": 605,
+          "type": "car",
+          "role": "braking",
+          "blueprint": "vehicle.tesla.model3",
+          "x": -78.03,
+          "y": -61.35,
+          "z": -0.74,
+          "yaw": -90.16,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 0.56,
+        "actor_moving": false,
+        "ground_projection_gap_m": 4.2649,
+        "vertical_overlap_m": 1.3645,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 4544,
+        "time_s": 233.2,
+        "progress_m": 972.934,
+        "ego_speed_mps": 1.325,
+        "active_event": "braking",
+        "inspector": "./inspect.html?run=urban-pace&frame=4544&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4544&camera=chase",
+        "ego_pose": {
+          "x": -78.00814819335938,
+          "y": -52.488407135009766,
+          "z": -0.6056026220321655,
+          "pitch": -1.2413588762283325,
+          "yaw": -90.1471176147461,
+          "roll": 0.0029141332488507032
+        },
+        "actor": {
+          "actor_id": 605,
+          "type": "car",
+          "role": "braking",
+          "blueprint": "vehicle.tesla.model3",
+          "x": -78.03,
+          "y": -61.73,
+          "z": -0.74,
+          "yaw": -90.16,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 1.28,
+        "actor_moving": true,
+        "ground_projection_gap_m": 4.3557,
+        "vertical_overlap_m": 1.3588,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 606,
+      "type": "van",
+      "role": "occluder",
+      "blueprint": "vehicle.sprinter.mercedes",
+      "x": 83.2,
+      "y": 136.91,
+      "z": 0.0,
+      "yaw": -0.82,
+      "dimensions_m": [
+        5.92,
+        2.73,
+        1.99
+      ],
+      "samples": {
+        "calibrated_actor_yaw_only": 801,
+        "vertical_overlap": 801
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 96
+      },
+      "closest_actor_origin": {
+        "frame": 2628,
+        "time_s": 41.6,
+        "progress_m": 141.994,
+        "ego_speed_mps": 1.327,
+        "active_event": "occluded",
+        "inspector": "./inspect.html?run=urban-pace&frame=2628&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2628&camera=chase",
+        "ego_pose": {
+          "x": 83.155517578125,
+          "y": 133.40606689453125,
+          "z": 0.07369131594896317,
+          "pitch": 0.10741216689348221,
+          "yaw": -0.8192179799079895,
+          "roll": 0.01832735352218151
+        },
+        "actor": {
+          "actor_id": 606,
+          "type": "van",
+          "role": "occluder",
+          "blueprint": "vehicle.sprinter.mercedes",
+          "x": 83.2,
+          "y": 136.91,
+          "z": 0.0,
+          "yaw": -0.82,
+          "dimensions_m": [
+            5.92,
+            2.73,
+            1.99
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "actor_origin_distance_m": 3.5042
+      },
+      "closest_overlapping_elevation": {
+        "frame": 2575,
+        "time_s": 36.3,
+        "progress_m": 140.491,
+        "ego_speed_mps": 0.005,
+        "active_event": "occluded",
+        "inspector": "./inspect.html?run=urban-pace&frame=2575&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2575&camera=chase",
+        "ego_pose": {
+          "x": 81.65278625488281,
+          "y": 133.42752075195312,
+          "z": 0.066014863550663,
+          "pitch": 0.055854298174381256,
+          "yaw": -0.8025190830230713,
+          "roll": 0.01830500178039074
+        },
+        "actor": {
+          "actor_id": 606,
+          "type": "van",
+          "role": "occluder",
+          "blueprint": "vehicle.sprinter.mercedes",
+          "x": 83.2,
+          "y": 136.91,
+          "z": 0.0,
+          "yaw": -0.82,
+          "dimensions_m": [
+            5.92,
+            2.73,
+            1.99
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 1.5944,
+        "vertical_overlap_m": 1.5295,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 607,
+      "type": "pedestrian",
+      "role": "occluded",
+      "blueprint": "walker.pedestrian.0045",
+      "x": 88.23,
+      "y": 139.47,
+      "z": 1.2,
+      "yaw": -90.82,
+      "dimensions_m": [
+        0.71,
+        1.85,
+        0.38
+      ],
+      "samples": {
+        "matched_capture_blueprint_yaw_only": 785,
+        "vertical_overlap": 762,
+        "vertical_disjoint": 23
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 2640,
+        "time_s": 42.8,
+        "progress_m": 144.52,
+        "ego_speed_mps": 3.053,
+        "active_event": "occluded",
+        "inspector": "./inspect.html?run=urban-pace&frame=2640&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2640&camera=chase",
+        "ego_pose": {
+          "x": 85.68174743652344,
+          "y": 133.36997985839844,
+          "z": 0.08815153688192368,
+          "pitch": 0.20678333938121796,
+          "yaw": -0.8244375586509705,
+          "roll": 0.018646592274308205
+        },
+        "actor": {
+          "actor_id": 607,
+          "type": "pedestrian",
+          "role": "occluded",
+          "blueprint": "walker.pedestrian.0045",
+          "x": 88.07,
+          "y": 127.82,
+          "z": 1.04,
+          "yaw": -90.82,
+          "dimensions_m": [
+            0.71,
+            1.85,
+            0.38
+          ]
+        },
+        "actor_origin_speed_mps": 1.2402,
+        "actor_moving": true,
+        "actor_origin_distance_m": 6.042
+      },
+      "closest_overlapping_elevation": {
+        "frame": 2625,
+        "time_s": 41.3,
+        "progress_m": 141.617,
+        "ego_speed_mps": 1.208,
+        "active_event": "occluded",
+        "inspector": "./inspect.html?run=urban-pace&frame=2625&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2625&camera=chase",
+        "ego_pose": {
+          "x": 82.7785415649414,
+          "y": 133.4114532470703,
+          "z": 0.07154438644647598,
+          "pitch": 0.1002938449382782,
+          "yaw": -0.8154869675636292,
+          "roll": 0.018334753811359406
+        },
+        "actor": {
+          "actor_id": 607,
+          "type": "pedestrian",
+          "role": "occluded",
+          "blueprint": "walker.pedestrian.0045",
+          "x": 88.1,
+          "y": 129.69,
+          "z": 1.04,
+          "yaw": -90.82,
+          "dimensions_m": [
+            0.71,
+            1.85,
+            0.38
+          ]
+        },
+        "actor_origin_speed_mps": 1.24,
+        "actor_moving": true,
+        "ground_projection_gap_m": 3.5913,
+        "vertical_overlap_m": 1.5194,
+        "geometry": "matched_capture_blueprint_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 2625,
+        "time_s": 41.3,
+        "progress_m": 141.617,
+        "ego_speed_mps": 1.208,
+        "active_event": "occluded",
+        "inspector": "./inspect.html?run=urban-pace&frame=2625&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2625&camera=chase",
+        "ego_pose": {
+          "x": 82.7785415649414,
+          "y": 133.4114532470703,
+          "z": 0.07154438644647598,
+          "pitch": 0.1002938449382782,
+          "yaw": -0.8154869675636292,
+          "roll": 0.018334753811359406
+        },
+        "actor": {
+          "actor_id": 607,
+          "type": "pedestrian",
+          "role": "occluded",
+          "blueprint": "walker.pedestrian.0045",
+          "x": 88.1,
+          "y": 129.69,
+          "z": 1.04,
+          "yaw": -90.82,
+          "dimensions_m": [
+            0.71,
+            1.85,
+            0.38
+          ]
+        },
+        "actor_origin_speed_mps": 1.24,
+        "actor_moving": true,
+        "ground_projection_gap_m": 3.5913,
+        "vertical_overlap_m": 1.5194,
+        "geometry": "matched_capture_blueprint_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": {
+        "frame": 3454,
+        "time_s": 124.2,
+        "progress_m": 528.139,
+        "ego_speed_mps": 6.392,
+        "active_event": "barrier",
+        "inspector": "./inspect.html?run=urban-pace&frame=3454&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3454&camera=chase",
+        "ego_pose": {
+          "x": 138.5796661376953,
+          "y": 193.18516540527344,
+          "z": 2.1665985584259033,
+          "pitch": -1.7503000497817993,
+          "yaw": 179.8514404296875,
+          "roll": -0.005497942212969065
+        },
+        "actor": {
+          "actor_id": 607,
+          "type": "pedestrian",
+          "role": "occluded",
+          "blueprint": "walker.pedestrian.0045",
+          "x": 88.0,
+          "y": 122.83,
+          "z": 1.19,
+          "yaw": -90.82,
+          "dimensions_m": [
+            0.71,
+            1.85,
+            0.38
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 84.1073,
+        "vertical_gap_m": 0.0112
+      },
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 608,
+      "type": "car",
+      "role": "oncoming",
+      "blueprint": "vehicle.mini.cooper",
+      "x": -84.3,
+      "y": -165.62,
+      "z": 0.03,
+      "yaw": 93.27,
+      "dimensions_m": [
+        4.55,
+        1.77,
+        2.1
+      ],
+      "samples": {
+        "calibrated_actor_yaw_only": 484,
+        "vertical_overlap": 484
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 4740,
+        "time_s": 252.8,
+        "progress_m": 1043.094,
+        "ego_speed_mps": 3.062,
+        "active_event": "left",
+        "inspector": "./inspect.html?run=urban-pace&frame=4740&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4740&camera=chase",
+        "ego_pose": {
+          "x": -78.20015716552734,
+          "y": -122.64862823486328,
+          "z": -0.08719782531261444,
+          "pitch": 0.5303021669387817,
+          "yaw": -90.1712875366211,
+          "roll": -0.01442083902657032
+        },
+        "actor": {
+          "actor_id": 608,
+          "type": "car",
+          "role": "oncoming",
+          "blueprint": "vehicle.mini.cooper",
+          "x": -84.88,
+          "y": -122.98,
+          "z": -0.06,
+          "yaw": 90.77,
+          "dimensions_m": [
+            4.55,
+            1.77,
+            2.1
+          ]
+        },
+        "actor_origin_speed_mps": 5.6206,
+        "actor_moving": true,
+        "actor_origin_distance_m": 6.6881
+      },
+      "closest_overlapping_elevation": {
+        "frame": 4741,
+        "time_s": 252.9,
+        "progress_m": 1043.403,
+        "ego_speed_mps": 3.103,
+        "active_event": "left",
+        "inspector": "./inspect.html?run=urban-pace&frame=4741&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4741&camera=chase",
+        "ego_pose": {
+          "x": -78.20140838623047,
+          "y": -122.95701599121094,
+          "z": -0.08316490054130554,
+          "pitch": 0.5256790518760681,
+          "yaw": -90.18492889404297,
+          "roll": -0.014166233129799366
+        },
+        "actor": {
+          "actor_id": 608,
+          "type": "car",
+          "role": "oncoming",
+          "blueprint": "vehicle.mini.cooper",
+          "x": -84.88,
+          "y": -122.42,
+          "z": -0.06,
+          "yaw": 90.77,
+          "dimensions_m": [
+            4.55,
+            1.77,
+            2.1
+          ]
+        },
+        "actor_origin_speed_mps": 5.6203,
+        "actor_moving": true,
+        "ground_projection_gap_m": 4.6738,
+        "vertical_overlap_m": 1.5213,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 4741,
+        "time_s": 252.9,
+        "progress_m": 1043.403,
+        "ego_speed_mps": 3.103,
+        "active_event": "left",
+        "inspector": "./inspect.html?run=urban-pace&frame=4741&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4741&camera=chase",
+        "ego_pose": {
+          "x": -78.20140838623047,
+          "y": -122.95701599121094,
+          "z": -0.08316490054130554,
+          "pitch": 0.5256790518760681,
+          "yaw": -90.18492889404297,
+          "roll": -0.014166233129799366
+        },
+        "actor": {
+          "actor_id": 608,
+          "type": "car",
+          "role": "oncoming",
+          "blueprint": "vehicle.mini.cooper",
+          "x": -84.88,
+          "y": -122.42,
+          "z": -0.06,
+          "yaw": 90.77,
+          "dimensions_m": [
+            4.55,
+            1.77,
+            2.1
+          ]
+        },
+        "actor_origin_speed_mps": 5.6203,
+        "actor_moving": true,
+        "ground_projection_gap_m": 4.6738,
+        "vertical_overlap_m": 1.5213,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 615,
+      "type": "cyclist",
+      "role": "cyclist",
+      "blueprint": "vehicle.bh.crossbike",
+      "x": -148.98,
+      "y": -44.97,
+      "z": 0.05,
+      "yaw": 90.04,
+      "dimensions_m": [
+        1.51,
+        1.61,
+        0.87
+      ],
+      "samples": {
+        "calibrated_actor_yaw_only": 883,
+        "vertical_overlap": 883
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 5116,
+        "time_s": 290.4,
+        "progress_m": 1235.616,
+        "ego_speed_mps": 3.272,
+        "active_event": "pedestrian-delayed",
+        "inspector": "./inspect.html?run=urban-pace&frame=5116&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=5116&camera=chase",
+        "ego_pose": {
+          "x": -149.00282287597656,
+          "y": -10.00245475769043,
+          "z": 0.00565135246142745,
+          "pitch": -0.2364887148141861,
+          "yaw": 90.03010559082031,
+          "roll": -0.019433433189988136
+        },
+        "actor": {
+          "actor_id": 615,
+          "type": "cyclist",
+          "role": "cyclist",
+          "blueprint": "vehicle.bh.crossbike",
+          "x": -143.93,
+          "y": -2.69,
+          "z": -0.01,
+          "yaw": 33.14,
+          "dimensions_m": [
+            1.51,
+            1.61,
+            0.87
+          ]
+        },
+        "actor_origin_speed_mps": 2.9182,
+        "actor_moving": true,
+        "actor_origin_distance_m": 8.8997
+      },
+      "closest_overlapping_elevation": {
+        "frame": 5113,
+        "time_s": 290.1,
+        "progress_m": 1234.648,
+        "ego_speed_mps": 3.176,
+        "active_event": "pedestrian-delayed",
+        "inspector": "./inspect.html?run=urban-pace&frame=5113&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=5113&camera=chase",
+        "ego_pose": {
+          "x": -149.00234985351562,
+          "y": -10.970698356628418,
+          "z": 0.005680744536221027,
+          "pitch": -0.22214068472385406,
+          "yaw": 90.02821350097656,
+          "roll": -0.019786475226283073
+        },
+        "actor": {
+          "actor_id": 615,
+          "type": "cyclist",
+          "role": "cyclist",
+          "blueprint": "vehicle.bh.crossbike",
+          "x": -144.67,
+          "y": -3.17,
+          "z": -0.01,
+          "yaw": 38.09,
+          "dimensions_m": [
+            1.51,
+            1.61,
+            0.87
+          ]
+        },
+        "actor_origin_speed_mps": 2.9116,
+        "actor_moving": true,
+        "ground_projection_gap_m": 5.4968,
+        "vertical_overlap_m": 1.5437,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 5113,
+        "time_s": 290.1,
+        "progress_m": 1234.648,
+        "ego_speed_mps": 3.176,
+        "active_event": "pedestrian-delayed",
+        "inspector": "./inspect.html?run=urban-pace&frame=5113&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=5113&camera=chase",
+        "ego_pose": {
+          "x": -149.00234985351562,
+          "y": -10.970698356628418,
+          "z": 0.005680744536221027,
+          "pitch": -0.22214068472385406,
+          "yaw": 90.02821350097656,
+          "roll": -0.019786475226283073
+        },
+        "actor": {
+          "actor_id": 615,
+          "type": "cyclist",
+          "role": "cyclist",
+          "blueprint": "vehicle.bh.crossbike",
+          "x": -144.67,
+          "y": -3.17,
+          "z": -0.01,
+          "yaw": 38.09,
+          "dimensions_m": [
+            1.51,
+            1.61,
+            0.87
+          ]
+        },
+        "actor_origin_speed_mps": 2.9116,
+        "actor_moving": true,
+        "ground_projection_gap_m": 5.4968,
+        "vertical_overlap_m": 1.5437,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 616,
+      "type": "bus",
+      "role": "stopped_bus",
+      "blueprint": "vehicle.fuso.mitsubishi",
+      "x": -74.23,
+      "y": 51.28,
+      "z": 0.67,
+      "yaw": -90.16,
+      "dimensions_m": [
+        8.18,
+        3.41,
+        3.16
+      ],
+      "samples": {
+        "calibrated_actor_yaw_only": 1066,
+        "vertical_overlap": 1066
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 71,
+        "2.0": 82
+      },
+      "closest_actor_origin": {
+        "frame": 4290,
+        "time_s": 207.8,
+        "progress_m": 869.091,
+        "ego_speed_mps": 1.702,
+        "active_event": "bus",
+        "inspector": "./inspect.html?run=urban-pace&frame=4290&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4290&camera=chase",
+        "ego_pose": {
+          "x": -77.72427368164062,
+          "y": 51.35451126098633,
+          "z": 0.6262531280517578,
+          "pitch": -1.7850127220153809,
+          "yaw": -90.16886138916016,
+          "roll": 0.0018311016028746963
+        },
+        "actor": {
+          "actor_id": 616,
+          "type": "bus",
+          "role": "stopped_bus",
+          "blueprint": "vehicle.fuso.mitsubishi",
+          "x": -74.23,
+          "y": 51.28,
+          "z": 0.59,
+          "yaw": -90.16,
+          "dimensions_m": [
+            8.18,
+            3.41,
+            3.16
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "actor_origin_distance_m": 3.4951
+      },
+      "closest_overlapping_elevation": {
+        "frame": 4310,
+        "time_s": 209.8,
+        "progress_m": 872.956,
+        "ego_speed_mps": 2.816,
+        "active_event": "bus",
+        "inspector": "./inspect.html?run=urban-pace&frame=4310&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4310&camera=chase",
+        "ego_pose": {
+          "x": -77.73481750488281,
+          "y": 47.4893913269043,
+          "z": 0.5193827748298645,
+          "pitch": -1.8412373065948486,
+          "yaw": -90.1697769165039,
+          "roll": 0.0020423156674951315
+        },
+        "actor": {
+          "actor_id": 616,
+          "type": "bus",
+          "role": "stopped_bus",
+          "blueprint": "vehicle.fuso.mitsubishi",
+          "x": -74.23,
+          "y": 51.28,
+          "z": 0.59,
+          "yaw": -90.16,
+          "dimensions_m": [
+            8.18,
+            3.41,
+            3.16
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 0.9215,
+        "vertical_overlap_m": 1.5319,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 619,
+      "type": "pedestrian",
+      "role": "background",
+      "blueprint": "walker.pedestrian.0026",
+      "x": 154.17,
+      "y": 110.19,
+      "z": 1.48,
+      "yaw": 126.63,
+      "dimensions_m": [
+        0.72,
+        1.84,
+        0.37
+      ],
+      "samples": {
+        "matched_capture_blueprint_yaw_only": 1089,
+        "vertical_overlap": 1043,
+        "vertical_disjoint": 46
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 2744,
+        "time_s": 53.2,
+        "progress_m": 222.332,
+        "ego_speed_mps": 8.377,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=2744&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2744&camera=chase",
+        "ego_pose": {
+          "x": 159.77281188964844,
+          "y": 119.64415740966797,
+          "z": 0.42318156361579895,
+          "pitch": -0.5373902916908264,
+          "yaw": -45.82794952392578,
+          "roll": 0.39708754420280457
+        },
+        "actor": {
+          "actor_id": 619,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0026",
+          "x": 152.12,
+          "y": 112.61,
+          "z": 1.51,
+          "yaw": 130.24,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.37
+          ]
+        },
+        "actor_origin_speed_mps": 1.0653,
+        "actor_moving": true,
+        "actor_origin_distance_m": 10.3945
+      },
+      "closest_overlapping_elevation": {
+        "frame": 2745,
+        "time_s": 53.3,
+        "progress_m": 223.171,
+        "ego_speed_mps": 8.38,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=2745&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2745&camera=chase",
+        "ego_pose": {
+          "x": 160.33277893066406,
+          "y": 119.02129364013672,
+          "z": 0.4188172221183777,
+          "pitch": -0.5576529502868652,
+          "yaw": -47.00254821777344,
+          "roll": 0.40055596828460693
+        },
+        "actor": {
+          "actor_id": 619,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0026",
+          "x": 152.05,
+          "y": 112.69,
+          "z": 1.51,
+          "yaw": 130.24,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.37
+          ]
+        },
+        "actor_origin_speed_mps": 1.05,
+        "actor_moving": true,
+        "ground_projection_gap_m": 9.0741,
+        "vertical_overlap_m": 1.4093,
+        "geometry": "matched_capture_blueprint_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 2745,
+        "time_s": 53.3,
+        "progress_m": 223.171,
+        "ego_speed_mps": 8.38,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=2745&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2745&camera=chase",
+        "ego_pose": {
+          "x": 160.33277893066406,
+          "y": 119.02129364013672,
+          "z": 0.4188172221183777,
+          "pitch": -0.5576529502868652,
+          "yaw": -47.00254821777344,
+          "roll": 0.40055596828460693
+        },
+        "actor": {
+          "actor_id": 619,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0026",
+          "x": 152.05,
+          "y": 112.69,
+          "z": 1.51,
+          "yaw": 130.24,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.37
+          ]
+        },
+        "actor_origin_speed_mps": 1.05,
+        "actor_moving": true,
+        "ground_projection_gap_m": 9.0741,
+        "vertical_overlap_m": 1.4093,
+        "geometry": "matched_capture_blueprint_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": {
+        "frame": 3437,
+        "time_s": 122.5,
+        "progress_m": 513.609,
+        "ego_speed_mps": 10.801,
+        "active_event": "barrier",
+        "inspector": "./inspect.html?run=urban-pace&frame=3437&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3437&camera=chase",
+        "ego_pose": {
+          "x": 153.10951232910156,
+          "y": 193.1588134765625,
+          "z": 2.4898760318756104,
+          "pitch": -1.6644940376281738,
+          "yaw": 179.5393524169922,
+          "roll": -0.14245665073394775
+        },
+        "actor": {
+          "actor_id": 619,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0026",
+          "x": 151.69,
+          "y": 113.11,
+          "z": 1.51,
+          "yaw": 130.24,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.37
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 78.7665,
+        "vertical_gap_m": 0.0129
+      },
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 620,
+      "type": "pedestrian",
+      "role": "background",
+      "blueprint": "walker.pedestrian.0046",
+      "x": 205.47,
+      "y": 171.35,
+      "z": 3.24,
+      "yaw": 143.27,
+      "dimensions_m": [
+        0.72,
+        1.84,
+        0.4
+      ],
+      "samples": {
+        "calibrated_actor_yaw_only": 607,
+        "vertical_disjoint": 344,
+        "vertical_overlap": 263
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 3383,
+        "time_s": 117.1,
+        "progress_m": 458.298,
+        "ego_speed_mps": 10.589,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=3383&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3383&camera=chase",
+        "ego_pose": {
+          "x": 205.635009765625,
+          "y": 178.3561248779297,
+          "z": 2.2462871074676514,
+          "pitch": 1.122244119644165,
+          "yaw": 146.65940856933594,
+          "roll": -0.49002423882484436
+        },
+        "actor": {
+          "actor_id": 620,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0046",
+          "x": 202.72,
+          "y": 173.22,
+          "z": 3.33,
+          "yaw": 145.81,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.4
+          ]
+        },
+        "actor_origin_speed_mps": 1.0373,
+        "actor_moving": true,
+        "actor_origin_distance_m": 5.9057
+      },
+      "closest_overlapping_elevation": {
+        "frame": 3384,
+        "time_s": 117.2,
+        "progress_m": 459.358,
+        "ego_speed_mps": 10.607,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=3384&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3384&camera=chase",
+        "ego_pose": {
+          "x": 204.73594665527344,
+          "y": 178.9162139892578,
+          "z": 2.2711844444274902,
+          "pitch": 1.0778541564941406,
+          "yaw": 147.64450073242188,
+          "roll": -0.4299197196960449
+        },
+        "actor": {
+          "actor_id": 620,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0046",
+          "x": 202.63,
+          "y": 173.28,
+          "z": 3.34,
+          "yaw": 145.81,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.4
+          ]
+        },
+        "actor_origin_speed_mps": 1.0486,
+        "actor_moving": true,
+        "ground_projection_gap_m": 4.5917,
+        "vertical_overlap_m": 1.4503,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 3384,
+        "time_s": 117.2,
+        "progress_m": 459.358,
+        "ego_speed_mps": 10.607,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=3384&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3384&camera=chase",
+        "ego_pose": {
+          "x": 204.73594665527344,
+          "y": 178.9162139892578,
+          "z": 2.2711844444274902,
+          "pitch": 1.0778541564941406,
+          "yaw": 147.64450073242188,
+          "roll": -0.4299197196960449
+        },
+        "actor": {
+          "actor_id": 620,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0046",
+          "x": 202.63,
+          "y": 173.28,
+          "z": 3.34,
+          "yaw": 145.81,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.4
+          ]
+        },
+        "actor_origin_speed_mps": 1.0486,
+        "actor_moving": true,
+        "ground_projection_gap_m": 4.5917,
+        "vertical_overlap_m": 1.4503,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": {
+        "frame": 3292,
+        "time_s": 108.0,
+        "progress_m": 393.001,
+        "ego_speed_mps": 1.418,
+        "active_event": "roadworks",
+        "inspector": "./inspect.html?run=urban-pace&frame=3292&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3292&camera=chase",
+        "ego_pose": {
+          "x": 228.67515563964844,
+          "y": 120.98423767089844,
+          "z": 0.7322644591331482,
+          "pitch": 0.9141650199890137,
+          "yaw": 91.39822387695312,
+          "roll": 0.001664021983742714
+        },
+        "actor": {
+          "actor_id": 620,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0046",
+          "x": 205.47,
+          "y": 171.35,
+          "z": 3.24,
+          "yaw": 143.27,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.4
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 52.493,
+        "vertical_gap_m": 0.0023
+      },
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 621,
+      "type": "pedestrian",
+      "role": "background",
+      "blueprint": "walker.pedestrian.0046",
+      "x": -68.35,
+      "y": 162.12,
+      "z": 1.1,
+      "yaw": -98.42,
+      "dimensions_m": [
+        0.72,
+        1.84,
+        0.4
+      ],
+      "samples": {
+        "calibrated_actor_yaw_only": 902,
+        "vertical_overlap": 902
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 4033,
+        "time_s": 182.1,
+        "progress_m": 761.445,
+        "ego_speed_mps": 7.017,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=4033&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4033&camera=chase",
+        "ego_pose": {
+          "x": -74.5416030883789,
+          "y": 158.71658325195312,
+          "z": 0.005302813835442066,
+          "pitch": -0.36697250604629517,
+          "yaw": -94.0943374633789,
+          "roll": -0.2728844881057739
+        },
+        "actor": {
+          "actor_id": 621,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0046",
+          "x": -68.67,
+          "y": 158.73,
+          "z": 1.1,
+          "yaw": -95.45,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.4
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "actor_origin_distance_m": 5.8716
+      },
+      "closest_overlapping_elevation": {
+        "frame": 4035,
+        "time_s": 182.3,
+        "progress_m": 762.815,
+        "ego_speed_mps": 6.705,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=4035&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4035&camera=chase",
+        "ego_pose": {
+          "x": -74.58675384521484,
+          "y": 157.3479461669922,
+          "z": 0.005344894714653492,
+          "pitch": -0.38020482659339905,
+          "yaw": -92.53359985351562,
+          "roll": -0.1672772914171219
+        },
+        "actor": {
+          "actor_id": 621,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0046",
+          "x": -68.67,
+          "y": 158.73,
+          "z": 1.1,
+          "yaw": -95.45,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.4
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 4.5502,
+        "vertical_overlap_m": 1.3909,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 4007,
+        "time_s": 179.5,
+        "progress_m": 742.137,
+        "ego_speed_mps": 6.193,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=4007&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4007&camera=chase",
+        "ego_pose": {
+          "x": -69.18970489501953,
+          "y": 177.05044555664062,
+          "z": 0.0055488236248493195,
+          "pitch": -0.13645833730697632,
+          "yaw": -122.1457748413086,
+          "roll": -0.23807552456855774
+        },
+        "actor": {
+          "actor_id": 621,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0046",
+          "x": -68.67,
+          "y": 158.73,
+          "z": 1.1,
+          "yaw": -95.45,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.4
+          ]
+        },
+        "actor_origin_speed_mps": 0.6627,
+        "actor_moving": true,
+        "ground_projection_gap_m": 15.5272,
+        "vertical_overlap_m": 1.3818,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 622,
+      "type": "pedestrian",
+      "role": "background",
+      "blueprint": "walker.pedestrian.0036",
+      "x": -68.75,
+      "y": -99.75,
+      "z": 0.57,
+      "yaw": -90.16,
+      "dimensions_m": [
+        0.69,
+        1.85,
+        0.54
+      ],
+      "samples": {
+        "actor_origin_only": 592
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 4661,
+        "time_s": 244.9,
+        "progress_m": 1025.306,
+        "ego_speed_mps": 5.166,
+        "active_event": "left",
+        "inspector": "./inspect.html?run=urban-pace&frame=4661&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4661&camera=chase",
+        "ego_pose": {
+          "x": -78.1511459350586,
+          "y": -104.86076354980469,
+          "z": -0.40210047364234924,
+          "pitch": 1.0835483074188232,
+          "yaw": -90.15548706054688,
+          "roll": -0.01722804643213749
+        },
+        "actor": {
+          "actor_id": 622,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0036",
+          "x": -68.77,
+          "y": -104.63,
+          "z": 0.69,
+          "yaw": -90.16,
+          "dimensions_m": [
+            0.69,
+            1.85,
+            0.54
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "actor_origin_distance_m": 9.384
+      },
+      "closest_overlapping_elevation": null,
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 623,
+      "type": "pedestrian",
+      "role": "background",
+      "blueprint": "walker.pedestrian.0022",
+      "x": -156.38,
+      "y": -24.97,
+      "z": 1.09,
+      "yaw": 90.03,
+      "dimensions_m": [
+        0.9,
+        1.86,
+        0.87
+      ],
+      "samples": {
+        "actor_origin_only": 783
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 5083,
+        "time_s": 287.1,
+        "progress_m": 1225.481,
+        "ego_speed_mps": 3.112,
+        "active_event": "cyclist",
+        "inspector": "./inspect.html?run=urban-pace&frame=5083&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=5083&camera=chase",
+        "ego_pose": {
+          "x": -148.9978485107422,
+          "y": -20.137950897216797,
+          "z": 0.005669801961630583,
+          "pitch": -0.2642708420753479,
+          "yaw": 90.02149200439453,
+          "roll": 0.001561820856295526
+        },
+        "actor": {
+          "actor_id": 623,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0022",
+          "x": -156.38,
+          "y": -20.14,
+          "z": 1.09,
+          "yaw": 90.03,
+          "dimensions_m": [
+            0.9,
+            1.86,
+            0.87
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "actor_origin_distance_m": 7.3822
+      },
+      "closest_overlapping_elevation": null,
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 624,
+      "type": "car",
+      "role": "background",
+      "blueprint": "vehicle.mini.cooper",
+      "x": 165.08,
+      "y": 104.12,
+      "z": 0.35,
+      "yaw": 109.15,
+      "dimensions_m": [
+        4.55,
+        1.77,
+        2.1
+      ],
+      "samples": {
+        "calibrated_actor_yaw_only": 689,
+        "vertical_overlap": 618,
+        "vertical_disjoint": 71
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 9
+      },
+      "closest_actor_origin": {
+        "frame": 2735,
+        "time_s": 52.3,
+        "progress_m": 214.803,
+        "ego_speed_mps": 8.349,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=2735&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2735&camera=chase",
+        "ego_pose": {
+          "x": 154.20176696777344,
+          "y": 124.68669128417969,
+          "z": 0.4507659077644348,
+          "pitch": -0.3773132264614105,
+          "yaw": -35.13652420043945,
+          "roll": 0.43587419390678406
+        },
+        "actor": {
+          "actor_id": 624,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "x": 152.17,
+          "y": 121.56,
+          "z": 0.47,
+          "yaw": 140.63,
+          "dimensions_m": [
+            4.55,
+            1.77,
+            2.1
+          ]
+        },
+        "actor_origin_speed_mps": 5.0477,
+        "actor_moving": true,
+        "actor_origin_distance_m": 3.7288
+      },
+      "closest_overlapping_elevation": {
+        "frame": 2734,
+        "time_s": 52.2,
+        "progress_m": 213.967,
+        "ego_speed_mps": 8.346,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=2734&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2734&camera=chase",
+        "ego_pose": {
+          "x": 153.5283966064453,
+          "y": 125.17955780029297,
+          "z": 0.4523348808288574,
+          "pitch": -0.3581821918487549,
+          "yaw": -33.94827651977539,
+          "roll": 0.42809250950813293
+        },
+        "actor": {
+          "actor_id": 624,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "x": 152.57,
+          "y": 121.25,
+          "z": 0.47,
+          "yaw": 139.74,
+          "dimensions_m": [
+            4.55,
+            1.77,
+            2.1
+          ]
+        },
+        "actor_origin_speed_mps": 5.0421,
+        "actor_moving": true,
+        "ground_projection_gap_m": 1.5872,
+        "vertical_overlap_m": 1.5264,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 2734,
+        "time_s": 52.2,
+        "progress_m": 213.967,
+        "ego_speed_mps": 8.346,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=2734&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2734&camera=chase",
+        "ego_pose": {
+          "x": 153.5283966064453,
+          "y": 125.17955780029297,
+          "z": 0.4523348808288574,
+          "pitch": -0.3581821918487549,
+          "yaw": -33.94827651977539,
+          "roll": 0.42809250950813293
+        },
+        "actor": {
+          "actor_id": 624,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "x": 152.57,
+          "y": 121.25,
+          "z": 0.47,
+          "yaw": 139.74,
+          "dimensions_m": [
+            4.55,
+            1.77,
+            2.1
+          ]
+        },
+        "actor_origin_speed_mps": 5.0421,
+        "actor_moving": true,
+        "ground_projection_gap_m": 1.5872,
+        "vertical_overlap_m": 1.5264,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": {
+        "frame": 3451,
+        "time_s": 123.9,
+        "progress_m": 526.111,
+        "ego_speed_mps": 7.149,
+        "active_event": "barrier",
+        "inspector": "./inspect.html?run=urban-pace&frame=3451&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3451&camera=chase",
+        "ego_pose": {
+          "x": 140.60781860351562,
+          "y": 193.17996215820312,
+          "z": 2.2116305828094482,
+          "pitch": -1.73216712474823,
+          "yaw": 179.8529052734375,
+          "roll": -0.0030261126812547445
+        },
+        "actor": {
+          "actor_id": 624,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "x": 122.37,
+          "y": 129.33,
+          "z": 0.35,
+          "yaw": 178.37,
+          "dimensions_m": [
+            4.55,
+            1.77,
+            2.1
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 63.39,
+        "vertical_gap_m": 0.0156
+      },
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 625,
+      "type": "car",
+      "role": "background",
+      "blueprint": "vehicle.tesla.model3",
+      "x": 225.55,
+      "y": 162.14,
+      "z": 1.64,
+      "yaw": 118.42,
+      "dimensions_m": [
+        4.69,
+        1.44,
+        2.09
+      ],
+      "samples": {
+        "calibrated_actor_yaw_only": 770,
+        "vertical_overlap": 644,
+        "vertical_disjoint": 126
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 16
+      },
+      "closest_actor_origin": {
+        "frame": 3360,
+        "time_s": 114.8,
+        "progress_m": 433.968,
+        "ego_speed_mps": 10.472,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=3360&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3360&camera=chase",
+        "ego_pose": {
+          "x": 222.2191925048828,
+          "y": 160.91331481933594,
+          "z": 1.6586662530899048,
+          "pitch": 1.1782314777374268,
+          "yaw": 117.78404998779297,
+          "roll": -0.5931435823440552
+        },
+        "actor": {
+          "actor_id": 625,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 225.11,
+          "y": 162.92,
+          "z": 1.66,
+          "yaw": 118.99,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 1.6745,
+        "actor_moving": true,
+        "actor_origin_distance_m": 3.519
+      },
+      "closest_overlapping_elevation": {
+        "frame": 3357,
+        "time_s": 114.5,
+        "progress_m": 430.841,
+        "ego_speed_mps": 10.365,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=3357&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3357&camera=chase",
+        "ego_pose": {
+          "x": 223.64508056640625,
+          "y": 158.13259887695312,
+          "z": 1.5830192565917969,
+          "pitch": 1.1861053705215454,
+          "yaw": 114.02569580078125,
+          "roll": -0.5739344954490662
+        },
+        "actor": {
+          "actor_id": 625,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 225.41,
+          "y": 162.38,
+          "z": 1.65,
+          "yaw": 118.59,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 0.5557,
+        "actor_moving": false,
+        "ground_projection_gap_m": 1.4156,
+        "vertical_overlap_m": 1.44,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 3359,
+        "time_s": 114.7,
+        "progress_m": 432.922,
+        "ego_speed_mps": 10.441,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=3359&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3359&camera=chase",
+        "ego_pose": {
+          "x": 222.7163543701172,
+          "y": 159.99380493164062,
+          "z": 1.6334470510482788,
+          "pitch": 1.1810758113861084,
+          "yaw": 116.52450561523438,
+          "roll": -0.5794838070869446
+        },
+        "actor": {
+          "actor_id": 625,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 225.23,
+          "y": 162.7,
+          "z": 1.66,
+          "yaw": 118.81,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 1.2627,
+        "actor_moving": true,
+        "ground_projection_gap_m": 1.4332,
+        "vertical_overlap_m": 1.44,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": {
+        "frame": 3638,
+        "time_s": 142.6,
+        "progress_m": 586.892,
+        "ego_speed_mps": 5.317,
+        "active_event": "lead",
+        "inspector": "./inspect.html?run=urban-pace&frame=3638&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3638&camera=chase",
+        "ego_pose": {
+          "x": 79.82662963867188,
+          "y": 193.33154296875,
+          "z": 0.8595576286315918,
+          "pitch": -1.536157250404358,
+          "yaw": 179.85784912109375,
+          "roll": -0.025134826079010963
+        },
+        "actor": {
+          "actor_id": 625,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 152.01,
+          "y": 196.69,
+          "z": 2.46,
+          "yaw": 179.77,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 67.4639,
+        "vertical_gap_m": 0.011
+      },
+      "first_projected_overlaps": []
+    },
+    {
+      "actor_id": 626,
+      "type": "car",
+      "role": "background",
+      "blueprint": "vehicle.lincoln.mkz",
+      "x": -145.48,
+      "y": -62.77,
+      "z": 0.23,
+      "yaw": -89.97,
+      "dimensions_m": [
+        4.89,
+        1.52,
+        1.84
+      ],
+      "samples": {
+        "calibrated_actor_yaw_only": 681,
+        "vertical_overlap": 681
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 10
+      },
+      "closest_actor_origin": {
+        "frame": 4954,
+        "time_s": 274.2,
+        "progress_m": 1163.826,
+        "ego_speed_mps": 7.184,
+        "active_event": "cyclist",
+        "inspector": "./inspect.html?run=urban-pace&frame=4954&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4954&camera=chase",
+        "ego_pose": {
+          "x": -148.96592712402344,
+          "y": -81.79296875,
+          "z": 0.4447583556175232,
+          "pitch": -0.9373311996459961,
+          "yaw": 89.986083984375,
+          "roll": 0.0001774498086888343
+        },
+        "actor": {
+          "actor_id": 626,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.lincoln.mkz",
+          "x": -145.47,
+          "y": -81.4,
+          "z": 0.44,
+          "yaw": -89.97,
+          "dimensions_m": [
+            4.89,
+            1.52,
+            1.84
+          ]
+        },
+        "actor_origin_speed_mps": 5.12,
+        "actor_moving": true,
+        "actor_origin_distance_m": 3.5179
+      },
+      "closest_overlapping_elevation": {
+        "frame": 4954,
+        "time_s": 274.2,
+        "progress_m": 1163.826,
+        "ego_speed_mps": 7.184,
+        "active_event": "cyclist",
+        "inspector": "./inspect.html?run=urban-pace&frame=4954&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4954&camera=chase",
+        "ego_pose": {
+          "x": -148.96592712402344,
+          "y": -81.79296875,
+          "z": 0.4447583556175232,
+          "pitch": -0.9373311996459961,
+          "yaw": 89.986083984375,
+          "roll": 0.0001774498086888343
+        },
+        "actor": {
+          "actor_id": 626,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.lincoln.mkz",
+          "x": -145.47,
+          "y": -81.4,
+          "z": 0.44,
+          "yaw": -89.97,
+          "dimensions_m": [
+            4.89,
+            1.52,
+            1.84
+          ]
+        },
+        "actor_origin_speed_mps": 5.12,
+        "actor_moving": true,
+        "ground_projection_gap_m": 1.6564,
+        "vertical_overlap_m": 1.52,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 4954,
+        "time_s": 274.2,
+        "progress_m": 1163.826,
+        "ego_speed_mps": 7.184,
+        "active_event": "cyclist",
+        "inspector": "./inspect.html?run=urban-pace&frame=4954&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4954&camera=chase",
+        "ego_pose": {
+          "x": -148.96592712402344,
+          "y": -81.79296875,
+          "z": 0.4447583556175232,
+          "pitch": -0.9373311996459961,
+          "yaw": 89.986083984375,
+          "roll": 0.0001774498086888343
+        },
+        "actor": {
+          "actor_id": 626,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.lincoln.mkz",
+          "x": -145.47,
+          "y": -81.4,
+          "z": 0.44,
+          "yaw": -89.97,
+          "dimensions_m": [
+            4.89,
+            1.52,
+            1.84
+          ]
+        },
+        "actor_origin_speed_mps": 5.12,
+        "actor_moving": true,
+        "ground_projection_gap_m": 1.6564,
+        "vertical_overlap_m": 1.52,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    }
+  ],
+  "ego_clearance": {
+    "background/car": {
+      "samples": {
+        "calibrated_actor_yaw_only": 2140,
+        "vertical_overlap": 1943,
+        "vertical_disjoint": 197
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 35
+      },
+      "closest_actor_origin": {
+        "frame": 4954,
+        "time_s": 274.2,
+        "progress_m": 1163.826,
+        "ego_speed_mps": 7.184,
+        "active_event": "cyclist",
+        "inspector": "./inspect.html?run=urban-pace&frame=4954&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4954&camera=chase",
+        "ego_pose": {
+          "x": -148.96592712402344,
+          "y": -81.79296875,
+          "z": 0.4447583556175232,
+          "pitch": -0.9373311996459961,
+          "yaw": 89.986083984375,
+          "roll": 0.0001774498086888343
+        },
+        "actor": {
+          "actor_id": 626,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.lincoln.mkz",
+          "x": -145.47,
+          "y": -81.4,
+          "z": 0.44,
+          "yaw": -89.97,
+          "dimensions_m": [
+            4.89,
+            1.52,
+            1.84
+          ]
+        },
+        "actor_origin_speed_mps": 5.12,
+        "actor_moving": true,
+        "actor_origin_distance_m": 3.5179
+      },
+      "closest_overlapping_elevation": {
+        "frame": 3357,
+        "time_s": 114.5,
+        "progress_m": 430.841,
+        "ego_speed_mps": 10.365,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=3357&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3357&camera=chase",
+        "ego_pose": {
+          "x": 223.64508056640625,
+          "y": 158.13259887695312,
+          "z": 1.5830192565917969,
+          "pitch": 1.1861053705215454,
+          "yaw": 114.02569580078125,
+          "roll": -0.5739344954490662
+        },
+        "actor": {
+          "actor_id": 625,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 225.41,
+          "y": 162.38,
+          "z": 1.65,
+          "yaw": 118.59,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 0.5557,
+        "actor_moving": false,
+        "ground_projection_gap_m": 1.4156,
+        "vertical_overlap_m": 1.44,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 3359,
+        "time_s": 114.7,
+        "progress_m": 432.922,
+        "ego_speed_mps": 10.441,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=3359&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3359&camera=chase",
+        "ego_pose": {
+          "x": 222.7163543701172,
+          "y": 159.99380493164062,
+          "z": 1.6334470510482788,
+          "pitch": 1.1810758113861084,
+          "yaw": 116.52450561523438,
+          "roll": -0.5794838070869446
+        },
+        "actor": {
+          "actor_id": 625,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 225.23,
+          "y": 162.7,
+          "z": 1.66,
+          "yaw": 118.81,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 1.2627,
+        "actor_moving": true,
+        "ground_projection_gap_m": 1.4332,
+        "vertical_overlap_m": 1.44,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": {
+        "frame": 3451,
+        "time_s": 123.9,
+        "progress_m": 526.111,
+        "ego_speed_mps": 7.149,
+        "active_event": "barrier",
+        "inspector": "./inspect.html?run=urban-pace&frame=3451&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3451&camera=chase",
+        "ego_pose": {
+          "x": 140.60781860351562,
+          "y": 193.17996215820312,
+          "z": 2.2116305828094482,
+          "pitch": -1.73216712474823,
+          "yaw": 179.8529052734375,
+          "roll": -0.0030261126812547445
+        },
+        "actor": {
+          "actor_id": 624,
+          "type": "car",
+          "role": "background",
+          "blueprint": "vehicle.mini.cooper",
+          "x": 122.37,
+          "y": 129.33,
+          "z": 0.35,
+          "yaw": 178.37,
+          "dimensions_m": [
+            4.55,
+            1.77,
+            2.1
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 63.39,
+        "vertical_gap_m": 0.0156
+      },
+      "first_projected_overlaps": []
+    },
+    "background/pedestrian": {
+      "samples": {
+        "calibrated_actor_yaw_only": 1509,
+        "vertical_overlap": 2208,
+        "matched_capture_blueprint_yaw_only": 1089,
+        "vertical_disjoint": 390,
+        "actor_origin_only": 1375
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 4033,
+        "time_s": 182.1,
+        "progress_m": 761.445,
+        "ego_speed_mps": 7.017,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=4033&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4033&camera=chase",
+        "ego_pose": {
+          "x": -74.5416030883789,
+          "y": 158.71658325195312,
+          "z": 0.005302813835442066,
+          "pitch": -0.36697250604629517,
+          "yaw": -94.0943374633789,
+          "roll": -0.2728844881057739
+        },
+        "actor": {
+          "actor_id": 621,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0046",
+          "x": -68.67,
+          "y": 158.73,
+          "z": 1.1,
+          "yaw": -95.45,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.4
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "actor_origin_distance_m": 5.8716
+      },
+      "closest_overlapping_elevation": {
+        "frame": 4035,
+        "time_s": 182.3,
+        "progress_m": 762.815,
+        "ego_speed_mps": 6.705,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=4035&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4035&camera=chase",
+        "ego_pose": {
+          "x": -74.58675384521484,
+          "y": 157.3479461669922,
+          "z": 0.005344894714653492,
+          "pitch": -0.38020482659339905,
+          "yaw": -92.53359985351562,
+          "roll": -0.1672772914171219
+        },
+        "actor": {
+          "actor_id": 621,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0046",
+          "x": -68.67,
+          "y": 158.73,
+          "z": 1.1,
+          "yaw": -95.45,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.4
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 4.5502,
+        "vertical_overlap_m": 1.3909,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 3384,
+        "time_s": 117.2,
+        "progress_m": 459.358,
+        "ego_speed_mps": 10.607,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=3384&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3384&camera=chase",
+        "ego_pose": {
+          "x": 204.73594665527344,
+          "y": 178.9162139892578,
+          "z": 2.2711844444274902,
+          "pitch": 1.0778541564941406,
+          "yaw": 147.64450073242188,
+          "roll": -0.4299197196960449
+        },
+        "actor": {
+          "actor_id": 620,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0046",
+          "x": 202.63,
+          "y": 173.28,
+          "z": 3.34,
+          "yaw": 145.81,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.4
+          ]
+        },
+        "actor_origin_speed_mps": 1.0486,
+        "actor_moving": true,
+        "ground_projection_gap_m": 4.5917,
+        "vertical_overlap_m": 1.4503,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": {
+        "frame": 3292,
+        "time_s": 108.0,
+        "progress_m": 393.001,
+        "ego_speed_mps": 1.418,
+        "active_event": "roadworks",
+        "inspector": "./inspect.html?run=urban-pace&frame=3292&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3292&camera=chase",
+        "ego_pose": {
+          "x": 228.67515563964844,
+          "y": 120.98423767089844,
+          "z": 0.7322644591331482,
+          "pitch": 0.9141650199890137,
+          "yaw": 91.39822387695312,
+          "roll": 0.001664021983742714
+        },
+        "actor": {
+          "actor_id": 620,
+          "type": "pedestrian",
+          "role": "background",
+          "blueprint": "walker.pedestrian.0046",
+          "x": 205.47,
+          "y": 171.35,
+          "z": 3.24,
+          "yaw": 143.27,
+          "dimensions_m": [
+            0.72,
+            1.84,
+            0.4
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 52.493,
+        "vertical_gap_m": 0.0023
+      },
+      "first_projected_overlaps": []
+    },
+    "staged/bus": {
+      "samples": {
+        "calibrated_actor_yaw_only": 1066,
+        "vertical_overlap": 1066
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 71,
+        "2.0": 82
+      },
+      "closest_actor_origin": {
+        "frame": 4290,
+        "time_s": 207.8,
+        "progress_m": 869.091,
+        "ego_speed_mps": 1.702,
+        "active_event": "bus",
+        "inspector": "./inspect.html?run=urban-pace&frame=4290&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4290&camera=chase",
+        "ego_pose": {
+          "x": -77.72427368164062,
+          "y": 51.35451126098633,
+          "z": 0.6262531280517578,
+          "pitch": -1.7850127220153809,
+          "yaw": -90.16886138916016,
+          "roll": 0.0018311016028746963
+        },
+        "actor": {
+          "actor_id": 616,
+          "type": "bus",
+          "role": "stopped_bus",
+          "blueprint": "vehicle.fuso.mitsubishi",
+          "x": -74.23,
+          "y": 51.28,
+          "z": 0.59,
+          "yaw": -90.16,
+          "dimensions_m": [
+            8.18,
+            3.41,
+            3.16
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "actor_origin_distance_m": 3.4951
+      },
+      "closest_overlapping_elevation": {
+        "frame": 4310,
+        "time_s": 209.8,
+        "progress_m": 872.956,
+        "ego_speed_mps": 2.816,
+        "active_event": "bus",
+        "inspector": "./inspect.html?run=urban-pace&frame=4310&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4310&camera=chase",
+        "ego_pose": {
+          "x": -77.73481750488281,
+          "y": 47.4893913269043,
+          "z": 0.5193827748298645,
+          "pitch": -1.8412373065948486,
+          "yaw": -90.1697769165039,
+          "roll": 0.0020423156674951315
+        },
+        "actor": {
+          "actor_id": 616,
+          "type": "bus",
+          "role": "stopped_bus",
+          "blueprint": "vehicle.fuso.mitsubishi",
+          "x": -74.23,
+          "y": 51.28,
+          "z": 0.59,
+          "yaw": -90.16,
+          "dimensions_m": [
+            8.18,
+            3.41,
+            3.16
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 0.9215,
+        "vertical_overlap_m": 1.5319,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    "staged/car": {
+      "samples": {
+        "calibrated_actor_yaw_only": 2723,
+        "vertical_overlap": 2691,
+        "vertical_disjoint": 32
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 4740,
+        "time_s": 252.8,
+        "progress_m": 1043.094,
+        "ego_speed_mps": 3.062,
+        "active_event": "left",
+        "inspector": "./inspect.html?run=urban-pace&frame=4740&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4740&camera=chase",
+        "ego_pose": {
+          "x": -78.20015716552734,
+          "y": -122.64862823486328,
+          "z": -0.08719782531261444,
+          "pitch": 0.5303021669387817,
+          "yaw": -90.1712875366211,
+          "roll": -0.01442083902657032
+        },
+        "actor": {
+          "actor_id": 608,
+          "type": "car",
+          "role": "oncoming",
+          "blueprint": "vehicle.mini.cooper",
+          "x": -84.88,
+          "y": -122.98,
+          "z": -0.06,
+          "yaw": 90.77,
+          "dimensions_m": [
+            4.55,
+            1.77,
+            2.1
+          ]
+        },
+        "actor_origin_speed_mps": 5.6206,
+        "actor_moving": true,
+        "actor_origin_distance_m": 6.6881
+      },
+      "closest_overlapping_elevation": {
+        "frame": 3574,
+        "time_s": 136.2,
+        "progress_m": 568.142,
+        "ego_speed_mps": 0.017,
+        "active_event": "lead",
+        "inspector": "./inspect.html?run=urban-pace&frame=3574&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3574&camera=chase",
+        "ego_pose": {
+          "x": 98.57695007324219,
+          "y": 193.28514099121094,
+          "z": 1.277967095375061,
+          "pitch": -1.8551454544067383,
+          "yaw": 179.8545684814453,
+          "roll": -0.0032312083058059216
+        },
+        "actor": {
+          "actor_id": 604,
+          "type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 90.08,
+          "y": 193.31,
+          "z": 1.08,
+          "yaw": 179.86,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 3.5955,
+        "vertical_overlap_m": 1.3214,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 3583,
+        "time_s": 137.1,
+        "progress_m": 568.144,
+        "ego_speed_mps": 0.0,
+        "active_event": "lead",
+        "inspector": "./inspect.html?run=urban-pace&frame=3583&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3583&camera=chase",
+        "ego_pose": {
+          "x": 98.5748519897461,
+          "y": 193.28515625,
+          "z": 1.2766069173812866,
+          "pitch": -1.5564252138137817,
+          "yaw": 179.85452270507812,
+          "roll": -0.0034930568654090166
+        },
+        "actor": {
+          "actor_id": 604,
+          "type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 89.42,
+          "y": 193.31,
+          "z": 1.07,
+          "yaw": 179.86,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 1.28,
+        "actor_moving": true,
+        "ground_projection_gap_m": 4.261,
+        "vertical_overlap_m": 1.3,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": {
+        "frame": 3432,
+        "time_s": 122.0,
+        "progress_m": 508.11,
+        "ego_speed_mps": 10.995,
+        "active_event": "barrier",
+        "inspector": "./inspect.html?run=urban-pace&frame=3432&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3432&camera=chase",
+        "ego_pose": {
+          "x": 158.60694885253906,
+          "y": 193.04002380371094,
+          "z": 2.6211843490600586,
+          "pitch": -1.6556775569915771,
+          "yaw": 176.76698303222656,
+          "roll": -0.2598739266395569
+        },
+        "actor": {
+          "actor_id": 604,
+          "type": "car",
+          "role": "lead",
+          "blueprint": "vehicle.tesla.model3",
+          "x": 90.08,
+          "y": 193.31,
+          "z": 1.08,
+          "yaw": 179.86,
+          "dimensions_m": [
+            4.69,
+            1.44,
+            2.09
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 63.5854,
+        "vertical_gap_m": 0.0262
+      },
+      "first_projected_overlaps": []
+    },
+    "staged/cyclist": {
+      "samples": {
+        "calibrated_actor_yaw_only": 883,
+        "vertical_overlap": 883
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 5116,
+        "time_s": 290.4,
+        "progress_m": 1235.616,
+        "ego_speed_mps": 3.272,
+        "active_event": "pedestrian-delayed",
+        "inspector": "./inspect.html?run=urban-pace&frame=5116&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=5116&camera=chase",
+        "ego_pose": {
+          "x": -149.00282287597656,
+          "y": -10.00245475769043,
+          "z": 0.00565135246142745,
+          "pitch": -0.2364887148141861,
+          "yaw": 90.03010559082031,
+          "roll": -0.019433433189988136
+        },
+        "actor": {
+          "actor_id": 615,
+          "type": "cyclist",
+          "role": "cyclist",
+          "blueprint": "vehicle.bh.crossbike",
+          "x": -143.93,
+          "y": -2.69,
+          "z": -0.01,
+          "yaw": 33.14,
+          "dimensions_m": [
+            1.51,
+            1.61,
+            0.87
+          ]
+        },
+        "actor_origin_speed_mps": 2.9182,
+        "actor_moving": true,
+        "actor_origin_distance_m": 8.8997
+      },
+      "closest_overlapping_elevation": {
+        "frame": 5113,
+        "time_s": 290.1,
+        "progress_m": 1234.648,
+        "ego_speed_mps": 3.176,
+        "active_event": "pedestrian-delayed",
+        "inspector": "./inspect.html?run=urban-pace&frame=5113&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=5113&camera=chase",
+        "ego_pose": {
+          "x": -149.00234985351562,
+          "y": -10.970698356628418,
+          "z": 0.005680744536221027,
+          "pitch": -0.22214068472385406,
+          "yaw": 90.02821350097656,
+          "roll": -0.019786475226283073
+        },
+        "actor": {
+          "actor_id": 615,
+          "type": "cyclist",
+          "role": "cyclist",
+          "blueprint": "vehicle.bh.crossbike",
+          "x": -144.67,
+          "y": -3.17,
+          "z": -0.01,
+          "yaw": 38.09,
+          "dimensions_m": [
+            1.51,
+            1.61,
+            0.87
+          ]
+        },
+        "actor_origin_speed_mps": 2.9116,
+        "actor_moving": true,
+        "ground_projection_gap_m": 5.4968,
+        "vertical_overlap_m": 1.5437,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 5113,
+        "time_s": 290.1,
+        "progress_m": 1234.648,
+        "ego_speed_mps": 3.176,
+        "active_event": "pedestrian-delayed",
+        "inspector": "./inspect.html?run=urban-pace&frame=5113&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=5113&camera=chase",
+        "ego_pose": {
+          "x": -149.00234985351562,
+          "y": -10.970698356628418,
+          "z": 0.005680744536221027,
+          "pitch": -0.22214068472385406,
+          "yaw": 90.02821350097656,
+          "roll": -0.019786475226283073
+        },
+        "actor": {
+          "actor_id": 615,
+          "type": "cyclist",
+          "role": "cyclist",
+          "blueprint": "vehicle.bh.crossbike",
+          "x": -144.67,
+          "y": -3.17,
+          "z": -0.01,
+          "yaw": 38.09,
+          "dimensions_m": [
+            1.51,
+            1.61,
+            0.87
+          ]
+        },
+        "actor_origin_speed_mps": 2.9116,
+        "actor_moving": true,
+        "ground_projection_gap_m": 5.4968,
+        "vertical_overlap_m": 1.5437,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    "staged/pedestrian": {
+      "samples": {
+        "calibrated_actor_yaw_only": 989,
+        "vertical_overlap": 2618,
+        "matched_capture_blueprint_yaw_only": 1652,
+        "vertical_disjoint": 23
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 2330,
+        "time_s": 11.8,
+        "progress_m": 27.297,
+        "ego_speed_mps": 3.987,
+        "active_event": "pedestrian",
+        "inspector": "./inspect.html?run=urban-pace&frame=2330&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2330&camera=chase",
+        "ego_pose": {
+          "x": -31.52583122253418,
+          "y": 134.682861328125,
+          "z": 0.005640330258756876,
+          "pitch": -0.10554072260856628,
+          "yaw": -1.3088264465332031,
+          "roll": -0.017865309491753578
+        },
+        "actor": {
+          "actor_id": 602,
+          "type": "pedestrian",
+          "role": "pedestrian",
+          "blueprint": "walker.pedestrian.0051",
+          "x": -29.94,
+          "y": 129.63,
+          "z": 0.97,
+          "yaw": -91.3,
+          "dimensions_m": [
+            0.57,
+            1.29,
+            0.31
+          ]
+        },
+        "actor_origin_speed_mps": 1.2406,
+        "actor_moving": true,
+        "actor_origin_distance_m": 5.2959
+      },
+      "closest_overlapping_elevation": {
+        "frame": 2323,
+        "time_s": 11.1,
+        "progress_m": 24.96,
+        "ego_speed_mps": 2.708,
+        "active_event": "pedestrian",
+        "inspector": "./inspect.html?run=urban-pace&frame=2323&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2323&camera=chase",
+        "ego_pose": {
+          "x": -33.86296081542969,
+          "y": 134.7359619140625,
+          "z": 0.00568776112049818,
+          "pitch": -0.12332510203123093,
+          "yaw": -1.3083471059799194,
+          "roll": -0.017706522718071938
+        },
+        "actor": {
+          "actor_id": 602,
+          "type": "pedestrian",
+          "role": "pedestrian",
+          "blueprint": "walker.pedestrian.0051",
+          "x": -29.92,
+          "y": 130.5,
+          "z": 0.97,
+          "yaw": -91.3,
+          "dimensions_m": [
+            0.57,
+            1.29,
+            0.31
+          ]
+        },
+        "actor_origin_speed_mps": 1.2406,
+        "actor_moving": true,
+        "ground_projection_gap_m": 3.3351,
+        "vertical_overlap_m": 1.2578,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": {
+        "frame": 2323,
+        "time_s": 11.1,
+        "progress_m": 24.96,
+        "ego_speed_mps": 2.708,
+        "active_event": "pedestrian",
+        "inspector": "./inspect.html?run=urban-pace&frame=2323&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2323&camera=chase",
+        "ego_pose": {
+          "x": -33.86296081542969,
+          "y": 134.7359619140625,
+          "z": 0.00568776112049818,
+          "pitch": -0.12332510203123093,
+          "yaw": -1.3083471059799194,
+          "roll": -0.017706522718071938
+        },
+        "actor": {
+          "actor_id": 602,
+          "type": "pedestrian",
+          "role": "pedestrian",
+          "blueprint": "walker.pedestrian.0051",
+          "x": -29.92,
+          "y": 130.5,
+          "z": 0.97,
+          "yaw": -91.3,
+          "dimensions_m": [
+            0.57,
+            1.29,
+            0.31
+          ]
+        },
+        "actor_origin_speed_mps": 1.2406,
+        "actor_moving": true,
+        "ground_projection_gap_m": 3.3351,
+        "vertical_overlap_m": 1.2578,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "smallest_xy_with_disjoint_elevation": {
+        "frame": 3454,
+        "time_s": 124.2,
+        "progress_m": 528.139,
+        "ego_speed_mps": 6.392,
+        "active_event": "barrier",
+        "inspector": "./inspect.html?run=urban-pace&frame=3454&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3454&camera=chase",
+        "ego_pose": {
+          "x": 138.5796661376953,
+          "y": 193.18516540527344,
+          "z": 2.1665985584259033,
+          "pitch": -1.7503000497817993,
+          "yaw": 179.8514404296875,
+          "roll": -0.005497942212969065
+        },
+        "actor": {
+          "actor_id": 607,
+          "type": "pedestrian",
+          "role": "occluded",
+          "blueprint": "walker.pedestrian.0045",
+          "x": 88.0,
+          "y": 122.83,
+          "z": 1.19,
+          "yaw": -90.82,
+          "dimensions_m": [
+            0.71,
+            1.85,
+            0.38
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 84.1073,
+        "vertical_gap_m": 0.0112
+      },
+      "first_projected_overlaps": []
+    },
+    "staged/van": {
+      "samples": {
+        "calibrated_actor_yaw_only": 801,
+        "vertical_overlap": 801
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 96
+      },
+      "closest_actor_origin": {
+        "frame": 2628,
+        "time_s": 41.6,
+        "progress_m": 141.994,
+        "ego_speed_mps": 1.327,
+        "active_event": "occluded",
+        "inspector": "./inspect.html?run=urban-pace&frame=2628&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2628&camera=chase",
+        "ego_pose": {
+          "x": 83.155517578125,
+          "y": 133.40606689453125,
+          "z": 0.07369131594896317,
+          "pitch": 0.10741216689348221,
+          "yaw": -0.8192179799079895,
+          "roll": 0.01832735352218151
+        },
+        "actor": {
+          "actor_id": 606,
+          "type": "van",
+          "role": "occluder",
+          "blueprint": "vehicle.sprinter.mercedes",
+          "x": 83.2,
+          "y": 136.91,
+          "z": 0.0,
+          "yaw": -0.82,
+          "dimensions_m": [
+            5.92,
+            2.73,
+            1.99
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "actor_origin_distance_m": 3.5042
+      },
+      "closest_overlapping_elevation": {
+        "frame": 2575,
+        "time_s": 36.3,
+        "progress_m": 140.491,
+        "ego_speed_mps": 0.005,
+        "active_event": "occluded",
+        "inspector": "./inspect.html?run=urban-pace&frame=2575&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2575&camera=chase",
+        "ego_pose": {
+          "x": 81.65278625488281,
+          "y": 133.42752075195312,
+          "z": 0.066014863550663,
+          "pitch": 0.055854298174381256,
+          "yaw": -0.8025190830230713,
+          "roll": 0.01830500178039074
+        },
+        "actor": {
+          "actor_id": 606,
+          "type": "van",
+          "role": "occluder",
+          "blueprint": "vehicle.sprinter.mercedes",
+          "x": 83.2,
+          "y": 136.91,
+          "z": 0.0,
+          "yaw": -0.82,
+          "dimensions_m": [
+            5.92,
+            2.73,
+            1.99
+          ]
+        },
+        "actor_origin_speed_mps": 0.0,
+        "actor_moving": false,
+        "ground_projection_gap_m": 1.5944,
+        "vertical_overlap_m": 1.5295,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    "static_map/car": {
+      "samples": {
+        "parked_map_box": 8504,
+        "vertical_overlap": 8469,
+        "vertical_disjoint": 35
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 2887,
+        "time_s": 67.5,
+        "progress_m": 296.679,
+        "ego_speed_mps": 4.075,
+        "active_event": "signal",
+        "inspector": "./inspect.html?run=urban-pace&frame=2887&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2887&camera=chase",
+        "ego_pose": {
+          "x": 188.87762451171875,
+          "y": 62.32521057128906,
+          "z": 0.005641824100166559,
+          "pitch": -0.1903442144393921,
+          "yaw": 0.39770808815956116,
+          "roll": -0.009652821347117424
+        },
+        "actor": {
+          "actor_id": "level-11906624848723412420",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "name": "Vh_Car_MercedesBenzCoupeC2_190_SM_0",
+          "x": 188.77061462402344,
+          "y": 80.13007354736328,
+          "z": 1.121764898300171,
+          "yaw": -90.0001220703125,
+          "dimensions_m": [
+            5.0267767906188965,
+            1.6470011472702026,
+            2.17128324508667
+          ]
+        },
+        "actor_origin_distance_m": 17.8052
+      },
+      "closest_overlapping_elevation": {
+        "frame": 2884,
+        "time_s": 67.2,
+        "progress_m": 295.492,
+        "ego_speed_mps": 3.823,
+        "active_event": "signal",
+        "inspector": "./inspect.html?run=urban-pace&frame=2884&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2884&camera=chase",
+        "ego_pose": {
+          "x": 187.69093322753906,
+          "y": 62.31825637817383,
+          "z": 0.005611657164990902,
+          "pitch": -0.2156652808189392,
+          "yaw": 0.5054493546485901,
+          "roll": -0.01081119105219841
+        },
+        "actor": {
+          "actor_id": "level-11906624848723412420",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "name": "Vh_Car_MercedesBenzCoupeC2_190_SM_0",
+          "x": 188.77061462402344,
+          "y": 80.13007354736328,
+          "z": 1.121764898300171,
+          "yaw": -90.0001220703125,
+          "dimensions_m": [
+            5.0267767906188965,
+            1.6470011472702026,
+            2.17128324508667
+          ]
+        },
+        "ground_projection_gap_m": 14.3609,
+        "vertical_overlap_m": 1.242,
+        "geometry": "parked_map_box"
+      },
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": {
+        "frame": 3418,
+        "time_s": 120.6,
+        "progress_m": 492.994,
+        "ego_speed_mps": 10.548,
+        "active_event": "barrier",
+        "inspector": "./inspect.html?run=urban-pace&frame=3418&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3418&camera=chase",
+        "ego_pose": {
+          "x": 173.5904541015625,
+          "y": 191.16879272460938,
+          "z": 2.8431484699249268,
+          "pitch": -0.3246615529060364,
+          "yaw": 167.81834411621094,
+          "roll": -0.27281948924064636
+        },
+        "actor": {
+          "actor_id": "level-6664586185198452187",
+          "type": "car",
+          "role": "parked-map-vehicle",
+          "name": "Vh_Car_SeatLeon_Norig_2_SM_0",
+          "x": 149.5501708984375,
+          "y": 149.86444091796875,
+          "z": 2.073540449142456,
+          "yaw": 90.00016784667969,
+          "dimensions_m": [
+            4.200743198394775,
+            1.5008375644683838,
+            1.863033413887024
+          ]
+        },
+        "ground_projection_gap_m": 43.916,
+        "vertical_gap_m": 0.0022
+      },
+      "first_projected_overlaps": []
+    },
+    "static_map/truck": {
+      "samples": {
+        "parked_map_box": 386,
+        "vertical_overlap": 386
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 5450,
+        "time_s": 323.8,
+        "progress_m": 1347.68,
+        "ego_speed_mps": 3.672,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=5450&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=5450&camera=chase",
+        "ego_pose": {
+          "x": -149.06134033203125,
+          "y": 102.06114959716797,
+          "z": 0.005633787717670202,
+          "pitch": -0.26301053166389465,
+          "yaw": 90.03340911865234,
+          "roll": 0.004037847742438316
+        },
+        "actor": {
+          "actor_id": "level-16725571583500344474",
+          "type": "truck",
+          "role": "parked-map-vehicle",
+          "name": "Vh_Van_VolkswagenT2_NOrig_178_SM_0",
+          "x": -194.48338317871094,
+          "y": 101.89999389648438,
+          "z": 0.7905589938163757,
+          "yaw": 0.00015500000154133886,
+          "dimensions_m": [
+            4.442289352416992,
+            1.9972392320632935,
+            1.8788551092147827
+          ]
+        },
+        "actor_origin_distance_m": 45.4223
+      },
+      "closest_overlapping_elevation": {
+        "frame": 5446,
+        "time_s": 323.4,
+        "progress_m": 1346.209,
+        "ego_speed_mps": 3.682,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=5446&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=5446&camera=chase",
+        "ego_pose": {
+          "x": -149.0606231689453,
+          "y": 100.59049987792969,
+          "z": 0.005633118096739054,
+          "pitch": -0.26322439312934875,
+          "yaw": 90.0394287109375,
+          "roll": 0.0031405119225382805
+        },
+        "actor": {
+          "actor_id": "level-16725571583500344474",
+          "type": "truck",
+          "role": "parked-map-vehicle",
+          "name": "Vh_Van_VolkswagenT2_NOrig_178_SM_0",
+          "x": -194.48338317871094,
+          "y": 101.89999389648438,
+          "z": 0.7905589938163757,
+          "yaw": 0.00015500000154133886,
+          "dimensions_m": [
+            4.442289352416992,
+            1.9972392320632935,
+            1.8788551092147827
+          ]
+        },
+        "ground_projection_gap_m": 42.2822,
+        "vertical_overlap_m": 1.5467,
+        "geometry": "parked_map_box"
+      },
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    }
+  },
+  "participant_pairs_within_12m": {
+    "car/car": {
+      "samples": {
+        "calibrated_actor_yaw_only": 17,
+        "vertical_overlap": 17
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 4672,
+        "time_s": 246.0,
+        "progress_m": 1030.997,
+        "ego_speed_mps": 5.284,
+        "active_event": "left",
+        "inspector": "./inspect.html?run=urban-pace&frame=4672&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4672&camera=chase",
+        "ego_pose": {
+          "x": -78.16671752929688,
+          "y": -110.55089569091797,
+          "z": -0.27673497796058655,
+          "pitch": 0.9751400947570801,
+          "yaw": -90.1529541015625,
+          "roll": -0.01702394336462021
+        },
+        "actors": [
+          {
+            "actor_id": 608,
+            "type": "car",
+            "role": "oncoming",
+            "blueprint": "vehicle.mini.cooper",
+            "x": -84.38,
+            "y": -160.27,
+            "z": 0.03,
+            "yaw": 90.88,
+            "dimensions_m": [
+              4.55,
+              1.77,
+              2.1
+            ]
+          },
+          {
+            "actor_id": 605,
+            "type": "car",
+            "role": "braking",
+            "blueprint": "vehicle.tesla.model3",
+            "x": -77.61,
+            "y": -160.27,
+            "z": 0.0,
+            "yaw": -87.2,
+            "dimensions_m": [
+              4.69,
+              1.44,
+              2.09
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          4.6204,
+          7.4278
+        ],
+        "actor_origin_distance_m": 6.77
+      },
+      "closest_overlapping_elevation": {
+        "frame": 4672,
+        "time_s": 246.0,
+        "progress_m": 1030.997,
+        "ego_speed_mps": 5.284,
+        "active_event": "left",
+        "inspector": "./inspect.html?run=urban-pace&frame=4672&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4672&camera=chase",
+        "ego_pose": {
+          "x": -78.16671752929688,
+          "y": -110.55089569091797,
+          "z": -0.27673497796058655,
+          "pitch": 0.9751400947570801,
+          "yaw": -90.1529541015625,
+          "roll": -0.01702394336462021
+        },
+        "actors": [
+          {
+            "actor_id": 608,
+            "type": "car",
+            "role": "oncoming",
+            "blueprint": "vehicle.mini.cooper",
+            "x": -84.38,
+            "y": -160.27,
+            "z": 0.03,
+            "yaw": 90.88,
+            "dimensions_m": [
+              4.55,
+              1.77,
+              2.1
+            ]
+          },
+          {
+            "actor_id": 605,
+            "type": "car",
+            "role": "braking",
+            "blueprint": "vehicle.tesla.model3",
+            "x": -77.61,
+            "y": -160.27,
+            "z": 0.0,
+            "yaw": -87.2,
+            "dimensions_m": [
+              4.69,
+              1.44,
+              2.09
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          4.6204,
+          7.4278
+        ],
+        "ground_projection_gap_m": 4.5941,
+        "vertical_overlap_m": 1.4081,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    "car/pedestrian": {
+      "samples": {
+        "calibrated_actor_yaw_only+matched_capture_blueprint_yaw_only": 56,
+        "vertical_overlap": 81,
+        "calibrated_actor_yaw_only": 25,
+        "actor_origin_only+calibrated_actor_yaw_only": 20
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 2714,
+        "time_s": 50.2,
+        "progress_m": 197.356,
+        "ego_speed_mps": 8.265,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=2714&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2714&camera=chase",
+        "ego_pose": {
+          "x": 138.44483947753906,
+          "y": 131.82510375976562,
+          "z": 0.42861270904541016,
+          "pitch": 0.03170179948210716,
+          "yaw": -10.169853210449219,
+          "roll": 0.442477822303772
+        },
+        "actors": [
+          {
+            "actor_id": 619,
+            "type": "pedestrian",
+            "role": "background",
+            "blueprint": "walker.pedestrian.0026",
+            "x": 154.17,
+            "y": 110.19,
+            "z": 1.48,
+            "yaw": 126.63,
+            "dimensions_m": [
+              0.72,
+              1.84,
+              0.37
+            ]
+          },
+          {
+            "actor_id": 624,
+            "type": "car",
+            "role": "background",
+            "blueprint": "vehicle.mini.cooper",
+            "x": 159.57,
+            "y": 114.11,
+            "z": 0.42,
+            "yaw": 124.37,
+            "dimensions_m": [
+              4.55,
+              1.77,
+              2.1
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          0.0,
+          4.899
+        ],
+        "actor_origin_distance_m": 6.6728
+      },
+      "closest_overlapping_elevation": {
+        "frame": 2717,
+        "time_s": 50.5,
+        "progress_m": 199.838,
+        "ego_speed_mps": 8.275,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=2717&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2717&camera=chase",
+        "ego_pose": {
+          "x": 140.8542938232422,
+          "y": 131.23936462402344,
+          "z": 0.43922510743141174,
+          "pitch": -0.041270140558481216,
+          "yaw": -13.769142150878906,
+          "roll": 0.44957107305526733
+        },
+        "actors": [
+          {
+            "actor_id": 619,
+            "type": "pedestrian",
+            "role": "background",
+            "blueprint": "walker.pedestrian.0026",
+            "x": 153.96,
+            "y": 110.43,
+            "z": 1.49,
+            "yaw": 130.24,
+            "dimensions_m": [
+              0.72,
+              1.84,
+              0.37
+            ]
+          },
+          {
+            "actor_id": 624,
+            "type": "car",
+            "role": "background",
+            "blueprint": "vehicle.mini.cooper",
+            "x": 158.65,
+            "y": 115.28,
+            "z": 0.43,
+            "yaw": 126.8,
+            "dimensions_m": [
+              4.55,
+              1.77,
+              2.1
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          0.6378,
+          4.94
+        ],
+        "ground_projection_gap_m": 5.2233,
+        "vertical_overlap_m": 1.6584,
+        "geometry": "calibrated_actor_yaw_only+matched_capture_blueprint_yaw_only"
+      },
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    "cyclist/pedestrian": {
+      "samples": {
+        "actor_origin_only+calibrated_actor_yaw_only": 78
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 5051,
+        "time_s": 283.9,
+        "progress_m": 1214.781,
+        "ego_speed_mps": 3.859,
+        "active_event": "cyclist",
+        "inspector": "./inspect.html?run=urban-pace&frame=5051&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=5051&camera=chase",
+        "ego_pose": {
+          "x": -148.99188232421875,
+          "y": -30.837158203125,
+          "z": 0.00942283309996128,
+          "pitch": -0.3826223611831665,
+          "yaw": 90.03263092041016,
+          "roll": -0.01682428829371929
+        },
+        "actors": [
+          {
+            "actor_id": 623,
+            "type": "pedestrian",
+            "role": "background",
+            "blueprint": "walker.pedestrian.0022",
+            "x": -156.38,
+            "y": -20.14,
+            "z": 1.09,
+            "yaw": 90.03,
+            "dimensions_m": [
+              0.9,
+              1.86,
+              0.87
+            ]
+          },
+          {
+            "actor_id": 615,
+            "type": "cyclist",
+            "role": "cyclist",
+            "blueprint": "vehicle.bh.crossbike",
+            "x": -149.0,
+            "y": -20.23,
+            "z": -0.01,
+            "yaw": 90.04,
+            "dimensions_m": [
+              1.51,
+              1.61,
+              0.87
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          0.48,
+          3.0
+        ],
+        "actor_origin_distance_m": 7.3805
+      },
+      "closest_overlapping_elevation": null,
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    },
+    "pedestrian/van": {
+      "samples": {
+        "calibrated_actor_yaw_only+matched_capture_blueprint_yaw_only": 276,
+        "vertical_overlap": 276
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 37
+      },
+      "closest_actor_origin": {
+        "frame": 2550,
+        "time_s": 33.8,
+        "progress_m": 133.008,
+        "ego_speed_mps": 6.105,
+        "active_event": "occluded",
+        "inspector": "./inspect.html?run=urban-pace&frame=2550&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2550&camera=chase",
+        "ego_pose": {
+          "x": 74.17090606689453,
+          "y": 133.5343017578125,
+          "z": 0.03375774994492531,
+          "pitch": -0.04912698268890381,
+          "yaw": -0.8142661452293396,
+          "roll": -0.017032071948051453
+        },
+        "actors": [
+          {
+            "actor_id": 606,
+            "type": "van",
+            "role": "occluder",
+            "blueprint": "vehicle.sprinter.mercedes",
+            "x": 83.2,
+            "y": 136.91,
+            "z": 0.0,
+            "yaw": -0.82,
+            "dimensions_m": [
+              5.92,
+              2.73,
+              1.99
+            ]
+          },
+          {
+            "actor_id": 607,
+            "type": "pedestrian",
+            "role": "occluded",
+            "blueprint": "walker.pedestrian.0045",
+            "x": 88.19,
+            "y": 136.59,
+            "z": 1.04,
+            "yaw": -90.82,
+            "dimensions_m": [
+              0.71,
+              1.85,
+              0.38
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          0.0,
+          1.2602
+        ],
+        "actor_origin_distance_m": 5.0002
+      },
+      "closest_overlapping_elevation": {
+        "frame": 2555,
+        "time_s": 34.3,
+        "progress_m": 135.764,
+        "ego_speed_mps": 4.944,
+        "active_event": "occluded",
+        "inspector": "./inspect.html?run=urban-pace&frame=2555&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2555&camera=chase",
+        "ego_pose": {
+          "x": 76.92623901367188,
+          "y": 133.4950408935547,
+          "z": 0.04450701177120209,
+          "pitch": -0.20360881090164185,
+          "yaw": -0.8137521743774414,
+          "roll": -0.016221169382333755
+        },
+        "actors": [
+          {
+            "actor_id": 606,
+            "type": "van",
+            "role": "occluder",
+            "blueprint": "vehicle.sprinter.mercedes",
+            "x": 83.2,
+            "y": 136.91,
+            "z": 0.0,
+            "yaw": -0.82,
+            "dimensions_m": [
+              5.92,
+              2.73,
+              1.99
+            ]
+          },
+          {
+            "actor_id": 607,
+            "type": "pedestrian",
+            "role": "occluded",
+            "blueprint": "walker.pedestrian.0045",
+            "x": 88.18,
+            "y": 135.97,
+            "z": 1.04,
+            "yaw": -90.82,
+            "dimensions_m": [
+              0.71,
+              1.85,
+              0.38
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          0.0,
+          1.2402
+        ],
+        "ground_projection_gap_m": 1.6715,
+        "vertical_overlap_m": 1.85,
+        "geometry": "calibrated_actor_yaw_only+matched_capture_blueprint_yaw_only"
+      },
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": []
+    }
+  },
+  "closest_participant_pairs": [
+    {
+      "samples": {
+        "calibrated_actor_yaw_only+matched_capture_blueprint_yaw_only": 276,
+        "vertical_overlap": 276
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 37
+      },
+      "closest_actor_origin": {
+        "frame": 2550,
+        "time_s": 33.8,
+        "progress_m": 133.008,
+        "ego_speed_mps": 6.105,
+        "active_event": "occluded",
+        "inspector": "./inspect.html?run=urban-pace&frame=2550&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2550&camera=chase",
+        "ego_pose": {
+          "x": 74.17090606689453,
+          "y": 133.5343017578125,
+          "z": 0.03375774994492531,
+          "pitch": -0.04912698268890381,
+          "yaw": -0.8142661452293396,
+          "roll": -0.017032071948051453
+        },
+        "actors": [
+          {
+            "actor_id": 606,
+            "type": "van",
+            "role": "occluder",
+            "blueprint": "vehicle.sprinter.mercedes",
+            "x": 83.2,
+            "y": 136.91,
+            "z": 0.0,
+            "yaw": -0.82,
+            "dimensions_m": [
+              5.92,
+              2.73,
+              1.99
+            ]
+          },
+          {
+            "actor_id": 607,
+            "type": "pedestrian",
+            "role": "occluded",
+            "blueprint": "walker.pedestrian.0045",
+            "x": 88.19,
+            "y": 136.59,
+            "z": 1.04,
+            "yaw": -90.82,
+            "dimensions_m": [
+              0.71,
+              1.85,
+              0.38
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          0.0,
+          1.2602
+        ],
+        "actor_origin_distance_m": 5.0002
+      },
+      "closest_overlapping_elevation": {
+        "frame": 2555,
+        "time_s": 34.3,
+        "progress_m": 135.764,
+        "ego_speed_mps": 4.944,
+        "active_event": "occluded",
+        "inspector": "./inspect.html?run=urban-pace&frame=2555&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2555&camera=chase",
+        "ego_pose": {
+          "x": 76.92623901367188,
+          "y": 133.4950408935547,
+          "z": 0.04450701177120209,
+          "pitch": -0.20360881090164185,
+          "yaw": -0.8137521743774414,
+          "roll": -0.016221169382333755
+        },
+        "actors": [
+          {
+            "actor_id": 606,
+            "type": "van",
+            "role": "occluder",
+            "blueprint": "vehicle.sprinter.mercedes",
+            "x": 83.2,
+            "y": 136.91,
+            "z": 0.0,
+            "yaw": -0.82,
+            "dimensions_m": [
+              5.92,
+              2.73,
+              1.99
+            ]
+          },
+          {
+            "actor_id": 607,
+            "type": "pedestrian",
+            "role": "occluded",
+            "blueprint": "walker.pedestrian.0045",
+            "x": 88.18,
+            "y": 135.97,
+            "z": 1.04,
+            "yaw": -90.82,
+            "dimensions_m": [
+              0.71,
+              1.85,
+              0.38
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          0.0,
+          1.2402
+        ],
+        "ground_projection_gap_m": 1.6715,
+        "vertical_overlap_m": 1.85,
+        "geometry": "calibrated_actor_yaw_only+matched_capture_blueprint_yaw_only"
+      },
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": [],
+      "pair": [
+        606,
+        607
+      ]
+    },
+    {
+      "samples": {
+        "calibrated_actor_yaw_only": 17,
+        "vertical_overlap": 17
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 4672,
+        "time_s": 246.0,
+        "progress_m": 1030.997,
+        "ego_speed_mps": 5.284,
+        "active_event": "left",
+        "inspector": "./inspect.html?run=urban-pace&frame=4672&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4672&camera=chase",
+        "ego_pose": {
+          "x": -78.16671752929688,
+          "y": -110.55089569091797,
+          "z": -0.27673497796058655,
+          "pitch": 0.9751400947570801,
+          "yaw": -90.1529541015625,
+          "roll": -0.01702394336462021
+        },
+        "actors": [
+          {
+            "actor_id": 608,
+            "type": "car",
+            "role": "oncoming",
+            "blueprint": "vehicle.mini.cooper",
+            "x": -84.38,
+            "y": -160.27,
+            "z": 0.03,
+            "yaw": 90.88,
+            "dimensions_m": [
+              4.55,
+              1.77,
+              2.1
+            ]
+          },
+          {
+            "actor_id": 605,
+            "type": "car",
+            "role": "braking",
+            "blueprint": "vehicle.tesla.model3",
+            "x": -77.61,
+            "y": -160.27,
+            "z": 0.0,
+            "yaw": -87.2,
+            "dimensions_m": [
+              4.69,
+              1.44,
+              2.09
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          4.6204,
+          7.4278
+        ],
+        "actor_origin_distance_m": 6.77
+      },
+      "closest_overlapping_elevation": {
+        "frame": 4672,
+        "time_s": 246.0,
+        "progress_m": 1030.997,
+        "ego_speed_mps": 5.284,
+        "active_event": "left",
+        "inspector": "./inspect.html?run=urban-pace&frame=4672&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=4672&camera=chase",
+        "ego_pose": {
+          "x": -78.16671752929688,
+          "y": -110.55089569091797,
+          "z": -0.27673497796058655,
+          "pitch": 0.9751400947570801,
+          "yaw": -90.1529541015625,
+          "roll": -0.01702394336462021
+        },
+        "actors": [
+          {
+            "actor_id": 608,
+            "type": "car",
+            "role": "oncoming",
+            "blueprint": "vehicle.mini.cooper",
+            "x": -84.38,
+            "y": -160.27,
+            "z": 0.03,
+            "yaw": 90.88,
+            "dimensions_m": [
+              4.55,
+              1.77,
+              2.1
+            ]
+          },
+          {
+            "actor_id": 605,
+            "type": "car",
+            "role": "braking",
+            "blueprint": "vehicle.tesla.model3",
+            "x": -77.61,
+            "y": -160.27,
+            "z": 0.0,
+            "yaw": -87.2,
+            "dimensions_m": [
+              4.69,
+              1.44,
+              2.09
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          4.6204,
+          7.4278
+        ],
+        "ground_projection_gap_m": 4.5941,
+        "vertical_overlap_m": 1.4081,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": [],
+      "pair": [
+        605,
+        608
+      ]
+    },
+    {
+      "samples": {
+        "calibrated_actor_yaw_only+matched_capture_blueprint_yaw_only": 56,
+        "vertical_overlap": 56
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 2714,
+        "time_s": 50.2,
+        "progress_m": 197.356,
+        "ego_speed_mps": 8.265,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=2714&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2714&camera=chase",
+        "ego_pose": {
+          "x": 138.44483947753906,
+          "y": 131.82510375976562,
+          "z": 0.42861270904541016,
+          "pitch": 0.03170179948210716,
+          "yaw": -10.169853210449219,
+          "roll": 0.442477822303772
+        },
+        "actors": [
+          {
+            "actor_id": 619,
+            "type": "pedestrian",
+            "role": "background",
+            "blueprint": "walker.pedestrian.0026",
+            "x": 154.17,
+            "y": 110.19,
+            "z": 1.48,
+            "yaw": 126.63,
+            "dimensions_m": [
+              0.72,
+              1.84,
+              0.37
+            ]
+          },
+          {
+            "actor_id": 624,
+            "type": "car",
+            "role": "background",
+            "blueprint": "vehicle.mini.cooper",
+            "x": 159.57,
+            "y": 114.11,
+            "z": 0.42,
+            "yaw": 124.37,
+            "dimensions_m": [
+              4.55,
+              1.77,
+              2.1
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          0.0,
+          4.899
+        ],
+        "actor_origin_distance_m": 6.6728
+      },
+      "closest_overlapping_elevation": {
+        "frame": 2717,
+        "time_s": 50.5,
+        "progress_m": 199.838,
+        "ego_speed_mps": 8.275,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=2717&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=2717&camera=chase",
+        "ego_pose": {
+          "x": 140.8542938232422,
+          "y": 131.23936462402344,
+          "z": 0.43922510743141174,
+          "pitch": -0.041270140558481216,
+          "yaw": -13.769142150878906,
+          "roll": 0.44957107305526733
+        },
+        "actors": [
+          {
+            "actor_id": 619,
+            "type": "pedestrian",
+            "role": "background",
+            "blueprint": "walker.pedestrian.0026",
+            "x": 153.96,
+            "y": 110.43,
+            "z": 1.49,
+            "yaw": 130.24,
+            "dimensions_m": [
+              0.72,
+              1.84,
+              0.37
+            ]
+          },
+          {
+            "actor_id": 624,
+            "type": "car",
+            "role": "background",
+            "blueprint": "vehicle.mini.cooper",
+            "x": 158.65,
+            "y": 115.28,
+            "z": 0.43,
+            "yaw": 126.8,
+            "dimensions_m": [
+              4.55,
+              1.77,
+              2.1
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          0.6378,
+          4.94
+        ],
+        "ground_projection_gap_m": 5.2233,
+        "vertical_overlap_m": 1.6584,
+        "geometry": "calibrated_actor_yaw_only+matched_capture_blueprint_yaw_only"
+      },
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": [],
+      "pair": [
+        619,
+        624
+      ]
+    },
+    {
+      "samples": {
+        "calibrated_actor_yaw_only": 25,
+        "vertical_overlap": 25
+      },
+      "at_or_below_m": {
+        "0.0": 0,
+        "0.25": 0,
+        "0.5": 0,
+        "1.0": 0,
+        "2.0": 0
+      },
+      "closest_actor_origin": {
+        "frame": 3405,
+        "time_s": 119.3,
+        "progress_m": 479.976,
+        "ego_speed_mps": 9.303,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=3405&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3405&camera=chase",
+        "ego_pose": {
+          "x": 186.12918090820312,
+          "y": 187.7084197998047,
+          "z": 2.7281062602996826,
+          "pitch": 0.9363452196121216,
+          "yaw": 160.09695434570312,
+          "roll": -0.22454623878002167
+        },
+        "actors": [
+          {
+            "actor_id": 620,
+            "type": "pedestrian",
+            "role": "background",
+            "blueprint": "walker.pedestrian.0046",
+            "x": 202.44,
+            "y": 173.41,
+            "z": 3.34,
+            "yaw": 145.81,
+            "dimensions_m": [
+              0.72,
+              1.84,
+              0.4
+            ]
+          },
+          {
+            "actor_id": 625,
+            "type": "car",
+            "role": "background",
+            "blueprint": "vehicle.tesla.model3",
+            "x": 207.22,
+            "y": 181.58,
+            "z": 2.25,
+            "yaw": 146.74,
+            "dimensions_m": [
+              4.69,
+              1.44,
+              2.09
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          0.0,
+          6.2793
+        ],
+        "actor_origin_distance_m": 9.4656
+      },
+      "closest_overlapping_elevation": {
+        "frame": 3407,
+        "time_s": 119.5,
+        "progress_m": 481.857,
+        "ego_speed_mps": 9.511,
+        "active_event": null,
+        "inspector": "./inspect.html?run=urban-pace&frame=3407&camera=front",
+        "chase_inspector": "./inspect.html?run=urban-pace&frame=3407&camera=chase",
+        "ego_pose": {
+          "x": 184.34829711914062,
+          "y": 188.3112030029297,
+          "z": 2.762596368789673,
+          "pitch": 0.7793921232223511,
+          "yaw": 161.20223999023438,
+          "roll": -0.23322635889053345
+        },
+        "actors": [
+          {
+            "actor_id": 620,
+            "type": "pedestrian",
+            "role": "background",
+            "blueprint": "walker.pedestrian.0046",
+            "x": 202.44,
+            "y": 173.41,
+            "z": 3.34,
+            "yaw": 145.81,
+            "dimensions_m": [
+              0.72,
+              1.84,
+              0.4
+            ]
+          },
+          {
+            "actor_id": 625,
+            "type": "car",
+            "role": "background",
+            "blueprint": "vehicle.tesla.model3",
+            "x": 206.15,
+            "y": 182.24,
+            "z": 2.28,
+            "yaw": 147.83,
+            "dimensions_m": [
+              4.69,
+              1.44,
+              2.09
+            ]
+          }
+        ],
+        "actor_origin_speeds_mps": [
+          0.0,
+          6.2753
+        ],
+        "ground_projection_gap_m": 8.0254,
+        "vertical_overlap_m": 1.3229,
+        "geometry": "calibrated_actor_yaw_only"
+      },
+      "closest_moving_actor": null,
+      "smallest_xy_with_disjoint_elevation": null,
+      "first_projected_overlaps": [],
+      "pair": [
+        620,
+        625
+      ]
+    }
+  ],
+  "harsh_braking_half_second": [
+    {
+      "frame": 3570,
+      "time_s": 135.8,
+      "progress_m": 567.856,
+      "ego_speed_mps": 1.305,
+      "active_event": "lead",
+      "inspector": "./inspect.html?run=urban-pace&frame=3570&camera=front",
+      "chase_inspector": "./inspect.html?run=urban-pace&frame=3570&camera=chase",
+      "ego_pose": {
+        "x": 98.86334228515625,
+        "y": 193.284423828125,
+        "z": 1.2851368188858032,
+        "pitch": -1.9006149768829346,
+        "yaw": 179.85491943359375,
+        "roll": -0.0031881523318588734
+      },
+      "first_frame": 3565,
+      "interval_s": 0.5,
+      "initial_speed_mps": 3.536,
+      "accel_mps2": -4.462,
+      "commanded_control": {
+        "steer": 7e-05,
+        "throttle": 0.0,
+        "brake": 0.36624
+      },
+      "applied_control": {
+        "steer": 6.0805661632912233e-05,
+        "throttle": 0.0,
+        "brake": 0.5368775129318237
+      }
+    },
+    {
+      "frame": 2273,
+      "time_s": 6.1,
+      "progress_m": 22.361,
+      "ego_speed_mps": 1.193,
+      "active_event": "pedestrian",
+      "inspector": "./inspect.html?run=urban-pace&frame=2273&camera=front",
+      "chase_inspector": "./inspect.html?run=urban-pace&frame=2273&camera=chase",
+      "ego_pose": {
+        "x": -36.46098709106445,
+        "y": 134.7948455810547,
+        "z": 0.005639157257974148,
+        "pitch": -0.5462017059326172,
+        "yaw": -1.2901283502578735,
+        "roll": -0.015630453824996948
+      },
+      "first_frame": 2268,
+      "interval_s": 0.5,
+      "initial_speed_mps": 3.279,
+      "accel_mps2": -4.172,
+      "commanded_control": {
+        "steer": -0.00024,
+        "throttle": 0.0,
+        "brake": 0.35587
+      },
+      "applied_control": {
+        "steer": -0.00023669490474276245,
+        "throttle": 0.0,
+        "brake": 0.44217655062675476
+      }
+    },
+    {
+      "frame": 4542,
+      "time_s": 233.0,
+      "progress_m": 972.638,
+      "ego_speed_mps": 1.678,
+      "active_event": "braking",
+      "inspector": "./inspect.html?run=urban-pace&frame=4542&camera=front",
+      "chase_inspector": "./inspect.html?run=urban-pace&frame=4542&camera=chase",
+      "ego_pose": {
+        "x": -78.0073471069336,
+        "y": -52.1930046081543,
+        "z": -0.6010403037071228,
+        "pitch": -1.4829031229019165,
+        "yaw": -90.1485824584961,
+        "roll": 0.0027367123402655125
+      },
+      "first_frame": 4537,
+      "interval_s": 0.5,
+      "initial_speed_mps": 3.7,
+      "accel_mps2": -4.044,
+      "commanded_control": {
+        "steer": -0.00015,
+        "throttle": 0.0,
+        "brake": 0.3173
+      },
+      "applied_control": {
+        "steer": -0.00014202635793481022,
+        "throttle": 0.0,
+        "brake": 0.6059814691543579
+      }
+    },
+    {
+      "frame": 5207,
+      "time_s": 299.5,
+      "progress_m": 1269.82,
+      "ego_speed_mps": 1.31,
+      "active_event": "pedestrian-delayed",
+      "inspector": "./inspect.html?run=urban-pace&frame=5207&camera=front",
+      "chase_inspector": "./inspect.html?run=urban-pace&frame=5207&camera=chase",
+      "ego_pose": {
+        "x": -149.0208740234375,
+        "y": 24.20156478881836,
+        "z": 0.005674075800925493,
+        "pitch": -0.5821934342384338,
+        "yaw": 90.03336334228516,
+        "roll": 0.001130052376538515
+      },
+      "first_frame": 5202,
+      "interval_s": 0.5,
+      "initial_speed_mps": 3.305,
+      "accel_mps2": -3.99,
+      "commanded_control": {
+        "steer": -8e-05,
+        "throttle": 0.0,
+        "brake": 0.36344
+      },
+      "applied_control": {
+        "steer": -6.98991643730551e-05,
+        "throttle": 0.0,
+        "brake": 0.4541153013706207
+      }
+    },
+    {
+      "frame": 2914,
+      "time_s": 70.2,
+      "progress_m": 307.164,
+      "ego_speed_mps": 1.255,
+      "active_event": "signal",
+      "inspector": "./inspect.html?run=urban-pace&frame=2914&camera=front",
+      "chase_inspector": "./inspect.html?run=urban-pace&frame=2914&camera=chase",
+      "ego_pose": {
+        "x": 199.36216735839844,
+        "y": 62.31461715698242,
+        "z": 0.005720146000385284,
+        "pitch": -0.5533605217933655,
+        "yaw": -0.15964896976947784,
+        "roll": 0.0029607361648231745
+      },
+      "first_frame": 2909,
+      "interval_s": 0.5,
+      "initial_speed_mps": 3.101,
+      "accel_mps2": -3.692,
+      "commanded_control": {
+        "steer": 8e-05,
+        "throttle": 0.0,
+        "brake": 0.35549
+      },
+      "applied_control": {
+        "steer": 3.171178468619473e-05,
+        "throttle": 0.0,
+        "brake": 0.4527514576911926
+      }
+    },
+    {
+      "frame": 2570,
+      "time_s": 35.8,
+      "progress_m": 140.348,
+      "ego_speed_mps": 0.983,
+      "active_event": "occluded",
+      "inspector": "./inspect.html?run=urban-pace&frame=2570&camera=front",
+      "chase_inspector": "./inspect.html?run=urban-pace&frame=2570&camera=chase",
+      "ego_pose": {
+        "x": 81.50977325439453,
+        "y": 133.4296112060547,
+        "z": 0.06501316279172897,
+        "pitch": -0.13624748587608337,
+        "yaw": -0.8058541417121887,
+        "roll": 0.007743667811155319
+      },
+      "first_frame": 2565,
+      "interval_s": 0.5,
+      "initial_speed_mps": 2.637,
+      "accel_mps2": -3.308,
+      "commanded_control": {
+        "steer": -0.00025,
+        "throttle": 0.0,
+        "brake": 0.38471
+      },
+      "applied_control": {
+        "steer": -0.00023678697471041232,
+        "throttle": 0.0,
+        "brake": 0.35358926653862
+      }
+    }
+  ],
+  "harsh_acceleration_half_second": [
+    {
+      "frame": 2218,
+      "time_s": 0.6,
+      "progress_m": 0.394,
+      "ego_speed_mps": 1.316,
+      "active_event": "pedestrian",
+      "inspector": "./inspect.html?run=urban-pace&frame=2218&camera=front",
+      "chase_inspector": "./inspect.html?run=urban-pace&frame=2218&camera=chase",
+      "ego_pose": {
+        "x": -58.41870880126953,
+        "y": 135.46420288085938,
+        "z": 0.005908442661166191,
+        "pitch": -0.08604900538921356,
+        "yaw": 0.16377630829811096,
+        "roll": 0.01543728169053793
+      },
+      "first_frame": 2213,
+      "interval_s": 0.5,
+      "initial_speed_mps": 0.195,
+      "accel_mps2": 2.242,
+      "commanded_control": {
+        "steer": -0.0987,
+        "throttle": 0.64277,
+        "brake": 0.0
+      },
+      "applied_control": {
+        "steer": -0.10563866794109344,
+        "throttle": 0.6432730555534363,
+        "brake": 0.0
+      }
+    },
+    {
+      "frame": 2230,
+      "time_s": 1.8,
+      "progress_m": 3.542,
+      "ego_speed_mps": 3.876,
+      "active_event": "pedestrian",
+      "inspector": "./inspect.html?run=urban-pace&frame=2230&camera=front",
+      "chase_inspector": "./inspect.html?run=urban-pace&frame=2230&camera=chase",
+      "ego_pose": {
+        "x": -55.27388000488281,
+        "y": 135.3012237548828,
+        "z": 0.005638403818011284,
+        "pitch": -0.09189122915267944,
+        "yaw": -2.6452512741088867,
+        "roll": -0.026842204853892326
+      },
+      "first_frame": 2225,
+      "interval_s": 0.5,
+      "initial_speed_mps": 2.84,
+      "accel_mps2": 2.072,
+      "commanded_control": {
+        "steer": -0.0022,
+        "throttle": 0.56067,
+        "brake": 0.0
+      },
+      "applied_control": {
+        "steer": -0.007501576095819473,
+        "throttle": 0.5981324911117554,
+        "brake": 0.0
+      }
+    },
+    {
+      "frame": 2648,
+      "time_s": 43.6,
+      "progress_m": 147.557,
+      "ego_speed_mps": 4.553,
+      "active_event": "occluded",
+      "inspector": "./inspect.html?run=urban-pace&frame=2648&camera=front",
+      "chase_inspector": "./inspect.html?run=urban-pace&frame=2648&camera=chase",
+      "ego_pose": {
+        "x": 88.71825408935547,
+        "y": 133.32666015625,
+        "z": 0.10677483677864075,
+        "pitch": 0.2552863359451294,
+        "yaw": -0.814667284488678,
+        "roll": 0.0186711885035038
+      },
+      "first_frame": 2643,
+      "interval_s": 0.5,
+      "initial_speed_mps": 3.586,
+      "accel_mps2": 1.934,
+      "commanded_control": {
+        "steer": -0.0,
+        "throttle": 0.50605,
+        "brake": 0.0
+      },
+      "applied_control": {
+        "steer": 2.4707758711883798e-05,
+        "throttle": 0.5205022692680359,
+        "brake": 0.0
+      }
+    },
+    {
+      "frame": 4318,
+      "time_s": 210.6,
+      "progress_m": 875.78,
+      "ego_speed_mps": 4.285,
+      "active_event": "bus",
+      "inspector": "./inspect.html?run=urban-pace&frame=4318&camera=front",
+      "chase_inspector": "./inspect.html?run=urban-pace&frame=4318&camera=chase",
+      "ego_pose": {
+        "x": -77.74274444580078,
+        "y": 44.66546630859375,
+        "z": 0.43618473410606384,
+        "pitch": -1.736820101737976,
+        "yaw": -90.16813659667969,
+        "roll": 0.002020958811044693
+      },
+      "first_frame": 4313,
+      "interval_s": 0.5,
+      "initial_speed_mps": 3.323,
+      "accel_mps2": 1.924,
+      "commanded_control": {
+        "steer": 0.0001,
+        "throttle": 0.42531,
+        "brake": 0.0
+      },
+      "applied_control": {
+        "steer": 9.230203431798145e-05,
+        "throttle": 0.5051692724227905,
+        "brake": 0.0
+      }
+    },
+    {
+      "frame": 3316,
+      "time_s": 110.4,
+      "progress_m": 399.137,
+      "ego_speed_mps": 4.509,
+      "active_event": "roadworks",
+      "inspector": "./inspect.html?run=urban-pace&frame=3316&camera=front",
+      "chase_inspector": "./inspect.html?run=urban-pace&frame=3316&camera=chase",
+      "ego_pose": {
+        "x": 228.52618408203125,
+        "y": 127.1178970336914,
+        "z": 0.8591845035552979,
+        "pitch": 1.076657772064209,
+        "yaw": 91.38377380371094,
+        "roll": 0.0014782724902033806
+      },
+      "first_frame": 3311,
+      "interval_s": 0.5,
+      "initial_speed_mps": 3.55,
+      "accel_mps2": 1.918,
+      "commanded_control": {
+        "steer": 0.00018,
+        "throttle": 0.52452,
+        "brake": 0.0
+      },
+      "applied_control": {
+        "steer": 0.00016980913642328233,
+        "throttle": 0.5390577912330627,
+        "brake": 0.0
+      }
+    },
+    {
+      "frame": 3610,
+      "time_s": 139.8,
+      "progress_m": 572.96,
+      "ego_speed_mps": 4.212,
+      "active_event": "lead",
+      "inspector": "./inspect.html?run=urban-pace&frame=3610&camera=front",
+      "chase_inspector": "./inspect.html?run=urban-pace&frame=3610&camera=chase",
+      "ego_pose": {
+        "x": 93.75914764404297,
+        "y": 193.29710388183594,
+        "z": 1.1703492403030396,
+        "pitch": -1.3994824886322021,
+        "yaw": 179.8603515625,
+        "roll": -0.003670494072139263
+      },
+      "first_frame": 3605,
+      "interval_s": 0.5,
+      "initial_speed_mps": 3.256,
+      "accel_mps2": 1.912,
+      "commanded_control": {
+        "steer": -7e-05,
+        "throttle": 0.41616,
+        "brake": 0.0
+      },
+      "applied_control": {
+        "steer": -7.42371121305041e-05,
+        "throttle": 0.49542027711868286,
+        "brake": 0.0
+      }
+    }
+  ]
+}

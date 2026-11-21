@@ -354,7 +354,7 @@ def score(stage, offsets, parked_path, candidate_path, calibration_stage=None):
                 dv = (row["speed_mps"]-motion[0]["speed_mps"]) / interval
                 sample = (dv, {**record, "first_frame": motion[0]["frame"], "interval_s": finite_record(interval),
                                "initial_speed_mps": motion[0]["speed_mps"], "accel_mps2": finite_record(dv),
-                               "brake": row["brake"], "throttle": row["throttle"]})
+                               "commanded_control": t["commanded_control"], "applied_control": t["applied_control"]})
                 braking.append(sample)
                 acceleration.append(sample)
             fresh = row.get("camera_detections", {}).get("front", []) if row.get("camera_inference_age_s", {}).get("front") == 0. else None

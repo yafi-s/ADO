@@ -103,7 +103,12 @@ def live_observations(raw):
         or journal.hexdigest() != capture["raw_sha256"]["perception.jsonl"]
     ):
         raise ValueError("Live journal differs from its completed capture")
-    return {"frames": frames, "capture_frames": count, "source_journal_sha256": journal.hexdigest()}
+    source = {
+        k: capture[k] for k in ("trial_id", "capture_id", "first_frame", "last_frame", "quality_requested")
+    }
+    source["source_journal_sha256"] = journal.hexdigest()
+    source["detector_sha256"] = capture["policy"]["code_sha256"]["traffic_cones.py"]
+    return {"frames": frames, "capture_frames": count, "source": source}
 
 
 def _targets(row):
@@ -139,10 +144,10 @@ def _errors(values):
 
 def evaluate(raw, sidecar):
     with (raw / "perception.jsonl").open(encoding="utf8") as stream:
-        return score_rows((json.loads(line) for line in stream), sidecar)
+        return score_rows((json.loads(line) for line in stream), sidecar, range_bands="source" in sidecar)
 
 
-def score_rows(rows, sidecar):
+def score_rows(rows, sidecar, *, range_bands=False):
     frames = {f["frame"]: f["cone_observations"] for f in sidecar["frames"]}
     nearest = Counter()
     matched = Counter()
@@ -150,11 +155,14 @@ def score_rows(rows, sidecar):
     by_range = Counter()
     center_errors, range_errors, unmatched = [], [], []
     observations = inside = 0
+    opportunities, matches = Counter(), Counter()
     for row in rows:
         refs = _targets(row)
         for key, x, y in refs:
             if math.hypot(x, y) <= 20.0:
                 nearest[key] += 1
+                if range_bands:
+                    opportunities[max(1, math.ceil(math.hypot(x, y) / 5))] += 1
         seen = frames.get(row["frame"], ())
         observations += len(seen)
         pairs = sorted(
@@ -171,11 +179,13 @@ def score_rows(rows, sidecar):
             center_errors.append(error)
             range_errors.append(abs(math.hypot(o["x"], o["y"]) - math.hypot(x, y)))
             inside += int(math.hypot(x, y) <= 20.0)
+            if range_bands and math.hypot(x, y) <= 20:
+                matches[max(1, math.ceil(math.hypot(x, y) / 5))] += 1
             matched[k] += 1
             by_camera[o["camera"]] += 1
             by_range[o["range_source"]] += 1
         unmatched.extend(dict(frame=row["frame"], **o) for i, o in enumerate(seen) if i not in used)
-    return {
+    report = {
         "capture_frames": sidecar["capture_frames"],
         "frames_with_fresh_measurements": len(frames),
         "observations": observations,
@@ -191,6 +201,17 @@ def score_rows(rows, sidecar):
         "horizontal_center_error": _errors(center_errors),
         "absolute_range_error": _errors(range_errors),
     }
+    if range_bands:
+        report["nearby_actor_frames_by_distance"] = [
+            {
+                "upper_bound_m": 5 * k,
+                "reference": opportunities[k],
+                "matched": matches[k],
+                "missed": opportunities[k] - matches[k],
+            }
+            for k in range(1, 5)
+        ]
+    return report
 
 
 def evaluate_packets(raw):
@@ -328,6 +349,8 @@ def main():
         if args.review_image:
             review_image(args.raw, measured, args.review_image)
     report = {"journey": evaluate(args.raw, measured), "archive": evaluate_archive(args.archive)}
+    if args.live_measurements:
+        report["source"] = measured["source"]
     write_json(args.metrics, report)
     print({k: v for k, v in report["journey"].items() if k != "unmatched"})
     print("Unmatched", len(report["journey"]["unmatched"]))
