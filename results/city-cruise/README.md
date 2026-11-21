@@ -16,4 +16,12 @@ The 4,707-byte provisional tactical checkpoint was reconstructed by repeating it
 
 [Seed 211 speeds](seed-211/speeds.json) · [Scored outcome and encounters](seed-211/summary.json) · [Complete trace](seed-211/trace.jsonl.gz) · [Sensor observations, requests and posted limits](seed-211/observations.npz) · [Archived v0.2 speed measurements](published-v02-speeds.json) · [Measurement script](../../tools/measure_city_cruise.py)
 
+## Five-camera evaluation on seed 212
+
+The same cruise checkpoint completed 1,416.1 of 1,416.4 m in 317.2 simulated seconds with five native RGB cameras, five radars, 360-degree LiDAR and the successor tactical checkpoint. The trace records the pass decision at 810.65 m and 149 frames of the subsequent committed maneuver. All ten encounters and eleven junctions completed with zero collisions, red-light violations, yield violations or moving-within-one-metre frames. The same six stopping events as seed 211 were observed.
+
+Permissive clear straights lasted 14.5 simulated seconds. Measured speed had a **34.85 km/h median**, **36.47 km/h 90th percentile** and **36.60 km/h peak**. The drive spent 6.7 seconds at or above 35 km/h, including 3.4 uninterrupted seconds from 417.1 to 450.3 m. With the 30 km/h sections included, the clear-straight median was **29.20 km/h**. The three turning junctions had a median speed of **12.63 km/h**. The model requested speeds within the native posted limit on all 3,172 frames, and measured speed remained below the posted limit plus 1 km/h. Rendering and processing the complete sensor suite took 915.5 wall-clock seconds on the local PC.
+
+[Seed 212 speeds](seed-212/speeds.json) · [Scored outcome and read-back rig configuration](seed-212/summary.json) · [Complete trace](seed-212/trace.jsonl.gz) · [Aligned observations and speed requests](seed-212/observations.npz)
+
 The cruise checkpoint was fitted twice on Google Colab CPU. The two fits produced identical checkpoint and fit-report bytes. Its SHA-256 is `78b84c5ead7ba81d34a354b0cf6c509c50c6a8e6bc6beb16f4360b2ab530c634`. The packaged instructor episode and fitting command are available with the model. [Model and training recipe](../../models/city-cruise/README.md)
