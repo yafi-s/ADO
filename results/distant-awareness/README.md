@@ -1,0 +1,41 @@
+# Forward road-user awareness
+
+ADO’s surround observer acquires a registered 1280 × 720 front image with a 90° horizontal field of view. Every 0.2 seconds it classifies the full 640 × 360 view and a second crop covering the center half of the native image width. The latter keeps the original detail in small road users ahead. It accepts road-user scores of at least 0.60, excludes clipped crop edges and preserves existing overlapping full-frame boxes. Both views use the same optical center. The driver, cones and front movie use the registered 640 × 360 working image.
+
+The 32-channel roof lidar reaches 100 m in surround mode at its original 160,000 rays per second. The driving policy receives returns inside its trained 60 m envelope. A small unsupported optical box appears in the front camera inset as **Camera only**. The scene needs measured depth. A distant car can qualify on its first frame with an independently associated radar return, at least five lidar hits on a compact upright face, and a compatible current front camera box. The range-only input can sustain the existing tracking rules. It cannot supply a new pedestrian class.
+
+## Sealed High city drive
+
+The High v0.4 drive has 3,354 camera exposures and 1,677 fresh front detections. For the optical comparison both variants saw the **same decoded 640 × 360 native MJPEG exposures**. The High movie retains its originally recorded detections. Its new horizon boxes are an offline counterfactual. The 3D comparison instead replays the **identical original native camera, range and track journal** through the previous and current rider displays. Neither reconstructed range nor new simulated returns enter this historical score.
+
+At first correct optical match, the first crossing pedestrian moved from **17.26 to 22.26 m**, a sidewalk pedestrian from **25.57 to 37.81 m**, and the delayed crossing pedestrian from **29.73 to 30.49 m**. The queue car moved from **22.70 to 27.90 m** and the oncoming car from **29.27 to 30.56 m**. The native exposures below show the matching people and vehicles. The earlier cue leads the old reading by 1.0 s for the first crossing walker and 2.8 s for the sidewalk walker.
+
+![Native forward exposures and enlarged crops for the five earlier optical observations](first-optical.jpg)
+
+Across all registered cars, trucks, buses and pedestrians, the full-frame classifier matched 452/561 projected opportunities inside 30 m, 104/544 at 30–50 m and 41/1,886 at 50–100 m. Adding the crop changed those counts to **467, 129 and 41**. Unmatched observations rose from **303 to 310**. Of the 141 pedestrian opportunities at 30–50 m, optical matches increased from **5 to 9**. Neither variant matched a pedestrian in the 539 opportunities beyond 50 m. Scoring treats a projected actor as an opportunity even behind a building, so these are coverage counts in the forward sector, not recall on an independently visibility-labeled set.
+
+The seven additional unmatched camera boxes are included below. Frames 3542 and 3544 repeatedly label the same bright shape beneath a structure as a car. The 3446 road-ahead blob has too little detail here to establish its identity. These readings show why the display retains image-only uncertainty. The 0.60 threshold was selected on this drive. At an initial 0.55, the extra optical matches and unmatched observations were 50 and 22, respectively. At 0.60 they were 40 and 7.
+
+![All seven additional unmatched front camera readings](unmatched-optical.jpg)
+
+For the first **accurate 3D symbol**, the lead car moved from **43.14 to 49.83 m**, the occluding van from **58.58 to 61.55 m**, and a background car from **50.78 to 51.20 m**. A parked control that previously missed the display gate appeared at **30.79 m**. Nearby matched symbol-frames stayed at **914/1,116**. At 30–50 m, matches rose from **359 to 366** of 1,088. At 50–100 m, they rose from **23 to 34** of 3,767. Unmatched forward symbols stayed at **213**. No first correct symbol was lost. Neither version drew a correct pedestrian symbol at or beyond 30 m on this tape.
+
+With the default follow camera at a 1366 × 768 laptop viewport, the 3D scene occupied 1001 × 619 pixels. At **61.55 m** the van covered 17 × 22 pixels, with 295 pixels at least 12/255 different from a second rendering with that vehicle body hidden. At **49.83 m** the lead car covered 20 × 20 pixels with 309 changed pixels. The **26.81 m** sidewalk pedestrian covered 11 × 36 pixels with 215 changed pixels. The orange line in each capture is an evaluation annotation. The range and body measurements exclude it. [61.55 m vehicle](high-laptop/frame-2471.jpg) · [49.83 m vehicle](high-laptop/frame-3452.jpg) · [26.81 m pedestrian](high-laptop/frame-3975.jpg) · [Pixel measurements](high-laptop/visibility.json)
+
+## Reproduction
+
+The complete rider screen was also exercised through its normal replay picker, video clock and default front camera. These screenshots have no evaluation overlay. [Van at 61.55 m](high-laptop/home-2471.jpg) · [Lead car at 49.83 m](high-laptop/home-3452.jpg) · [Sidewalk pedestrian at 26.81 m](high-laptop/home-3975.jpg)
+
+The scorer runs the display on calibrated sensors, road geometry and ego odometry, then reads actor references. Optical matches need the correct class and one-to-one intersection-over-union of at least 0.25 with the projected reference body. Vehicle tilt and camera pitch are unavailable in this historical journal. A marginal projection can miss a true image detection. For 3D, the symbol needs at least half opacity, the correct class, and a one-to-one reference center within 3 m on the ground plane. Distances are horizontal ego-to-reference-center distances. First sightings are chronological within the recorded encounter. This study has no human observer baseline. [Baseline results](high-before.json) · [Candidate results, per-class bands and every encounter](high-after.json)
+
+The High journal SHA-256 is `035769ea010f15e5b89f4d1a376d5d009a8182ef7fa00fac559de337e79bfb58`. The front native MJPEG SHA-256 is `68581e383925bba76b044cf67821bcfb381acc9c5f19cde3937cb4294d0eb482`.
+
+```powershell
+$capture = 'out/journey-captures/long-city-drive-nxksaiij/raw'
+$review = 'web/media/urban-pace/barrier-review.json'
+python tools/replay_distant_optics.py $capture out/distant-awareness/front-replay.jsonl
+node tools/score_distant_awareness.mjs $capture out/distant-awareness/before.json --memory-revision 251ae057 --review $review
+node tools/score_distant_awareness.mjs $capture out/distant-awareness/after.json --paired out/distant-awareness/front-replay.jsonl --review $review --examples out/distant-awareness/unmatched.jsonl
+python tools/illustrate_distant_optics.py $capture out/distant-awareness/after.json out/distant-awareness/unmatched.jsonl out/distant-awareness
+python tools/check_distant_visibility.py $capture out/distant-awareness/after.json out/distant-awareness/laptop --review $review --targets 606 604 621
+```

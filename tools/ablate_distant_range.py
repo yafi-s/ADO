@@ -33,7 +33,7 @@ def ablate(source, sweeps, output):
                 # Preserve return indices referenced by native striped-board/chain associations.
                 near = scan.copy()
                 near[np.einsum("ij,ij->i", xyz, xyz) > 60**2] = np.nan
-                f["tracks"] = observer.update(near, measurement["radar"], fresh, f["observer_map"]["ego"],
+                f["tracks"] = observer.update(near, measurement["radar"], fresh, measurement["ego_xy_yaw"],
                                               f["sim_time"], corner_radars={k: measurement[k] for k in CORNER_RADARS})
             for view, observations in fresh.items():
                 supported = {tuple(track["rgb_boxes"][view]): track["id"]

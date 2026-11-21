@@ -39,8 +39,13 @@ function overlap(a,b){
   const intersection=area([Math.max(a[0],b[0]),Math.max(a[1],b[1]),Math.min(a[2],b[2]),Math.min(a[3],b[3])]);
   return intersection/(area(a)+area(b)-intersection);
 }
-const actorsSeen=new Map(), bands={}, extras={}, samples=[];
-const group=(stage,r)=>((bands[stage]??={})[band(r)]??={opportunities:0,matched:0});
+const actorsSeen=new Map(), bands={},classBands={}, extras={}, samples=[];
+const count=(stage,a,field)=>{
+  const r=band(near(a));
+  for(const level of [bands[stage]??={},(classBands[stage]??={})[a.label]??={}]){
+    (level[r]??={opportunities:0,matched:0})[field]++;
+  }
+};
 const unmatched=(stage,box,frame,range=null)=>{
   (extras[stage]??={total:0,by_class:{}}).total++;
   const kinds=extras[stage].by_class;kinds[box.label]=(kinds[box.label]??0)+1;
@@ -49,13 +54,13 @@ const unmatched=(stage,box,frame,range=null)=>{
 const stat=(a)=>actorsSeen.get(a.id);
 function hit(stage,a,frame,details){
   const row=stat(a), r=near(a);
-  group(stage,r).matched++;
+  count(stage,a,'matched');
   row.first[stage]??={frame:frame.frame,time_s:frame.sim_time,range_m:+r.toFixed(2),...details};
 }
 function scoreBoxes(stage,boxes,actors,frame){
   const observations=boxes.filter(b=>roadUser(b.label)),candidates=[];
   for(const a of actors){
-    group(stage,near(a)).opportunities++;
+    count(stage,a,'opportunities');
     for(const b of observations){
       if(a.label!==b.label)continue;
       const iou=overlap(a.pixels,b.box);
@@ -90,7 +95,7 @@ const result=await audit(directory,{staticFile:reference,memoryRevision:values['
     }
   }
   const predictions=display.filter(p=>roadUser(p.label)&&p.opacity>=.5);
-  for(const a of eligible)group('display',near(a)).opportunities++;
+  for(const a of eligible)count('display',a,'opportunities');
   const found=new Set();
   for(const label of ['person','car','truck','bus']){
     const pairs=match(actors.filter(a=>a.label===label),predictions.filter(p=>p.label===label),3);
@@ -106,6 +111,6 @@ const sha=path=>createHash('sha256').update(fs.readFileSync(path)).digest('hex')
 const report={schema:1,frames:result.frames,front_acquisitions:acquisitions,journal_sha256:result.sha256,
   registered_parked_sha256:sha(reference),memory_sha256_lf:result.memory_sha256_lf,paired_optics_sha256:values.paired?sha(values.paired):null,
   method:'Front camera sector, reference center within 100 m and projected body in image; geometric opportunities include occluded actors. Optical requires exact class and one-to-one projected-box IoU >= 0.25. Unmatched optical boxes have no assigned distance. 3D requires exact class, >=0.5 opacity and a unique center within 3 m. Distances are horizontal ego-to-reference-center range.',
-  bands,unmatched:extras,encounters:[...actorsSeen.values()].map(a=>({...a,minimum_m:+a.minimum_m.toFixed(2)}))};
+  bands,class_bands:classBands,unmatched:extras,encounters:[...actorsSeen.values()].map(a=>({...a,minimum_m:+a.minimum_m.toFixed(2)}))};
 fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n');
 if(values.examples)fs.writeFileSync(values.examples,samples.map(x=>JSON.stringify(x)).join('\n')+'\n');
