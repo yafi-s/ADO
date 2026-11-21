@@ -1,6 +1,6 @@
 # Town03 Urban Pace perception
 
-The final High drive covered 3,354 consecutive native acquisitions, frames 2212–5565. The tracker matched **2,080 of 3,309** nearby scenario actor-frames. The rider display matched **2,260**, including 2,256 with the exact reference label. Adding registered parked vehicles gives **2,229 of 4,565** tracker matches and **2,505** display matches. The display produced more unmatched symbols in absolute terms, 2,109 against 2,040, while its share of symbols matched to a reference rose from 52.2% to 54.2%. [Full metrics and source hashes](perception.json)
+The final High drive covered 3,354 consecutive native acquisitions, frames 2212–5565. The tracker matched **2,080 of 3,309** nearby scenario actor-frames. The rider display matched **2,260**, including 2,256 with the exact reference label. Adding registered parked vehicles gives **2,229 of 4,565** tracker matches and **2,505** display matches. The display produced more unmatched symbols in absolute terms, 2,074 against 2,040, while its share of symbols matched to a reference rose from 52.2% to 54.7%. [Full metrics and source hashes](perception.json)
 
 The scorer independently assigns native tracks and drawn objects to CARLA actors, one prediction per actor, within 3 m. Counts use a 35 m radius and include occluded road users. A vehicle-family match can have the wrong vehicle class. Registered parked controls account for 1,256 nearby actor-frames, with 149 raw and 245 display matches. The road-user reference omits ordinary street furniture, cones and unstaged scenery vehicles. An unmatched output therefore needs an image check before it can be called a false detection.
 
@@ -8,7 +8,7 @@ The scorer independently assigns native tracks and drawn objects to CARLA actors
 
 | Sector | Scenario actor-frames | Raw matches | Rider matches | Unmatched raw / total raw | Unmatched rider / total rider |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Front | 1,621 | 1,193 | 1,196 | 582 / 1,767 | 344 / 1,543 |
+| Front | 1,621 | 1,193 | 1,196 | 582 / 1,767 | 309 / 1,508 |
 | Left | 265 | 132 | 162 | 330 / 459 | 285 / 450 |
 | Right | 386 | 258 | 281 | 925 / 1,184 | 1,067 / 1,351 |
 | Rear | 1,037 | 497 | 621 | 349 / 855 | 657 / 1,265 |
@@ -18,6 +18,8 @@ The largest coverage gain is behind the vehicle, where retaining a previously ob
 ## Native camera and rider evidence
 
 **Striped boards.** At 124.8 s, the front camera measures board 617 at 5.71 m from the vehicle. The matching display symbol is 0.123 m from the actor origin. Across the two planted boards the native tracker matches 191 of 369 nearby actor-frames and the display matches 185. Of 180 raw striped-board camera boxes, 155 pass the appearance and owned-lidar checks. Of 28 raw chain proposals, none qualifies for a camera label or rider symbol. The separate controlled chain study tests real suspended chains. [Barrier evidence](../barrier-recognition/README.md)
+
+The original frame also placed a 4.4 m car over the farther board. Two weak front-camera car readings on source 105 had scores of 0.423 and 0.508. All 79 published surface points on its ten measured ticks lay within 0.355 m of the later lidar returns on board source 108, after transforming each scan to world coordinates. The earlier car interpretation remains available in the raw trace. Once the board is independently confirmed, the display withdraws a non-current, single-view, weak car fit only when every point in multiple recent scans agrees with the board footprint and its measured 3D surface. It preserves a freshly measured car, a strongly classified car, and a neighboring car with separate returns. This follow-up repair removed 35 unmatched drawings on the full drive and preserved every nearby match. [Source attribution, individual sweeps and before/after counts](far-board-ownership.json)
 
 ![The near roadside board in native front RGB and the rider display at the identical frame](perception-board.jpg)
 
