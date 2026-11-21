@@ -581,7 +581,7 @@ export class PerceptionScene {
     trail.renderOrder=1;
     this.trackGroup.add(group,trail);
     const track={id,label,group,foot,trail,materials:shape.materials,history:[],from:V(),to:V(),fromAngle:0,toAngle:0,pulse:-Infinity,
-      size:V(),fromSize:V(),toSize:V(),heading:0,velocity:{x:0,z:0}};
+      size:V(),fromSize:V(),toSize:V(),heading:0,against:0,velocity:{x:0,z:0}};
     this.tracks.set(id,track);return track;
   }
 
@@ -648,17 +648,17 @@ export class PerceptionScene {
           track.velocity.x+=TRACK_BETA*rx/step;track.velocity.z+=TRACK_BETA*rz/step;
         }else track.velocity.x=track.velocity.z=0;
       }else track.velocity.x=track.velocity.z=0;
-      // Heading is an estimate with a front/back ambiguity. Keep the facing the shape already has,
-      // unless the object is clearly travelling the other way.
+      // Heading is an estimate with a front/back ambiguity. Keep the facing the shape already has.
+      // Swap ends only after the object has plainly travelled the other way for half a second.
       let facing=degrees+(finite(sample.heading)?sample.heading:0);
+      if(!fresh&&Math.abs(turn(track.heading,facing))>90)facing+=180;
       const travelling=Math.hypot(track.velocity.x,track.velocity.z);
-      if(travelling>1.2){
-        const course=Math.atan2(track.velocity.z,track.velocity.x)/rad;
-        if(Math.abs(turn(course,facing))>90)facing+=180;
-      }else if(!fresh&&Math.abs(turn(track.heading,facing))>90)facing+=180;
-      // A front/back correction swaps ends at once; anything smaller is eased.
-      const swing=turn(track.heading,facing);
-      track.heading=fresh||Math.abs(swing)>120?facing:track.heading+swing*ease(step,HEADING_SECONDS);
+      const against=!fresh&&travelling>1.5&&sample.speed_mps>1.5&&
+        Math.abs(turn(Math.atan2(track.velocity.z,track.velocity.x)/rad,track.heading))>110;
+      track.against=against?track.against+1:0;
+      const swap=track.against>=5;
+      if(swap){track.heading+=180;facing+=180;track.against=0;}
+      track.heading=fresh?facing:track.heading+turn(track.heading,facing)*ease(step,HEADING_SECONDS);
       // Track Z is the estimated centre. Anchor the shape at its measured base.
       const base=h+sample.z-sample.height/2;
       track.from.copy(track.group.position);track.to.set(tx,base,tz);
@@ -671,7 +671,7 @@ export class PerceptionScene {
       // The symbol stays within sizes its class can have; the ground outline keeps the estimate itself.
       plausibleSize(label,track.size,track.toSize);
       track.foot.scale.set(track.size.x/track.toSize.x,track.size.z/track.toSize.z,1);
-      if(fresh||Math.abs(swing)>120)track.fromAngle=track.toAngle;
+      if(fresh||swap)track.fromAngle=track.toAngle;
       if(fresh){track.from.copy(track.to);track.fromSize.copy(track.toSize);track.group.scale.copy(track.toSize);}
       styleConfidence(track,sample.confidence,coast);
       if(!coast&&(fresh||track.coast)&&now-track.pulse>680){track.pulse=now;this.lastPulse=now;}
