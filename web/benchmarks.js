@@ -1,3 +1,5 @@
+import {readRevisionReport, revisionCohorts} from './benchmarks-v2.mjs';
+
 const policies = new Map([
   ['fusion', 'Learned sensor fusion'],
   ['camera', 'Learned camera-only'],
@@ -49,6 +51,20 @@ function tableHeader(label, scope) {
   const node = element('th', label);
   node.scope = scope;
   return node;
+}
+
+function resultsTable(label, columns) {
+  const wrap = element('div');
+  wrap.className = 'table-wrap';
+  wrap.setAttribute('role', 'region');
+  wrap.setAttribute('aria-label', label);
+  wrap.tabIndex = 0;
+  const table = element('table'), head = element('thead'), row = element('tr'), body = element('tbody');
+  row.append(...columns.map(column => tableHeader(column, 'col')));
+  head.append(row);
+  table.append(head, body);
+  wrap.append(table);
+  return {wrap, body};
 }
 
 function humanize(value) {
@@ -253,4 +269,98 @@ async function load() {
   }
 }
 
+function revisionPanel(stage, data, root) {
+  const {spec, cases, totals, changes} = data;
+  const panel = element('section'), heading = element('h3', spec.title), header = element('header');
+  panel.className = 'panel';
+  heading.id = `revision-${stage}`;
+  panel.setAttribute('aria-labelledby', heading.id);
+  header.className = 'panel-head result-head';
+  const paired = element('span', `${spec.pairs} matched pairs`);
+  paired.className = 'unit-tag';
+  header.append(heading, paired);
+
+  const totalsTable = resultsTable(`${spec.title} totals`, ['Policy', 'Clean finishes', 'Collisions', 'Yield violations', 'Red-light violations']);
+  for (const [arm, label] of [['baseline', spec.baseline], ['candidate', 'Behavior V2']]) {
+    const scores = totals[arm];
+    const row = element('tr');
+    row.append(tableHeader(label, 'row'), element('td', `${scores.clean} / ${scores.drives}`),
+      ...[scores.contacts, scores.yield_breaches, scores.red_breaches].map(value => element('td', value)));
+    totalsTable.body.append(row);
+  }
+  const context = stage === 'fresh' ? 'Both policies ran the same newly selected case and seed pairs.' :
+    'Behavior V2 repeated the routes and seeds used in the published v0.1 evaluation.';
+  const note = element('p', `${context} A clean finish reached the route end without contact or traffic violations. ` +
+    'Collision and violation totals count affected runs. ' +
+    `Both finished cleanly in ${changes.both_clean} pairs. Behavior V2 alone finished cleanly in ${changes.candidate_only}, ` +
+    `v0.1 alone in ${changes.baseline_only}, and neither in ${changes.neither_clean}. `);
+  note.className = 'result-note';
+  const link = element('a', 'View cohort report');
+  link.href = new URL(`${stage}.json`, root).href;
+  note.append(link);
+
+  const details = element('details'), picker = element('div'), select = element('select');
+  details.className = 'revision-pairs';
+  picker.className = 'source-picker';
+  select.id = `revision-case-${stage}`;
+  const label = element('label', 'Case');
+  label.htmlFor = select.id;
+  picker.append(label, select);
+  const pairs = resultsTable(`${spec.title} outcomes by seed`, ['Seed', spec.baseline, 'Behavior V2']);
+  const options = [...new Set([...encounters.keys(), ...cases.keys()])].filter(key => cases.has(key));
+  select.replaceChildren(...options.map(key => new Option(key === 'left' ? 'Left turn' : encounters.get(key) ?? humanize(key), key)));
+  function showCase() {
+    const selected = cases.get(select.value);
+    const rows = [...selected].sort((a, b) => a[0] - b[0]).map(([seed, {baseline, candidate}]) => {
+      const row = element('tr');
+      row.append(tableHeader(seed, 'row'));
+      for (const episode of [baseline, candidate]) {
+        const cell = element('td');
+        cell.append(outcomeLabel(episode));
+        row.append(cell);
+      }
+      return row;
+    });
+    pairs.body.replaceChildren(...rows);
+  }
+  select.addEventListener('change', showCase);
+  showCase();
+  details.append(element('summary', 'Matched outcomes by case and seed'), picker, pairs.wrap);
+  panel.append(header, totalsTable.wrap, note, details);
+  return panel;
+}
+
+async function loadRevision() {
+  const roots = [new URL('./media/behavior-v2/', location.href),
+    new URL('https://raw.githubusercontent.com/yafi-s/ADO/main/results/behavior-v2/')];
+  if (['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
+    roots.splice(1, 0, new URL('../results/behavior-v2/', location.href));
+  }
+  for (const root of roots) {
+    const manifestUrl = new URL('study.json', root);
+    try {
+      const response = await fetch(manifestUrl, {signal: AbortSignal.timeout(8000)});
+      if (!response.ok) continue;
+      const study = await response.json();
+      if (typeof study?.study_id !== 'string' || !study.study_id || study.archive?.file !== 'closed-loop-evidence.zip' ||
+          typeof study.archive.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(study.archive.sha256)) continue;
+      const reports = await Promise.allSettled(Object.keys(revisionCohorts).map(async stage => {
+        const report = await readRevisionReport(root, study, stage);
+        return report && revisionPanel(stage, report, root);
+      }));
+      const panels = reports.filter(result => result.status === 'fulfilled' && result.value).map(result => result.value);
+      if (!panels.length) continue;
+      document.getElementById('revision-cohorts').replaceChildren(...panels);
+      document.getElementById('revision-download').href = new URL(study.archive.file, root).href;
+      document.getElementById('revision-manifest').href = manifestUrl.href;
+      document.getElementById('revision-results').hidden = false;
+      document.getElementById('legacy-title').hidden = false;
+      return;
+    } catch {
+      // Sites without the new evidence still show the original published evaluation.
+    }
+  }
+}
+
 load();
+void loadRevision();

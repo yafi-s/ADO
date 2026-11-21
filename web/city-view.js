@@ -1,4 +1,6 @@
 import * as T from './vendor/city-view/three-view.js';
+import {buildRoadUser} from './road-users.js';
+import {loadReplay} from './replay-pack.mjs';
 
 const el = id => document.getElementById(id);
 const finite = Number.isFinite;
@@ -129,6 +131,8 @@ class CityScene {
     // Ground-truth actors arrive as positions, often without a heading, so their markers stay symmetric.
     this.actorBody = new T.RoundedBoxGeometry(3.9, 1.12, 1.78, 3, .3);
     this.actorRoof = new T.RoundedBoxGeometry(2.05, .52, 1.58, 3, .2);
+    this.coneBody = new T.CylinderGeometry(.025, .16, .52, 12);
+    this.coneMat = colorMaterial(0xe88a36);
     this.walkerBody = new T.CapsuleGeometry(.2, .92, 5, 14);
     this.walkerHead = new T.SphereGeometry(.17, 16, 12);
     this.frameCamera = true;
@@ -173,9 +177,33 @@ class CityScene {
     this.dirty = true;
   }
 
-  async loadTown() {
+  async loadTown(url = './media/town.json', mapName = null) {
+    if ((this.mapUrl === url && this.mapName === mapName) ||
+        (this.mapRequest?.url === url && this.mapRequest.mapName === mapName)) return;
+    this.mapRequest?.control.abort();
+    const request = {url, mapName, control: new AbortController()};
+    this.mapRequest = request;
+    this.mapUrl = this.mapName = this.bounds = null;
+    for (const name of ['curbs', 'roads', 'buildings']) {
+      const geometry = this[name];
+      if (!geometry) continue;
+      this.scene.remove(geometry);
+      geometry.geometry.dispose();
+      geometry.material.dispose();
+      geometry.dispose?.();
+      this[name] = null;
+    }
+    this.grid.clear();
+    this.floor.position.y = -.16;
+    this.routeKey = '';
+    if (this.lastFrame) this.show(this.lastFrame);
+    this.dirty = true;
+    issue('map-issue');
     try {
-      const data = await read('./media/town.json', new AbortController().signal);
+      if (typeof url !== 'string' || !/^\.\/media\/(?:[\w-]+\/)*[\w-]+\.json$/i.test(url)) throw new Error('Invalid road map path');
+      const data = await read(url, request.control.signal, 30000);
+      if (this.mapRequest !== request) return;
+      if (mapName && data.producer?.map !== mapName) throw new Error('Road geometry does not match the recording');
       const roads = (data.roads || []).map(lane => (Array.isArray(lane) ? lane : lane.points || []).filter(p => point(p, 3))).filter(lane => lane.length > 1);
       if (!roads.length) throw new Error('No lanes');
       for (const road of roads) for (let i = 1; i < road.length; i++) {
@@ -212,11 +240,15 @@ class CityScene {
         this.scene.add(buildings);
       }
       this.dirty = true;
+      this.mapUrl = url;
+      this.mapName = mapName;
       this.routeKey = '';
       if (this.lastFrame) this.show(this.lastFrame);
       if (this.mode === 'overview' || !this.ego.visible) this.positionCamera(true);
     } catch {
-      issue('map-issue', 'City footprint unavailable. Vehicle and route use telemetry coordinates.');
+      if (!request.control.signal.aborted) issue('map-issue', 'City footprint unavailable. Vehicle and route use telemetry coordinates.');
+    } finally {
+      if (this.mapRequest === request) this.mapRequest = null;
     }
   }
 
@@ -272,25 +304,43 @@ class CityScene {
 
   drawActors(map) {
     const actors = (map.others || []).filter(a => a && finite(a.x) && finite(a.y));
-    for (const [p, type] of [[map.traffic, 'vehicle'], [map.hazard, map.hazard_type === 'pedestrian' ? 'walker' : 'vehicle']]) {
+    for (const [p, type] of [[map.traffic, 'vehicle'], [map.hazard, map.hazard_type ?? 'vehicle']]) {
       if (point(p) && !actors.some(a => Math.hypot(p[0] - a.x, p[1] - a.y) < .7)) actors.push({x:p[0], y:p[1], type});
     }
     actors.forEach((a, i) => {
       const walker = a.type === 'walker' || a.type === 'pedestrian';
+      const kind = walker ? 'walker' : ['bus', 'cyclist', 'cone', 'van'].includes(a.type) ? a.type : 'vehicle';
       let marker = this.actors[i];
-      if (!marker || marker.userData.walker !== walker) {
-        if (marker) this.scene.remove(marker);
+      if (!marker || marker.userData.kind !== kind) {
+        if (marker) {
+          this.scene.remove(marker);
+          marker.userData.materials?.forEach(material => material.dispose());
+        }
         marker = new T.Group();
-        marker.userData.walker = walker;
-        const body = mesh(walker ? this.walkerBody : this.actorBody, walker ? this.walkerMat : this.vehicleMat, marker);
-        body.position.y = walker ? .68 : .70;
-        const top = mesh(walker ? this.walkerHead : this.actorRoof, walker ? this.walkerMat : this.vehicleMat, marker);
-        top.position.y = walker ? 1.56 : 1.39;
+        marker.userData.kind = kind;
+        if (kind === 'cone') {
+          mesh(this.coneBody, this.coneMat, marker).position.y = .26;
+        } else if (kind === 'bus' || kind === 'cyclist') {
+          const shape = buildRoadUser(kind === 'bus' ? 'bus' : 'bicycle', {
+            vehicle: 0x8196c2, rider: 0xe1a44a, glass: 0x314558, tyre: 0x25313a,
+            hub: 0x96a0ac, lamp: 0xf6edd8, tail: 0xe76d68, glow: .05
+          });
+          const nominal = kind === 'bus' ? [7.7, 2.8, 2.1] : [1.85, 1.65, .65];
+          const size = point(a.dimensions_m, 3) ? a.dimensions_m : nominal;
+          shape.group.scale.set(...size);
+          marker.add(shape.group);
+          marker.userData.materials = shape.materials;
+        } else {
+          const body = mesh(walker ? this.walkerBody : this.actorBody, walker ? this.walkerMat : this.vehicleMat, marker);
+          body.position.y = walker ? .68 : .70;
+          const top = mesh(walker ? this.walkerHead : this.actorRoof, walker ? this.walkerMat : this.vehicleMat, marker);
+          top.position.y = walker ? 1.56 : 1.39;
+        }
         this.actors[i] = marker;
         this.scene.add(marker);
       }
-      // Legacy actor telemetry supplies XY only. Use a square footprint to avoid implying a heading.
-      marker.scale.set(!walker && !finite(a.yaw) ? .55 : 1, 1, 1);
+      // Older observer logs sometimes have just XY, so use a neutral car footprint.
+      marker.scale.set(kind === 'vehicle' && !finite(a.yaw) ? .55 : 1, kind === 'van' ? 1.40 : 1, 1);
       marker.rotation.y = -(finite(a.yaw) ? a.yaw : 0) * radians;
       marker.position.set(a.x, this.height(a.x, a.y) + .025, a.y);
       marker.visible = true;
@@ -443,6 +493,15 @@ function renderRecording() {
   el('clock').textContent = fmtTime(position);
   el('seek').value = position;
 }
+function parseRecording(data) {
+  const frames = Array.isArray(data) ? data : data?.frames;
+  if (!frames?.length || !frames.every(f => finite(f?.frame))) throw new Error('Invalid telemetry');
+  const rawTimes = frames.map((f,i) => finite(f.video_time) ? f.video_time : finite(data.fps) && data.fps > 0 ? i / data.fps : f.sim_time);
+  if (rawTimes.some((t,i) => !finite(t) || (i && t < rawTimes[i-1]))) throw new Error('Invalid timing');
+  const times = rawTimes.map(t => t - rawTimes[0]);
+  return {frames, times, end:times.at(-1)};
+}
+
 async function startRecording() {
   replayRequest?.abort();
   replayRequest = new AbortController();
@@ -452,24 +511,35 @@ async function startRecording() {
   issue('data-issue', 'Loading recorded driveâ€¦');
   try {
     if (!catalog.length) {
-      const data = await read('./media/catalog.json', signal);
+      const [base, viewer] = await Promise.allSettled([
+        read('./media/catalog.json', signal), read('./media/viewer-catalog.json', signal)
+      ]);
       if (signal.aborted) return;
-      catalog = (Array.isArray(data) ? data : data.records || []).filter(entry => typeof entry.label === 'string' &&
+      const entries = result => Array.isArray(result.value) ? result.value : result.value?.records || [];
+      const legacy = entries(base);
+      const paths = new Set(legacy.map(entry => entry?.path));
+      const viewerEntries = entries(viewer);
+      const viewerByPath = new Map(viewerEntries.filter(Boolean).map(entry => [entry.path, entry]));
+      const extra = viewerEntries.filter(entry => (entry?.map_url || entry?.replay_pack_url) && !paths.has(entry.path));
+      const primary = legacy.map(entry => {
+        const supplemental = viewerByPath.get(entry?.path);
+        return {...entry, map: entry?.map ?? supplemental?.map, map_url: entry?.map_url ?? supplemental?.map_url,
+          replay_pack_url: entry?.replay_pack_url ?? supplemental?.replay_pack_url};
+      });
+      catalog = [...primary, ...extra].filter(entry => typeof entry?.label === 'string' &&
         typeof entry.path === 'string' && (entry.path === '' || /^[\w-]+(?:\/[\w-]+)*$/.test(entry.path)));
       if (!catalog.length) throw new Error('Empty catalog');
       el('case').replaceChildren(...catalog.map(entry => new Option(entry.label, entry.path)));
       if (catalog.some(e => e.path === requestedCase)) el('case').value = requestedCase;
       el('case-label').hidden = false;
     }
+    const selected = catalog.find(entry => entry.path === el('case').value);
+    void scene?.loadTown(selected?.map_url, typeof selected?.map === 'string' ? selected.map : null);
     const directory = './media/' + (el('case').value ? el('case').value + '/' : '');
-    const data = await read(directory + 'replay.json', signal, 30000);
+    const playback = await loadReplay(selected?.replay_pack_url, signal, parseRecording,
+      () => read(directory + 'replay.json', signal, 30000));
     if (signal.aborted) return;
-    const frames = Array.isArray(data) ? data : data.frames;
-    if (!frames?.length || !frames.every(f => finite(f?.frame))) throw new Error('Invalid telemetry');
-    const rawTimes = frames.map((f,i) => finite(f.video_time) ? f.video_time : finite(data.fps) && data.fps > 0 ? i / data.fps : f.sim_time);
-    if (rawTimes.some((t,i) => !finite(t) || (i && t < rawTimes[i-1]))) throw new Error('Invalid timing');
-    const times = rawTimes.map(t => t - rawTimes[0]);
-    recording = {frames, times, end:times.at(-1)};
+    recording = playback;
     playing = recording.end > 0;
     renderRecording();
     controls();
@@ -493,6 +563,7 @@ async function monitor(serial, signal) {
         replayRequest?.abort();
         setMode('live', 'Live');
         resetDrive();
+        void scene?.loadTown();
         activeLiveId = frame.run_id;
       }
       display(frame);

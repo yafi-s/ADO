@@ -1,0 +1,546 @@
+{
+  "format_version": 1,
+  "simulator": {
+    "server": "CARLA 1.0",
+    "client": "CARLA 1.0",
+    "map": "Town01_Opt",
+    "district": "train",
+    "xodr_sha256": "97a7f6ac67812567e5c8ee0599cd823b23f80f30f3f97c502212e38b72e2b709"
+  },
+  "fit_environment": {
+    "provider": "Google Colab",
+    "accelerator": "CPU",
+    "architecture": "Linux x86_64",
+    "python": "3.13.18",
+    "packages": {
+      "numpy": "2.4.6",
+      "scipy": "1.16.3",
+      "scikit-learn": "1.6.1",
+      "opencv-python": "5.0.0.93",
+      "joblib": "1.6.0",
+      "threadpoolctl": "3.7.0"
+    }
+  },
+  "artifacts": {
+    "data/training.npz": {
+      "bytes": 2706491,
+      "sha256": "97f37276ff5adde351e3c480ebc17101251e3e02659ed2a2b63fc553232ba6d7"
+    },
+    "models/fusion.npz": {
+      "bytes": 21361,
+      "sha256": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26"
+    },
+    "data/behavior-v2/labels.npz": {
+      "bytes": 46066,
+      "sha256": "5e5a05faadb51dc648c23a0f55bbf81dfe04ff36ff4d54ab97e6246763bd3281"
+    },
+    "data/behavior-v2/lessons.zip": {
+      "bytes": 533844,
+      "sha256": "e507492135560dea7aa8b50a16e38cd2d86048060c06e63b21f4db88d75baa7f"
+    },
+    "models/behavior-v2/candidate.npz": {
+      "bytes": 254599,
+      "sha256": "25b7059a6a559ece65e2c8c64ddc1197d95c763f008be9bb31797d69617b1a6c"
+    },
+    "models/behavior-v2/training-report.json": {
+      "bytes": 4145,
+      "sha256": "b2d514091103dad18e7dffe1636ba801bda7cba9aefe381517cad460df885726"
+    }
+  },
+  "fit_sources": {
+    "crosswalk/__init__.py": {
+      "colab_sha256": "590317093851e1344de8f7faa51a24f62685ee5f187f655a0aae308c9c773b05",
+      "lf_sha256": "cbb3015e9518f7c3b9079b14001455b026da244cdfb36547c8f15ccbba618c64"
+    },
+    "crosswalk/behavior_v2.py": {
+      "colab_sha256": "6a496b331b385eada2f0c2c0709914f2b856cb8bc97c0f1ea1128fbedf0b4c63",
+      "lf_sha256": "7ad0af4a9df6586cad6485417c1d7da4e35bbaea317c74f54b11af079052ff6f"
+    },
+    "crosswalk/steering_search.py": {
+      "colab_sha256": "97840656afc5657d452a2dd3160151f1a7307b3438bd0fa5ddfc3d24ce218031",
+      "lf_sha256": "43a8f147e5154b963c0ebdc9d339e737dbe5888c126c00af0028ec89b2f8a37c"
+    },
+    "crosswalk/vision.py": {
+      "colab_sha256": "987ba3f37f7f49161bd41b761d21d5ad4e2fd9962ec0d0f54f7118a86bebed2b",
+      "lf_sha256": "0075f835d27f52147cb521feebbbbd3f65be1a2d2516d68910a94a316a6816a8"
+    },
+    "crosswalk/lamp.py": {
+      "colab_sha256": "3110575e3eb89115fee4726556bb3aaaceba95d1587ea38643afec2c85e23ec7",
+      "lf_sha256": "90a551a1e7587d8df46b8b99603ac6c3a670d9673c326e14cb1da7e7c26e934e"
+    },
+    "crosswalk/policy.py": {
+      "colab_sha256": "609dc843d6ea52f66301c441b943e75f691702ca502e64d390d95c613d45a907",
+      "lf_sha256": "addeeb63d55419089c6ffdd05035f0d84b4243c074850f5a54a4c9ff96e8dcc0"
+    },
+    "crosswalk/signal_vision.py": {
+      "colab_sha256": "f03f29ff1a32c1bb28f12a78cba1a3ba4d92a31d42e1e65a5fdf448edea901b3",
+      "lf_sha256": "8bf60e3a411a258096b549311d343d540996f3f210a1f4064f62a7df833a46b4"
+    }
+  },
+  "legacy": {
+    "rows": 10086,
+    "episodes": 48,
+    "seeds": [
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ]
+  },
+  "supplement": [
+    {
+      "member": "clear-43.npz",
+      "sha256": "7c76e57a5acc9675cc95f7609c000a841b46cc639379a9ab3f568f5f58fb6ae7",
+      "rows": 123,
+      "case": "clear",
+      "seed": 43,
+      "route_id": "train:7093278927938951740:12028589368709797021",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "clear-44.npz",
+      "sha256": "517b16241f8ce2d44c5bab1244e68bb5b8872f60065e65e5504582d8b00f3738",
+      "rows": 123,
+      "case": "clear",
+      "seed": 44,
+      "route_id": "train:2370795146794732196:10212580816582631417",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "clear-47.npz",
+      "sha256": "8a30fb43c43dafbd02b1eebbe5a9d2368582d58607582682a432eb5ba716c526",
+      "rows": 123,
+      "case": "clear",
+      "seed": 47,
+      "route_id": "train:11446740074119218795:14855710320573371001",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "clear-48.npz",
+      "sha256": "717cad6015ce135e0c268bd054d3efd65b4a838542f81dd39e1eb17426c903c0",
+      "rows": 123,
+      "case": "clear",
+      "seed": 48,
+      "route_id": "train:7502020940646949751:3545034594906147438",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "lead-43.npz",
+      "sha256": "aec30353c5262e71cfb42a5b7ab35b1b56d33501f34ecafae013327f8a83b4c2",
+      "rows": 166,
+      "case": "lead",
+      "seed": 43,
+      "route_id": "train:7093278927938951740:12028589368709797021",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "lead-44.npz",
+      "sha256": "4038d61a708fcb213f80bb678a54f96ab642de35c18db4554e814232b352b0a8",
+      "rows": 164,
+      "case": "lead",
+      "seed": 44,
+      "route_id": "train:2370795146794732196:10212580816582631417",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "lead-47.npz",
+      "sha256": "4eea5c734ff6d31870955e02a0cd0570db89b44f7c393de13db1d4ecfa68cc1c",
+      "rows": 172,
+      "case": "lead",
+      "seed": 47,
+      "route_id": "train:11446740074119218795:14855710320573371001",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "lead-48.npz",
+      "sha256": "e9e9fb39d68d1c35a79fcb492f8dfc26b4b0b4722b6d5c9e22dc1fd4a05f7055",
+      "rows": 168,
+      "case": "lead",
+      "seed": 48,
+      "route_id": "train:7502020940646949751:3545034594906147438",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "left-43.npz",
+      "sha256": "f0fcdb0db080ff5f6ee1c800c22dc38f4427ba328e20f54dcc89dd06dad95141",
+      "rows": 217,
+      "case": "left",
+      "seed": 43,
+      "route_id": "train:8553153459742949830:6849975260625286975",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "left-44.npz",
+      "sha256": "4d33964abe9fed34fe79a635049d8f1e71611e169ed21866f7d09094644a2976",
+      "rows": 214,
+      "case": "left",
+      "seed": 44,
+      "route_id": "train:15816394447699160701:6980397699127290469",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "left-47.npz",
+      "sha256": "680face78c0c832334f24bc7df5d3b78ab2c050a1d5020de203b7ecc6683de03",
+      "rows": 216,
+      "case": "left",
+      "seed": 47,
+      "route_id": "train:3973267318441558873:3393957197093477166",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "left-48.npz",
+      "sha256": "b60f740713e37e0a551d8b8e9a27cdc9c430a5548b26678ed99dc61adc2a31b2",
+      "rows": 217,
+      "case": "left",
+      "seed": 48,
+      "route_id": "train:5199995383711568595:9778815203370937399",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "occluded-43.npz",
+      "sha256": "f4f7f6f411243df76956fe0afbe57674b2e3ba508d24e2b793e4a2a5b9b04d21",
+      "rows": 176,
+      "case": "occluded",
+      "seed": 43,
+      "route_id": "train:7093278927938951740:12028589368709797021",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "occluded-44.npz",
+      "sha256": "7a284e751f48a9ab6e0cd2a3393017c5b4654c7e907031e4542fd5f2c54f86e9",
+      "rows": 184,
+      "case": "occluded",
+      "seed": 44,
+      "route_id": "train:2370795146794732196:10212580816582631417",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "occluded-47.npz",
+      "sha256": "c26f6dd6a32443abea08a93c218e015b4b085bff98855340032bf751da26b8b6",
+      "rows": 187,
+      "case": "occluded",
+      "seed": 47,
+      "route_id": "train:11446740074119218795:14855710320573371001",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "occluded-48.npz",
+      "sha256": "cc3c4f0d230f38295277a007343f2e2fcedbf5afe5a51cdd6ece6a807fdea340",
+      "rows": 188,
+      "case": "occluded",
+      "seed": 48,
+      "route_id": "train:7502020940646949751:3545034594906147438",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "pedestrian-43.npz",
+      "sha256": "a4307ac5f18da81ffe827e96afb46430df6cafd62dd88282f003f3d1661792de",
+      "rows": 173,
+      "case": "pedestrian",
+      "seed": 43,
+      "route_id": "train:7093278927938951740:12028589368709797021",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "pedestrian-44.npz",
+      "sha256": "b5f6021fbd43adf67126b65530e30cf5c078b38c19fd8d90b01f371ec55f2f63",
+      "rows": 180,
+      "case": "pedestrian",
+      "seed": 44,
+      "route_id": "train:2370795146794732196:10212580816582631417",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "pedestrian-47.npz",
+      "sha256": "ea6fa66f7dccaee55e2996db2cf0684f6c032ae14e95b44c6e1b5caf84195ab5",
+      "rows": 182,
+      "case": "pedestrian",
+      "seed": 47,
+      "route_id": "train:11446740074119218795:14855710320573371001",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "pedestrian-48.npz",
+      "sha256": "fb3c4910cdf406e608c1cf59cb95394c6c9592a96daaf9dbe968a9db5f33ec04",
+      "rows": 182,
+      "case": "pedestrian",
+      "seed": 48,
+      "route_id": "train:7502020940646949751:3545034594906147438",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "pedestrian-delayed-43.npz",
+      "sha256": "bb0761623c03346fccc4c0baa39312efd9178f373bd8ec7d919562e7215fca93",
+      "rows": 185,
+      "case": "pedestrian-delayed",
+      "seed": 43,
+      "route_id": "train:7093278927938951740:12028589368709797021",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 1.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "pedestrian-delayed-44.npz",
+      "sha256": "c219f89d570ea29a00cf68778f6121097dc3a636e15d39fab459ad554239d883",
+      "rows": 192,
+      "case": "pedestrian-delayed",
+      "seed": 44,
+      "route_id": "train:2370795146794732196:10212580816582631417",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 1.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "pedestrian-delayed-47.npz",
+      "sha256": "3a0fbbeca562c7e5a29cc31d4bf9c454b22847870ef04a194b23cf8bfa017d25",
+      "rows": 194,
+      "case": "pedestrian-delayed",
+      "seed": 47,
+      "route_id": "train:11446740074119218795:14855710320573371001",
+      "weather": "WetNoon",
+      "crossing_delay_s": 1.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "pedestrian-delayed-48.npz",
+      "sha256": "7fada18080bce3500c94595febfdbd1ce17542b77bdb944bc9d6c20af6001418",
+      "rows": 195,
+      "case": "pedestrian-delayed",
+      "seed": 48,
+      "route_id": "train:7502020940646949751:3545034594906147438",
+      "weather": "WetNoon",
+      "crossing_delay_s": 1.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "trip-43.npz",
+      "sha256": "ce4cd02f0f132bdc8140708b1bf79979cf08c37eb43fe67ab8781ecc0cae814a",
+      "rows": 539,
+      "case": "trip",
+      "seed": 43,
+      "route_id": "train:12830937343991442140:18313795912026913960",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "trip-44.npz",
+      "sha256": "8f3836d53c3a436daf26be04b463cc84495400315ddca5b9b65b940939841f4e",
+      "rows": 578,
+      "case": "trip",
+      "seed": 44,
+      "route_id": "train:3295262048007518178:12667651780569733249",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "trip-47.npz",
+      "sha256": "496ea7917deb2766bc9130ee8d124fd957af8a616892f44f1938be597a09eab5",
+      "rows": 547,
+      "case": "trip",
+      "seed": 47,
+      "route_id": "train:12830937343991442140:18313795912026913960",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "trip-48.npz",
+      "sha256": "7943cd7e404b4c28b81a594d528416e820ffd65665ce0232701e1d82b6ffb315",
+      "rows": 581,
+      "case": "trip",
+      "seed": 48,
+      "route_id": "train:3295262048007518178:12667651780569733249",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "turn-43.npz",
+      "sha256": "ccca7697ceeca2fd579579e9483303cc02a3ea2748f80bf04d1b5ac6ccb06445",
+      "rows": 157,
+      "case": "turn",
+      "seed": 43,
+      "route_id": "train:12659970760603332682:522752599358616396",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "turn-44.npz",
+      "sha256": "7c33642f24108ec1b8d9de167242126f849b9daad464a10c90147ffacdbf665c",
+      "rows": 174,
+      "case": "turn",
+      "seed": 44,
+      "route_id": "train:1563426751027588046:4156941519210354365",
+      "weather": "ClearSunset",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "turn-47.npz",
+      "sha256": "5906fa06919a6c82b746e75750571f992fdaf372f7eafcccd64606612782b912",
+      "rows": 156,
+      "case": "turn",
+      "seed": 47,
+      "route_id": "train:2862435906423937046:6645522222167686593",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    },
+    {
+      "member": "turn-48.npz",
+      "sha256": "88717bb3eb9273bfa0d077022d9cd036789f7a69671e3611fac70325a7f9853e",
+      "rows": 174,
+      "case": "turn",
+      "seed": 48,
+      "route_id": "train:9132171940949724066:14895008472253235605",
+      "weather": "WetNoon",
+      "crossing_delay_s": 0.0,
+      "outcome": "complete",
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0
+    }
+  ],
+  "repeat": {
+    "result": "candidate and training report reproduced byte-for-byte in the original Colab runtime",
+    "model_sha256": "25b7059a6a559ece65e2c8c64ddc1197d95c763f008be9bb31797d69617b1a6c"
+  }
+}

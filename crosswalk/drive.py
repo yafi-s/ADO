@@ -45,12 +45,18 @@ def _xy(location):
 def _observer_map(scene, path):
     pose = scene.ego.get_transform()
     hazard = scene.hazard
+    if hasattr(scene, "observer_positions"):
+        others = scene.observer_positions()
+        hazard_type = next((a["type"] for a in others if hazard and a["actor_id"] == hazard.id), None)
+    else:
+        others = scene.ambient.observer_positions() if scene.ambient else []
+        hazard_type = ("pedestrian" if hazard.type_id.startswith("walker.") else "vehicle") if hazard else None
     return {
         "path": path, "ego": [*_xy(pose.location), round(pose.rotation.yaw, 2)], "ego_z": round(pose.location.z,2),
-        "others": scene.ambient.observer_positions() if scene.ambient else [],
+        "others": others,
         "traffic": _xy(scene.traffic.get_location()) if scene.traffic else None,
         "hazard": _xy(hazard.get_location()) if hazard else None,
-        "hazard_type": ("pedestrian" if hazard.type_id.startswith("walker.") else "vehicle") if hazard else None,
+        "hazard_type": hazard_type,
     }
 
 
@@ -67,22 +73,26 @@ def start_demonstration(scene, teacher):
 
 
 def update_instructor(scene, teacher):
-    if scene.kind in ("signal", "left"):
+    speed_limit = 6.
+    if scene.kind in ("signal", "left", "journey"):
         # Only the demonstration instructor can consult a stop line. Traffic
         # Manager still selects the actual actuators that become training labels.
         available = max(0., scene.expert_gap() - 2.8)
-        teacher.set_desired_speed(scene.ego, 3.6 * min(6., math.sqrt(4.5 * available)))
-    elif scene.kind == "trip":
+        speed_limit = min(speed_limit, math.sqrt(4.5 * available))
+    if scene.kind in ("turn", "trip", "left", "journey"):
         progress, _ = scene._coordinates(scene.ego.get_location())
         near_junction = any(entry - 13. <= progress <= exit_ + 7.
                             for entry, exit_ in scene._junction_ranges)
-        teacher.set_desired_speed(scene.ego, 3.6 * (3.7 if near_junction else 6.0))
+        if near_junction:
+            speed_limit = min(speed_limit, 3.7)
+    teacher.set_desired_speed(scene.ego, 3.6 * speed_limit)
+    return speed_limit
 
 
 def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             recording=None, realtime=False, max_steps=None, district=None, crossing_delay=0.,
             destination=None, run_id=None, change_request=None, weather="seeded", grip=1.0,
-            range_only=False):
+            range_only=False, scene_factory=Scenario, observation_factory=None):
     """Apply t's observation to t+1. Oracle labels and metrics are isolated from inference."""
     cv2.setNumThreads(2)
     data, targets = [], []
@@ -95,7 +105,7 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
     with ExitStack() as stack:
         if teacher is not None:
             teacher.set_random_device_seed(seed)
-        scene = Scenario(world, kind, seed, perturb=True, district=district,
+        scene = scene_factory(world, kind, seed, perturb=True, district=district,
                          crossing_delay=crossing_delay, destination=destination)
         stack.callback(scene.close)
         if weather != "seeded":
@@ -142,35 +152,56 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 raise RuntimeError("CARLA did not apply the requested wheel grip.")
         detector = None if range_only else Detector()
         navigation = Navigation(scene.route)
+        make_observer = observation_factory or getattr(model, "new_observer", None)
+        observer = make_observer() if make_observer is not None else None
+        teacher_speed = None
         pending = None
         detections = []
+        sensor_lamp = getattr(model, "sensor_lamp_classifier", None)
         if teacher is not None:
             stack.callback(scene.ego.set_autopilot, False, teacher.get_port())
             start_demonstration(scene, teacher)
         else:
             lamp_expert = getattr(model, "lamp_expert", None)
             route_lamps = None
-            if lamp_expert is not None and not range_only:
+            if (lamp_expert is not None or sensor_lamp is not None) and not range_only:
                 from .lamp import RouteLamps
-                lamp_expert = lamp_expert.for_episode()
                 route_lamps = RouteLamps(world, scene.route)
+            if lamp_expert is not None:
+                lamp_expert = lamp_expert.for_episode()
         start = perf_counter()
+        best_journey_progress = 0.
+        last_forward_step = 0
         for step in range(max_steps):
             scene.before_tick()
             if teacher is not None:
-                update_instructor(scene, teacher)
+                teacher_speed = update_instructor(scene, teacher)
             frame = world.tick()
             obs = rig.read(frame)
             speed = vehicle_speed(scene.ego)
-            local_route = navigation.read(scene.ego)
+            if observer is None:
+                local_route = navigation.read(scene.ego)
+            else:
+                points = navigation.read(scene.ego, (3., 7., 13., 18., 25., 32., 40.))
+                local_route = points[:6]
             if range_only:
                 from .policy import range_features
                 x = range_features(obs["lidar"], obs["radar"], speed, local_route)
             else:
                 if step % 2 == 0:
                     detections = detector.detect(obs["front"])
-                x = features(obs["front"], obs["lidar"], obs["radar"], speed, detections,
-                             navigation=local_route, side_views=(obs["left"], obs["right"]))
+                if observer is None:
+                    x = features(obs["front"], obs["lidar"], obs["radar"], speed, detections,
+                                 navigation=local_route, side_views=(obs["left"], obs["right"]))
+                elif not hasattr(observer, "observe_and_predict"):
+                    junction_gap = next((start - navigation.progress - 2.25
+                                         for start, end in scene._junction_ranges if end >= navigation.progress), 60.)
+                    x = observer.observe(obs, detections, local_route, speed,
+                                         route_preview=points[6:], stopline_gap=max(-2., min(60., junction_gap)))
+            if sensor_lamp is not None:
+                signal = route_lamps.observe(scene.ego, obs)
+                light = (sensor_lamp.red_probability(signal[1]), signal[0]) if signal is not None else (0., 60.)
+                x = np.asarray([*x, *light], dtype=np.float32)
             if teacher is not None:
                 applied = scene.ego.get_control()
                 steer, throttle, brake = applied.steer, applied.throttle, applied.brake
@@ -180,8 +211,14 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                     targets.append((steer, throttle, brake))
                 pending = x
             else:
-                predicted = model.predict_range(x) if range_only else model.predict(x)
-                if route_lamps is not None:
+                if observer is not None and hasattr(observer, "observe_and_predict"):
+                    pose = scene.ego.get_transform()
+                    predicted = observer.observe_and_predict(obs, detections, local_route, speed,
+                        route_preview=points[6:], ego_pose=(pose.location.x, pose.location.y, pose.rotation.yaw),
+                        sim_time=step*DT, detection_fresh=step % 2 == 0)
+                else:
+                    predicted = model.predict_range(x) if range_only else model.predict(x)
+                if lamp_expert is not None and route_lamps is not None:
                     predicted = lamp_expert.apply(route_lamps.observe(scene.ego, obs), speed, predicted)
                 steer, throttle, brake = (float(v) for v in predicted)
                 scene.ego.apply_control(carla.VehicleControl(steer=steer, throttle=throttle, brake=brake))
@@ -204,6 +241,13 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 "yield_violations": state["yield_violations"],
                 "event_triggered": state["event_triggered"], "event_cleared": state["event_cleared"],
             }
+            if teacher is not None:
+                row["instructor_speed_mps"] = teacher_speed
+            if "events" in state:
+                row["active_event"] = state["active_event"]
+                row["events"] = state["events"]
+            if observer is not None and hasattr(observer,"last_info"):
+                row["planner"] = observer.last_info
             trace.append(row)
             if visuals:
                 lp, rp = _sensor_plot(obs["lidar"], obs["radar"])
@@ -229,6 +273,13 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             if state["progress_m"] >= state["route_length_m"] - 0.6:
                 outcome = "complete"
                 break
+            if kind == "journey":
+                if state["progress_m"] >= best_journey_progress + .5:
+                    best_journey_progress = state["progress_m"]
+                    last_forward_step = step
+                if (step-last_forward_step)*DT >= 45.:
+                    outcome = "timeout"
+                    break
             if change_request and change_request():
                 outcome = "restarted"
                 break
@@ -273,6 +324,13 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                        wall_seconds=round(perf_counter()-start, 3))
         if teacher is not None:
             summary["route_xy"] = [[p.x, p.y] for p in scene.route]
+        if "events" in state:
+            summary.update(events=state["events"], turn_counts=state["turn_counts"], district=state["district"],
+                           junction_traversals=state["junction_traversals"], turns_completed=state["turns_completed"],
+                           clear_road_m=state["clear_road_m"])
+            for name in ("sidewalk_activity", "background_traffic_activity"):
+                if name in state:
+                    summary[name] = state[name]
         return summary, trace, np.asarray(data, np.float32), np.asarray(targets, np.float32)
 
 

@@ -1,0 +1,195 @@
+{
+  "subject": "Native Town03 fixture movements with a stationary ego; no driving-performance score",
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town03_Opt"
+  },
+  "seed": 211,
+  "route_m": 1415.4376535898139,
+  "actors": {
+    "pedestrian": {
+      "route_m": 28.0,
+      "actor": "walker.pedestrian.0031"
+    },
+    "occluded": {
+      "route_m": 146.99,
+      "actor": "walker.pedestrian.0048"
+    },
+    "signal": {
+      "route_m": 322.57,
+      "actor": "vehicle.tesla.model3",
+      "native_light": 6106,
+      "native_stop_lanes": [
+        [
+          1382,
+          1
+        ],
+        [
+          1363,
+          1
+        ]
+      ],
+      "affected_lanes": [
+        [
+          1363,
+          1
+        ],
+        [
+          1382,
+          1
+        ]
+      ],
+      "queue_vehicle": "vehicle.tesla.model3"
+    },
+    "roadworks": {
+      "route_m": 375.16,
+      "actor": "static.prop.trafficcone01"
+    },
+    "lead": {
+      "route_m": 576.65,
+      "actor": "vehicle.tesla.model3"
+    },
+    "bus": {
+      "route_m": 811.91,
+      "actor": "vehicle.fuso.mitsubishi"
+    },
+    "braking": {
+      "route_m": 977.17,
+      "actor": "vehicle.tesla.model3"
+    },
+    "left": {
+      "route_m": 1043.17,
+      "actor": "vehicle.mini.cooper"
+    },
+    "cyclist": {
+      "route_m": 1200.65,
+      "actor": "vehicle.bh.crossbike"
+    },
+    "pedestrian-delayed": {
+      "route_m": 1276.65,
+      "actor": "walker.pedestrian.0015"
+    }
+  },
+  "ambient": {
+    "walkers": 5,
+    "vehicles": 3
+  },
+  "measurements": {
+    "walker_paths": {
+      "pedestrian": {
+        "start_side_m": 6.635000200194451,
+        "minimum_side_m": -11.005595960630679
+      },
+      "occluded": {
+        "start_side_m": 6.135008251508907,
+        "minimum_side_m": -10.505586196166746
+      },
+      "pedestrian-delayed": {
+        "start_side_m": 6.634995516066843,
+        "minimum_side_m": -10.106193605819929
+      }
+    },
+    "van_blocks_fixed_approach": true,
+    "moving_walker_emerged": true,
+    "bicycle_peak_mps": 3.005058964540872,
+    "stopped_lead_exited": true,
+    "stopped_lead_terminal_error_m": 0.6157835125923157,
+    "bicycle_travel_m": 57.25472640991211,
+    "bicycle_exit_seen": true,
+    "brake_entry_mps": 2.8483878635710895,
+    "lead_peak_deceleration_mps2": 10.005739244332972,
+    "lead_final_mps": 0.0,
+    "bus_peak_mps": 0.013675682306518541,
+    "bus_lane": [
+      4,
+      3
+    ],
+    "sidewalk_walkers": [
+      {
+        "distance_m": 3.79,
+        "on_sidewalk": true
+      },
+      {
+        "distance_m": 3.61,
+        "on_sidewalk": true
+      },
+      {
+        "distance_m": 3.37,
+        "on_sidewalk": true
+      },
+      {
+        "distance_m": 4.88,
+        "on_sidewalk": true
+      },
+      {
+        "distance_m": 4.86,
+        "on_sidewalk": true
+      }
+    ],
+    "background_cars": {
+      "spawned": 3,
+      "moving_near_ego": 0,
+      "vehicles": [
+        {
+          "blueprint": "vehicle.mini.cooper",
+          "movement": "opposing",
+          "road": 76,
+          "lane": 1,
+          "traveled_m": 53.41,
+          "peak_speed_mps": 5.24,
+          "closest_while_moving_m": 180.87,
+          "left_corridor": false
+        },
+        {
+          "blueprint": "vehicle.tesla.model3",
+          "movement": "parallel",
+          "road": 67,
+          "lane": -1,
+          "traveled_m": 85.06,
+          "peak_speed_mps": 6.6,
+          "closest_while_moving_m": 219.15,
+          "left_corridor": false
+        },
+        {
+          "blueprint": "vehicle.lincoln.mkz",
+          "movement": "opposing",
+          "road": 20,
+          "lane": 1,
+          "traveled_m": 59.49,
+          "peak_speed_mps": 5.15,
+          "closest_while_moving_m": 216.49,
+          "left_corridor": false
+        }
+      ]
+    },
+    "cone_count": 6,
+    "cone_planned_centerline_gaps_m": [
+      0.571,
+      0.37,
+      0.27,
+      0.27,
+      0.37,
+      0.57
+    ],
+    "oncoming_crossed": true,
+    "queue_held_red": true,
+    "queue_moved_on_green": true,
+    "real_green_seen": true,
+    "ego_distance_m": 0.0
+  },
+  "checks": {
+    "walkers": true,
+    "occlusion": true,
+    "cycle": true,
+    "bus": true,
+    "stopped_lead_runout": true,
+    "lead": true,
+    "cone": true,
+    "oncoming": true,
+    "queue": true,
+    "sidewalk": true,
+    "ordinary_traffic": true
+  },
+  "all_fixture_checks_passed": true
+}

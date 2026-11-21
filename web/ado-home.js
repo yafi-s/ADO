@@ -2,6 +2,9 @@
 // PerceptionScene renderer. The renderer is loaded on its own so that footage and
 // telemetry keep working if the 3D scene cannot start.
 
+import {recordedChapters} from './encounter-chapters.mjs';
+import {loadReplay} from './replay-pack.mjs';
+
 const CAR_URL = './vehicle-assets/waymo-ipace.glb';
 const TOWN_URL = './media/town.json';
 const CAMERA_LABELS = {front: 'Front', chase: 'Chase'};
@@ -9,6 +12,7 @@ const CAMERA_ORDER = ['front', 'chase'];
 const LOCAL_CONSOLE = ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname);
 const POLICY_LABELS = {
   fusion: 'Learned multisensor', camera: 'Learned vision',
+  'ado-city-policy-v1': 'ADO city driver', 'ado-behavior-v2': 'ADO behavior v2',
   demonstrator: 'Training instructor', teacher: 'Training instructor'
 };
 const OUTCOME_LABELS = {complete: 'Route complete', red_light: 'Red-light violation'};
@@ -68,7 +72,7 @@ const state = {
 // stands in only for a recorded drive whose footage is missing.
 const clock = {video: false, t: 0, playing: false, pendingT: 0, pendingPlay: false};
 
-const stage = {scene: null, failed: false, faulted: false};
+const stage = {scene: null, failed: false, faulted: false, mapUrl: TOWN_URL, mapName: null};
 let loadControl;
 let shownActivity = '';
 let candidateActivity = '';
@@ -188,6 +192,37 @@ function sceneUnavailable(message) {
   if (!state.feedChosen) setFeed('dock');
 }
 
+async function loadSceneMap(url = TOWN_URL, mapName = null) {
+  stage.mapUrl = url;
+  stage.mapName = mapName;
+  const scene = stage.scene;
+  if (!scene || (stage.loadedMap === url && stage.loadedMapName === mapName) ||
+      (stage.mapRequest?.url === url && stage.mapRequest.mapName === mapName)) return;
+  stage.mapRequest?.control.abort();
+  stage.loadedMap = null;
+  sceneCall('setMap', null);
+  note('note-map', '');
+  const request = {url, mapName, control: new AbortController()};
+  stage.mapRequest = request;
+  try {
+    if (typeof url !== 'string' || !/^\.\/media\/(?:[\w-]+\/)*[\w-]+\.json$/i.test(url)) throw new Error('Invalid road map path');
+    const data = await getJson(url, {timeout: 30000, signal: request.control.signal});
+    if (stage.mapRequest !== request) return;
+    if (!Array.isArray(data.roads) || !data.roads.length || (mapName && data.producer?.map !== mapName)) {
+      throw new Error('Road geometry does not match the recording');
+    }
+    scene.setMap(data);
+    stage.loadedMap = url;
+    stage.loadedMapName = mapName;
+  } catch (error) {
+    if (request.control.signal.aborted) return;
+    console.error(error);
+    note('note-map', 'Road map unavailable. The scene is placed from telemetry alone.');
+  } finally {
+    if (stage.mapRequest === request) stage.mapRequest = null;
+  }
+}
+
 async function bootScene() {
   note('note-scene', 'Loading the 3D scene…');
   let module;
@@ -216,12 +251,8 @@ async function bootScene() {
   const car = Promise.resolve()
     .then(() => scene.loadCar(CAR_URL))
     .then(() => true, error => { console.error(error); return false; });
-  const town = getJson(TOWN_URL, {timeout: 30000})
-    .then(data => scene.setMap(data))
-    .then(() => true, error => { console.error(error); return false; });
-  const [carReady, mapReady] = await Promise.all([car, town]);
+  const [carReady] = await Promise.all([car, loadSceneMap(stage.mapUrl, stage.mapName)]);
   if (!stage.faulted) note('note-scene', carReady ? '' : 'The vehicle model could not be loaded.');
-  note('note-map', mapReady ? '' : 'Road map unavailable. The scene is placed from telemetry alone.');
   if (state.frame) sceneCall('update', state.frame);
 }
 
@@ -609,6 +640,23 @@ function renderRunLinks() {
   link('link-mp4', footage ? film.src : null);
 }
 
+function renderChapters() {
+  const replay = state.source === 'recorded' ? state.replay : null;
+  const chapters = replay?.end > 0 ? replay.chapters : [];
+  show('chapters', Boolean(chapters?.length));
+  $('chapter-list').replaceChildren(...(chapters ?? []).map(chapter => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'chip';
+    button.textContent = chapter.label;
+    button.setAttribute('aria-label', `Jump to ${chapter.label}`);
+    button.addEventListener('click', () => {
+      if (state.replay === replay) seekTo(replay.times[chapter.index]);
+    });
+    return button;
+  }));
+}
+
 function renderRun() {
   const {build, entry, run, source, training} = state;
   let title = '';
@@ -630,11 +678,13 @@ function renderRun() {
 
   const recorded = source === 'recorded';
   fact('outcome', recorded && run?.outcome ? OUTCOME_LABELS[run.outcome] ?? sentence(String(run.outcome)) : null);
-  const checkpoint = build?.checkpoints?.[run?.policy];
+  const checkpoint = Object.values(build?.checkpoints ?? {}).find(item => item.sha256 === run?.model_sha256);
   hashFact('checkpoint', recorded ? run?.model_sha256 : null,
     checkpoint?.sha256 && checkpoint.sha256 === run?.model_sha256 ? checkpoint.url : null);
-  hashFact('revision', source === 'recorded' || source === 'training' ? build?.source?.commit : null, build?.source?.url);
+  const revision = run?.source ?? build?.legacy_run_source ?? build?.source;
+  hashFact('revision', source === 'recorded' || source === 'training' ? revision?.commit : null, revision?.url);
   renderFrameFacts(state.frame);
+  renderChapters();
   renderRunLinks();
 }
 
@@ -809,7 +859,7 @@ function loadVideo(url, at, autoplay) {
 }
 
 function videoUrl() {
-  return `${state.dir}/${state.camera}.mp4`;
+  return artifactUrl(state.entry?.camera_urls?.[state.camera]) ?? `${state.dir}/${state.camera}.mp4`;
 }
 
 function setCameras(cameras) {
@@ -950,6 +1000,7 @@ function beginSource(source) {
   candidateActivity = '';
   note('note-data', '');
   present(null);
+  if (source !== 'recorded') void loadSceneMap();
   renderTelemetry(null);
   return loadControl.signal;
 }
@@ -969,7 +1020,8 @@ function parseReplay(data) {
   }
   return {
     kind: 'replay', uniform: !stamped, frames, times, end: times[times.length - 1],
-    cameras: Array.isArray(data) ? undefined : data.cameras
+    cameras: Array.isArray(data) ? undefined : data.cameras,
+    chapters: recordedChapters(frames)
   };
 }
 
@@ -999,11 +1051,28 @@ function parseTrainingLog(log) {
 
 const replays = new Map();
 
-async function openRecorded(entry) {
+async function loadChapterManifest(entry, replay, signal) {
+  if (!entry.trial_id || typeof entry.manifest !== 'string' ||
+      !/^\.\/media\/(?:[\w-]+\/)*manifest\.json$/i.test(entry.manifest)) return;
+  try {
+    const manifest = await getJson(entry.manifest, {signal});
+    if (signal.aborted || state.replay !== replay || manifest.trial_id !== entry.trial_id ||
+        manifest.first_frame !== replay.frames[0].frame || manifest.last_frame !== replay.frames.at(-1).frame) return;
+    replay.chapters = recordedChapters(replay.frames, manifest);
+    renderChapters();
+  } catch {
+    // Playback and run details are available without optional chapter metadata.
+  }
+}
+
+async function openRecorded(entry, startSeconds = 0) {
   const signal = beginSource('recorded');
   state.entry = entry;
   state.run = findRun(entry);
   state.dir = entry.path ? `./media/${entry.path}` : './media';
+  const mapUrl = entry.map_url ?? state.run?.map_url;
+  const mapName = entry.map ?? state.run?.map;
+  void loadSceneMap(mapUrl ?? TOWN_URL, typeof mapName === 'string' ? mapName : null);
   if (!state.feedChosen && !stage.failed) setFeed('inset');
   setMode('loading', 'Loading');
   feedNote('Loading footage…');
@@ -1017,8 +1086,9 @@ async function openRecorded(entry) {
   let replay = replays.get(dir) ?? null;
   if (!replay) {
     try {
-      replay = parseReplay(await getJson(`${dir}/replay.json`, {signal, timeout: 30000}));
-      replays.set(dir, replay);
+      replay = await loadReplay(entry.replay_pack_url ?? state.run?.replay_pack_url, signal, parseReplay,
+        () => getJson(`${dir}/replay.json`, {signal, timeout: 30000}));
+      if (replay && !signal.aborted) replays.set(dir, replay);
     } catch (error) {
       if (signal.aborted) return;
       console.error(error);
@@ -1031,9 +1101,10 @@ async function openRecorded(entry) {
 
   const listed = Array.isArray(entry.cameras) ? entry.cameras : Array.isArray(replay?.cameras) ? replay.cameras : CAMERA_ORDER;
   setCameras([...new Set(listed.filter(camera => CAMERA_ORDER.includes(camera)))]);
-  if (replay) present(frameAt(0));
+  const start = replay && finite(startSeconds) ? Math.max(0, Math.min(startSeconds, replay.end)) : 0;
+  if (replay) present(frameAt(start));
   if (state.camera) {
-    loadVideo(videoUrl(), 0, !reducedMotion);
+    loadVideo(videoUrl(), start, !reducedMotion);
   } else {
     feedNote('No front or chase footage is listed for this run.');
     clock.playing = Boolean(replay) && !reducedMotion;
@@ -1041,6 +1112,9 @@ async function openRecorded(entry) {
   }
   renderRun();
   renderTransport();
+  if (replay && !replay.chapters.length && !replay.frames.some(frame => Array.isArray(frame.events))) {
+    void loadChapterManifest(entry, replay, signal);
+  }
 }
 
 function trainingLogUrl(build) {
@@ -1158,6 +1232,7 @@ function showLive(frame) {
   setMode('live', 'Live');
   if (frame.run_id !== state.liveRun) {
     state.liveRun = frame.run_id;
+    void loadSceneMap(frame.map_url ?? TOWN_URL, frame.map ?? null);
     renderRun();
   }
   showLiveImage(frame);
@@ -1265,7 +1340,10 @@ function catalogFromBuild() {
     trial_id: run.trial_id,
     path: run.recording_path,
     label: run.label || state.build?.title || sentence(run.case_id) || run.trial_id || 'Recorded drive',
-    cameras: run.cameras
+    cameras: run.cameras,
+    map: run.map,
+    map_url: run.map_url,
+    replay_pack_url: run.replay_pack_url
   }));
 }
 
@@ -1419,7 +1497,8 @@ async function boot() {
   bootScene();
   if (LOCAL_CONSOLE) confirmControls();
 
-  const requested = new URLSearchParams(location.search).get('run');
+  const search = new URLSearchParams(location.search);
+  const requested = search.get('run');
   const [build, catalog] = await Promise.all([loadBuild(), loadCatalog()]);
   state.build = build;
   state.catalog = catalog.length ? catalog : catalogFromBuild();
@@ -1429,7 +1508,7 @@ async function boot() {
   if (requested) {
     state.wanted = 'recorded';
     const entry = resolveRun(requested);
-    if (entry) openRecorded(entry);
+    if (entry) openRecorded(entry, Number(search.get('at')));
     else showUnresolved(requested);
   } else if (!LOCAL_CONSOLE) {
     showDefault();
