@@ -31,6 +31,9 @@ def load_driver(path):
     if version == "ado-city-pace-v1":
         from .city_pace import CityPaceModel, FEATURE_NAMES as city_names
         return CityPaceModel.load(path), city_names, version
+    if version == "ado-city-clearance-v1":
+        from .city_clearance import ClearanceModel, FEATURE_NAMES as clearance_names
+        return ClearanceModel.load(path), clearance_names, version
     raise ValueError(f"Unknown driving model: {version}")
 
 
@@ -99,7 +102,7 @@ def main():
         parser.error("Crossing delay must be finite and nonnegative")
     model_sha = fingerprint(args.model)
     driver, names, schema = load_driver(args.model)
-    live_cruise = args.serve and schema in ("ado-city-cruise-v1", "ado-city-pace-v1")
+    live_cruise = args.serve and schema in ("ado-city-cruise-v1", "ado-city-pace-v1", "ado-city-clearance-v1")
     options = {key: True for key, value in (("surround", args.surround), ("tactical", args.tactical))
                if (live_cruise if value is None else value)}
     tactical_sha = None
@@ -107,7 +110,7 @@ def main():
         from .overtake import MODEL as tactical_checkpoint
         tactical_sha = fingerprint(tactical_checkpoint)
     model = LoggedDriver(driver)
-    scene_factory = partial(JourneyScenario, barriers=True) if schema == "ado-city-pace-v1" else JourneyScenario
+    scene_factory = partial(JourneyScenario, barriers=True) if schema in ("ado-city-pace-v1", "ado-city-clearance-v1") else JourneyScenario
     root = args.output or PROJECT / "out/city-drives"
     root.mkdir(parents=True, exist_ok=True)
     folder = Path(mkdtemp(prefix=f"city-{args.seed}-", dir=root))
