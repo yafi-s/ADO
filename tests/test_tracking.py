@@ -95,6 +95,31 @@ class TrackingTests(unittest.TestCase):
                               (lidar, [detection, detection])]:
             self.assertEqual(Tracker().update(points, EMPTY, boxes, (0, 0, 0), 0.), [])
 
+    def test_a_re_read_class_continues_the_same_track(self):
+        # The detector calls one van a car, then a truck, then a car again.
+        tracker = Tracker()
+        lidar, detection = car(14., -3.)
+        first, = tracker.update(lidar, EMPTY, [detection], (0, 0, 0), 0.)
+        second, = tracker.update(lidar, EMPTY, [dict(detection, label="truck", score=.5)], (0, 0, 0), .2)
+        third, = tracker.update(lidar, EMPTY, [detection], (0, 0, 0), .4)
+        self.assertEqual({first["id"], second["id"], third["id"]}, {first["id"]})
+        # The class that has gathered the most confidence names it.
+        self.assertEqual([first["label"], second["label"], third["label"]], ["car", "car", "car"])
+        # A pedestrian where the car was is another object.
+        lidar, walker = person(14., -3.)
+        self.assertEqual({t["label"] for t in tracker.update(lidar, EMPTY, [walker], (0, 0, 0), .6)}, {"car", "person"})
+
+    def test_two_classes_on_one_object_make_one_measurement(self):
+        # A car box and a bicycle box on the same van share every lidar return.
+        lidar, detection = car(14., -3.)
+        repeat = dict(detection, label="bicycle", score=.4)
+        track, = Tracker().update(lidar, EMPTY, [repeat, detection], (0, 0, 0), 0.)
+        self.assertEqual(track["label"], "car")
+        # A person standing in front of a car is not a repeat of it.
+        near, walker = person(8., -3.)
+        labels = {t["label"] for t in Tracker().update(np.vstack([lidar, near]), EMPTY, [detection, walker], (0, 0, 0), 0.)}
+        self.assertIn("person", labels)
+
     def test_signed_radar_velocity_matches_in_three_dimensions(self):
         lidar, detection = person(11.3, 1.5)
         dx, dy = 9.3, 1.5

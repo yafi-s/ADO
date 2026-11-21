@@ -5,7 +5,7 @@
 // re-detected object a new id. Drawn as reported, objects blink, vanish beside the vehicle
 // and reappear. This module keeps one drawn object per physical object instead:
 //
-//   confirm   an object is drawn once the tracker has measured it twice (or once, close and sure)
+//   confirm   an object is drawn once it has been measured two or three times (or once, close and sure)
 //   stitch    a measurement beside a remembered object of the same kind continues that object
 //   hold      a stopped object stays where it was last measured, drawn as remembered, until
 //             the vehicle passes it, it is plainly gone, or the vehicle drives through the spot
@@ -33,7 +33,7 @@ const VIEW_RANGE_M = 40;
 
 const GRACE_S = .25;            // the detector idles on alternate frames
 const CANDIDATE_S = .7;         // an unconfirmed measurement waits this long for a second one
-const SURE = {confidence: .6, range: 15};
+const SURE = {confidence: .6, range: 15}, FAIR = .5;
 const GATE_M = {person: 1.2, wheeled: 2.4, unknown: 1.5};
 const DRIFT_MPS = {person: 2, wheeled: 1.5, unknown: 1.5};   // how far an unseen object may have moved, per second
 const TRAVEL_DRIFT_MPS = 8;
@@ -53,7 +53,7 @@ const EGO_HALF = {length: 2.7, width: 1.3};
 // out than this were kiosks, sheds and street furniture.
 const OFF_ROAD_M = 3.6;
 const FADE_IN_S = .3, FADE_OUT_S = .6, DIM_S = .4;
-const REMEMBERED = .5;          // how solid a remembered object is drawn
+const REMEMBERED = .6;          // how solid a remembered object is drawn
 
 // How quickly the drawn shape follows the tracker's estimates.
 const SHAPE_SECONDS = .55, HEADING_SECONDS = .4, TRACK_ALPHA = .5, TRACK_BETA = .14, STILL_SECONDS = 2.4, REST_SECONDS = .35;
@@ -299,8 +299,13 @@ function witnessed(object, sample, ctx, state) {
   object.hits++;
   object.lastHit = object.lastBox = object.lastLidar = ctx.t;
   object.leaving = false; object.why = null;
-  // The tracker reports a speed only from its second measurement of an object.
-  if (finite(s.speed_mps) || object.hits >= 2 || (s.confidence >= SURE.confidence && range <= SURE.range)) {
+  object.peak = Math.max(object.peak, finite(s.confidence) ? s.confidence : 0);
+  if (sample.joining) object.lastHit = ctx.t - (finite(s.age_s) ? clamp(s.age_s, 0, 1) : GRACE_S + .05);
+  // Two measurements confirm an object the detector was fairly sure of, three one it was not:
+  // boxes near the detector's threshold, twice in a row, were bollards. Joining a drive part-way,
+  // the tracker's own second measurement stands in; it reports a speed only from then on.
+  const sure = s.confidence >= SURE.confidence && range <= SURE.range;
+  if (sure || object.hits >= 3 || (object.hits >= 2 && object.peak >= FAIR) || (sample.joining && finite(s.speed_mps))) {
     if (!object.confirmed && state.warm < GRACE_S) object.alpha = 1 - 1e-9;   // joining mid-drive: show what is tracked at once
     object.confirmed = true;
   }
@@ -325,9 +330,12 @@ export function advance(state, ctx, deps = {}) {
     listed.add(s.id);
     const sources = Array.isArray(s.sources) ? s.sources : [];
     // A 2D class score cannot establish depth, and a coast is the tracker's guess, not a measurement.
-    if (s.coasting === true || !(sources.includes('lidar') || sources.includes('radar'))) continue;
+    // Joining a drive part-way is the exception: what the tracker is coasting was measured a moment
+    // before, in frames this memory never saw, so it is taken up as already remembered.
+    const joining = s.coasting === true && state.warm < GRACE_S && !sources.length && !state.ids.has(s.id);
+    if (!joining && (s.coasting === true || !(sources.includes('lidar') || sources.includes('radar')))) continue;
     const label = LABELS.has(s.label) ? s.label : 'unknown';
-    samples.push({s, label, family: familyOf(label), range: Math.hypot(s.x, s.y), object: null,
+    samples.push({s, label, family: familyOf(label), range: Math.hypot(s.x, s.y), object: null, joining,
       mx: ex + cos * s.x - sin * s.y, mz: ez + sin * s.x + cos * s.y});
   }
 
@@ -382,7 +390,7 @@ export function advance(state, ctx, deps = {}) {
       continue;
     }
     const object = {key: state.next++, family: sample.family, label: sample.label, votes: {}, hits: 0, confirmed: false,
-      leaving: false, why: null, alpha: 0, solid: 1, x: sample.mx, z: sample.mz, y: 0, vx: 0, vz: 0, heading: 0, against: 0, across: 0,
+      leaving: false, why: null, peak: 0, alpha: 0, solid: 1, x: sample.mx, z: sample.mz, y: 0, vx: 0, vz: 0, heading: 0, against: 0, across: 0,
       length: sample.s.length, width: sample.s.width, height: sample.s.height, seen: [], travelling: false, travelFor: 0, stillFor: 0, rest: null, turned: true,
       raw: {x: sample.mx, z: sample.mz}, lastHit: t, lastBox: t, lastLidar: t, t, speed: null};
     state.objects.set(object.key, object);

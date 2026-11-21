@@ -31,6 +31,34 @@ COURSE_WINDOW_S = 1.    # travel is judged over this much recent history
 COURSE_MIN_S = .45
 COURSE_MIN_M = {"person": .6}   # net travel needed before it sets the heading; 1 m otherwise
 COURSE_STRAIGHTNESS = .8        # net travel over path length; jitter scores low
+REPEAT_IOU = .5         # two boxes of one family overlapping this much are one object
+
+
+def _family(label):
+    """Classes the detector confuses with one another. A van reads as car, bus or bicycle."""
+    return "person" if label == "person" else "wheeled"
+
+
+def _distinct(detections):
+    """Keep the surer box where another class of the same family repeats it.
+
+    The detector suppresses repeats within a class only. Left alone, two boxes on one
+    object share every lidar return, and shared returns support neither.
+    """
+    kept = []
+    for detection in sorted(detections, key=lambda d: -d["score"]):
+        left, top, right, bottom = detection["box"]
+        for other in kept:
+            if other["label"] == detection["label"] or _family(other["label"]) != _family(detection["label"]):
+                continue
+            a, b, c, d = other["box"]
+            overlap = max(0., min(right, c) - max(left, a)) * max(0., min(bottom, d) - max(top, b))
+            union = (right - left) * (bottom - top) + (c - a) * (d - b) - overlap
+            if union > 0 and overlap / union >= REPEAT_IOU:
+                break
+        else:
+            kept.append(detection)
+    return kept
 
 
 def _project(lidar):
@@ -77,9 +105,7 @@ def _measure(lidar, detections):
     points, u, v = _project(lidar)
     selections = []
     owners = np.zeros(len(points), dtype=int)
-    for detection in detections:
-        if detection["label"] not in SIZE:
-            continue
+    for detection in _distinct([d for d in detections if d["label"] in SIZE]):
         box = np.clip(detection["box"], 0., 1.)
         left, top, right, bottom = box
         mask = (u >= left) & (u <= right) & (v >= top) & (v <= bottom)
@@ -174,8 +200,13 @@ class _Track:
     heading_world: float
     size: np.ndarray        # settled length, width, height
     trail: list             # recent (time, world position) observations
+    votes: dict             # confidence each class has gathered; the leader names the track
     observations: int = 1
     travelling: bool = False    # sustained travel was seen at the last observation
+
+    @property
+    def label(self):
+        return max(self.votes, key=self.votes.get)
 
 
 class Tracker:
@@ -199,7 +230,8 @@ class Tracker:
             dt = now - track.last_seen
             prediction = track.position + dt * track.velocity
             for idx, (item, pos) in enumerate(zip(measurements, positions)):
-                if item["label"] != track.measurement["label"]:
+                # A re-read of the class is not a new object.
+                if _family(item["label"]) != _family(track.label):
                     continue
                 distance = float(np.linalg.norm(pos - prediction))
                 max_speed = 4. if item["label"] == "person" else 20.
@@ -222,7 +254,8 @@ class Tracker:
                 track.velocity += weight * ((pos - track.position) / dt - track.velocity)
                 track.observations += 1
             track.trail = [entry for entry in track.trail if now - entry[0] <= COURSE_WINDOW_S] + [(now, pos)]
-            course = _course(track.trail, item["label"])
+            track.votes[item["label"]] = track.votes.get(item["label"], 0.) + item["confidence"]
+            course = _course(track.trail, track.label)
             track.travelling = course is not None
             if course is not None:
                 track.heading_world = course
@@ -234,7 +267,8 @@ class Tracker:
                 size = np.array([item["length"], item["width"], item["height"]])
                 # Road users mostly travel along or across the ego vehicle's own heading.
                 facing = yaw + (90. if item["sideways"] else 0.)
-                self._tracks[self._next_id] = _Track(pos, np.zeros(2), now, item, facing, size, [(now, pos)])
+                self._tracks[self._next_id] = _Track(pos, np.zeros(2), now, item, facing, size, [(now, pos)],
+                                                     {item["label"]: item["confidence"]})
                 self._next_id += 1
         result = []
         for key, track in self._tracks.items():
@@ -249,7 +283,7 @@ class Tracker:
             if radial is not None:
                 sources.append("radar")
             length, width, height = (float(value) for value in track.size)
-            result.append(dict(id=key, label=item["label"], x=float(x), y=float(y),
+            result.append(dict(id=key, label=track.label, x=float(x), y=float(y),
                                z=max(height / 2, item["top"] - height / 2), length=length,
                                width=width, height=height,
                                heading=(track.heading_world - yaw + 180) % 360 - 180,

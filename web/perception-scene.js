@@ -34,17 +34,17 @@ function release(root) {
 const PALETTES = {
   night: {
     sky:'#192633', floorFar:[.013,.024,.035], floorNear:[.025,.042,.054], grid:[.012,.024,.024],
-    roadEdge:[.041,.058,.077], roadMid:[.052,.073,.092], marking:[.32,.43,.49], centre:[.56,.42,.10], curb:'#3d4d58',
+    roadEdge:[.036,.052,.070], roadMid:[.047,.067,.086], marking:[.36,.47,.53], centre:[.62,.46,.11], kerb:[.17,.24,.29], curb:'#3a4a56',
     pathFar:[.028,.38,.42], pathNear:[.24,.84,.76],
-    wallDark:[.023,.037,.052], wallLit:[.066,.092,.112], wallEdge:[.014,.029,.037],
+    wallDark:[.026,.041,.058], wallLit:[.074,.102,.126], wallEdge:[.030,.052,.066],
     shadow:'#061012', shadowOpacity:.57, lidar:'#8cced2', radar:'#e6b979',
-    vehicle:'#7084e4', rider:'#e3bc83', person:'#f59a98', unknown:'#9cafbf',
+    vehicle:'#8a9cf2', rider:'#f2c27c', person:'#ffc27a', unknown:'#9cafbf',
     glass:'#3d4f86', lamp:'#e6ecff', tail:'#ff8f9c', tyre:'#232f44', hub:'#5b6c9c', glow:.04, rim:.3, exposure:1.04,
     signalBody:'#2a3644', signalOff:'#141c26', red:'#ff453a', amber:'#ffb01f', green:'#2fe37a'
   },
   day: {
     sky:'#eceef2', floorFar:'#e2e5ea', floorNear:'#e7eaee', grid:[-.05,-.047,-.042],
-    roadEdge:'#f3f4f7', roadMid:'#f9fafb', marking:'#9aa3b1', centre:'#d8a019', curb:'#cfd4dc',
+    roadEdge:'#f3f4f7', roadMid:'#f9fafb', marking:'#9aa3b1', centre:'#d8a019', kerb:'#b4bcc8', curb:'#cfd4dc',
     pathFar:'#7fa8f5', pathNear:'#1f5fe8',
     wallDark:'#cdd2da', wallLit:'#e9ecf0', wallEdge:[-.035,-.033,-.03],
     shadow:'#1d2633', shadowOpacity:.34, lidar:'#5578b4', radar:'#d9641a',
@@ -53,7 +53,7 @@ const PALETTES = {
     signalBody:'#5d6674', signalOff:'#39414d', red:'#e5352b', amber:'#e39a0c', green:'#17a85a'
   }
 };
-const TONES = ['sky','floorFar','floorNear','grid','roadEdge','roadMid','marking','centre','curb','pathFar','pathNear',
+const TONES = ['sky','floorFar','floorNear','grid','roadEdge','roadMid','marking','centre','kerb','curb','pathFar','pathNear',
   'wallDark','wallLit','wallEdge','shadow','lidar','radar'];
 const displayMode = () => document.documentElement.dataset.display === 'day' ? 'day' : 'night';
 const tone = (target, value) => Array.isArray(value) ? target.setRGB(...value) : target.set(value);
@@ -178,9 +178,9 @@ void main(){
 function streetMaterial(tones) {
   return new T.ShaderMaterial({
     uniforms:{uSky:{value:tones.sky}, uEdge:{value:tones.roadEdge}, uMid:{value:tones.roadMid}, uMark:{value:tones.marking},
-      uCentre:{value:tones.centre}},
+      uCentre:{value:tones.centre}, uKerb:{value:tones.kerb}},
     side:T.DoubleSide,vertexShader:ribbonVertex,
-    fragmentShader:`uniform vec3 uSky,uEdge,uMid,uMark,uCentre; varying vec2 vLane; varying vec3 vWorld;
+    fragmentShader:`uniform vec3 uSky,uEdge,uMid,uMark,uCentre,uKerb; varying vec2 vLane; varying vec3 vWorld;
       varying float vInner,vCalm,vPaint,vBroken;
       ${haze}
       void main(){
@@ -194,6 +194,9 @@ function streetMaterial(tones) {
         float marking=strength*lane*(1.-smoothstep(.05,.7,vCalm));
         vec3 base=mix(uEdge,uMid,1.-a);
         vec3 color=mix(base,mix(uMark,uCentre,step(1.5,vPaint)),marking*.85);
+        // An unpainted outer edge meets the kerb: a fine line keeps the carriageway's outline crisp.
+        float kerb=recorded*(1.-step(.5,vPaint))*(1.-step(.58,vInner))*lane*(1.-smoothstep(.05,.7,vCalm));
+        color=mix(color,uKerb,kerb*.8);
         gl_FragColor=vec4(aerial(color,vWorld),1.);${endColor}
       }`
   });
@@ -357,6 +360,13 @@ function reviseTrail(trail, history, now, speed) {
 // traffic signals. Written by crosswalk/map_features.py, one file per town.
 const featuresURL=name=>new URL(`./media/map-features/${encodeURIComponent(name)}.json`,import.meta.url);
 const endsKey=(a,b)=>`${a[0].toFixed(2)},${a[1].toFixed(2)}|${b[0].toFixed(2)},${b[1].toFixed(2)}`;
+const featureFiles=new Map();
+function townFeatures(name) {
+  if(!featureFiles.has(name)){
+    featureFiles.set(name,fetch(featuresURL(name)).then(response=>response.ok?response.json():null).catch(()=>null));
+  }
+  return featureFiles.get(name);
+}
 
 // A traffic signal is drawn as a symbol, half again as large as life so its lamps read from the
 // follow camera. Its position and facing are the map's. A lamp is lit only from a recorded state.
@@ -558,10 +568,10 @@ export class PerceptionScene {
     // The town's signals and lane paint arrive separately. The scene is complete without them.
     const name=town?.producer?.map, request=this.featureRequest=(this.featureRequest||0)+1;
     if(typeof name!=='string'||!/^[\w-]+$/.test(name))return;
-    fetch(featuresURL(name)).then(response=>response.ok?response.json():null).then(data=>{
+    townFeatures(name).then(data=>{
       if(this.disposed||request!==this.featureRequest||data?.map!==name)return;
       this.features=data;this.buildMap();
-    }).catch(()=>{});
+    });
   }
   buildMap() {
     const town=this.town, features=this.features;
@@ -610,8 +620,10 @@ export class PerceptionScene {
     this.redraw();
   }
   // Light each signal from the frame. A recording can list lamp states around the vehicle as
-  // observer_map.signals: [{x, y, state}]. The signal scenario instead records the phase of the
-  // one signal ahead that governs the vehicle's lane. Any other signal is drawn unlit.
+  // observer_map.signals: [{x, y, state}]. Recordings made before that field say less: the signal
+  // scenario records the phase of the signal the vehicle waits at, and the trip scenario holds
+  // every signal on the route at green (crosswalk/world.py; the recorded cameras show both).
+  // A signal with no recorded state is drawn unlit.
   lightSignals(frame,ctx) {
     if(!this.signals?.length)return;
     const states=new Map(), listed=frame.observer_map?.signals;
@@ -625,17 +637,26 @@ export class PerceptionScene {
         }
         if(nearest)states.set(nearest,lampState(entry.state));
       }
-    }else if(ctx.located&&frame.scenario==='signal'&&/^(red|green) signal$/.test(frame.phase)){
-      const cos=Math.cos(ctx.degrees*rad), sin=Math.sin(ctx.degrees*rad);
-      let governing=null, ahead=70;
+    }else if(ctx.located&&(frame.scenario==='trip'||(frame.scenario==='signal'&&/^(red|green) signal$/.test(frame.phase)))){
+      // The signals ahead that govern traffic heading the vehicle's way, nearest first.
+      const c=Math.cos(ctx.degrees*rad), n=Math.sin(ctx.degrees*rad), ahead=[];
       for(const signal of this.signals){
-        const dx=signal.x-ctx.x, dz=signal.z-ctx.z, fx=cos*dx+sin*dz, fy=-sin*dx+cos*dz;
+        const dx=signal.x-ctx.x, dz=signal.z-ctx.z, fx=c*dx+n*dz, fy=-n*dx+c*dz;
         const along=Math.abs((((signal.yaw-ctx.degrees)%360)+540)%360-180)<35;
-        if(along&&fx>2&&fx<ahead&&Math.abs(fy)<8){ahead=fx;governing=signal;}
+        if(along&&fx>2&&fx<70&&Math.abs(fy)<8)ahead.push([fx,signal]);
       }
-      if(governing)states.set(governing,frame.phase.startsWith('red')?'red':'green');
+      ahead.sort((a,b)=>a[0]-b[0]);
+      if(frame.scenario==='trip')for(const [,signal] of ahead)states.set(signal,'green');
+      else if(ahead.length)states.set(ahead[0][1],frame.phase.startsWith('red')?'red':'green');
     }
-    for(const signal of this.signals)showSignal(this.signalParts,signal,states.get(signal)??null);
+    const cos=Math.cos(ctx.degrees*rad), sin=Math.sin(ctx.degrees*rad), follow=this.view==='follow';
+    for(const signal of this.signals){
+      showSignal(this.signalParts,signal,states.get(signal)??null);
+      // A signal the vehicle is passing shrinks away, so it does not loom in front of the follow camera.
+      const ahead=cos*(signal.x-ctx.x)+sin*(signal.z-ctx.z);
+      const size=follow&&ctx.located?clamp((ahead-2)/3,0,1):1;
+      signal.group.visible=size>0;signal.group.scale.setScalar(Math.max(size,.001));
+    }
   }
 
   height(x,z){
@@ -808,8 +829,8 @@ export class PerceptionScene {
     const vertical=overview?1.13:clamp(.47+this.pitch,.19,1.24);
     const bearing=(overview?Math.PI*.5:Math.PI)+this.orbit;
     const portrait=this.camera.aspect<.9;
-    const distance=(overview?74:portrait?27:21)*this.zoom;
-    const pivot=overview?0:portrait?7:8.5;
+    const distance=(overview?74:portrait?27:22)*this.zoom;
+    const pivot=overview?0:portrait?6:5.5;
     this.target.set(pivot,.6,0);
     this.offset.set(Math.cos(bearing)*Math.cos(vertical)*distance,Math.sin(vertical)*distance,
       Math.sin(bearing)*Math.cos(vertical)*distance);
@@ -826,6 +847,7 @@ export class PerceptionScene {
     this.view=view;this.orbit=this.pitch=0;this.zoom=1;this.snapCamera=true;
     if(this.path)this.path.material.uniforms.uOverview.value=Number(view==='overview');
     if(this.buildings)this.buildings.material.uniforms.uOverview.value=Number(view==='overview');
+    if(this.frame&&this.memory.ctx)this.lightSignals(this.frame,this.memory.ctx);
     this.dirty=true;
   }
   setLayer(layer,enabled){
