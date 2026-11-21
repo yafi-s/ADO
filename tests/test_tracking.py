@@ -147,6 +147,14 @@ class TrackingTests(unittest.TestCase):
         self.assertLess(np.ptp([x for x, _ in settled]), .3)
         self.assertLess(np.ptp([y for _, y in settled]), .3)
         self.assertLess(max(track["speed_mps"] for track in tracks[6:]), .9)
+        # Losing sight of it must not slide it along whatever velocity the changing view suggested.
+        held = world(tracks[-1], poses[-1])
+        for step in range(21, 25):
+            pose = (.5 * step, 0., 0.)
+            coast, = tracker.update(EMPTY, EMPTY, [], pose, .1 * step)
+            self.assertTrue(coast["coasting"])
+            self.assertAlmostEqual(world(coast, pose)[0], held[0])
+            self.assertAlmostEqual(world(coast, pose)[1], held[1])
 
     def test_heading_follows_sustained_travel(self):
         # A car crosses from left to right at 4 m/s. It is first assumed to face the other way.
@@ -158,6 +166,10 @@ class TrackingTests(unittest.TestCase):
                 self.assertAlmostEqual(track["heading"], 90.)
         self.assertAlmostEqual(track["heading"], -90., delta=6.)
         self.assertAlmostEqual(track["speed_mps"], 4., delta=.3)
+        # A travelling object is still carried forward while it is briefly unseen.
+        before = track["y"]
+        coast, = tracker.update(EMPTY, EMPTY, [], (0, 0, 0), 1.2)
+        self.assertAlmostEqual(coast["y"] - before, -.8, delta=.1)
 
 
 if __name__ == "__main__":

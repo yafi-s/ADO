@@ -1,8 +1,9 @@
 """Causal viewer tracks from front RGB, roof lidar and front radar.
 
 Positions describe estimated object centres in metres. Dimensions and heading are
-estimates. A fresh detection needs independent depth support. A coast extrapolates
-a previously measured world position for at most half a second.
+estimates. A fresh detection needs independent depth support. A coast holds
+a previously measured world position for at most half a second, and carries it
+forward only if the object had been seen travelling.
 
 Heading starts parallel to the ego vehicle, or across it for a broadside view, and
 afterwards follows only sustained travel. A single view shows one or two faces of
@@ -174,6 +175,7 @@ class _Track:
     size: np.ndarray        # settled length, width, height
     trail: list             # recent (time, world position) observations
     observations: int = 1
+    travelling: bool = False    # sustained travel was seen at the last observation
 
 
 class Tracker:
@@ -221,6 +223,7 @@ class Tracker:
                 track.observations += 1
             track.trail = [entry for entry in track.trail if now - entry[0] <= COURSE_WINDOW_S] + [(now, pos)]
             course = _course(track.trail, item["label"])
+            track.travelling = course is not None
             if course is not None:
                 track.heading_world = course
             track.position, track.last_seen, track.measurement = pos, now, item
@@ -237,7 +240,10 @@ class Tracker:
         for key, track in self._tracks.items():
             age = now - track.last_seen
             item = track.measurement
-            x, y = rotation.T @ (track.position + age * track.velocity - origin)
+            # Only an object seen travelling is carried forward through a coast. The small
+            # velocity a stopped object picks up from a changing view would slide it away.
+            carried = age * track.velocity if track.travelling else 0.
+            x, y = rotation.T @ (track.position + carried - origin)
             radial = item["radial_mps"] if not age else None
             sources = ["rgb", "lidar"] if not age else []
             if radial is not None:

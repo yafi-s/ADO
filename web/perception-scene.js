@@ -383,6 +383,8 @@ function styleConfidence(track, confidence, coasting) {
 // How quickly the drawn shape follows the tracker. Position and heading are measured or
 // estimated afresh every frame and arrive noisy; the drawing eases toward them.
 const SHAPE_SECONDS=.55, HEADING_SECONDS=.4, TRACK_ALPHA=.5, TRACK_BETA=.14, CAMERA_SECONDS=.32;
+// An object counts as travelling once its measured positions show net, straight movement over this window.
+const TRAVEL_SECONDS=1.2, TRAVEL_METRES={person:.5}, TRAVEL_STRAIGHTNESS=.7, STILL_SECONDS=1.2;
 const ease=(seconds,over)=>1-Math.exp(-Math.max(0,seconds)/over);
 const turn=(from,to)=>(((to-from)%360)+540)%360-180;   // shortest signed difference in degrees, for any operands
 
@@ -616,7 +618,7 @@ export class PerceptionScene {
     trail.renderOrder=1;
     this.trackGroup.add(group,trail);
     const track={id,label,group,foot,trail,materials:shape.materials,history:[],from:V(),to:V(),fromAngle:0,toAngle:0,pulse:-Infinity,
-      size:V(),fromSize:V(),toSize:V(),heading:0,against:0,across:0,velocity:{x:0,z:0}};
+      size:V(),fromSize:V(),toSize:V(),heading:0,against:0,across:0,seen:[],onTheMove:false,velocity:{x:0,z:0}};
     this.tracks.set(id,track);return track;
   }
 
@@ -673,16 +675,42 @@ export class PerceptionScene {
       const fresh=!this.tracks.has(id),track=this.tracks.get(id)||this.makeTrack(id,label);
       const mx=x+cos*sample.x-sin*sample.y,mz=z+sin*sample.x+cos*sample.y;
       const step=reset||fresh?0:clamp(dt,0,.5);
-      // Position: an alpha-beta filter keeps up with a moving object and sheds frame-to-frame jitter.
+      // Is it really going somewhere? The reported position of a stopped object wanders by a few
+      // tenths of a metre as the view of it changes, and a coast extrapolates whatever velocity that
+      // wander suggested. Only net, straight movement of measured positions counts as travel.
+      if(fresh)track.seen.length=0;
+      if(!coast){
+        track.seen.push({t,x:mx,z:mz});
+        while(t-track.seen[0].t>TRAVEL_SECONDS)track.seen.shift();
+      }
+      const first=track.seen[0], latest=track.seen.at(-1);
+      let onTheMove=false;
+      if(first&&latest.t-first.t>=.4){
+        let path=0;
+        for(let i=1;i<track.seen.length;i++)path+=Math.hypot(track.seen[i].x-track.seen[i-1].x,track.seen[i].z-track.seen[i-1].z);
+        const net=Math.hypot(latest.x-first.x,latest.z-first.z);
+        onTheMove=net>=(TRAVEL_METRES[label]??.8)&&net>=TRAVEL_STRAIGHTNESS*path;
+        if(onTheMove&&!track.onTheMove){
+          // Setting off: start from the speed the window already shows.
+          track.velocity.x=(latest.x-first.x)/(latest.t-first.t);track.velocity.z=(latest.z-first.z)/(latest.t-first.t);
+        }
+      }
+      track.onTheMove=onTheMove;
       let tx=mx,tz=mz;
-      if(!fresh&&step>0){
+      if(fresh||step<=0)track.velocity.x=track.velocity.z=0;
+      else if(Math.hypot(mx-track.to.x,mz-track.to.z)>=3.5)track.velocity.x=track.velocity.z=0;
+      else if(onTheMove){
+        // Travelling: an alpha-beta filter keeps up with it and sheds frame-to-frame jitter.
         const px=track.to.x+track.velocity.x*step,pz=track.to.z+track.velocity.z*step;
         const rx=mx-px,rz=mz-pz;
-        if(Math.hypot(rx,rz)<3.5){
-          tx=px+TRACK_ALPHA*rx;tz=pz+TRACK_ALPHA*rz;
-          track.velocity.x+=TRACK_BETA*rx/step;track.velocity.z+=TRACK_BETA*rz/step;
-        }else track.velocity.x=track.velocity.z=0;
-      }else track.velocity.x=track.velocity.z=0;
+        tx=px+TRACK_ALPHA*rx;tz=pz+TRACK_ALPHA*rz;
+        track.velocity.x+=TRACK_BETA*rx/step;track.velocity.z+=TRACK_BETA*rz/step;
+      }else{
+        // Staying put: hold through a coast and drift only slowly toward where it is measured.
+        const follow=coast?0:ease(step,STILL_SECONDS);
+        tx=track.to.x+(mx-track.to.x)*follow;tz=track.to.z+(mz-track.to.z)*follow;
+        track.velocity.x=track.velocity.z=0;
+      }
       // Heading is an estimate with a front/back ambiguity, and in recordings it can sit far off
       // the road's direction. A vehicle on or beside a mapped lane is drawn along that lane; its
       // own travel decides which way it faces and overrides the lane when it is crossing or turning.
@@ -728,7 +756,7 @@ export class PerceptionScene {
       if(!coast&&(fresh||track.coast)&&now-track.pulse>680){track.pulse=now;this.lastPulse=now;}
       track.coast=coast;
       const history=track.history;
-      const moving=located&&finite(sample.speed_mps)&&sample.speed_mps>(label==='person' ? .30 : .55);
+      const moving=located&&onTheMove&&finite(sample.speed_mps)&&sample.speed_mps>(label==='person' ? .30 : .55);
       if(!moving)history.length=0;
       while(history.length&&(t-history[0].t>1.65||history.length>=30))history.shift();
       const last=history.at(-1);
