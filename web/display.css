@@ -39,6 +39,18 @@
   --live: #ff5f52;
   --info: #8fc4ff;
 
+  /* Top-down plots (sensor.js reads these). */
+  --plot-grid: #121b29;
+  --plot-ring: #2a3850;
+  --plot-label: #8793a8;
+  --plot-lidar: #7fd6d8;
+  --plot-radar: #ffbd66;
+  --plot-ego: #eef3fb;
+  --plot-ego-glass: #2a3850;
+  --plot-route: #45e2c7;
+  --plot-route-base: #1a2940;
+  --plot-outline: #060a11;
+
   --font: 'Barlow', system-ui, 'Segoe UI', Roboto, sans-serif;
   --cond: 'Barlow Condensed', 'Barlow', 'Arial Narrow', system-ui, sans-serif;
   --mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
@@ -80,6 +92,17 @@
   --go: #12804a;
   --live: #dc3327;
   --info: #2563eb;
+
+  --plot-grid: #d2d7df;
+  --plot-ring: #aeb6c3;
+  --plot-label: #596375;
+  --plot-lidar: #3b6cb3;
+  --plot-radar: #d9641a;
+  --plot-ego: #12161d;
+  --plot-ego-glass: #c5cbd4;
+  --plot-route: #2563eb;
+  --plot-route-base: #c3cad6;
+  --plot-outline: #ffffff;
 }
 
 /* A screen needs a bezel only where there is room for a cabin around it. */

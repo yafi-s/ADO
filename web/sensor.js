@@ -14,9 +14,24 @@ function observerRoute(data) {
   };
 }
 
+// Plot colours come from the display tokens in display.css, so the canvas follows the night and day modes.
+const TOKENS = {
+  grid: '--plot-grid', ring: '--plot-ring', label: '--plot-label', lidar: '--plot-lidar', radar: '--plot-radar',
+  ego: '--plot-ego', glass: '--plot-ego-glass', route: '--plot-route', routeBase: '--plot-route-base',
+  outline: '--plot-outline', traffic: '--caution', hazard: '--vru'
+};
+const FALLBACK = {
+  grid: '#121b29', ring: '#2a3850', label: '#8793a8', lidar: '#7fd6d8', radar: '#ffbd66', ego: '#eef3fb',
+  glass: '#2a3850', route: '#45e2c7', routeBase: '#1a2940', outline: '#060a11', traffic: '#ffbd66', hazard: '#ffa59d'
+};
+
 export class SensorView {
   constructor(canvas, reading) {
     this.canvas = canvas;
+    addEventListener('ado:display', () => {
+      this.colors = undefined;
+      this.draw();
+    });
     this.reading = reading;
     this.lidar = [];
     this.radar = [];
@@ -47,6 +62,16 @@ export class SensorView {
     this.draw();
   }
 
+  palette() {
+    if (!this.colors) {
+      const style = getComputedStyle(this.canvas);
+      this.colors = Object.fromEntries(Object.entries(TOKENS).map(
+        ([name, token]) => [name, style.getPropertyValue(token).trim() || FALLBACK[name]]
+      ));
+    }
+    return this.colors;
+  }
+
   draw() {
     const {canvas} = this;
     const width = canvas.clientWidth;
@@ -74,9 +99,10 @@ export class SensorView {
     const y0 = height * .72;
     const scale = Math.min(width / 47, height / 56);
     this.projection = {x0, y0, scale};
+    const color = this.palette();
 
     ctx.lineWidth = 1;
-    ctx.strokeStyle = '#304037';
+    ctx.strokeStyle = color.grid;
     ctx.beginPath();
     for (let d = -50; d <= 50; d += 5) {
       ctx.moveTo(x0 + d * scale, 0);
@@ -85,7 +111,7 @@ export class SensorView {
       ctx.lineTo(width, y0 + d * scale);
     }
     ctx.stroke();
-    ctx.strokeStyle = '#586c5b';
+    ctx.strokeStyle = color.ring;
     ctx.setLineDash([3, 4]);
     ctx.beginPath();
     for (let r = 10; r <= 50; r += 10) {
@@ -94,17 +120,17 @@ export class SensorView {
     }
     ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle = '#a1b69e';
-    ctx.font = '9px ui-monospace, Consolas, monospace';
+    ctx.fillStyle = color.label;
+    ctx.font = '600 10px Barlow, system-ui, sans-serif';
     for (let r = 10; y0 - r * scale > 16; r += 10) {
       ctx.fillText(r + ' m', x0 + 4, y0 - r * scale - 3);
     }
 
-    ctx.fillStyle = '#89d9b6';
+    ctx.fillStyle = color.lidar;
     for (const [x, y] of this.lidar) {
       ctx.fillRect(x0 + y * scale - 1, y0 - x * scale - 1, 2, 2);
     }
-    ctx.fillStyle = '#ffc16d';
+    ctx.fillStyle = color.radar;
     ctx.beginPath();
     for (const [x, y] of this.radar) {
       const px = x0 + y * scale;
@@ -119,17 +145,18 @@ export class SensorView {
 
     const egoW = Math.max(scale * 1.85, 8);
     const egoH = Math.max(scale * 4.3, 17);
-    ctx.fillStyle = '#e1ecca';
+    ctx.fillStyle = color.ego;
     ctx.beginPath();
     ctx.roundRect(x0 - egoW / 2, y0 - egoH / 2, egoW, egoH, 3);
     ctx.fill();
-    ctx.fillStyle = '#374c40';
+    ctx.fillStyle = color.glass;
     ctx.fillRect(x0 - egoW * .33, y0 - egoH * .28, egoW * .66, egoH * .23);
     if (this.pointer) this.inspect();
   }
 
   drawRoute(ctx, width, height) {
     const {path, ego, traffic, hazard, hazard_type: hazardType} = this.route;
+    const color = this.palette();
     const points = [...path, ego, traffic, hazard].filter(Boolean);
     let minX = Infinity;
     let maxX = -Infinity;
@@ -158,15 +185,15 @@ export class SensorView {
     ctx.moveTo(...project(path[0]));
     for (const point of path.slice(1)) ctx.lineTo(...project(point));
     ctx.lineWidth = 6;
-    ctx.strokeStyle = '#30473c';
+    ctx.strokeStyle = color.routeBase;
     ctx.stroke();
     ctx.lineWidth = 2.5;
-    ctx.strokeStyle = '#88ba9e';
+    ctx.strokeStyle = color.route;
     ctx.stroke();
 
     const [startX, startY] = project(path[0]);
-    ctx.fillStyle = '#17251f';
-    ctx.strokeStyle = '#acd3bb';
+    ctx.fillStyle = color.outline;
+    ctx.strokeStyle = color.route;
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.arc(startX, startY, 4.5, 0, 2 * Math.PI);
@@ -174,12 +201,12 @@ export class SensorView {
     ctx.stroke();
 
     const [endX, endY] = project(path.at(-1));
-    ctx.fillStyle = '#91d3ab';
+    ctx.fillStyle = color.route;
     ctx.fillRect(endX - 4.5, endY - 4.5, 9, 9);
 
     if (traffic) {
       const [x, y] = project(traffic);
-      ctx.fillStyle = '#ffc16d';
+      ctx.fillStyle = color.traffic;
       ctx.beginPath();
       ctx.moveTo(x, y - 5);
       ctx.lineTo(x + 5, y);
@@ -190,8 +217,8 @@ export class SensorView {
 
     if (hazard) {
       const [x, y] = project(hazard);
-      ctx.fillStyle = '#fa9eac';
-      ctx.strokeStyle = '#17251f';
+      ctx.fillStyle = color.hazard;
+      ctx.strokeStyle = color.outline;
       ctx.beginPath();
       if (hazardType === 'vehicle') ctx.roundRect(x - 5, y - 4, 10, 8, 2);
       else ctx.arc(x, y, 5, 0, 2 * Math.PI);
@@ -201,8 +228,8 @@ export class SensorView {
 
     ctx.translate(...project(ego));
     ctx.rotate(ego[2] * Math.PI / 180);
-    ctx.fillStyle = '#edf7ce';
-    ctx.strokeStyle = '#17251f';
+    ctx.fillStyle = color.ego;
+    ctx.strokeStyle = color.outline;
     ctx.beginPath();
     ctx.moveTo(9, 0);
     ctx.lineTo(-5, -5.5);

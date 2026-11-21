@@ -3,94 +3,113 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#192420">
+  <meta name="theme-color" content="#090e16">
+  <meta name="color-scheme" content="dark light">
   <title>ADO · Builds &amp; logs</title>
+  <link rel="stylesheet" href="./display.css">
   <link rel="stylesheet" href="console.css">
   <link rel="stylesheet" href="builds.css">
+  <script src="./display.js"></script>
   <script type="module" src="builds.js"></script>
 </head>
 <body>
-  <header class="masthead">
-    <div class="mast-inner">
-      <div class="brand"><i class="brand-mark" aria-hidden="true"></i>ADO</div>
-      <span class="mast-rule" aria-hidden="true"></span>
-      <span class="mast-type">Autonomous driving research</span>
-      <nav class="mast-nav" aria-label="Project navigation"><a href="./">Drive monitor</a></nav>
-    </div>
-  </header>
-  <main class="shell">
-    <section class="intro builds-intro" aria-labelledby="builds-title">
-      <div>
-        <div class="eyebrow"><i class="small-rule" aria-hidden="true"></i> CARLA simulation archive</div>
-        <h1 id="builds-title">Builds &amp; logs</h1>
-        <p>Source revisions, policy checkpoints, and the logs behind the drives.</p>
+  <div class="display">
+    <header class="statusbar">
+      <div class="brand"><a href="./" aria-label="ADO home"><b>ADO</b></a></div>
+      <span class="app-name">Builds</span>
+      <div class="status-end">
+        <button class="icon-button display-toggle" id="display-toggle" type="button" aria-keyshortcuts="D">
+          <svg class="i-night" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.2A8 8 0 0 1 9.8 4a8 8 0 1 0 10.2 10.2z"/></svg>
+          <svg class="i-day" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg>
+        </button>
+        <time class="clock" id="display-clock"></time>
       </div>
-    </section>
-    <p class="archive-state" id="archive-state" role="status">Loading the build archive…</p>
-    <div class="build-archive" id="build-archive" hidden>
-      <div class="build-overview">
-        <section class="panel" aria-labelledby="build-title">
-          <header class="panel-head archive-head">
-            <h2 id="build-title">Build information</h2>
-            <span class="unit-tag" id="build-status"></span>
-          </header>
-          <div class="build-content">
-            <p class="build-name" id="build-name"></p>
-            <dl class="build-meta">
-              <div id="source-info" hidden><dt>Source revision</dt><dd><a id="source-commit-link" hidden></a><code id="source-commit-text" hidden></code></dd></div>
-              <div id="server-info" hidden><dt>CARLA server</dt><dd id="server-version"></dd></div>
-              <div id="client-info" hidden><dt>CARLA Python API</dt><dd id="client-version"></dd></div>
-              <div id="map-info" hidden><dt>Map</dt><dd id="simulator-map"></dd></div>
-            </dl>
-            <div class="archive-links">
-              <a class="archive-download" id="release-zip" hidden>Download build ZIP</a>
-              <a id="release-link" hidden>Release page</a>
-              <a id="release-checksum" hidden>ZIP checksum</a>
+    </header>
+    <main class="surface">
+      <div class="page">
+        <section class="intro builds-intro" aria-labelledby="builds-title">
+          <div>
+            <div class="eyebrow">CARLA simulation archive</div>
+            <h1 id="builds-title">Builds &amp; logs</h1>
+            <p>Source revisions, policy checkpoints, and the logs behind the drives.</p>
+          </div>
+        </section>
+        <p class="archive-state state-card" id="archive-state" role="status">Loading the build archive…</p>
+        <div class="build-archive" id="build-archive" hidden>
+          <div class="build-overview">
+            <section class="panel" aria-labelledby="build-title">
+              <header class="panel-head archive-head">
+                <h2 id="build-title">Build information</h2>
+                <span class="unit-tag" id="build-status"></span>
+              </header>
+              <div class="build-content">
+                <p class="build-name" id="build-name"></p>
+                <dl class="build-meta">
+                  <div id="source-info" hidden><dt>Source revision</dt><dd><a id="source-commit-link" hidden></a><code id="source-commit-text" hidden></code></dd></div>
+                  <div id="server-info" hidden><dt>CARLA server</dt><dd id="server-version"></dd></div>
+                  <div id="client-info" hidden><dt>CARLA Python API</dt><dd id="client-version"></dd></div>
+                  <div id="map-info" hidden><dt>Map</dt><dd id="simulator-map"></dd></div>
+                </dl>
+                <div class="archive-links">
+                  <a class="archive-download" id="release-zip" hidden>Download build ZIP</a>
+                  <a id="release-link" hidden>Release page</a>
+                  <a id="release-checksum" hidden>ZIP checksum</a>
+                </div>
+                <p class="build-note" id="release-note" hidden>Release package pending.</p>
+              </div>
+            </section>
+            <section class="panel" aria-labelledby="evidence-title" id="evidence-panel" hidden>
+              <header class="panel-head archive-head"><h2 id="evidence-title">Evidence files</h2></header>
+              <ul class="evidence-list" id="evidence-list"></ul>
+            </section>
+          </div>
+          <section class="panel" id="checkpoint-panel" aria-labelledby="checkpoint-title" hidden>
+            <header class="panel-head archive-head"><h2 id="checkpoint-title">Policy checkpoints</h2></header>
+            <dl class="checkpoints" id="checkpoints"></dl>
+          </section>
+          <section class="panel" aria-labelledby="runs-title">
+            <header class="panel-head archive-head trials-head">
+              <h2 id="runs-title">Simulation runs</h2>
+              <a id="runs-csv" hidden>Download runs CSV</a>
+            </header>
+            <p class="build-content" id="trials-empty">Awaiting archived evaluation runs.</p>
+            <div id="trials" hidden>
+              <div class="trial-filters">
+                <label for="trial-search">Search runs <input type="search" id="trial-search" placeholder="Run, case, seed, or cohort"></label>
+                <label for="trial-policy">Controller <select id="trial-policy"></select></label>
+                <label for="trial-outcome">Outcome <select id="trial-outcome"></select></label>
+                <p id="trial-count" role="status"></p>
+              </div>
+              <div class="trial-scroll" role="region" aria-labelledby="runs-title" tabindex="0">
+                <table>
+                  <thead>
+                    <tr><th scope="col">Run</th><th scope="col">Seed</th><th scope="col">Controller</th><th scope="col">Outcome</th>
+                      <th scope="col">Progress</th><th scope="col">Duration</th><th scope="col">Evidence</th></tr>
+                  </thead>
+                  <tbody id="trial-rows"></tbody>
+                </table>
+              </div>
             </div>
-            <p class="build-note" id="release-note" hidden>Release package pending.</p>
-          </div>
-        </section>
-        <section class="panel" aria-labelledby="evidence-title" id="evidence-panel" hidden>
-          <header class="panel-head archive-head"><h2 id="evidence-title">Evidence files</h2></header>
-          <ul class="evidence-list" id="evidence-list"></ul>
-        </section>
-      </div>
-      <section class="panel" id="checkpoint-panel" aria-labelledby="checkpoint-title" hidden>
-        <header class="panel-head archive-head"><h2 id="checkpoint-title">Policy checkpoints</h2></header>
-        <dl class="checkpoints" id="checkpoints"></dl>
-      </section>
-      <section class="panel" aria-labelledby="runs-title">
-        <header class="panel-head archive-head trials-head">
-          <h2 id="runs-title">Simulation runs</h2>
-          <a id="runs-csv" hidden>Download runs CSV</a>
-        </header>
-        <p class="build-content" id="trials-empty">Awaiting archived evaluation runs.</p>
-        <div id="trials" hidden>
-          <div class="trial-filters">
-            <label for="trial-search">Search runs <input type="search" id="trial-search" placeholder="Run, case, seed, or cohort"></label>
-            <label for="trial-policy">Controller <select id="trial-policy"></select></label>
-            <label for="trial-outcome">Outcome <select id="trial-outcome"></select></label>
-            <p id="trial-count" role="status"></p>
-          </div>
-          <div class="trial-scroll" role="region" aria-labelledby="runs-title" tabindex="0">
-            <table>
-              <thead>
-                <tr><th scope="col">Run</th><th scope="col">Seed</th><th scope="col">Controller</th><th scope="col">Outcome</th>
-                  <th scope="col">Progress</th><th scope="col">Duration</th><th scope="col">Evidence</th></tr>
-              </thead>
-              <tbody id="trial-rows"></tbody>
-            </table>
-          </div>
+          </section>
         </div>
-      </section>
-    </div>
-    <footer>
-      <span>Simulation by CARLA and its contributors</span>
-      <nav aria-label="Project links">
-        <a href="./benchmarks.html">Benchmark results</a>
-        <a href="https://github.com/yafi-s/ADO">Source code</a>
+        <footer class="credits">
+          <span>Simulation by CARLA and its contributors</span>
+          <nav aria-label="Project links">
+            <a href="https://github.com/yafi-s/ADO">Source code</a>
+          </nav>
+        </footer>
+      </div>
+    </main>
+    <footer class="dockbar">
+      <nav class="dock" aria-label="ADO pages">
+        <a data-app="drive" href="./">Drive</a>
+        <a data-app="console" href="./drive.html">Console</a>
+        <a data-app="map" href="./city.html">Map</a>
+        <a data-app="vehicle" href="./vehicle.html?model=ipace">Vehicle</a>
+        <a data-app="results" href="./benchmarks.html">Results</a>
+        <a data-app="builds" href="./builds.html" aria-current="page">Builds</a>
       </nav>
     </footer>
-  </main>
+  </div>
 </body>
 </html>
