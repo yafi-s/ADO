@@ -146,8 +146,4 @@ Final wheel friction readback matched the requested setting in 9/9 trials. 9/9 t
 
 [Tire-friction trial data](../results/traction.json) · [CARLA Chaos Vehicles vehicle physics controls](https://github.com/carla-simulator/carla/blob/1.0/Docs/tuto_vehicle_physics.md)
 
-## Résumé bullet
-
-- Built a camera, lidar and radar behavior-cloning driver for CARLA Town01_Opt, logging 70 clean finishes in 100 closed-loop trials across 10 cases in a held-out district and running a 20-trial camera-only comparison.
-
 Regenerate this report with `python -m crosswalk.report --root .` using the published results.
