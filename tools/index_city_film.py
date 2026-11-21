@@ -70,9 +70,15 @@ def publish(web, directory, *, feature=False, source_revision=None):
         canonical = json.dumps(manifest["policy"]["code_sha256"], sort_keys=True).encode()
         show["source"] = {"fingerprint": hashlib.sha256(canonical).hexdigest(), "url": entry["manifest"]}
     pack = recording / "replay-pack.json.gz"
+    pace = manifest["policy"]["schema"] == "ado-city-pace-v1"
+    if pace and not pack.is_file():
+        raise ValueError(f"Pack the urban replay before indexing: {pack}")
     if pack.is_file():
         entry["replay_pack_url"] = show["replay_pack_url"] = f"{base}/{pack.name}"
         entry["replay_pack_sha256"] = digest(pack)
+        if pace and pack.name not in manifest["sha256"]:
+            manifest["sha256"][pack.name] = entry["replay_pack_sha256"]
+            write_json(recording / "manifest.json", manifest)
     build_path = media / "build.json"
     catalog_path = media / "viewer-catalog.json"
     build = json.loads(build_path.read_bytes())

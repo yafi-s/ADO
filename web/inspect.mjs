@@ -76,7 +76,7 @@ async function openRun(entry, options = new URLSearchParams()) {
   const dir = entry.path ? `./media/${entry.path}` : './media';
   try {
     const [replay, map] = await Promise.all([
-      loadReplay(entry.replay_pack_url, signal, parseReplay, () => json(`${dir}/replay.json`, signal)),
+      loadReplay(entry.replay_pack_url, signal, parseReplay, () => json(entry.replay_url ?? `${dir}/replay.json`, signal)),
       roadContext(entry, signal)
     ]);
     if (signal.aborted) return;

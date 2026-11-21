@@ -223,7 +223,7 @@ function renderSensorPanel() {
   ui['route-hazard'].hidden = !sensor.route?.hazard;
   const hazardType = sensor.route?.hazard_type ?? '';
   if (ui['route-hazard'].dataset.kind !== hazardType) ui['route-hazard'].dataset.kind = hazardType;
-  setText('route-hazard-label', {vehicle: 'Hazard vehicle', car: 'Vehicle', pedestrian: 'Pedestrian', cyclist: 'Cyclist', bus: 'Bus', cone: 'Traffic cone', van: 'Van'}[hazardType] ?? 'Hazard');
+  setText('route-hazard-label', {vehicle: 'Hazard vehicle', car: 'Vehicle', pedestrian: 'Pedestrian', cyclist: 'Cyclist', bus: 'Bus', barrier: 'Traffic barrier', cone: 'Traffic cone', van: 'Van'}[hazardType] ?? 'Hazard');
   const label = showingRoute
     ? 'Map ground truth showing the route and simulator actor positions'
     : 'Top-down lidar returns and radar detections around the vehicle';
@@ -615,8 +615,8 @@ function renderArchiveRun(build, entry, directory) {
   archiveHash('source', run && build.source?.commit, run && build.source?.url);
   const checkpoint = build?.checkpoints?.[run?.policy];
   archiveHash('model', run?.model_sha256, checkpoint?.sha256 === run?.model_sha256 ? checkpoint?.url : undefined);
-  setArtifactLink(ui['archive-replay'], directory + '/replay.json');
-  setArtifactLink(ui['archive-log'], run?.log_url);
+  setArtifactLink(ui['archive-replay'], entry.replay_url ?? directory + '/replay.json');
+  setArtifactLink(ui['archive-log'], entry.log_url ?? run?.log_url);
 }
 
 function showPreview(build) {
@@ -742,7 +742,8 @@ async function openReplay(signal, trialId) {
   const directory = entry.path ? `./media/${entry.path}` : './media';
   try {
     const recording = recordings.get(directory) ??
-      await loadReplay(entry.replay_pack_url, signal, parseReplay, () => readJson(`${directory}/replay.json`, signal, 30000));
+      await loadReplay(entry.replay_pack_url, signal, parseReplay,
+        () => readJson(entry.replay_url ?? `${directory}/replay.json`, signal, 30000));
     if (signal.aborted) return;
     recordings.set(directory, recording);
     replay = {...recording, directory, cameraUrls: entry.camera_urls};

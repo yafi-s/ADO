@@ -1,9 +1,11 @@
-"""Stage the release-verified chase film within the GitHub Pages size limit."""
+"""Stage verified recordings within the GitHub Pages size limit."""
 
+import argparse
 import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 from tempfile import TemporaryDirectory
@@ -16,7 +18,9 @@ ARCHIVE_REPO = "https://raw.githubusercontent.com/yafi-s/ADO"
 RELEASE_FILMS = {
     "v0.2.0": ("long-city-drive", "ADO-Town03-Chase-1080p.mp4"),
     "v0.3.0": ("surround-city", "ADO-Surround-City-1080p.mp4"),
+    "v0.4.0": ("urban-pace", "ADO-Urban-Pace-1080p.mp4"),
 }
+LARGE_RECORDINGS = ("urban-pace", "surround-city", "long-city-drive")
 SITE_LIMIT = 1_000_000_000
 SITE_RESERVE = 1_000_000
 VIDEO_FIELDS = ("width", "height", "codec_name", "nb_read_frames", "pix_fmt", "r_frame_rate")
@@ -82,12 +86,64 @@ def encode_for_site(source, target, master, budget):
     raise ValueError(f"Encoded chase film exceeds its {budget} byte Pages allocation")
 
 
-def prepare(web):
+def fit_archive_data(web, build, revision):
+    limit = SITE_LIMIT - SITE_RESERVE
+    if site_size(web) <= limit:
+        return
+    if not revision or not re.fullmatch(r"[0-9a-f]{40}", revision):
+        raise ValueError("Pages needs the immutable checkout commit to link archived recording data")
+
+    catalog = web / "media/viewer-catalog.json"
+    records = json.loads(catalog.read_bytes())
+    runs = [run for section in ("runs", "showcases", "development_runs", "native_replays")
+            for run in build.get(section, [])]
+    for directory in LARGE_RECORDINGS:
+        folder = web / "media" / directory
+        manifest_path = folder / "manifest.json"
+        if not manifest_path.is_file():
+            continue
+        manifest = json.loads(manifest_path.read_bytes())
+        checks = manifest["sha256"]
+        entry = next((entry for entry in records if entry["path"] == directory), None)
+        pack = folder / "replay-pack.json.gz"
+        pack_digest = entry and entry.get("replay_pack_sha256")
+        if (entry is None or entry.get("replay_pack_url") != f"./media/{directory}/{pack.name}"
+                or not pack.is_file() or sha256(pack) != pack_digest
+                or checks.get(pack.name, pack_digest) != pack_digest):
+            raise ValueError(f"Missing the verified local replay pack at {folder}")
+        for name, field in (("replay.json", "replay_url"), ("telemetry.json", "log_url")):
+            if site_size(web) <= limit:
+                return
+            path = folder / name
+            if not path.is_file():
+                continue
+            if sha256(path) != checks.get(name):
+                raise ValueError(f"Archived public data differs from the capture manifest: {path}")
+            local = f"./media/{directory}/{name}"
+            url = f"{ARCHIVE_REPO}/{revision}/web/media/{directory}/{name}"
+            entry[field] = url
+            for run in runs:
+                if run.get("recording_path") == directory:
+                    run[field] = url
+            for item in build.get("evidence", []):
+                if item["url"] == local:
+                    item["url"] = url
+            manifest.setdefault("external_artifacts", {})[name] = url
+            write_json(manifest_path, manifest)
+            write_json(catalog, records)
+            write_json(web / "media/build.json", build)
+            path.unlink()
+            print(f"Linked the original {directory}/{name} at the checkout commit.")
+
+
+def prepare(web, archive_revision=None):
     build_path = web / "media/build.json"
     if not build_path.is_file():
         return
     build = json.loads(build_path.read_bytes())
     tag = build.get("release", {}).get("label")
+    if tag == "v0.4.0":
+        fit_archive_data(web, build, archive_revision)
     total = site_size(web)
     if total > SITE_LIMIT:
         raise ValueError(f"The committed Pages site already exceeds {SITE_LIMIT} bytes ({total} bytes)")
@@ -97,7 +153,7 @@ def prepare(web):
     folder = web / "media" / directory
     manifest_path = folder / "manifest.json"
     if not manifest_path.is_file():
-        if tag == "v0.3.0":
+        if tag in {"v0.3.0", "v0.4.0"}:
             raise ValueError(f"Missing the featured chase capture manifest at {manifest_path}")
         return
     manifest = json.loads(manifest_path.read_bytes())
@@ -122,7 +178,7 @@ def prepare(web):
             playback = original
             video = {key: master[key] for key in VIDEO_FIELDS}
             kind = "release-master"
-        elif budget >= compact_size * 1.10 or manifest["video"]["height"] < master["height"]:
+        elif budget > 0 and (budget >= compact_size * 1.10 or manifest["video"]["height"] < master["height"]):
             playback = Path(scratch) / "playback.mp4"
             video = encode_for_site(original, playback, master, budget)
             kind = "pages-encode"
@@ -153,4 +209,8 @@ def prepare(web):
 
 
 if __name__ == "__main__":
-    prepare(Path(__file__).resolve().parents[1] / "web")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--web", type=Path, default=Path(__file__).resolve().parents[1] / "web")
+    parser.add_argument("--archive-revision", help="Git commit serving the original recording data")
+    args = parser.parse_args()
+    prepare(args.web, args.archive_revision)
