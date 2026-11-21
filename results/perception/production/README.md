@@ -128,16 +128,16 @@ The separate signal-head audit compares the actual camera classifications with C
 
 [Full coverage](coverage.json) · [Exact pose-paired CARLA frames](pose-pairs.json) · [Frame-by-frame motion evidence](motion-evidence.zip)
 
-The ZIP contains before/after metrics and per-tick actor rows for High, clear pass and yield pass, plus the complete scored High frames including unmatched outputs. Use the archived final-display.mjs with --memory-file to reproduce the exact release memory. The acquisition-level audit excludes render interpolation. Fall-through between an on-screen body and an unclassified return is visible only where its recorded ID and label permit attribution. The earlier High display is pinned to a7e516c; each run logs the normalized display-module SHA-256. Scoring the public replay yields the same motion/coverage measurements as the native journal while the input file digest changes.
+The ZIP contains before/after metrics and per-tick actor rows for High, clear pass and yield pass, plus the complete scored High frames including unmatched outputs. Use the archived final-display.mjs with --memory-file to reproduce the exact release memory. The acquisition-level audit excludes render interpolation. Fall-through between an on-screen body and an unclassified return is visible only where its recorded ID and label permit attribution. The preceding High display is pinned to a7e516c and the final display and bicycle association to b856138d720972b33f193c87f6a4ba9aaabd37cd. The final normalized display-module SHA-256 is ab4afd7f1b069bbeb9aaa58ec4293f9ccd00f49b59a2f03e24c2026cd2ce6f91. Direct rescoring of the published replay pack (SHA-256 7fa6eea96ed07e23a1d877b291b0c62526fad7a3157126ab2ac2ff3d5581014e) exactly reproduced the native journal’s coverage, motion/error groups, per-encounter timing, all-ID step statistics and all 23 optical rider associations.
 
 ~~~powershell
 $p = "results/perception/town03-static-vehicles.json"
-node tools/audit_city_perception.mjs web/media/surround-city --static-map $p --output coverage.json --frames high.jsonl
+node tools/audit_city_perception.mjs web/media/surround-city --memory-revision b856138 --static-map $p --output coverage.json --frames high.jsonl
 node tools/audit_city_perception.mjs web/media/long-city-drive --memory-revision 0ff276b --static-map $p --output old.json --frames v02.jsonl
 node tools/compare_city_encounters.mjs v02.jsonl high.jsonl pose-pairs.json
-node tools/audit_rider_overlay.mjs web/media/surround-city --static-map $p --output rider.json
-node tools/audit_city_motion.mjs web/media/surround-city --static-map $p --output motion.json --rows motion.jsonl
-node tools/audit_city_motion.mjs web/media/overtake-clear --static-map $p --output clear.json --rows clear.jsonl
-node tools/audit_city_motion.mjs web/media/overtake-yield --static-map $p --output yield.json --rows yield.jsonl
+node tools/audit_rider_overlay.mjs web/media/surround-city --memory-revision b856138 --static-map $p --output rider.json
+node tools/audit_city_motion.mjs web/media/surround-city --memory-revision b856138 --static-map $p --output motion.json --rows motion.jsonl
+node tools/audit_city_motion.mjs web/media/overtake-clear --memory-revision b856138 --static-map $p --output clear.json --rows clear.jsonl
+node tools/audit_city_motion.mjs web/media/overtake-yield --memory-revision b856138 --static-map $p --output yield.json --rows yield.jsonl
 node --test tests/test_audit_city_perception.mjs
 ~~~
