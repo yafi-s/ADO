@@ -1,0 +1,78 @@
+{
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town03_Opt"
+  },
+  "speed_model_sha256": "43ee49e6b7bd8d258b1b3ed0ae90314eace178f33debeb9e11c81beb8b08e535",
+  "tactical_model_sha256": "570ece96d6cdf2d8ed72c6253446d58d2a4d2575d0e1d9d1555bf0e55519d13f",
+  "features": "real 360-degree LiDAR, radar, localized lane geometry, speed; no RGB detections",
+  "city_model": "models\\city-pace\\candidate.npz",
+  "cases": [
+    {
+      "case": "clear",
+      "frames": 69,
+      "collisions": 0,
+      "yield_s": 0.0,
+      "first_yield_s": null,
+      "first_commit_s": 0.5,
+      "clearance_at_commit_m": null,
+      "first_alongside_s": 5.2,
+      "completed_pass_s": 6.8,
+      "lead_travel_m": 7.812,
+      "lead_speed_during_pass_mps": 1.241,
+      "minimum_passing_clearance_m": 1.512,
+      "minimum_adjacent_gap_while_yielding_m": null,
+      "max_yield_lateral_error_m": null,
+      "ego_travel_m": 38.205,
+      "maximum_source_displacement_m": 3.518,
+      "passed": true
+    },
+    {
+      "case": "occupied",
+      "frames": 179,
+      "collisions": 0,
+      "yield_s": 7.5,
+      "first_yield_s": 0.3,
+      "first_commit_s": 7.8,
+      "clearance_at_commit_m": 30.427,
+      "first_alongside_s": 15.4,
+      "completed_pass_s": 17.8,
+      "lead_travel_m": 21.765,
+      "lead_speed_during_pass_mps": 1.288,
+      "minimum_passing_clearance_m": 1.537,
+      "minimum_adjacent_gap_while_yielding_m": 0.072,
+      "max_yield_lateral_error_m": 0.001,
+      "ego_travel_m": 51.577,
+      "maximum_source_displacement_m": 3.518,
+      "hold_throttle_frames": 0,
+      "peak_speed_after_stop_mps": 0.005,
+      "unheld_frames_before_commit": 0,
+      "passed": true
+    },
+    {
+      "case": "no-lead",
+      "frames": 78,
+      "collisions": 0,
+      "yield_s": 0.0,
+      "first_yield_s": null,
+      "first_commit_s": null,
+      "clearance_at_commit_m": null,
+      "first_alongside_s": null,
+      "completed_pass_s": null,
+      "lead_travel_m": null,
+      "lead_speed_during_pass_mps": null,
+      "minimum_passing_clearance_m": null,
+      "minimum_adjacent_gap_while_yielding_m": null,
+      "max_yield_lateral_error_m": null,
+      "ego_travel_m": 45.801,
+      "maximum_source_displacement_m": 0.001,
+      "passed": true
+    }
+  ],
+  "runtime_sources_sha256": {
+    "city_pace.py": "d81731090e8a3db8bfc1cf72f5eea5f9e5a584673275fe808793889274f1025c",
+    "overtake.py": "c8b65baf56dc75c2665d756bff412d1d2af7dfc9fe304a7b5f1727ee9c390c04",
+    "overtake_trials.py": "1fbc403d7c5a8bf92b23d20d7ae46728f1314471604d468db125e74a09c80bcd"
+  }
+}

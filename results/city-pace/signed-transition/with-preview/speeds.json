@@ -1,0 +1,53 @@
+{
+  "outcome": "complete",
+  "contacts": 0,
+  "seed": 316,
+  "frames": 303,
+  "route_length_m": 285.489,
+  "max_lateral_error_m": 0.028,
+  "native_posted_kmh": {
+    "30.0": 43,
+    "60.0": 50,
+    "90.0": 210
+  },
+  "over_40_seconds": 0.2,
+  "over_posted_plus_1_seconds": 0.0,
+  "lower_zone_entries": [
+    {
+      "at_m": 217.21,
+      "prior_limit_kmh": 90.0,
+      "next_limit_kmh": 60.0,
+      "entry_speed_kmh": 39.859,
+      "entry_request_kmh": 38.656,
+      "preview_distance_before_entry_m": null
+    },
+    {
+      "at_m": 267.33,
+      "prior_limit_kmh": 60.0,
+      "next_limit_kmh": 30.0,
+      "entry_speed_kmh": 30.161,
+      "entry_request_kmh": 29.946,
+      "preview_distance_before_entry_m": 31.35
+    }
+  ],
+  "total_seconds_35_to_40": 19.7,
+  "longest_seconds_35_to_40": 10.3,
+  "first_sustained_35_to_40_at_s": 7.8,
+  "total_seconds_38_to_40": 15.5,
+  "longest_seconds_38_to_40": 7.3,
+  "first_sustained_38_to_40_at_s": 9.3,
+  "interior": {
+    "from_m": 60.0,
+    "to_m": 273.49,
+    "frames": 195,
+    "median_kmh": 38.675,
+    "p10_kmh": 35.62,
+    "p90_kmh": 39.804,
+    "sd_kmh": 2.352,
+    "variance_kmh2": 5.53,
+    "peak_kmh": 40.036,
+    "mean_abs_speed_change_kmh_per_s": 1.016,
+    "seconds_with_brake_above_005": 2.5,
+    "seconds_decelerating_above_1_mps2": 2.2
+  }
+}

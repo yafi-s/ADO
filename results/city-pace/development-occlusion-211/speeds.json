@@ -1,0 +1,175 @@
+{
+  "seed": 211,
+  "frames": 341,
+  "duration_s": 34.1,
+  "outcome": "collision",
+  "collision_events": 1,
+  "progress_m": 144.014,
+  "route_length_m": 1415.438,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "moving_within_1m_frames": 4,
+  "turns_completed": {
+    "left": 0,
+    "right": 0,
+    "straight": 1
+  },
+  "clear_straights": {
+    "frames": 19,
+    "seconds": 1.9,
+    "p10_kmh": 25.12,
+    "median_kmh": 27.86,
+    "p90_kmh": 28.88,
+    "peak_kmh": 29.04,
+    "sd_kmh": 1.487,
+    "variance_kmh2": 2.212,
+    "mean_absolute_change_kmh_per_s": 2.792,
+    "seconds_35_to_40_kmh": 0.0,
+    "longest_continuous_seconds_35_to_40_kmh": 0.0,
+    "seconds_at_or_above_35": 0.0,
+    "longest_continuous_seconds_at_or_above_35": 0.0,
+    "longest_interval": null
+  },
+  "inside_left_and_right_turns": {
+    "frames": 0
+  },
+  "whole_drive": {
+    "frames": 341,
+    "seconds": 34.1,
+    "p10_kmh": 5.53,
+    "median_kmh": 13.42,
+    "p90_kmh": 27.85,
+    "peak_kmh": 29.91,
+    "sd_kmh": 7.387,
+    "variance_kmh2": 54.563,
+    "mean_absolute_change_kmh_per_s": 2.954,
+    "seconds_35_to_40_kmh": 0.0,
+    "longest_continuous_seconds_35_to_40_kmh": 0.0,
+    "seconds_at_or_above_35": 0.0,
+    "longest_continuous_seconds_at_or_above_35": 0.0,
+    "longest_interval": null
+  },
+  "events": {
+    "pedestrian": {
+      "handled": true,
+      "stopped": true,
+      "exposed": true,
+      "passed": true,
+      "violation": false,
+      "minimum_gap_m": 2.44,
+      "seconds_from_clear_to_5_kmh": 0.0
+    },
+    "occluded": {
+      "handled": false,
+      "stopped": false,
+      "exposed": true,
+      "passed": false,
+      "violation": false,
+      "minimum_gap_m": 0.18
+    },
+    "signal": {
+      "handled": false,
+      "stopped": false,
+      "exposed": false,
+      "passed": false,
+      "violation": false,
+      "minimum_gap_m": 60.0
+    },
+    "roadworks": {
+      "handled": false,
+      "stopped": false,
+      "exposed": false,
+      "passed": false,
+      "violation": false,
+      "minimum_gap_m": 60.0
+    },
+    "barrier": {
+      "handled": false,
+      "stopped": false,
+      "exposed": false,
+      "passed": false,
+      "violation": false,
+      "minimum_gap_m": 60.0
+    },
+    "lead": {
+      "handled": false,
+      "stopped": false,
+      "exposed": false,
+      "passed": false,
+      "violation": false,
+      "minimum_gap_m": 60.0
+    },
+    "bus": {
+      "handled": false,
+      "stopped": false,
+      "exposed": false,
+      "passed": false,
+      "violation": false,
+      "minimum_gap_m": 60.0
+    },
+    "braking": {
+      "handled": false,
+      "stopped": false,
+      "exposed": false,
+      "passed": false,
+      "violation": false,
+      "minimum_gap_m": 60.0
+    },
+    "left": {
+      "handled": false,
+      "stopped": false,
+      "exposed": false,
+      "passed": false,
+      "violation": false,
+      "minimum_gap_m": 60.0
+    },
+    "cyclist": {
+      "handled": false,
+      "stopped": false,
+      "exposed": false,
+      "passed": false,
+      "violation": false,
+      "minimum_gap_m": 60.0
+    },
+    "pedestrian-delayed": {
+      "handled": false,
+      "stopped": false,
+      "exposed": false,
+      "passed": false,
+      "violation": false,
+      "minimum_gap_m": 60.0
+    }
+  },
+  "matched_boulevard_interior": {
+    "from_m": 420.16,
+    "to_m": 501.65,
+    "active_encounter_frames": 0,
+    "frames": 0
+  },
+  "max_request_above_posted_kmh": 0.0,
+  "native_limit_frames": {
+    "30.0": 341
+  },
+  "permissive_clear_straights": {
+    "frames": 0
+  },
+  "seconds_measured_above_posted_plus_1_kmh": 0.0,
+  "seconds_measured_above_posted": 0.0,
+  "max_measured_excess_above_posted_kmh": 0.0,
+  "longitudinal_comfort": {
+    "raw_peak_deceleration_mps2": 4.41,
+    "half_second_peak_deceleration_mps2": 3.812,
+    "half_second_peak_acceleration_mps2": 2.344,
+    "raw_seconds_braking_harder_than_3_mps2": 0.7,
+    "clear_straight_seconds_braking_harder_than_3_mps2": 0.0,
+    "half_second_seconds_braking_harder_than_3_mps2": 0.4,
+    "strongest_half_second_end": {
+      "sim_time_s": 33.4,
+      "progress_m": 142.398,
+      "active_event": "occluded"
+    },
+    "moving_p95_abs_half_second_acceleration_mps2": 2.268
+  },
+  "first_10_kmh_at_s": 1.3,
+  "seconds_measured_above_40_kmh": 0.0
+}

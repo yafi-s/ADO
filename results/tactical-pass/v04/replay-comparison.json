@@ -1,0 +1,107 @@
+{
+  "pace_at_fit_sha256": "ca1db33eb2229334beb7457d233e5a186f7ddcd6a794e1bdcb41abfc8ece4a6f",
+  "pace_runtime_sha256": "e4cd142ff20581048d99215fa84935ff59a6c0ed8ca781b902736b3b212f3319",
+  "fitted_pace_sha256": "43ee49e6b7bd8d258b1b3ed0ae90314eace178f33debeb9e11c81beb8b08e535",
+  "inactive_speed_limit": {
+    "seed-211": {
+      "frames": 3351,
+      "requests_byte_identical_to_fit_source": true,
+      "actuators_byte_identical_to_fit_source": true,
+      "max_abs_saved_request_error_mps": 0.0
+    },
+    "challenges/late-entry": {
+      "frames": 446,
+      "requests_byte_identical_to_fit_source": true,
+      "actuators_byte_identical_to_fit_source": true,
+      "max_abs_saved_request_error_mps": 0.0
+    },
+    "challenges/late-route": {
+      "frames": 851,
+      "requests_byte_identical_to_fit_source": true,
+      "actuators_byte_identical_to_fit_source": true,
+      "max_abs_saved_request_error_mps": 0.0
+    }
+  },
+  "historical_native_traces": {
+    "results/tactical-pass/paired-4fppmp4k/occupied.jsonl.gz": {
+      "frames": 154,
+      "first_commit_s": 8.7,
+      "wait_start_s": 0.3,
+      "throttle_frames_between_first_yield_and_commit": 33,
+      "temporary_releases_then_rebrakes": 3,
+      "rebrake_speeds_mps": [
+        0.516,
+        0.83,
+        1.139
+      ],
+      "sha256": "2067eedcf74f52e831eaedf2f1dcc04f94ebb33e52ae67b966a8ba3263dc76e1",
+      "recorded_measurement_rescore": {
+        "first_yield_s": 0.3,
+        "first_commit_s": 8.0,
+        "observed_lead_keep_releases_before_commit": 0
+      }
+    },
+    "web/media/overtake-yield/telemetry.json": {
+      "frames": 183,
+      "first_commit_s": 8.6,
+      "wait_start_s": 0.3,
+      "throttle_frames_between_first_yield_and_commit": 36,
+      "temporary_releases_then_rebrakes": 4,
+      "rebrake_speeds_mps": [
+        0.927,
+        0.516,
+        0.83,
+        0.998
+      ],
+      "sha256": "b5949e6de841df5e44aada4c0ec4b663429070ba01fdced112153f7177978af6",
+      "recorded_measurement_rescore": {
+        "first_yield_s": 0.3,
+        "first_commit_s": 8.1,
+        "observed_lead_keep_releases_before_commit": 0
+      }
+    },
+    "web/media/overtake-clear/telemetry.json": {
+      "frames": 116,
+      "first_commit_s": 0.5,
+      "wait_start_s": null,
+      "throttle_frames_between_first_yield_and_commit": 0,
+      "temporary_releases_then_rebrakes": 0,
+      "rebrake_speeds_mps": [],
+      "sha256": "555c496e03a126190e504292692b104423be8354ac192dc510861d1ed405a12c",
+      "recorded_measurement_rescore": {
+        "first_yield_s": null,
+        "first_commit_s": 0.5,
+        "observed_lead_keep_releases_before_commit": 0
+      }
+    },
+    "results/tactical-pass/paired-4fppmp4k/clear.jsonl.gz": {
+      "frames": 79,
+      "first_commit_s": 0.5,
+      "wait_start_s": null,
+      "throttle_frames_between_first_yield_and_commit": 0,
+      "temporary_releases_then_rebrakes": 0,
+      "rebrake_speeds_mps": [],
+      "sha256": "ac3fd8753b7779ded7c16948d9c467fbeac30f329b719c3022322817ad632a07",
+      "recorded_measurement_rescore": {
+        "first_yield_s": null,
+        "first_commit_s": 0.5,
+        "observed_lead_keep_releases_before_commit": 0
+      }
+    },
+    "results/tactical-pass/paired-4fppmp4k/no-lead.jsonl.gz": {
+      "frames": 86,
+      "first_commit_s": null,
+      "wait_start_s": null,
+      "throttle_frames_between_first_yield_and_commit": 0,
+      "temporary_releases_then_rebrakes": 0,
+      "rebrake_speeds_mps": [],
+      "sha256": "8436aa4b4645eca58b38d33b6391773b87aadad458ca8a9b8fa54fb953321e7e",
+      "recorded_measurement_rescore": {
+        "first_yield_s": null,
+        "first_commit_s": null,
+        "observed_lead_keep_releases_before_commit": 0
+      }
+    }
+  },
+  "rescore_scope": "Open-loop frozen tree and causal lead motion on stored per-scan ranges, with the old ego trajectory. Source pavement was unavailable in the compact traces and treated as unobserved. The resulting actions are counterfactual judgments, not new speeds or physics."
+}
