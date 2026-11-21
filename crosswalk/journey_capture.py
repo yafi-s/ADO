@@ -265,7 +265,7 @@ def _load_inputs(model_path):
 
     path = Path(model_path).resolve(strict=True)
     saved_sha = fingerprint(path)
-    model, _, schema = load_driver(path)
+    model, feature_names, schema = load_driver(path)
     if fingerprint(path) != saved_sha:
         raise ValueError("The driving checkpoint changed while it was loading")
     fit_path = PROJECT / "models" / "fit.json"
@@ -298,6 +298,7 @@ def _load_inputs(model_path):
     if schema == "ado-city-progress-v1":
         # Include transitive imports and evaluation code as well as the direct model and rig.
         policy["code_sha256"] = {p.name: fingerprint(p) for p in sorted(Path(__file__).parent.glob("*.py"))}
+        policy["control_feature_names"] = list(feature_names)
         from .city_drive import LoggedDriver
         model = LoggedDriver(model)
     return model, JourneyScenario, model.new_observer, policy
@@ -370,12 +371,12 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
                   **_result(summary, expected_events))
     source["perimeter_views"] = list(views)
     if policy.get("schema") == "ado-city-progress-v1":
-        from .city_progress import FEATURE_NAMES
-        if len(model.observations) != len(trace):
+        names = policy["control_feature_names"]
+        if len(model.observations) != len(trace) or any(len(row) != len(names) for row in model.observations):
             raise ValueError("The replay and native policy feature tape have different lengths")
         tape = stage / "policy-observations.npz"
         save_arrays(tape, frame=[row["frame"] for row in trace], features=model.observations,
-                    feature_names=FEATURE_NAMES, speed_request_mps=model.requested_speed,
+                    feature_names=names, speed_request_mps=model.requested_speed,
                     posted_limit_kmh=model.posted_limits)
         source["policy_observations_sha256"] = fingerprint(tape)
     if population_profile != "standard":
