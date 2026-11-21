@@ -211,6 +211,7 @@ class Model:
 
     def __init__(self, inputs, mean, scale, heads):
         self.inputs = inputs
+        self.lamp_expert = None
         self.mask = input_mask(inputs)
         self.columns = head_columns(inputs)
         self.mean = np.asarray(mean, dtype=np.float32)
@@ -255,6 +256,10 @@ class Model:
         path.parent.mkdir(parents=True, exist_ok=True)
         params = {f"{head}_{i}": param for head, weights in zip(("steer", "drive"), self.heads)
                   for i, param in enumerate(weights)}
+        if self.lamp_expert is not None:
+            if self.inputs == "range":
+                raise ValueError("a range-only diagnostic cannot contain a camera lamp expert")
+            params.update(self.lamp_expert.arrays("lamp_"))
         with path.open("wb") as output:
             packed = {"packed_feature_names": RANGE_FEATURE_NAMES} if self.inputs == "range" else {}
             np.savez_compressed(output, version=MODEL_VERSION, feature_names=FEATURE_NAMES,
@@ -275,4 +280,10 @@ class Model:
             if not np.array_equal(data["input_mask"], input_mask(inputs)):
                 raise ValueError("invalid policy input mask")
             heads = [[data[f"{head}_{i}"] for i in range(4)] for head in ("steer", "drive")]
-            return cls(inputs, data["mean"], data["scale"], heads)
+            model = cls(inputs, data["mean"], data["scale"], heads)
+            if "lamp_version" in data:
+                if inputs == "range":
+                    raise ValueError("a range-only diagnostic cannot contain a camera lamp expert")
+                from .lamp import LampExpert
+                model.lamp_expert = LampExpert.from_arrays(data, "lamp_")
+            return model

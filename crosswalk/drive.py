@@ -113,7 +113,11 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
         if visuals:
             from .tracking import Tracker
             spatial_tracker = Tracker()
-        rig = Rig(world, scene.ego, visuals=visuals, range_only=range_only)
+        if visuals:
+            include_aux = live is not None or not getattr(recording, "primary_rig_only", False)
+            rig = Rig(world, scene.ego, visuals=include_aux, range_only=range_only)
+        else:
+            rig = Rig(world, scene.ego, visuals=visuals, range_only=range_only)
         stack.callback(rig.close)
         # Settle the suspension and prime the GPU cameras while all actors wait.
         for _ in range(8):
@@ -143,6 +147,12 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
         if teacher is not None:
             stack.callback(scene.ego.set_autopilot, False, teacher.get_port())
             start_demonstration(scene, teacher)
+        else:
+            lamp_expert = getattr(model, "lamp_expert", None)
+            route_lamps = None
+            if lamp_expert is not None and not range_only:
+                from .lamp import RouteLamps
+                route_lamps = RouteLamps(world, scene.route)
         start = perf_counter()
         for step in range(max_steps):
             scene.before_tick()
@@ -170,6 +180,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 pending = x
             else:
                 predicted = model.predict_range(x) if range_only else model.predict(x)
+                if route_lamps is not None:
+                    predicted = lamp_expert.apply(route_lamps.observe(scene.ego, obs), speed, predicted)
                 steer, throttle, brake = (float(v) for v in predicted)
                 scene.ego.apply_control(carla.VehicleControl(steer=steer, throttle=throttle, brake=brake))
             # Actor geometry below this line is only consulted for scoring.
@@ -268,6 +280,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scenario", choices=list(SCENARIOS), default="trip")
     parser.add_argument("--destination", choices=list(DESTINATIONS), default="market")
+    parser.add_argument("--district", choices=("train","heldout"), default="heldout",
+                        help="Use training streets for development or held-out streets for a demonstration.")
     parser.add_argument("--crossing-delay", type=float, default=0., help="Delay the pedestrian's entry by 0–5 simulated seconds")
     parser.add_argument("--weather", choices=list(WEATHER), default="seeded")
     parser.add_argument("--grip", choices=GRIP, type=float, default=1.0)
@@ -328,7 +342,7 @@ def main():
                 live.set_status("running", run_id=index, settings=settings, outcome=None, error=None)
             try:
                 result, *_ = episode(world, settings["scenario"], settings["seed"], args.policy, model,
-                                     live=live, recording=rec, realtime=bool(live), district="heldout",
+                                     live=live, recording=rec, realtime=bool(live), district=args.district,
                                      destination=settings["destination"], crossing_delay=settings["crossing_delay"],
                                      weather=settings.get("weather","seeded"), grip=settings.get("grip",1.0),
                                      run_id=index, change_request=changed if args.interactive else None)

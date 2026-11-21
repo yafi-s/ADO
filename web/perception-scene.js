@@ -703,7 +703,13 @@ export class PerceptionScene {
     this.renderer.setPixelRatio(ratio);
     this.renderer.setSize(w,h,false);
     this.lidar.material.uniforms.uPixel.value=this.radar.material.uniforms.uPixel.value=ratio;
-    this.camera.aspect=w/Math.max(1,h);this.camera.updateProjectionMatrix();this.dirty=true;
+    const style=getComputedStyle(this.canvas);
+    const offsetX=Number(style.getPropertyValue('--perception-offset-x'))||0;
+    const offsetY=Number(style.getPropertyValue('--perception-offset-y'))||0;
+    this.camera.aspect=w/Math.max(1,h);
+    if(offsetX||offsetY)this.camera.setViewOffset(w,h,w*offsetX,h*offsetY,w,h);
+    else this.camera.clearViewOffset();
+    this.dirty=true;
   }
   dispose(){
     if(this.disposed)return;

@@ -93,6 +93,9 @@ class PublicationTest(unittest.TestCase):
     def test_full_and_rejected_republication(self):
         manifest, summary, row = self.fixture()
         build = self.publish()
+        media = self.root / "web/media"
+        self.assertEqual(build["showcases"], [])
+        self.assertEqual(pub.read_json(media / "viewer-catalog.json"), pub.read_json(media / "catalog.json"))
         self.assertEqual(build["runs"][0]["recording_path"], "")
         self.assertEqual(build["runs"][0]["model_sha256"], manifest["model_sha256"]["fusion"])
         log = self.root / "web" / build["runs"][0]["log_url"]
@@ -121,6 +124,49 @@ class PublicationTest(unittest.TestCase):
                 self.publish()
         self.assertEqual(index.read_bytes(), published)
 
+    def test_separate_showcase_and_integrity(self):
+        manifest, summary, _ = self.fixture()
+        media = self.root / "web/media"
+        dest = media / "showcase/trip"
+        dest.mkdir(parents=True)
+        for name in ("front.mp4", "chase.mp4", "front.jpg", "chase.jpg"):
+            shutil.copyfile(media / name, dest / name)
+        shutil.copyfile(dest / "chase.jpg", dest / "poster.jpg")
+        key = "showcase-211-trip-fusion"
+        summary.update(scenario="trip", seed=211)
+        row = dict(frame=44, camera_frame=44, video_index=0, video_time=0, scenario="trip", seed=211,
+                   policy="fusion", map="Town01_Opt", steer=0.1, throttle=0.4, brake=0, progress_m=1.25)
+        pub.write_json(dest / "telemetry.json", [row])
+        pub.write_json(dest / "replay.json", [dict(row, run_id=key, lidar=[], radar=[], tracks=[], detections=[],
+                                                  observer_map={"ego": [0, 0, 0]})])
+        entry = dict(path="showcase/trip", trial_id=key, benchmark_member=False, label="Showcase · Market trip",
+                     manifest="./media/showcase/trip/manifest.json", cameras=["chase", "front"])
+        record = dict(trial_id=key, benchmark_member=False, catalog_entry=entry, replay="replay.json",
+                      summary=summary, outcome=summary["outcome"], producer=self.producer,
+                      model_sha256=manifest["model_sha256"]["fusion"], frame_period_s=0.1, quality_requested="High",
+                      first_frame=44, last_frame=44, poster_frame=44, video=pub.check_video(dest / "chase.mp4", 1),
+                      front_video=pub.check_video(dest / "front.mp4", 1),
+                      sha256={file.name: pub.fingerprint(file) for file in dest.iterdir()})
+        pub.write_json(dest / "manifest.json", record)
+        build = self.publish()
+        self.assertEqual([r["trial_id"] for r in build["runs"]], [self.trial.trial_id])
+        self.assertEqual(build["showcases"][0]["cohort"], "showcase")
+        self.assertEqual([e["trial_id"] for e in pub.read_json(media / "viewer-catalog.json")],
+                         [key, self.trial.trial_id])
+        self.assertTrue(all((self.root / "web" / e["url"]).is_file() for e in build["evidence"]
+                            if e["url"].startswith("./")))
+        for changes in (dict(model_sha256="c"*64), dict(benchmark_member=True), dict(last_frame=45),
+                        dict(video=dict(record["video"], width=1920))):
+            with self.subTest(changes=changes):
+                pub.write_json(dest / "manifest.json", dict(record, **changes))
+                with self.assertRaises(ValueError):
+                    self.publish()
+        pub.write_json(dest / "manifest.json", record)
+        (dest / "front.jpg").write_bytes(b"corrupted")
+        with self.assertRaisesRegex(ValueError, "digest"):
+            self.publish()
+        self.assertEqual(build, pub.read_json(media / "build.json"))
+
     def test_development_cli(self):
         self.commissioning_files()
         _, summary, _ = self.fixture()
@@ -148,6 +194,7 @@ class PublicationTest(unittest.TestCase):
         self.assertEqual([r["trial_id"] for r in build["runs"]], [key])
         self.assertEqual(build["checkpoints"]["fusion"]["sha256"], build["runs"][0]["model_sha256"])
         self.assertEqual(build["preview_video"], "./media/dev-crossing/chase.mp4")
+        self.assertEqual(pub.read_json(media / "viewer-catalog.json"), pub.read_json(media / "catalog.json"))
         self.assertNotEqual(subprocess.run([*args, "--commissioning"], capture_output=True).returncode, 0)
         for changes in ({"cohort": "primary"}, {"district": "heldout"}, {"model_sha256": "0"*64}, {"frames": 2}):
             with self.subTest(changes=changes):

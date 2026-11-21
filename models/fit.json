@@ -1,6 +1,6 @@
 {
   "dataset_id": "e54c1bf322f2100ef1c5",
-  "fit_id": "8623fe7e71a2eb6cf498",
+  "fit_id": "1a0e8481f874239f901d",
   "training_seeds": [
     11,
     12,
@@ -10,9 +10,23 @@
     16
   ],
   "training_sources": {
-    "policy": "c22cdc2a8fc751173a5ca03b4e37acf5b3182bcda06c9c48518bb2f1ca805ddd",
+    "policy": "609dc843d6ea52f66301c441b943e75f691702ca502e64d390d95c613d45a907",
     "train": "3e1918574c3814b8b3ed1fb842798d217fad60a81870c2cf3f5038b3ce2d3d9b",
     "steering_search": "027657cc773aa10368be6f1bfcb68b76ea71999506eb65de6570971034bae7e6"
+  },
+  "signal_specialist": {
+    "source": "data/signals/lamp.npz",
+    "sha256": "5d8479b212c386af7fa5df8128f468727b4a55abb1f8abd7c68fd40ac5d09d33",
+    "fit_seeds": [
+      11,
+      12,
+      13,
+      14
+    ],
+    "lessons": 8,
+    "demonstrated_controls": 486,
+    "static_pairs": 16,
+    "fit_report_sha256": "7c06f5f114f608f3e55b6f71d5b9c555526dd17fefecf82d35b5266f2c55cd21"
   },
   "training_producer": {
     "client_version": "1.0",
@@ -78,11 +92,11 @@
   },
   "training_data_sha256": "97f37276ff5adde351e3c480ebc17101251e3e02659ed2a2b63fc553232ba6d7",
   "model_sha256": {
-    "fusion": "7c22cd3615355a4cbc914ff32cdaf860cc0394992603d6f2bb4e76bea3a3426d",
-    "camera": "28a4f679a90e42124711d214f144d9f7f5c2ef2318cca5aca1bff76ac1fba1b2"
+    "fusion": "0c438f310b8be5ca1e833984bb331074d6c2b2263d30436f97d19634e21b6b26",
+    "camera": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf"
   },
   "imitation_sha256": {
-    "fusion": "311dd3c198ab510bfa821801ae6b5d429278f95069b641cfbc28e0af3d2702c5",
-    "camera": "de6fe242841fdd794e82e3dc2d9f42ed98732249bc305451d2565e65ed32f246"
+    "fusion": "2698ae3947b015801aa57c9e07e0092c1437ce23f448787e7549dc497c2da85c",
+    "camera": "8c883a79b21d69a28dcb7c1d3a9bdf216cc407d809b5f2052ce82fa6e61b2426"
   }
 }

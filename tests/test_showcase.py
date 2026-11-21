@@ -92,7 +92,9 @@ class ShowcaseTests(unittest.TestCase):
                 world.try_spawn_actor.return_value = Mock(id=7, is_alive=True, attributes={"role_name": "hero"})
                 observed.try_spawn_actor("blueprint", "transform")
                 self.assertIs(observed.get_settings(), world.get_settings())
-                self.assertNotIn("recording", settings)
+                recording = settings["recording"]
+                self.assertTrue(recording.primary_rig_only)
+                self.assertEqual(settings["run_id"], "showcase-211-trip-fusion")
                 trace = []
                 for i, (frame, shade) in enumerate(zip(range(28, 33), (0, 40, 120, 185, 255))):
                     def tick():
@@ -101,12 +103,18 @@ class ShowcaseTests(unittest.TestCase):
                     world.tick.side_effect = tick
                     self.assertEqual(observed.tick(), frame)
                     if 0 < i < 4:
-                        trace.append(dict(frame=frame, steer=.1, speed_mps=2.5, collision_count=0))
+                        row = dict(frame=frame, steer=.1, speed_mps=2.5, collision_count=0)
+                        trace.append(row)
+                        perception = dict(row, lidar=[[frame, 2.]], radar=[[frame, 1., -1.]],
+                                          tracks=[{"id": 1, "x": frame}], detections=[],
+                                          observer_map={"ego": [frame, 0., 0.]})
+                        rgb = np.full((360, 640, 3), 255 - shade, np.uint8)
+                        recording.append(perception, {"front": rgb})
                 trace[-1]["collision_count"] = 1  # collision barrier delivers after capture
                 return dict(outcome="collision", frames=3), trace, None, None
 
             stack.enter_context(patch.object(showcase, "episode", side_effect=episode))
-            output = root / "public"
+            output = root / "web/media/showcase/trip"
             manifest = showcase.capture("trip", "High", "tiny", 75, 2668, output)
             launch.assert_called_once_with(2668, attach=False, quality="High")
             self.assertEqual(os.environ["CROSSWALK_RGB_RENDER"], "native")
@@ -116,23 +124,42 @@ class ShowcaseTests(unittest.TestCase):
             self.assertEqual(manifest["producer"], producer)
             self.assertEqual(int(manifest["video"]["nb_read_frames"]), 3)
             self.assertEqual(manifest["video"]["r_frame_rate"], "10/1")
-            self.assertEqual(manifest["sha256"].keys(), {"chase.mp4", "poster.jpg", "telemetry.json"})
+            self.assertEqual(manifest["sha256"].keys(), {
+                "chase.mp4", "chase.jpg", "poster.jpg", "telemetry.json", "front.mp4", "front.jpg", "replay.json"})
+            self.assertEqual(manifest["catalog_entry"]["path"], "showcase/trip")
+            self.assertEqual(manifest["catalog_entry"]["cameras"], ["chase", "front"])
+            self.assertEqual(manifest["catalog_entry"]["manifest"], "./media/showcase/trip/manifest.json")
+            self.assertEqual(manifest["front_video"]["width"], 640)
             for name, expected in manifest["sha256"].items():
                 self.assertEqual(showcase.fingerprint(output / name), expected)
             log = json.loads((output / "telemetry.json").read_text())
             self.assertEqual([(r["camera_frame"], r["frame"]) for r in log], [(n, n) for n in (29, 30, 31)])
             self.assertEqual(log[-1]["collision_count"], 1)
             self.assertEqual(log[-1]["camera_pose"]["x"], 31.)
+            replay = json.loads((output / "replay.json").read_text())
+            self.assertEqual(len(replay), len(log))
+            for index, (score, perception) in enumerate(zip(log, replay, strict=True)):
+                frame = perception["frame"]
+                self.assertEqual(frame, score["camera_frame"])
+                self.assertEqual(perception["video_time"], index / 10)
+                self.assertEqual(perception["lidar"][0][0], frame)
+                self.assertEqual(perception["radar"][0][0], frame)
+                self.assertEqual(perception["tracks"][0]["x"], frame)
+                self.assertEqual(perception["observer_map"]["ego"][0], frame)
+                self.assertEqual(perception["collision_count"], score["collision_count"])
             self.assertEqual(manifest["poster_frame"], 31)
-            video = cv2.VideoCapture(str(output / "chase.mp4"))
-            try:
-                for shade in (40, 120, 185):
-                    exists, pixels = video.read()
-                    self.assertTrue(exists)
-                    self.assertAlmostEqual(float(pixels.mean()), shade, delta=3)
-                self.assertFalse(video.read()[0])
-            finally:
-                video.release()
+            for camera, shades in [("chase", (40, 120, 185)), ("front", (215, 135, 70))]:
+                video = cv2.VideoCapture(str(output / f"{camera}.mp4"))
+                try:
+                    for shade in shades:
+                        exists, pixels = video.read()
+                        self.assertTrue(exists)
+                        self.assertAlmostEqual(float(pixels.mean()), shade, delta=3)
+                    self.assertFalse(video.read()[0])
+                finally:
+                    video.release()
+                poster = cv2.imread(str(output / f"{camera}.jpg"))
+                self.assertAlmostEqual(float(poster.mean()), shades[-1], delta=1)
             with self.assertRaises(FileExistsError):
                 showcase.capture("trip", "High", "tiny", 75, 2668, output)
             launch.assert_called_once()
@@ -140,6 +167,13 @@ class ShowcaseTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "decode mismatch"):
                     showcase.capture("trip", "High", "tiny", 75, 2668, root / "failed")
                 self.assertFalse((root / "failed").exists())
+
+    def test_perception_sink_refuses_a_different_world_tick(self):
+        observer = SimpleNamespace(rows=[{"camera_frame": 330}])
+        sink = showcase.PerceptionCapture(observer, io.BytesIO(), io.StringIO())
+        with self.assertRaisesRegex(ValueError, "disagree at frame 329"):
+            sink.append({"frame": 329}, {})
+        self.assertEqual(sink.front_offsets, [])
 
 
 if __name__ == "__main__":

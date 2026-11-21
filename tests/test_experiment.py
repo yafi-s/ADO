@@ -134,8 +134,8 @@ class ExperimentTests(unittest.TestCase):
             return (summary, [{"t": 0}, {"t": 1}], np.zeros((1, len(ex.FEATURE_NAMES))), np.zeros((1, 3)))
 
         def fit(data, weights, report, *, inputs, imitation_path):
-            weights.write_bytes(b"test model")
-            imitation_path.write_bytes(b"imitation test model")
+            np.savez(weights, model=[1])
+            np.savez(imitation_path, model=[2])
             ex.write_json(report, {})
 
         with TemporaryDirectory() as temp, patch.object(ex, "episode", side_effect=drive) as driver, \
@@ -156,6 +156,15 @@ class ExperimentTests(unittest.TestCase):
             ex.evaluate(None, root, base, "dev", [31])
             with self.assertRaisesRegex(RuntimeError, "required training seeds"):
                 ex.evaluate(None, root, base, "evaluate", None)
+            lamp = root / "data/signals/lamp.npz"
+            lamp.parent.mkdir()
+            np.savez(lamp, version=1, center=np.zeros(4), weights=np.ones(4), calibration=[1., 0.],
+                     points=np.ones((486, 3)), pedals=np.zeros(486))
+            with self.assertRaisesRegex(ValueError, "validated calibration"):
+                ex.signal_specialist(root)
+            fixture_digest = patch.object(ex, "LAMP_SHA256", ex.fingerprint(lamp))
+            fixture_digest.start()
+            self.addCleanup(fixture_digest.stop)
             ex.collect(None, object(), base, ex.TRAIN[1:])
             ex.fit_archive(root, base)
             ex.evaluate(None, root, base, "evaluate", None)
@@ -170,6 +179,12 @@ class ExperimentTests(unittest.TestCase):
             self.assertTrue(all((root / "web/media" / r["path"] / "replay.json").exists() for r in catalog))
             manifest = ex.read_json(root / "results/manifest.json")
             self.assertEqual(manifest["evaluation_producer"], self.producer)
+            self.assertEqual(manifest["signal_specialist"]["demonstrated_controls"], 486)
+            for name in ("fusion", "camera", "fusion-imitation", "camera-imitation"):
+                with np.load(root / "models" / f"{name}.npz") as weights:
+                    self.assertEqual({k for k in weights if k.startswith("lamp_")},
+                                     {"lamp_version", "lamp_center", "lamp_weights", "lamp_calibration",
+                                      "lamp_points", "lamp_pedals"})
             self.assertEqual(manifest["map"], "Town01_Opt")
             with np.load(root / "data/training.npz") as sample:
                 self.assertEqual(json.loads(str(sample["producer"])), self.producer)

@@ -116,6 +116,28 @@ class PerceptionTest(unittest.TestCase):
 
 
 class LearningTest(unittest.TestCase):
+    def test_optional_lamp_roundtrip_preserves_base_controls(self):
+        from crosswalk.lamp import LampClassifier, LampExpert
+        x = np.tile(features(IMAGE, EMPTY, EMPTY, 2., navigation=NAV, side_views=SIDES), (4, 1))
+        y = np.tile([.1, .4, 0.], (4, 1))
+        lamp = LampExpert(LampClassifier(np.zeros(4), np.ones(4)), np.array([1., .1]),
+                          np.array([[1., 4., 8.], [3., 4., 5.]]), np.array([.6, -.4]))
+        model = fit(x, y, epochs=1)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/"policy.npz"
+            model.save(path)
+            self.assertIsNone(Model.load(path).lamp_expert)
+            base = model.predict_batch(x)
+            model.lamp_expert = lamp
+            model.save(path)
+            loaded = Model.load(path)
+            np.testing.assert_equal(loaded.predict_batch(x), base)
+            for key, array in lamp.arrays().items():
+                np.testing.assert_equal(loaded.lamp_expert.arrays()[key], array)
+            loaded.inputs = "range"
+            with self.assertRaisesRegex(ValueError, "range-only"):
+                loaded.save(path)
+
     def test_matched_pedal_fit_uses_identical_targets_weights_and_different_physical_cues(self):
         rng = np.random.default_rng(4)
         X = rng.uniform(size=(128, len(FEATURE_NAMES))).astype(np.float32)

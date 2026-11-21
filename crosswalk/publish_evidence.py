@@ -113,9 +113,67 @@ def split_traces(source, logs, episodes):
 
 def check_video(video, frame_count):
     info = subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0", "-threads", "1",
-                                    "-count_frames", "-show_entries", "stream=nb_read_frames",
-                                    "-of", "csv=p=0", str(video)], text=True)
-    require(info.strip() == str(frame_count), f"Video length differs for {video}")
+                                    "-count_frames", "-show_entries",
+                                    "stream=nb_read_frames,width,height,codec_name,r_frame_rate,pix_fmt",
+                                    "-of", "json", str(video)], text=True)
+    stream, = json.loads(info)["streams"]
+    require(int(stream["nb_read_frames"]) == frame_count, f"Video length differs for {video}")
+    return stream
+
+
+def showcase_entry(directory, build):
+    manifest = read_json(directory / "manifest.json")
+    scenario = directory.name
+    path = f"showcase/{scenario}"
+    key = f"showcase-211-{scenario}-fusion"
+    base = f"./media/{path}"
+    summary = manifest["summary"]
+    entry = manifest["catalog_entry"]
+    require(manifest["benchmark_member"] is False and entry["benchmark_member"] is False
+            and entry["path"] == path and entry["trial_id"] == manifest["trial_id"] == key
+            and entry["manifest"] == f"{base}/manifest.json" and entry["cameras"] == ["chase", "front"]
+            and manifest["replay"] == "replay.json" and summary["scenario"] == scenario
+            and summary["seed"] == 211 and summary["policy"] == "fusion" and summary["district"] == "heldout"
+            and manifest["model_sha256"] == build["checkpoints"]["fusion"]["sha256"]
+            and validate_producer(manifest["producer"]) == build["simulator"],
+            f"Unexpected showcase identity or provenance for {key}")
+    files = {"front.mp4", "chase.mp4", "poster.jpg", "front.jpg", "chase.jpg", "telemetry.json", "replay.json"}
+    require(manifest["sha256"].keys() == files
+            and all(fingerprint(directory / name) == sha for name, sha in manifest["sha256"].items()),
+            f"Showcase file digest mismatch for {key}")
+    trace, replay = (read_json(directory / name) for name in ("telemetry.json", "replay.json"))
+    frames = len(trace)
+    dt = manifest["frame_period_s"]
+    require(frames > 0 and frames == len(replay) == summary["frames"] and dt == 0.1
+            and summary["duration_s"] == round(frames * dt, 2) and summary["outcome"] == manifest["outcome"]
+            and trace[-1]["progress_m"] == summary["progress_m"] and trace[-1]["frame"] == manifest["last_frame"]
+            and manifest["first_frame"] <= manifest["poster_frame"] <= manifest["last_frame"],
+            f"Inconsistent showcase summary for {key}")
+    for i, (row, recorded) in enumerate(zip(trace, replay)):
+        require(row["frame"] == row["camera_frame"] == manifest["first_frame"] + i
+                and row["video_index"] == i and row["video_time"] == i / 10 and recorded["run_id"] == key
+                and row["scenario"] == scenario and row["seed"] == 211 and row["policy"] == "fusion"
+                and row["map"] == build["simulator"]["map"] and -1 <= row["steer"] <= 1
+                and 0 <= row["throttle"] <= 1 and 0 <= row["brake"] <= 1
+                and all(recorded[k] == v for k, v in row.items())
+                and all(isinstance(recorded[k], list) for k in ("lidar", "radar", "tracks", "detections"))
+                and "ego" in recorded["observer_map"], f"Inconsistent showcase replay at frame {i} in {key}")
+    quality = manifest["quality_requested"]
+    require(quality in {"Medium", "High", "Epic"}, f"Unknown capture quality for {key}")
+    for camera, field in (("chase", "video"), ("front", "front_video")):
+        info = check_video(directory / f"{camera}.mp4", frames)
+        require(info == manifest[field], f"Showcase video metadata mismatch for {key}/{camera}")
+    video = manifest["video"]
+    show = dict(trial_id=key, case_id=scenario, policy="fusion", seed=summary["seed"], cohort="showcase",
+                benchmark_member=False, quality_requested=quality, width=video["width"], height=video["height"],
+                frames=frames, model_sha256=manifest["model_sha256"], outcome=summary["outcome"],
+                duration_s=summary["duration_s"], progress_m=summary["progress_m"], recording_path=path,
+                manifest_url=entry["manifest"], log_url=f"{base}/telemetry.json", video_url=f"{base}/chase.mp4")
+    for label, file in (("capture manifest", "manifest.json"), ("chase camera", "chase.mp4"),
+                        ("front camera", "front.mp4"), ("frame telemetry", "telemetry.json")):
+        build["evidence"].append(dict(label=f"{entry['label']} · {quality} · {label}", url=f"{base}/{file}"))
+    build["showcases"].append(show)
+    return dict(entry, cohort="showcase")
 
 
 def training_clip(web, build):
@@ -251,6 +309,17 @@ def publish(root, tag, source_commit, commissioning_only=False, development_only
             build = development(root, logs)
         else:
             build = evaluated(root, logs, tag)
+        catalog = []
+        if build["status"] == "evaluated":
+            build["showcases"] = []
+            for scenario in ("trip", "pedestrian"):
+                directory = web / "media/showcase" / scenario
+                if directory.exists():
+                    catalog.append(showcase_entry(directory, build))
+        if not commissioning_only:
+            runs = {run["trial_id"] for run in build["runs"]}
+            catalog.extend(entry for entry in read_json(web / "media/catalog.json") if entry["trial_id"] in runs)
+        write_json(stage / "viewer-catalog.json", catalog)
         training_clip(web, build)
         preview = "commissioning-chase.jpg" if commissioning_only else "chase.jpg"
         build["source"] = dict(commit=source_commit, url=f"{REPO}/tree/{source_commit}")
@@ -260,6 +329,7 @@ def publish(root, tag, source_commit, commissioning_only=False, development_only
         (web / "media").mkdir(exist_ok=True)
         for path in logs.iterdir():
             path.replace(web / "logs" / path.name)
+        (stage / "viewer-catalog.json").replace(web / "media/viewer-catalog.json")
         (stage / "build.json").replace(web / "media/build.json")
     return build
 

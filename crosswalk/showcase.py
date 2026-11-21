@@ -26,6 +26,7 @@ RESOLUTIONS = {"960x540": (960, 540), "1280x720": (1280, 720), "1920x1080": (192
 SEED = 211
 MOUNT = dict(x=-7.8, y=0.55, z=3.40, pitch=-10.5, yaw=-2.0)
 FPS = round(1 / DT)
+FRONT_SIZE = (640, 360)
 
 
 def transform_fields(transform):
@@ -136,6 +137,48 @@ class ObservedWorld:
         return frame
 
 
+class PerceptionCapture:
+    """Collect scored observations from the policy rig without requesting any extra sensors."""
+
+    primary_rig_only = True
+
+    def __init__(self, observer, front_stream, row_stream):
+        self.observer, self.front_stream, self.row_stream = observer, front_stream, row_stream
+        self.front_offsets = []
+
+    def append(self, telemetry, observations):
+        frame = telemetry["frame"]
+        if not self.observer.rows or self.observer.rows[-1]["camera_frame"] != frame:
+            raise ValueError(f"Perception and chase camera disagree at frame {frame}")
+        required = {"lidar", "radar", "tracks", "detections", "observer_map"}
+        if not required.issubset(telemetry) or "ego" not in telemetry["observer_map"]:
+            raise ValueError(f"Missing perception telemetry at frame {frame}")
+        rgb = observations["front"]
+        if rgb.dtype != np.uint8 or rgb.shape != (FRONT_SIZE[1], FRONT_SIZE[0], 3):
+            raise ValueError(f"Unexpected policy front camera image at frame {frame}")
+        success, jpeg = cv2.imencode(".jpg", rgb[:, :, ::-1], [cv2.IMWRITE_JPEG_QUALITY, 94])
+        if not success:
+            raise RuntimeError(f"Could not encode front camera frame {frame}")
+        self.front_offsets.append((self.front_stream.tell(), jpeg.nbytes))
+        self.front_stream.write(jpeg.tobytes())
+        self.row_stream.write(json.dumps(telemetry, separators=(",", ":"), allow_nan=False) + "\n")
+
+
+def write_replay(path, source, telemetry):
+    """Join measured perception to final barrier-corrected scores by CARLA frame."""
+    with source.open(encoding="utf-8") as rows, path.open("w", encoding="utf-8") as output:
+        output.write("[")
+        for line, score in zip(rows, telemetry, strict=True):
+            row = json.loads(line)
+            if row["frame"] != score["frame"]:
+                raise ValueError("Replay observation differs from its final scored frame")
+            row.update(score)
+            if score["video_index"]:
+                output.write(",")
+            json.dump(row, output, separators=(",", ":"), allow_nan=False)
+        output.write("]\n")
+
+
 @contextmanager
 def policy_profile(profile):
     """Match the policy-camera settings recorded by the shipped fit."""
@@ -196,10 +239,13 @@ def capture(scenario, quality, resolution, percentage, port, output):
         work = Path(work)
         stage = work / "publish"
         stage.mkdir()
-        raw = work / "chase.mjpeg"
+        raw, front_raw, rows = work / "chase.mjpeg", work / "front.mjpeg", work / "perception.jsonl"
         size = RESOLUTIONS[resolution]
-        with raw.open("wb") as stream, policy_profile(fit["render_profile"]):
+        trial_id = f"showcase-{SEED}-{scenario}-fusion"
+        with (raw.open("wb") as stream, front_raw.open("wb") as front_stream,
+              rows.open("w", encoding="utf-8") as row_stream, policy_profile(fit["render_profile"])):
             observer = ChaseCapture(*size, percentage, stream)
+            perception = PerceptionCapture(observer, front_stream, row_stream)
             with simulator(port, attach=False, quality=quality) as world:
                 producer = validate_producer(producer_info(world))
                 if producer != fit["training_producer"]:
@@ -214,10 +260,12 @@ def capture(scenario, quality, resolution, percentage, port, output):
                 try:
                     result, trace, *_ = episode(ObservedWorld(world, observer), scenario, SEED, "fusion", model,
                                                 district="heldout", weather="ClearNoon",
+                                                recording=perception, run_id=trial_id,
                                                 destination="market" if scenario == "trip" else None)
                 finally:
                     observer.close()
-        if not trace or not observer.rows or len(trace) != result["frames"]:
+        if (not trace or not observer.rows or len(trace) != result["frames"]
+                or len(perception.front_offsets) != len(trace)):
             raise ValueError("Missing scored frames or observer exposures")
         start = trace[0]["frame"] - observer.rows[0]["camera_frame"]
         if start < 0 or start + len(trace) > len(observer.rows):
@@ -228,19 +276,35 @@ def capture(scenario, quality, resolution, percentage, port, output):
             if row["frame"] != exposure["camera_frame"]:
                 raise ValueError("Telemetry frame differs from its camera exposure")
             metadata = {k: v for k, v in exposure.items() if k not in ("offset", "size")}
-            telemetry.append({**row, **metadata, "video_index": index})
-        poster = selected[min(2 * FPS, len(selected) - 1)]
+            telemetry.append({**row, **metadata, "video_index": index, "video_time": index / FPS})
+        poster_index = min(2 * FPS, len(selected) - 1)
+        poster = selected[poster_index]
         with raw.open("rb") as stream:
             stream.seek(poster["offset"])
             (stage / "poster.jpg").write_bytes(stream.read(poster["size"]))
+        shutil.copyfile(stage / "poster.jpg", stage / "chase.jpg")
+        with front_raw.open("rb") as stream:
+            offset, length = perception.front_offsets[poster_index]
+            stream.seek(offset)
+            (stage / "front.jpg").write_bytes(stream.read(length))
         write_json(stage / "telemetry.json", telemetry)
+        write_replay(stage / "replay.json", rows, telemetry)
         video = encode_and_check(raw, stage / "chase.mp4", size, start, len(trace))
+        front_video = encode_and_check(front_raw, stage / "front.mp4", FRONT_SIZE, 0, len(trace))
         files = {p.name: fingerprint(p) for p in sorted(stage.iterdir())}
+        media_root = PROJECT / "web/media"
+        entry = None
+        if output.is_relative_to(media_root):
+            directory = output.relative_to(media_root).as_posix()
+            entry = dict(label=f"Showcase · {'Market trip' if scenario == 'trip' else 'Pedestrian crossing'}",
+                         path=directory, cameras=["chase", "front"], trial_id=trial_id,
+                         benchmark_member=False, manifest=f"./media/{directory}/manifest.json")
         manifest = dict(purpose="ADO independent closed-loop showcase drive", benchmark_member=False,
+                        trial_id=trial_id, catalog_entry=entry, replay="replay.json",
                         producer=producer, quality_requested=quality, world_settings=observed_settings,
                         fit_id=fit["fit_id"],
                         model_path="models/fusion.npz", model_sha256=model_sha,
-                        observer=observer.rendering, video=video, frame_period_s=DT,
+                        observer=observer.rendering, video=video, front_video=front_video, frame_period_s=DT,
                         pose_coordinates="CARLA world metres and Euler degrees",
                         control_timing="The policy observes frame t and commands the following tick.",
                         first_frame=trace[0]["frame"], last_frame=trace[-1]["frame"],
@@ -256,7 +320,7 @@ def main():
     parser.add_argument("--scenario", choices=("trip", "pedestrian"), default="trip")
     parser.add_argument("--quality", choices=("Medium", "High", "Epic"), default="High")
     parser.add_argument("--resolution", choices=RESOLUTIONS, default="1280x720")
-    parser.add_argument("--dlss-percent", choices=(67, 75), type=int, default=75)
+    parser.add_argument("--dlss-percent", "--dlss-percentage", choices=(67, 75), type=int, default=75)
     parser.add_argument("--port", type=int, default=2668)
     parser.add_argument("--output", type=Path, help="Fresh directory for the complete recording")
     args = parser.parse_args()

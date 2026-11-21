@@ -36,6 +36,7 @@ VIDEO_LABELS = dict(zip(VIDEO_CASES, ("Pedestrian crossing", "Occluded pedestria
                                       "Unprotected left turn", "Destination trip", "Destination trip · delayed crossing")))
 DATA_FORMAT = 3
 STAGES = ("collect", "fit", "dev", "evaluate", "all")
+LAMP_SHA256 = "5d8479b212c386af7fa5df8128f468727b4a55abb1f8abd7c68fd40ac5d09d33"
 
 
 @dataclass(frozen=True)
@@ -119,7 +120,9 @@ class CollectionPath(ast.NodeTransformer):
         condition = ast.unparse(node.test)
         if condition == "teacher is not None":
             return [self.visit(child) for child in node.body]
-        if condition in ("visuals", "realtime", "change_request and change_request()"):
+        if condition == "visuals":
+            return [self.visit(child) for child in node.orelse]
+        if condition in ("realtime", "change_request and change_request()"):
             return []
         return self.generic_visit(node)
 
@@ -300,6 +303,26 @@ def bundle(files, path):
                 **{key: np.concatenate(values) for key, values in arrays.items()})
 
 
+def signal_specialist(root):
+    path = root / "data/signals/lamp.npz"
+    if not path.is_file():
+        return None, {}
+    if fingerprint(path) != LAMP_SHA256:
+        raise ValueError(f"Signal expert differs from the validated calibration artifact: {path}")
+    from .lamp import LampExpert
+    arrays = LampExpert.load(path).arrays("lamp_")
+    info = dict(source="data/signals/lamp.npz", sha256=LAMP_SHA256, fit_seeds=[11, 12, 13, 14],
+                lessons=8, demonstrated_controls=len(arrays["lamp_pedals"]), static_pairs=16)
+    report = path.with_name("fit.json")
+    if report.is_file():
+        calibration = read_json(report)
+        if (len(calibration["lessons"]) != info["lessons"] or calibration["fit_frames"] != info["demonstrated_controls"]
+                or calibration["fit_seeds"] != info["fit_seeds"] or calibration["fit_static_pairs"] != info["static_pairs"]):
+            raise ValueError(f"Signal calibration report disagrees with validated specialist: {report}")
+        info["fit_report_sha256"] = fingerprint(report)
+    return info, arrays
+
+
 def fit_archive(root, base):
     seeds = []
     folders = []
@@ -315,7 +338,11 @@ def fit_archive(root, base):
     src = PROJECT / "crosswalk"
     source = {n: fingerprint(src / f"{n}.py") for n in ("policy", "train", "steering_search")}
     sample_hashes = {f.name: read_json(f / "checkpoint.json")["sha256"]["samples.npz"] for f in folders}
-    fit_id = identity(dict(source=source, samples=sample_hashes, dataset_id=base.name))
+    specialist, lamp_arrays = signal_specialist(root)
+    ingredients = dict(source=source, samples=sample_hashes, dataset_id=base.name)
+    if specialist:
+        ingredients["signal_specialist"] = specialist["sha256"]
+    fit_id = identity(ingredients)
     archive = base / "fits" / fit_id
     archive.mkdir(parents=True, exist_ok=True)
     combined = archive / "training.npz"
@@ -325,6 +352,13 @@ def fit_archive(root, base):
             print(f"Fitting {policy} on {len(folders)} drives", flush=True)
             train(combined, archive / f"{policy}.npz", archive / f"fit-{policy}.json",
                   inputs=policy, imitation_path=archive / f"{policy}-imitation.npz")
+            if lamp_arrays:
+                for name in (f"{policy}.npz", f"{policy}-imitation.npz"):
+                    path = archive / name
+                    with np.load(path, allow_pickle=False) as weights:
+                        merged = dict(weights)
+                    merged.update(lamp_arrays)
+                    save_arrays(path, **merged)
         files = ["training.npz"] + [f"{p}.npz" for p in POLICIES] + [f"fit-{p}.json" for p in POLICIES]
         files.extend(f"{p}-imitation.npz" for p in POLICIES)
         write_json(archive / "checkpoint.json", {"sha256": {n: fingerprint(archive / n) for n in files}})
@@ -333,6 +367,7 @@ def fit_archive(root, base):
         producer = validate_producer(json.loads(str(records["producer"])))
         profile = json.loads(str(records["render_profile"]))
     provenance = dict(dataset_id=base.name, fit_id=fit_id, training_seeds=seeds, training_sources=source,
+                      signal_specialist=specialist,
                       training_producer=producer, render_profile=profile, data_format=DATA_FORMAT,
                       training_samples=sample_hashes, training_data_sha256=hashes["training.npz"],
                       model_sha256={p: hashes[f"{p}.npz"] for p in POLICIES},
@@ -369,6 +404,15 @@ def evaluate(world, root, base, stage, seeds):
     archive = base / "fits" / fit["fit_id"]
     if not valid_checkpoint(archive):
         raise RuntimeError(f"Incomplete or damaged fit archive: {archive}")
+    specialist, lamp_arrays = signal_specialist(root)
+    if specialist:
+        if (fit.get("signal_specialist") or {}).get("sha256") != specialist["sha256"]:
+            raise RuntimeError("Fit the models with the current canonical signal specialist before evaluation")
+        for policy in POLICIES:
+            with np.load(archive / f"{policy}.npz", allow_pickle=False) as weights:
+                if any(key not in weights or not np.array_equal(weights[key], value)
+                       for key, value in lamp_arrays.items()):
+                    raise ValueError(f"{policy} model lacks the validated signal expert")
     src = PROJECT / "crosswalk"
     if any(fingerprint(src / f"{name}.py") != digest for name, digest in fit["training_sources"].items()):
         raise RuntimeError("Policy or training code changed since this fit. Run --stage fit first.")
@@ -376,7 +420,7 @@ def evaluate(world, root, base, stage, seeds):
     trials = list(schedule(stage, seeds))
     source = {name: fingerprint(src / f"{name}.py") for name in
               ("drive", "world", "district", "policy", "sensors", "control", "vision", "signal_vision",
-               "robotaxi", "thermal", "runtime", "viewio") if (src / f"{name}.py").is_file()}
+               "robotaxi", "thermal", "runtime", "viewio", "lamp", "tracking") if (src / f"{name}.py").is_file()}
     version = identity(dict(fit=fit["fit_id"], scoring=source,
                             protocol=[(asdict(t), t.settings, t.record) for t in schedule(stage)]))
     runs = base / stage / version
