@@ -55,7 +55,7 @@ const state = {
   liveRun: undefined,
   frame: null,
   camera: null,
-  preferredCamera: null,
+  preferredCamera: 'chase',   // the view that shows the vehicle in its street
   cameras: [],
   view: 'follow',
   layers: {path: true, tracks: true, returns: true},

@@ -15,6 +15,26 @@ function issue(id, message = '') {
   el(id).hidden = !message;
 }
 const colorMaterial = color => new T.MeshLambertMaterial({color});
+
+// Night and day palettes for the map, matching the display mode chosen in the status bar.
+// Only colour and light levels differ; the geometry and the telemetry it shows do not.
+const PALETTES = {
+  night: {
+    sky: 0x16212f, ground: 0x1a2533, curb: 0x56667c, road: 0x3a4a60,
+    buildings: [0x48586e, 0x415166, 0x506077, 0x3b4a5f],
+    route: 0x45e2c7, marker: 0x45e2c7, vehicle: 0x9caefa, walker: 0xff9d9b,
+    shadow: 0x000000, shadowOpacity: .42, locatorRing: 0x0c3d38, locator: 0x7ff3df,
+    hemiSky: 0xdbe6ff, hemiGround: 0x3a4658, hemi: 1.7, sun: 1.3, environment: .6, exposure: 1.0
+  },
+  day: {
+    sky: 0xeceef2, ground: 0xdde1e7, curb: 0xc9cfd8, road: 0xf7f8fa,
+    buildings: [0xe3e6eb, 0xd9dde4, 0xe8eaee, 0xdfe2e8],
+    route: 0x2563eb, marker: 0x2563eb, vehicle: 0x9fa6b2, walker: 0xe2702a,
+    shadow: 0x1d2633, shadowOpacity: .26, locatorRing: 0xffffff, locator: 0x2563eb,
+    hemiSky: 0xffffff, hemiGround: 0x9aa3b0, hemi: 2.0, sun: 1.7, environment: .75, exposure: 1.0
+  }
+};
+const displayMode = () => document.documentElement.dataset.display === 'day' ? 'day' : 'night';
 function mesh(geometry, material, group) {
   const item = new T.Mesh(geometry, material);
   group.add(item);
@@ -53,8 +73,9 @@ class CityScene {
     this.renderer.toneMappingExposure = 1.05;
     this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.6));
     this.scene = new T.Scene();
-    this.scene.background = new T.Color(0xcbd4c8);
-    this.scene.fog = new T.Fog(0xcbd4c8, 350, 2400);
+    this.look = PALETTES[displayMode()];
+    this.scene.background = new T.Color(this.look.sky);
+    this.scene.fog = new T.Fog(this.look.sky, 350, 2400);
     this.camera = new T.PerspectiveCamera(46, 1, .15, 3500);
     this.controls = new T.OrbitControls(this.camera, canvas);
     this.dirty = true;
@@ -66,8 +87,9 @@ class CityScene {
     this.controls.target.set(0, 0, 0);
     this.camera.position.set(-10, 7, 9);
     this.controls.update();
-    this.scene.add(new T.HemisphereLight(0xfff9e9, 0x748477, 2.05));
-    const sunlight = new T.DirectionalLight(0xfff4d9, 1.8);
+    this.hemisphere = new T.HemisphereLight(0xfff9e9, 0x748477, 2.05);
+    this.scene.add(this.hemisphere);
+    const sunlight = this.sunlight = new T.DirectionalLight(0xfff4d9, 1.8);
     sunlight.position.set(-70, 100, -40);
     this.scene.add(sunlight);
     const room = new T.RoomEnvironment();
@@ -82,7 +104,7 @@ class CityScene {
     this.ego = new T.Group();
     this.ego.visible = false;
     this.scene.add(this.ego);
-    const shadow = mesh(new T.CylinderGeometry(1, 1, .015, 48), new T.MeshBasicMaterial({
+    const shadow = this.shadow = mesh(new T.CylinderGeometry(1, 1, .015, 48), new T.MeshBasicMaterial({
       color: 0x1c2b25, transparent: true, opacity: .31, depthWrite: false
     }), this.ego);
     shadow.scale.set(2.54, 1, 1.13);
@@ -92,7 +114,7 @@ class CityScene {
     this.overhead = mesh(new T.CylinderGeometry(1, 1, .04, 32), new T.MeshBasicMaterial({
       color: 0x154c47, depthTest: false, toneMapped: false
     }), this.ego);
-    const locator = mesh(new T.CylinderGeometry(.60, .60, .05, 32), new T.MeshBasicMaterial({
+    const locator = this.locator = mesh(new T.CylinderGeometry(.60, .60, .05, 32), new T.MeshBasicMaterial({
       color: 0xc1ff8c, depthTest: false, toneMapped: false
     }), this.overhead);
     this.overhead.renderOrder = 10;
@@ -104,11 +126,14 @@ class CityScene {
     this.actors = [];
     this.vehicleMat = colorMaterial(0xea9e60);
     this.walkerMat = colorMaterial(0xf87c99);
-    this.actorBody = new T.BoxGeometry(3.9, 1.12, 1.78);
-    this.actorRoof = new T.BoxGeometry(2.05, .52, 1.58);
-    this.walkerBody = new T.CylinderGeometry(.23, .26, 1.24, 12);
-    this.walkerHead = new T.SphereGeometry(.23, 12, 8);
+    // Ground-truth actors arrive as positions, often without a heading, so their markers stay symmetric.
+    this.actorBody = new T.RoundedBoxGeometry(3.9, 1.12, 1.78, 3, .3);
+    this.actorRoof = new T.RoundedBoxGeometry(2.05, .52, 1.58, 3, .2);
+    this.walkerBody = new T.CapsuleGeometry(.2, .92, 5, 14);
+    this.walkerHead = new T.SphereGeometry(.17, 16, 12);
     this.frameCamera = true;
+    this.applyPalette();
+    addEventListener('ado:display', () => this.applyPalette());
     new ResizeObserver(() => {
       const w = canvas.clientWidth, h = canvas.clientHeight;
       this.dirty = true;
@@ -117,6 +142,35 @@ class CityScene {
       this.camera.updateProjectionMatrix();
       if (this.mode === 'overview') this.positionCamera();
     }).observe(canvas);
+  }
+
+  applyPalette() {
+    const look = this.look = PALETTES[displayMode()];
+    this.scene.background.set(look.sky);
+    this.scene.fog.color.set(look.sky);
+    this.renderer.toneMappingExposure = look.exposure;
+    this.scene.environmentIntensity = look.environment;
+    this.hemisphere.color.set(look.hemiSky);
+    this.hemisphere.groundColor.set(look.hemiGround);
+    this.hemisphere.intensity = look.hemi;
+    this.sunlight.intensity = look.sun;
+    this.floor.material.color.set(look.ground);
+    this.shadow.material.color.set(look.shadow);
+    this.shadow.material.opacity = look.shadowOpacity;
+    this.marker.material.color.set(look.marker);
+    this.overhead.material.color.set(look.locatorRing);
+    this.locator.material.color.set(look.locator);
+    this.vehicleMat.color.set(look.vehicle);
+    this.walkerMat.color.set(look.walker);
+    this.curbs?.material.color.set(look.curb);
+    this.roads?.material.color.set(look.road);
+    this.route?.material.color.set(look.route);
+    if (this.buildings) {
+      const tint = new T.Color();
+      for (let i = 0; i < this.buildings.count; i++) this.buildings.setColorAt(i, tint.set(look.buildings[i % look.buildings.length]));
+      this.buildings.instanceColor.needsUpdate = true;
+    }
+    this.dirty = true;
   }
 
   async loadTown() {
@@ -138,12 +192,13 @@ class CityScene {
       for (const lane of roads) for (const [x, y, z] of lane) bounds.expandByPoint(vec(x, z, y));
       this.bounds = bounds;
       this.floor.position.y = bounds.min.y - .16;
-      this.scene.add(ribbon(roads, 4.65, -.065, colorMaterial(0xbec4b4)));
-      this.scene.add(ribbon(roads, 3.53, 0, colorMaterial(0x465351)));
+      this.curbs = ribbon(roads, 4.65, -.065, colorMaterial(this.look.curb));
+      this.roads = ribbon(roads, 3.53, 0, colorMaterial(this.look.road));
+      this.scene.add(this.curbs, this.roads);
       const boxes = (data.buildings || []).filter(b => point(b.center, 3) && point(b.extent, 3) && b.extent.every(v => v > 0));
       if (boxes.length) {
         const buildings = new T.InstancedMesh(new T.BoxGeometry(), colorMaterial(0xffffff), boxes.length);
-        const dummy = new T.Object3D(), palettes = [0xd9d4c2, 0xc3cbbb, 0xc2c6b9, 0xd9d8c9];
+        const dummy = new T.Object3D(), palettes = this.look.buildings;
         boxes.forEach((b, i) => {
           const [x, y, z] = b.center, [sx, sy, sz] = b.extent;
           dummy.position.set(x, z, y);
@@ -153,6 +208,7 @@ class CityScene {
           buildings.setMatrixAt(i, dummy.matrix);
           buildings.setColorAt(i, new T.Color(palettes[i % palettes.length]));
         });
+        this.buildings = buildings;
         this.scene.add(buildings);
       }
       this.dirty = true;
@@ -227,9 +283,9 @@ class CityScene {
         marker = new T.Group();
         marker.userData.walker = walker;
         const body = mesh(walker ? this.walkerBody : this.actorBody, walker ? this.walkerMat : this.vehicleMat, marker);
-        body.position.y = walker ? .64 : .70;
+        body.position.y = walker ? .68 : .70;
         const top = mesh(walker ? this.walkerHead : this.actorRoof, walker ? this.walkerMat : this.vehicleMat, marker);
-        top.position.y = walker ? 1.50 : 1.39;
+        top.position.y = walker ? 1.56 : 1.39;
         this.actors[i] = marker;
         this.scene.add(marker);
       }
@@ -255,7 +311,7 @@ class CityScene {
         this.route.material.dispose();
       }
       const points = path.filter(p => point(p)).map(([x,y]) => [x,y,this.height(x,y)]);
-      this.route = ribbon([points], .32, .055, new T.MeshBasicMaterial({color:0x82ecc0}));
+      this.route = ribbon([points], .32, .055, new T.MeshBasicMaterial({color:this.look.route}));
       this.routeKey = routeKey;
       this.scene.add(this.route);
     }

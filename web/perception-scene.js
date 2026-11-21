@@ -1,4 +1,5 @@
 import * as T from './vendor/city-view/three-view.js';
+import {buildRoadUser, disposeRoadUserGeometry, plausibleSize, TRACK_TONE} from './road-users.js';
 
 const V = (x = 0, y = 0, z = 0) => new T.Vector3(x, y, z);
 const finite = Number.isFinite;
@@ -26,6 +27,34 @@ function release(root) {
   root?.removeFromParent();
 }
 
+// Two display palettes. Night keeps the original values; day is a light studio
+// with clay-grey road users. Linear RGB triples feed the shaders directly, hex
+// strings are sRGB. Only colour changes between them, never what is drawn.
+const PALETTES = {
+  night: {
+    sky:'#192633', floorFar:[.013,.024,.035], floorNear:[.025,.042,.054], grid:[.012,.024,.024],
+    roadEdge:[.041,.058,.077], roadMid:[.052,.073,.092], marking:[.32,.43,.49], curb:'#3d4d58',
+    pathFar:[.028,.38,.42], pathNear:[.24,.84,.76],
+    wallDark:[.023,.037,.052], wallLit:[.066,.092,.112], wallEdge:[.014,.029,.037],
+    shadow:'#061012', shadowOpacity:.57, lidar:'#8cced2', radar:'#e6b979',
+    vehicle:'#7084e4', rider:'#e3bc83', person:'#f59a98', unknown:'#9cafbf',
+    glass:'#3d4f86', lamp:'#e6ecff', tail:'#ff8f9c', tyre:'#232f44', hub:'#5b6c9c', glow:.04, rim:.3, exposure:1.04
+  },
+  day: {
+    sky:'#eceef2', floorFar:'#e2e5ea', floorNear:'#e7eaee', grid:[-.05,-.047,-.042],
+    roadEdge:'#f3f4f7', roadMid:'#f9fafb', marking:'#9aa3b1', curb:'#cfd4dc',
+    pathFar:'#7fa8f5', pathNear:'#1f5fe8',
+    wallDark:'#cdd2da', wallLit:'#e9ecf0', wallEdge:[-.035,-.033,-.03],
+    shadow:'#1d2633', shadowOpacity:.34, lidar:'#5578b4', radar:'#d9641a',
+    vehicle:'#9fa6b2', rider:'#e08a3c', person:'#e2702a', unknown:'#a7adb8',
+    glass:'#7a8392', lamp:'#f6f7f9', tail:'#d98f84', tyre:'#565e6c', hub:'#878f9c', glow:0, rim:0, exposure:1.0
+  }
+};
+const TONES = ['sky','floorFar','floorNear','grid','roadEdge','roadMid','marking','curb','pathFar','pathNear',
+  'wallDark','wallLit','wallEdge','shadow','lidar','radar'];
+const displayMode = () => document.documentElement.dataset.display === 'day' ? 'day' : 'night';
+const tone = (target, value) => Array.isArray(value) ? target.setRGB(...value) : target.set(value);
+
 const worldVertex = `
 varying vec3 vWorld;
 void main(){
@@ -39,19 +68,20 @@ vec3 aerial(vec3 color, vec3 p) {
   float dist = distance(cameraPosition, p);
   return mix(color, uSky, smoothstep(48., 210., dist)*.96);
 }`;
-function floorMaterial(sky) {
+function floorMaterial(tones) {
   return new T.ShaderMaterial({
-    uniforms:{uSky:{value:sky}, uEgo:{value:V()}}, vertexShader:worldVertex,
+    uniforms:{uSky:{value:tones.sky}, uEgo:{value:V()}, uFar:{value:tones.floorFar}, uNear:{value:tones.floorNear},
+      uGrid:{value:tones.grid}}, vertexShader:worldVertex,
     fragmentShader:`
-      uniform vec3 uSky,uEgo; varying vec3 vWorld;
+      uniform vec3 uSky,uEgo,uFar,uNear,uGrid; varying vec3 vWorld;
       ${haze}
       void main(){
         vec2 g = vWorld.xz / 5.;
         vec2 dd = abs(fract(g + .5) - .5) / max(fwidth(g),vec2(.0001));
         float line = 1.-smoothstep(0.,1.,min(dd.x,dd.y));
         float proximity = 1.-smoothstep(9.,78.,distance(vWorld.xz,uEgo.xz));
-        vec3 base = mix(vec3(.013,.024,.035),vec3(.025,.042,.054), proximity);
-        base += vec3(.012,.024,.024)*line*proximity;
+        vec3 base = mix(uFar,uNear, proximity);
+        base += uGrid*line*proximity;
         gl_FragColor = vec4(aerial(base,vWorld),1.);${endColor}
       }`
   });
@@ -61,22 +91,48 @@ function floorMaterial(sky) {
 // their shared boundaries and separate interior markings from the outside curb.
 function roadIndex(roads) {
   const cells = new Map(), key = (x,z) => Math.floor(x/6)+','+Math.floor(z/6);
-  roads.forEach((lane,id) => lane.forEach(p => {
+  roads.forEach((lane,id) => lane.forEach((p,i) => {
+    const a=lane[Math.max(0,i-1)], b=lane[Math.min(lane.length-1,i+1)];
+    const len=Math.hypot(b[0]-a[0],b[1]-a[1])||1;
     const k=key(p[0],p[1]); if (!cells.has(k)) cells.set(k,[]);
-    cells.get(k).push([id,p]);
+    cells.get(k).push([id,p,(b[0]-a[0])/len,(b[1]-a[1])/len]);
   }));
-  return (x,z,id) => {
+  const near = (x,z,id,test) => {
     for (let i=-1;i<=1;i++) for (let j=-1;j<=1;j++) {
-      for (const [other,p] of cells.get(key(x+i*6,z+j*6)) || []) {
-        if (other!==id && (p[0]-x)**2+(p[1]-z)**2<2.7) return true;
+      for (const entry of cells.get(key(x+i*6,z+j*6)) || []) {
+        if (entry[0]!==id && (entry[1][0]-x)**2+(entry[1][1]-z)**2<2.7 && test(entry)) return true;
       }
     }
     return false;
   };
+  return {
+    // Another lane runs alongside this edge, so the line between them is a lane divider.
+    beside: (x,z,id) => near(x,z,id,()=>true),
+    // Another lane crosses or peels away here, which only happens inside a junction.
+    crossing: (x,z,id,dx,dz) => near(x,z,id,entry=>Math.abs(entry[2]*dx+entry[3]*dz)<.975)
+  };
 }
-function surfaceGeometry(lines, halfWidth, elevation = 0, edges = null) {
-  const xyz=[],uv=[],inside=[],indices=[];
-  lines.forEach((line,id) => {
+// A ribbon along each lane centre. `reach` continues every lane past both ends so
+// neighbouring segments overlap instead of leaving a seam. Markings stop inside junctions.
+function surfaceGeometry(lines, halfWidth, elevation = 0, index = null, reach = 0) {
+  const xyz=[],uv=[],inside=[],calm=[],indices=[];
+  lines.forEach((source,id) => {
+    const heading=(i)=>{
+      const a=source[Math.max(0,i-1)], b=source[Math.min(source.length-1,i+1)];
+      const len=Math.hypot(b[0]-a[0],b[1]-a[1])||1;
+      return [(b[0]-a[0])/len,(b[1]-a[1])/len];
+    };
+    let junction=source.map(()=>0);
+    if(index){
+      const hit=source.map((p,i)=>index.crossing(p[0],p[1],id,...heading(i)));
+      junction=source.map((_,i)=>hit.slice(Math.max(0,i-3),i+4).some(Boolean)?1:0);
+    }
+    let line=source;
+    if(reach>0){
+      const [sx,sz]=heading(0), [ex,ez]=heading(source.length-1), first=source[0], last=source[source.length-1];
+      line=[[first[0]-sx*reach,first[1]-sz*reach,first[2]],...source,[last[0]+ex*reach,last[1]+ez*reach,last[2]]];
+      junction=[1,...junction,1];
+    }
     const offset=xyz.length/3;
     let s=0;
     line.forEach(([x,z,y],i) => {
@@ -87,7 +143,8 @@ function surfaceGeometry(lines, halfWidth, elevation = 0, edges = null) {
       for(const sign of [-1,1]) {
         xyz.push(x+sign*halfWidth*nx, y+elevation,z+sign*halfWidth*nz);
         uv.push(sign,s);
-        inside.push(edges?.(x+sign*4*nx,z+sign*4*nz,id)?1:0);
+        inside.push(index?.beside(x+sign*4*nx,z+sign*4*nz,id)?1:0);
+        calm.push(junction[i]);
       }
       if(i) {const k=offset+i*2;indices.push(k-2,k-1,k,k,k-1,k+1);}
     });
@@ -96,39 +153,41 @@ function surfaceGeometry(lines, halfWidth, elevation = 0, edges = null) {
   geo.setAttribute('position',new T.Float32BufferAttribute(xyz,3));
   geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));
   geo.setAttribute('inner',new T.Float32BufferAttribute(inside,1));
+  geo.setAttribute('calm',new T.Float32BufferAttribute(calm,1));
   geo.setIndex(indices);
   return geo;
 }
 const ribbonVertex = `
-attribute float inner;
-varying vec2 vLane; varying vec3 vWorld; varying float vInner;
+attribute float inner, calm;
+varying vec2 vLane; varying vec3 vWorld; varying float vInner, vCalm;
 void main(){
-  vLane=uv; vInner=inner;
+  vLane=uv; vInner=inner; vCalm=calm;
   vec4 p=modelMatrix*vec4(position,1.); vWorld=p.xyz;
   gl_Position=projectionMatrix*viewMatrix*p;
 }`;
-function streetMaterial(sky) {
+function streetMaterial(tones) {
   return new T.ShaderMaterial({
-    uniforms:{uSky:{value:sky}},side:T.DoubleSide,vertexShader:ribbonVertex,
-    fragmentShader:`uniform vec3 uSky; varying vec2 vLane; varying vec3 vWorld; varying float vInner;
+    uniforms:{uSky:{value:tones.sky}, uEdge:{value:tones.roadEdge}, uMid:{value:tones.roadMid}, uMark:{value:tones.marking}},
+    side:T.DoubleSide,vertexShader:ribbonVertex,
+    fragmentShader:`uniform vec3 uSky,uEdge,uMid,uMark; varying vec2 vLane; varying vec3 vWorld; varying float vInner,vCalm;
       ${haze}
       void main(){
         float a=abs(vLane.x), aa=min(.12,fwidth(a)*.7+.001);
-        float lane=smoothstep(.967-aa,.967+aa,a);
+        float lane=smoothstep(.96-aa,.96+aa,a);
         float d=mod(vLane.y,7.);
         float dash=smoothstep(.05,.25,d)*(1.-smoothstep(2.65,2.85,d));
-        float marking=mix(.52,dash,step(.58,vInner))*lane;
-        vec3 base=mix(vec3(.041,.058,.077),vec3(.052,.073,.092),1.-a);
-        vec3 color=mix(base,vec3(.32,.43,.49),marking*.85);
+        float marking=mix(.6,dash,step(.58,vInner))*lane*(1.-smoothstep(.05,.7,vCalm));
+        vec3 base=mix(uEdge,uMid,1.-a);
+        vec3 color=mix(base,uMark,marking*.85);
         gl_FragColor=vec4(aerial(color,vWorld),1.);${endColor}
       }`
   });
 }
-function pathMaterial(sky) {
+function pathMaterial(tones) {
   return new T.ShaderMaterial({
-    uniforms:{uSky:{value:sky},uStation:{value:0},uOverview:{value:0}},
+    uniforms:{uSky:{value:tones.sky},uStation:{value:0},uOverview:{value:0},uFar:{value:tones.pathFar},uNear:{value:tones.pathNear}},
     transparent:true,side:T.DoubleSide,depthWrite:false,vertexShader:ribbonVertex,
-    fragmentShader:`uniform vec3 uSky; uniform float uStation,uOverview;
+    fragmentShader:`uniform vec3 uSky,uFar,uNear; uniform float uStation,uOverview;
       varying vec2 vLane; varying vec3 vWorld;
       ${haze}
       void main() {
@@ -143,20 +202,21 @@ function pathMaterial(sky) {
         float ahead=smoothstep(-4.,-.4,along)*(1.-smoothstep(65.,108.,along));
         float energy=mix(ahead*(.18+.82*nearEgo),.32+.68*exp(-abs(along)/42.),uOverview);
         float opacity=energy*mask*(.52+.29*edge+.17*chevron);
-        vec3 color=mix(vec3(.028,.38,.42),vec3(.24,.84,.76),.17*nearEgo+max(edge,chevron)*.81);
+        vec3 color=mix(uFar,uNear,.17*nearEgo+max(edge,chevron)*.81);
         gl_FragColor=vec4(aerial(color,vWorld),opacity);${endColor}
       }`
   });
 }
-function architecture(boxes, sky, egoPosition) {
+function architecture(boxes, tones, egoPosition) {
   const material=new T.ShaderMaterial({
-    uniforms:{uSky:{value:sky},uEgo:{value:egoPosition},uOverview:{value:0}},
+    uniforms:{uSky:{value:tones.sky},uEgo:{value:egoPosition},uOverview:{value:0},
+      uDark:{value:tones.wallDark},uLit:{value:tones.wallLit},uRim:{value:tones.wallEdge}},
     transparent:true,
     vertexShader:`varying vec3 vWorld,vLocal,vNormal;
       void main(){ vLocal=position;vec4 p=instanceMatrix*vec4(position,1.);
         vNormal=normalize(mat3(instanceMatrix)*normal);
         vWorld=p.xyz; gl_Position=projectionMatrix*viewMatrix*p; }`,
-    fragmentShader:`uniform vec3 uSky,uEgo; uniform float uOverview; varying vec3 vWorld,vLocal,vNormal;
+    fragmentShader:`uniform vec3 uSky,uEgo,uDark,uLit,uRim; uniform float uOverview; varying vec3 vWorld,vLocal,vNormal;
       ${haze}
       void main(){
         vec3 ax=abs(vLocal);
@@ -165,7 +225,7 @@ function architecture(boxes, sky, egoPosition) {
         float e=vNormal.y>.6?sideEdge:min(.5-ax.y,sideDist);
         float edge=1.-smoothstep(.001, .007+fwidth(e),e);
         float light=clamp(.4+dot(vNormal,normalize(vec3(-.4,1.,-.25)))*.5,0.,1.);
-        vec3 c=mix(vec3(.023,.037,.052),vec3(.066,.092,.112),light)+edge*vec3(.014,.029,.037);
+        vec3 c=mix(uDark,uLit,light)+edge*uRim;
         float fade=mix(smoothstep(8.,20.,distance(vWorld.xz,uEgo.xz)),1.,uOverview);
         if(fade<.015) discard;
         gl_FragColor=vec4(aerial(c,vWorld),fade);${endColor}
@@ -183,13 +243,13 @@ function architecture(boxes, sky, egoPosition) {
 
 function projectedPatch(color, solid = false) {
   return new T.ShaderMaterial({
-    uniforms:{uColor:{value:C(color)},uPulse:{value:0},uFresh:{value:1}},
+    uniforms:{uColor:{value:color?.isColor?color:C(color)},uPulse:{value:0},uFresh:{value:1},uStrength:{value:.57}},
     transparent:true, depthWrite:false,side:T.DoubleSide,
     vertexShader:`varying vec2 vUv;void main(){vUv=uv*2.-1.;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-    fragmentShader:`uniform vec3 uColor;uniform float uPulse,uFresh;varying vec2 vUv;
+    fragmentShader:`uniform vec3 uColor;uniform float uPulse,uFresh,uStrength;varying vec2 vUv;
       void main() {
         float d=length(vUv);
-        ${solid ? 'float opacity=(1.-smoothstep(.38,1.,d))*.57;' : `
+        ${solid ? 'float opacity=(1.-smoothstep(.38,1.,d))*uStrength;' : `
           float border=abs(length(max(abs(vUv)-vec2(.50,.34),0.))-.22);
           float footprint=(1.-smoothstep(.013,.036+fwidth(border),border))*.54;
           float ring=(1.-smoothstep(.015,.045,abs(d-(.65+.32*uPulse))))*(1.-uPulse)*step(.00001,uPulse);
@@ -203,89 +263,11 @@ function patch(parent,length,width,mat,height) {
   p.rotation.x=-Math.PI/2;
   return p;
 }
-function shapedCabin() {
-  // Cross-sections taper the nose, rake the windscreen and round the roof shoulders.
-  const positions=[], indices=[];
-  for (const [x,bottom,top,span] of [[-.46,.39,.47,.36],[-.30,.41,.77,.405],[-.19,.42,.91,.39],
-      [.10,.42,.92,.39],[.31,.42,.63,.406],[.43,.40,.48,.34]]) {
-    for (const [z,y] of [[-span,bottom],[-span*.94,top-.09],[-span*.74,top],[span*.74,top],
-        [span*.94,top-.09],[span,bottom]]) positions.push(x,y,z);
-  }
-  for(let i=0;i<5;i++)for(let j=0;j<6;j++) {
-    const a=i*6+j,b=i*6+(j+1)%6;
-    indices.push(a,b,a+6,b,b+6,a+6);
-  }
-  for(const off of [0,30])for(let j=1;j<5;j++)indices.push(off,off+j,off+j+1);
-  const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(positions,3));geo.setIndex(indices);
-  geo.computeVertexNormals();
-  return geo;
-}
-const colors = {
-  car:0x9caefa, bus:0x9caefa, truck:0x9caefa, motorcycle:0xe3bc83,
-  bicycle:0xe3bc83, person:0xff9d9b, unknown:0x9cafbf
-};
-function segment(parent,start,end,radius,mat) {
-  const a=V(...start),b=V(...end),delta=b.clone().sub(a);
-  const m=add(parent,new T.CylinderGeometry(radius,radius*.85,delta.length(),8),mat);
-  m.position.copy(a).add(b).multiplyScalar(.5);
-  m.quaternion.setFromUnitVectors(V(0,1,0),delta.normalize());
-}
-function form(label) {
-  const root=new T.Group(),color=colors[label]||colors.unknown;
-  const body=paint(color,{roughness:.4,emissive:color,emissiveIntensity:.14});
-  const glass=paint(0x485a8c,{metalness:.32,roughness:.31,side:T.DoubleSide});
-  const light=ink(0xcdd6ff), dark=paint(0x28364c);
-  const rounded=(w,h,d,r,mat,x,y,z)=>add(root,new T.RoundedBoxGeometry(w,h,d,2,r),mat,x,y,z);
-  if(label==='person') {
-    // Symbolic pedestrian, mapped to the estimated track envelope.
-    const head=add(root,new T.SphereGeometry(.17,16,12),body,.03,.885,0);
-    head.scale.set(1.16,.68,1.13);
-    rounded(.51,.34,.72,.12,body,0,.58,0);
-    for(const sign of [-1,1]){
-      segment(root,[0,.46,sign*.155],[sign*.065,.08,sign*.20],.105,body);
-      segment(root,[0,.698,sign*.31],[-.022,.427,sign*.43],.069,body);
-    }
-  } else if(label==='bicycle'||label==='motorcycle') {
-    for(const sign of [-1,1]){
-      const wheel=add(root,new T.CylinderGeometry(.15,.15,.11,20),dark,sign*.34,.17,0);
-      wheel.rotation.x=Math.PI/2;
-      segment(root,[sign*.34,.19,0],[0,.43,0],.045,body);
-    }
-    rounded(.48,.22,.46,.07,body,0,.39,0);
-    segment(root,[0,.44,0],[-.055,.73,0],.115,body);
-    add(root,new T.SphereGeometry(.124,12,10),body,.008,.86,0);
-    segment(root,[0,.68,0],[.27,.53,0],.055,body);
-  } else if(label==='car'||label==='truck'||label==='bus') {
-    rounded(.99,.36,.98,.08,body,0,.34,0);
-    if(label==='car') {
-      add(root,shapedCabin(),glass);
-      rounded(.32,.057,.61,.027,body,-.045,.918,0);
-    } else if(label==='truck') {
-      rounded(.65,.63,.92,.045,body,-.165,.665,0);
-      rounded(.30,.40,.90,.055,glass,.31,.575,0);
-    } else {
-      rounded(.96,.63,.94,.053,body,0,.655,0);
-      rounded(.92,.31,.95,.045,glass,.006,.71,0);
-    }
-    for(const x of [-.302,.305])for(const z of [-.467,.467]){
-      const wheel=add(root,new T.CylinderGeometry(.115,.115,.081,14),dark,x,.185,z);
-      wheel.rotation.x=Math.PI/2;
-      wheel.scale.x=.89;
-      wheel.scale.z=1.38;
-    }
-    for(const sign of [-1,1]){
-      rounded(.018,.045,.17,.008,light,.492,.414,sign*.305);
-      rounded(.018,.045,.15,.007,ink(0xc0a7c6),-.491,.412,sign*.32);
-    }
-  } else rounded(.97,.97,.97,.075,body,0,.5,0);
-  return root;
-}
-
-function cloud(radar) {
+function cloud(radar, color) {
   const geometry=new T.BufferGeometry();
   const material=new T.ShaderMaterial({
     transparent:true,depthWrite:false,
-    uniforms:{uPixel:{value:1},uColor:{value:C(radar?0xe6b979:0x8cced2)}},
+    uniforms:{uPixel:{value:1},uColor:{value:color}},
     vertexShader:`uniform float uPixel;void main(){
       vec4 view=modelViewMatrix*vec4(position,1.);
       gl_Position=projectionMatrix*view;
@@ -361,17 +343,15 @@ function styleConfidence(track, confidence, coasting) {
   const c=finite(confidence)?clamp(confidence,0,1):0;
   const x=clamp((c-.16)/.66,0,1);
   const opacity=coasting ? .14+.29*c : .23+.77*x*x*(3-2*x);
-  for(const material of track.materials){
-    const transparent=opacity<.995;
-    if(material.transparent!==transparent){
-      material.transparent=transparent;
-      material.depthWrite=!transparent;
-      material.needsUpdate=true;
-    }
-    material.opacity=opacity;
-  }
+  for(const material of track.materials)material.opacity=opacity;
   track.foot.material.uniforms.uFresh.value=coasting ? .18 : c;
 }
+
+// How quickly the drawn shape follows the tracker. Position and heading are measured or
+// estimated afresh every frame and arrive noisy; the drawing eases toward them.
+const SHAPE_SECONDS=.55, HEADING_SECONDS=.4, TRACK_ALPHA=.5, TRACK_BETA=.14, CAMERA_SECONDS=.32;
+const ease=(seconds,over)=>1-Math.exp(-Math.max(0,seconds)/over);
+const turn=(from,to)=>((to-from+540)%360)-180;   // shortest signed difference in degrees
 
 export class PerceptionScene {
   constructor(canvas) {
@@ -379,8 +359,8 @@ export class PerceptionScene {
     this.renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'low-power'});
     this.renderer.toneMapping=T.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure=1.04;
-    const custom=getComputedStyle(canvas).getPropertyValue('--perception-sky').trim();
-    this.sky=C(custom||'#192633');
+    this.tones=Object.fromEntries(TONES.map(name=>[name,new T.Color()]));
+    this.sky=this.tones.sky;
     this.scene=new T.Scene();
     this.scene.background=this.sky;
     this.scene.fog=new T.Fog(this.sky,48,210);
@@ -396,23 +376,25 @@ export class PerceptionScene {
     const key=new T.DirectionalLight(0xfff5dd,2.15);
     key.position.set(-20,40,-22);this.scene.add(key);
     const rim=new T.DirectionalLight(0xacd7ed,1.05);rim.position.set(17,14,20);this.scene.add(rim);
-    this.floor=add(this.scene,new T.PlaneGeometry(6000,6000),floorMaterial(this.sky));
+    this.floor=add(this.scene,new T.PlaneGeometry(6000,6000),floorMaterial(this.tones));
     this.floor.rotation.x=-Math.PI/2;
     this.floor.position.y=-.10;
     this.ego.visible=false;
-    this.shadow=patch(this.ego,5.58,2.75,projectedPatch(0x061012,true),.029);
+    this.shadow=patch(this.ego,5.58,2.75,projectedPatch(this.tones.shadow,true),.029);
     this.returnGroup=new T.Group();this.ego.add(this.returnGroup);
-    this.lidar=cloud(false);this.radar=cloud(true);this.returnGroup.add(this.lidar,this.radar);
+    this.lidar=cloud(false,this.tones.lidar);this.radar=cloud(true,this.tones.radar);this.returnGroup.add(this.lidar,this.radar);
     this.trackGroup=new T.Group();this.scene.add(this.trackGroup);
     this.layers={returns:true,tracks:true,path:true};
-    this.tracks=new Map();this.templates=new Map();
+    this.tracks=new Map();
     this.resources=0;
-    this.view='follow';this.yaw=0;this.fromYaw=0;this.toYaw=0;
+    this.view='follow';this.yaw=0;this.fromYaw=0;this.toYaw=0;this.cameraYaw=0;
     this.from=V();this.to=V();this.at=V();
     this.target=V();this.offset=V();
     this.orbit=0;this.pitch=0;this.zoom=1;this.dirty=true;
     this.bindings=new AbortController();
     const opts={signal:this.bindings.signal};
+    this.setPalette(displayMode());
+    addEventListener('ado:display',()=>this.setPalette(displayMode()),opts);
     let drag=null;
     canvas.addEventListener('pointerdown',e=>{
       if(e.button!==0||!e.isPrimary)return;
@@ -438,20 +420,45 @@ export class PerceptionScene {
       this.raf=requestAnimationFrame(this.animate);
       const interpolating=this.duration>0 && now<this.started+this.duration+35;
       const pulsing=this.layers.tracks && now<this.lastPulse+680;
-      if(document.hidden||(!this.dirty&&!interpolating&&!pulsing))return;
+      const settling=this.view==='follow' && Math.abs(shortest(this.cameraYaw,this.yaw))>.0006;
+      if(document.hidden||(!this.dirty&&!interpolating&&!pulsing&&!settling))return;
       if(!this.dirty&&now-(this.lastDraw||0)<24)return;
-      this.sample(now);this.placeCamera();
+      this.sample(now);
+      // The camera turns with the vehicle after a short lag, so the scene does not swing with every steering input.
+      const elapsed=clamp((now-(this.lastDraw||now))/1000,0,.1);
+      this.cameraYaw=this.snapCamera?this.yaw:this.cameraYaw+shortest(this.cameraYaw,this.yaw)*ease(elapsed,CAMERA_SECONDS);
+      this.snapCamera=false;
+      this.placeCamera();
       this.renderer.render(this.scene,this.camera);
       this.lastDraw=now;this.dirty=false;
     };
     this.raf=requestAnimationFrame(this.animate);
   }
 
+  // Recolour the scene for the night or day display. Geometry, tracks and rules stay as they are.
+  setPalette(name) {
+    if(this.disposed)return;
+    const look=PALETTES[name]||PALETTES.night;
+    if(look===this.look)return;
+    this.look=look;
+    for(const key of TONES)tone(this.tones[key],look[key]);
+    const custom=name==='night'&&getComputedStyle(this.canvas).getPropertyValue('--perception-sky').trim();
+    if(custom)this.sky.set(custom);
+    this.scene.fog.color.copy(this.sky);
+    this.curbs?.color.copy(this.tones.curb);
+    this.renderer.toneMappingExposure=look.exposure;
+    this.shadow.material.uniforms.uStrength.value=look.shadowOpacity;
+    // Track shapes carry their own materials, so rebuild them from the current frame.
+    const frame=this.frame;
+    if(frame){this.clearTracks();this.frame=null;this.update(frame);}
+    this.dirty=true;
+  }
+
   async loadCar(url) {
     if(this.disposed)return;
     if(url===this.carURL&&this.car)return;
     const version=++this.resources;
-    if(this.car){release(this.car);this.car=null;}
+    if(this.car){release(this.car);this.car=null;this.brakeLamps=null;}
     this.carURL=null;this.dirty=true;
     const gltf=await new T.GLTFLoader().loadAsync(url);
     const car=gltf.scene;
@@ -459,21 +466,32 @@ export class PerceptionScene {
     const bounds=new T.Box3().setFromObject(car,true);
     if(bounds.isEmpty()){release(car);throw new Error('The vehicle model is empty.');}
     car.position.y-=bounds.min.y;
+    // The model names its rear lamp material. Its glow follows the recorded brake input.
+    const lamps=new Set();
+    car.traverse(part=>{for(const material of [].concat(part.material||[]))if(/rear lamp/i.test(material.name))lamps.add(material);});
+    for(const lamp of lamps)lamp.emissive.setRGB(1,.06,.045);
+    this.brakeLamps=[...lamps];
     this.carURL=url;this.car=car;
-    this.ego.add(car);this.dirty=true;
+    this.ego.add(car);this.showBrake(this.frame?.brake);this.dirty=true;
+  }
+  showBrake(brake) {
+    const level=finite(brake)?clamp(brake,0,1):0;
+    for(const lamp of this.brakeLamps||[])lamp.emissiveIntensity=.3+3.2*level;
   }
 
   setMap(town) {
     if(this.disposed)return;
-    if(this.map){release(this.map);this.map=null;this.buildings=null;}
+    if(this.map){release(this.map);this.map=null;this.buildings=null;this.curbs=null;}
     this.elevation=new Map();
     this.mapKey=town?.producer?.map;
     const lanes=(town?.roads||[]).map(l=>(Array.isArray(l)?l:l.points||[]).filter(p=>coord(p,3))).filter(l=>l.length>1);
     if(lanes.length){
       this.map=new T.Group();
-      const streets=new T.Mesh(surfaceGeometry(lanes,2.02,.008,roadIndex(lanes)),streetMaterial(this.sky));
-      const sidewalks=ink(0x3d4d58);sidewalks.side=T.DoubleSide;
-      const curbs=new T.Mesh(surfaceGeometry(lanes,2.65,-.028),sidewalks);
+      const streets=new T.Mesh(surfaceGeometry(lanes,2.02,.008,roadIndex(lanes),2.4),streetMaterial(this.tones));
+      const sidewalks=ink(this.tones.curb);sidewalks.side=T.DoubleSide;
+      this.curbs=sidewalks;
+      // A sidewalk band beside every lane; under the street surface it also closes junction corners.
+      const curbs=new T.Mesh(surfaceGeometry(lanes,3.75,-.028,null,2.4),sidewalks);
       this.map.add(curbs,streets);
       for(const lane of lanes)for(const p of lane){
         const key=Math.floor(p[0]/8)+','+Math.floor(p[1]/8);
@@ -482,7 +500,7 @@ export class PerceptionScene {
       }
       const boxes=(town.buildings||[]).filter(b=>coord(b.center,3)&&coord(b.extent,3)&&b.extent.every(v=>v>0));
       if(boxes.length){
-        this.buildings=architecture(boxes,this.sky,this.at);
+        this.buildings=architecture(boxes,this.tones,this.at);
         this.map.add(this.buildings);
       }
       this.map.visible=Boolean(this.localized);
@@ -525,7 +543,7 @@ export class PerceptionScene {
       this.stations.push([p.x,p.z,s]);
     });
     const lines=samples.map(p=>[p.x,p.z,p.y]);
-    this.path=new T.Mesh(surfaceGeometry([lines],1.22,.051),pathMaterial(this.sky));
+    this.path=new T.Mesh(surfaceGeometry([lines],1.22,.051),pathMaterial(this.tones));
     this.path.renderOrder=1;this.path.visible=this.layers.path;
     this.scene.add(this.path);
     this.path.material.uniforms.uOverview.value=Number(this.view==='overview');
@@ -547,29 +565,23 @@ export class PerceptionScene {
     const track=this.tracks.get(id);
     if(!track)return;
     track.group.removeFromParent();release(track.foot);release(track.trail);
-    for(const material of track.materials)material.dispose();
+    for(const material of track.materials)material.dispose();   // the shape's geometry is shared
     this.tracks.delete(id);
   }
   clearTracks(){
     for(const id of this.tracks.keys())this.dropTrack(id);
   }
   makeTrack(id,label) {
-    if(!this.templates.has(label))this.templates.set(label,form(label));
-    const group=new T.Group(), body=this.templates.get(label).clone(true);
-    // Each track owns its opacity; geometry stays shared between matching classes.
-    const copies=new Map();
-    body.traverse(part=>{
-      if(!part.isMesh)return;
-      const base=part.material;
-      if(!copies.has(base))copies.set(base,base.clone());
-      part.material=copies.get(base);
-    });
-    group.add(body);
-    const color=colors[label]||colors.unknown;
+    const group=new T.Group(), shape=buildRoadUser(label,this.look);
+    group.add(shape.group);
+    const color=this.look[TRACK_TONE[label]];
     const foot=patch(group,1.30,1.55,projectedPatch(color),.034);
+    foot.renderOrder=1;
     const trail=makeTrail(color);
+    trail.renderOrder=1;
     this.trackGroup.add(group,trail);
-    const track={id,label,group,foot,trail,materials:[...copies.values()],history:[],from:V(),to:V(),fromAngle:0,toAngle:0,pulse:-Infinity};
+    const track={id,label,group,foot,trail,materials:shape.materials,history:[],from:V(),to:V(),fromAngle:0,toAngle:0,pulse:-Infinity,
+      size:V(),fromSize:V(),toSize:V(),heading:0,against:0,velocity:{x:0,z:0}};
     this.tracks.set(id,track);return track;
   }
 
@@ -601,17 +613,18 @@ export class PerceptionScene {
     if(this.map)this.map.visible=located;
     this.from.copy(this.at);this.fromYaw=this.yaw;
     this.to.set(x,h,z);this.toYaw=-degrees*rad;
-    if(reset){this.from.copy(this.to);this.fromYaw=this.toYaw;}
+    if(reset){this.from.copy(this.to);this.fromYaw=this.toYaw;this.snapCamera=true;}
     this.started=now;this.duration=reset?0:clamp(dt*1000,25,160);
     this.setPath(located?m.path:null);
     this.stationFrom=reset?this.station(x,z):(this.path?.material.uniforms.uStation.value||0);
     this.stationTo=this.station(x,z);
+    this.showBrake(frame.brake);
     fillReturns(this.lidar,frame.lidar,.085);fillReturns(this.radar,frame.radar,.105);
     const seen=new Set(),cos=Math.cos(degrees*rad),sin=Math.sin(degrees*rad);
     for(const sample of Array.isArray(frame.tracks)?frame.tracks:[]){
       if(sample?.id==null||![sample.x,sample.y,sample.z,sample.length,sample.width,sample.height].every(finite)||
          sample.length<=0||sample.width<=0||sample.height<=0)continue;
-      const label=Object.hasOwn(colors,sample.label)?sample.label:'unknown';
+      const label=Object.hasOwn(TRACK_TONE,sample.label)?sample.label:'unknown';
       const id=sample.id;
       if(seen.has(id))continue;
       const coast=sample.coasting===true;
@@ -623,14 +636,43 @@ export class PerceptionScene {
       seen.add(id);
       if(this.tracks.get(id)?.label!==label)this.dropTrack(id);
       const fresh=!this.tracks.has(id),track=this.tracks.get(id)||this.makeTrack(id,label);
-      const tx=x+cos*sample.x-sin*sample.y,tz=z+sin*sample.x+cos*sample.y;
+      const mx=x+cos*sample.x-sin*sample.y,mz=z+sin*sample.x+cos*sample.y;
+      const step=reset||fresh?0:clamp(dt,0,.5);
+      // Position: an alpha-beta filter keeps up with a moving object and sheds frame-to-frame jitter.
+      let tx=mx,tz=mz;
+      if(!fresh&&step>0){
+        const px=track.to.x+track.velocity.x*step,pz=track.to.z+track.velocity.z*step;
+        const rx=mx-px,rz=mz-pz;
+        if(Math.hypot(rx,rz)<3.5){
+          tx=px+TRACK_ALPHA*rx;tz=pz+TRACK_ALPHA*rz;
+          track.velocity.x+=TRACK_BETA*rx/step;track.velocity.z+=TRACK_BETA*rz/step;
+        }else track.velocity.x=track.velocity.z=0;
+      }else track.velocity.x=track.velocity.z=0;
+      // Heading is an estimate with a front/back ambiguity. Keep the facing the shape already has.
+      // Swap ends only after the object has plainly travelled the other way for half a second.
+      let facing=degrees+(finite(sample.heading)?sample.heading:0);
+      if(!fresh&&Math.abs(turn(track.heading,facing))>90)facing+=180;
+      const travelling=Math.hypot(track.velocity.x,track.velocity.z);
+      const against=!fresh&&travelling>1.5&&sample.speed_mps>1.5&&
+        Math.abs(turn(Math.atan2(track.velocity.z,track.velocity.x)/rad,track.heading))>110;
+      track.against=against?track.against+1:0;
+      const swap=track.against>=5;
+      if(swap){track.heading+=180;facing+=180;track.against=0;}
+      track.heading=fresh?facing:track.heading+turn(track.heading,facing)*ease(step,HEADING_SECONDS);
       // Track Z is the estimated centre. Anchor the shape at its measured base.
       const base=h+sample.z-sample.height/2;
       track.from.copy(track.group.position);track.to.set(tx,base,tz);
       track.fromAngle=track.group.rotation.y;
-      track.toAngle=-(degrees+(finite(sample.heading)?sample.heading:0))*rad;
-      if(fresh){track.from.copy(track.to);track.fromAngle=track.toAngle;}
-      track.group.scale.set(sample.length,sample.height,sample.width);
+      track.toAngle=-track.heading*rad;
+      // Length, width and height are estimates too; ease them so the shape does not pump.
+      track.fromSize.copy(track.group.scale);
+      if(fresh)track.size.set(sample.length,sample.height,sample.width);
+      else track.size.lerp(V(sample.length,sample.height,sample.width),ease(step,SHAPE_SECONDS));
+      // The symbol stays within sizes its class can have; the ground outline keeps the estimate itself.
+      plausibleSize(label,track.size,track.toSize);
+      track.foot.scale.set(track.size.x/track.toSize.x,track.size.z/track.toSize.z,1);
+      if(fresh||swap)track.fromAngle=track.toAngle;
+      if(fresh){track.from.copy(track.to);track.fromSize.copy(track.toSize);track.group.scale.copy(track.toSize);}
       styleConfidence(track,sample.confidence,coast);
       if(!coast&&(fresh||track.coast)&&now-track.pulse>680){track.pulse=now;this.lastPulse=now;}
       track.coast=coast;
@@ -658,6 +700,7 @@ export class PerceptionScene {
     if(this.path)this.path.material.uniforms.uStation.value=this.stationFrom+(this.stationTo-this.stationFrom)*t;
     for(const tr of this.tracks.values()){
       tr.group.position.lerpVectors(tr.from,tr.to,t);
+      tr.group.scale.lerpVectors(tr.fromSize,tr.toSize,t);
       tr.group.rotation.y=tr.fromAngle+shortest(tr.fromAngle,tr.toAngle)*t;
       const age=(now-tr.pulse)/640;
       tr.foot.material.uniforms.uPulse.value=age>0&&age<1?age:0;
@@ -675,7 +718,7 @@ export class PerceptionScene {
       Math.sin(bearing)*Math.cos(vertical)*distance);
     if(!overview){
       this.target.applyAxisAngle(PerceptionScene.up,this.yaw);
-      this.offset.applyAxisAngle(PerceptionScene.up,this.yaw);
+      this.offset.applyAxisAngle(PerceptionScene.up,this.cameraYaw);
     }
     this.target.add(this.at);
     this.camera.position.copy(this.target).add(this.offset);
@@ -683,7 +726,7 @@ export class PerceptionScene {
   }
   setView(view){
     if(view!=='follow'&&view!=='overview')return;
-    this.view=view;this.orbit=this.pitch=0;this.zoom=1;
+    this.view=view;this.orbit=this.pitch=0;this.zoom=1;this.snapCamera=true;
     if(this.path)this.path.material.uniforms.uOverview.value=Number(view==='overview');
     if(this.buildings)this.buildings.material.uniforms.uOverview.value=Number(view==='overview');
     this.dirty=true;
@@ -716,9 +759,7 @@ export class PerceptionScene {
     this.disposed=true;this.resources++;
     cancelAnimationFrame(this.raf);this.bindings.abort();this.observer?.disconnect();
     this.clearTracks();
-    for(const template of this.templates.values())release(template);
-    this.templates.clear();
-    release(this.scene);this.environment.dispose();this.renderer.dispose();
+    release(this.scene);disposeRoadUserGeometry();this.environment.dispose();this.renderer.dispose();
   }
 }
 PerceptionScene.up=V(0,1,0);

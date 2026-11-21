@@ -3,34 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#121a22">
+  <meta name="theme-color" content="#090e16">
+  <meta name="color-scheme" content="dark light">
   <title>Meridian robotaxi · ADO</title>
+  <link rel="stylesheet" href="./display.css">
   <link rel="stylesheet" href="console.css">
   <link rel="stylesheet" href="vehicle.css">
+  <script src="./display.js"></script>
   <script type="module" src="vendor/model-viewer/model-viewer.min.js"></script>
 </head>
 <body>
-  <header class="masthead"><div class="shell vehicle-nav">
-    <a href="./">ADO</a><a href="./benchmarks.html">Driving trials</a>
-  </div></header>
-  <main class="shell">
-    <section class="intro"><div><div class="eyebrow">Blender vehicle design</div><h1 id="model-name">Meridian</h1></div>
-      <div class="source-picker"><label for="asset">Vehicle</label>
-      <select id="asset"><option value="meridian">Meridian research sedan</option><option value="ipace">Waymo Jaguar I-PACE</option></select></div></section>
-    <model-viewer id="car" camera-controls touch-action="pan-y" interaction-prompt="none"
-      shadow-intensity="0.85" environment-image="neutral" exposure="1.05"
-      src="./vehicle-assets/meridian.glb" poster="./vehicle-assets/meridian-studio.png"
-      camera-orbit="54deg 72deg 8.6m" camera-target="0m 0.95m 0m" field-of-view="31deg" min-camera-orbit="auto 4deg 2.9m"
-      max-camera-orbit="auto 91deg 11m" alt="White four-door Meridian robotaxi with roof lidar and three camera housings">
-      <img id="poster" src="./vehicle-assets/meridian-studio.png" slot="poster" alt="Vehicle studio render">
-    </model-viewer>
-    <div class="viewer-tools"><span>Drag to orbit · Scroll or pinch to zoom</span>
-      <button id="home" type="button">Reset view</button></div>
-    <article class="asset-notes">
-      <div><h2>Vehicle design</h2><p id="description"></p><p>The 3D city observer places either exterior at the simulation’s measured pose. CARLA runs the vehicle physics on a Lincoln chassis with a rigid sensor assembly.</p></div>
-      <div><h2>Files</h2><p><a id="files" href="https://github.com/yafi-s/ADO/tree/main/assets/robotaxi/vehicle">Blender source and exports</a><br><a id="glb" href="./vehicle-assets/meridian.glb" download>Download the GLB</a><br><a href="https://github.com/yafi-s/ADO/blob/main/assets/robotaxi/simulator-comparison.jpg">View the native CARLA vehicle</a><br><a href="./city.html">Open the 3D city observer</a></p></div>
-    </article>
-  </main>
+  <div class="display">
+    <header class="statusbar">
+      <div class="brand"><a href="./" aria-label="ADO home"><b>ADO</b></a></div>
+      <span class="app-name">Vehicle</span>
+      <div class="status-end">
+        <button class="icon-button display-toggle" id="display-toggle" type="button" aria-keyshortcuts="D">
+          <svg class="i-night" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.2A8 8 0 0 1 9.8 4a8 8 0 1 0 10.2 10.2z"/></svg>
+          <svg class="i-day" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg>
+        </button>
+        <time class="clock" id="display-clock"></time>
+      </div>
+    </header>
+    <main class="surface">
+      <div class="page">
+        <section class="intro"><div><div class="eyebrow">Blender vehicle design</div><h1 id="model-name">Meridian</h1></div>
+          <div class="source-picker"><label for="asset">Vehicle</label>
+          <select id="asset"><option value="meridian">Meridian research sedan</option><option value="ipace">Waymo Jaguar I-PACE</option></select></div></section>
+        <model-viewer id="car" camera-controls touch-action="pan-y" interaction-prompt="none"
+          shadow-intensity="0.85" environment-image="neutral" exposure="1.05"
+          src="./vehicle-assets/meridian.glb" poster="./vehicle-assets/meridian-studio.png"
+          camera-orbit="54deg 72deg 8.6m" camera-target="0m 0.95m 0m" field-of-view="31deg" min-camera-orbit="auto 4deg 2.9m"
+          max-camera-orbit="auto 91deg 11m" alt="White four-door Meridian robotaxi with roof lidar and three camera housings">
+          <img id="poster" src="./vehicle-assets/meridian-studio.png" slot="poster" alt="Vehicle studio render">
+        </model-viewer>
+        <div class="viewer-tools"><span>Drag to orbit · Scroll or pinch to zoom</span>
+          <button id="home" type="button">Reset view</button></div>
+        <article class="asset-notes">
+          <div><h2>Vehicle design</h2><p id="description"></p><p>The 3D city observer places either exterior at the simulation’s measured pose. CARLA runs the vehicle physics on a Lincoln chassis with a rigid sensor assembly.</p></div>
+          <div><h2>Files</h2><p><a id="files" href="https://github.com/yafi-s/ADO/tree/main/assets/robotaxi/vehicle">Blender source and exports</a><br><a id="glb" href="./vehicle-assets/meridian.glb" download>Download the GLB</a><br><a href="https://github.com/yafi-s/ADO/blob/main/assets/robotaxi/simulator-comparison.jpg">View the native CARLA vehicle</a><br><a href="./city.html">Open the 3D city observer</a></p></div>
+        </article>
+      </div>
+    </main>
+    <footer class="dockbar">
+      <nav class="dock" aria-label="ADO pages">
+        <a data-app="drive" href="./">Drive</a>
+        <a data-app="console" href="./drive.html">Console</a>
+        <a data-app="map" href="./city.html">Map</a>
+        <a data-app="vehicle" href="./vehicle.html?model=ipace" aria-current="page">Vehicle</a>
+        <a data-app="results" href="./benchmarks.html">Results</a>
+        <a data-app="builds" href="./builds.html">Builds</a>
+      </nav>
+    </footer>
+  </div>
   <script>
     const car = document.querySelector('#car');
     const assets = {
