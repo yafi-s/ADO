@@ -72,6 +72,14 @@ class PassingCorridor:
         source = self.source[0,:2] + stations[:,None]*self.forward
         return source - (self.width*alpha)[:,None]*self.right
 
+    def planned_centers(self, stations, commit):
+        """World-space preview for a recorded or active lateral commitment."""
+        alpha = np.zeros_like(stations)
+        if commit is not None:
+            t = np.clip((stations-commit)/24., 0., 1.)
+            alpha = t**3*(10.-15.*t+6.*t**2)
+        return self.lane_points(stations, alpha)
+
 
 def _nearest(distances):
     """Reject isolated single-beam outliers, retain a measured surface distance."""
@@ -166,11 +174,7 @@ class TacticalPass:
         stations = station+np.asarray(lookaheads)
         # Use the learned trajectory choice as long as this road segment is in range.
         # After completing a pass the original route and selected lane coincide.
-        alpha = np.zeros_like(stations)
-        if self.commit is not None:
-            t = np.clip((stations-self.commit)/24.,0.,1.)
-            alpha = t**3*(10.-15.*t+6.*t**2)
-        goals = self.corridor.lane_points(stations, alpha) - xy
+        goals = self.corridor.planned_centers(stations, self.commit) - xy
         right = np.array((-heading[1], heading[0]))
         local = np.column_stack((goals @ heading, goals @ right))
         if self.commit is not None:

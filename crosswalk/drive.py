@@ -284,6 +284,13 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 observer_map = _observer_map(scene, display_path)
                 if surround_perception is not None:
                     tracks = obs["surround_tracks"]
+                    if observer is not None:
+                        # These are the exact local navigation targets handed to the model on this tick.
+                        yaw = math.radians(pose.rotation.yaw)
+                        rotation = np.asarray([[math.cos(yaw), math.sin(yaw)], [-math.sin(yaw), math.cos(yaw)]])
+                        origin = np.asarray([pose.location.x, pose.location.y])
+                        selected = np.asarray(points).reshape(-1, 2) @ rotation + origin
+                        measured["plan_xy"] = np.vstack((origin, selected)).round(3).tolist()
                     signal_reads = signals.read(pose, obs, step * DT)
                     surface = obs["lidar"][:, :3].copy()
                     surface[:, 2] += 2.30

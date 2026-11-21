@@ -507,7 +507,7 @@
     "map_url": "./media/overtake-yield/town.json",
     "manifest": "./media/overtake-yield/manifest.json",
     "replay_pack_url": "./media/overtake-yield/replay-pack.json.gz",
-    "replay_pack_sha256": "e071b8633a00606f5563c602d01bb3f971e04415d88f9595b111ae2857c53c24"
+    "replay_pack_sha256": "181b98c1c3d0f4b1b5a625a2e7e31e5b009a00597e120fcd869a931ba83349e6"
   },
   "cohort": "tactical-study",
   "benchmark_member": false,
@@ -598,8 +598,8 @@
     "poster.jpg": "d2fa9159187050fefa7e0cf5f772a197bf18e30ec45f475d634a7c1a242ee90f",
     "rear_left.mp4": "471fd8e5f000a2c0ae83f7d29203371b37f1dc474f8069350b99178349c67a97",
     "rear_right.mp4": "5c4ab770ac6fe145d116a42fe193ddab55479f75cc05918666634da1fb0e801e",
-    "replay-pack.json.gz": "e071b8633a00606f5563c602d01bb3f971e04415d88f9595b111ae2857c53c24",
-    "replay.json": "172f98ef2dc7daffcb61ec56ddf1b99e78d3db51d6652c336d05cc7afa765843",
+    "replay-pack.json.gz": "181b98c1c3d0f4b1b5a625a2e7e31e5b009a00597e120fcd869a931ba83349e6",
+    "replay.json": "8bd9efd054a18188326dd1dd363547ed4260718cbee805f283880cb3f4887773",
     "right.mp4": "2795885f0f9e88b48c186d29f5d7781be7b99de3732145fefa8df98649965874",
     "telemetry.json": "b5949e6de841df5e44aada4c0ec4b663429070ba01fdced112153f7177978af6",
     "town.json": "ad7db3ded5e31a8ffb463c1498625ac0a0e35e9f4746f8cbc9113134c6b31e63"
@@ -613,5 +613,9 @@
   "navigation_reference": "observer_map.path is the source-lane destination reference. The tactical planner supplies its selected lateral trajectory to the city steering model.",
   "inference": "Five RGB, full-sweep lidar and five radars run on the inference rig. The pass classifier uses mapped lane geometry and LiDAR; independent surround tracks and RGB lamp classifications are recorded for perception.",
   "source_mode": "one closed-loop simulation with simultaneous camera capture",
-  "teacher": false
+  "teacher": false,
+  "plan_provenance": {
+    "source": "Recorded ego pose, logged commitment, native road 4 OpenDRIVE lanes and the fitted planner's exact geometric preview inside this corridor.",
+    "original_replay_sha256": "172f98ef2dc7daffcb61ec56ddf1b99e78d3db51d6652c336d05cc7afa765843"
+  }
 }

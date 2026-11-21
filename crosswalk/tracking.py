@@ -459,5 +459,5 @@ class Tracker:
                                   radar_sensors=[] if age else list(item.get("doppler", {})),
                                   doppler={} if age else item.get("doppler", {}),
                                   class_age_s=None if track.last_classified is None else now-track.last_classified,
-                                  lidar_hits=len(hits), surface_xyz=xyz.round(3).tolist())
+                                  lidar_hits=len(hits), surface_xyz=xyz.astype(float).round(3).tolist())
         return result

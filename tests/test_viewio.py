@@ -30,6 +30,18 @@ def poster_rgb(data):
 
 
 class LiveTests(unittest.TestCase):
+    def test_live_perimeter_frames_reach_the_camera_picker(self):
+        images = shots(120)
+        images["rear_left"] = images["left"]
+        images["rear_right"] = images["right"]
+        with Live(0) as live:
+            live.publish({"frame": 49, "perception_version": "surround-v1"}, images)
+            with urlopen(live.url+"api/frame") as response:
+                frame = json.load(response)
+        self.assertEqual(frame["frame"], 49)
+        self.assertEqual(set(frame["cameras"]), {*CAMERAS, "rear_left", "rear_right"})
+        self.assertGreater(len(base64.b64decode(frame["cameras"]["rear_right"])), 100)
+
     def test_live_city_serves_geometry_from_its_own_world(self):
         geometry = {"producer": {"map": "Town03_Opt"}, "roads": [[[1, 2, 0], [3, 2, 0]]]}
         with Live(0, map_geometry=geometry) as live:

@@ -104,7 +104,7 @@ class SurroundPerception:
         self.radar_points = {}
         for name, samples in corners.items():
             returns = ego_returns(samples, name)
-            self.radar_points[name] = returns[::max(1, math.ceil(len(returns)/24))].round(3).tolist()
+            self.radar_points[name] = returns[::max(1, math.ceil(len(returns)/24))].astype(float).round(3).tolist()
         tracks = self.tracker.update(obs["lidar"], obs["radar"], fresh, ego_pose, sim_time, corner_radars=corners)
         self.view_detections = {}
         for view, boxes in fresh.items():
