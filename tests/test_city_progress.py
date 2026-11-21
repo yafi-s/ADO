@@ -40,7 +40,7 @@ def roadrow():
 
 class ProgressTests(unittest.TestCase):
     def model(self):
-        model, cols, _ = load_driver(PROJECT / "models/city-progress/candidate.npz")
+        model, cols, _ = load_driver(PROJECT / "results/city-progress/junction-transfer/transfer-r3-first/candidate.npz")
         self.assertEqual(cols, FEATURE_NAMES)
         model.new_observer()
         return model

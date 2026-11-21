@@ -4,6 +4,7 @@ import unittest
 import numpy as np
 
 from crosswalk.junction_progress_study import grade, station_speeds
+from crosswalk.grade_transfer_study import score as hill_score
 
 
 def box(x, y, hx, hy):
@@ -64,6 +65,17 @@ class JunctionGradeTests(unittest.TestCase):
         self.assertEqual(samples["0.0"]["time_s"], 1.05)
         self.assertEqual(samples["0.0"]["actual_kmh"], 10.8)
         self.assertEqual(samples["0.0"]["applied_target_kmh"], 7.2)
+
+    def test_hill_obstacle_needs_sustained_close_stop_and_stationary_car(self):
+        rows = [dict(frame=i, sim_time=.1*i, speed_mps=0., speed_request_mps=0.,
+                     ego_station_m=15., parked_grade_station_m=25., parked_origin_xyz=[0.,0.,0.], gap_m=4.)
+                for i in range(30)]
+        summary = dict(outcome="restarted", collision_events=0)
+        self.assertTrue(hill_score(rows, summary, True)["passed"])
+        self.assertFalse(hill_score(rows[:-1], summary, True)["passed"])
+        self.assertFalse(hill_score(rows, dict(summary, outcome="lane_departure"), True)["passed"])
+        rows[-1]["parked_origin_xyz"] = [1.,0.,0.]
+        self.assertFalse(hill_score(rows, summary, True)["passed"])
 
 
 if __name__ == "__main__":
