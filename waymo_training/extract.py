@@ -109,18 +109,26 @@ def decode(payload, source):
         images.append(cv2.cvtColor(thumb, cv2.COLOR_BGR2RGB))
     scores = np.full(3, -1, np.float32)
     rated = np.full((3, 20, 2), np.nan, np.float32)
+    rater_lengths = np.zeros((3, 2), np.int32)
     for index, trajectory in enumerate(item.preference_trajectories):
         if index >= len(scores):
             raise ValueError("unexpected number of preference trajectories")
+        lengths = (len(trajectory.pos_x), len(trajectory.pos_y))
+        rater_lengths[index] = lengths
         if trajectory.HasField("preference_score") and 0 <= trajectory.preference_score <= 10:
             scores[index] = trajectory.preference_score
-            rated[index] = states(trajectory, ("pos_x", "pos_y"), 20)
+            # Rater alternatives need not contain a point for every training-label time.
+            # Preserve their score and lengths without guessing a sampling grid.
+            if lengths == (20, 20):
+                xy = np.column_stack((trajectory.pos_x, trajectory.pos_y))
+                if np.isfinite(xy).all():
+                    rated[index] = xy
     if not item.HasField("intent"):
         raise ValueError("missing driving intent")
     return dict(images=np.stack(images), past=states(item.past_states, PAST, 16),
                 intent=np.int64(item.intent), future=states(item.future_states, ("pos_x", "pos_y"), 20),
                 group=group, frame_index=np.int32(match.group(2)), timestamps=np.int64(frame.timestamp_micros), split=partition(source, group),
-                rater_scores=scores, rater_trajectories=rated,
+                rater_scores=scores, rater_trajectories=rated, rater_position_lengths=rater_lengths,
                 rater_candidates=np.uint8(len(item.preference_trajectories)))
 
 
@@ -305,6 +313,18 @@ def summarize(root, receipts):
         path = root / "features" / f"{source}-{index:05}.npz"
         with np.load(path, allow_pickle=False) as data:
             zero_timestamps += int(np.count_nonzero(data["timestamps"] == 0))
+            if source == "val":
+                scored = data["rater_scores"] >= 0
+                # Earlier pilot shards only accepted scores with complete finite 20-point XY.
+                if "rater_position_lengths" in data.files:
+                    lengths = data["rater_position_lengths"]
+                    ratings["scored_candidates_with_short_coordinates"] += int(
+                        np.count_nonzero(scored & (lengths < 20).any(axis=2)))
+                    ratings["scored_candidates_without_20_point_lengths"] += int(
+                        np.count_nonzero(scored & (lengths != 20).any(axis=2)))
+                dense = np.isfinite(data["rater_trajectories"]).all(axis=(2, 3))
+                ratings["scored_candidates_without_dense_trajectory"] += int(
+                    np.count_nonzero(scored & ~dense))
             for split, group, index_in_segment, intent, scores, candidates in zip(
                     data["split"], data["group"], data["frame_index"], data["intent"],
                     data["rater_scores"], data["rater_candidates"], strict=True):
