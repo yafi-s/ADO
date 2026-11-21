@@ -43,9 +43,17 @@
             <svg id="traffic-plot" viewBox="0 0 700 144" role="img" aria-label="Actual and requested speed over the recorded drive"></svg>
             <div class="traffic-scrub"><label for="traffic-time">Time</label><input id="traffic-time" type="range" min="0" value="0" step="1"><output for="traffic-time" id="traffic-timestamp"></output></div>
             <div class="traffic-reading" id="traffic-reading"></div>
-            <div class="traffic-links"><a id="traffic-watch">Watch here</a><a id="traffic-frame">Inspect this exposure</a><button id="traffic-cones" type="button">Jump to cones</button><button id="traffic-mixed" type="button">Find mixed traffic</button></div>
+            <div class="traffic-links"><a id="traffic-watch">Watch here</a><a id="traffic-frame">Inspect this exposure</a><a id="traffic-comparison" hidden></a><button id="traffic-cones" type="button">Jump to cones</button><button id="traffic-mixed" type="button">Find mixed traffic</button></div>
           </div>
           <p class="result-note" id="traffic-summary"></p>
+        </section>
+        <section class="results drive-review" id="progress-review" aria-labelledby="progress-title" hidden>
+          <h2 class="study-title" id="progress-title">Progress through city traffic</h2>
+          <div class="panel table-wrap"><table>
+            <thead><tr><th scope="col">Road situation</th><th scope="col">Measured behavior</th><th scope="col">Recordings and data</th></tr></thead>
+            <tbody id="progress-review-rows"></tbody>
+          </table></div>
+          <p class="result-note" id="progress-review-limits"></p>
         </section>
         <section class="results drive-review" id="city-life-review" aria-labelledby="city-life-title" hidden>
           <h2 class="study-title" id="city-life-title">City Life driving and perception</h2>

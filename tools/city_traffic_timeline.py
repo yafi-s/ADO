@@ -1,5 +1,6 @@
 """Grade the physical traffic and recorded pace of one continuous Town03 drive."""
 import argparse
+from bisect import bisect_left
 from collections import Counter, deque
 import gzip
 import hashlib
@@ -36,7 +37,7 @@ def moving_nearby(history):
     return [counts["vehicle"], counts["pedestrian"]]
 
 
-def measure(folder):
+def measure(folder, station_log=None):
     manifest = json.loads((folder / "manifest.json").read_bytes())
     path = folder / "replay.json"
     opener = open
@@ -68,6 +69,9 @@ def measure(folder):
                 raise ValueError("Nonconsecutive native exposures")
             t = row["sim_time"]
             scene = row["observer_map"]
+            if station_log is not None and index == 0:
+                station_log["route"] = scene["path"]
+                station_log["frames"] = []
             actors = {a["actor_id"]: (names[a["type"]], a["x"], a["y"])
                       for a in scene["others"] if a["type"] in names}
             history.append((t, scene["ego"][:2], actors))
@@ -75,6 +79,8 @@ def measure(folder):
             if nearby is not None:
                 density.append(nearby)
             speed = row["speed_mps"] * 3.6
+            if station_log is not None:
+                station_log["frames"].append((row["progress_m"], row["frame"], round(speed, 2)))
             request = row.get("speed_request_mps")
             request = None if request is None else round(request * 3.6, 2)
             sample = [round(t, 2), row["frame"], round(row["progress_m"], 2), round(speed, 2),
@@ -117,13 +123,48 @@ def measure(folder):
             "mixed_at_s": mixed_sample[0] if mixed_sample else None, "samples": samples}
 
 
+def compare_by_position(drives, logs):
+    """Join actual camera frames by distance along the same mapped route."""
+    by_id = {run["trial"]: run for run in drives}
+    pair = ("city-life", "city-progress")
+    if not all(name in logs for name in pair):
+        return
+    baseline, candidate = pair
+    if not logs[baseline]["route"] or logs[baseline]["route"] != logs[candidate]["route"]:
+        raise ValueError("Before/after camera comparison needs matching planned route geometry")
+    for current, other in (pair, pair[::-1]):
+        frames = {}
+        for station, frame, kmh in logs[other]["frames"]:
+            frames.setdefault(station, (frame, round(station, 2), kmh))
+        stations = sorted(frames)
+        matches = []
+        for sample in by_id[current]["samples"]:
+            target = sample[2]
+            index = bisect_left(stations, target)
+            neighbors = stations[max(0, index - 1):index + 1]
+            closest = min(neighbors, key=lambda s: (abs(s - target), frames[s][0]))
+            matches.append(frames[closest] if abs(closest - target) <= 1.2 else None)
+        by_id[current]["comparison"] = {"trial": other, "label": by_id[other]["label"], "frames": matches}
+
+
+def generate(recordings):
+    drives, logs = [], {}
+    for folder in recordings:
+        log = {} if folder.name in ("city-progress", "city-life") else None
+        run = measure(folder, log)
+        drives.append(run)
+        if log is not None:
+            logs[run["trial"]] = log
+    compare_by_position(drives, logs)
+    return {"columns": ["seconds", "frame", "route_m", "speed_kmh", "target_kmh",
+                        "limit_kmh", "moving_vehicles", "moving_pedestrians"], "drives": drives}
+
+
 if __name__ == "__main__":
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("recordings", nargs="+", type=Path)
     cli.add_argument("--output", required=True, type=Path)
     args = cli.parse_args()
-    data = {"columns": ["seconds", "frame", "route_m", "speed_kmh", "target_kmh",
-                        "limit_kmh", "moving_vehicles", "moving_pedestrians"],
-            "drives": [measure(folder) for folder in args.recordings]}
+    data = generate(args.recordings)
     args.output.write_text(json.dumps(data, separators=(",", ":"), allow_nan=False) + "\n",
                            encoding="utf8", newline="\n")

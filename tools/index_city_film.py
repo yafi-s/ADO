@@ -43,6 +43,10 @@ def publish(web, directory, *, feature=False, source_revision=None, source_snaps
         entry["label"] = "City Life"
         entry["selection_note"] = ("One continuous Town03 development drive with moving neighborhood traffic "
                                    "and the roadside-clearance driver.")
+    if manifest["policy"]["schema"] == "ado-city-progress-v1" and folder == "city-progress":
+        entry["label"] = "City Progress"
+        entry["selection_note"] = ("One continuous drive on the populated Market route with the revised speed planner. "
+                                   "The previous City Life recording provides the comparison at the same road positions.")
     base = f"./media/{folder}"
     summary = manifest["summary"]
     show = {key: summary[key] for key in ("scenario", "policy", "seed", "destination", "district", "outcome",
@@ -55,10 +59,10 @@ def publish(web, directory, *, feature=False, source_revision=None, source_snaps
                 width=manifest["video"]["width"], height=manifest["video"]["height"],
                 manifest_url=entry["manifest"], log_url=f"{base}/telemetry.json", video_url=f"{base}/chase.mp4",
                 cameras=entry["cameras"])
-    if folder == "city-life":
+    if folder in ("city-life", "city-progress"):
         replay = manifest["replay"]
         if replay not in ("replay.json", "replay.json.gz") or replay not in manifest["sha256"]:
-            raise ValueError("City Life needs the original measured replay in its manifest")
+            raise ValueError(f"{folder} needs the original measured replay in its manifest")
         entry["replay_url"] = show["replay_url"] = f"{base}/{replay}"
     if tactical:
         show["tactical_score"] = manifest["score"]
@@ -85,7 +89,7 @@ def publish(web, directory, *, feature=False, source_revision=None, source_snaps
         canonical = json.dumps(manifest["policy"]["code_sha256"], sort_keys=True).encode()
         show["source"] = {"fingerprint": hashlib.sha256(canonical).hexdigest(), "url": entry["manifest"]}
     pack = recording / "replay-pack.json.gz"
-    pace = manifest["policy"]["schema"] in ("ado-city-pace-v1", "ado-city-clearance-v1")
+    pace = manifest["policy"]["schema"] in ("ado-city-pace-v1", "ado-city-clearance-v1", "ado-city-progress-v1")
     if pace and not pack.is_file():
         raise ValueError(f"Pack the urban replay before indexing: {pack}")
     if pack.is_file():
@@ -109,7 +113,7 @@ def publish(web, directory, *, feature=False, source_revision=None, source_snaps
         manifest["sha256"][sidecar.name] = h
         write_json(recording / "manifest.json", manifest)
     build_path = media / "build.json"
-    if folder == "city-life":
+    if folder in ("city-life", "city-progress"):
         write_json(recording / "manifest.json", manifest)
     catalog_path = media / "viewer-catalog.json"
     build = json.loads(build_path.read_bytes())
