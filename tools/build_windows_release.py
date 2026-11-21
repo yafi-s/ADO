@@ -183,8 +183,12 @@ def validate_zip(path, files, commit, tag, scratch):
 
         showcases = build.get("showcases", [])
         viewer_records = read_json("web/media/viewer-catalog.json")
-        require({row["trial_id"] for row in viewer_records}
-                == {row["trial_id"] for row in [*catalog, *showcases]}, "Incomplete viewer recording catalog")
+        extras = [row for key in ("native_replays", "development_runs") for row in build.get(key, [])
+                  if row.get("recording_path") is not None]
+        expected_ids = {row["trial_id"] for row in [*catalog, *showcases, *extras]}
+        require(len(viewer_records) == len(expected_ids) and
+                {row["trial_id"] for row in viewer_records} == expected_ids,
+                "Incomplete viewer recording catalog")
         for showcase in showcases:
             relative = showcase["recording_path"]
             require(re.fullmatch(r"showcase/[a-z0-9-]+", relative), f"Invalid showcase path: {relative}")
