@@ -1,5 +1,6 @@
 import {ReplayMemory, laneAxes} from './object-memory.mjs';
 import {loadReplay} from './replay-pack.mjs';
+import {barrierName} from './barrier-review.mjs';
 import {bicycleAssociations} from './rider-association.mjs';
 
 const $ = id => document.getElementById(id);
@@ -76,7 +77,7 @@ async function openRun(entry, options = new URLSearchParams()) {
   const dir = entry.path ? `./media/${entry.path}` : './media';
   try {
     const [replay, map] = await Promise.all([
-      loadReplay(entry.replay_pack_url, signal, parseReplay, () => json(entry.replay_url ?? `${dir}/replay.json`, signal)),
+      loadReplay(entry.replay_pack_url, signal, parseReplay, () => json(entry.replay_url ?? `${dir}/replay.json`, signal),entry),
       roadContext(entry, signal)
     ]);
     if (signal.aborted) return;
@@ -172,11 +173,11 @@ function local(x,y,ctx) {
 
 function observations(frame, ctx, objects) {
   const riders = bicycleAssociations(session.frames,index);
-  const drawn = objects.map(o => ({id:o.key, name:`Display ${o.key} · ${o.label==='person' && riders.has(o.sourceId) ? 'bicycle rider' : o.label}`, xy:local(o.x,o.z,ctx),
+  const drawn = objects.map(o => ({id:o.key, name:`Display ${o.key} · ${o.label==='person' && riders.has(o.sourceId) ? 'bicycle rider' : barrierName(o)??o.label}`, xy:local(o.x,o.z,ctx),
     length:o.length, width:o.width, angle:o.heading-ctx.degrees, opacity:o.opacity, source:o.sourceId}));
   const measured = (frame.tracks || []).filter(t => !t.coasting && finite(t.x) && finite(t.y) &&
     t.sources?.some(s => s === 'lidar' || s === 'radar')).map(t => ({
-      id:t.id, name:`Track ${t.id} · ${t.label}`, xy:[t.x,t.y]
+      id:t.id, name:`Track ${t.id} · ${barrierName(t)??t.label}`, xy:[t.x,t.y]
     }));
   const observer = [], map = frame.observer_map;
   if (ctx.located && map) {
@@ -276,6 +277,27 @@ function renderPositions(ctx,layers) {
     if (!list.children.length) list.textContent='None recorded for this frame.';
     div.append(h,list); return div;
   }));
+  const review=ctx.frame.barrier_review;
+  if(review?.tracks){
+    const detail=document.createElement('details'),title=document.createElement('summary'),list=document.createElement('ul');
+    title.textContent='Raw barrier candidates and sensor review';
+    for(const t of review.tracks){
+      const retained=ctx.frame.tracks.some(shown=>shown.id===t.id);
+      const item=document.createElement('li');
+      item.textContent=`Raw ${barrierName(t)??'barrier'} track ${t.id} · ${t.coasting?'coasted':'measured'} · (${t.x.toFixed(2)}, ${t.y.toFixed(2)}) m · ${retained?'retained':'unconfirmed'}`;
+      list.append(item);
+    }
+    for(const {view,box,confirmed,observation} of review.cameras){
+      const item=document.createElement('li'),scores=observation?.post_scores;
+      const appearance=box.barrier_subtype==='striped_board' ?
+        finite(observation?.measured_diameter_m)?`measured span ${observation.measured_diameter_m.toFixed(2)} m`:'unconfirmed span' :
+        (observation?.appearance_confirmed??observation?.confirmed)?'post appearance passed':observation?'post appearance rejected':'unreviewed appearance';
+      item.textContent=`${views[view]??view} · image ${box.image_id??'unknown'} · ${box.track_id==null?'bearing only':'track '+box.track_id} · ${appearance} · ${confirmed?'displayed':'excluded'}`+
+        (Array.isArray(scores)&&scores.every(finite)?` · post scores ${scores.map(x=>x.toFixed(2)).join(', ')}`:'');
+      list.append(item);
+    }
+    detail.append(title,list);$('objects').append(detail);
+  }
 }
 
 function link() {

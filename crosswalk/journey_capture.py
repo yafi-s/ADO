@@ -250,11 +250,12 @@ def _load_inputs(model_path):
         policy["control_inputs"] = "Navigation, NanoDet front RGB, camera-measured signal color, lidar and forward radar. The pass planner also measures both lanes in 360-degree lidar."
         policy["display_inputs"] = "Five registered RGB cameras, 360-degree lidar and five Doppler radars."
     if schema == "ado-city-pace-v1":
-        from . import barrier, barrier_chain, barrier_scene, city_cruise, city_policy, cycle_association, speed_signs
-        for module in (barrier, barrier_chain, barrier_scene, city_cruise, city_policy, cycle_association, speed_signs):
+        from . import barrier, barrier_chain, barrier_posts, barrier_scene, city_cruise, city_policy, cycle_association, speed_signs
+        for module in (barrier, barrier_chain, barrier_posts, barrier_scene, city_cruise, city_policy, cycle_association, speed_signs):
             source = Path(module.__file__)
             policy["code_sha256"][source.name] = fingerprint(source)
         policy["barrier_sha256"] = fingerprint(barrier.MODEL)
+        policy["barrier_post_appearance_sha256"] = fingerprint(barrier_posts.MODEL)
     return model, JourneyScenario, model.new_observer, policy
 
 

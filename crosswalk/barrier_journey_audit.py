@@ -5,19 +5,32 @@ import gzip
 import hashlib
 import json
 import math
+from contextlib import contextmanager
+from zipfile import ZipFile
 from pathlib import Path
 from statistics import median
 
 
+@contextmanager
+def journal_stream(path):
+    path = Path(path)
+    if path.suffix == ".zip":
+        with ZipFile(path) as archive, archive.open("rows.jsonl") as rows:
+            yield rows
+    else:
+        opener = gzip.open if path.suffix == ".gz" else open
+        with opener(path, "rb") as rows:
+            yield rows
+
+
 def evaluate(path):
     path = Path(path)
-    opener = gzip.open if path.suffix == ".gz" else open
     actors, reference, predictions = defaultdict(list), Counter(), Counter()
     unmatched, examples = [], []
     digest = hashlib.sha256()
     count = 0
     subtype_counts = Counter()
-    with opener(path, "rb") as stream:
+    with journal_stream(path) as stream:
         for line in stream:
             row = json.loads(line)
             digest.update(line)

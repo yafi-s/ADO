@@ -66,7 +66,7 @@ def candidates(image, camera, threshold=None):
     return found
 
 
-def detect(image, lidar, view):
+def detect(image, lidar, view, *, verify_posts=True):
     """Recognize supported striped boards and short connected post-and-chain barriers."""
     from .tracking import _project
     camera = CAMERAS[view]
@@ -78,6 +78,12 @@ def detect(image, lidar, view):
         item["chain_ends_xy"] = [p.tolist() for p in item.pop("_endpoints")]
         item["chain_return_ids"] = [ids[group].tolist() for group in item.pop("_groups")]
         item["subtype_confidence"] = item["score"]
+        if verify_posts:
+            from .barrier_posts import review
+            grade = review(image, camera, item)
+            if not grade["confirmed"]:
+                continue
+            item["post_appearance"] = grade
         result.append(item)
     for candidate in boxes:
         left, top, right, bottom = candidate["box"]

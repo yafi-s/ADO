@@ -550,7 +550,7 @@ async function startRecording() {
     void scene?.loadTown(selected?.map_url, typeof selected?.map === 'string' ? selected.map : null);
     const directory = './media/' + (el('case').value ? el('case').value + '/' : '');
     const playback = await loadReplay(selected?.replay_pack_url, signal, parseRecording,
-      () => read(selected?.replay_url ?? directory + 'replay.json', signal, 30000));
+      () => read(selected?.replay_url ?? directory + 'replay.json', signal, 30000),selected);
     if (signal.aborted) return;
     recording = playback;
     playing = recording.end > 0;

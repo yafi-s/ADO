@@ -1,3 +1,5 @@
+import {applyBarrierReview,loadBarrierReview} from './barrier-review.mjs';
+
 export function unpackReplay(pack) {
   const replay = pack?.replay;
   const frames = Array.isArray(replay) ? replay : replay?.frames;
@@ -44,15 +46,17 @@ async function fetchPacked(url, signal) {
   }
 }
 
-export async function loadReplay(packUrl, signal, parse, raw) {
+export async function loadReplay(packUrl, signal, parse, raw, entry) {
   if (signal?.aborted) return null;
+  const review=await loadBarrierReview(entry,signal);
+  const parseReviewed=replay=>parse(applyBarrierReview(replay,review));
   try {
-    const packed = await fetchPacked(packUrl, signal);
-    if (packed !== null && !signal?.aborted) return parse(packed);
+    const replay=await fetchPacked(packUrl,signal);
+    if(replay!=null&&!signal?.aborted)return parseReviewed(replay);
   } catch {
     // Use the original replay if the optional pack cannot be fetched or read.
   }
   if (signal?.aborted) return null;
   const replay = await raw();
-  return signal?.aborted ? null : parse(replay);
+  return signal?.aborted ? null : parseReviewed(replay);
 }

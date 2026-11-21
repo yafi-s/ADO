@@ -11,6 +11,7 @@ import cv2
 import numpy as np
 
 from .barrier import detect as detect_barriers
+from .barrier_posts import ChainHistory, add_observation, board_grade, range_only_decision
 from .camera_geometry import CAMERAS
 from .radar_geometry import CORNER_RADARS, RADARS, ego_returns
 from .tracking import Tracker
@@ -74,6 +75,8 @@ class SurroundPerception:
 
     def __init__(self, evidence_dir=None):
         self.tracker = Tracker(surround=True)
+        self._chain_history = ChainHistory()
+        self.barrier_review = {}
         self._images = _ImageAssociations()
         self.view_detections = {}
         self.radar_points = {}
@@ -131,6 +134,18 @@ class SurroundPerception:
                 tagged.append(dict(detection, bearing_deg=(bearing + 180) % 360 - 180,
                                    range_supported=track_id is not None, track_id=track_id))
             self.view_detections[view] = tagged
+        self.barrier_review = {str(t["id"]):range_only_decision(t["surface_xyz"]) for t in tracks
+                               if t.get("barrier_subtype")=="striped_board" and not t["coasting"] and not t["cameras"]}
+        track_by_id = {track["id"]:track for track in tracks}
+        for view, boxes in self.view_detections.items():
+            for box in boxes:
+                if box.get("barrier_subtype")=="striped_board":
+                    surface=track_by_id.get(box["track_id"],{}).get("surface_xyz",[])
+                    add_observation(self.barrier_review,view,box,board_grade(surface))
+                elif box.get("barrier_subtype")=="chain" and "post_appearance" in box:
+                    support=track_by_id.get(box["track_id"],{}).get("chain_support")
+                    grade=self._chain_history.qualify(box,box["post_appearance"],ego_pose,sim_time,support)
+                    add_observation(self.barrier_review,view,box,grade)
         if self._evidence_root:
             barrier_evidence = ("barrier" not in self._special_examples and any(
                 t["label"] == "barrier" and t["cameras"] and math.hypot(t["x"], t["y"]) <= 13.

@@ -1,0 +1,1206 @@
+{
+  "schema": "ado-post-appearance-fit-v1",
+  "threshold": 0.34,
+  "model_sha256": "cba4996fa7341455e2913afb75042f8b650f1e73fd0cf076c69c4a1c96f8fa71",
+  "training_exposures": [
+    "fit_0_chain_5",
+    "fit_1_chain_5"
+  ],
+  "training_posts": 4,
+  "fixtures": {
+    "development": {
+      "exposures": 216,
+      "actual_chain_exposures": 24,
+      "raw_chain_tracks": 6,
+      "appearance_confirmed_chain_tracks": 6,
+      "causal_confirmed_chain_tracks": 2,
+      "causal_confirmed_by_distance_m": {
+        "5.0": 1,
+        "10.0": 0,
+        "7.0": 1
+      },
+      "raw_unmatched_predictions": 0,
+      "frames": [
+        {
+          "name": "fit_0_chain_5",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                1.0,
+                1.0
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": false,
+              "appearance_confirmed": true,
+              "post_scores": [
+                1.0,
+                1.0
+              ],
+              "strong_range": false,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "fit_0_chain_10",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.859312,
+                0.844279
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": false,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.859312,
+                0.844279
+              ],
+              "strong_range": false,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "fit_1_chain_5",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                1.0,
+                1.0
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": false,
+              "appearance_confirmed": true,
+              "post_scores": [
+                1.0,
+                1.0
+              ],
+              "strong_range": false,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "fit_1_chain_7",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.832246,
+                0.885679
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.832246,
+                0.885679
+              ],
+              "strong_range": true,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "holdout_2_chain_5",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.830266,
+                0.802249
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.830266,
+                0.802249
+              ],
+              "strong_range": true,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "holdout_3_chain_5",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.882614,
+                0.883659
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": false,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.882614,
+                0.883659
+              ],
+              "strong_range": false,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        }
+      ],
+      "archive_sha256": "1abd44fe9bfbc0e0b4b4da81533132961303341850d547b0dc71bc015a6a683b"
+    },
+    "low": {
+      "exposures": 162,
+      "actual_chain_exposures": 18,
+      "raw_chain_tracks": 9,
+      "appearance_confirmed_chain_tracks": 9,
+      "causal_confirmed_chain_tracks": 6,
+      "causal_confirmed_by_distance_m": {
+        "5.0": 3,
+        "10.0": 0,
+        "7.0": 3
+      },
+      "raw_unmatched_predictions": 0,
+      "frames": [
+        {
+          "name": "validation_0_chain_5_s1",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.486699,
+                0.395628
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": false,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.486699,
+                0.395628
+              ],
+              "strong_range": false,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_0_chain_5_s2",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.835122,
+                0.947841
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.835122,
+                0.947841
+              ],
+              "strong_range": false,
+              "repeat_supported": true,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_0_chain_10_s1",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.381004,
+                0.384427
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": false,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.381004,
+                0.384427
+              ],
+              "strong_range": false,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_1_chain_5_s0",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.798489,
+                0.793545
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": false,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.798489,
+                0.793545
+              ],
+              "strong_range": false,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_1_chain_5_s1",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.926136,
+                0.947507
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.926136,
+                0.947507
+              ],
+              "strong_range": false,
+              "repeat_supported": true,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_1_chain_5_s2",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.82532,
+                0.857227
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.82532,
+                0.857227
+              ],
+              "strong_range": false,
+              "repeat_supported": true,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_1_chain_7_s0",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.899488,
+                0.568376
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.899488,
+                0.568376
+              ],
+              "strong_range": true,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_1_chain_7_s1",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.775793,
+                0.827179
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.775793,
+                0.827179
+              ],
+              "strong_range": false,
+              "repeat_supported": true,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_1_chain_7_s2",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.855919,
+                0.927867
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.855919,
+                0.927867
+              ],
+              "strong_range": true,
+              "repeat_supported": true,
+              "exclusive_range": true
+            }
+          ]
+        }
+      ],
+      "archive_sha256": "39433cc4c77da410d705e82ff54bee2ef2ebb0c8b7f6dfc30819a40107e14b14"
+    },
+    "high": {
+      "exposures": 162,
+      "actual_chain_exposures": 18,
+      "raw_chain_tracks": 9,
+      "appearance_confirmed_chain_tracks": 9,
+      "causal_confirmed_chain_tracks": 6,
+      "causal_confirmed_by_distance_m": {
+        "5.0": 3,
+        "10.0": 0,
+        "7.0": 3
+      },
+      "raw_unmatched_predictions": 0,
+      "frames": [
+        {
+          "name": "validation_0_chain_5_s1",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.495521,
+                0.42751
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": false,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.495521,
+                0.42751
+              ],
+              "strong_range": false,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_0_chain_5_s2",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.747827,
+                0.632636
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.747827,
+                0.632636
+              ],
+              "strong_range": false,
+              "repeat_supported": true,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_0_chain_10_s1",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.34913,
+                0.363723
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": false,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.34913,
+                0.363723
+              ],
+              "strong_range": false,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_1_chain_5_s0",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.672691,
+                0.637943
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": false,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.672691,
+                0.637943
+              ],
+              "strong_range": false,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_1_chain_5_s1",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.482642,
+                0.593275
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.482642,
+                0.593275
+              ],
+              "strong_range": false,
+              "repeat_supported": true,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_1_chain_5_s2",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.632476,
+                0.647613
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.632476,
+                0.647613
+              ],
+              "strong_range": false,
+              "repeat_supported": true,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_1_chain_7_s0",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.621587,
+                0.545593
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.621587,
+                0.545593
+              ],
+              "strong_range": true,
+              "repeat_supported": false,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_1_chain_7_s1",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.652049,
+                0.621125
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.652049,
+                0.621125
+              ],
+              "strong_range": false,
+              "repeat_supported": true,
+              "exclusive_range": true
+            }
+          ]
+        },
+        {
+          "name": "validation_1_chain_7_s2",
+          "raw_chain_tracks": 1,
+          "post_confirmation": [
+            {
+              "confirmed": true,
+              "post_scores": [
+                0.497727,
+                0.560995
+              ]
+            }
+          ],
+          "presented_chain": [
+            {
+              "confirmed": true,
+              "appearance_confirmed": true,
+              "post_scores": [
+                0.497727,
+                0.560995
+              ],
+              "strong_range": true,
+              "repeat_supported": true,
+              "exclusive_range": true
+            }
+          ]
+        }
+      ],
+      "archive_sha256": "f2aabc0ac2600bad185843789cdeac06c7670d34f67012d0a04841fa13828314"
+    }
+  },
+  "striped_board_breadth": {
+    "town03-native.zip": {
+      "raw_ranged_boards": 22,
+      "confirmed": 22,
+      "minimum_observed_diameter_m": 0.573135,
+      "tracks": [
+        {
+          "name": "fit_0_barricade_5",
+          "confirmed": true,
+          "measured_diameter_m": 1.147099,
+          "post_scores": []
+        },
+        {
+          "name": "fit_0_barricade_7",
+          "confirmed": true,
+          "measured_diameter_m": 1.077024,
+          "post_scores": []
+        },
+        {
+          "name": "fit_0_barricade_10",
+          "confirmed": true,
+          "measured_diameter_m": 1.169213,
+          "post_scores": []
+        },
+        {
+          "name": "fit_0_barricade_13",
+          "confirmed": true,
+          "measured_diameter_m": 0.999113,
+          "post_scores": []
+        },
+        {
+          "name": "fit_0_barricade_16",
+          "confirmed": true,
+          "measured_diameter_m": 0.811362,
+          "post_scores": []
+        },
+        {
+          "name": "fit_0_barricade_20",
+          "confirmed": true,
+          "measured_diameter_m": 1.005099,
+          "post_scores": []
+        },
+        {
+          "name": "fit_1_barricade_5",
+          "confirmed": true,
+          "measured_diameter_m": 1.087677,
+          "post_scores": []
+        },
+        {
+          "name": "fit_1_barricade_7",
+          "confirmed": true,
+          "measured_diameter_m": 0.952848,
+          "post_scores": []
+        },
+        {
+          "name": "fit_1_barricade_13",
+          "confirmed": true,
+          "measured_diameter_m": 0.986852,
+          "post_scores": []
+        },
+        {
+          "name": "fit_1_barricade_16",
+          "confirmed": true,
+          "measured_diameter_m": 1.017319,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_2_barricade_5",
+          "confirmed": true,
+          "measured_diameter_m": 1.094845,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_2_barricade_7",
+          "confirmed": true,
+          "measured_diameter_m": 1.170944,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_2_barricade_10",
+          "confirmed": true,
+          "measured_diameter_m": 1.052316,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_2_barricade_13",
+          "confirmed": true,
+          "measured_diameter_m": 1.063295,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_2_barricade_16",
+          "confirmed": true,
+          "measured_diameter_m": 0.816354,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_2_barricade_20",
+          "confirmed": true,
+          "measured_diameter_m": 1.087348,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_3_barricade_5",
+          "confirmed": true,
+          "measured_diameter_m": 0.932383,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_3_barricade_7",
+          "confirmed": true,
+          "measured_diameter_m": 1.098259,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_3_barricade_10",
+          "confirmed": true,
+          "measured_diameter_m": 1.053953,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_3_barricade_13",
+          "confirmed": true,
+          "measured_diameter_m": 1.300877,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_3_barricade_16",
+          "confirmed": true,
+          "measured_diameter_m": 0.851071,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_3_barricade_20",
+          "confirmed": true,
+          "measured_diameter_m": 0.573135,
+          "post_scores": []
+        }
+      ]
+    },
+    "town03-chains.zip": {
+      "raw_ranged_boards": 24,
+      "confirmed": 24,
+      "minimum_observed_diameter_m": 0.552457,
+      "tracks": [
+        {
+          "name": "fit_0_barricade_5",
+          "confirmed": true,
+          "measured_diameter_m": 0.853642,
+          "post_scores": []
+        },
+        {
+          "name": "fit_0_barricade_7",
+          "confirmed": true,
+          "measured_diameter_m": 1.037255,
+          "post_scores": []
+        },
+        {
+          "name": "fit_0_barricade_10",
+          "confirmed": true,
+          "measured_diameter_m": 1.163806,
+          "post_scores": []
+        },
+        {
+          "name": "fit_0_barricade_13",
+          "confirmed": true,
+          "measured_diameter_m": 1.163686,
+          "post_scores": []
+        },
+        {
+          "name": "fit_0_barricade_16",
+          "confirmed": true,
+          "measured_diameter_m": 0.823343,
+          "post_scores": []
+        },
+        {
+          "name": "fit_0_barricade_20",
+          "confirmed": true,
+          "measured_diameter_m": 0.76245,
+          "post_scores": []
+        },
+        {
+          "name": "fit_1_barricade_5",
+          "confirmed": true,
+          "measured_diameter_m": 1.066286,
+          "post_scores": []
+        },
+        {
+          "name": "fit_1_barricade_7",
+          "confirmed": true,
+          "measured_diameter_m": 1.00704,
+          "post_scores": []
+        },
+        {
+          "name": "fit_1_barricade_10",
+          "confirmed": true,
+          "measured_diameter_m": 1.173561,
+          "post_scores": []
+        },
+        {
+          "name": "fit_1_barricade_13",
+          "confirmed": true,
+          "measured_diameter_m": 0.8365,
+          "post_scores": []
+        },
+        {
+          "name": "fit_1_barricade_16",
+          "confirmed": true,
+          "measured_diameter_m": 1.016071,
+          "post_scores": []
+        },
+        {
+          "name": "fit_1_barricade_20",
+          "confirmed": true,
+          "measured_diameter_m": 1.030589,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_2_barricade_5",
+          "confirmed": true,
+          "measured_diameter_m": 1.124157,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_2_barricade_7",
+          "confirmed": true,
+          "measured_diameter_m": 1.008481,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_2_barricade_10",
+          "confirmed": true,
+          "measured_diameter_m": 1.059272,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_2_barricade_13",
+          "confirmed": true,
+          "measured_diameter_m": 1.048806,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_2_barricade_16",
+          "confirmed": true,
+          "measured_diameter_m": 1.040927,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_2_barricade_20",
+          "confirmed": true,
+          "measured_diameter_m": 0.552457,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_3_barricade_5",
+          "confirmed": true,
+          "measured_diameter_m": 1.001246,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_3_barricade_7",
+          "confirmed": true,
+          "measured_diameter_m": 1.050362,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_3_barricade_10",
+          "confirmed": true,
+          "measured_diameter_m": 1.188772,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_3_barricade_13",
+          "confirmed": true,
+          "measured_diameter_m": 1.237695,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_3_barricade_16",
+          "confirmed": true,
+          "measured_diameter_m": 0.852446,
+          "post_scores": []
+        },
+        {
+          "name": "holdout_3_barricade_20",
+          "confirmed": true,
+          "measured_diameter_m": 1.101716,
+          "post_scores": []
+        }
+      ]
+    },
+    "town03-chain-validation.zip": {
+      "raw_ranged_boards": 18,
+      "confirmed": 18,
+      "minimum_observed_diameter_m": 0.898212,
+      "tracks": [
+        {
+          "name": "validation_0_barricade_5_s0",
+          "confirmed": true,
+          "measured_diameter_m": 1.084189,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_5_s1",
+          "confirmed": true,
+          "measured_diameter_m": 1.051023,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_5_s2",
+          "confirmed": true,
+          "measured_diameter_m": 1.02619,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_7_s0",
+          "confirmed": true,
+          "measured_diameter_m": 1.000617,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_7_s1",
+          "confirmed": true,
+          "measured_diameter_m": 1.019385,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_7_s2",
+          "confirmed": true,
+          "measured_diameter_m": 1.07953,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_10_s0",
+          "confirmed": true,
+          "measured_diameter_m": 0.898212,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_10_s1",
+          "confirmed": true,
+          "measured_diameter_m": 1.015368,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_10_s2",
+          "confirmed": true,
+          "measured_diameter_m": 1.02183,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_5_s0",
+          "confirmed": true,
+          "measured_diameter_m": 1.096805,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_5_s1",
+          "confirmed": true,
+          "measured_diameter_m": 1.032773,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_5_s2",
+          "confirmed": true,
+          "measured_diameter_m": 1.034018,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_7_s0",
+          "confirmed": true,
+          "measured_diameter_m": 1.09322,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_7_s1",
+          "confirmed": true,
+          "measured_diameter_m": 1.028164,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_7_s2",
+          "confirmed": true,
+          "measured_diameter_m": 1.075174,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_10_s0",
+          "confirmed": true,
+          "measured_diameter_m": 1.084159,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_10_s1",
+          "confirmed": true,
+          "measured_diameter_m": 1.121784,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_10_s2",
+          "confirmed": true,
+          "measured_diameter_m": 1.086694,
+          "post_scores": []
+        }
+      ]
+    },
+    "town03-chain-high.zip": {
+      "raw_ranged_boards": 18,
+      "confirmed": 18,
+      "minimum_observed_diameter_m": 0.898212,
+      "tracks": [
+        {
+          "name": "validation_0_barricade_5_s0",
+          "confirmed": true,
+          "measured_diameter_m": 1.152906,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_5_s1",
+          "confirmed": true,
+          "measured_diameter_m": 1.015721,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_5_s2",
+          "confirmed": true,
+          "measured_diameter_m": 1.026934,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_7_s0",
+          "confirmed": true,
+          "measured_diameter_m": 1.000617,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_7_s1",
+          "confirmed": true,
+          "measured_diameter_m": 1.019385,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_7_s2",
+          "confirmed": true,
+          "measured_diameter_m": 1.07953,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_10_s0",
+          "confirmed": true,
+          "measured_diameter_m": 0.898212,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_10_s1",
+          "confirmed": true,
+          "measured_diameter_m": 1.015368,
+          "post_scores": []
+        },
+        {
+          "name": "validation_0_barricade_10_s2",
+          "confirmed": true,
+          "measured_diameter_m": 1.02183,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_5_s0",
+          "confirmed": true,
+          "measured_diameter_m": 1.096805,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_5_s1",
+          "confirmed": true,
+          "measured_diameter_m": 1.104799,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_5_s2",
+          "confirmed": true,
+          "measured_diameter_m": 1.034018,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_7_s0",
+          "confirmed": true,
+          "measured_diameter_m": 1.082811,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_7_s1",
+          "confirmed": true,
+          "measured_diameter_m": 1.028164,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_7_s2",
+          "confirmed": true,
+          "measured_diameter_m": 1.075174,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_10_s0",
+          "confirmed": true,
+          "measured_diameter_m": 1.084159,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_10_s1",
+          "confirmed": true,
+          "measured_diameter_m": 1.121784,
+          "post_scores": []
+        },
+        {
+          "name": "validation_1_barricade_10_s2",
+          "confirmed": true,
+          "measured_diameter_m": 1.086694,
+          "post_scores": []
+        }
+      ]
+    }
+  }
+}

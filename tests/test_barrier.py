@@ -42,6 +42,31 @@ class BarrierTests(unittest.TestCase):
         track_again, = tracker.update(cloud, empty, {"front": detections}, (0, 0, 0), .2)
         self.assertEqual(track["id"], track_again["id"])
 
+    def test_board_breadth_needs_horizontal_returns(self):
+        from crosswalk.barrier_posts import board_grade
+        self.assertFalse(board_grade([[5.,1.,.4],[5.08,1.08,1.5]])["confirmed"])
+        grade=board_grade([[5.,1.,.4],[5.,1.4,.4],[5.,1.3,.6]])
+        self.assertTrue(grade["confirmed"])
+        self.assertAlmostEqual(grade["measured_diameter_m"],.4)
+
+    def test_connected_chain_publication_needs_decisive_or_repeated_exclusive_ranges(self):
+        from crosswalk.barrier_posts import ChainHistory
+        history=ChainHistory()
+        sparse={"posts":[2,3],"span_hits":1}
+        strong={"posts":[4,3],"span_hits":2}
+        raw=dict(chain_ends_xy=[[5.,1.],[5.,2.44]], chain_support=sparse, range_supported=True, track_id=7)
+        appearance=dict(confirmed=True,post_scores=[.8,.75])
+        self.assertFalse(history.qualify(raw,appearance,(0,0,0),0.,sparse)["confirmed"])
+        self.assertFalse(history.qualify(raw,appearance,(0,0,0),0.,sparse)["confirmed"])
+        # A change in vehicle pose should leave the two stationary post sites aligned.
+        later=dict(raw,chain_ends_xy=[[4.8,2.44],[4.8,1.]])
+        self.assertTrue(history.qualify(later,appearance,(.2,0,0),.2,sparse)["repeat_supported"])
+        self.assertFalse(history.qualify(raw,appearance,(0,0,0),1.,sparse)["confirmed"])
+        self.assertFalse(ChainHistory().qualify(dict(raw,chain_support=strong,range_supported=False),
+                                              appearance,(0,0,0),0.,strong)["confirmed"])
+        self.assertTrue(ChainHistory().qualify(dict(raw,chain_support=strong),
+                                              appearance,(0,0,0),0.,strong)["confirmed"])
+
     def test_actual_parked_car_cone_curb_and_planter_remain_distinct(self):
         for negative in ("clear", "cone", "parked_car", "planter"):
             with self.subTest(negative=negative):
@@ -61,6 +86,8 @@ class BarrierTests(unittest.TestCase):
             rgb, cloud, boxes = observe("chain")
             box, = boxes
             self.assertEqual(box["barrier_subtype"], "chain")
+            self.assertTrue(box["post_appearance"]["confirmed"])
+            self.assertGreaterEqual(min(box["post_appearance"]["post_scores"]), .34)
             ids = box["chain_return_ids"][1]
             self.assertTrue(ids)
             self.assertFalse(detect(rgb, np.delete(cloud, ids, axis=0), "front"))

@@ -1,0 +1,1125 @@
+{
+  "schema": "ado-full-city-barrier-score-v1",
+  "capture_frames": 3354,
+  "native_journal_sha256": "035769ea010f15e5b89f4d1a376d5d009a8182ef7fa00fac559de337e79bfb58",
+  "raw_counts": {
+    "raw_chain": 20,
+    "post_confirmed_chain_tracks": 0,
+    "raw_striped_board": 158,
+    "breadth_confirmed_striped_boards": 155,
+    "striped_map_asset_matches": 105,
+    "confirmed_striped_map_asset_matches": 104,
+    "striped_scene_matches": 49,
+    "confirmed_striped_scene_matches": 49
+  },
+  "named_map_barriers": 32,
+  "named_chain_map_objects": 0,
+  "planted_boards": [
+    {
+      "actor_id": "617",
+      "actor_frames_within_20m": 104,
+      "matched_fresh_observations": 25,
+      "matched_fresh_within_20m": 24,
+      "median_center_error_m": 0.0861,
+      "first_observation": {
+        "frame": 3440,
+        "sim_time_s": 122.8,
+        "distance_m": 20.092,
+        "error_m": 0.1995,
+        "track_id": 104,
+        "cameras": [
+          "front"
+        ],
+        "rgb_score": 0.6201,
+        "laser_hits": 4,
+        "support": [
+          "rgb",
+          "lidar",
+          "radar"
+        ],
+        "subtype": "striped_board"
+      },
+      "last_observation": {
+        "frame": 3537,
+        "sim_time_s": 132.5,
+        "distance_m": 16.354,
+        "error_m": 0.4516,
+        "track_id": 111,
+        "cameras": [
+          "rear_right"
+        ],
+        "rgb_score": 0.6689,
+        "laser_hits": 5,
+        "support": [
+          "rgb",
+          "lidar",
+          "radar"
+        ],
+        "subtype": "striped_board"
+      },
+      "observed_in": [
+        "front",
+        "rear_right"
+      ],
+      "tracker_ids": [
+        104,
+        111
+      ]
+    },
+    {
+      "actor_id": "618",
+      "actor_frames_within_20m": 110,
+      "matched_fresh_observations": 24,
+      "matched_fresh_within_20m": 24,
+      "median_center_error_m": 0.10705,
+      "first_observation": {
+        "frame": 3460,
+        "sim_time_s": 124.8,
+        "distance_m": 12.478,
+        "error_m": 0.1502,
+        "track_id": 108,
+        "cameras": [
+          "front"
+        ],
+        "rgb_score": 0.9095,
+        "laser_hits": 12,
+        "support": [
+          "rgb",
+          "lidar",
+          "radar"
+        ],
+        "subtype": "striped_board"
+      },
+      "last_observation": {
+        "frame": 3551,
+        "sim_time_s": 133.9,
+        "distance_m": 16.611,
+        "error_m": 0.019,
+        "track_id": 113,
+        "cameras": [
+          "rear_right"
+        ],
+        "rgb_score": 0.7113,
+        "laser_hits": 7,
+        "support": [
+          "rgb",
+          "lidar",
+          "radar"
+        ],
+        "subtype": "striped_board"
+      },
+      "observed_in": [
+        "front",
+        "rear_right"
+      ],
+      "tracker_ids": [
+        108,
+        113
+      ]
+    }
+  ],
+  "unmatched_striped_measurements": [
+    {
+      "frame": 2705,
+      "id": 40,
+      "center_xy": [
+        129.389,
+        142.732
+      ],
+      "nearest_named_board": "SM_StreetBarrier32_108_SM_0",
+      "center_distance_m": 0.744,
+      "breadth_confirmed": true,
+      "views": [
+        {
+          "view": "right",
+          "image_id": 109,
+          "track_id": 40,
+          "barrier_subtype": "striped_board",
+          "range_supported": true,
+          "box": [
+            0.86621875,
+            0.5441111111111111,
+            0.95565625,
+            0.6735
+          ],
+          "confirmed": true,
+          "measured_diameter_m": 1.805345,
+          "post_scores": [],
+          "source_jpeg_sha256": "0576ddb1df44fad82f21cb3c9adbba8b32cdb8ba3332cc20488c4b91bd734aa7"
+        }
+      ]
+    },
+    {
+      "frame": 4111,
+      "id": 131,
+      "center_xy": [
+        -67.501,
+        120.779
+      ],
+      "nearest_named_board": "SM_StreetBarrier6_SM_0",
+      "center_distance_m": 91.765,
+      "breadth_confirmed": false,
+      "views": [
+        {
+          "view": "right",
+          "image_id": 374,
+          "track_id": 131,
+          "barrier_subtype": "striped_board",
+          "range_supported": true,
+          "box": [
+            0.25003125000000004,
+            0.4567777777777778,
+            0.35934375,
+            0.6166111111111111
+          ],
+          "confirmed": false,
+          "measured_diameter_m": 0.213284,
+          "post_scores": [],
+          "source_jpeg_sha256": "38f41a2849a9e2799904e79955d9d3dffabaa8d15d36ee9759a8266c155e5b8d"
+        }
+      ]
+    },
+    {
+      "frame": 5404,
+      "id": 199,
+      "center_xy": [
+        -165.226,
+        111.052
+      ],
+      "nearest_named_board": "SM_StreetBarrier6_SM_0",
+      "center_distance_m": 7.783,
+      "breadth_confirmed": true,
+      "views": [
+        {
+          "view": "front",
+          "image_id": 594,
+          "track_id": 199,
+          "barrier_subtype": "striped_board",
+          "range_supported": true,
+          "box": [
+            0.8038437500000001,
+            0.5361666666666667,
+            0.83365625,
+            0.5780277777777778
+          ],
+          "confirmed": true,
+          "measured_diameter_m": 1.379036,
+          "post_scores": [],
+          "source_jpeg_sha256": "34a911b7beb4c1a795906cfb432895737d926eb23988ae20c965a6cd679575d5"
+        }
+      ]
+    },
+    {
+      "frame": 5463,
+      "id": 207,
+      "center_xy": [
+        -156.941,
+        106.686
+      ],
+      "nearest_named_board": "SM_StreetBarrier6_SM_0",
+      "center_distance_m": 1.584,
+      "breadth_confirmed": false,
+      "views": [
+        {
+          "view": "right",
+          "image_id": 610,
+          "track_id": 207,
+          "barrier_subtype": "striped_board",
+          "range_supported": true,
+          "box": [
+            0.81565625,
+            0.5901111111111111,
+            0.92496875,
+            0.7499444444444445
+          ],
+          "confirmed": false,
+          "measured_diameter_m": 0.012,
+          "post_scores": [],
+          "source_jpeg_sha256": "370d76cec49903df181aa91f81051636b3c9b0b270d623df20453f6256b5c37d"
+        }
+      ]
+    }
+  ],
+  "chain_candidates": [
+    {
+      "frame": 2578,
+      "sim_time_s": 36.6,
+      "track_id": 17,
+      "raw_chain_support": {
+        "posts": [
+          2,
+          2
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.4691358024691358,
+      "confirmed": false,
+      "post_scores": [
+        0.373535,
+        0.308614
+      ],
+      "views": [
+        {
+          "view": "left",
+          "image_id": 65,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                84.195,
+                123.46
+              ],
+              "nearest_name": "BP_Lamppost_4_SM_2",
+              "center_distance_m": 0.309,
+              "semantic_tag": "Static"
+            },
+            {
+              "xy_m": [
+                85.726,
+                123.281
+              ],
+              "nearest_name": "BP_Lamppost_4_SM_2",
+              "center_distance_m": 1.779,
+              "semantic_tag": "Static"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 2622,
+      "sim_time_s": 41.0,
+      "track_id": 20,
+      "raw_chain_support": {
+        "posts": [
+          2,
+          4
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.2640603566529492,
+      "confirmed": false,
+      "post_scores": [
+        0.276478,
+        0.292727
+      ],
+      "views": [
+        {
+          "view": "left",
+          "image_id": 73,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                82.791,
+                123.346
+              ],
+              "nearest_name": "BP_Lamppost_4_SM_0",
+              "center_distance_m": 1.157,
+              "semantic_tag": "Static"
+            },
+            {
+              "xy_m": [
+                84.303,
+                123.507
+              ],
+              "nearest_name": "BP_Lamppost_4_SM_2",
+              "center_distance_m": 0.425,
+              "semantic_tag": "Static"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 2634,
+      "sim_time_s": 42.2,
+      "track_id": 22,
+      "raw_chain_support": {
+        "posts": [
+          4,
+          3
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.4074074074074074,
+      "confirmed": false,
+      "post_scores": [
+        0.260243,
+        0.24435
+      ],
+      "views": [
+        {
+          "view": "front",
+          "image_id": 78,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                92.177,
+                139.68
+              ],
+              "nearest_name": "SM_PlatformGarbage01_SM_0",
+              "center_distance_m": 0.882,
+              "semantic_tag": "Static"
+            },
+            {
+              "xy_m": [
+                93.497,
+                139.799
+              ],
+              "nearest_name": "SM_PlatformGarbage01_SM_0",
+              "center_distance_m": 0.559,
+              "semantic_tag": "Static"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 2650,
+      "sim_time_s": 43.8,
+      "track_id": 23,
+      "raw_chain_support": {
+        "posts": [
+          3,
+          4
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.7777777777777778,
+      "confirmed": false,
+      "post_scores": [
+        0.182518,
+        0.123741
+      ],
+      "views": [
+        {
+          "view": "left",
+          "image_id": 80,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                89.53,
+                123.412
+              ],
+              "nearest_name": "SM_TrashCan13_SM_0",
+              "center_distance_m": 0.203,
+              "semantic_tag": "Other"
+            },
+            {
+              "xy_m": [
+                90.91,
+                123.391
+              ],
+              "nearest_name": "SM_TrashCan12_SM_0",
+              "center_distance_m": 0.211,
+              "semantic_tag": "Other"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 2652,
+      "sim_time_s": 44.0,
+      "track_id": 23,
+      "raw_chain_support": {
+        "posts": [
+          3,
+          6
+        ],
+        "span_hits": 2
+      },
+      "raw_confidence": 0.6296296296296297,
+      "confirmed": false,
+      "post_scores": [
+        0.085548,
+        0.071495
+      ],
+      "views": [
+        {
+          "view": "left",
+          "image_id": 80,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                89.676,
+                123.413
+              ],
+              "nearest_name": "SM_TrashCan13_SM_0",
+              "center_distance_m": 0.252,
+              "semantic_tag": "Other"
+            },
+            {
+              "xy_m": [
+                91.045,
+                123.39
+              ],
+              "nearest_name": "SM_TrashCan12_SM_0",
+              "center_distance_m": 0.214,
+              "semantic_tag": "Other"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 2660,
+      "sim_time_s": 44.8,
+      "track_id": 24,
+      "raw_chain_support": {
+        "posts": [
+          6,
+          7
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.350480109739369,
+      "confirmed": false,
+      "post_scores": [
+        0.250539,
+        0.295443
+      ],
+      "views": [
+        {
+          "view": "rear_left",
+          "image_id": 87,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                89.848,
+                123.379
+              ],
+              "nearest_name": "SM_TrashCan13_SM_0",
+              "center_distance_m": 0.362,
+              "semantic_tag": "Other"
+            },
+            {
+              "xy_m": [
+                91.1,
+                123.39
+              ],
+              "nearest_name": "SM_TrashCan12_SM_0",
+              "center_distance_m": 0.239,
+              "semantic_tag": "Other"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 2697,
+      "sim_time_s": 48.5,
+      "track_id": 36,
+      "raw_chain_support": {
+        "posts": [
+          3,
+          3
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.22119341563786007,
+      "confirmed": false,
+      "post_scores": [
+        0.125629,
+        0.127995
+      ],
+      "views": [
+        {
+          "view": "right",
+          "image_id": 104,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                127.718,
+                142.7
+              ],
+              "nearest_name": "SM_TrasdhBag7_126_SM_0",
+              "center_distance_m": 0.031,
+              "semantic_tag": "Dynamic"
+            },
+            {
+              "xy_m": [
+                129.025,
+                143.414
+              ],
+              "nearest_name": "SM_StreetBarrier32_108_SM_0",
+              "center_distance_m": 0.194,
+              "semantic_tag": "Dynamic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 2728,
+      "sim_time_s": 51.6,
+      "track_id": 43,
+      "raw_chain_support": {
+        "posts": [
+          5,
+          2
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.2314814814814815,
+      "confirmed": false,
+      "post_scores": [
+        0.208642,
+        0.24042
+      ],
+      "views": [
+        {
+          "view": "front",
+          "image_id": 120,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                159.054,
+                128.987
+              ],
+              "nearest_name": "SM_TrasdhBag15_SM_0",
+              "center_distance_m": 0.06,
+              "semantic_tag": "Dynamic"
+            },
+            {
+              "xy_m": [
+                160.011,
+                127.927
+              ],
+              "nearest_name": "SM_TrasdhBag16_SM_0",
+              "center_distance_m": 0.149,
+              "semantic_tag": "Dynamic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 2781,
+      "sim_time_s": 56.9,
+      "track_id": 52,
+      "raw_chain_support": {
+        "posts": [
+          3,
+          5
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.21124828532235937,
+      "confirmed": false,
+      "post_scores": [
+        0.370507,
+        0.189569
+      ],
+      "views": [
+        {
+          "view": "right",
+          "image_id": 139,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                177.685,
+                90.442
+              ],
+              "nearest_name": "SM_TrashCan15_SM_0",
+              "center_distance_m": 0.43,
+              "semantic_tag": "Other"
+            },
+            {
+              "xy_m": [
+                176.772,
+                89.204
+              ],
+              "nearest_name": "SM_TrashCan15_SM_0",
+              "center_distance_m": 1.109,
+              "semantic_tag": "Other"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 3101,
+      "sim_time_s": 88.9,
+      "track_id": 75,
+      "raw_chain_support": {
+        "posts": [
+          2,
+          3
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.3240740740740741,
+      "confirmed": false,
+      "post_scores": [
+        0.354088,
+        0.344785
+      ],
+      "views": [
+        {
+          "view": "right",
+          "image_id": 239,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                222.566,
+                93.425
+              ],
+              "nearest_name": "SM_BusStop3_SM_1",
+              "center_distance_m": 0.051,
+              "semantic_tag": "Static"
+            },
+            {
+              "xy_m": [
+                223.739,
+                94.384
+              ],
+              "nearest_name": "SM_BusStop3_SM_1",
+              "center_distance_m": 1.502,
+              "semantic_tag": "Static"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 3110,
+      "sim_time_s": 89.8,
+      "track_id": 77,
+      "raw_chain_support": {
+        "posts": [
+          5,
+          2
+        ],
+        "span_hits": 2
+      },
+      "raw_confidence": 0.2630315500685871,
+      "confirmed": false,
+      "post_scores": [
+        0.326382,
+        0.380595
+      ],
+      "views": [
+        {
+          "view": "front",
+          "image_id": 243,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                222.625,
+                97.062
+              ],
+              "nearest_name": "SM_BusStop4_SM_1",
+              "center_distance_m": 0.068,
+              "semantic_tag": "Static"
+            },
+            {
+              "xy_m": [
+                223.7,
+                97.783
+              ],
+              "nearest_name": "SM_BusStop4_SM_1",
+              "center_distance_m": 1.346,
+              "semantic_tag": "Static"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 3733,
+      "sim_time_s": 152.1,
+      "track_id": 123,
+      "raw_chain_support": {
+        "posts": [
+          5,
+          2
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.4801097393689986,
+      "confirmed": false,
+      "post_scores": [
+        0.236028,
+        0.218673
+      ],
+      "views": [
+        {
+          "view": "right",
+          "image_id": 347,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                24.892,
+                183.952
+              ],
+              "nearest_name": "SM_TrasdhBag_818_SM_0",
+              "center_distance_m": 0.052,
+              "semantic_tag": "Dynamic"
+            },
+            {
+              "xy_m": [
+                23.533,
+                183.675
+              ],
+              "nearest_name": "SM_TrasdhBag2_821_SM_0",
+              "center_distance_m": 0.138,
+              "semantic_tag": "Dynamic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 3739,
+      "sim_time_s": 152.7,
+      "track_id": 125,
+      "raw_chain_support": {
+        "posts": [
+          3,
+          2
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.3333333333333333,
+      "confirmed": false,
+      "post_scores": [
+        0.219692,
+        0.199071
+      ],
+      "views": [
+        {
+          "view": "right",
+          "image_id": 349,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                24.791,
+                184.023
+              ],
+              "nearest_name": "SM_TrasdhBag_818_SM_0",
+              "center_distance_m": 0.114,
+              "semantic_tag": "Dynamic"
+            },
+            {
+              "xy_m": [
+                23.639,
+                183.648
+              ],
+              "nearest_name": "SM_TrasdhBag2_821_SM_0",
+              "center_distance_m": 0.051,
+              "semantic_tag": "Dynamic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 5029,
+      "sim_time_s": 281.7,
+      "track_id": 175,
+      "raw_chain_support": {
+        "posts": [
+          4,
+          4
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.345679012345679,
+      "confirmed": false,
+      "post_scores": [
+        0.272604,
+        0.197966
+      ],
+      "views": [
+        {
+          "view": "right",
+          "image_id": 508,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                -160.277,
+                -41.12
+              ],
+              "nearest_name": "BP_StreetLight_simple116_SM_2",
+              "center_distance_m": 10.089,
+              "semantic_tag": "Static"
+            },
+            {
+              "xy_m": [
+                -160.26,
+                -39.628
+              ],
+              "nearest_name": "BP_StreetLight_simple116_SM_2",
+              "center_distance_m": 8.97,
+              "semantic_tag": "Static"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 5031,
+      "sim_time_s": 281.9,
+      "track_id": 175,
+      "raw_chain_support": {
+        "posts": [
+          4,
+          3
+        ],
+        "span_hits": 5
+      },
+      "raw_confidence": 0.3895747599451303,
+      "confirmed": false,
+      "post_scores": [
+        0.349264,
+        0.228853
+      ],
+      "views": [
+        {
+          "view": "right",
+          "image_id": 508,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                -160.284,
+                -39.451
+              ],
+              "nearest_name": "BP_StreetLight_simple116_SM_2",
+              "center_distance_m": 8.863,
+              "semantic_tag": "Static"
+            },
+            {
+              "xy_m": [
+                -160.211,
+                -38.11
+              ],
+              "nearest_name": "BP_StreetLight_simple116_SM_2",
+              "center_distance_m": 7.933,
+              "semantic_tag": "Static"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 5157,
+      "sim_time_s": 294.5,
+      "track_id": 186,
+      "raw_chain_support": {
+        "posts": [
+          3,
+          3
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.462962962962963,
+      "confirmed": false,
+      "post_scores": [
+        0.264018,
+        0.366517
+      ],
+      "views": [
+        {
+          "view": "rear_right",
+          "image_id": 563,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                -158.208,
+                -3.699
+              ],
+              "nearest_name": "SM_StreetBarrier4_SM_0",
+              "center_distance_m": 0.092,
+              "semantic_tag": "Dynamic"
+            },
+            {
+              "xy_m": [
+                -158.242,
+                -2.199
+              ],
+              "nearest_name": "SM_StreetBarrier3_SM_0",
+              "center_distance_m": 0.403,
+              "semantic_tag": "Dynamic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 5264,
+      "sim_time_s": 305.2,
+      "track_id": 194,
+      "raw_chain_support": {
+        "posts": [
+          2,
+          2
+        ],
+        "span_hits": 3
+      },
+      "raw_confidence": 0.2908093278463649,
+      "confirmed": false,
+      "post_scores": [
+        0.178773,
+        0.281648
+      ],
+      "views": [
+        {
+          "view": "left",
+          "image_id": 574,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                -137.559,
+                32.258
+              ],
+              "nearest_name": "SM_BusStop10_SM_0",
+              "center_distance_m": 0.448,
+              "semantic_tag": "Static"
+            },
+            {
+              "xy_m": [
+                -137.921,
+                33.526
+              ],
+              "nearest_name": "SM_BusStop10_SM_1",
+              "center_distance_m": 1.381,
+              "semantic_tag": "Static"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 5383,
+      "sim_time_s": 317.1,
+      "track_id": 198,
+      "raw_chain_support": {
+        "posts": [
+          3,
+          5
+        ],
+        "span_hits": 2
+      },
+      "raw_confidence": 0.29732510288065844,
+      "confirmed": false,
+      "post_scores": [
+        0.169705,
+        0.177184
+      ],
+      "views": [
+        {
+          "view": "right",
+          "image_id": 592,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                -160.067,
+                74.067
+              ],
+              "nearest_name": "BP_StreetLight_simple143_SM_2",
+              "center_distance_m": 7.217,
+              "semantic_tag": "Static"
+            },
+            {
+              "xy_m": [
+                -160.24,
+                75.274
+              ],
+              "nearest_name": "BP_StreetLight_simple143_SM_2",
+              "center_distance_m": 6.822,
+              "semantic_tag": "Static"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 5441,
+      "sim_time_s": 322.9,
+      "track_id": 204,
+      "raw_chain_support": {
+        "posts": [
+          4,
+          4
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.3120713305898491,
+      "confirmed": false,
+      "post_scores": [
+        0.313316,
+        0.222065
+      ],
+      "views": [
+        {
+          "view": "right",
+          "image_id": 605,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                -158.31,
+                106.279
+              ],
+              "nearest_name": "SM_StreetBarrier7_SM_0",
+              "center_distance_m": 0.579,
+              "semantic_tag": "Dynamic"
+            },
+            {
+              "xy_m": [
+                -157.039,
+                106.717
+              ],
+              "nearest_name": "SM_StreetBarrier6_SM_0",
+              "center_distance_m": 1.485,
+              "semantic_tag": "Dynamic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 5475,
+      "sim_time_s": 326.3,
+      "track_id": 210,
+      "raw_chain_support": {
+        "posts": [
+          3,
+          2
+        ],
+        "span_hits": 1
+      },
+      "raw_confidence": 0.4022633744855967,
+      "confirmed": false,
+      "post_scores": [
+        0.087252,
+        0.29747
+      ],
+      "views": [
+        {
+          "view": "rear_right",
+          "image_id": 622,
+          "scorer_nearest_posts": [
+            {
+              "xy_m": [
+                -158.288,
+                103.689
+              ],
+              "nearest_name": "SM_StreetBarrier8_SM_0",
+              "center_distance_m": 0.211,
+              "semantic_tag": "Dynamic"
+            },
+            {
+              "xy_m": [
+                -158.291,
+                105.29
+              ],
+              "nearest_name": "SM_StreetBarrier7_SM_0",
+              "center_distance_m": 0.41,
+              "semantic_tag": "Dynamic"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

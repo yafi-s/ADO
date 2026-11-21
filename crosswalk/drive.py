@@ -322,6 +322,7 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                     surface = surface[(surface[:, 2] > .20) & (surface[:, 2] < 5.0)]
                     sparse = surface[::max(1, math.ceil(len(surface) / 180))]
                     measured.update(perception_version="surround-v1", signals=signal_reads,
+                                    barrier_review=surround_perception.barrier_review,
                                     lidar_xyz=sparse.astype(float).round(2).tolist(),
                                     corner_radar=surround_perception.radar_points,
                                     camera_detections=surround_perception.view_detections,

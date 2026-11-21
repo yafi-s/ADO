@@ -48,7 +48,7 @@ def evaluate(archive_path):
             rgb = read_rgb(archive.read(n+".jpg"))
             with np.load(io.BytesIO(archive.read(n+".npz"))) as packet:
                 cloud = packet["lidar"].astype(np.float32)
-            detections = detector.detect(rgb) + detect(rgb, cloud, "front")
+            detections = detector.detect(rgb) + detect(rgb, cloud, "front", verify_posts=False)
             tracks = Tracker(surround=True).update(cloud,np.empty((0,4)),{"front":detections},(0.,0.,0.),0.)
             expected = {"chain": "chain", "barricade": "striped_board"}.get(case)
             predicted = []
