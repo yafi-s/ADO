@@ -1,0 +1,2008 @@
+{
+  "schema": "ado-chain-recognition-v1",
+  "archive_sha256": "1abd44fe9bfbc0e0b4b4da81533132961303341850d547b0dc71bc015a6a683b",
+  "detector_source_sha256": "f3b3f4ee3c29f4713555adda05497d2737722464ef05cb4cefe25af1e9a2ef4c",
+  "exposures": 216,
+  "by_condition": {
+    "raw_chain": {
+      "exposures": 24
+    },
+    "chain": {
+      "fresh_predictions": 6,
+      "exposures": 24,
+      "matched": 6,
+      "missed": 18,
+      "distinct_matched_site_distance_pairs": 6
+    },
+    "unlinked": {
+      "exposures": 24
+    },
+    "lone_post": {
+      "exposures": 24
+    },
+    "warning": {
+      "exposures": 24
+    },
+    "barrel": {
+      "exposures": 24
+    },
+    "cone": {
+      "exposures": 24
+    },
+    "barricade": {
+      "fresh_predictions": 24,
+      "exposures": 24,
+      "matched": 24,
+      "missed": 0,
+      "distinct_matched_site_distance_pairs": 24
+    },
+    "clear": {
+      "exposures": 24
+    }
+  },
+  "unmatched_predictions": 0,
+  "frames": [
+    {
+      "name": "fit_0_raw_chain_5",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_raw_chain_7",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_raw_chain_10",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_raw_chain_13",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_raw_chain_16",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_raw_chain_20",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_chain_5",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.7037,
+          "center_error_m": 0.0079,
+          "laser_hits": 17,
+          "chain_support": {
+            "posts": [
+              10,
+              6
+            ],
+            "span_hits": 1
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          7,
+          6
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "fit_0_chain_7",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          2,
+          4
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "fit_0_chain_10",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.3512,
+          "center_error_m": 0.0302,
+          "laser_hits": 6,
+          "chain_support": {
+            "posts": [
+              2,
+              2
+            ],
+            "span_hits": 2
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          2,
+          2
+        ],
+        "interior_corridor_hits": 2
+      }
+    },
+    {
+      "name": "fit_0_chain_13",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          1,
+          0
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "fit_0_chain_16",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          2,
+          1
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "fit_0_chain_20",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          1,
+          2
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "fit_0_unlinked_5",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_unlinked_7",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_unlinked_10",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_unlinked_13",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_unlinked_16",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_unlinked_20",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_lone_post_5",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_lone_post_7",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_lone_post_10",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_lone_post_13",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_lone_post_16",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_lone_post_20",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_warning_5",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_warning_7",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_warning_10",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_warning_13",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_warning_16",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_warning_20",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_barrel_5",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_barrel_7",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_barrel_10",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_barrel_13",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_barrel_16",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_barrel_20",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_cone_5",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_cone_7",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_cone_10",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_cone_13",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_cone_16",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_cone_20",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_barricade_5",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.9215,
+          "center_error_m": 0.0931,
+          "laser_hits": 65,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_barricade_7",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.9506,
+          "center_error_m": 0.1134,
+          "laser_hits": 37,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_barricade_10",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.9275,
+          "center_error_m": 0.0791,
+          "laser_hits": 23,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_barricade_13",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8936,
+          "center_error_m": 0.0426,
+          "laser_hits": 8,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_barricade_16",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8636,
+          "center_error_m": 0.0367,
+          "laser_hits": 7,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_barricade_20",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8248,
+          "center_error_m": 0.1385,
+          "laser_hits": 4,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_clear_5",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_clear_7",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_clear_10",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_clear_13",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_clear_16",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_0_clear_20",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_raw_chain_5",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_raw_chain_7",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_raw_chain_10",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_raw_chain_13",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_raw_chain_16",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_raw_chain_20",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_chain_5",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.8889,
+          "center_error_m": 0.0239,
+          "laser_hits": 11,
+          "chain_support": {
+            "posts": [
+              4,
+              6
+            ],
+            "span_hits": 1
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          6,
+          4
+        ],
+        "interior_corridor_hits": 2
+      }
+    },
+    {
+      "name": "fit_1_chain_7",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.6121,
+          "center_error_m": 0.0269,
+          "laser_hits": 12,
+          "chain_support": {
+            "posts": [
+              5,
+              4
+            ],
+            "span_hits": 3
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          3,
+          4
+        ],
+        "interior_corridor_hits": 3
+      }
+    },
+    {
+      "name": "fit_1_chain_10",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          2,
+          4
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "fit_1_chain_13",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          4,
+          0
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "fit_1_chain_16",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          0,
+          1
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "fit_1_chain_20",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          1,
+          0
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "fit_1_unlinked_5",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_unlinked_7",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_unlinked_10",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_unlinked_13",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_unlinked_16",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_unlinked_20",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_lone_post_5",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_lone_post_7",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_lone_post_10",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_lone_post_13",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_lone_post_16",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_lone_post_20",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_warning_5",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_warning_7",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_warning_10",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_warning_13",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_warning_16",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_warning_20",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_barrel_5",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_barrel_7",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_barrel_10",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_barrel_13",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_barrel_16",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_barrel_20",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_cone_5",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_cone_7",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_cone_10",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_cone_13",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_cone_16",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_cone_20",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_barricade_5",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8412,
+          "center_error_m": 0.0632,
+          "laser_hits": 70,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_barricade_7",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.933,
+          "center_error_m": 0.0291,
+          "laser_hits": 45,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_barricade_10",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.9327,
+          "center_error_m": 0.035,
+          "laser_hits": 18,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_barricade_13",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8845,
+          "center_error_m": 0.0899,
+          "laser_hits": 11,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_barricade_16",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8565,
+          "center_error_m": 0.0619,
+          "laser_hits": 10,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_barricade_20",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8087,
+          "center_error_m": 0.0311,
+          "laser_hits": 3,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_clear_5",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_clear_7",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_clear_10",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_clear_13",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_clear_16",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "fit_1_clear_20",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_raw_chain_5",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_raw_chain_7",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_raw_chain_10",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_raw_chain_13",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_raw_chain_16",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_raw_chain_20",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_chain_5",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.439,
+          "center_error_m": 0.033,
+          "laser_hits": 15,
+          "chain_support": {
+            "posts": [
+              8,
+              5
+            ],
+            "span_hits": 2
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          11,
+          7
+        ],
+        "interior_corridor_hits": 3
+      }
+    },
+    {
+      "name": "holdout_2_chain_7",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          6,
+          4
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "holdout_2_chain_10",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          3,
+          1
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "holdout_2_chain_13",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          0,
+          1
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "holdout_2_chain_16",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          0,
+          1
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "holdout_2_chain_20",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          0,
+          1
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "holdout_2_unlinked_5",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_unlinked_7",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_unlinked_10",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_unlinked_13",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_unlinked_16",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_unlinked_20",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_lone_post_5",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_lone_post_7",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_lone_post_10",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_lone_post_13",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_lone_post_16",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_lone_post_20",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_warning_5",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_warning_7",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_warning_10",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_warning_13",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_warning_16",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_warning_20",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_barrel_5",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_barrel_7",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_barrel_10",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_barrel_13",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_barrel_16",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_barrel_20",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_cone_5",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_cone_7",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_cone_10",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_cone_13",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_cone_16",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_cone_20",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_barricade_5",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8443,
+          "center_error_m": 0.0871,
+          "laser_hits": 52,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_barricade_7",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8377,
+          "center_error_m": 0.1057,
+          "laser_hits": 29,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_barricade_10",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8391,
+          "center_error_m": 0.0295,
+          "laser_hits": 17,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_barricade_13",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.9256,
+          "center_error_m": 0.0952,
+          "laser_hits": 4,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_barricade_16",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8907,
+          "center_error_m": 0.0794,
+          "laser_hits": 8,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_barricade_20",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.821,
+          "center_error_m": 0.36,
+          "laser_hits": 4,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_clear_5",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_clear_7",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_clear_10",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_clear_13",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_clear_16",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_2_clear_20",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_raw_chain_5",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_raw_chain_7",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_raw_chain_10",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_raw_chain_13",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_raw_chain_16",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_raw_chain_20",
+      "condition": "raw_chain",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_chain_5",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [
+        {
+          "subtype": "chain",
+          "score": 0.4979,
+          "center_error_m": 0.0118,
+          "laser_hits": 14,
+          "chain_support": {
+            "posts": [
+              6,
+              7
+            ],
+            "span_hits": 1
+          },
+          "matched": true
+        }
+      ],
+      "reference_range": {
+        "posts": [
+          4,
+          8
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "holdout_3_chain_7",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          2,
+          3
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "holdout_3_chain_10",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          4,
+          2
+        ],
+        "interior_corridor_hits": 2
+      }
+    },
+    {
+      "name": "holdout_3_chain_13",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          0,
+          2
+        ],
+        "interior_corridor_hits": 1
+      }
+    },
+    {
+      "name": "holdout_3_chain_16",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          0,
+          2
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "holdout_3_chain_20",
+      "condition": "chain",
+      "target_subtype": "chain",
+      "measurements": [],
+      "reference_range": {
+        "posts": [
+          0,
+          1
+        ],
+        "interior_corridor_hits": 0
+      }
+    },
+    {
+      "name": "holdout_3_unlinked_5",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_unlinked_7",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_unlinked_10",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_unlinked_13",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_unlinked_16",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_unlinked_20",
+      "condition": "unlinked",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_lone_post_5",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_lone_post_7",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_lone_post_10",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_lone_post_13",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_lone_post_16",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_lone_post_20",
+      "condition": "lone_post",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_warning_5",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_warning_7",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_warning_10",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_warning_13",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_warning_16",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_warning_20",
+      "condition": "warning",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_barrel_5",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_barrel_7",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_barrel_10",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_barrel_13",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_barrel_16",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_barrel_20",
+      "condition": "barrel",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_cone_5",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_cone_7",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_cone_10",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_cone_13",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_cone_16",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_cone_20",
+      "condition": "cone",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_barricade_5",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8,
+          "center_error_m": 0.0635,
+          "laser_hits": 69,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_barricade_7",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.9097,
+          "center_error_m": 0.0614,
+          "laser_hits": 40,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_barricade_10",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8802,
+          "center_error_m": 0.1116,
+          "laser_hits": 12,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_barricade_13",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.8603,
+          "center_error_m": 0.2449,
+          "laser_hits": 14,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_barricade_16",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.836,
+          "center_error_m": 0.1042,
+          "laser_hits": 5,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_barricade_20",
+      "condition": "barricade",
+      "target_subtype": "striped_board",
+      "measurements": [
+        {
+          "subtype": "striped_board",
+          "score": 0.7322,
+          "center_error_m": 0.1404,
+          "laser_hits": 6,
+          "chain_support": null,
+          "matched": true
+        }
+      ],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_clear_5",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_clear_7",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_clear_10",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_clear_13",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_clear_16",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    },
+    {
+      "name": "holdout_3_clear_20",
+      "condition": "clear",
+      "target_subtype": null,
+      "measurements": [],
+      "reference_range": null
+    }
+  ]
+}

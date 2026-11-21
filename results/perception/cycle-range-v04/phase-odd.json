@@ -1,0 +1,2011 @@
+{
+  "baseline": "ae31697ea43aa9f773c7e73a5bcd3114b3547175",
+  "camera_phase": 1,
+  "match_radius_m": 1.5,
+  "results": {
+    "development/rear": {
+      "frames": 15,
+      "rgb_bicycle_frames": 2
+    },
+    "development/oblique": {
+      "frames": 15,
+      "rgb_bicycle_frames": 7,
+      "after_cycle_frames": 10,
+      "associated_frames": 10,
+      "fresh_association_with_doppler": 5
+    },
+    "development/side": {
+      "frames": 15,
+      "rgb_bicycle_frames": 7,
+      "after_cycle_frames": 8,
+      "associated_frames": 8,
+      "fresh_association_with_doppler": 4,
+      "before_false_bicycle_frames": 4,
+      "before_cycle_frames": 4,
+      "before_duplicates": 4
+    },
+    "development/walk": {
+      "frames": 15,
+      "before_walk_frames": 14,
+      "after_walk_frames": 14
+    },
+    "development/near_walker": {
+      "frames": 15,
+      "before_walk_frames": 14,
+      "after_walk_frames": 14,
+      "rgb_bicycle_frames": 6,
+      "before_cycle_frames": 10,
+      "before_duplicates": 10,
+      "after_cycle_frames": 10,
+      "after_duplicates": 2,
+      "associated_frames": 8,
+      "fresh_association_with_doppler": 4,
+      "fresh_exclusive_frames": 1
+    },
+    "development/stationary_cycle": {
+      "frames": 15,
+      "rgb_bicycle_frames": 6,
+      "before_false_bicycle_frames": 4,
+      "before_cycle_frames": 4,
+      "before_duplicates": 4,
+      "after_cycle_frames": 4,
+      "after_duplicates": 4
+    },
+    "heldout/rear": {
+      "frames": 15,
+      "rgb_bicycle_frames": 3,
+      "after_cycle_frames": 2,
+      "associated_frames": 2,
+      "fresh_association_with_doppler": 1
+    },
+    "heldout/oblique": {
+      "frames": 15,
+      "rgb_bicycle_frames": 6,
+      "after_cycle_frames": 6,
+      "associated_frames": 6,
+      "fresh_association_with_doppler": 3
+    },
+    "heldout/side": {
+      "frames": 15,
+      "rgb_bicycle_frames": 7,
+      "after_cycle_frames": 4,
+      "associated_frames": 4,
+      "fresh_association_with_doppler": 2,
+      "before_cycle_frames": 2,
+      "before_duplicates": 2
+    },
+    "heldout/walk": {
+      "frames": 15,
+      "before_walk_frames": 12,
+      "after_walk_frames": 12
+    },
+    "heldout/near_walker": {
+      "frames": 15,
+      "before_walk_frames": 14,
+      "after_walk_frames": 14,
+      "rgb_bicycle_frames": 6,
+      "after_cycle_frames": 8,
+      "associated_frames": 8,
+      "fresh_association_with_doppler": 4,
+      "before_cycle_frames": 6,
+      "before_duplicates": 6
+    },
+    "heldout/stationary_cycle": {
+      "frames": 15,
+      "rgb_bicycle_frames": 7,
+      "before_cycle_frames": 8,
+      "before_duplicates": 8,
+      "after_cycle_frames": 8,
+      "after_duplicates": 8
+    }
+  },
+  "associations": [
+    {
+      "stem": "development-oblique-05",
+      "id": 1,
+      "xy": [
+        10.518031782936735,
+        -0.39729601878094745
+      ],
+      "center_error_m": 0.11966486518967402,
+      "doppler": {
+        "radar": {
+          "hits": 215,
+          "radial_mps": -3.492236852645874
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4426833152770996,
+        0.5588612450493706,
+        0.5008145332336426,
+        0.6513063642713759
+      ],
+      "rider_box": [
+        0.4550042629241943,
+        0.49272486368815105,
+        0.5016636371612548,
+        0.6414485507541232
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 18,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.5816779492222008,
+        1.500136491656303
+      ]
+    },
+    {
+      "stem": "development-oblique-06",
+      "id": 1,
+      "xy": [
+        10.281207081659696,
+        -0.1829478397718027
+      ],
+      "center_error_m": 0.10533089635730204,
+      "doppler": {
+        "radar": {
+          "hits": 327,
+          "radial_mps": -3.4975662231445312
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4426833152770996,
+        0.5588612450493706,
+        0.5008145332336426,
+        0.6513063642713759
+      ],
+      "rider_box": [
+        0.4550042629241943,
+        0.49272486368815105,
+        0.5016636371612548,
+        0.6414485507541232
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.10000000000000009,
+      "estimated_size_m": [
+        1.7,
+        0.5816779492222008,
+        1.500136491656303
+      ]
+    },
+    {
+      "stem": "development-oblique-07",
+      "id": 1,
+      "xy": [
+        10.022790471652996,
+        0.07344898375561165
+      ],
+      "center_error_m": 0.1476567494823088,
+      "doppler": {
+        "radar": {
+          "hits": 345,
+          "radial_mps": -3.4981071949005127
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4710685729980469,
+        0.5664314270019531,
+        0.5255946159362793,
+        0.6622660319010417
+      ],
+      "rider_box": [
+        0.4785312652587891,
+        0.4938315921359592,
+        0.5263285636901855,
+        0.6466075897216796
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 20,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 4,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.326,
+        0.6452434289337292,
+        1.3121709585189818
+      ]
+    },
+    {
+      "stem": "development-oblique-08",
+      "id": 1,
+      "xy": [
+        9.70470746900344,
+        0.1444975435123382
+      ],
+      "center_error_m": 0.07059294166803874,
+      "doppler": {
+        "radar": {
+          "hits": 362,
+          "radial_mps": -3.498481273651123
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4710685729980469,
+        0.5664314270019531,
+        0.5255946159362793,
+        0.6622660319010417
+      ],
+      "rider_box": [
+        0.4785312652587891,
+        0.4938315921359592,
+        0.5263285636901855,
+        0.6466075897216796
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 4,
+      "age_s": 0.09999999999999998,
+      "estimated_size_m": [
+        1.326,
+        0.6452434289337292,
+        1.3121709585189818
+      ]
+    },
+    {
+      "stem": "development-oblique-09",
+      "id": 1,
+      "xy": [
+        9.473732500438018,
+        0.23509758145048684
+      ],
+      "center_error_m": 0.10810607621746521,
+      "doppler": {
+        "radar": {
+          "hits": 344,
+          "radial_mps": -3.497659683227539
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4852128505706787,
+        0.5751999749077691,
+        0.5412845134735107,
+        0.6710744222005208
+      ],
+      "rider_box": [
+        0.49111075401306153,
+        0.4951825883653429,
+        0.5449911594390869,
+        0.6580813513861762
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 24,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 5,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.6630776801544984,
+        1.5063285678625102
+      ]
+    },
+    {
+      "stem": "development-oblique-10",
+      "id": 1,
+      "xy": [
+        9.203806881504603,
+        0.4175168895793486
+      ],
+      "center_error_m": 0.10668004412726007,
+      "doppler": {
+        "radar": {
+          "hits": 326,
+          "radial_mps": -3.4951953887939453
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4852128505706787,
+        0.5751999749077691,
+        0.5412845134735107,
+        0.6710744222005208
+      ],
+      "rider_box": [
+        0.49111075401306153,
+        0.4951825883653429,
+        0.5449911594390869,
+        0.6580813513861762
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 5,
+      "age_s": 0.09999999999999998,
+      "estimated_size_m": [
+        1.7,
+        0.6630776801544984,
+        1.5063285678625102
+      ]
+    },
+    {
+      "stem": "development-oblique-11",
+      "id": 1,
+      "xy": [
+        8.992074083788571,
+        0.5788070849755452
+      ],
+      "center_error_m": 0.16800173650403694,
+      "doppler": {
+        "radar": {
+          "hits": 270,
+          "radial_mps": -3.4904227256774902
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.506797456741333,
+        0.5759175618489584,
+        0.5613643169403076,
+        0.6850237528483073
+      ],
+      "rider_box": [
+        0.5129491806030273,
+        0.4902944776746962,
+        0.5679115295410156,
+        0.6633346557617188
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 24,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 6,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.6748636612224832,
+        1.3995277702808377
+      ]
+    },
+    {
+      "stem": "development-oblique-12",
+      "id": 1,
+      "xy": [
+        8.609370354537758,
+        0.6129888432074945
+      ],
+      "center_error_m": 0.08402795538243672,
+      "doppler": {
+        "radar": {
+          "hits": 221,
+          "radial_mps": -3.4838993549346924
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.506797456741333,
+        0.5759175618489584,
+        0.5613643169403076,
+        0.6850237528483073
+      ],
+      "rider_box": [
+        0.5129491806030273,
+        0.4902944776746962,
+        0.5679115295410156,
+        0.6633346557617188
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 6,
+      "age_s": 0.10000000000000009,
+      "estimated_size_m": [
+        1.7,
+        0.6748636612224832,
+        1.3995277702808377
+      ]
+    },
+    {
+      "stem": "development-oblique-13",
+      "id": 1,
+      "xy": [
+        8.318003818073525,
+        0.7960347924384166
+      ],
+      "center_error_m": 0.03785207432979919,
+      "doppler": {
+        "radar": {
+          "hits": 219,
+          "radial_mps": -3.476696252822876
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5294325828552247,
+        0.5771002027723524,
+        0.5836311340332031,
+        0.7030050489637587
+      ],
+      "rider_box": [
+        0.5335333824157715,
+        0.4965001000298394,
+        0.5931501388549805,
+        0.6801363203260634
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 25,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 6,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.6581508717481062,
+        1.457730996608734
+      ]
+    },
+    {
+      "stem": "development-oblique-14",
+      "id": 1,
+      "xy": [
+        8.022060822176256,
+        0.9352239208209041
+      ],
+      "center_error_m": 0.024998504346535354,
+      "doppler": {
+        "radar": {
+          "hits": 193,
+          "radial_mps": -3.4616644382476807
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5294325828552247,
+        0.5771002027723524,
+        0.5836311340332031,
+        0.7030050489637587
+      ],
+      "rider_box": [
+        0.5335333824157715,
+        0.4965001000298394,
+        0.5931501388549805,
+        0.6801363203260634
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 6,
+      "age_s": 0.10000000000000009,
+      "estimated_size_m": [
+        1.7,
+        0.6581508717481062,
+        1.457730996608734
+      ]
+    },
+    {
+      "stem": "development-side-07",
+      "id": 1,
+      "xy": [
+        9.825532433757223,
+        -0.11406076522483077
+      ],
+      "center_error_m": 0.1254038976676928,
+      "doppler": {
+        "radar": {
+          "hits": 360,
+          "radial_mps": -3.4977235794067383
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.45532846450805664,
+        0.5581525166829427,
+        0.5401705741882324,
+        0.656689198811849
+      ],
+      "rider_box": [
+        0.4679386615753174,
+        0.49287007649739584,
+        0.5185858249664307,
+        0.6395203484429254
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 20,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.326,
+        0.51,
+        1.3125685304403305
+      ]
+    },
+    {
+      "stem": "development-side-08",
+      "id": 1,
+      "xy": [
+        9.483771559552448,
+        0.017540293817769892
+      ],
+      "center_error_m": 0.1855779306373989,
+      "doppler": {
+        "radar": {
+          "hits": 431,
+          "radial_mps": -3.498300313949585
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.45532846450805664,
+        0.5581525166829427,
+        0.5401705741882324,
+        0.656689198811849
+      ],
+      "rider_box": [
+        0.4679386615753174,
+        0.49287007649739584,
+        0.5185858249664307,
+        0.6395203484429254
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.09999999999999998,
+      "estimated_size_m": [
+        1.326,
+        0.51,
+        1.3125685304403305
+      ]
+    },
+    {
+      "stem": "development-side-09",
+      "id": 1,
+      "xy": [
+        9.455979339041786,
+        0.23444555018257754
+      ],
+      "center_error_m": 0.09110237117856132,
+      "doppler": {
+        "radar": {
+          "hits": 396,
+          "radial_mps": -3.498008966445923
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.47002692222595216,
+        0.5724587334526909,
+        0.5580187320709229,
+        0.6682090759277344
+      ],
+      "rider_box": [
+        0.4846475601196289,
+        0.4935775332980686,
+        0.5339715957641602,
+        0.6609172821044922
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 19,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 4,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.7102200042045863,
+        1.5311933755874632
+      ]
+    },
+    {
+      "stem": "development-side-10",
+      "id": 1,
+      "xy": [
+        8.960997564197351,
+        0.39898298371418095
+      ],
+      "center_error_m": 0.13758021278115323,
+      "doppler": {
+        "radar": {
+          "hits": 371,
+          "radial_mps": -3.497230291366577
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.47002692222595216,
+        0.5724587334526909,
+        0.5580187320709229,
+        0.6682090759277344
+      ],
+      "rider_box": [
+        0.4846475601196289,
+        0.4935775332980686,
+        0.5339715957641602,
+        0.6609172821044922
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 4,
+      "age_s": 0.09999999999999998,
+      "estimated_size_m": [
+        1.7,
+        0.7102200042045863,
+        1.5311933755874632
+      ]
+    },
+    {
+      "stem": "development-side-11",
+      "id": 1,
+      "xy": [
+        8.948587704907009,
+        0.397875424310422
+      ],
+      "center_error_m": 0.1859845374718676,
+      "doppler": {
+        "radar": {
+          "hits": 326,
+          "radial_mps": -3.493865966796875
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4869297981262207,
+        0.558321295844184,
+        0.581837272644043,
+        0.6816278245713976
+      ],
+      "rider_box": [
+        0.5038228034973145,
+        0.4916973114013672,
+        0.5593277931213378,
+        0.6669392479790581
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 30,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 5,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.7729426657366407,
+        1.5770323842763898
+      ]
+    },
+    {
+      "stem": "development-side-12",
+      "id": 1,
+      "xy": [
+        8.47290383260373,
+        0.6112339177346149
+      ],
+      "center_error_m": 0.10992639138483583,
+      "doppler": {
+        "radar": {
+          "hits": 303,
+          "radial_mps": -3.486016273498535
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4869297981262207,
+        0.558321295844184,
+        0.581837272644043,
+        0.6816278245713976
+      ],
+      "rider_box": [
+        0.5038228034973145,
+        0.4916973114013672,
+        0.5593277931213378,
+        0.6669392479790581
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 5,
+      "age_s": 0.10000000000000009,
+      "estimated_size_m": [
+        1.7,
+        0.7729426657366407,
+        1.5770323842763898
+      ]
+    },
+    {
+      "stem": "development-side-13",
+      "id": 1,
+      "xy": [
+        8.491144579983914,
+        0.735408913377076
+      ],
+      "center_error_m": 0.21940302704070688,
+      "doppler": {
+        "radar": {
+          "hits": 234,
+          "radial_mps": -3.4805641174316406
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5046974182128906,
+        0.5705932193332248,
+        0.6087747573852539,
+        0.6961654239230686
+      ],
+      "rider_box": [
+        0.5228349685668945,
+        0.49610328674316406,
+        0.5865425109863281,
+        0.6807574378119574
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 28,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 6,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.7940055132044248,
+        1.5636564761400218
+      ]
+    },
+    {
+      "stem": "development-side-14",
+      "id": 1,
+      "xy": [
+        7.935478634762265,
+        0.9343674654672351
+      ],
+      "center_error_m": 0.08713319322641742,
+      "doppler": {
+        "radar": {
+          "hits": 202,
+          "radial_mps": -3.4658055305480957
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5046974182128906,
+        0.5705932193332248,
+        0.6087747573852539,
+        0.6961654239230686
+      ],
+      "rider_box": [
+        0.5228349685668945,
+        0.49610328674316406,
+        0.5865425109863281,
+        0.6807574378119574
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 6,
+      "age_s": 0.10000000000000009,
+      "estimated_size_m": [
+        1.7,
+        0.7940055132044248,
+        1.5636564761400218
+      ]
+    },
+    {
+      "stem": "development-near_walker-07",
+      "id": 1,
+      "xy": [
+        9.907607753425857,
+        -0.11388238653207017
+      ],
+      "center_error_m": 0.09389631279776894,
+      "doppler": {
+        "radar": {
+          "hits": 345,
+          "radial_mps": -3.4979586601257324
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.46357879638671873,
+        0.5693423800998264,
+        0.5283534049987793,
+        0.6588946024576823
+      ],
+      "rider_box": [
+        0.46846914291381836,
+        0.4935675303141276,
+        0.508644962310791,
+        0.6477005428738064
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 19,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.51,
+        1.5257284700870508
+      ]
+    },
+    {
+      "stem": "development-near_walker-08",
+      "id": 1,
+      "xy": [
+        9.575620996825625,
+        0.07292246074635744
+      ],
+      "center_error_m": 0.07855036504623099,
+      "doppler": {
+        "radar": {
+          "hits": 385,
+          "radial_mps": -3.4982118606567383
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.46357879638671873,
+        0.5693423800998264,
+        0.5283534049987793,
+        0.6588946024576823
+      ],
+      "rider_box": [
+        0.46846914291381836,
+        0.4935675303141276,
+        0.508644962310791,
+        0.6477005428738064
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.09999999999999998,
+      "estimated_size_m": [
+        1.7,
+        0.51,
+        1.5257284700870508
+      ]
+    },
+    {
+      "stem": "development-near_walker-09",
+      "id": 1,
+      "xy": [
+        9.427867196683511,
+        0.24959530448632136
+      ],
+      "center_error_m": 0.060239721738804784,
+      "doppler": {
+        "radar": {
+          "hits": 373,
+          "radial_mps": -3.4979541301727295
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.48006205558776854,
+        0.569242180718316,
+        0.5474350452423096,
+        0.6705109490288629
+      ],
+      "rider_box": [
+        0.4897709846496582,
+        0.49804619683159723,
+        0.5277510643005371,
+        0.6507525126139323
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 17,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 4,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.7007357286343114,
+        1.5293259978294371
+      ]
+    },
+    {
+      "stem": "development-near_walker-10",
+      "id": 1,
+      "xy": [
+        8.996479816703706,
+        0.3847288399603278
+      ],
+      "center_error_m": 0.10323070060069951,
+      "doppler": {
+        "radar": {
+          "hits": 331,
+          "radial_mps": -3.4973597526550293
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.48006205558776854,
+        0.569242180718316,
+        0.5474350452423096,
+        0.6705109490288629
+      ],
+      "rider_box": [
+        0.4897709846496582,
+        0.49804619683159723,
+        0.5277510643005371,
+        0.6507525126139323
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 4,
+      "age_s": 0.09999999999999998,
+      "estimated_size_m": [
+        1.7,
+        0.7007357286343114,
+        1.5293259978294371
+      ]
+    },
+    {
+      "stem": "development-near_walker-11",
+      "id": 1,
+      "xy": [
+        8.9046072380241,
+        0.513260065820859
+      ],
+      "center_error_m": 0.0805548691017581,
+      "doppler": {
+        "radar": {
+          "hits": 295,
+          "radial_mps": -3.491661548614502
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.49776039123535154,
+        0.5749368879530165,
+        0.5681724548339844,
+        0.6847963545057508
+      ],
+      "rider_box": [
+        0.5065151691436768,
+        0.4970218234592014,
+        0.5509693622589111,
+        0.6638483683268229
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "bicycle-exclusive lidar",
+      "surface_hits": 28,
+      "bicycle_exclusive_hits": 4,
+      "bicycle_surface_xyz": [
+        [
+          8.37,
+          0.0,
+          0.511
+        ],
+        [
+          8.595,
+          0.324,
+          0.268
+        ],
+        [
+          9.088,
+          0.917,
+          0.551
+        ],
+        [
+          9.223,
+          1.048,
+          0.316
+        ]
+      ],
+      "paired_observations": 5,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.7664211119304992,
+        1.5191921889781947
+      ]
+    },
+    {
+      "stem": "development-near_walker-12",
+      "id": 1,
+      "xy": [
+        8.525000031999092,
+        0.6542570865752982
+      ],
+      "center_error_m": 0.04237995189640371,
+      "doppler": {
+        "radar": {
+          "hits": 241,
+          "radial_mps": -3.4839859008789062
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.49776039123535154,
+        0.5749368879530165,
+        0.5681724548339844,
+        0.6847963545057508
+      ],
+      "rider_box": [
+        0.5065151691436768,
+        0.4970218234592014,
+        0.5509693622589111,
+        0.6638483683268229
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "bicycle-exclusive lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 5,
+      "age_s": 0.10000000000000009,
+      "estimated_size_m": [
+        1.7,
+        0.7664211119304992,
+        1.5191921889781947
+      ]
+    },
+    {
+      "stem": "development-near_walker-13",
+      "id": 1,
+      "xy": [
+        8.42426885295581,
+        0.7316646799163032
+      ],
+      "center_error_m": 0.16180491969690947,
+      "doppler": {
+        "radar": {
+          "hits": 228,
+          "radial_mps": -3.47391939163208
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5203276634216308,
+        0.5705247243245443,
+        0.5911552429199218,
+        0.6994730207655165
+      ],
+      "rider_box": [
+        0.5286644458770752,
+        0.4945818583170573,
+        0.5761041164398193,
+        0.6685162862141927
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 26,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 6,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.5777940857060746,
+        1.5769347578287123
+      ]
+    },
+    {
+      "stem": "development-near_walker-14",
+      "id": 1,
+      "xy": [
+        8.080661837773583,
+        0.9567077287814244
+      ],
+      "center_error_m": 0.06199409510614875,
+      "doppler": {
+        "radar": {
+          "hits": 209,
+          "radial_mps": -3.4646520614624023
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5203276634216308,
+        0.5705247243245443,
+        0.5911552429199218,
+        0.6994730207655165
+      ],
+      "rider_box": [
+        0.5286644458770752,
+        0.4945818583170573,
+        0.5761041164398193,
+        0.6685162862141927
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 6,
+      "age_s": 0.10000000000000009,
+      "estimated_size_m": [
+        1.7,
+        0.5777940857060746,
+        1.5769347578287123
+      ]
+    },
+    {
+      "stem": "heldout-rear-07",
+      "id": 1,
+      "xy": [
+        9.626093091759264,
+        0.0005098156640532814
+      ],
+      "center_error_m": 0.2839953546991504,
+      "doppler": {
+        "radar": {
+          "hits": 348,
+          "radial_mps": -3.4985713958740234
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4822227954864502,
+        0.5811224619547526,
+        0.5131975650787354,
+        0.6928231557210286
+      ],
+      "rider_box": [
+        0.4777993202209473,
+        0.52117919921875,
+        0.5188750267028809,
+        0.6907543606228299
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 15,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.51,
+        1.2325
+      ]
+    },
+    {
+      "stem": "heldout-rear-08",
+      "id": 1,
+      "xy": [
+        9.462222760805226,
+        0.11827993444201201
+      ],
+      "center_error_m": 0.17715692951570758,
+      "doppler": {
+        "radar": {
+          "hits": 367,
+          "radial_mps": -3.498567581176758
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4822227954864502,
+        0.5811224619547526,
+        0.5131975650787354,
+        0.6928231557210286
+      ],
+      "rider_box": [
+        0.4777993202209473,
+        0.52117919921875,
+        0.5188750267028809,
+        0.6907543606228299
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.09999999999999998,
+      "estimated_size_m": [
+        1.7,
+        0.51,
+        1.2325
+      ]
+    },
+    {
+      "stem": "heldout-oblique-09",
+      "id": 1,
+      "xy": [
+        9.223539646801909,
+        0.23693530628226167
+      ],
+      "center_error_m": 0.14765721590322348,
+      "doppler": {
+        "radar": {
+          "hits": 370,
+          "radial_mps": -3.497567892074585
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.48708362579345704,
+        0.5933349609375,
+        0.5416925430297852,
+        0.705430433485243
+      ],
+      "rider_box": [
+        0.49251842498779297,
+        0.5279426150851779,
+        0.5404973983764648,
+        0.6925596025254991
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 17,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.6767439294564668,
+        1.2325
+      ]
+    },
+    {
+      "stem": "heldout-oblique-10",
+      "id": 1,
+      "xy": [
+        8.956405073071274,
+        0.3424926644856745
+      ],
+      "center_error_m": 0.15412764719825092,
+      "doppler": {
+        "radar": {
+          "hits": 288,
+          "radial_mps": -3.4960782527923584
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.48708362579345704,
+        0.5933349609375,
+        0.5416925430297852,
+        0.705430433485243
+      ],
+      "rider_box": [
+        0.49251842498779297,
+        0.5279426150851779,
+        0.5404973983764648,
+        0.6925596025254991
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.09999999999999998,
+      "estimated_size_m": [
+        1.7,
+        0.6767439294564668,
+        1.2325
+      ]
+    },
+    {
+      "stem": "heldout-oblique-11",
+      "id": 1,
+      "xy": [
+        8.75652772846983,
+        0.5070553167171852
+      ],
+      "center_error_m": 0.08000148232342826,
+      "doppler": {
+        "radar": {
+          "hits": 262,
+          "radial_mps": -3.4920477867126465
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5064443111419678,
+        0.6059677547878689,
+        0.5608612537384033,
+        0.7171174791124132
+      ],
+      "rider_box": [
+        0.5089475154876709,
+        0.5250072479248047,
+        0.5661186695098877,
+        0.705319595336914
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 24,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 4,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.5447105467058188,
+        1.3556181788444515
+      ]
+    },
+    {
+      "stem": "heldout-oblique-12",
+      "id": 1,
+      "xy": [
+        8.450203646727902,
+        0.7085111135927753
+      ],
+      "center_error_m": 0.11289805004943651,
+      "doppler": {
+        "radar": {
+          "hits": 210,
+          "radial_mps": -3.48599910736084
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5064443111419678,
+        0.6059677547878689,
+        0.5608612537384033,
+        0.7171174791124132
+      ],
+      "rider_box": [
+        0.5089475154876709,
+        0.5250072479248047,
+        0.5661186695098877,
+        0.705319595336914
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 4,
+      "age_s": 0.10000000000000009,
+      "estimated_size_m": [
+        1.7,
+        0.5447105467058188,
+        1.3556181788444515
+      ]
+    },
+    {
+      "stem": "heldout-oblique-13",
+      "id": 1,
+      "xy": [
+        8.265557219282595,
+        0.7885573779874511
+      ],
+      "center_error_m": 0.039493867089995596,
+      "doppler": {
+        "radar": {
+          "hits": 210,
+          "radial_mps": -3.4755196571350098
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5283887386322021,
+        0.6183435228135851,
+        0.5848903179168701,
+        0.7347844441731771
+      ],
+      "rider_box": [
+        0.5314479351043702,
+        0.5198680453830296,
+        0.59175705909729,
+        0.7166612413194444
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 21,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 5,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.5260507979425126,
+        1.2735978841781614
+      ]
+    },
+    {
+      "stem": "heldout-oblique-14",
+      "id": 1,
+      "xy": [
+        8.02266114474249,
+        0.9389422169924746
+      ],
+      "center_error_m": 0.02131414538059231,
+      "doppler": {
+        "radar": {
+          "hits": 207,
+          "radial_mps": -3.462750196456909
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5283887386322021,
+        0.6183435228135851,
+        0.5848903179168701,
+        0.7347844441731771
+      ],
+      "rider_box": [
+        0.5314479351043702,
+        0.5198680453830296,
+        0.59175705909729,
+        0.7166612413194444
+      ],
+      "bicycle_image_id": 2,
+      "rider_image_id": 1,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 5,
+      "age_s": 0.10000000000000009,
+      "estimated_size_m": [
+        1.7,
+        0.5260507979425126,
+        1.2735978841781614
+      ]
+    },
+    {
+      "stem": "heldout-side-11",
+      "id": 1,
+      "xy": [
+        8.956639835811107,
+        0.4577313919496948
+      ],
+      "center_error_m": 0.15149657410299916,
+      "doppler": {
+        "radar": {
+          "hits": 329,
+          "radial_mps": -3.4952666759490967
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4886974811553955,
+        0.5910259670681424,
+        0.5826668262481689,
+        0.712149895562066
+      ],
+      "rider_box": [
+        0.5038812637329102,
+        0.522483401828342,
+        0.5575512886047364,
+        0.7001499599880643
+      ],
+      "bicycle_image_id": 1,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 18,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.689797436705442,
+        1.382386130094528
+      ]
+    },
+    {
+      "stem": "heldout-side-12",
+      "id": 1,
+      "xy": [
+        8.65724461835618,
+        0.49414161729317385
+      ],
+      "center_error_m": 0.21002069568838153,
+      "doppler": {
+        "radar": {
+          "hits": 235,
+          "radial_mps": -3.4883158206939697
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4886974811553955,
+        0.5910259670681424,
+        0.5826668262481689,
+        0.712149895562066
+      ],
+      "rider_box": [
+        0.5038812637329102,
+        0.522483401828342,
+        0.5575512886047364,
+        0.7001499599880643
+      ],
+      "bicycle_image_id": 1,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.10000000000000009,
+      "estimated_size_m": [
+        1.7,
+        0.689797436705442,
+        1.382386130094528
+      ]
+    },
+    {
+      "stem": "heldout-side-13",
+      "id": 1,
+      "xy": [
+        8.249357553757399,
+        0.7900182523992196
+      ],
+      "center_error_m": 0.05006991983402903,
+      "doppler": {
+        "radar": {
+          "hits": 226,
+          "radial_mps": -3.4808907508850098
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5064178943634033,
+        0.5971012539333768,
+        0.6102758884429932,
+        0.7268648783365885
+      ],
+      "rider_box": [
+        0.5245997428894043,
+        0.5242723253038194,
+        0.5858134269714356,
+        0.706026373969184
+      ],
+      "bicycle_image_id": 1,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 22,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 4,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.326,
+        0.51,
+        1.2478241860866544
+      ]
+    },
+    {
+      "stem": "heldout-side-14",
+      "id": 1,
+      "xy": [
+        7.934779387019754,
+        0.8682500553612056
+      ],
+      "center_error_m": 0.12488774658526593,
+      "doppler": {
+        "radar": {
+          "hits": 190,
+          "radial_mps": -3.4703001976013184
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5064178943634033,
+        0.5971012539333768,
+        0.6102758884429932,
+        0.7268648783365885
+      ],
+      "rider_box": [
+        0.5245997428894043,
+        0.5242723253038194,
+        0.5858134269714356,
+        0.706026373969184
+      ],
+      "bicycle_image_id": 1,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 4,
+      "age_s": 0.10000000000000009,
+      "estimated_size_m": [
+        1.326,
+        0.51,
+        1.2478241860866544
+      ]
+    },
+    {
+      "stem": "heldout-near_walker-07",
+      "id": 1,
+      "xy": [
+        9.858439742142107,
+        -0.0689124674931203
+      ],
+      "center_error_m": 0.07059326404230097,
+      "doppler": {
+        "radar": {
+          "hits": 345,
+          "radial_mps": -3.49825119972229
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.46384315490722655,
+        0.5734994676378038,
+        0.531855583190918,
+        0.6898556179470486
+      ],
+      "rider_box": [
+        0.47400660514831544,
+        0.5227487352159288,
+        0.5191824436187744,
+        0.6616198221842448
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 18,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.6234640926398591,
+        1.2325
+      ]
+    },
+    {
+      "stem": "heldout-near_walker-08",
+      "id": 1,
+      "xy": [
+        9.532339978938175,
+        0.13064625859535228
+      ],
+      "center_error_m": 0.10755914679675645,
+      "doppler": {
+        "radar": {
+          "hits": 364,
+          "radial_mps": -3.4985971450805664
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.46384315490722655,
+        0.5734994676378038,
+        0.531855583190918,
+        0.6898556179470486
+      ],
+      "rider_box": [
+        0.47400660514831544,
+        0.5227487352159288,
+        0.5191824436187744,
+        0.6616198221842448
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 3,
+      "age_s": 0.09999999999999998,
+      "estimated_size_m": [
+        1.7,
+        0.6234640926398591,
+        1.2325
+      ]
+    },
+    {
+      "stem": "heldout-near_walker-09",
+      "id": 1,
+      "xy": [
+        9.362833307016116,
+        0.29462466735527615
+      ],
+      "center_error_m": 0.03523867904501133,
+      "doppler": {
+        "radar": {
+          "hits": 388,
+          "radial_mps": -3.498467445373535
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4792610168457031,
+        0.578543217976888,
+        0.5492994308471679,
+        0.7020125918918185
+      ],
+      "rider_box": [
+        0.4901235580444336,
+        0.5224681430392795,
+        0.5333391189575195,
+        0.6879346211751302
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 19,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 4,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.6004693177149729,
+        1.2325
+      ]
+    },
+    {
+      "stem": "heldout-near_walker-10",
+      "id": 1,
+      "xy": [
+        9.04767667280091,
+        0.40948120946665867
+      ],
+      "center_error_m": 0.05259059082277108,
+      "doppler": {
+        "radar": {
+          "hits": 391,
+          "radial_mps": -3.496997594833374
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4792610168457031,
+        0.578543217976888,
+        0.5492994308471679,
+        0.7020125918918185
+      ],
+      "rider_box": [
+        0.4901235580444336,
+        0.5224681430392795,
+        0.5333391189575195,
+        0.6879346211751302
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 4,
+      "age_s": 0.09999999999999998,
+      "estimated_size_m": [
+        1.7,
+        0.6004693177149729,
+        1.2325
+      ]
+    },
+    {
+      "stem": "heldout-near_walker-11",
+      "id": 1,
+      "xy": [
+        8.914985806722072,
+        0.4639400724177172
+      ],
+      "center_error_m": 0.11447950934836526,
+      "doppler": {
+        "radar": {
+          "hits": 287,
+          "radial_mps": -3.4915966987609863
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4984871864318848,
+        0.5904463450113933,
+        0.5689792633056641,
+        0.718644290500217
+      ],
+      "rider_box": [
+        0.5076944351196289,
+        0.5210834079318576,
+        0.5595191955566406,
+        0.6974202473958333
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 17,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 5,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.51,
+        1.3815466880798337
+      ]
+    },
+    {
+      "stem": "heldout-near_walker-12",
+      "id": 1,
+      "xy": [
+        8.580025128702555,
+        0.7069700197867799
+      ],
+      "center_error_m": 0.033926708448610836,
+      "doppler": {
+        "radar": {
+          "hits": 230,
+          "radial_mps": -3.4834420680999756
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.4984871864318848,
+        0.5904463450113933,
+        0.5689792633056641,
+        0.718644290500217
+      ],
+      "rider_box": [
+        0.5076944351196289,
+        0.5210834079318576,
+        0.5595191955566406,
+        0.6974202473958333
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 5,
+      "age_s": 0.10000000000000009,
+      "estimated_size_m": [
+        1.7,
+        0.51,
+        1.3815466880798337
+      ]
+    },
+    {
+      "stem": "heldout-near_walker-13",
+      "id": 1,
+      "xy": [
+        8.36248417620808,
+        0.6870933139130027
+      ],
+      "center_error_m": 0.15164064969093613,
+      "doppler": {
+        "radar": {
+          "hits": 212,
+          "radial_mps": -3.477525234222412
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5195323467254639,
+        0.5987057579888238,
+        0.5931167125701904,
+        0.7330499437120226
+      ],
+      "rider_box": [
+        0.5293888092041016,
+        0.5246382395426432,
+        0.590476131439209,
+        0.7073694441053603
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 20,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 6,
+      "age_s": 0.0,
+      "estimated_size_m": [
+        1.7,
+        0.51,
+        1.2842028528451919
+      ]
+    },
+    {
+      "stem": "heldout-near_walker-14",
+      "id": 1,
+      "xy": [
+        8.034797747918375,
+        0.8807485934831791
+      ],
+      "center_error_m": 0.08073514577382522,
+      "doppler": {
+        "radar": {
+          "hits": 167,
+          "radial_mps": -3.46638560295105
+        }
+      },
+      "camera": "front",
+      "bicycle_box": [
+        0.5195323467254639,
+        0.5987057579888238,
+        0.5931167125701904,
+        0.7330499437120226
+      ],
+      "rider_box": [
+        0.5293888092041016,
+        0.5246382395426432,
+        0.590476131439209,
+        0.7073694441053603
+      ],
+      "bicycle_image_id": 3,
+      "rider_image_id": 2,
+      "range_source": "shared rider/bicycle lidar",
+      "surface_hits": 0,
+      "bicycle_exclusive_hits": 0,
+      "bicycle_surface_xyz": [],
+      "paired_observations": 6,
+      "age_s": 0.10000000000000009,
+      "estimated_size_m": [
+        1.7,
+        0.51,
+        1.2842028528451919
+      ]
+    }
+  ]
+}

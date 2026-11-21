@@ -13,7 +13,7 @@ WALKERS = {"pedestrian", "pedestrian-delayed", "occluded"}
 LEADS = {"lead", "braking"}
 
 
-def required_event_kinds(map_name):
+def required_event_kinds(map_name, *, barriers=False):
     """Immutable encounter contract for each supported continuous journey course."""
     town = map_name.rsplit("/",1)[-1].lower()
     base = ("pedestrian","pedestrian-delayed","occluded","lead","braking",
@@ -21,7 +21,7 @@ def required_event_kinds(map_name):
     if town in ("town01","town01_opt"):
         return base
     if town in ("town03","town03_opt"):
-        return (*base,"bus")
+        return (*base,"bus","barrier") if barriers else (*base,"bus")
     raise ValueError(f"No commissioned journey layout for {map_name}")
 
 
@@ -169,6 +169,9 @@ class Encounter:
     cones: list = field(default_factory=list)
     encountered_cones: set = field(default_factory=set)
     cone_origins: list = field(default_factory=list)
+    barriers: list = field(default_factory=list)
+    barrier_origins: list = field(default_factory=list)
+    encountered_barriers: set = field(default_factory=set)
 
     def mark(self, name, time):
         self.observed.setdefault(name, round(time, 3))
@@ -190,6 +193,8 @@ class Encounter:
                 evidence.append("lead_stopped_s")
         elif self.kind == "cyclist":
             evidence.extend(("moving_ahead_s", "left_route_s"))
+        elif self.kind == "barrier":
+            evidence.append("all_barriers_passed_s")
         elif self.kind == "roadworks":
             evidence.append("all_cones_passed_s")
         return dict(kind=self.kind, station_m=round(self.s, 2), phase=self.state,
@@ -205,7 +210,7 @@ class Encounter:
 
 class JourneyScenario(Scenario):
     """All movement commands target NPCs. The caller drives and samples the single ego."""
-    def __init__(self, world, kind, seed, perturb=False, district=None, crossing_delay=0., destination=None):
+    def __init__(self, world, kind, seed, perturb=False, district=None, crossing_delay=0., destination=None, *, barriers=False):
         if kind != "journey":
             raise ValueError("JourneyScenario expects kind='journey'")
         self.kind = self.name = kind
@@ -240,7 +245,7 @@ class JourneyScenario(Scenario):
         try:
             town = self._map.name.rsplit("/",1)[-1].lower()
             self._urban = None
-            required = required_event_kinds(town)
+            required = required_event_kinds(town, barriers=barriers)
             if town in ("town03","town03_opt"):
                 from .urban_map import urban_route
                 self._urban = urban_route(self._map, self.seed, destination)
@@ -325,6 +330,9 @@ class JourneyScenario(Scenario):
             if self._urban:
                 lane_change = self._urban.lane_change
                 self._spawn_bus(self._event("bus", lane_change.start), lane_change)
+                if barriers:
+                    from .barrier_scene import spawn_barriers
+                    spawn_barriers(self)
             self.events.sort(key=lambda e:e.s)
             if sorted(e.kind for e in self.events) != sorted(required):
                 raise RuntimeError("Journey setup does not match the course encounter contract")
@@ -874,6 +882,9 @@ class JourneyScenario(Scenario):
                 gap = self._lead_gap(e, distance, progress, lateral, nose)
             elif e.kind == "cyclist":
                 gap = self._cyclist_gap(e, distance, progress, lateral, nose)
+            elif e.kind == "barrier":
+                from .barrier_scene import barrier_gap
+                gap = barrier_gap(self, e, progress)
             elif e.kind == "roadworks":
                 gap = self._roadworks_gap(e, progress)
             elif e.kind == "bus":
@@ -986,6 +997,8 @@ class JourneyScenario(Scenario):
         for event in self.events:
             if event.kind == "roadworks":
                 actors.extend((cone,"cone","roadworks") for cone in event.cones)
+            elif event.kind == "barrier":
+                actors.extend((board, "barrier", "workzone_barrier") for board in event.barriers)
             elif event.kind in WALKERS:
                 actors.append((event.actor,"pedestrian",event.kind))
             elif event.kind == "cyclist":

@@ -10,6 +10,7 @@ from tempfile import mkdtemp
 import cv2
 import numpy as np
 
+from .barrier import detect as detect_barriers
 from .camera_geometry import CAMERAS
 from .radar_geometry import CORNER_RADARS, RADARS, ego_returns
 from .tracking import Tracker
@@ -96,6 +97,9 @@ class SurroundPerception:
         else:
             for name in auxiliary:
                 fresh[name] = detector.detect(obs[name])
+        for name, boxes in fresh.items():
+            if name in obs:
+                fresh[name] = [*boxes, *detect_barriers(obs[name], obs["lidar"], name)]
         fresh = {name: self._images.update(name, boxes, sim_time) for name, boxes in fresh.items()}
         self._last_inference.update(dict.fromkeys(fresh, sim_time))
         self.view_ages = {name: round(sim_time - self._last_inference[name], 4)
@@ -111,26 +115,40 @@ class SurroundPerception:
             camera = CAMERAS[view]
             supported = {tuple(track["rgb_boxes"][view]): track["id"]
                          for track in tracks if view in track["rgb_boxes"]}
+            mounted = {tuple(info[role]): (track["id"], info["range_source"])
+                       for track in tracks if (info := track.get("cycle_association"))
+                       and info["camera"] == view and info["age_s"] == 0.
+                       for role in ("rider_box", "bicycle_box")}
             tagged = []
             for detection in boxes:
                 box = tuple(detection["box"])
                 midpoint = (box[0] + box[2]) / 2
                 bearing = camera.yaw + math.degrees(math.atan((midpoint - .5) / camera.fx))
                 track_id = supported.get(box)
+                if box in mounted:
+                    track_id, range_source = mounted[box]
+                    detection = dict(detection, range_source=range_source)
                 tagged.append(dict(detection, bearing_deg=(bearing + 180) % 360 - 180,
                                    range_supported=track_id is not None, track_id=track_id))
             self.view_detections[view] = tagged
-        if self._evidence_root and self._saved < 8:
-            self._record_examples(obs, ego_pose, sim_time, step, tracks)
+        if self._evidence_root:
+            barrier_evidence = ("barrier" not in self._special_examples and any(
+                t["label"] == "barrier" and t["cameras"] and math.hypot(t["x"], t["y"]) <= 13.
+                for t in tracks))
+            standard_examples = self._saved - int("barrier" in self._special_examples)
+            if standard_examples < 8 or barrier_evidence:
+                self._record_examples(obs, ego_pose, sim_time, step, tracks, barrier_evidence)
         return tracks
 
-    def _record_examples(self, obs, pose, sim_time, step, tracks):
+    def _record_examples(self, obs, pose, sim_time, step, tracks, barrier_evidence=False):
         # Reserve capacity for late encounters even when the first hundred metres
-        # contain many front-facing cars. Baseline + five directions + two classes.
+        # contain many front-facing cars. Reserve one additional sample for a close barricade.
         new = {view for track in tracks for view in track["cameras"]} - self._examples
         special = {"cycle" for track in tracks if track["cameras"] and track["label"] in ("bicycle", "motorcycle")}
         if any(t["label"] == "unknown" and "lidar" in t["sources"] for t in tracks):
             special.add("unclassified_mover")
+        if barrier_evidence:
+            special.add("barrier")
         special -= self._special_examples
         if self._saved and not (new or special):
             return

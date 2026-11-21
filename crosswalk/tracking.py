@@ -23,7 +23,7 @@ from .radar_geometry import ego_returns
 
 # Length, width, height in metres. Single-view returns sample visible surfaces.
 SIZE = {"car": (4.4, 1.85, 1.52), "truck": (7.0, 2.5, 3.2),
-        "bus": (10.5, 2.55, 3.2), "person": (.52, .52, 1.70),
+        "barrier": (1.19, .40, 1.09), "bus": (10.5, 2.55, 3.2), "person": (.52, .52, 1.70),
         "bicycle": (1.7, .60, 1.45), "motorcycle": (2.1, .78, 1.45)}
 COAST_S = .50
 SIZE_SETTLE_S = .6      # a track's dimensions approach each new view over this long
@@ -36,7 +36,7 @@ REPEAT_IOU = .5         # two boxes of one family overlapping this much are one 
 
 def _family(label):
     """Classes the detector confuses with one another. A van reads as car, bus or bicycle."""
-    return "person" if label == "person" else "wheeled"
+    return label if label in ("person", "barrier") else "wheeled"
 
 
 def _distinct(detections):
@@ -106,7 +106,7 @@ def _object_surface(depths, indices, label, box, camera):
     return first
 
 
-def _measure(lidar, detections, view="front"):
+def _measure(lidar, detections, view="front", *, cycle_context=None):
     if not detections:
         return []
     camera = CAMERAS[view]
@@ -122,15 +122,66 @@ def _measure(lidar, detections, view="front"):
     result = []
     for detection, box, mask in selections:
         label = detection["label"]
-        supported = _object_surface(depths, np.flatnonzero(mask & (owners == 1)), label, box, camera)
+        if detection.get("barrier_subtype") == "chain":
+            groups = [np.flatnonzero(np.isin(ids, group) & (owners == 1)) for group in detection["chain_return_ids"]]
+            if len(groups) != 3 or any(len(g) < n for g, n in zip(groups, (2, 1, 2))):
+                continue
+            supported = np.concatenate(groups)
+        else:
+            supported = _object_surface(depths, np.flatnonzero(mask & (owners == 1)), label, box, camera)
         if supported is None:
             continue
         surface = points[supported]
+        if cycle_context and label == "bicycle" and surface[:, 2].max() < .60:
+            # On sloping streets a single lidar ring can draw a horizontal strip
+            # of asphalt through a bicycle box. Require another elevation beam
+            # before that low strip alone can establish a standalone bicycle.
+            rays = surface - MOUNTS["lidar"][:3]
+            elevation = np.arctan2(rays[:, 2], np.hypot(rays[:, 0], rays[:, 1]))
+            if np.ptp(elevation) < math.radians(.6):
+                continue
         item = _fit_surface(surface, label, detection["score"], set(ids[supported].tolist()), [view],
                             box=detection["box"])
+        if "barrier_subtype" in detection:
+            item["barrier_subtype"] = detection["barrier_subtype"]
+            item["subtype_confidence"] = detection["subtype_confidence"]
+            if detection["barrier_subtype"] == "chain":
+                ends = np.asarray(detection["chain_ends_xy"])
+                axis = ends[1]-ends[0]
+                center = ends.mean(axis=0)
+                item.update(chain_center=center, center=np.r_[center,.35], length=np.linalg.norm(axis)+.20,
+                            width=.24, height=.70, angle=math.degrees(math.atan2(axis[1], axis[0])),
+                            chain_support=dict(posts=[len(groups[0]),len(groups[2])],span_hits=len(groups[1])))
         if "image_id" in detection:
             item["image_ids"][view] = detection["image_id"]
         result.append(item)
+    if cycle_context and any(d["label"] == "bicycle" for d, _, _ in selections):
+        from .cycle_association import pairs, pair_surface
+        cycles, pose, now = cycle_context
+        masks = [(d, mask) for d, _, mask in selections]
+        for person, bike in pairs([d for d, _ in masks]):
+            joint = pair_surface(points, depths, u, v, masks, person, bike, camera)
+            if joint is None:
+                continue
+            info = cycles.observe(view, person, bike, joint, points, depths, camera, pose, now)
+            if info is None:
+                continue
+            group, _, _ = joint
+            # Separate well-supported depths could be a walker in front of a parked
+            # bike. Do not replace either object with an assumed joint surface.
+            members = [m for m in result if m["boxes"][view] in (person["box"], bike["box"])]
+            if any(np.linalg.norm(m["center"][:2]-joint[2]) > 1.6 for m in members):
+                continue
+            result = [m for m in result if all(m is not member for member in members)]
+            item = _fit_surface(points[group], "bicycle", min(person["score"], bike["score"]), set(ids[group].tolist()),
+                                [view], box=person["box"])
+            # Keep the rider's association family when the wheels disappear in a
+            # later view. Radar and the reported footprint use the mounted body.
+            item["label"] = "person"
+            info["estimated_size_m"] = [item[k] for k in ("length", "width", "height")]
+            item["image_ids"][view] = person["image_id"]
+            item["cycle_association"] = info
+            result.append(item)
     return result
 
 
@@ -166,19 +217,23 @@ def _fit_surface(surface, label, score, hit_ids, cameras, *, box=None):
 
 def _centre(item, length, width):
     """Ego-frame centre of an object whose near surface was seen, given its footprint."""
+    if "chain_center" in item:
+        return item["chain_center"]
     extent = width if item["sideways"] else length
     along = item["near"] + max(item["seen"], extent) / 2
     sin, cos = math.sin(item["bearing"]), math.cos(item["bearing"])
     return np.array([cos * along - sin * item["lateral"], sin * along + cos * item["lateral"]])
 
 
-def _across_views(lidar, by_view):
+def _across_views(lidar, by_view, cycle_context=None):
     """Deduplicate overlap only when two independent camera boxes own the same laser surface."""
-    measured = [item for view, detections in by_view.items() for item in _measure(lidar, detections, view)]
+    measured = [item for view, detections in by_view.items() for item in _measure(lidar, detections, view, cycle_context=cycle_context)]
     kept = []
-    for item in sorted(measured, key=lambda m: (-len(m["hit_ids"]), -m["confidence"])):
+    for item in sorted(measured, key=lambda m: ("cycle_association" not in m, -len(m["hit_ids"]), -m["confidence"])):
         for other in kept:
-            if (_family(other["label"]) != _family(item["label"]) or
+            same_kind = (_family(other["label"]) == _family(item["label"]) or
+                         ("cycle_association" in other and item["label"] == "bicycle"))
+            if (not same_kind or
                     not set(other["cameras"]).isdisjoint(item["cameras"])):
                 continue
             common = len(other["hit_ids"] & item["hit_ids"])
@@ -256,6 +311,8 @@ class _Track:
     last_confirmed: float = 0.
     image_keys: frozenset = frozenset()
     hidden: bool = False
+    cycle_evidence: tuple | None = None
+    barrier_read: tuple | None = None
 
     @property
     def label(self):
@@ -268,7 +325,9 @@ class Tracker:
         self._next_id = 1
         self.surround = surround
         if surround:
+            from .cycle_association import CycleAssociator
             from .lidar_motion import LidarMotion
+            self.cycles = CycleAssociator()
             self.motion = LidarMotion()
 
     def _range_measurements(self, clusters, optical, origin, rotation, now):
@@ -281,6 +340,9 @@ class Tracker:
                 continue
             matches = []
             for key, track in self._tracks.items():
+                # A single post cannot refresh the depth or pose of a whole suspended chain.
+                if track.barrier_read and track.barrier_read[0] == "chain":
+                    continue
                 if track.hidden or now - track.last_seen > self._lifetime(track) or now - track.last_confirmed > 1.2:
                     continue
                 dt = now - track.last_seen
@@ -318,7 +380,8 @@ class Tracker:
         yaw = float(ego_pose[2])
         cos, sin = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
         rotation = np.array([[cos, -sin], [sin, cos]])
-        measurements = _across_views(lidar, detections) if self.surround else _measure(lidar, detections)
+        measurements = (_across_views(lidar, detections, (self.cycles, ego_pose, now)) if self.surround
+                        else _measure(lidar, detections))
         self._tracks = {k: t for k, t in self._tracks.items()
                         if 0 <= now - t.last_seen <= (2. if self.surround and t.image_keys else self._lifetime(t)) + 1e-8}
         if self.surround:
@@ -343,6 +406,11 @@ class Tracker:
                 prediction = track.position
             for idx, (item, pos) in enumerate(zip(measurements, positions)):
                 # A re-read of the class is not a new object.
+                if track.barrier_read:
+                    prior_subtype = track.barrier_read[0]
+                    next_subtype = item.get("barrier_subtype")
+                    if (next_subtype and next_subtype != prior_subtype) or (prior_subtype == "chain" and not next_subtype):
+                        continue
                 if item.get("required_track", key) != key:
                     continue
                 if item.get("weak_edge") and (dormant or track.label != item["label"]):
@@ -411,6 +479,27 @@ class Tracker:
                                                      image_keys=frozenset(item["image_ids"].items()))
                 self._next_id += 1
         if self.surround:
+            for track in self._tracks.values():
+                item = track.measurement
+                if track.last_seen == now and item.get("barrier_subtype"):
+                    track.barrier_read = (item["barrier_subtype"], item["subtype_confidence"], now)
+                    if item["barrier_subtype"] == "chain":
+                        track.heading_world = yaw + item["angle"]
+            for key, track in list(self._tracks.items()):
+                item = track.measurement
+                info = item.get("cycle_association")
+                if track.last_seen != now or not info:
+                    continue
+                track.cycle_evidence = now, info
+                # A previously separate bike box can still be coasting after both
+                # image identities were measured as one body. Retire only that
+                # exact optical ID near the newly confirmed joint measurement.
+                for other_key, other in list(self._tracks.items()):
+                    if (other_key != key and other.label == "bicycle" and
+                        (info["camera"],info["bicycle_image_id"]) in other.image_keys and
+                        np.linalg.norm(other.position-track.position)<1.5):
+                        del self._tracks[other_key]
+        if self.surround:
             # A positive sweep through the predicted surface contradicts a coast.
             # Missing returns and foreground occlusion cannot erase an object.
             current = self.motion.history[-1]
@@ -460,4 +549,22 @@ class Tracker:
                                   doppler={} if age else item.get("doppler", {}),
                                   class_age_s=None if track.last_classified is None else now-track.last_classified,
                                   lidar_hits=len(hits), surface_xyz=xyz.astype(float).round(3).tolist())
+                if track.label == "barrier" and track.barrier_read:
+                    subtype, confidence, stamp = track.barrier_read
+                    result[-1].update(barrier_subtype=subtype, subtype_confidence=confidence,
+                                      subtype_age_s=round(now-stamp, 4))
+                    if not age and "chain_support" in item:
+                        result[-1]["chain_support"] = item["chain_support"]
+                if track.cycle_evidence:
+                    stamp, info = track.cycle_evidence
+                    elapsed = now-stamp
+                    # Fill the gap between scheduled optical exposures only.
+                    if elapsed <= .21 and (not elapsed or info["camera"] not in detections):
+                        cycle = dict(info, age_s=elapsed)
+                        if elapsed:
+                            cycle.update(surface_hits=0, bicycle_exclusive_hits=0, bicycle_surface_xyz=[])
+                        length, width, height = map(float, info["estimated_size_m"])
+                        result[-1].update(label="bicycle", cycle_association=cycle,
+                                          length=length, width=width, height=height,
+                                          z=max(height / 2, item["top"] - height / 2))
         return result

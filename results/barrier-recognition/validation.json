@@ -1,0 +1,1691 @@
+{
+  "schema": "ado-barrier-validation-v1",
+  "archive_sha256": "1a79b21a6deb871f0d0b179254e549e94ec346a20dafd7a00434d2e267ba4a1e",
+  "model_sha256": "e08508c4e8756806dba940c87bf615542f8bac334df6c0d4397f9298ec6f9e4f",
+  "labels_used_at_inference": false,
+  "split_unit": "road/lane/station, four Town03 capture sites; independent held-out approach angles",
+  "match_radius_m": 0.65,
+  "fit_annotations_xywh": {
+    "fit_0_barricade_5": [
+      428,
+      234,
+      116,
+      72
+    ],
+    "fit_1_barricade_5": [
+      428,
+      240,
+      119,
+      72
+    ]
+  },
+  "totals": {
+    "fit": {
+      "exposures": 60,
+      "negative_exposures": 48,
+      "positive": 12,
+      "true_positive": 10,
+      "false_positive": 0,
+      "false_negative": 2,
+      "median_center_error_m": 0.0688,
+      "max_center_error_m": 0.1057
+    },
+    "holdout": {
+      "exposures": 60,
+      "negative_exposures": 48,
+      "positive": 12,
+      "true_positive": 12,
+      "false_positive": 0,
+      "false_negative": 0,
+      "median_center_error_m": 0.1106,
+      "max_center_error_m": 0.3435
+    }
+  },
+  "seed212_hedge_control_detections_by_view": {
+    "front": 0,
+    "left": 0,
+    "right": 0,
+    "rear_left": 0,
+    "rear_right": 0
+  },
+  "frames": [
+    {
+      "name": "fit_0_clear_5",
+      "split": "fit",
+      "condition": "clear",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_clear_7",
+      "split": "fit",
+      "condition": "clear",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_clear_10",
+      "split": "fit",
+      "condition": "clear",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_clear_13",
+      "split": "fit",
+      "condition": "clear",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_clear_16",
+      "split": "fit",
+      "condition": "clear",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_clear_20",
+      "split": "fit",
+      "condition": "clear",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_barricade_5",
+      "split": "fit",
+      "condition": "barricade",
+      "distance_m": 5.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.086,
+      "measurements": [
+        {
+          "center_xy_m": [
+            4.9312,
+            1.8464
+          ],
+          "lidar_hits": 73,
+          "rgb_score": 0.9237
+        }
+      ]
+    },
+    {
+      "name": "fit_0_barricade_7",
+      "split": "fit",
+      "condition": "barricade",
+      "distance_m": 7.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.064,
+      "measurements": [
+        {
+          "center_xy_m": [
+            6.9343,
+            2.197
+          ],
+          "lidar_hits": 33,
+          "rgb_score": 0.9548
+        }
+      ]
+    },
+    {
+      "name": "fit_0_barricade_10",
+      "split": "fit",
+      "condition": "barricade",
+      "distance_m": 10.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.1057,
+      "measurements": [
+        {
+          "center_xy_m": [
+            9.8922,
+            2.4043
+          ],
+          "lidar_hits": 23,
+          "rgb_score": 0.9298
+        }
+      ]
+    },
+    {
+      "name": "fit_0_barricade_13",
+      "split": "fit",
+      "condition": "barricade",
+      "distance_m": 13.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.0733,
+      "measurements": [
+        {
+          "center_xy_m": [
+            12.9329,
+            2.1351
+          ],
+          "lidar_hits": 12,
+          "rgb_score": 0.901
+        }
+      ]
+    },
+    {
+      "name": "fit_0_barricade_16",
+      "split": "fit",
+      "condition": "barricade",
+      "distance_m": 16.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.0573,
+      "measurements": [
+        {
+          "center_xy_m": [
+            15.9943,
+            2.4573
+          ],
+          "lidar_hits": 6,
+          "rgb_score": 0.8671
+        }
+      ]
+    },
+    {
+      "name": "fit_0_barricade_20",
+      "split": "fit",
+      "condition": "barricade",
+      "distance_m": 20.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.0912,
+      "measurements": [
+        {
+          "center_xy_m": [
+            19.949,
+            2.222
+          ],
+          "lidar_hits": 8,
+          "rgb_score": 0.8028
+        }
+      ]
+    },
+    {
+      "name": "fit_0_parked_car_5",
+      "split": "fit",
+      "condition": "parked_car",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_parked_car_7",
+      "split": "fit",
+      "condition": "parked_car",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_parked_car_10",
+      "split": "fit",
+      "condition": "parked_car",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_parked_car_13",
+      "split": "fit",
+      "condition": "parked_car",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_parked_car_16",
+      "split": "fit",
+      "condition": "parked_car",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_parked_car_20",
+      "split": "fit",
+      "condition": "parked_car",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_cone_5",
+      "split": "fit",
+      "condition": "cone",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_cone_7",
+      "split": "fit",
+      "condition": "cone",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_cone_10",
+      "split": "fit",
+      "condition": "cone",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_cone_13",
+      "split": "fit",
+      "condition": "cone",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_cone_16",
+      "split": "fit",
+      "condition": "cone",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_cone_20",
+      "split": "fit",
+      "condition": "cone",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_planter_5",
+      "split": "fit",
+      "condition": "planter",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_planter_7",
+      "split": "fit",
+      "condition": "planter",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_planter_10",
+      "split": "fit",
+      "condition": "planter",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_planter_13",
+      "split": "fit",
+      "condition": "planter",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_planter_16",
+      "split": "fit",
+      "condition": "planter",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_0_planter_20",
+      "split": "fit",
+      "condition": "planter",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_clear_5",
+      "split": "fit",
+      "condition": "clear",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_clear_7",
+      "split": "fit",
+      "condition": "clear",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_clear_10",
+      "split": "fit",
+      "condition": "clear",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_clear_13",
+      "split": "fit",
+      "condition": "clear",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_clear_16",
+      "split": "fit",
+      "condition": "clear",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_clear_20",
+      "split": "fit",
+      "condition": "clear",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_barricade_5",
+      "split": "fit",
+      "condition": "barricade",
+      "distance_m": 5.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.0408,
+      "measurements": [
+        {
+          "center_xy_m": [
+            4.9739,
+            1.8684
+          ],
+          "lidar_hits": 60,
+          "rgb_score": 0.8379
+        }
+      ]
+    },
+    {
+      "name": "fit_1_barricade_7",
+      "split": "fit",
+      "condition": "barricade",
+      "distance_m": 7.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.047,
+      "measurements": [
+        {
+          "center_xy_m": [
+            7.0014,
+            2.153
+          ],
+          "lidar_hits": 32,
+          "rgb_score": 0.9349
+        }
+      ]
+    },
+    {
+      "name": "fit_1_barricade_10",
+      "split": "fit",
+      "condition": "barricade",
+      "distance_m": 10.0,
+      "positive": true,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 1,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_barricade_13",
+      "split": "fit",
+      "condition": "barricade",
+      "distance_m": 13.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.0905,
+      "measurements": [
+        {
+          "center_xy_m": [
+            12.9376,
+            2.166
+          ],
+          "lidar_hits": 9,
+          "rgb_score": 0.8789
+        }
+      ]
+    },
+    {
+      "name": "fit_1_barricade_16",
+      "split": "fit",
+      "condition": "barricade",
+      "distance_m": 16.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.0643,
+      "measurements": [
+        {
+          "center_xy_m": [
+            15.9583,
+            2.3507
+          ],
+          "lidar_hits": 7,
+          "rgb_score": 0.8691
+        }
+      ]
+    },
+    {
+      "name": "fit_1_barricade_20",
+      "split": "fit",
+      "condition": "barricade",
+      "distance_m": 20.0,
+      "positive": true,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 1,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_parked_car_5",
+      "split": "fit",
+      "condition": "parked_car",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_parked_car_7",
+      "split": "fit",
+      "condition": "parked_car",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_parked_car_10",
+      "split": "fit",
+      "condition": "parked_car",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_parked_car_13",
+      "split": "fit",
+      "condition": "parked_car",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_parked_car_16",
+      "split": "fit",
+      "condition": "parked_car",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_parked_car_20",
+      "split": "fit",
+      "condition": "parked_car",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_cone_5",
+      "split": "fit",
+      "condition": "cone",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_cone_7",
+      "split": "fit",
+      "condition": "cone",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_cone_10",
+      "split": "fit",
+      "condition": "cone",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_cone_13",
+      "split": "fit",
+      "condition": "cone",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_cone_16",
+      "split": "fit",
+      "condition": "cone",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_cone_20",
+      "split": "fit",
+      "condition": "cone",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_planter_5",
+      "split": "fit",
+      "condition": "planter",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_planter_7",
+      "split": "fit",
+      "condition": "planter",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_planter_10",
+      "split": "fit",
+      "condition": "planter",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_planter_13",
+      "split": "fit",
+      "condition": "planter",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_planter_16",
+      "split": "fit",
+      "condition": "planter",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "fit_1_planter_20",
+      "split": "fit",
+      "condition": "planter",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_clear_5",
+      "split": "holdout",
+      "condition": "clear",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_clear_7",
+      "split": "holdout",
+      "condition": "clear",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_clear_10",
+      "split": "holdout",
+      "condition": "clear",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_clear_13",
+      "split": "holdout",
+      "condition": "clear",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_clear_16",
+      "split": "holdout",
+      "condition": "clear",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_clear_20",
+      "split": "holdout",
+      "condition": "clear",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_barricade_5",
+      "split": "holdout",
+      "condition": "barricade",
+      "distance_m": 5.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.0875,
+      "measurements": [
+        {
+          "center_xy_m": [
+            4.9163,
+            1.8751
+          ],
+          "lidar_hits": 49,
+          "rgb_score": 0.8428
+        }
+      ]
+    },
+    {
+      "name": "holdout_2_barricade_7",
+      "split": "holdout",
+      "condition": "barricade",
+      "distance_m": 7.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.099,
+      "measurements": [
+        {
+          "center_xy_m": [
+            6.9032,
+            2.1792
+          ],
+          "lidar_hits": 27,
+          "rgb_score": 0.839
+        }
+      ]
+    },
+    {
+      "name": "holdout_2_barricade_10",
+      "split": "holdout",
+      "condition": "barricade",
+      "distance_m": 10.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.1181,
+      "measurements": [
+        {
+          "center_xy_m": [
+            9.8992,
+            2.4618
+          ],
+          "lidar_hits": 13,
+          "rgb_score": 0.8355
+        }
+      ]
+    },
+    {
+      "name": "holdout_2_barricade_13",
+      "split": "holdout",
+      "condition": "barricade",
+      "distance_m": 13.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.0535,
+      "measurements": [
+        {
+          "center_xy_m": [
+            12.949,
+            2.0825
+          ],
+          "lidar_hits": 8,
+          "rgb_score": 0.9194
+        }
+      ]
+    },
+    {
+      "name": "holdout_2_barricade_16",
+      "split": "holdout",
+      "condition": "barricade",
+      "distance_m": 16.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.1779,
+      "measurements": [
+        {
+          "center_xy_m": [
+            15.9764,
+            2.2236
+          ],
+          "lidar_hits": 7,
+          "rgb_score": 0.8957
+        }
+      ]
+    },
+    {
+      "name": "holdout_2_barricade_20",
+      "split": "holdout",
+      "condition": "barricade",
+      "distance_m": 20.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.1565,
+      "measurements": [
+        {
+          "center_xy_m": [
+            19.8633,
+            2.2222
+          ],
+          "lidar_hits": 7,
+          "rgb_score": 0.8028
+        }
+      ]
+    },
+    {
+      "name": "holdout_2_parked_car_5",
+      "split": "holdout",
+      "condition": "parked_car",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_parked_car_7",
+      "split": "holdout",
+      "condition": "parked_car",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_parked_car_10",
+      "split": "holdout",
+      "condition": "parked_car",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_parked_car_13",
+      "split": "holdout",
+      "condition": "parked_car",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_parked_car_16",
+      "split": "holdout",
+      "condition": "parked_car",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_parked_car_20",
+      "split": "holdout",
+      "condition": "parked_car",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_cone_5",
+      "split": "holdout",
+      "condition": "cone",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_cone_7",
+      "split": "holdout",
+      "condition": "cone",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_cone_10",
+      "split": "holdout",
+      "condition": "cone",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_cone_13",
+      "split": "holdout",
+      "condition": "cone",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_cone_16",
+      "split": "holdout",
+      "condition": "cone",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_cone_20",
+      "split": "holdout",
+      "condition": "cone",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_planter_5",
+      "split": "holdout",
+      "condition": "planter",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_planter_7",
+      "split": "holdout",
+      "condition": "planter",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_planter_10",
+      "split": "holdout",
+      "condition": "planter",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_planter_13",
+      "split": "holdout",
+      "condition": "planter",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_planter_16",
+      "split": "holdout",
+      "condition": "planter",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_2_planter_20",
+      "split": "holdout",
+      "condition": "planter",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_clear_5",
+      "split": "holdout",
+      "condition": "clear",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_clear_7",
+      "split": "holdout",
+      "condition": "clear",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_clear_10",
+      "split": "holdout",
+      "condition": "clear",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_clear_13",
+      "split": "holdout",
+      "condition": "clear",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_clear_16",
+      "split": "holdout",
+      "condition": "clear",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_clear_20",
+      "split": "holdout",
+      "condition": "clear",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_barricade_5",
+      "split": "holdout",
+      "condition": "barricade",
+      "distance_m": 5.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.0337,
+      "measurements": [
+        {
+          "center_xy_m": [
+            4.9692,
+            1.8827
+          ],
+          "lidar_hits": 59,
+          "rgb_score": 0.8011
+        }
+      ]
+    },
+    {
+      "name": "holdout_3_barricade_7",
+      "split": "holdout",
+      "condition": "barricade",
+      "distance_m": 7.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.0761,
+      "measurements": [
+        {
+          "center_xy_m": [
+            6.9381,
+            2.1528
+          ],
+          "lidar_hits": 40,
+          "rgb_score": 0.9058
+        }
+      ]
+    },
+    {
+      "name": "holdout_3_barricade_10",
+      "split": "holdout",
+      "condition": "barricade",
+      "distance_m": 10.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.1032,
+      "measurements": [
+        {
+          "center_xy_m": [
+            9.8952,
+            2.3834
+          ],
+          "lidar_hits": 15,
+          "rgb_score": 0.8868
+        }
+      ]
+    },
+    {
+      "name": "holdout_3_barricade_13",
+      "split": "holdout",
+      "condition": "barricade",
+      "distance_m": 13.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.241,
+      "measurements": [
+        {
+          "center_xy_m": [
+            13.2348,
+            2.1358
+          ],
+          "lidar_hits": 14,
+          "rgb_score": 0.8638
+        }
+      ]
+    },
+    {
+      "name": "holdout_3_barricade_16",
+      "split": "holdout",
+      "condition": "barricade",
+      "distance_m": 16.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.1811,
+      "measurements": [
+        {
+          "center_xy_m": [
+            15.9751,
+            2.2201
+          ],
+          "lidar_hits": 7,
+          "rgb_score": 0.8291
+        }
+      ]
+    },
+    {
+      "name": "holdout_3_barricade_20",
+      "split": "holdout",
+      "condition": "barricade",
+      "distance_m": 20.0,
+      "positive": true,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": 0.3435,
+      "measurements": [
+        {
+          "center_xy_m": [
+            20.3384,
+            2.309
+          ],
+          "lidar_hits": 5,
+          "rgb_score": 0.7526
+        }
+      ]
+    },
+    {
+      "name": "holdout_3_parked_car_5",
+      "split": "holdout",
+      "condition": "parked_car",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_parked_car_7",
+      "split": "holdout",
+      "condition": "parked_car",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_parked_car_10",
+      "split": "holdout",
+      "condition": "parked_car",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_parked_car_13",
+      "split": "holdout",
+      "condition": "parked_car",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_parked_car_16",
+      "split": "holdout",
+      "condition": "parked_car",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_parked_car_20",
+      "split": "holdout",
+      "condition": "parked_car",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_cone_5",
+      "split": "holdout",
+      "condition": "cone",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_cone_7",
+      "split": "holdout",
+      "condition": "cone",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_cone_10",
+      "split": "holdout",
+      "condition": "cone",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_cone_13",
+      "split": "holdout",
+      "condition": "cone",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_cone_16",
+      "split": "holdout",
+      "condition": "cone",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_cone_20",
+      "split": "holdout",
+      "condition": "cone",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_planter_5",
+      "split": "holdout",
+      "condition": "planter",
+      "distance_m": 5.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_planter_7",
+      "split": "holdout",
+      "condition": "planter",
+      "distance_m": 7.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_planter_10",
+      "split": "holdout",
+      "condition": "planter",
+      "distance_m": 10.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_planter_13",
+      "split": "holdout",
+      "condition": "planter",
+      "distance_m": 13.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_planter_16",
+      "split": "holdout",
+      "condition": "planter",
+      "distance_m": 16.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    },
+    {
+      "name": "holdout_3_planter_20",
+      "split": "holdout",
+      "condition": "planter",
+      "distance_m": 20.0,
+      "positive": false,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "closest_center_error_m": null,
+      "measurements": []
+    }
+  ]
+}
