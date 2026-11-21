@@ -3,6 +3,7 @@ import argparse
 import gzip
 import json
 from pathlib import Path
+import shutil
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import cv2
@@ -33,7 +34,9 @@ WINDOWS = {
     "delayed": (1228., 1333., ((1256., 1278.), (1286., 1325.)), "pedestrian-delayed", 626),
 }
 WINDOWS["bus-crossing"] = WINDOWS["bus"]
-CASES = (*WINDOWS, "adjacent", "reopened-board")
+PASS_TRIALS = {"adjacent": "occupied", "adjacent-camera": "occupied", "no-lead": "no-lead",
+               "departing-lead": "departing-lead"}
+CASES = (*WINDOWS, *PASS_TRIALS, "reopened-board")
 
 
 class Witness:
@@ -119,26 +122,31 @@ def main():
     cv2.setNumThreads(1)
     root = args.output
     root.mkdir(parents=True, exist_ok=True)
+    checkpoint = root / "checkpoint.npz"
+    with args.model.open("rb") as source, checkpoint.open("xb") as copy:
+        shutil.copyfileobj(source, copy)
+    if fingerprint(args.model) != fingerprint(checkpoint):
+        raise RuntimeError("Model changed while freezing the trial")
     snapshot = root / "study-source.zip"
     with ZipFile(snapshot, "x", ZIP_DEFLATED) as archive:
         for path in sorted(Path(__file__).parent.glob("*.py")):
             archive.write(path, f"crosswalk/{path.name}")
-    write_json(root / "protocol.json", dict(cases=args.cases, windows=WINDOWS, model_sha256=fingerprint(args.model),
+    write_json(root / "protocol.json", dict(cases=args.cases, windows=WINDOWS, model_sha256=fingerprint(checkpoint),
                execution_source_sha256=fingerprint(snapshot), quality="High", map="Town03_Opt", step_s=.1))
     with simulator(args.port, quality="High", map_name="Town03_Opt") as world:
         for case in args.cases:
             folder = root / case
-            if case == "adjacent":
+            if case in PASS_TRIALS:
                 folder.mkdir(parents=True, exist_ok=False)
                 corridor, geometry = second_corridor(world.get_map())
-                score = evaluate(world, "occupied", args.model, folder, source_lane=SOURCE,
-                                 ego_s=EGO_STATION, corridor=corridor)
+                score = evaluate(world, PASS_TRIALS[case], checkpoint, folder, source_lane=SOURCE,
+                                 ego_s=EGO_STATION, corridor=corridor, native_rgb=case != "adjacent")
                 write_json(folder / "summary.json", dict(case=case, geometry=geometry, score=score,
-                    model_sha256=fingerprint(args.model), producer=producer_info(world)))
+                    model_sha256=fingerprint(checkpoint), producer=producer_info(world)))
             elif case == "reopened-board":
-                run_workzone(world, args.model, folder, "blocked", 621)
+                run_workzone(world, checkpoint, folder, "blocked", 621)
             else:
-                route_trial(world, args.model, folder, PROJECT / "out/city-progress-trials" / root.name / case, case)
+                route_trial(world, checkpoint, folder, PROJECT / "out/city-progress-trials" / root.name / case, case)
 
 
 if __name__ == "__main__":

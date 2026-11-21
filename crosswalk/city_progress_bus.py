@@ -28,14 +28,15 @@ class BusCrossing(JourneyScenario):
         super().__init__(*args, **kwargs)
         try:
             self.bus = next(e.actor for e in self.events if e.kind == "bus")
-            pose = self.bus.get_transform()
             base = self._urban.lane_change.bus_pose
             self.origin = base.location
             self.forward, self.right = base.get_forward_vector(), base.get_right_vector()
             self.passing_lane_width = self._map.get_waypoint_xodr(4, 2, 23.).lane_width
             nose = max(_offset(self.origin, p, self.forward)
-                       for p in self.bus.bounding_box.get_world_vertices(pose))
+                       for p in self.bus.bounding_box.get_world_vertices(base))
             self.cross_station = nose + 1.6
+            if not 2. < self.cross_station < 13.:
+                raise ValueError("Crossing station must be immediately beyond the native bus nose")
             loc = self.origin + self.forward * self.cross_station
             loc.z = base.location.z + 1.
             bp = sorted(self._catalog.filter("walker.pedestrian.*"), key=lambda entry: entry.id)[0]
