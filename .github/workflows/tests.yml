@@ -39,4 +39,4 @@ jobs:
           CARLA_TOWN01_XODR: '.local/Town01_Opt-1.0.xodr'
           CARLA_TOWN03_XODR: '.local/Town03_Opt-1.0.xodr'
       - name: Verify replay transport and encounter seeking
-        run: node --test tests/test_replay_pack.mjs tests/test_encounter_chapters.mjs tests/test_object_memory.mjs tests/test_audit_city_perception.mjs tests/test_exposure_clock.mjs
+        run: node --test tests/test_replay_pack.mjs tests/test_encounter_chapters.mjs tests/test_object_memory.mjs tests/test_audit_city_perception.mjs tests/test_exposure_clock.mjs tests/test_follow_heading.mjs

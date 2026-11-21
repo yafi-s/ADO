@@ -53,3 +53,15 @@
   .comparison-grid { grid-template-columns: 1fr; }
   .episode-card + .episode-card { border-left: 0; border-top: 1px solid var(--line); }
 }
+
+#city-review tbody th { min-width: 8rem; }
+#city-review td { white-space: normal; line-height: 1.5; }
+#city-review td:last-child { min-width: 7rem; }
+#city-review .result-note { padding: 0 2px; }
+@media (max-width: 570px) {
+  #city-review table, #city-review tbody, #city-review tr { display: block; }
+  #city-review thead { display: none; }
+  #city-review tbody tr { padding: 12px 14px; border-top: 1px solid var(--line); }
+  #city-review tbody tr:first-child { border-top: 0; }
+  #city-review tbody th, #city-review tbody td { display: block; padding: 2px 0; border: 0; }
+}

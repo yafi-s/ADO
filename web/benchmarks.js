@@ -364,3 +364,31 @@ async function loadRevision() {
 
 load();
 void loadRevision();
+
+async function loadCityReview() {
+  const response = await fetch('./media/urban-review.json', {cache: 'no-cache'});
+  if (!response.ok) return;
+  const study = await response.json();
+  if (!Array.isArray(study.checks) || !study.checks.length) return;
+  const rows = [];
+  for (const check of study.checks) {
+    const row = document.createElement('tr');
+    const title = element('th', check.test);
+    title.scope = 'row';
+    const links = document.createElement('td');
+    for (const entry of check.evidence) {
+      const url = new URL(entry.url, document.baseURI);
+      if (url.origin !== location.origin && url.protocol !== 'https:') continue;
+      if (links.childNodes.length) links.append(' · ');
+      const link = element('a', entry.label);
+      link.href = url.href;
+      links.append(link);
+    }
+    row.append(title, element('td', check.result), links);
+    rows.push(row);
+  }
+  document.getElementById('city-review-rows').replaceChildren(...rows);
+  document.getElementById('city-review-limits').textContent = study.scope;
+  document.getElementById('city-review').hidden = false;
+}
+void loadCityReview().catch(() => {});

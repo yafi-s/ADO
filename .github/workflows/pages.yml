@@ -6,6 +6,7 @@ on:
       - 'web/**'
       - 'results/behavior-v2/**'
       - 'results/perception/rider-motion/*.mp4'
+      - 'results/perception/rider-turns/*.mp4'
       - 'tools/prepare_pages_film.py'
       - 'assets/robotaxi/vehicle/meridian.glb'
       - 'assets/robotaxi/vehicle/meridian-studio.png'
@@ -63,6 +64,9 @@ jobs:
       - name: Include the measured frame-by-frame comparison
         if: ${{ hashFiles('results/perception/rider-motion/high-occluded-pedestrian-and-van.mp4') != '' }}
         run: cp results/perception/rider-motion/high-occluded-pedestrian-and-van.mp4 web/media/frame-comparison.mp4
+      - name: Include the measured turning-camera comparison
+        if: ${{ hashFiles('results/perception/rider-turns/right-turn.mp4') != '' }}
+        run: cp results/perception/rider-turns/right-turn.mp4 web/media/turn-camera.mp4
       - name: Fit the verified city recordings within the Pages budget
         run: |
           if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then

@@ -29,10 +29,19 @@
       <div class="page">
         <section class="intro results-intro" aria-labelledby="results-title">
           <div>
-            <div class="eyebrow">Held-out evaluation</div>
             <h1 id="results-title">Evaluation results</h1>
-            <p>Recorded Town01 simulation trials evaluate learned steering, throttle and braking. The camera-only policy runs on a subset of the multisensor cases with the same navigation inputs.</p>
+            <p>Recorded driving and perception results from Town03 and Town01, with the camera footage and logs behind each measurement.</p>
           </div>
+        </section>
+        <section class="results" id="city-review" aria-labelledby="city-review-title" hidden>
+          <h2 class="study-title" id="city-review-title">Urban pace and barriers</h2>
+          <div class="panel">
+            <div class="table-wrap" tabindex="0"><table>
+              <thead><tr><th scope="col">Test</th><th scope="col">Measured result</th><th scope="col">Evidence</th></tr></thead>
+              <tbody id="city-review-rows"></tbody>
+            </table></div>
+          </div>
+          <p class="result-note" id="city-review-limits"></p>
         </section>
         <section class="results revision-results" id="revision-results" aria-labelledby="revision-title" hidden>
           <h2 class="study-title" id="revision-title">Behavior V2</h2>
