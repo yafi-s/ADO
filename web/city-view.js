@@ -173,9 +173,33 @@ class CityScene {
     this.dirty = true;
   }
 
-  async loadTown() {
+  async loadTown(url = './media/town.json', mapName = null) {
+    if ((this.mapUrl === url && this.mapName === mapName) ||
+        (this.mapRequest?.url === url && this.mapRequest.mapName === mapName)) return;
+    this.mapRequest?.control.abort();
+    const request = {url, mapName, control: new AbortController()};
+    this.mapRequest = request;
+    this.mapUrl = this.mapName = this.bounds = null;
+    for (const name of ['curbs', 'roads', 'buildings']) {
+      const geometry = this[name];
+      if (!geometry) continue;
+      this.scene.remove(geometry);
+      geometry.geometry.dispose();
+      geometry.material.dispose();
+      geometry.dispose?.();
+      this[name] = null;
+    }
+    this.grid.clear();
+    this.floor.position.y = -.16;
+    this.routeKey = '';
+    if (this.lastFrame) this.show(this.lastFrame);
+    this.dirty = true;
+    issue('map-issue');
     try {
-      const data = await read('./media/town.json', new AbortController().signal);
+      if (typeof url !== 'string' || !/^\.\/media\/(?:[\w-]+\/)*[\w-]+\.json$/i.test(url)) throw new Error('Invalid road map path');
+      const data = await read(url, request.control.signal, 30000);
+      if (this.mapRequest !== request) return;
+      if (mapName && data.producer?.map !== mapName) throw new Error('Road geometry does not match the recording');
       const roads = (data.roads || []).map(lane => (Array.isArray(lane) ? lane : lane.points || []).filter(p => point(p, 3))).filter(lane => lane.length > 1);
       if (!roads.length) throw new Error('No lanes');
       for (const road of roads) for (let i = 1; i < road.length; i++) {
@@ -212,11 +236,15 @@ class CityScene {
         this.scene.add(buildings);
       }
       this.dirty = true;
+      this.mapUrl = url;
+      this.mapName = mapName;
       this.routeKey = '';
       if (this.lastFrame) this.show(this.lastFrame);
       if (this.mode === 'overview' || !this.ego.visible) this.positionCamera(true);
     } catch {
-      issue('map-issue', 'City footprint unavailable. Vehicle and route use telemetry coordinates.');
+      if (!request.control.signal.aborted) issue('map-issue', 'City footprint unavailable. Vehicle and route use telemetry coordinates.');
+    } finally {
+      if (this.mapRequest === request) this.mapRequest = null;
     }
   }
 
@@ -452,15 +480,23 @@ async function startRecording() {
   issue('data-issue', 'Loading recorded driveâ€¦');
   try {
     if (!catalog.length) {
-      const data = await read('./media/catalog.json', signal);
+      const [base, viewer] = await Promise.allSettled([
+        read('./media/catalog.json', signal), read('./media/viewer-catalog.json', signal)
+      ]);
       if (signal.aborted) return;
-      catalog = (Array.isArray(data) ? data : data.records || []).filter(entry => typeof entry.label === 'string' &&
+      const entries = result => Array.isArray(result.value) ? result.value : result.value?.records || [];
+      const legacy = entries(base);
+      const paths = new Set(legacy.map(entry => entry?.path));
+      const extra = entries(viewer).filter(entry => entry?.map_url && !paths.has(entry.path));
+      catalog = [...legacy, ...extra].filter(entry => typeof entry?.label === 'string' &&
         typeof entry.path === 'string' && (entry.path === '' || /^[\w-]+(?:\/[\w-]+)*$/.test(entry.path)));
       if (!catalog.length) throw new Error('Empty catalog');
       el('case').replaceChildren(...catalog.map(entry => new Option(entry.label, entry.path)));
       if (catalog.some(e => e.path === requestedCase)) el('case').value = requestedCase;
       el('case-label').hidden = false;
     }
+    const selected = catalog.find(entry => entry.path === el('case').value);
+    void scene?.loadTown(selected?.map_url, typeof selected?.map === 'string' ? selected.map : null);
     const directory = './media/' + (el('case').value ? el('case').value + '/' : '');
     const data = await read(directory + 'replay.json', signal, 30000);
     if (signal.aborted) return;
@@ -493,6 +529,7 @@ async function monitor(serial, signal) {
         replayRequest?.abort();
         setMode('live', 'Live');
         resetDrive();
+        void scene?.loadTown();
         activeLiveId = frame.run_id;
       }
       display(frame);

@@ -316,6 +316,9 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             summary.update(events=state["events"], turn_counts=state["turn_counts"], district=state["district"],
                            junction_traversals=state["junction_traversals"], turns_completed=state["turns_completed"],
                            clear_road_m=state["clear_road_m"])
+            for name in ("sidewalk_activity", "background_traffic_activity"):
+                if name in state:
+                    summary[name] = state[name]
         return summary, trace, np.asarray(data, np.float32), np.asarray(targets, np.float32)
 
 

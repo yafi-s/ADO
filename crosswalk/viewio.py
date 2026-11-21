@@ -85,6 +85,8 @@ class _ConsoleHandler(SimpleHTTPRequestHandler):
             frame = live.frame
             code = HTTPStatus.OK if frame is not None else HTTPStatus.SERVICE_UNAVAILABLE
             self._send_json(code, frame or b"{}", write_body)
+        elif path == "/api/map" and live.map_bytes is not None:
+            self._send_json(HTTPStatus.OK, live.map_bytes, write_body)
         elif path == "/api/options" and live.options is not None:
             self._send_json(HTTPStatus.OK, live.options, write_body)
         elif path == "/api/status" and live.options is not None:
@@ -206,9 +208,10 @@ class _ConsoleHandler(SimpleHTTPRequestHandler):
 class Live:
     """Serve the console and replace its current frame with each publish."""
 
-    def __init__(self, port, options=None):
+    def __init__(self, port, options=None, map_geometry=None):
         self.port = port
         self.options = _json(options) if options is not None else None
+        self.map_bytes = _json(map_geometry) if map_geometry is not None else None
         self._scenarios = self._option_ids(options, "scenarios")
         self._destinations = self._option_ids(options, "destinations")
         self._weather = self._option_ids(options, "weather", WEATHER_OPTIONS) & WEATHER_OPTIONS
@@ -315,7 +318,8 @@ class Live:
 
     def publish(self, telemetry, shots):
         cameras = {name: base64.b64encode(image).decode("ascii") for name, image in _jpegs(shots).items()}
-        frame = _json({**telemetry, "cameras": cameras})
+        metadata = {"map_url": "./api/map"} if self.map_bytes is not None else {}
+        frame = _json({**telemetry, **metadata, "cameras": cameras})
         with self._lock:
             self._frame = frame
 

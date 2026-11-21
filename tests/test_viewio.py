@@ -9,6 +9,7 @@ import unittest
 from unittest.mock import patch
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
+from urllib.parse import urljoin
 
 import cv2
 import numpy as np
@@ -29,6 +30,15 @@ def poster_rgb(data):
 
 
 class LiveTests(unittest.TestCase):
+    def test_live_city_serves_geometry_from_its_own_world(self):
+        geometry = {"producer": {"map": "Town03_Opt"}, "roads": [[[1, 2, 0], [3, 2, 0]]]}
+        with Live(0, map_geometry=geometry) as live:
+            live.publish({"frame": 37, "map": "Town03_Opt"}, shots(0))
+            with urlopen(live.url + "api/frame") as response:
+                frame = json.load(response)
+            with urlopen(urljoin(live.url, frame["map_url"])) as response:
+                self.assertEqual(json.load(response), geometry)
+
     def test_latest_frame_and_idle(self):
         with Live(0) as live:
             with urlopen(live.url, timeout=5) as response:
