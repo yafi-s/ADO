@@ -1063,7 +1063,7 @@ async function loadChapterManifest(entry, replay, signal) {
   }
 }
 
-async function openRecorded(entry) {
+async function openRecorded(entry, startSeconds = 0) {
   const signal = beginSource('recorded');
   state.entry = entry;
   state.run = findRun(entry);
@@ -1099,9 +1099,10 @@ async function openRecorded(entry) {
 
   const listed = Array.isArray(entry.cameras) ? entry.cameras : Array.isArray(replay?.cameras) ? replay.cameras : CAMERA_ORDER;
   setCameras([...new Set(listed.filter(camera => CAMERA_ORDER.includes(camera)))]);
-  if (replay) present(frameAt(0));
+  const start = replay && finite(startSeconds) ? Math.max(0, Math.min(startSeconds, replay.end)) : 0;
+  if (replay) present(frameAt(start));
   if (state.camera) {
-    loadVideo(videoUrl(), 0, !reducedMotion);
+    loadVideo(videoUrl(), start, !reducedMotion);
   } else {
     feedNote('No front or chase footage is listed for this run.');
     clock.playing = Boolean(replay) && !reducedMotion;
@@ -1494,7 +1495,8 @@ async function boot() {
   bootScene();
   if (LOCAL_CONSOLE) confirmControls();
 
-  const requested = new URLSearchParams(location.search).get('run');
+  const search = new URLSearchParams(location.search);
+  const requested = search.get('run');
   const [build, catalog] = await Promise.all([loadBuild(), loadCatalog()]);
   state.build = build;
   state.catalog = catalog.length ? catalog : catalogFromBuild();
@@ -1504,7 +1506,7 @@ async function boot() {
   if (requested) {
     state.wanted = 'recorded';
     const entry = resolveRun(requested);
-    if (entry) openRecorded(entry);
+    if (entry) openRecorded(entry, Number(search.get('at')));
     else showUnresolved(requested);
   } else if (!LOCAL_CONSOLE) {
     showDefault();

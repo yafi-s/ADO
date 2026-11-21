@@ -28,6 +28,9 @@ def publish(web, directory, *, feature=False):
         if Path(name).name != name or digest(recording / name) != expected:
             raise ValueError(f"Recording artifact differs: {name}")
 
+    if manifest["policy"]["schema"] == "ado-city-policy-v1":
+        entry["selection_note"] = ("One continuous Town03 development drive on the city training course. "
+                                   "Navigation supplied the lane-change path around the bus.")
     base = f"./media/{folder}"
     summary = manifest["summary"]
     show = {key: summary[key] for key in ("scenario", "policy", "seed", "destination", "district", "outcome",
@@ -35,7 +38,7 @@ def publish(web, directory, *, feature=False):
                                           "collision_events", "red_light_violations", "yield_violations")}
     show.update(label=entry["label"], trial_id=entry["trial_id"], case_id=summary["scenario"],
                 recording_path=folder, model_sha256=manifest["policy"]["sha256"], benchmark_member=False,
-                selection_note=manifest["selection_note"], cohort=entry["cohort"],
+                selection_note=entry["selection_note"], cohort=entry["cohort"],
                 quality_requested=manifest["quality_requested"], map=entry["map"], map_url=entry["map_url"],
                 width=manifest["video"]["width"], height=manifest["video"]["height"],
                 manifest_url=entry["manifest"], log_url=f"{base}/telemetry.json", video_url=f"{base}/chase.mp4",
