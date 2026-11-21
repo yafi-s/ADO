@@ -155,6 +155,34 @@ class PublicationTest(unittest.TestCase):
                          [key, self.trial.trial_id])
         self.assertTrue(all((self.root / "web" / e["url"]).is_file() for e in build["evidence"]
                             if e["url"].startswith("./")))
+        curated = dest.with_name("market-demo")
+        shutil.copytree(dest, curated)
+        curated_key = "showcase-31-market-demo-fusion"
+        curated_path = "./media/showcase/market-demo"
+        disclosure = dict(cohort="showcase", district="train", selection_note=pub.CURATED_NOTE)
+        curated_entry = dict(entry, trial_id=curated_key, path="showcase/market-demo",
+                             label="Curated Market drive · training district", manifest=f"{curated_path}/manifest.json",
+                             **disclosure)
+        for name in ("telemetry.json", "replay.json"):
+            rows = pub.read_json(curated / name)
+            rows[0]["seed"] = 31
+            if name == "replay.json":
+                rows[0]["run_id"] = curated_key
+            pub.write_json(curated / name, rows)
+        curated_manifest = dict(record, trial_id=curated_key, catalog_entry=curated_entry, **disclosure,
+                                summary=dict(summary, district="train", seed=31, destination="market"),
+                                sha256={name: pub.fingerprint(curated / name) for name in record["sha256"]})
+        pub.write_json(curated / "manifest.json", curated_manifest)
+        build = self.publish()
+        self.assertEqual([r["trial_id"] for r in build["runs"]], [self.trial.trial_id])
+        self.assertEqual([e["trial_id"] for e in pub.read_json(media / "viewer-catalog.json")],
+                         [key, curated_key, self.trial.trial_id])
+        self.assertEqual(build["showcases"][1]["selection_note"], pub.CURATED_NOTE)
+        self.assertEqual(build["showcases"][1]["district"], "train")
+        pub.write_json(curated / "manifest.json", dict(curated_manifest, selection_note=""))
+        with self.assertRaisesRegex(ValueError, "disclosure"):
+            self.publish()
+        pub.write_json(curated / "manifest.json", curated_manifest)
         for changes in (dict(model_sha256="c"*64), dict(benchmark_member=True), dict(last_frame=45),
                         dict(video=dict(record["video"], width=1920))):
             with self.subTest(changes=changes):

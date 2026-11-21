@@ -1,7 +1,8 @@
 """Film an independent, closed-loop CARLA drive with one exterior RGB observer."""
 import argparse
 from collections import deque
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
+from functools import partial
 import hashlib
 from io import BytesIO
 import json
@@ -27,6 +28,8 @@ SEED = 211
 MOUNT = dict(x=-7.8, y=0.55, z=3.40, pitch=-10.5, yaw=-2.0)
 FPS = round(1 / DT)
 FRONT_SIZE = (640, 360)
+CASES = ("trip", "pedestrian", "market-demo")
+CURATED_NOTE = "The training-district Market route was selected because the learned driver completed it during development."
 
 
 def transform_fields(transform):
@@ -220,7 +223,26 @@ def encode_and_check(raw, output, size, start, count):
     return video
 
 
-def capture(scenario, quality, resolution, percentage, port, output):
+def capture(case, quality, resolution, percentage, port, output):
+    """Record one viewing drive on a fresh, graphics-capable CARLA host."""
+    return _record(partial(simulator, port, attach=False, quality=quality), case, quality, resolution, percentage, output)
+
+
+def run(world, case, output, *, quality="High", resolution="1920x1080", percentage=67):
+    """Record on a caller-owned graphics world launched with the specified quality level."""
+    return _record(partial(nullcontext, world), case, quality, resolution, percentage, output)
+
+
+def _record(world_session, case, quality, resolution, percentage, output):
+    if case not in CASES:
+        raise ValueError(f"Unknown showcase case {case!r}")
+    curated = case == "market-demo"
+    scenario = "trip" if curated else case
+    seed, district = (31, "train") if curated else (SEED, "heldout")
+    selection_note = CURATED_NOTE if curated else "This independent showcase case and seed were selected before capture."
+    label = {"market-demo": "Curated Market drive · training district", "trip": "Showcase · Market trip",
+             "pedestrian": "Showcase · Pedestrian crossing"}[case]
+    disclosure = dict(cohort="showcase", district=district, selection_note=selection_note, benchmark_member=False)
     output = output.resolve()
     if output.exists():
         raise FileExistsError(f"Choose a fresh output directory to preserve {output}")
@@ -241,12 +263,12 @@ def capture(scenario, quality, resolution, percentage, port, output):
         stage.mkdir()
         raw, front_raw, rows = work / "chase.mjpeg", work / "front.mjpeg", work / "perception.jsonl"
         size = RESOLUTIONS[resolution]
-        trial_id = f"showcase-{SEED}-{scenario}-fusion"
+        trial_id = f"showcase-{seed}-{case}-fusion"
         with (raw.open("wb") as stream, front_raw.open("wb") as front_stream,
               rows.open("w", encoding="utf-8") as row_stream, policy_profile(fit["render_profile"])):
             observer = ChaseCapture(*size, percentage, stream)
             perception = PerceptionCapture(observer, front_stream, row_stream)
-            with simulator(port, attach=False, quality=quality) as world:
+            with world_session() as world:
                 producer = validate_producer(producer_info(world))
                 if producer != fit["training_producer"]:
                     raise ValueError("Showcase simulator differs from the shipped fit producer")
@@ -258,8 +280,8 @@ def capture(scenario, quality, resolution, percentage, port, output):
                         or abs(settings.fixed_delta_seconds - DT) > 1e-6):
                     raise ValueError("CARLA must run in synchronous graphics mode at the policy timestep")
                 try:
-                    result, trace, *_ = episode(ObservedWorld(world, observer), scenario, SEED, "fusion", model,
-                                                district="heldout", weather="ClearNoon",
+                    result, trace, *_ = episode(ObservedWorld(world, observer), scenario, seed, "fusion", model,
+                                                district=district, weather="ClearNoon",
                                                 recording=perception, run_id=trial_id,
                                                 destination="market" if scenario == "trip" else None)
                 finally:
@@ -292,14 +314,13 @@ def capture(scenario, quality, resolution, percentage, port, output):
         video = encode_and_check(raw, stage / "chase.mp4", size, start, len(trace))
         front_video = encode_and_check(front_raw, stage / "front.mp4", FRONT_SIZE, 0, len(trace))
         files = {p.name: fingerprint(p) for p in sorted(stage.iterdir())}
-        media_root = PROJECT / "web/media"
+        media_root = (PROJECT / "web/media").resolve()
         entry = None
         if output.is_relative_to(media_root):
             directory = output.relative_to(media_root).as_posix()
-            entry = dict(label=f"Showcase · {'Market trip' if scenario == 'trip' else 'Pedestrian crossing'}",
-                         path=directory, cameras=["chase", "front"], trial_id=trial_id,
-                         benchmark_member=False, manifest=f"./media/{directory}/manifest.json")
-        manifest = dict(purpose="ADO independent closed-loop showcase drive", benchmark_member=False,
+            entry = dict(label=label, path=directory, cameras=["chase", "front"], trial_id=trial_id,
+                         manifest=f"./media/{directory}/manifest.json", **disclosure)
+        manifest = dict(purpose="ADO independent closed-loop showcase drive", **disclosure,
                         trial_id=trial_id, catalog_entry=entry, replay="replay.json",
                         producer=producer, quality_requested=quality, world_settings=observed_settings,
                         fit_id=fit["fit_id"],
@@ -317,18 +338,39 @@ def capture(scenario, quality, resolution, percentage, port, output):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--scenario", choices=("trip", "pedestrian"), default="trip")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--scenario", choices=("trip", "pedestrian"), help="Prespecified seed-211 held-out drive")
+    group.add_argument("--development-demo", action="store_true", help="Curated seed-31 Market drive in the training district")
+    group.add_argument("--all", action="store_true", help="Record all three viewing drives sequentially on one fresh host")
     parser.add_argument("--quality", choices=("Medium", "High", "Epic"), default="High")
-    parser.add_argument("--resolution", choices=RESOLUTIONS, default="1280x720")
-    parser.add_argument("--dlss-percent", "--dlss-percentage", choices=(67, 75), type=int, default=75)
+    parser.add_argument("--resolution", choices=RESOLUTIONS)
+    parser.add_argument("--dlss-percent", "--dlss-percentage", choices=(67, 75), type=int)
     parser.add_argument("--port", type=int, default=2668)
-    parser.add_argument("--output", type=Path, help="Fresh directory for the complete recording")
+    parser.add_argument("--output", type=Path, help="Fresh recording directory, or parent directory for --all")
     args = parser.parse_args()
     if not 1 <= args.port <= 65533:
         parser.error("Choose a port between 1 and 65533")
-    output = args.output or PROJECT / "web/media/showcase" / args.scenario
-    manifest = capture(args.scenario, args.quality, args.resolution, args.dlss_percent, args.port, output)
-    print(f"{manifest['outcome']}, {manifest['summary']['frames']} frames — {output.resolve()}", flush=True)
+    case = "market-demo" if args.development_demo else args.scenario or "trip"
+    root = PROJECT / "web/media/showcase"
+    resolution = args.resolution or ("1920x1080" if args.development_demo or args.all else "1280x720")
+    percentage = args.dlss_percent or (67 if args.development_demo or args.all else 75)
+    if args.all:
+        root = args.output or root
+        targets = [(name, root / name) for name in CASES]
+    else:
+        targets = [(case, args.output or root / case)]
+    for _, target in targets:
+        if target.exists():
+            parser.error(f"A recording already exists at {target}; choose a fresh destination")
+    if not args.all:
+        _, output = targets[0]
+        manifest = capture(case, args.quality, resolution, percentage, args.port, output)
+        print(f"{manifest['outcome']}, {manifest['summary']['frames']} frames — {output.resolve()}", flush=True)
+        return
+    with simulator(args.port, attach=False, quality=args.quality) as world:
+        for name, output in targets:
+            manifest = run(world, name, output, quality=args.quality, resolution=resolution, percentage=percentage)
+            print(f"{manifest['outcome']}, {manifest['summary']['frames']} frames — {output.resolve()}", flush=True)
 
 
 if __name__ == "__main__":

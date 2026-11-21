@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import sys
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 import unittest
@@ -86,7 +87,10 @@ class ShowcaseTests(unittest.TestCase):
             stack.enter_context(patch.dict(os.environ, CROSSWALK_RGB_RENDER="native"))
 
             def episode(observed, kind, seed, policy, model, **settings):
-                self.assertEqual((kind, seed, policy), ("trip", showcase.SEED, "fusion"))
+                curated = settings["run_id"] == "showcase-31-market-demo-fusion"
+                self.assertEqual((kind, seed, policy), ("trip", 31 if curated else showcase.SEED, "fusion"))
+                self.assertEqual(settings["district"], "train" if curated else "heldout")
+                self.assertIsNone(settings.get("teacher"))
                 self.assertEqual(settings["destination"], "market")
                 self.assertEqual(showcase.render_profile(), fit["render_profile"])
                 world.try_spawn_actor.return_value = Mock(id=7, is_alive=True, attributes={"role_name": "hero"})
@@ -94,7 +98,7 @@ class ShowcaseTests(unittest.TestCase):
                 self.assertIs(observed.get_settings(), world.get_settings())
                 recording = settings["recording"]
                 self.assertTrue(recording.primary_rig_only)
-                self.assertEqual(settings["run_id"], "showcase-211-trip-fusion")
+                self.assertEqual(settings["run_id"], "showcase-31-market-demo-fusion" if curated else "showcase-211-trip-fusion")
                 trace = []
                 for i, (frame, shade) in enumerate(zip(range(28, 33), (0, 40, 120, 185, 255))):
                     def tick():
@@ -111,7 +115,7 @@ class ShowcaseTests(unittest.TestCase):
                         rgb = np.full((360, 640, 3), 255 - shade, np.uint8)
                         recording.append(perception, {"front": rgb})
                 trace[-1]["collision_count"] = 1  # collision barrier delivers after capture
-                return dict(outcome="collision", frames=3), trace, None, None
+                return dict(outcome="collision", frames=3, seed=seed, scenario=kind, district=settings["district"]), trace, None, None
 
             stack.enter_context(patch.object(showcase, "episode", side_effect=episode))
             output = root / "web/media/showcase/trip"
@@ -163,6 +167,20 @@ class ShowcaseTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 showcase.capture("trip", "High", "tiny", 75, 2668, output)
             launch.assert_called_once()
+            curated = showcase.run(world, "market-demo", root / "web/media/showcase/market-demo", resolution="tiny")
+            launch.assert_called_once()
+            self.assertEqual(curated["quality_requested"], "High")
+            self.assertEqual(curated["summary"]["seed"], 31)
+            self.assertEqual(curated["summary"]["scenario"], "trip")
+            self.assertEqual(curated["summary"]["district"], "train")
+            self.assertEqual(curated["model_sha256"], manifest["model_sha256"])
+            for item in (curated, curated["catalog_entry"]):
+                self.assertEqual(item["cohort"], "showcase")
+                self.assertEqual(item["district"], "train")
+                self.assertFalse(item["benchmark_member"])
+                self.assertEqual(item["selection_note"], showcase.CURATED_NOTE)
+            self.assertEqual(curated["outcome"], "collision")
+            self.assertEqual(curated["catalog_entry"]["label"], "Curated Market drive · training district")
             with patch.object(showcase, "encode_and_check", side_effect=ValueError("decode mismatch")):
                 with self.assertRaisesRegex(ValueError, "decode mismatch"):
                     showcase.capture("trip", "High", "tiny", 75, 2668, root / "failed")
@@ -174,6 +192,22 @@ class ShowcaseTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "disagree at frame 329"):
             sink.append({"frame": 329}, {})
         self.assertEqual(sink.front_offsets, [])
+
+    def test_suite_uses_one_fresh_host_and_separate_output_for_each_drive(self):
+        with TemporaryDirectory() as tmp, ExitStack() as stack:
+            world = Mock()
+            launch = stack.enter_context(patch.object(showcase, "simulator", return_value=nullcontext(world)))
+            run = stack.enter_context(patch.object(showcase, "run", return_value=dict(
+                outcome="timeout", summary={"frames": 3})))
+            stack.enter_context(patch("builtins.print"))
+            root = Path(tmp)
+            with patch.object(sys, "argv", ["showcase", "--all", "--output", str(root)]):
+                showcase.main()
+            launch.assert_called_once_with(2668, attach=False, quality="High")
+            self.assertEqual([call.args for call in run.call_args_list],
+                             [(world, name, root / name) for name in ("trip", "pedestrian", "market-demo")])
+            self.assertTrue(all(call.kwargs == dict(quality="High", resolution="1920x1080", percentage=67)
+                                for call in run.call_args_list))
 
 
 if __name__ == "__main__":

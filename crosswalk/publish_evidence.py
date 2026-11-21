@@ -13,6 +13,7 @@ from tempfile import TemporaryDirectory
 from .experiment import (CAMERAS, POSTERS, TRAIN, POLICIES, fingerprint, read_json,
                          schedule, validate_producer, write_json)
 from .policy import Model
+from .showcase import CASES as SHOWCASE_CASES, CURATED_NOTE
 
 REPO = "https://github.com/yafi-s/ADO"
 RAW = "https://raw.githubusercontent.com/yafi-s/ADO"
@@ -123,17 +124,24 @@ def check_video(video, frame_count):
 
 def showcase_entry(directory, build):
     manifest = read_json(directory / "manifest.json")
-    scenario = directory.name
-    path = f"showcase/{scenario}"
-    key = f"showcase-211-{scenario}-fusion"
+    case = directory.name
+    curated = case == "market-demo"
+    scenario, seed, district = ("trip", 31, "train") if curated else (case, 211, "heldout")
+    path = f"showcase/{case}"
+    key = f"showcase-{seed}-{case}-fusion"
     base = f"./media/{path}"
     summary = manifest["summary"]
     entry = manifest["catalog_entry"]
+    if curated:
+        disclosure = dict(cohort="showcase", district="train", selection_note=CURATED_NOTE)
+        require(all(manifest.get(k) == entry.get(k) == v for k, v in disclosure.items())
+                and summary["destination"] == "market" and entry["label"] == "Curated Market drive · training district",
+                f"Missing curated Market selection disclosure for {key}")
     require(manifest["benchmark_member"] is False and entry["benchmark_member"] is False
             and entry["path"] == path and entry["trial_id"] == manifest["trial_id"] == key
             and entry["manifest"] == f"{base}/manifest.json" and entry["cameras"] == ["chase", "front"]
             and manifest["replay"] == "replay.json" and summary["scenario"] == scenario
-            and summary["seed"] == 211 and summary["policy"] == "fusion" and summary["district"] == "heldout"
+            and summary["seed"] == seed and summary["policy"] == "fusion" and summary["district"] == district
             and manifest["model_sha256"] == build["checkpoints"]["fusion"]["sha256"]
             and validate_producer(manifest["producer"]) == build["simulator"],
             f"Unexpected showcase identity or provenance for {key}")
@@ -152,7 +160,7 @@ def showcase_entry(directory, build):
     for i, (row, recorded) in enumerate(zip(trace, replay)):
         require(row["frame"] == row["camera_frame"] == manifest["first_frame"] + i
                 and row["video_index"] == i and row["video_time"] == i / 10 and recorded["run_id"] == key
-                and row["scenario"] == scenario and row["seed"] == 211 and row["policy"] == "fusion"
+                and row["scenario"] == scenario and row["seed"] == seed and row["policy"] == "fusion"
                 and row["map"] == build["simulator"]["map"] and -1 <= row["steer"] <= 1
                 and 0 <= row["throttle"] <= 1 and 0 <= row["brake"] <= 1
                 and all(recorded[k] == v for k, v in row.items())
@@ -164,7 +172,8 @@ def showcase_entry(directory, build):
         info = check_video(directory / f"{camera}.mp4", frames)
         require(info == manifest[field], f"Showcase video metadata mismatch for {key}/{camera}")
     video = manifest["video"]
-    show = dict(trial_id=key, case_id=scenario, policy="fusion", seed=summary["seed"], cohort="showcase",
+    show = dict(trial_id=key, case_id=case, scenario=scenario, policy="fusion", seed=seed, cohort="showcase",
+                district=district, selection_note=manifest.get("selection_note"), destination=summary.get("destination"),
                 benchmark_member=False, quality_requested=quality, width=video["width"], height=video["height"],
                 frames=frames, model_sha256=manifest["model_sha256"], outcome=summary["outcome"],
                 duration_s=summary["duration_s"], progress_m=summary["progress_m"], recording_path=path,
@@ -312,7 +321,7 @@ def publish(root, tag, source_commit, commissioning_only=False, development_only
         catalog = []
         if build["status"] == "evaluated":
             build["showcases"] = []
-            for scenario in ("trip", "pedestrian"):
+            for scenario in SHOWCASE_CASES:
                 directory = web / "media/showcase" / scenario
                 if directory.exists():
                     catalog.append(showcase_entry(directory, build))
