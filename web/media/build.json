@@ -1,9 +1,4 @@
 {
-  "status": "commissioning",
-  "title": "Simulator commissioning",
-  "release": null,
-  "checkpoints": {},
-  "runs": [],
   "simulator": {
     "server_version": "1.0",
     "client_version": "1.0",
@@ -31,6 +26,26 @@
       "url": "./logs/simulator-verification.json"
     },
     {
+      "label": "Development drive \u00b7 front camera",
+      "url": "./media/dev-crossing/front.mp4"
+    },
+    {
+      "label": "Development drive \u00b7 chase camera",
+      "url": "./media/dev-crossing/chase.mp4"
+    },
+    {
+      "label": "Development drive \u00b7 infrared camera",
+      "url": "./media/dev-crossing/infrared.mp4"
+    },
+    {
+      "label": "Development drive \u00b7 left camera",
+      "url": "./media/dev-crossing/left.mp4"
+    },
+    {
+      "label": "Development drive \u00b7 right camera",
+      "url": "./media/dev-crossing/right.mp4"
+    },
+    {
       "label": "Traffic Manager training demonstration",
       "url": "./logs/training-drive.json",
       "producer": {
@@ -39,14 +54,43 @@
         "map": "Town01_Opt"
       },
       "subject": "Traffic Manager training demonstration"
+    },
+    {
+      "label": "Traffic Manager training footage",
+      "url": "./media/training-drive.mp4"
     }
   ],
-  "preview_video": "./media/training-drive.mp4",
-  "preview_log": "./logs/training-drive.json",
-  "preview_label": "Training demonstration \u00b7 CARLA 1.0",
-  "source": {
-    "commit": "f3b9b04909605d866478e3ef3dc82acb579c5bbd",
-    "url": "https://github.com/yafi-s/ADO/tree/f3b9b04909605d866478e3ef3dc82acb579c5bbd"
+  "status": "development",
+  "title": "Learned development drive",
+  "release": null,
+  "checkpoints": {
+    "fusion": {
+      "sha256": "7c22cd3615355a4cbc914ff32cdaf860cc0394992603d6f2bb4e76bea3a3426d",
+      "url": "./logs/dev31-fusion.npz"
+    }
   },
-  "preview_image": "./media/commissioning-chase.jpg"
+  "runs": [
+    {
+      "seed": 31,
+      "policy": "fusion",
+      "cohort": "development",
+      "district": "train",
+      "outcome": "complete",
+      "progress_m": 63.512,
+      "duration_s": 19.5,
+      "trial_id": "dev31-crossing",
+      "case_id": "pedestrian",
+      "model_sha256": "7c22cd3615355a4cbc914ff32cdaf860cc0394992603d6f2bb4e76bea3a3426d",
+      "log_url": "./logs/dev31-crossing.json",
+      "recording_path": "dev-crossing"
+    }
+  ],
+  "preview_video": "./media/dev-crossing/chase.mp4",
+  "preview_image": "./media/dev-crossing/chase.jpg",
+  "preview_label": "Learned development drive \u00b7 CARLA 1.0",
+  "preview_log": "./logs/dev31-crossing.json",
+  "source": {
+    "commit": "66fe491db3fdcd38f409395e4b8d70fc47bc58a4",
+    "url": "https://github.com/yafi-s/ADO/tree/66fe491db3fdcd38f409395e4b8d70fc47bc58a4"
+  }
 }
