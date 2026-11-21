@@ -1,16 +1,16 @@
 {
   "status": "evaluated",
-  "title": "Surround perception and urban cruise",
+  "title": "Urban pace, work zones and turning-camera verification",
   "simulator": {
     "server_version": "1.0",
     "client_version": "1.0",
     "map": "Town01_Opt"
   },
   "release": {
-    "label": "v0.3.0",
-    "url": "https://github.com/yafi-s/ADO/releases/tag/v0.3.0",
-    "zip_url": "https://github.com/yafi-s/ADO/releases/download/v0.3.0/ADO-v0.3.0-Windows.zip",
-    "sha256_url": "https://github.com/yafi-s/ADO/releases/download/v0.3.0/SHA256SUMS.txt"
+    "label": "v0.4.0",
+    "url": "https://github.com/yafi-s/ADO/releases/tag/v0.4.0",
+    "zip_url": "https://github.com/yafi-s/ADO/releases/download/v0.4.0/ADO-v0.4.0-Windows.zip",
+    "sha256_url": "https://github.com/yafi-s/ADO/releases/download/v0.4.0/SHA256SUMS.txt"
   },
   "checkpoints": {
     "fusion": {
@@ -36,9 +36,49 @@
     "tactical-pass": {
       "sha256": "570ece96d6cdf2d8ed72c6253446d58d2a4d2575d0e1d9d1555bf0e55519d13f",
       "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.3.0/models/tactical-pass/choice.json"
+    },
+    "city-pace": {
+      "sha256": "43ee49e6b7bd8d258b1b3ed0ae90314eace178f33debeb9e11c81beb8b08e535",
+      "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.4.0/models/city-pace/candidate.npz"
+    },
+    "barrier-appearance": {
+      "sha256": "e08508c4e8756806dba940c87bf615542f8bac334df6c0d4397f9298ec6f9e4f",
+      "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.4.0/models/barrier-appearance.json"
+    },
+    "town01-yield-gated-v04": {
+      "sha256": "afe8a3c2ffeb811bd30d7689941c7fb50cc3c4f7748b4e7e843cb6cb9a3a4746",
+      "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.4.0/models/town01-yield-gated-v04/calibration.json"
     }
   },
   "evidence": [
+    {
+      "label": "Original 1080p urban pace drive",
+      "url": "https://github.com/yafi-s/ADO/releases/download/v0.4.0/ADO-Urban-Pace-1080p.mp4"
+    },
+    {
+      "label": "Driving and display review",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/urban-pace/README.md"
+    },
+    {
+      "label": "Closed lane and curbside barrier controls",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/workzone-stop/README.md"
+    },
+    {
+      "label": "Native barrier recognition",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/barrier-recognition/README.md"
+    },
+    {
+      "label": "Turning-camera timing and geometry",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/perception/rider-turns/README.md"
+    },
+    {
+      "label": "Town01 repaired failures and controls",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.4.0/results/town01-yield-gated-v04/README.md"
+    },
+    {
+      "label": "Verified earlier Town01 comparison archive",
+      "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.4.0/results/behavior-v2/closed-loop-evidence.zip"
+    },
     {
       "label": "Original 1080p surround city drive",
       "url": "https://github.com/yafi-s/ADO/releases/download/v0.3.0/ADO-Surround-City-1080p.mp4"
@@ -66,10 +106,6 @@
     {
       "label": "Continuous Town03 drive log",
       "url": "./media/long-city-drive/telemetry.json"
-    },
-    {
-      "label": "All measured comparison frames and failure logs",
-      "url": "https://github.com/yafi-s/ADO/raw/refs/tags/v0.2.0/results/behavior-v2/closed-loop-evidence.zip"
     },
     {
       "label": "Reserved-seed comparison and historical regression",
@@ -1764,6 +1800,54 @@
   "showcases": [
     {
       "scenario": "journey",
+      "policy": "ado-city-pace-v1",
+      "seed": 212,
+      "destination": "market",
+      "district": "townwide",
+      "outcome": "complete",
+      "frames": 3354,
+      "duration_s": 335.4,
+      "route_length_m": 1416.438,
+      "progress_m": 1416.32,
+      "collision_events": 0,
+      "red_light_violations": 0,
+      "yield_violations": 0,
+      "label": "Urban pace and barriers",
+      "trial_id": "urban-pace",
+      "case_id": "journey",
+      "recording_path": "urban-pace",
+      "model_sha256": "43ee49e6b7bd8d258b1b3ed0ae90314eace178f33debeb9e11c81beb8b08e535",
+      "benchmark_member": false,
+      "selection_note": "One closed-loop CARLA development route with staged encounters.",
+      "cohort": "showcase",
+      "quality_requested": "High",
+      "map": "Town03_Opt",
+      "map_url": "./media/urban-pace/town.json",
+      "width": 1280,
+      "height": 720,
+      "manifest_url": "./media/urban-pace/manifest.json",
+      "log_url": "./media/urban-pace/telemetry.json",
+      "video_url": "./media/urban-pace/chase.mp4",
+      "cameras": [
+        "chase",
+        "front",
+        "left",
+        "right",
+        "rear_left",
+        "rear_right"
+      ],
+      "encounters_handled": 11,
+      "encounters_planned": 11,
+      "source": {
+        "commit": "e9865e03736dcf2be51805f8751f6a96aa18d6b5",
+        "url": "https://github.com/yafi-s/ADO/tree/e9865e03736dcf2be51805f8751f6a96aa18d6b5"
+      },
+      "replay_pack_url": "./media/urban-pace/replay-pack.json.gz",
+      "barrier_review_url": "./media/urban-pace/barrier-review.json",
+      "barrier_review_sha256": "b239338aac001703bf15fe18ccdb75259eda43218dcb08a73666eb990357e91f"
+    },
+    {
+      "scenario": "journey",
       "policy": "ado-city-cruise-v1",
       "seed": 211,
       "destination": "market",
@@ -2075,8 +2159,8 @@
     }
   ],
   "source": {
-    "commit": "35b0af102a9d4ebbf9e0c1619df19f0b6b88a1fc",
-    "url": "https://github.com/yafi-s/ADO/tree/35b0af102a9d4ebbf9e0c1619df19f0b6b88a1fc"
+    "commit": "e9865e03736dcf2be51805f8751f6a96aa18d6b5",
+    "url": "https://github.com/yafi-s/ADO/tree/e9865e03736dcf2be51805f8751f6a96aa18d6b5"
   },
   "preview_image": "./media/chase.jpg",
   "legacy_run_source": {

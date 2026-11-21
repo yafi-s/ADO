@@ -1,5 +1,29 @@
 [
   {
+    "label": "Urban pace and barriers",
+    "path": "urban-pace",
+    "cameras": [
+      "chase",
+      "front",
+      "left",
+      "right",
+      "rear_left",
+      "rear_right"
+    ],
+    "trial_id": "urban-pace",
+    "manifest": "./media/urban-pace/manifest.json",
+    "cohort": "showcase",
+    "district": "townwide",
+    "benchmark_member": false,
+    "selection_note": "One closed-loop CARLA development route with staged encounters.",
+    "map_url": "./media/urban-pace/town.json",
+    "map": "Town03_Opt",
+    "replay_pack_url": "./media/urban-pace/replay-pack.json.gz",
+    "replay_pack_sha256": "d38b98a40cf165058ec86a5cee5b8fb4b318d3853caa9762603f2fe9699ad956",
+    "barrier_review_url": "./media/urban-pace/barrier-review.json",
+    "barrier_review_sha256": "b239338aac001703bf15fe18ccdb75259eda43218dcb08a73666eb990357e91f"
+  },
+  {
     "label": "Surround city drive",
     "path": "surround-city",
     "cameras": [
