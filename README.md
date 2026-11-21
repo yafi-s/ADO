@@ -1,5 +1,10 @@
 # ADO — Autonomous Driver Omniverse
 
+**The Town03 city drive.** ADO drove 1.42 km through eleven junctions in one continuous 5 minute 54 second simulation. It stopped for crossing pedestrians and a red-light queue, changed lanes around a stationary bus, passed a six-cone taper and followed a cyclist. The run scored 10 of 10 encounters with zero contacts, red-light violations or yield violations. The synchronized camera, lidar, radar and control records cover all 3,543 frames. [Watch the drive](https://yafi-s.github.io/ADO/?run=long-city-drive) · [Jump to the bus approach](https://yafi-s.github.io/ADO/?run=long-city-drive&at=202) · [City route and controls](docs/city-driving.md)
+
+The city driver learned speed responses from CARLA sensor observations and training demonstrations. The Market route was used for development, and navigation supplied the path around the bus. The car steered and controlled its pedals throughout the recorded drive. Performance on unfamiliar streets is measured separately in the Town01 comparison. [City model and Colab fit](models/city-v1/README.md) · [Training failures and corrections](results/city-development/README.md) · [Held-out protocol](docs/behavior-v2-protocol.md)
+
+
 **Real-data research track.** ADO's original three-camera trajectory model was trained on the Waymo Open Dataset using a Colab T4. It achieved 1.81 m mean open-loop displacement error, compared with 2.98 m for constant velocity and 1.78 m for history and route intent alone. The first two simulator transfer configurations did not complete a route. [Research results](waymo_training/RESULTS.md) · [Open the Colab notebook](https://colab.research.google.com/github/yafi-s/ADO/blob/main/waymo_training/ADO_Waymo_Colab.ipynb) · [Watch the labeled stopped-car trial](https://yafi-s.github.io/ADO/?run=waymo-research-v2-lead-seed41-start3)
 
 

@@ -20,9 +20,33 @@
     "camera": {
       "sha256": "fe229cf3768076151caffab38b58a88b26721e76e1be09ed3e05dd93028faaaf",
       "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.1.0/models/camera.npz"
+    },
+    "behavior-v2": {
+      "sha256": "25b7059a6a559ece65e2c8c64ddc1197d95c763f008be9bb31797d69617b1a6c",
+      "url": "https://raw.githubusercontent.com/yafi-s/ADO/5673a4ae835dbaf6cfb4b60537474118d6fda92b/models/behavior-v2/candidate.npz"
+    },
+    "city-v1": {
+      "sha256": "e139089bf706909f6caa711dc189a8a7cc29c7c2d6a9918a6f350b604cb3025e",
+      "url": "https://raw.githubusercontent.com/yafi-s/ADO/5673a4ae835dbaf6cfb4b60537474118d6fda92b/models/city-v1/candidate-73-74.npz"
     }
   },
   "evidence": [
+    {
+      "label": "City drive and encounter timestamps",
+      "url": "https://github.com/yafi-s/ADO/blob/main/docs/city-driving.md"
+    },
+    {
+      "label": "City driver training data and Colab fit",
+      "url": "https://github.com/yafi-s/ADO/blob/main/models/city-v1/README.md"
+    },
+    {
+      "label": "Native city fixture checks and development failures",
+      "url": "https://github.com/yafi-s/ADO/tree/main/results/city-development"
+    },
+    {
+      "label": "Waymo motion forecasting and simulator transfer",
+      "url": "https://github.com/yafi-s/ADO/blob/main/waymo_training/MOTION_TRANSFER.md"
+    },
     {
       "label": "Held-out evaluation protocol",
       "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.1.0/results/manifest.json"
@@ -1694,6 +1718,40 @@
     }
   ],
   "showcases": [
+    {
+      "scenario": "journey",
+      "policy": "ado-city-policy-v1",
+      "seed": 211,
+      "destination": "market",
+      "district": "townwide",
+      "outcome": "complete",
+      "frames": 3543,
+      "duration_s": 354.3,
+      "route_length_m": 1415.438,
+      "progress_m": 1415.157,
+      "collision_events": 0,
+      "red_light_violations": 0,
+      "yield_violations": 0,
+      "label": "Long city drive",
+      "trial_id": "long-city-drive",
+      "case_id": "journey",
+      "recording_path": "long-city-drive",
+      "model_sha256": "e139089bf706909f6caa711dc189a8a7cc29c7c2d6a9918a6f350b604cb3025e",
+      "benchmark_member": false,
+      "selection_note": "One continuous Town03 development drive on the city training course. Navigation supplied the lane-change path around the bus.",
+      "cohort": "showcase",
+      "quality_requested": "High",
+      "map": "Town03_Opt",
+      "map_url": "./media/long-city-drive/town.json",
+      "width": 1280,
+      "height": 720,
+      "manifest_url": "./media/long-city-drive/manifest.json",
+      "log_url": "./media/long-city-drive/telemetry.json",
+      "video_url": "./media/long-city-drive/chase.mp4",
+      "encounters_handled": 10,
+      "encounters_planned": 10,
+      "replay_pack_url": "./media/long-city-drive/replay-pack.json.gz"
+    },
     {
       "trial_id": "showcase-211-pedestrian-fusion",
       "case_id": "pedestrian",

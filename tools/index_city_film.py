@@ -12,7 +12,8 @@ def digest(path):
 
 def write_json(path, data):
     temp = path.with_name(path.name + ".partial")
-    temp.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf8", newline="\n")
+    newline = "\r\n" if b"\r\n" in path.read_bytes() else "\n"
+    temp.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf8", newline=newline)
     temp.replace(path)
 
 

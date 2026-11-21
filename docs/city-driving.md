@@ -2,6 +2,19 @@
 
 The Town03 Market route covers roughly 1.42 km and passes through 11 junctions. CARLA advances the car from its measured steering, throttle and brake inputs. Its cameras, roof lidar and forward radar observe the resulting world on the next simulation tick. A website recording can therefore be checked against what the sensors saw and what the driver commanded.
 
+## Watch the measured drive
+
+The final seed-211 recording ran for **354.3 simulated seconds**. The car traveled 1,415.16 m along the 1,415.44 m Market route, passed eleven junctions and reached 18.66 km/h. CARLA recorded zero contacts, red-light violations or yield violations. The chase camera captured 1920×1080 at ten frames per simulated second with High rendering and DLSS at 67%. The forward policy camera stayed at 640×360. The mounted sensors move with CARLA's native Lincoln. The separate perception display renders ADO's Blender robotaxi at the recorded ego pose. [Watch the synchronized recording](https://yafi-s.github.io/ADO/?run=long-city-drive) · [Run and camera manifest](../web/media/long-city-drive/manifest.json)
+
+[![The recorded CARLA chase camera shows ADO drawing alongside the stopped bus in the adjacent lane](media/town03-bus.jpg)](https://yafi-s.github.io/ADO/?run=long-city-drive&at=210)
+
+- **0:36** — A pedestrian emerges from behind a parked van. ADO stops before passing. [Watch the occluded crossing](https://yafi-s.github.io/ADO/?run=long-city-drive&at=33)
+- **1:15** — A queue is stopped at a red light. ADO stops, then crosses on green. [Watch the queue](https://yafi-s.github.io/ADO/?run=long-city-drive&at=72)
+- **1:36** — The car enters the six-cone work zone. The scorer measures 0.27 m minimum vehicle-body clearance. [Watch the taper](https://yafi-s.github.io/ADO/?run=long-city-drive&at=93)
+- **3:28** — ADO crosses into the neighboring lane and clears the stopped bus with 0.928 m of lateral clearance. [Watch the bus pass](https://yafi-s.github.io/ADO/?run=long-city-drive&at=202)
+- **4:12** — ADO yields to oncoming traffic before its left turn. [Watch the turn](https://yafi-s.github.io/ADO/?run=long-city-drive&at=249)
+- **4:52** — A cyclist rides ahead before taking a side road. [Watch the cyclist](https://yafi-s.github.io/ADO/?run=long-city-drive&at=289)
+
 ## The city route
 
 - A pedestrian crosses the street, a second crossing starts late, and a third pedestrian emerges from behind a parked van. The occlusion case records the blocked sightline and the moment the pedestrian becomes visible.

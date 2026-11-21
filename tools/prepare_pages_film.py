@@ -32,11 +32,25 @@ def prepare(web):
     with target.open("rb") as stream:
         if hashlib.file_digest(stream, "sha256").hexdigest() != master["sha256"]:
             raise ValueError("Downloaded chase master differs from the original CARLA capture")
-    catalog = web / "media/viewer-catalog.json"
-    entries = json.loads(catalog.read_bytes())
-    entry = next(item for item in entries if item["trial_id"] == manifest["trial_id"])
-    entry["camera_urls"] = {"chase": "./media/long-city-drive/chase-1080p.mp4"}
-    catalog.write_text(json.dumps(entries, indent=2, ensure_ascii=False) + "\n", encoding="utf8", newline="\n")
+    # Pages has a site-size budget. Serve one chase film and identify the
+    # compact version in the archived build by its original digest.
+    manifest["archive_chase"] = {
+        "sha256": manifest["sha256"]["chase.mp4"], "video": manifest["video"],
+        "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.2.0/web/media/long-city-drive/chase.mp4"
+    }
+    target.replace(folder / "chase.mp4")
+    manifest["sha256"]["chase.mp4"] = master["sha256"]
+    manifest["video"] = {key: value for key, value in master.items()
+                         if key not in ("path", "file_bytes", "sha256")}
+    (folder / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
+                                          encoding="utf8", newline="\n")
+    build_path = web / "media/build.json"
+    build = json.loads(build_path.read_bytes())
+    for run in build.get("showcases", []):
+        if run["trial_id"] == manifest["trial_id"]:
+            run.update(width=master["width"], height=master["height"])
+    build_path.write_text(json.dumps(build, indent=2, ensure_ascii=False) + "\n",
+                          encoding="utf8", newline="\n")
     print(f"Serving the verified {master['width']} x {master['height']} CARLA chase master.")
 
 
