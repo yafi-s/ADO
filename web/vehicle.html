@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#121a22">
+  <title>Meridian robotaxi · Crosswalk Lab</title>
+  <link rel="stylesheet" href="console.css">
+  <link rel="stylesheet" href="vehicle.css">
+  <script type="module" src="vendor/model-viewer/model-viewer.min.js"></script>
+</head>
+<body>
+  <header class="masthead"><div class="shell vehicle-nav">
+    <a href="./">Crosswalk Lab</a><a href="./benchmarks.html">Driving trials</a>
+  </div></header>
+  <main class="shell">
+    <section class="intro"><div><div class="eyebrow">Blender vehicle design</div><h1>Meridian</h1></div></section>
+    <model-viewer id="car" camera-controls touch-action="pan-y" interaction-prompt="none"
+      shadow-intensity="0.85" environment-image="neutral" exposure="1.05"
+      src="./vehicle-assets/meridian.glb" poster="./vehicle-assets/meridian-studio.png"
+      camera-orbit="54deg 72deg 7.1m" field-of-view="31deg" min-camera-orbit="auto 4deg 2.9m"
+      max-camera-orbit="auto 91deg 11m" alt="White four-door Meridian robotaxi with roof lidar and three camera housings">
+      <img src="./vehicle-assets/meridian-studio.png" slot="poster" alt="Studio render of the Meridian">
+    </model-viewer>
+    <div class="viewer-tools"><span>Drag to orbit · Scroll or pinch to zoom</span>
+      <button id="home" type="button">Reset view</button></div>
+    <article class="asset-notes">
+      <div><h2>Vehicle design</h2><p>The editable Blender scene contains the original bodywork, glass, wheels and sensor carrier. The CARLA driving simulation uses a Lincoln chassis with a rigidly mounted sensor assembly. The exported model lets you inspect the designed exterior and its mount locations in detail.</p></div>
+      <div><h2>Files</h2><p><a href="https://github.com/yafi-s/crosswalk-lab/tree/main/assets/robotaxi/vehicle">Blender source and exports</a><br><a href="./vehicle-assets/meridian.glb" download>Download the GLB</a><br><a href="./">Open the driving console</a></p></div>
+    </article>
+  </main>
+  <script>
+    const car = document.querySelector('#car');
+    document.querySelector('#home').onclick = () => {
+      car.cameraOrbit = '54deg 72deg 7.1m';
+      car.cameraTarget = 'auto auto auto';
+      car.fieldOfView = '31deg';
+    };
+  </script>
+</body>
+</html>
