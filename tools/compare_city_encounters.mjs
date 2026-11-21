@@ -14,7 +14,7 @@ async function encounters(file) {
       // Background actors can have identical roles. Named event actors are unique.
       const station=f.event_stations[eventOf[a.role]??a.role];
       if (!Number.isFinite(station)||Math.abs(f.progress_m-station)>35) continue;
-      const entry={frame:f.frame,t:f.sim_time,progress:f.progress_m,ego:f.ego,actor:a,
+      const entry={frame:f.frame,t:f.sim_time,progress:f.progress_m,ego:f.ego,actor:a,parked:f.parked,
         tracker:a.match,display:f.display.actors.find(d=>d.id===a.id)?.match};
       if (!groups.has(a.role)) groups.set(a.role,[]);
       groups.get(a.role).push(entry);
@@ -86,6 +86,23 @@ function summarize(pairs) {
   }
   return result;
 }
+function nearbyParked(pairs) {
+  const counts={};
+  for (const [base,next] of pairs) {
+    if (!base.parked||!next.parked) continue;
+    for (const a of base.parked.tracker) {
+      const b=next.parked.tracker.find(x=>x.id===a.id);
+      if (!b) continue;
+      const row=counts[a.id]??={paired_frames:0,base:{tracker:0,display:0},candidate:{tracker:0,display:0}};
+      row.paired_frames++;
+      row.base.tracker+=Number(Boolean(a.match));
+      row.candidate.tracker+=Number(Boolean(b.match));
+      row.base.display+=Number(Boolean(base.parked.display.find(x=>x.id===a.id)?.match));
+      row.candidate.display+=Number(Boolean(next.parked.display.find(x=>x.id===a.id)?.match));
+    }
+  }
+  return counts;
+}
 export async function compare(baseFile,nextFile) {
   const [base,next]=await Promise.all([encounters(baseFile),encounters(nextFile)]);
   const result={};
@@ -98,6 +115,7 @@ export async function compare(baseFile,nextFile) {
       bySector[sector]=summarize(pairs.filter(p=>p[0].actor.sector===sector));
     }
     result[role]={full_base:range(first),full_candidate:range(second),aligned:summarize(pairs),by_sector:bySector,
+      matched_pose_parked_vehicles:nearbyParked(pairs),
       paired_frames:pairs.map(([a,b])=>[a.frame,b.frame]),
       max_paired_ego_distance_m:fixed(Math.max(0,...pairs.map(([a,b])=>Math.hypot(a.ego[0]-b.ego[0],a.ego[1]-b.ego[1]))))};
   }

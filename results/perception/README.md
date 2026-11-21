@@ -22,6 +22,8 @@ The original 640×360 front and 320×180 perimeter PNGs show the crossing pedest
 
 Across the commissioning run, 131 of 251 tracker predictions and 214 of 327 displayed predictions had no matching scenario actor. All of those predictions match a registered parked vehicle within 3 m when the static reference is included. The tracker covered the two parked cars on 131 of their 243 nearby actor-frames, and the revised display covered them on 212. This is a short crossing with two parked cars. On the full v0.2 drive, including all 13 level vehicles reduced the tracker's unmatched count from 520 to 498, while both display versions still had 331 unmatched predictions.
 
+On the same 155 pose-aligned frames, the v0.2 tracker matched the parked cars on 24 of 243 nearby actor-frames and the old rider display drew neither. The five-camera display held one ID for each parked car, covering the Mini on 115 of 128 nearby frames and the BMW on 97 of 115.
+
 ### A real roadside classification error
 
 In a separate seed-212 commissioning run, the rear-right camera labeled the edge of a hedge as a car at 24.5 seconds. The track had 10 lidar returns and 22 rear-right radar returns. Its estimated center lies 3.3% across the rear-right image and 94.3% across the simultaneous right image, in a row of shrubs. The nearest registered parked car is 34.32 m away. The nearest tagged foliage footprint is 0.19 m away. The two original images, raw track metadata and foliage bounds are saved in `seed212-hedge-source.zip`.
@@ -85,7 +87,7 @@ node --test tests/test_audit_city_perception.mjs
 The original commissioning journal is included as `preflight/perception.jsonl.gz`. The same Town03 town export supplies its lane geometry. Reproduce the aligned crossing comparison with
 
 ```powershell
-node tools/audit_city_perception.mjs web/media/long-city-drive --memory-revision 0ff276b --output v02-summary.json --frames v02-frames.jsonl
+node tools/audit_city_perception.mjs web/media/long-city-drive --memory-revision 0ff276b --static-map $parked --output v02-summary.json --frames v02-frames.jsonl
 node tools/audit_city_perception.mjs results/perception/preflight --town web/media/long-city-drive/town.json --memory-revision a7e516c --static-map $parked --output preflight-summary.json --frames preflight-frames.jsonl
 node tools/compare_city_encounters.mjs v02-frames.jsonl preflight-frames.jsonl aligned.json
 ```
