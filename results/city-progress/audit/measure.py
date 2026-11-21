@@ -234,6 +234,31 @@ def audit(folder, reference):
     straight_stats["junction_ids"] = sorted(near_straight_ids)
     straight_stats["no_path_actor_recorded"] = stats(true_straights & no_actor)
     straight_stats["no_current_or_later_path_actor_or_near_vru"] = stats(true_straights & no_actor & ~later_hit)
+    # Trapezoidal mean over five 0.1 s intervals and the observed body yaw change.
+    mean_speed = np.convolve(speed/3.6, np.array([.1,.2,.2,.2,.2,.1]), mode="valid")
+    lateral = np.r_[np.full(5,np.nan), abs(np.deg2rad(yaw[5:]-yaw[:-5])) / .5 * mean_speed]
+    def inside_all_steps(mask):
+        return np.r_[np.zeros(5,bool),np.convolve(mask.astype(int), np.ones(6,int), mode="valid")==6]
+    def lateral_stats(mask):
+        usable = np.flatnonzero(mask & np.isfinite(lateral))
+        if not len(usable):return dict(windows=0)
+        peak = usable[np.argmax(lateral[usable])]
+        return dict(windows=len(usable),p95_mps2=rounded(np.quantile(lateral[usable],.95)),
+                    peak_mps2=rounded(lateral[peak]),peak_frame=rows[peak]["frame"],
+                    peak_station_m=station[peak],peak_time_s=time[peak],peak_end_speed_kmh=rounded(speed[peak]))
+    by_junction = {}
+    all_inside = np.zeros(len(rows),bool)
+    turn_inside = np.zeros(len(rows),bool)
+    for jid,direction,lo,hi in boundaries:
+        inside = inside_all_steps((station>=lo)&(station<hi))
+        if direction in ("left","right"):
+            turn_inside |= inside
+        all_inside |= inside
+        by_junction[str(jid)] = lateral_stats(inside)
+    lateral_summary=dict(method="Absolute unwrapped native body yaw change over 0.5 s divided by 0.5 s, times trapezoidal mean native speed in m/s over those same six exposures. Overlapping windows sampled every 0.1 s. Includes stopped frames. Each junction observation lies entirely within one fixed junction interior. Kinematic estimate excludes tire slip, body roll, suspension and seat acceleration.",
+                         whole=lateral_stats(np.ones(len(rows),bool)),all_junctions=lateral_stats(all_inside),
+                         near_straights=lateral_stats(inside_all_steps(true_straights)),
+                         left_and_right=lateral_stats(turn_inside),by_junction=by_junction)
     releases=[]
     event_moments={}
     for e in s["events"]:
@@ -321,7 +346,8 @@ def audit(folder, reference):
                         half_s_hard_braking_seconds=dt(accel5<-3),raw_hard_braking_seconds=dt(accel<-3),
                         peak_jerk_half_s=worst(jerk),p95_abs_jerk=rounded(np.nanquantile(abs(jerk),.95)),
                         overspeed_posted_plus_1_seconds=dt(speed>posted+1),over_40_seconds=dt(speed>40)),
-           clearance_below_four_m=minima,unresolved_actor_body_samples=unknown,abrupt_request_drops=transitions)
+           clearance_below_four_m=minima,unresolved_actor_body_samples=unknown,abrupt_request_drops=transitions,
+           lateral_acceleration_estimate=lateral_summary)
     return r, rows, flags
 
 

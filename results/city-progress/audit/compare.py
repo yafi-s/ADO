@@ -61,6 +61,11 @@ def comparison(old, new, old_boxes, new_boxes):
                              change_over_5s_kmh=pair(a["gain_5s_kmh"],b.get("gain_5s_kmh")),
                              first_threshold_s={k:pair(v,b.get("first_threshold_s",{}).get(k))
                                                 for k,v in a["first_threshold_s"].items()}))
+    old_lat, new_lat = (r["lateral_acceleration_estimate"] for r in (old,new))
+    def compare_lat(a,b):
+        return {k:pair(a.get(k),b.get(k)) for k in ("windows","peak_mps2","p95_mps2")}
+    lateral = {k:compare_lat(old_lat[k],new_lat[k]) for k in ("whole","all_junctions","left_and_right","near_straights")}
+    lateral["by_junction"] = {k:compare_lat(v,new_lat["by_junction"].get(k,{})) for k,v in old_lat["by_junction"].items()}
     return dict(source=source,source_mismatches=[k for k,v in source.items() if v["v05"]!=v["candidate"]],
                 required_grade_failures=reasons,
                 route=dict(total_s=pair(old["grade"]["duration_s"],new["grade"]["duration_s"]),
@@ -72,7 +77,7 @@ def comparison(old, new, old_boxes, new_boxes):
                 station_bins=group("station_bins"),sections=group("sections"),
                 junctions=[dict(id=a["id"],direction=a["direction"],**window(a,b))
                            for a,b in zip(old["junctions"],new["junctions"],strict=True)],
-                releases=releases,physical_clearances=pairs,events=safety,
+                releases=releases,physical_clearances=pairs,events=safety,lateral_acceleration_estimate=lateral,
                 comfort={k:pair(v,new["comfort"][k]) for k,v in old["comfort"].items() if isinstance(v,(float,int))})
 
 if __name__=="__main__":

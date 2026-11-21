@@ -1,5 +1,7 @@
 # Why City Life slows down
 
+[Read the v0.6 full-drive comparison, remaining slow sections and safety tradeoffs](V06.md).
+
 The published v0.5 car reached Market in 332.0 simulated seconds. It spent 202.0 s below 15 km/h and 51.8 s below 10. The repeated slowdown is a requested speed near 13 km/h on very different junctions. Six nearly straight junction interiors alone occupied 55.0 s. Recoveries after a pedestrian cleared or a stopped vehicle began moving usually took about one or two seconds to reach 10 km/h. [Original drive](https://yafi-s.github.io/ADO/?run=city-life) · [Sealed v0.5 manifest](https://github.com/yafi-s/ADO/blob/v0.5.0/web/media/city-life/manifest.json) · [All 57 station bins, 11 junctions, 14 release marks and slow spells](v05.json) · [Registered measurements](PROTOCOL.md) · [Bus station correction](BUS-LOCATION.md)
 
 ![Measured and requested speeds over the continuous 1.42 km drive with junction interiors shaded](v05-speed.png)
@@ -47,6 +49,7 @@ On its first fresh J1221 clear transfer, revision 4 added speed from grade evide
 The scorer verified the published telemetry and sealed replay hashes, native actor-reference hash and exact synchronized 10 Hz frame count. Contact sheets use hashed native front and chase JPEG streams with separate chase warmup indexing. All 57 consecutive station bins have a front-camera midpoint frame in [sheet 1](v05-camera/front-route-1.jpg), [sheet 2](v05-camera/front-route-2.jpg), [sheet 3](v05-camera/front-route-3.jpg), [sheet 4](v05-camera/front-route-4.jpg) and [sheet 5](v05-camera/front-route-5.jpg). These stills illustrate the measured windows. Quantitative claims use the whole window.
 
 The evaluator projects actor boxes onto a 25 m strip aligned with the ego's subsequently measured path, beginning at the nose, with the native Lincoln's half-width. It includes dynamic actors and mapped parked vehicles, considers elevation, and checks the four future offsets separately. At the destination 3.4 s lack a full forward horizon. Unknown visibility, an actor outside the footprint, lane entry between checks, bridge occlusion, and props are separate from the absence of a recorded road user. At 10 Hz a minimum measured gap can exceed the continuous-time minimum. Controls are the native applied pedals. Coasting means both are below 0.05 while moving at least 1 km/h. Statistics use the frames inside each station interval, independently of event labels. [Scorer](measure.py) · [Native camera extraction](camera_sheets.py)
+
 
 
 

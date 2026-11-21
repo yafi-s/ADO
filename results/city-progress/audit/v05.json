@@ -11136,5 +11136,145 @@
         "subsequent_5s_below_15s": 1.7
       }
     ]
+  },
+  "lateral_acceleration_estimate": {
+    "method": "Absolute unwrapped native body yaw change over 0.5 s divided by 0.5 s, times trapezoidal mean native speed in m/s over those same six exposures. Overlapping windows sampled every 0.1 s. Includes stopped frames. Each junction observation lies entirely within one fixed junction interior. Kinematic estimate excludes tire slip, body roll, suspension and seat acceleration.",
+    "whole": {
+      "windows": 3315,
+      "p95_mps2": 1.556,
+      "peak_mps2": 2.674,
+      "peak_frame": 3356,
+      "peak_station_m": 1393.648,
+      "peak_time_s": 329.2,
+      "peak_end_speed_kmh": 29.48
+    },
+    "all_junctions": {
+      "windows": 895,
+      "p95_mps2": 1.274,
+      "peak_mps2": 1.735,
+      "peak_frame": 724,
+      "peak_station_m": 285.014,
+      "peak_time_s": 66.0,
+      "peak_end_speed_kmh": 13.478
+    },
+    "near_straights": {
+      "windows": 520,
+      "p95_mps2": 0.081,
+      "peak_mps2": 0.118,
+      "peak_frame": 1881,
+      "peak_station_m": 783.786,
+      "peak_time_s": 181.7,
+      "peak_end_speed_kmh": 13.147
+    },
+    "left_and_right": {
+      "windows": 238,
+      "p95_mps2": 1.571,
+      "peak_mps2": 1.735,
+      "peak_frame": 724,
+      "peak_station_m": 285.014,
+      "peak_time_s": 66.0,
+      "peak_end_speed_kmh": 13.478
+    },
+    "by_junction": {
+      "103": {
+        "windows": 107,
+        "p95_mps2": 0.058,
+        "peak_mps2": 0.058,
+        "peak_frame": 250,
+        "peak_station_m": 54.116,
+        "peak_time_s": 18.6,
+        "peak_end_speed_kmh": 13.169
+      },
+      "1038": {
+        "windows": 67,
+        "p95_mps2": 1.713,
+        "peak_mps2": 1.735,
+        "peak_frame": 724,
+        "peak_station_m": 285.014,
+        "peak_time_s": 66.0,
+        "peak_end_speed_kmh": 13.478
+      },
+      "1352": {
+        "windows": 89,
+        "p95_mps2": 1.562,
+        "peak_mps2": 1.57,
+        "peak_frame": 924,
+        "peak_station_m": 339.678,
+        "peak_time_s": 86.0,
+        "peak_end_speed_kmh": 12.661
+      },
+      "82": {
+        "windows": 99,
+        "p95_mps2": 0.001,
+        "peak_mps2": 0.001,
+        "peak_frame": 1586,
+        "peak_station_m": 662.706,
+        "peak_time_s": 152.2,
+        "peak_end_speed_kmh": 13.176
+      },
+      "1932": {
+        "windows": 84,
+        "p95_mps2": 0.434,
+        "peak_mps2": 0.435,
+        "peak_frame": 1742,
+        "peak_station_m": 720.406,
+        "peak_time_s": 167.8,
+        "peak_end_speed_kmh": 13.057
+      },
+      "238": {
+        "windows": 66,
+        "p95_mps2": 0.115,
+        "peak_mps2": 0.118,
+        "peak_frame": 1881,
+        "peak_station_m": 783.786,
+        "peak_time_s": 181.7,
+        "peak_end_speed_kmh": 13.147
+      },
+      "861": {
+        "windows": 98,
+        "p95_mps2": 0.001,
+        "peak_mps2": 0.002,
+        "peak_frame": 2186,
+        "peak_station_m": 905.447,
+        "peak_time_s": 212.2,
+        "peak_end_speed_kmh": 13.662
+      },
+      "730": {
+        "windows": 82,
+        "p95_mps2": 1.16,
+        "peak_mps2": 1.172,
+        "peak_frame": 2583,
+        "peak_station_m": 1058.302,
+        "peak_time_s": 251.9,
+        "peak_end_speed_kmh": 12.74
+      },
+      "1820": {
+        "windows": 46,
+        "p95_mps2": 0.001,
+        "peak_mps2": 0.001,
+        "peak_frame": 2967,
+        "peak_station_m": 1247.062,
+        "peak_time_s": 290.3,
+        "peak_end_speed_kmh": 12.866
+      },
+      "1901": {
+        "windows": 104,
+        "p95_mps2": 0.0,
+        "peak_mps2": 0.0,
+        "peak_frame": 3154,
+        "peak_station_m": 1304.719,
+        "peak_time_s": 309.0,
+        "peak_end_speed_kmh": 13.097
+      },
+      "1669": {
+        "windows": 53,
+        "p95_mps2": 0.372,
+        "peak_mps2": 0.39,
+        "peak_frame": 3302,
+        "peak_station_m": 1359.961,
+        "peak_time_s": 323.8,
+        "peak_end_speed_kmh": 13.068
+      }
+    }
   }
 }
