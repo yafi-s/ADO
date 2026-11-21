@@ -1,6 +1,6 @@
 [
   {
-    "label": "Showcase \u00b7 Pedestrian crossing",
+    "label": "Showcase · Pedestrian crossing",
     "path": "showcase/pedestrian",
     "cameras": [
       "chase",
@@ -14,7 +14,7 @@
     "benchmark_member": false
   },
   {
-    "label": "High-quality replay of scored Market drive \u00b7 captured trajectory",
+    "label": "High-quality replay of scored Market drive · captured trajectory",
     "path": "recorded-trip",
     "cameras": [
       "chase",
@@ -92,7 +92,7 @@
     "evaluation_id": "9049ea6a3ddf7fb85f59"
   },
   {
-    "label": "Destination trip \u00b7 delayed crossing",
+    "label": "Destination trip · delayed crossing",
     "path": "trip-delayed",
     "cameras": [
       "front",
@@ -107,7 +107,7 @@
   {
     "trial_id": "dev31-crossing",
     "path": "dev-crossing",
-    "label": "Development \u00b7 pedestrian crossing (training district)",
+    "label": "Development · pedestrian crossing (training district)",
     "cameras": [
       "front",
       "chase",
@@ -117,5 +117,14 @@
     ],
     "cohort": "development",
     "benchmark_member": false
+  },
+  {
+    "label": "Non-commercial Waymo research · stopped lead · lane departure",
+    "path": "waymo-research-pilot",
+    "trial_id": "waymo-research-v2-lead-seed41-start3",
+    "cameras": [
+      "front",
+      "chase"
+    ]
   }
 ]

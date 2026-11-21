@@ -533,7 +533,9 @@ function renderSource() {
 function listedRuns() {
   const runs = Array.isArray(state.build?.runs) ? state.build.runs : [];
   const showcases = Array.isArray(state.build?.showcases) ? state.build.showcases : [];
-  return [...runs, ...showcases];
+  const nativeReplays = Array.isArray(state.build?.native_replays) ? state.build.native_replays : [];
+  const development = Array.isArray(state.build?.development_runs) ? state.build.development_runs : [];
+  return [...runs, ...showcases, ...nativeReplays, ...development];
 }
 
 function findRun(entry) {
