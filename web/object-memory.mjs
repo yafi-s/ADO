@@ -510,6 +510,10 @@ function measure(object, sample, ctx, deps, state) {
 // The object was measured in this frame.
 function witnessed(object, sample, ctx, state) {
   const {s, range} = sample;
+  if(object.sourceId!==s.id)object.mounted=null;
+  if(sample.mounted){
+    object.mounted={t:ctx.t-s.cycle_association.age_s,length:s.length,width:s.width,height:s.height};
+  }
   object.sourceId = s.id;
   object.support=s.lidar_hits??0;
   if (s.label === 'barrier' && ['striped_board', 'chain'].includes(s.barrier_subtype)) {
@@ -749,6 +753,11 @@ export function advance(state, ctx, deps = {}) {
   }
   const dt = ctx.reset ? 0 : clamp(ctx.dt, 0, .8);
   state.warm = Math.min(30, state.warm + dt);
+  // A fresh negative barrier review withdraws a previously confirmed compound.
+  for(const id of frame.barrier_review?.revoked??[]){
+    const key=state.ids.get(id),previous=state.objects.get(key);
+    if(previous?.sourceId===id&&previous.family==='barrier')state.objects.delete(key);
+  }
   const cos = Math.cos(degrees * rad), sin = Math.sin(degrees * rad);
 
   for(const [key,obs] of state.images)if(t-obs.time>.5)state.images.delete(key);
@@ -761,10 +770,10 @@ export function advance(state, ctx, deps = {}) {
     }
   }
 
-  const samples = [], listed = new Set();
+  const samples = [], listed = new Map();
   for (const track of Array.isArray(frame.tracks) ? frame.tracks : []) {
     if (!validSample(track) || listed.has(track.id)) continue;
-    listed.add(track.id);
+    listed.set(track.id,track);
     const {s,bounds}=rangedReading(track,frame,state,t);
     const sources = Array.isArray(s.sources) ? s.sources : [];
     // A 2D class score cannot establish depth, and a coast is the tracker's guess, not a measurement.
@@ -772,8 +781,14 @@ export function advance(state, ctx, deps = {}) {
     // before, in frames this memory never saw, so it is taken up as already remembered.
     const joining = s.coasting === true && state.warm < GRACE_S && !sources.length && !state.ids.has(s.id);
     if (!joining && (s.coasting === true || !(sources.includes('lidar') || sources.includes('radar')))) continue;
-    const label = LABELS.has(s.label) ? s.label : 'unknown';
-    samples.push({s, bounds,label, family: familyOf(label), range: Math.hypot(s.x, s.y), object: null, joining,
+    // The mounted-cycle model attaches a wheel classification to the ranged
+    // person's native identity. A skipped wheel exposure yields "person" again
+    // on that very same track. Keep one spatial body for both observations.
+    const cycle=s.cycle_association;
+    const mounted=s.label==='bicycle' && cycle?.paired_observations>=3 && finite(cycle.age_s) &&
+      cycle.age_s>=0 && cycle.age_s<=.21 && ['shared rider/bicycle lidar','bicycle-exclusive lidar'].includes(cycle.range_source);
+    const label = mounted?'person':LABELS.has(s.label)?s.label:'unknown';
+    samples.push({s,mounted,bounds,label, family: familyOf(label), range: Math.hypot(s.x, s.y), object: null, joining,
       mx: ex + cos * s.x - sin * s.y, mz: ez + sin * s.x + cos * s.y});
   }
 
@@ -937,8 +952,19 @@ export function advance(state, ctx, deps = {}) {
     }
     if (object.alpha <= 0) continue;
     const speed = object.speed;
+    if(object.mounted){
+      // Use the same two-second semantic horizon and current/recent lidar
+      // continuity required for an optical rider association. The source's
+      // class is still available in the raw measurement inspector.
+      const source=listed.get(object.sourceId);
+      const validSource=source && (source.label==='person'||source.label==='bicycle') &&
+        (source.coasting?source.age_s<=.20001:source.sources?.includes('lidar') && source.lidar_hits>=3);
+      if(!validSource||t-object.mounted.t>2.00001)object.mounted=null;
+    }
     drawn.push({key: object.key, sourceId: object.sourceId, label: object.label, family: object.family, x: object.x, y: object.y, z: object.z,
       heading: object.heading, length: object.length, width: object.width, height: object.height,
+      ...(object.mounted?{label:'bicycle',family:'wheeled',mountedRider:true,
+        length:object.mounted.length,width:object.mounted.width,height:object.mounted.height}:{}),
       ...(object.label === 'barrier' && object.barrierSubtype ? {barrierSubtype:object.barrierSubtype,
         barrierSubtypeConfidence:object.barrierSubtypeConfidence} : {}),
       opacity: object.alpha * object.solid, held, leaving: object.leaving, why: object.why, turned: object.turned,

@@ -836,8 +836,8 @@ export class PerceptionScene {
   setRiderAssociations(riders){ this.riders=riders; }
   sourceGroups(frame){
     if(!frame||frame.frame!==this.frame?.frame||frame.run_id!==this.frame?.run_id)return [];
-    return [...this.tracks.values()].filter(t=>t.sourceIds?.length>1)
-      .map(t=>({key:t.id,primary:t.sourceId,ids:t.sourceIds,label:t.label}));
+    return [...this.tracks.values()].filter(t=>t.sourceIds?.length>1||t.mountedRider)
+      .map(t=>({key:t.id,primary:t.sourceId,ids:t.sourceIds??[t.sourceId],label:t.label,mountedRider:t.mountedRider}));
   }
 
   positionTrackBadge(){
@@ -941,7 +941,11 @@ export class PerceptionScene {
       fillReturns(this.lidar,frame.lidar_xyz,null);fillReturns(this.surfaces,[],null);
     }else{
       fillReturns(this.lidar,frame.lidar,.085);
-      fillReturns(this.surfaces,(frame.tracks||[]).flatMap(track=>track.surface_xyz||[]),null);
+      const measurements=[...(frame.tracks??[])];
+      for(const raw of frame.barrier_review?.tracks??[]){
+        if(!measurements.some(t=>t.id===raw.id))measurements.push(raw);
+      }
+      fillReturns(this.surfaces,measurements.flatMap(track=>track.surface_xyz||[]),null);
     }
     fillReturns(this.radar,frame.radar,.105);fillReturns(this.cornerRadar,cornerReturns(frame),null);
     this.lightSignals(frame,ctx);
@@ -960,6 +964,7 @@ export class PerceptionScene {
       track=track||this.makeTrack(object.key,label);
       track.sourceId=object.sourceId;
       track.sourceIds=object.sourceIds;
+      track.mountedRider=object.mountedRider;
       track.from.copy(track.group.position);track.to.set(object.x,object.y,object.z);
       track.fromAngle=track.group.rotation.y;track.toAngle=-object.heading*rad;
       // The symbol stays within sizes its class can have; the ground outline keeps the estimate itself.

@@ -34,6 +34,26 @@ const repeat = (count, make) => Array.from({length: count}, (_, i) => make(i));
 // A lane centre line along the world x axis, sampled every 2 m as a town export is.
 const lane = repeat(101, i => [i * 2 - 100, 0, 0]);
 
+test('a single ranged rider keeps one identity through intermittent mounted bicycle classifications',()=>{
+  const frames=repeat(13,i=>{
+    const mounted=i===4||i===8;
+    const sample=person(73,8,.5,{confidence:.9,lidar_hits:8,cameras:['front'],sources:['lidar','rgb']});
+    if(mounted)Object.assign(sample,{label:'bicycle',length:1.7,width:.55,cycle_association:{
+      range_source:'shared rider/bicycle lidar',paired_observations:4,surface_hits:8,age_s:0}});
+    return {frame:i,sim_time:i/10,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+      tracks:[sample,person(74,8,2.8,{confidence:.9})]};
+  });
+  const memory=new ReplayMemory({});
+  const baseline=memory.at(frames,3).objects.find(o=>o.sourceId===73).key;
+  for(let i=4;i<frames.length;i++){
+    const outputs=memory.at(frames,i).objects,owned=outputs.filter(o=>o.sourceId===73);
+    assert.equal(owned.length,1);
+    assert.equal(owned[0].key,baseline);
+    assert.equal(owned[0].label,'bicycle');
+    assert.equal(outputs.find(o=>o.sourceId===74).label,'person');
+  }
+});
+
 test('a weak car box on a long measured surface stays inspectable as an unclassified footprint',()=>{
   const frames=repeat(8,i=>{
     const clear=i>=4;

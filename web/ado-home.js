@@ -607,10 +607,11 @@ function renderSensing(frame) {
         finite(m.track.radial_mps)?`Relative Doppler ${signedTenth.format(m.track.radial_mps)} m/s`:''].filter(Boolean).join(' · ')})),
     kind: trackKind(label),
     coasting: Boolean(track.coasting),
-    name: state.riders.has(track.id)?'Bicycle rider':sentence(String(barrierName(track)??label??'')) || 'Object',
+    name: state.riders.has(track.id)||group?.mountedRider?'Bicycle rider':sentence(String(barrierName(track)??label??'')) || 'Object',
     where: trackBearing(track),
     range: `${tenth.format(range)} m`,
-    meta: state.riders.has(track.id)?`Bicycle seen in ${CAMERA_LABELS[state.riders.get(track.id).camera]} camera · Depth from person track · ${trackMeta(track)}`:trackMeta(track)
+    meta: state.riders.has(track.id)?`Bicycle seen in ${CAMERA_LABELS[state.riders.get(track.id).camera]} camera · Depth from person track · ${trackMeta(track)}`:
+      group?.mountedRider?`Ranged rider and bicycle association · ${trackMeta(track)}`:trackMeta(track)
     };
   });
   const signature = JSON.stringify(rows);
@@ -633,7 +634,7 @@ function renderSensing(frame) {
   const lead = tracks.find(({track}) => !track.coasting && track.x > 0 && Math.abs(track.y) <= CORRIDOR_HALF_WIDTH_M);
   show('ahead', Boolean(lead));
   if (lead) {
-    const name = state.riders.has(lead.track.id)?'Bicycle rider':sentence(String(barrierName(lead.track)??lead.track.label??'')) || 'Object';
+    const name = state.riders.has(lead.track.id)||bySource.get(lead.track.id)?.mountedRider?'Bicycle rider':sentence(String(barrierName(lead.track)??lead.track.label??'')) || 'Object';
     text('ahead', `${name} ahead · ${tenth.format(lead.track.x)} m`);
     $('ahead').dataset.kind = trackKind(lead.track.label);
   }
