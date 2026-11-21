@@ -1,5 +1,6 @@
 import * as T from './vendor/city-view/three-view.js';
 import {buildRoadUser} from './road-users.js';
+import {loadReplay} from './replay-pack.mjs';
 
 const el = id => document.getElementById(id);
 const finite = Number.isFinite;
@@ -492,6 +493,15 @@ function renderRecording() {
   el('clock').textContent = fmtTime(position);
   el('seek').value = position;
 }
+function parseRecording(data) {
+  const frames = Array.isArray(data) ? data : data?.frames;
+  if (!frames?.length || !frames.every(f => finite(f?.frame))) throw new Error('Invalid telemetry');
+  const rawTimes = frames.map((f,i) => finite(f.video_time) ? f.video_time : finite(data.fps) && data.fps > 0 ? i / data.fps : f.sim_time);
+  if (rawTimes.some((t,i) => !finite(t) || (i && t < rawTimes[i-1]))) throw new Error('Invalid timing');
+  const times = rawTimes.map(t => t - rawTimes[0]);
+  return {frames, times, end:times.at(-1)};
+}
+
 async function startRecording() {
   replayRequest?.abort();
   replayRequest = new AbortController();
@@ -508,8 +518,15 @@ async function startRecording() {
       const entries = result => Array.isArray(result.value) ? result.value : result.value?.records || [];
       const legacy = entries(base);
       const paths = new Set(legacy.map(entry => entry?.path));
-      const extra = entries(viewer).filter(entry => entry?.map_url && !paths.has(entry.path));
-      catalog = [...legacy, ...extra].filter(entry => typeof entry?.label === 'string' &&
+      const viewerEntries = entries(viewer);
+      const viewerByPath = new Map(viewerEntries.filter(Boolean).map(entry => [entry.path, entry]));
+      const extra = viewerEntries.filter(entry => (entry?.map_url || entry?.replay_pack_url) && !paths.has(entry.path));
+      const primary = legacy.map(entry => {
+        const supplemental = viewerByPath.get(entry?.path);
+        return {...entry, map: entry?.map ?? supplemental?.map, map_url: entry?.map_url ?? supplemental?.map_url,
+          replay_pack_url: entry?.replay_pack_url ?? supplemental?.replay_pack_url};
+      });
+      catalog = [...primary, ...extra].filter(entry => typeof entry?.label === 'string' &&
         typeof entry.path === 'string' && (entry.path === '' || /^[\w-]+(?:\/[\w-]+)*$/.test(entry.path)));
       if (!catalog.length) throw new Error('Empty catalog');
       el('case').replaceChildren(...catalog.map(entry => new Option(entry.label, entry.path)));
@@ -519,14 +536,10 @@ async function startRecording() {
     const selected = catalog.find(entry => entry.path === el('case').value);
     void scene?.loadTown(selected?.map_url, typeof selected?.map === 'string' ? selected.map : null);
     const directory = './media/' + (el('case').value ? el('case').value + '/' : '');
-    const data = await read(directory + 'replay.json', signal, 30000);
+    const playback = await loadReplay(selected?.replay_pack_url, signal, parseRecording,
+      () => read(directory + 'replay.json', signal, 30000));
     if (signal.aborted) return;
-    const frames = Array.isArray(data) ? data : data.frames;
-    if (!frames?.length || !frames.every(f => finite(f?.frame))) throw new Error('Invalid telemetry');
-    const rawTimes = frames.map((f,i) => finite(f.video_time) ? f.video_time : finite(data.fps) && data.fps > 0 ? i / data.fps : f.sim_time);
-    if (rawTimes.some((t,i) => !finite(t) || (i && t < rawTimes[i-1]))) throw new Error('Invalid timing');
-    const times = rawTimes.map(t => t - rawTimes[0]);
-    recording = {frames, times, end:times.at(-1)};
+    recording = playback;
     playing = recording.end > 0;
     renderRecording();
     controls();

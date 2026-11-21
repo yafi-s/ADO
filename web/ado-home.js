@@ -3,6 +3,7 @@
 // telemetry keep working if the 3D scene cannot start.
 
 import {recordedChapters} from './encounter-chapters.mjs';
+import {loadReplay} from './replay-pack.mjs';
 
 const CAR_URL = './vehicle-assets/waymo-ipace.glb';
 const TOWN_URL = './media/town.json';
@@ -1083,8 +1084,9 @@ async function openRecorded(entry) {
   let replay = replays.get(dir) ?? null;
   if (!replay) {
     try {
-      replay = parseReplay(await getJson(`${dir}/replay.json`, {signal, timeout: 30000}));
-      replays.set(dir, replay);
+      replay = await loadReplay(entry.replay_pack_url ?? state.run?.replay_pack_url, signal, parseReplay,
+        () => getJson(`${dir}/replay.json`, {signal, timeout: 30000}));
+      if (replay && !signal.aborted) replays.set(dir, replay);
     } catch (error) {
       if (signal.aborted) return;
       console.error(error);
@@ -1337,7 +1339,8 @@ function catalogFromBuild() {
     label: run.label || state.build?.title || sentence(run.case_id) || run.trial_id || 'Recorded drive',
     cameras: run.cameras,
     map: run.map,
-    map_url: run.map_url
+    map_url: run.map_url,
+    replay_pack_url: run.replay_pack_url
   }));
 }
 
