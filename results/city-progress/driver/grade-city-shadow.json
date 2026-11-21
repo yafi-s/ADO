@@ -1,0 +1,508 @@
+{
+  "schema": "city-progress-city-life-grade-shadow-v1",
+  "session": "long-city-drive-dc3q_29s",
+  "sweeps": "sweeps-64q0fq80",
+  "replay_sha256": "e1823a4929368d12e49240981edcf0b42c7364a9be11937def768b8ae340c2ef",
+  "detector_source_sha256": "7d2399df65551df7361940baae0a5a9ecca118513969a4727b12e87bc85716c6",
+  "legacy_cues_source_sha256": "a996e4f630912183e7af728ff64b7e1951a3f404660663f6b7f9c80b5769f06f",
+  "method": "Use the seven archived route waypoints in the measured ego frame with an exact (0,0) origin. Use native vehicle speed and matching range frames. Float32 body cues and nine-scan means follow behavior_v2.Observer. Attempt the grade fit when current body gap is below 32 m and radar is present, with camera acceptance assumed. Apply GradeObserver's last-nine raw-gap veto and last-three positive rule. Add archived event and phase labels after estimating grade.",
+  "interpretation": "Confirmed pavement with a raw body gap below 24 m is the geometry-only upper bound. Camera quality, RGB detections, signals, crossing history, speed caps and other control eligibility checks can still force abstention. No speed requests or closed-loop runs were generated.",
+  "complete": {
+    "frames": 3320,
+    "geometry_fit_attempts": 742,
+    "fit_gate_closed": 2578,
+    "fit_positive": 0,
+    "fit_unknown_after_attempt": 742,
+    "confirmed": 0,
+    "raw_body_below_24_m": 627,
+    "geometry_only_candidates": 0
+  },
+  "geometry_only_candidate_windows": [],
+  "raw_body_below_24_m_windows": [
+    {
+      "start_frame": 112,
+      "end_frame": 156,
+      "time_s": [
+        4.8,
+        9.2
+      ],
+      "station_m": [
+        10.603,
+        22.638
+      ],
+      "frames": 45,
+      "geometry_fit_attempts": 40,
+      "fit_gate_closed": 5,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 40,
+      "confirmed": 0,
+      "raw_body_below_24_m": 45,
+      "geometry_only_candidates": 0,
+      "native_context": [
+        {
+          "active_event": "pedestrian",
+          "phase": "pedestrian: crossing",
+          "frames": 8
+        },
+        {
+          "active_event": "pedestrian",
+          "phase": "pedestrian: dwell",
+          "frames": 21
+        },
+        {
+          "active_event": "pedestrian",
+          "phase": "pedestrian: leaving",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "start_frame": 435,
+      "end_frame": 481,
+      "time_s": [
+        37.1,
+        41.7
+      ],
+      "station_m": [
+        137.641,
+        140.449
+      ],
+      "frames": 47,
+      "geometry_fit_attempts": 42,
+      "fit_gate_closed": 5,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 42,
+      "confirmed": 0,
+      "raw_body_below_24_m": 47,
+      "geometry_only_candidates": 0,
+      "native_context": [
+        {
+          "active_event": "occluded",
+          "phase": "occluded: crossing",
+          "frames": 10
+        },
+        {
+          "active_event": "occluded",
+          "phase": "occluded: dwell",
+          "frames": 20
+        },
+        {
+          "active_event": "occluded",
+          "phase": "occluded: leaving",
+          "frames": 17
+        }
+      ]
+    },
+    {
+      "start_frame": 731,
+      "end_frame": 856,
+      "time_s": [
+        66.7,
+        79.2
+      ],
+      "station_m": [
+        287.636,
+        314.913
+      ],
+      "frames": 126,
+      "geometry_fit_attempts": 123,
+      "fit_gate_closed": 3,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 123,
+      "confirmed": 0,
+      "raw_body_below_24_m": 126,
+      "geometry_only_candidates": 0,
+      "native_context": [
+        {
+          "active_event": "signal",
+          "phase": "signal: waiting",
+          "frames": 14
+        },
+        {
+          "active_event": "signal",
+          "phase": "signal: red",
+          "frames": 71
+        },
+        {
+          "active_event": "signal",
+          "phase": "signal: green",
+          "frames": 41
+        }
+      ]
+    },
+    {
+      "start_frame": 1316,
+      "end_frame": 1421,
+      "time_s": [
+        125.2,
+        135.7
+      ],
+      "station_m": [
+        548.007,
+        583.74
+      ],
+      "frames": 106,
+      "geometry_fit_attempts": 106,
+      "fit_gate_closed": 0,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 106,
+      "confirmed": 0,
+      "raw_body_below_24_m": 106,
+      "geometry_only_candidates": 0,
+      "native_context": [
+        {
+          "active_event": "lead",
+          "phase": "lead: waiting",
+          "frames": 9
+        },
+        {
+          "active_event": "lead",
+          "phase": "lead: stopped",
+          "frames": 41
+        },
+        {
+          "active_event": "lead",
+          "phase": "lead: departing",
+          "frames": 56
+        }
+      ]
+    },
+    {
+      "start_frame": 2295,
+      "end_frame": 2402,
+      "time_s": [
+        223.1,
+        233.8
+      ],
+      "station_m": [
+        951.319,
+        997.308
+      ],
+      "frames": 108,
+      "geometry_fit_attempts": 108,
+      "fit_gate_closed": 0,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 108,
+      "confirmed": 0,
+      "raw_body_below_24_m": 108,
+      "geometry_only_candidates": 0,
+      "native_context": [
+        {
+          "active_event": "braking",
+          "phase": "braking: cruising",
+          "frames": 6
+        },
+        {
+          "active_event": "braking",
+          "phase": "braking: braking",
+          "frames": 3
+        },
+        {
+          "active_event": "braking",
+          "phase": "braking: stopped",
+          "frames": 31
+        },
+        {
+          "active_event": "braking",
+          "phase": "braking: departing",
+          "frames": 68
+        }
+      ]
+    },
+    {
+      "start_frame": 2505,
+      "end_frame": 2519,
+      "time_s": [
+        244.1,
+        245.5
+      ],
+      "station_m": [
+        1039.187,
+        1039.221
+      ],
+      "frames": 15,
+      "geometry_fit_attempts": 12,
+      "fit_gate_closed": 3,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 12,
+      "confirmed": 0,
+      "raw_body_below_24_m": 15,
+      "geometry_only_candidates": 0,
+      "native_context": [
+        {
+          "active_event": "left",
+          "phase": "left: yield to oncoming",
+          "frames": 11
+        },
+        {
+          "active_event": "left",
+          "phase": "left: oncoming cleared",
+          "frames": 4
+        }
+      ]
+    },
+    {
+      "start_frame": 2570,
+      "end_frame": 2570,
+      "time_s": [
+        250.6,
+        250.6
+      ],
+      "station_m": [
+        1053.65,
+        1053.65
+      ],
+      "frames": 1,
+      "geometry_fit_attempts": 1,
+      "fit_gate_closed": 0,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 1,
+      "confirmed": 0,
+      "raw_body_below_24_m": 1,
+      "geometry_only_candidates": 0,
+      "native_context": [
+        {
+          "active_event": "braking",
+          "phase": "braking: departing",
+          "frames": 1
+        }
+      ]
+    },
+    {
+      "start_frame": 2790,
+      "end_frame": 2921,
+      "time_s": [
+        272.6,
+        285.7
+      ],
+      "station_m": [
+        1175.368,
+        1231.597
+      ],
+      "frames": 132,
+      "geometry_fit_attempts": 127,
+      "fit_gate_closed": 5,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 127,
+      "confirmed": 0,
+      "raw_body_below_24_m": 132,
+      "geometry_only_candidates": 0,
+      "native_context": [
+        {
+          "active_event": "cyclist",
+          "phase": "cyclist: cycling",
+          "frames": 132
+        }
+      ]
+    },
+    {
+      "start_frame": 3002,
+      "end_frame": 3048,
+      "time_s": [
+        293.8,
+        298.4
+      ],
+      "station_m": [
+        1260.584,
+        1270.152
+      ],
+      "frames": 47,
+      "geometry_fit_attempts": 42,
+      "fit_gate_closed": 5,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 42,
+      "confirmed": 0,
+      "raw_body_below_24_m": 47,
+      "geometry_only_candidates": 0,
+      "native_context": [
+        {
+          "active_event": "pedestrian-delayed",
+          "phase": "pedestrian-delayed: crossing",
+          "frames": 10
+        },
+        {
+          "active_event": "pedestrian-delayed",
+          "phase": "pedestrian-delayed: dwell",
+          "frames": 20
+        },
+        {
+          "active_event": "pedestrian-delayed",
+          "phase": "pedestrian-delayed: leaving",
+          "frames": 17
+        }
+      ]
+    }
+  ],
+  "negative_controls_by_station": {
+    "occluded_pedestrian_approach": {
+      "station_m_inclusive_exclusive": [
+        130.0,
+        152.0
+      ],
+      "frames": 104,
+      "geometry_fit_attempts": 42,
+      "fit_gate_closed": 62,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 42,
+      "confirmed": 0,
+      "raw_body_below_24_m": 47,
+      "geometry_only_candidates": 0
+    },
+    "boards_and_stopped_lead": {
+      "station_m_inclusive_exclusive": [
+        525.0,
+        550.0
+      ],
+      "frames": 97,
+      "geometry_fit_attempts": 36,
+      "fit_gate_closed": 61,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 36,
+      "confirmed": 0,
+      "raw_body_below_24_m": 5,
+      "geometry_only_candidates": 0
+    },
+    "departing_lead": {
+      "station_m_inclusive_exclusive": [
+        600.0,
+        645.0
+      ],
+      "frames": 87,
+      "geometry_fit_attempts": 12,
+      "fit_gate_closed": 75,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 12,
+      "confirmed": 0,
+      "raw_body_below_24_m": 0,
+      "geometry_only_candidates": 0
+    },
+    "bus_approach": {
+      "station_m_inclusive_exclusive": [
+        835.0,
+        858.0
+      ],
+      "frames": 45,
+      "geometry_fit_attempts": 0,
+      "fit_gate_closed": 45,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 0,
+      "confirmed": 0,
+      "raw_body_below_24_m": 0,
+      "geometry_only_candidates": 0
+    },
+    "bus_alongside": {
+      "station_m_inclusive_exclusive": [
+        858.0,
+        872.0
+      ],
+      "frames": 77,
+      "geometry_fit_attempts": 0,
+      "fit_gate_closed": 77,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 0,
+      "confirmed": 0,
+      "raw_body_below_24_m": 0,
+      "geometry_only_candidates": 0
+    },
+    "bus_blind_nose": {
+      "station_m_inclusive_exclusive": [
+        865.0,
+        872.0
+      ],
+      "frames": 40,
+      "geometry_fit_attempts": 0,
+      "fit_gate_closed": 40,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 0,
+      "confirmed": 0,
+      "raw_body_below_24_m": 0,
+      "geometry_only_candidates": 0
+    },
+    "bus_recovery": {
+      "station_m_inclusive_exclusive": [
+        872.0,
+        882.0
+      ],
+      "frames": 25,
+      "geometry_fit_attempts": 0,
+      "fit_gate_closed": 25,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 0,
+      "confirmed": 0,
+      "raw_body_below_24_m": 0,
+      "geometry_only_candidates": 0
+    }
+  },
+  "negative_controls_by_native_event": {
+    "barrier": {
+      "frames": 52,
+      "geometry_fit_attempts": 0,
+      "fit_gate_closed": 52,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 0,
+      "confirmed": 0,
+      "raw_body_below_24_m": 0,
+      "geometry_only_candidates": 0
+    },
+    "braking": {
+      "frames": 251,
+      "geometry_fit_attempts": 150,
+      "fit_gate_closed": 101,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 150,
+      "confirmed": 0,
+      "raw_body_below_24_m": 109,
+      "geometry_only_candidates": 0
+    },
+    "bus": {
+      "frames": 281,
+      "geometry_fit_attempts": 0,
+      "fit_gate_closed": 281,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 0,
+      "confirmed": 0,
+      "raw_body_below_24_m": 0,
+      "geometry_only_candidates": 0
+    },
+    "lead": {
+      "frames": 429,
+      "geometry_fit_attempts": 171,
+      "fit_gate_closed": 258,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 171,
+      "confirmed": 0,
+      "raw_body_below_24_m": 106,
+      "geometry_only_candidates": 0
+    },
+    "occluded": {
+      "frames": 165,
+      "geometry_fit_attempts": 42,
+      "fit_gate_closed": 123,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 42,
+      "confirmed": 0,
+      "raw_body_below_24_m": 47,
+      "geometry_only_candidates": 0
+    },
+    "pedestrian": {
+      "frames": 135,
+      "geometry_fit_attempts": 40,
+      "fit_gate_closed": 95,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 40,
+      "confirmed": 0,
+      "raw_body_below_24_m": 45,
+      "geometry_only_candidates": 0
+    },
+    "pedestrian-delayed": {
+      "frames": 173,
+      "geometry_fit_attempts": 42,
+      "fit_gate_closed": 131,
+      "fit_positive": 0,
+      "fit_unknown_after_attempt": 42,
+      "confirmed": 0,
+      "raw_body_below_24_m": 47,
+      "geometry_only_candidates": 0
+    }
+  }
+}

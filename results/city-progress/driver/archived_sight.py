@@ -7,7 +7,8 @@ from pathlib import Path
 
 import numpy as np
 
-from crosswalk.city_progress import FlankMotion, ProgressModel, _profile
+from crosswalk.city_drive import load_driver
+from crosswalk.city_progress import FlankMotion, _profile
 
 
 def main():
@@ -21,7 +22,7 @@ def main():
     session = json.loads((a.session / "capture.json").read_bytes())
     source_digest = hashlib.sha256(replay.read_bytes()).hexdigest()
     rows = json.loads(replay.read_bytes())
-    model = ProgressModel.load(a.model)
+    model, _, _ = load_driver(a.model)
     if len(rows) != session["summary"]["frames"]:
         raise ValueError("Capture length mismatch")
     samples, hist = [], deque(maxlen=3)

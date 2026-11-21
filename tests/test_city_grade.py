@@ -7,7 +7,8 @@ from unittest.mock import patch
 import numpy as np
 
 from crosswalk.behavior_v2 import _range_cues
-from crosswalk.city_grade import GradeModel, GradeObserver, supported_grade
+from crosswalk.city_grade import FEATURE_NAMES, GradeModel, GradeObserver, supported_grade
+from crosswalk.city_drive import load_driver
 from crosswalk.city_progress import ProgressModel
 from crosswalk.city_progress_fit import fit
 from crosswalk.policy import BUMPER_X, LIDAR_Z, RADAR_X, RADAR_Z
@@ -64,6 +65,16 @@ class GradeTests(unittest.TestCase):
         clearance = supported_grade(lidar, radar, PATH, SPEED)
         self.assertGreaterEqual(clearance, 0.)
         self.assertLessEqual(clearance, x - BUMPER_X)
+
+    def test_promoted_checkpoint_matches_native_suite(self):
+        root = Path(__file__).resolve().parents[1]
+        path = root / "models/city-progress/candidate.npz"
+        trial = root / "results/city-progress/junction-transfer/j1221-r4-first/candidate.npz"
+        self.assertEqual(path.read_bytes(),trial.read_bytes())
+        model, names, schema = load_driver(path)
+        self.assertIsInstance(model,GradeModel)
+        self.assertEqual(names,FEATURE_NAMES)
+        self.assertEqual(schema,"ado-city-progress-v1")
 
     def test_smooth_clear_grade_recovers_lidar_and_radar_false_hits(self):
         _, lidar_gap, radar_gap, *_ = _range_cues(self.lidar, self.radar, SPEED, PATH)

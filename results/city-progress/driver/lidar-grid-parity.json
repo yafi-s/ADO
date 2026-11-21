@@ -1,0 +1,85 @@
+{
+  "method": "Run each witness's archived and current LidarMotion in frame order over identical retained LiDAR arrays and poses. Pose yaw comes from the trace's ego matrix. Compare sweep range arrays and all cluster fields including motion labels exactly. Only retained frames participate.",
+  "current_source_sha256": "55c9e73dffa0aaef1f0a8e839858a5375bdbb91c133d754a3646f803b6b94aea",
+  "numpy": "2.4.2",
+  "opencv": "4.13.0",
+  "witnesses": [
+    {
+      "witness": "development-v3/candidate-clear",
+      "archive_source_sha256": "fd277aa2bab6a1261b4ef8a78b9e573a2487abf36b5feeec21f51b421e5b4ec8",
+      "frames": 138,
+      "returns": 1014183,
+      "clamped_returns": 0,
+      "exact_frames": 138,
+      "archived_failures": [],
+      "different_frames": []
+    },
+    {
+      "witness": "development-v3/candidate-crossing",
+      "archive_source_sha256": "fd277aa2bab6a1261b4ef8a78b9e573a2487abf36b5feeec21f51b421e5b4ec8",
+      "frames": 171,
+      "returns": 1249584,
+      "clamped_returns": 0,
+      "exact_frames": 171,
+      "archived_failures": [],
+      "different_frames": []
+    },
+    {
+      "witness": "transfer-r3-first/baseline-clear",
+      "archive_source_sha256": "fd277aa2bab6a1261b4ef8a78b9e573a2487abf36b5feeec21f51b421e5b4ec8",
+      "frames": 171,
+      "returns": 1185420,
+      "clamped_returns": 0,
+      "exact_frames": 171,
+      "archived_failures": [],
+      "different_frames": []
+    },
+    {
+      "witness": "transfer-r3-first/baseline-crossing",
+      "archive_source_sha256": "fd277aa2bab6a1261b4ef8a78b9e573a2487abf36b5feeec21f51b421e5b4ec8",
+      "frames": 171,
+      "returns": 1168557,
+      "clamped_returns": 0,
+      "exact_frames": 171,
+      "archived_failures": [],
+      "different_frames": []
+    },
+    {
+      "witness": "transfer-r3-first/candidate-clear",
+      "archive_source_sha256": "fd277aa2bab6a1261b4ef8a78b9e573a2487abf36b5feeec21f51b421e5b4ec8",
+      "frames": 153,
+      "returns": 1060268,
+      "clamped_returns": 0,
+      "exact_frames": 153,
+      "archived_failures": [],
+      "different_frames": []
+    },
+    {
+      "witness": "transfer-r3-first/candidate-crossing",
+      "archive_source_sha256": "fd277aa2bab6a1261b4ef8a78b9e573a2487abf36b5feeec21f51b421e5b4ec8",
+      "frames": 171,
+      "returns": 1164929,
+      "clamped_returns": 0,
+      "exact_frames": 171,
+      "archived_failures": [],
+      "different_frames": []
+    },
+    {
+      "witness": "transfer-r3-first/candidate-stops-short",
+      "archive_source_sha256": "fd277aa2bab6a1261b4ef8a78b9e573a2487abf36b5feeec21f51b421e5b4ec8",
+      "frames": 160,
+      "returns": 1109179,
+      "clamped_returns": 0,
+      "exact_frames": 160,
+      "archived_failures": [],
+      "different_frames": []
+    }
+  ],
+  "grid_cells_per_axis": 288,
+  "totals": {
+    "frames": 1135,
+    "returns": 7952120,
+    "clamped_returns": 0,
+    "exact_frames": 1135
+  }
+}
