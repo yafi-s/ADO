@@ -23,8 +23,25 @@ concurrency:
   group: pages
   cancel-in-progress: false
 jobs:
+  publish-from-main:
+    # The Pages environment permits deployments from main. A release event runs on a tag.
+    if: github.repository == 'yafi-s/ADO' && github.event_name == 'release' && github.event.release.tag_name == 'v0.3.0'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Start the release deployment from main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main
+
   deploy:
-    if: github.repository == 'yafi-s/ADO' && (github.event_name != 'release' || github.event.release.tag_name == 'v0.3.0')
+    if: github.repository == 'yafi-s/ADO' && github.event_name != 'release'
+    permissions:
+      actions: read
+      contents: read
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -56,5 +73,17 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web
+      - name: Wait for this run's Pages artifact to be indexed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in {1..12}; do
+            id=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" \
+              --jq '.artifacts[] | select(.name == "github-pages" and .expired == false) | .id') || id=""
+            if [ -n "$id" ]; then exit 0; fi
+            sleep 5
+          done
+          echo "Pages artifact still unavailable for run $GITHUB_RUN_ID" >&2
+          exit 1
       - id: publish
         uses: actions/deploy-pages@v4
