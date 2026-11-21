@@ -1,0 +1,25 @@
+{
+  "seed": 881,
+  "junction": 1221,
+  "ego_connector": [
+    1229,
+    1
+  ],
+  "traffic_connector": [
+    1334,
+    -2
+  ],
+  "npc_speed_mps": 3.6,
+  "near_miss_gap_m": 1.0,
+  "near_miss_time_s": 1.0,
+  "policy_checkpoints": {
+    "baseline": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+    "candidate": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755"
+  },
+  "fixture_sha256": "1f85c4572b9eaa5b3cf4e43b82958d9f1ffbe99e39084cea73effa91a5e6f32b",
+  "execution_source_sha256": "ed5d520d995f82820c114184da0234f1dfa369ebec5e63711dde80d78f4bd6ee",
+  "release": "Shared departure aligned to clear candidate center arrival",
+  "schedule_reference": null,
+  "short_stop_control": "Same traffic car, spawn and release, brakes at native connector entry",
+  "camera_samples": "incident side and front every 0.5 simulated seconds, same row time as trace"
+}
