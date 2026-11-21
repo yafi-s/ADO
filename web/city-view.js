@@ -20,11 +20,11 @@ const colorMaterial = color => new T.MeshLambertMaterial({color});
 // Only colour and light levels differ; the geometry and the telemetry it shows do not.
 const PALETTES = {
   night: {
-    sky: 0x0f1824, ground: 0x0b121b, curb: 0x2a3745, road: 0x172231,
-    buildings: [0x243142, 0x202c3b, 0x293648, 0x1d2836],
+    sky: 0x16212f, ground: 0x1a2533, curb: 0x56667c, road: 0x3a4a60,
+    buildings: [0x48586e, 0x415166, 0x506077, 0x3b4a5f],
     route: 0x45e2c7, marker: 0x45e2c7, vehicle: 0x9caefa, walker: 0xff9d9b,
     shadow: 0x000000, shadowOpacity: .42, locatorRing: 0x0c3d38, locator: 0x7ff3df,
-    hemiSky: 0xdbe6ff, hemiGround: 0x2b3646, hemi: 1.55, sun: 1.25, environment: .6, exposure: 1.0
+    hemiSky: 0xdbe6ff, hemiGround: 0x3a4658, hemi: 1.7, sun: 1.3, environment: .6, exposure: 1.0
   },
   day: {
     sky: 0xeceef2, ground: 0xdde1e7, curb: 0xc9cfd8, road: 0xf7f8fa,

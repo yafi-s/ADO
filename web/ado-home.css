@@ -50,9 +50,11 @@
 
 @container bar (max-width: 1180px) { .build-note { display: none; } }
 @container bar (max-width: 980px) { .build-group { display: none; } }
-@container bar (max-width: 620px) {
-  .statusbar { flex-wrap: wrap; }
-  .source { order: 3; flex: 1 1 100%; flex-wrap: wrap; }
+/* Narrow screens: the source and run picker take their own row under the brand. */
+@media (max-width: 660px) {
+  .statusbar { flex-wrap: wrap; row-gap: 8px; }
+  .source { order: 3; flex: 1 1 100%; }
+  .source > .pill { flex: 0 1 auto; }
   .source > .pick { flex: 1 1 140px; }
   .pick select { max-width: none; width: 100%; }
 }
@@ -80,6 +82,7 @@
 .scrim {
   position: absolute; inset: 0; pointer-events: none;
   background:
+    radial-gradient(34% 44% at 0 0, rgba(var(--scrim), .8) 0, rgba(var(--scrim), .45) 55%, rgba(var(--scrim), 0) 100%),
     linear-gradient(to top, rgba(var(--scrim), .84) 0, rgba(var(--scrim), .4) 15%, rgba(var(--scrim), 0) 36%),
     linear-gradient(to bottom, rgba(var(--scrim), .72) 0, rgba(var(--scrim), .3) 13%, rgba(var(--scrim), 0) 27%);
 }
@@ -256,7 +259,7 @@
 .feed {
   flex: none; overflow: hidden;
   border-radius: var(--radius); border: 1px solid var(--line);
-  background: #000;
+  background: var(--surface);
 }
 .feed-frame { position: relative; aspect-ratio: 16 / 9; background: #050608; }
 .feed-frame video, .feed-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
