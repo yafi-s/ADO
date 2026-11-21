@@ -22,6 +22,33 @@ def person(x=11.3, y=0.):
     return returns, detection
 
 
+def car(x, y, side=0., broadside=False):
+    """Lidar returns and an image box for a car whose nearest face is at ego-frame (x, y).
+
+    `side` adds that many metres of the flank beyond the rear face, as an oblique view would.
+    `broadside` turns the car across the road, so its 4.4 m flank faces the ego vehicle.
+    """
+    heights = (.5, .8, 1.1, 1.4)
+    across = np.linspace(-2.2, 2.2, 12) if broadside else np.linspace(-.9, .9, 6)
+    surface = [(x, y + dy, z) for dy in across for z in heights]
+    edge = y + (.9 if y < 0 else -.9)   # the flank nearer the ego vehicle's axis
+    surface += [(x + dx, edge, z) for dx in np.arange(.4, side + .01, .4) for z in heights]
+    points = np.array(surface)
+    depth = points[:, 0] - 1.3
+    u = .5 + .5 * points[:, 1] / depth
+    v = .5 - (320 / 360) * (points[:, 2] - 1.65) / depth
+    box = [u.min() - .004, v.min() - .004, u.max() + .004, v.max() + .004]
+    returns = np.column_stack((points[:, 0], points[:, 1], points[:, 2] - 2.3, np.full(len(points), .9)))
+    return returns, dict(label="car", score=.9, box=box)
+
+
+def world(track, pose):
+    """World position of a track reported relative to an ego pose (x, y, yaw degrees)."""
+    yaw = math.radians(pose[2])
+    return (pose[0] + math.cos(yaw) * track["x"] - math.sin(yaw) * track["y"],
+            pose[1] + math.sin(yaw) * track["x"] + math.cos(yaw) * track["y"])
+
+
 class TrackingTests(unittest.TestCase):
     def test_extrinsic_projection_and_ground_removal(self):
         # At this range the camera/lidar offset shifts the box by dozens of pixels.
@@ -68,6 +95,31 @@ class TrackingTests(unittest.TestCase):
                               (lidar, [detection, detection])]:
             self.assertEqual(Tracker().update(points, EMPTY, boxes, (0, 0, 0), 0.), [])
 
+    def test_a_re_read_class_continues_the_same_track(self):
+        # The detector calls one van a car, then a truck, then a car again.
+        tracker = Tracker()
+        lidar, detection = car(14., -3.)
+        first, = tracker.update(lidar, EMPTY, [detection], (0, 0, 0), 0.)
+        second, = tracker.update(lidar, EMPTY, [dict(detection, label="truck", score=.5)], (0, 0, 0), .2)
+        third, = tracker.update(lidar, EMPTY, [detection], (0, 0, 0), .4)
+        self.assertEqual({first["id"], second["id"], third["id"]}, {first["id"]})
+        # The class that has gathered the most confidence names it.
+        self.assertEqual([first["label"], second["label"], third["label"]], ["car", "car", "car"])
+        # A pedestrian where the car was is another object.
+        lidar, walker = person(14., -3.)
+        self.assertEqual({t["label"] for t in tracker.update(lidar, EMPTY, [walker], (0, 0, 0), .6)}, {"car", "person"})
+
+    def test_two_classes_on_one_object_make_one_measurement(self):
+        # A car box and a bicycle box on the same van share every lidar return.
+        lidar, detection = car(14., -3.)
+        repeat = dict(detection, label="bicycle", score=.4)
+        track, = Tracker().update(lidar, EMPTY, [repeat, detection], (0, 0, 0), 0.)
+        self.assertEqual(track["label"], "car")
+        # A person standing in front of a car is not a repeat of it.
+        near, walker = person(8., -3.)
+        labels = {t["label"] for t in Tracker().update(np.vstack([lidar, near]), EMPTY, [detection, walker], (0, 0, 0), 0.)}
+        self.assertIn("person", labels)
+
     def test_signed_radar_velocity_matches_in_three_dimensions(self):
         lidar, detection = person(11.3, 1.5)
         dx, dy = 9.3, 1.5
@@ -89,6 +141,60 @@ class TrackingTests(unittest.TestCase):
         self.assertEqual(moved["id"], track["id"])
         self.assertAlmostEqual(moved["speed_mps"], 2.)
         self.assertAlmostEqual(moved["heading"], 0.)
+
+    def test_new_vehicle_faces_along_the_ego_heading_not_the_sightline(self):
+        # A car in the next lane is seen off-axis. Its heading is not the direction it is seen from.
+        lidar, detection = car(20., 4.)
+        track, = Tracker().update(lidar, EMPTY, [detection], (0, 0, 0), 0.)
+        self.assertAlmostEqual(track["heading"], 0.)
+        lidar, detection = car(14., 0., broadside=True)
+        track, = Tracker().update(lidar, EMPTY, [detection], (0, 0, 0), 0.)
+        self.assertAlmostEqual(abs(track["heading"]), 90.)
+
+    def test_stopped_vehicle_holds_heading_and_size_while_the_view_changes(self):
+        # The ego vehicle closes on a stopped car in the oncoming lane. Alternate frames
+        # see only its rear face, then its rear face and three metres of flank, which
+        # changes the single-view length estimate and the apparent centre.
+        tracker = Tracker()
+        tracks = []
+        poses = []
+        for step in range(21):
+            pose = (.5 * step, 0., 0.)
+            lidar, detection = car(30. - pose[0], -4., side=3. if step % 2 else 0.)
+            track, = tracker.update(lidar, EMPTY, [detection], pose, .1 * step)
+            tracks.append(track)
+            poses.append(pose)
+        self.assertEqual(len({track["id"] for track in tracks}), 1)
+        for before, after in zip(tracks, tracks[1:]):
+            self.assertLess(abs(after["heading"]), 3.)
+            self.assertLess(abs(after["length"] - before["length"]), .2)
+        settled = [world(track, pose) for track, pose in zip(tracks[6:], poses[6:])]
+        self.assertLess(np.ptp([x for x, _ in settled]), .3)
+        self.assertLess(np.ptp([y for _, y in settled]), .3)
+        self.assertLess(max(track["speed_mps"] for track in tracks[6:]), .9)
+        # Losing sight of it must not slide it along whatever velocity the changing view suggested.
+        held = world(tracks[-1], poses[-1])
+        for step in range(21, 25):
+            pose = (.5 * step, 0., 0.)
+            coast, = tracker.update(EMPTY, EMPTY, [], pose, .1 * step)
+            self.assertTrue(coast["coasting"])
+            self.assertAlmostEqual(world(coast, pose)[0], held[0])
+            self.assertAlmostEqual(world(coast, pose)[1], held[1])
+
+    def test_heading_follows_sustained_travel(self):
+        # A car crosses from left to right at 4 m/s. It is first assumed to face the other way.
+        tracker = Tracker()
+        for step in range(11):
+            lidar, detection = car(14., 3. - .4 * step, broadside=True)
+            track, = tracker.update(lidar, EMPTY, [detection], (0, 0, 0), .1 * step)
+            if step == 0:
+                self.assertAlmostEqual(track["heading"], 90.)
+        self.assertAlmostEqual(track["heading"], -90., delta=6.)
+        self.assertAlmostEqual(track["speed_mps"], 4., delta=.3)
+        # A travelling object is still carried forward while it is briefly unseen.
+        before = track["y"]
+        coast, = tracker.update(EMPTY, EMPTY, [], (0, 0, 0), 1.2)
+        self.assertAlmostEqual(coast["y"] - before, -.8, delta=.1)
 
 
 if __name__ == "__main__":
