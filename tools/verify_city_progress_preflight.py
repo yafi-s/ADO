@@ -19,7 +19,7 @@ def grade(folder, checkpoint):
         if stopped and len(batch) >= 10:
             stops.append(dict(seconds=round(.1*len(batch), 1), first_frame=batch[0]["frame"],
                 station_m=batch[0]["progress_m"], phases=dict(Counter(r["phase"] for r in batch)),
-                constraints=dict(Counter(r.get("progress_evidence", {}).get("binding") for r in batch))))
+                constraints=dict(Counter(r.get("progress_evidence", {}).get("binding", "legacy policy") for r in batch))))
     activity = summary["background_traffic_activity"]
     checksum = fingerprint(checkpoint)
     conditions = (summary["seed"] == 213 and summary["crossing_delay_s"] == .75 and

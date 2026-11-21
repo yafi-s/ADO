@@ -45,6 +45,7 @@ def verify_ranges(directory, frames, telemetry, summary, folder):
                 for i in range(max(0, index - 6), min(len(frames), index + 2))}
     rows = []
     samples = {}
+    first_grid_edge = None
     for frame, row in zip(frames, telemetry, strict=True):
         frame = int(frame)
         path = files[frame]
@@ -52,6 +53,15 @@ def verify_ranges(directory, frames, telemetry, summary, folder):
             pose = row["ego_pose"]
             if not np.allclose(sweep["ego_xy_yaw"], [pose[k] for k in ("x", "y", "yaw")], atol=.015, rtol=0.):
                 raise ValueError(f"Raw range pose disagrees with native camera at {frame}")
+            if first_grid_edge is None:
+                cloud = sweep["lidar"]
+                xy = cloud[:, :2]
+                height = cloud[:, 2] + 2.3
+                edge = (np.abs(xy) < 36.).all(axis=1) & (height > .23) & (height < 3.6)
+                edge &= np.any((xy + np.float32(36.)) / np.float32(.25) >= 288., axis=1)
+                if np.any(edge):
+                    first_grid_edge = dict(frame=frame, indices=np.flatnonzero(edge).tolist())
+                    selected.setdefault(frame, "float32-grid-edge")
             if frame in selected:
                 raw = BytesIO()
                 np.savez(raw, **{k: sweep[k] for k in sweep.files if k == "lidar" or k == "ego_xy_yaw" or k.startswith("radar")})
@@ -65,7 +75,7 @@ def verify_ranges(directory, frames, telemetry, summary, folder):
     with ZipFile(target) as archive:
         if set(archive.namelist()) != set(samples) or any(archive.read(k) != v for k,v in samples.items()):
             raise ValueError("Selected native range samples do not match the retained raw sweep arrays")
-    return dict(local_sweep_session=directory.name, frames=len(rows),
+    return dict(local_sweep_session=directory.name, frames=len(rows), first_float32_grid_edge=first_grid_edge,
                 total_bytes=sum(row["bytes"] for row in rows), files=rows,
                 samples=dict(sha256=fingerprint(target), frames=selected))
 
