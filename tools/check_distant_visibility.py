@@ -49,6 +49,8 @@ def main():
     parser.add_argument("report", type=Path)
     parser.add_argument("output", type=Path)
     parser.add_argument("--review", type=Path)
+    parser.add_argument("--scene-source", type=Path, help="Optional renderer candidate for paired comparison")
+    parser.add_argument("--theme", choices=("day","night"), default="night")
     parser.add_argument("--targets", nargs="+", required=True, help="Reference IDs with a half-visible display match")
     args = parser.parse_args()
     web = ROOT / "web"
@@ -58,11 +60,14 @@ def main():
         actor = next(a for a in report["encounters"] if str(a["id"]) == key)
         selected.append(dict(actor=key, role=actor["role"], **actor["first"]["display"]))
     assets = source_files(None, web)
+    if args.scene_source:
+        assets["perception-scene.js"] = args.scene_source.read_bytes()
     for name in ("ado-home.css", "display.css", "barrier-review.mjs"):
         assets[name] = (web / name).read_bytes()
     bundle = {k: (v, "text/css" if k.endswith(".css") else "application/json" if k.endswith(".json")
                   else "text/javascript") for k, v in assets.items()}
     html = re.sub(r'<script\b.*?</script>', '', (web / "index.html").read_text(encoding="utf8"), flags=re.S)
+    html = html.replace('<html lang="en">',f'<html lang="en" data-display="{args.theme}">',1)
     bundle.update({"": (html.encode(), "text/html"), "frames": (recorded_inputs(args.raw, max(
         r["frame"] for r in selected)+1), "application/json"), "town": ((args.raw / "town.json").read_bytes(),
         "application/json"), "review": (args.review.read_bytes() if args.review else b"null", "application/json"),
@@ -84,7 +89,7 @@ def main():
         delta=np.abs(a-b).max(axis=2)
         # Include only visibly changed pixels. Jagged edges sometimes change by a single 8-bit step.
         y,x=np.where(delta>=12)
-        row.update(symbol=draw["body"],scene_size_px=rendered.size,pixels_rgb_delta_ge_12=len(x))
+        row.update(symbol=draw["body"],theme=args.theme,scene_size_px=rendered.size,pixels_rgb_delta_ge_12=len(x))
         if len(x):
             extent=[int(x.min()),int(y.min()),int(x.max()+1),int(y.max()+1)]
             row["extent_px"]=[extent[2]-extent[0],extent[3]-extent[1]]

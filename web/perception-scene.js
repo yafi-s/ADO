@@ -869,7 +869,7 @@ export class PerceptionScene {
     const trail=makeTrail(color);
     trail.renderOrder=1;
     this.trackGroup.add(group,trail);
-    const track={id,label,group,foot,trail,materials:shape.materials,history:[],from:V(),to:V(),fromAngle:0,toAngle:0,
+    const track={id,label,group,foot,trail,materials:shape.materials,bodyPaint:shape.bodyPaint,history:[],from:V(),to:V(),fromAngle:0,toAngle:0,
       size:V(),fromSize:V(),toSize:V(),opacity:-1,fromOpacity:0,toOpacity:0};
     this.tracks.set(id,track);return track;
   }
@@ -965,6 +965,17 @@ export class PerceptionScene {
       track.sourceId=object.sourceId;
       track.sourceIds=object.sourceIds;
       track.mountedRider=object.mountedRider;
+      if(TRACK_TONE[label]==='vehicle'||label==='person'){
+        // Keep the measured silhouette and its depth test. Recent, confirmed distant bodies
+        // need a darker paint on the day road and slightly brighter paint on the night road.
+        const source=nativeTracks.get(object.sourceId);
+        const current=source?.last_cameras?.length && !object.held && !object.leaving && object.opacity>=.5;
+        const contrast=current ? clamp((Math.hypot(source.x,source.y)-30)/34,0,1) *
+          clamp((.5-(source.class_age_s??Infinity))/.3,0,1) : 0;
+        const day=this.look===PALETTES.day;
+        track.bodyPaint.color.set(this.look[TRACK_TONE[label]]).multiplyScalar(day?1-.60*contrast:1);
+        track.bodyPaint.emissiveIntensity=this.look.glow+(day?0:.85*contrast);
+      }
       track.from.copy(track.group.position);track.to.set(object.x,object.y,object.z);
       track.fromAngle=track.group.rotation.y;track.toAngle=-object.heading*rad;
       // The symbol stays within sizes its class can have; the ground outline keeps the estimate itself.

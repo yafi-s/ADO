@@ -161,7 +161,7 @@ function builder(look, label) {
   // Scale the metre-space parts into the unit box.
   function finish(length, height, width) {
     inner.scale.set(1 / length, 1 / height, 1 / width);
-    return {group: root, materials};
+    return {group: root, materials, bodyPaint: body};
   }
   return {paints, shell, box, ball, limb, wheel, finish, part};
 }

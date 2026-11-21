@@ -20,7 +20,15 @@ The six additional unmatched camera boxes are included below. Frames 3542 and 35
 
 For the first **accurate 3D symbol**, the lead car moved from **43.14 to 49.83 m**, the occluding van from **58.58 to 61.55 m**, and a background car from **50.78 to 51.20 m**. A parked control that previously missed the display gate appeared at **30.79 m**. Nearby matched symbol-frames stayed at **914/1,116**. At 30–50 m, matches rose from **359 to 366** of 1,088. At 50–100 m, they rose from **23 to 34** of 3,767. Unmatched forward symbols stayed at **213**. No first correct symbol was lost. Neither version drew a correct pedestrian symbol at or beyond 30 m on this tape.
 
-With the default follow camera at a 1366 × 768 laptop viewport, the 3D scene occupied 1001 × 619 pixels. At **61.55 m** the van covered 17 × 22 pixels, with 295 pixels at least 12/255 different from a second rendering with that vehicle body hidden. At **49.83 m** the lead car covered 20 × 20 pixels with 309 changed pixels. The **26.81 m** sidewalk pedestrian covered 11 × 36 pixels with 215 changed pixels. The orange line in each capture is an evaluation annotation. The range and body measurements exclude it. [61.55 m vehicle](high-laptop/frame-2471.jpg) · [49.83 m vehicle](high-laptop/frame-3452.jpg) · [26.81 m pedestrian](high-laptop/frame-3975.jpg) · [Pixel measurements](high-laptop/visibility.json)
+With the default follow camera at a 1366 × 768 laptop viewport, the 3D scene occupied 1001 × 619 pixels. At **61.55 m** the van covered 17 × 22 pixels, with 297 pixels at least 12/255 different from a second rendering with that vehicle body hidden. At **49.83 m** the lead car covered 20 × 20 pixels with 308 changed pixels. The **26.81 m** sidewalk pedestrian covered 11 × 36 pixels with 215 changed pixels. The orange line in each capture is an evaluation annotation. The range and body measurements exclude it. [61.55 m vehicle](high-laptop/frame-2471.jpg) · [49.83 m vehicle](high-laptop/frame-3452.jpg) · [26.81 m pedestrian](high-laptop/frame-3975.jpg) · [Pixel measurements](high-laptop/visibility.json)
+
+## Distant symbols in the populated city
+
+The range-qualified bodies keep their measured positions and physical scale. The display gradually brightens their paint at night and darkens it during the day beyond 30 m. Only confirmed bodies with a recent camera class receive this treatment. Geometry, depth testing and opacity remain under the existing object and occlusion rules.
+
+On the corrected city drive, the first accurate van symbol at **76.66 m** remained 15 × 19 pixels, partly behind the real signal gantry. Its median visible-pixel contrast against the same rendering with that body hidden increased from **49 to 57** at night and **42 to 54.5** during the day on an 8-bit scale. At **55.79 m**, the background car improved from **48 to 62** at night and **37 to 51** during the day. A **36.51 m** pedestrian improved from **168 to 175.5** at night and **159 to 163.5** during the day. The paired **12.62 m** control image reproduced byte-for-byte in each theme. [Full measurements](city-laptop/contrast-comparison.json)
+
+![Before and after distant car and pedestrian appearance in night and day modes](city-laptop/contrast-comparison.jpg)
 
 ## Reproduction
 
