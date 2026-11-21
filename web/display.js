@@ -68,4 +68,9 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready);
   else ready();
+
+  // A page restored by Back or Forward keeps the mode it had when it was left.
+  addEventListener('pageshow', event => {
+    if (event.persisted) apply(stored() ?? 'night');
+  });
 })();
