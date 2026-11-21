@@ -1,0 +1,1264 @@
+{
+  "checkpoint_heldout_stationary_crops": {
+    "resolved": {
+      "published": [
+        49,
+        0,
+        35
+      ],
+      "visibility_gate": [
+        49,
+        0,
+        35
+      ]
+    },
+    "small": {
+      "published": [
+        54,
+        5,
+        121
+      ],
+      "visibility_gate": [
+        21,
+        2,
+        157
+      ]
+    }
+  },
+  "classifier_sha256": "9e032da511086924a785106b1fc65223e8db6177b7d933c15054ad67d8d21058",
+  "native": {
+    "heldout_10m": {
+      "published_reader": {
+        "by_camera": {
+          "front": 105
+        },
+        "confusion": {
+          "green->red": 26,
+          "off->red": 18,
+          "red->red": 41,
+          "yellow->red": 20
+        },
+        "counts": {
+          "correct": 41,
+          "held_from_previous_frame": 24,
+          "mapped_head_frames": 150,
+          "scored_camera_readings": 105,
+          "unknown": 45
+        },
+        "denominator": "All mapped heads within 60 m, including out-of-view, occluded and back-facing heads",
+        "evidence": {
+          "fresh_correct": 37,
+          "fresh_wrong": 44,
+          "retained_correct": 4,
+          "retained_wrong": 20
+        },
+        "mismatches": [
+          {
+            "age_s": 0.0,
+            "confidence": 0.9957,
+            "frame": 190,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9913,
+            "frame": 190,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 190,
+            "id": "light/84.03/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9814,
+            "frame": 191,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9985,
+            "frame": 191,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.877,
+            "frame": 191,
+            "id": "light/84.03/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9765,
+            "frame": 192,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9817,
+            "frame": 192,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.8876,
+            "frame": 192,
+            "id": "light/84.03/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9771,
+            "frame": 193,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9978,
+            "frame": 193,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 193,
+            "id": "light/84.03/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.996,
+            "frame": 194,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9925,
+            "frame": 194,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.2,
+            "confidence": null,
+            "frame": 194,
+            "id": "light/84.03/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9939,
+            "frame": 195,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9936,
+            "frame": 195,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.3,
+            "confidence": null,
+            "frame": 195,
+            "id": "light/84.03/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9873,
+            "frame": 196,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9835,
+            "frame": 196,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9629,
+            "frame": 197,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9508,
+            "frame": 197,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9425,
+            "frame": 198,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9936,
+            "frame": 198,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9816,
+            "frame": 199,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9932,
+            "frame": 199,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9613,
+            "frame": 200,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9417,
+            "frame": 200,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 201,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 201,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9201,
+            "frame": 202,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9224,
+            "frame": 202,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 203,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 203,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9839,
+            "frame": 204,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9569,
+            "frame": 204,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9399,
+            "frame": 205,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.8672,
+            "frame": 205,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9054,
+            "frame": 206,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 206,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.8673,
+            "frame": 207,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9314,
+            "frame": 207,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 208,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 208,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.2,
+            "confidence": null,
+            "frame": 209,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9594,
+            "frame": 209,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9507,
+            "frame": 220,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9399,
+            "frame": 220,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 221,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9086,
+            "frame": 221,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9218,
+            "frame": 222,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9294,
+            "frame": 222,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 223,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.961,
+            "frame": 223,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.2,
+            "confidence": null,
+            "frame": 224,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9622,
+            "frame": 224,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9787,
+            "frame": 225,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 226,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9589,
+            "frame": 227,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9162,
+            "frame": 227,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 228,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 228,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.2,
+            "confidence": null,
+            "frame": 229,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.2,
+            "confidence": null,
+            "frame": 229,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "off",
+            "source_frame": null,
+            "view": "front"
+          }
+        ],
+        "source": "RGB measurements compared to CARLA reference after control",
+        "target_junction": {},
+        "transitions": [
+          {
+            "abstained_head_frames_before_agreement": 4,
+            "first_agreement_frames": null,
+            "frame": 190,
+            "from_state": "red",
+            "source_frame": null,
+            "to_state": "green",
+            "wrong_head_frames": 26
+          },
+          {
+            "abstained_head_frames_before_agreement": 10,
+            "first_agreement_frames": null,
+            "frame": 200,
+            "from_state": "green",
+            "source_frame": null,
+            "to_state": "yellow",
+            "wrong_head_frames": 20
+          },
+          {
+            "abstained_head_frames_before_agreement": 0,
+            "first_agreement_frames": 0,
+            "frame": 210,
+            "from_state": "yellow",
+            "source_frame": null,
+            "to_state": "red",
+            "wrong_head_frames": 0
+          },
+          {
+            "abstained_head_frames_before_agreement": 0,
+            "first_agreement_frames": null,
+            "frame": 220,
+            "from_state": "red",
+            "source_frame": null,
+            "to_state": "off",
+            "wrong_head_frames": 18
+          }
+        ],
+        "units": "head-frames; correlated views and nearby frames are not independent"
+      },
+      "revised_reader": {
+        "by_camera": {
+          "front": 5
+        },
+        "confusion": {
+          "red->red": 5
+        },
+        "counts": {
+          "correct": 5,
+          "held_from_previous_frame": 0,
+          "mapped_head_frames": 150,
+          "scored_camera_readings": 5,
+          "unknown": 145
+        },
+        "denominator": "All mapped heads within 60 m, including out-of-view, occluded and back-facing heads",
+        "evidence": {
+          "fresh_correct": 5
+        },
+        "mismatches": [],
+        "source": "RGB measurements compared to CARLA reference after control",
+        "target_junction": {},
+        "transitions": [
+          {
+            "abstained_head_frames_before_agreement": 30,
+            "first_agreement_frames": null,
+            "frame": 190,
+            "from_state": "red",
+            "source_frame": null,
+            "to_state": "green",
+            "wrong_head_frames": 0
+          },
+          {
+            "abstained_head_frames_before_agreement": 30,
+            "first_agreement_frames": null,
+            "frame": 200,
+            "from_state": "green",
+            "source_frame": null,
+            "to_state": "yellow",
+            "wrong_head_frames": 0
+          },
+          {
+            "abstained_head_frames_before_agreement": 30,
+            "first_agreement_frames": null,
+            "frame": 210,
+            "from_state": "yellow",
+            "source_frame": null,
+            "to_state": "red",
+            "wrong_head_frames": 0
+          },
+          {
+            "abstained_head_frames_before_agreement": 0,
+            "first_agreement_frames": null,
+            "frame": 220,
+            "from_state": "red",
+            "source_frame": null,
+            "to_state": "off",
+            "wrong_head_frames": 0
+          }
+        ],
+        "units": "head-frames; correlated views and nearby frames are not independent"
+      }
+    },
+    "heldout_22m": {
+      "published_reader": {
+        "by_camera": {
+          "front": 29
+        },
+        "confusion": {
+          "green->red": 9,
+          "red->red": 18,
+          "yellow->red": 2
+        },
+        "counts": {
+          "correct": 18,
+          "held_from_previous_frame": 10,
+          "mapped_head_frames": 150,
+          "scored_camera_readings": 29,
+          "unknown": 121
+        },
+        "denominator": "All mapped heads within 60 m, including out-of-view, occluded and back-facing heads",
+        "evidence": {
+          "fresh_correct": 15,
+          "fresh_wrong": 4,
+          "retained_correct": 3,
+          "retained_wrong": 7
+        },
+        "mismatches": [
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 248,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 248,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9208,
+            "frame": 249,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.2,
+            "confidence": null,
+            "frame": 249,
+            "id": "light/90.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9666,
+            "frame": 250,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9581,
+            "frame": 251,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 252,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.2,
+            "confidence": null,
+            "frame": 253,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.938,
+            "frame": 257,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.1,
+            "confidence": null,
+            "frame": 258,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.2,
+            "confidence": null,
+            "frame": 259,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "yellow",
+            "source_frame": null,
+            "view": "front"
+          }
+        ],
+        "source": "RGB measurements compared to CARLA reference after control",
+        "target_junction": {},
+        "transitions": [
+          {
+            "abstained_head_frames_before_agreement": 21,
+            "first_agreement_frames": null,
+            "frame": 248,
+            "from_state": "red",
+            "source_frame": null,
+            "to_state": "green",
+            "wrong_head_frames": 9
+          },
+          {
+            "abstained_head_frames_before_agreement": 28,
+            "first_agreement_frames": null,
+            "frame": 258,
+            "from_state": "green",
+            "source_frame": null,
+            "to_state": "yellow",
+            "wrong_head_frames": 2
+          },
+          {
+            "abstained_head_frames_before_agreement": 18,
+            "first_agreement_frames": 6,
+            "frame": 268,
+            "from_state": "yellow",
+            "source_frame": null,
+            "to_state": "red",
+            "wrong_head_frames": 0
+          },
+          {
+            "abstained_head_frames_before_agreement": 0,
+            "first_agreement_frames": null,
+            "frame": 278,
+            "from_state": "red",
+            "source_frame": null,
+            "to_state": "off",
+            "wrong_head_frames": 0
+          }
+        ],
+        "units": "head-frames; correlated views and nearby frames are not independent"
+      },
+      "revised_reader": {
+        "by_camera": {
+          "front": 13
+        },
+        "confusion": {
+          "green->red": 3,
+          "red->red": 10
+        },
+        "counts": {
+          "correct": 10,
+          "held_from_previous_frame": 0,
+          "mapped_head_frames": 150,
+          "scored_camera_readings": 13,
+          "unknown": 137
+        },
+        "denominator": "All mapped heads within 60 m, including out-of-view, occluded and back-facing heads",
+        "evidence": {
+          "fresh_correct": 10,
+          "fresh_wrong": 3
+        },
+        "mismatches": [
+          {
+            "age_s": 0.0,
+            "confidence": 0.9666,
+            "frame": 250,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.9581,
+            "frame": 251,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          },
+          {
+            "age_s": 0.0,
+            "confidence": 0.938,
+            "frame": 257,
+            "id": "light/87.53/-214.01/6.00",
+            "map_id": "2010",
+            "read": "red",
+            "reference": "green",
+            "source_frame": null,
+            "view": "front"
+          }
+        ],
+        "source": "RGB measurements compared to CARLA reference after control",
+        "target_junction": {},
+        "transitions": [
+          {
+            "abstained_head_frames_before_agreement": 27,
+            "first_agreement_frames": null,
+            "frame": 248,
+            "from_state": "red",
+            "source_frame": null,
+            "to_state": "green",
+            "wrong_head_frames": 3
+          },
+          {
+            "abstained_head_frames_before_agreement": 30,
+            "first_agreement_frames": null,
+            "frame": 258,
+            "from_state": "green",
+            "source_frame": null,
+            "to_state": "yellow",
+            "wrong_head_frames": 0
+          },
+          {
+            "abstained_head_frames_before_agreement": 30,
+            "first_agreement_frames": null,
+            "frame": 268,
+            "from_state": "yellow",
+            "source_frame": null,
+            "to_state": "red",
+            "wrong_head_frames": 0
+          },
+          {
+            "abstained_head_frames_before_agreement": 0,
+            "first_agreement_frames": null,
+            "frame": 278,
+            "from_state": "red",
+            "source_frame": null,
+            "to_state": "off",
+            "wrong_head_frames": 0
+          }
+        ],
+        "units": "head-frames; correlated views and nearby frames are not independent"
+      }
+    },
+    "original_approach": {
+      "published_reader": {
+        "by_camera": {
+          "front": 100
+        },
+        "confusion": {
+          "green->green": 93,
+          "green->red": 1,
+          "red->red": 6
+        },
+        "counts": {
+          "correct": 99,
+          "held_from_previous_frame": 10,
+          "mapped_head_frames": 303,
+          "scored_camera_readings": 100,
+          "unknown": 203
+        },
+        "denominator": "All mapped heads within 60 m, including out-of-view, occluded and back-facing heads",
+        "evidence": {
+          "fresh_correct": 90,
+          "retained_correct": 9,
+          "retained_wrong": 1
+        },
+        "mismatches": [
+          {
+            "age_s": 0.2,
+            "confidence": null,
+            "frame": 94,
+            "id": "light/248.55/68.43/6.08",
+            "map_id": "2024",
+            "read": "red",
+            "reference": "green",
+            "source_frame": 1450,
+            "view": "front"
+          }
+        ],
+        "source": "RGB measurements compared to CARLA reference after control",
+        "target_junction": {
+          "green->green": 93,
+          "green->red": 1,
+          "red->red": 6
+        },
+        "transitions": [
+          {
+            "abstained_head_frames_before_agreement": 95,
+            "first_agreement_frames": 32,
+            "frame": 94,
+            "from_state": "red",
+            "source_frame": 1450,
+            "to_state": "green",
+            "wrong_head_frames": 1
+          }
+        ],
+        "units": "head-frames; correlated views and nearby frames are not independent"
+      },
+      "revised_reader": {
+        "by_camera": {
+          "front": 87
+        },
+        "confusion": {
+          "green->green": 86,
+          "red->red": 1
+        },
+        "counts": {
+          "correct": 87,
+          "held_from_previous_frame": 3,
+          "mapped_head_frames": 303,
+          "scored_camera_readings": 87,
+          "unknown": 216
+        },
+        "denominator": "All mapped heads within 60 m, including out-of-view, occluded and back-facing heads",
+        "evidence": {
+          "fresh_correct": 84,
+          "retained_correct": 3
+        },
+        "mismatches": [],
+        "source": "RGB measurements compared to CARLA reference after control",
+        "target_junction": {
+          "green->green": 86,
+          "red->red": 1
+        },
+        "transitions": [
+          {
+            "abstained_head_frames_before_agreement": 123,
+            "first_agreement_frames": 41,
+            "frame": 94,
+            "from_state": "red",
+            "source_frame": 1450,
+            "to_state": "green",
+            "wrong_head_frames": 0
+          }
+        ],
+        "units": "head-frames; correlated views and nearby frames are not independent"
+      }
+    }
+  },
+  "native_capture_sha256": {
+    "capture.json": "76483585d3dbf4e249070016fd29708d95d70d3cfb7a21e2e977ab33087ab115",
+    "heldout_10m.npz": "629b662e17728328232fcfa8b743ba82b515c3e2045b9ec2ad1b77aabe39c407",
+    "heldout_22m.npz": "da4a52ca6a712d3e2eec7c8e71ae1b0edf2b739a7ac4c37b3a7a77193d19d010",
+    "original_approach.npz": "8540c27e5b192af9c63eb4ff03dd1c12d66551ef786eb8c514f8d4868a0077d2"
+  },
+  "reader_sha256": {
+    "published": "c87dedb38af4288029e300eb8666b01550111f6df64fb60c06e02d486bb304f1",
+    "revised": "6f361819d2089d30746c716f892b888a08f47e783ca4c76b82cbb7e5b63861c3"
+  },
+  "scope": "Exploratory native re-sense at the original Market approach and two stationary poses at pole 2010. These exposures informed selection of the gate.",
+  "stationary_count_order": [
+    "correct",
+    "wrong",
+    "abstained"
+  ]
+}

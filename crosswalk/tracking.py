@@ -123,7 +123,7 @@ def _measure(lidar, detections, view="front", *, cycle_context=None):
     for detection, box, mask in selections:
         label = detection["label"]
         if detection.get("barrier_subtype") == "chain":
-            groups = [np.flatnonzero(np.isin(ids, group) & (owners == 1)) for group in detection["chain_return_ids"]]
+            groups = [np.flatnonzero(np.isin(ids, group) & mask & (owners == 1)) for group in detection["chain_return_ids"]]
             if len(groups) != 3 or any(len(g) < n for g, n in zip(groups, (2, 1, 2))):
                 continue
             supported = np.concatenate(groups)
@@ -484,7 +484,10 @@ class Tracker:
                 if track.last_seen == now and item.get("barrier_subtype"):
                     track.barrier_read = (item["barrier_subtype"], item["subtype_confidence"], now)
                     if item["barrier_subtype"] == "chain":
-                        track.heading_world = yaw + item["angle"]
+                        # A pair of identical posts has an axis, not a front. Choose
+                        # its equivalent direction nearest the previous observation.
+                        difference = (yaw + item["angle"] - track.heading_world + 90.) % 180. - 90.
+                        track.heading_world += difference
             for key, track in list(self._tracks.items()):
                 item = track.measurement
                 info = item.get("cycle_association")
