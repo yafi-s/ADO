@@ -10,7 +10,8 @@ import {advance, contextOf, createState, laneAxes} from '../web/object-memory.mj
 
 const {positionals: [stage, candidatePath, output], values} = parseArgs({
   allowPositionals: true,
-  options: {barriers: {type: 'string'}, cones: {type: 'string'}}
+  options: {barriers: {type: 'string'}, cones: {type: 'string'}, 'physical-audit': {type: 'string'},
+    probe: {type: 'string', multiple: true}}
 });
 if (!stage || !candidatePath || !output) throw Error('Pass the capture stage, candidate journal, and report destination.');
 
@@ -19,6 +20,9 @@ const capture = read(path.join(stage, 'capture.json'));
 const town = read(path.join(stage, 'raw/town.json'));
 const features = read(new URL(`../web/media/map-features/${town.producer.map}.json`, import.meta.url));
 const offsets = read(new URL('../results/perception/town03-body-offsets.json', import.meta.url));
+const physical = values['physical-audit'] ? read(values['physical-audit']) : null;
+if (physical && physical.capture !== capture.capture_id) throw Error('Physical calibration is for a different recording.');
+Object.assign(offsets, physical?.supplementary_blueprint_calibration?.stable_blueprints);
 const ends = (a, b) => [a, b].map(p => p.slice(0, 2).map(n => n.toFixed(2)).join(',')).join('|');
 const routes = (town.roads ?? []).map(lane => lane.points ?? lane).filter(lane => lane.length > 1);
 const directions = new Map((features.lanes ?? []).map(lane => [ends(lane.a, lane.b), lane.forward]));
@@ -156,20 +160,26 @@ frames.sort((a, b) => Math.min(b.vehicles, b.pedestrians) - Math.min(a.vehicles,
   b.matched_screen_objects.length - a.matched_screen_objects.length || b.moving - a.moving ||
   b.eligible_default_rows - a.eligible_default_rows || a.furthest_m - b.furthest_m);
 const representatives = [];
+const withContinuity = frame => ({...frame, matched_screen_objects: frame.matched_screen_objects.map(hit =>
+  ({...hit, local_motion_and_id: continuity(frame.frame, hit)}))});
 for (const frame of frames) {
   if (representatives.every(prior => Math.abs(prior.time_s - frame.time_s) >= 4)) {
-    representatives.push({...frame, matched_screen_objects: frame.matched_screen_objects.map(hit =>
-      ({...hit, local_motion_and_id: continuity(frame.frame, hit)}))});
+    representatives.push(withContinuity(frame));
   }
   if (representatives.length >= 10) break;
 }
+const requested = new Set((values.probe ?? []).map(Number));
+const requestedMatches = frames.filter(frame => requested.delete(frame.frame)).map(withContinuity);
+if (requested.size) throw Error('Requested frames do not meet the mixed display gate: ' + [...requested].join(', '));
 const hash = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 fs.writeFileSync(output, JSON.stringify({
   schema: 'ado-city-interaction-display-v1', capture: capture.capture_id, trial: capture.trial_id,
   frames: index, counts, representatives, all_verified_exposures: frames,
+  requested_exposures: requestedMatches,
   incomplete_optical_exposures: incomplete,
   source_hashes: {candidates: hash(candidatePath),
     object_memory: hash(new URL('../web/object-memory.mjs', import.meta.url)),
+    physical_audit: values['physical-audit'] ? hash(values['physical-audit']) : null,
     barrier_review: values.barriers ? hash(values.barriers) : null,
     cone_review: values.cones ? hash(values.cones) : null}
 }, null, 2) + '\n');

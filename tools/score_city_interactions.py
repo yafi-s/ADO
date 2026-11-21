@@ -136,8 +136,10 @@ def box_for(actor, shapes):
         offset, angles = (0., 0., 0.), (0., 0., 0.)
         method = "parked_map_box"
     elif shape := shapes.get(actor.get("blueprint")):
+        if any(abs(a-b) > .006 for a, b in zip(actor["dimensions_m"], shape["dimensions_m"])):
+            return None, "actor_origin_only"
         offset, angles = shape["offset_xyz"], shape["rotation"]
-        method = "calibrated_actor_yaw_only"
+        method = "matched_capture_blueprint_yaw_only" if shape.get("matched_capture") else "calibrated_actor_yaw_only"
     else:
         return None, "actor_origin_only"
     heading = rotation(actor.get("pitch", 0.), actor["yaw"], actor.get("roll", 0.))
@@ -273,13 +275,47 @@ def front_observations(row, targets, fresh):
     return observations
 
 
-def score(stage, offsets, parked_path, candidate_path):
+def matched_calibration(stage, producer, existing):
+    """Recover missing archived offsets from stable same-map, same-build native boxes."""
+    source = stage / "raw/perception.jsonl"
+    capture = read_json(stage / "capture.json")
+    digest = sha256(source)
+    if capture["producer"] != producer or capture["raw_sha256"][source.name] != digest:
+        raise ValueError("Supplementary measurements require an intact recording on the same CARLA version and map")
+    observed = defaultdict(Counter)
+    with source.open(encoding="utf-8") as journal:
+        for line in journal:
+            row = json.loads(line)
+            for actor in row["observer_map"]["others"]:
+                name = actor["blueprint"]
+                if (actor["type"] in KINDS and name not in existing and "bbox_offset_m" in actor
+                        and "bbox_rotation_deg" in actor):
+                    observed[name][tuple(actor["dimensions_m"] + actor["bbox_offset_m"]
+                                         + actor["bbox_rotation_deg"])] += 1
+    geometries = {}
+    for name, models in observed.items():
+        if len(models) != 1:
+            continue
+        shape, count = next(iter(models.items()))
+        if count >= 10:
+            geometries[name] = dict(dimensions_m=shape[:3], offset_xyz=shape[3:6],
+                                    rotation=shape[6:9], native_observations=count,
+                                    matched_capture=capture["capture_id"])
+    return geometries, digest
+
+
+def score(stage, offsets, parked_path, candidate_path, calibration_stage=None):
     capture = read_json(stage / "capture.json")
     raw = stage / "raw"
     readings = raw / "perception.jsonl"
     telemetry_path = raw / "telemetry.json"
     telemetry = read_json(telemetry_path)
     shapes, parked = read_json(offsets), read_json(parked_path)
+    supplementary = {}
+    if calibration_stage:
+        extra_shapes, digest = matched_calibration(calibration_stage, capture["producer"], shapes)
+        shapes.update(extra_shapes)
+        supplementary = dict(perception_journal_sha256=digest, stable_blueprints=extra_shapes)
     if capture["producer"]["map"] != parked["map"]:
         raise ValueError("Parked registry and recording use different maps")
     if len(telemetry) != capture["last_frame"] - capture["first_frame"] + 1:
@@ -418,6 +454,7 @@ def score(stage, offsets, parked_path, candidate_path):
                 capture_failure_reasons=capture["failure_reasons"], source_hashes=hashes, frames=total,
                 first_frame=capture["first_frame"], last_frame=capture["last_frame"],
                 native_grade={key: summary.get(key) for key in keys},
+                supplementary_blueprint_calibration=supplementary,
                 front_camera=dict(fresh_frames=fresh_count, simultaneous_ranged_matches=dict(optical_frames)),
                 by_actor=[{**labels[k], **v.report()} for k, v in sorted(actors.items())],
                 ego_clearance={k: v.report() for k, v in sorted(groups.items())},
@@ -489,10 +526,11 @@ def main():
     parser.add_argument("--candidates", type=Path, required=True)
     parser.add_argument("--offsets", type=Path, default=OFFSETS)
     parser.add_argument("--parked", type=Path, default=PARKED)
+    parser.add_argument("--same-map-calibration-stage", type=Path)
     parser.add_argument("--image", action="append", default=[], metavar="CAMERA:FRAME")
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    result = score(args.stage, args.offsets, args.parked, args.candidates)
+    result = score(args.stage, args.offsets, args.parked, args.candidates, args.same_map_calibration_stage)
     if args.image:
         folder = args.output.with_suffix("")
         result["native_jpeg_evidence"] = extract_evidence(args.stage, folder, args.image)

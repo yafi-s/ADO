@@ -41,6 +41,15 @@ class InteractionGeometryTests(unittest.TestCase):
         self.assertAlmostEqual(report["closest_overlapping_elevation"]["ground_projection_gap_m"], .3)
         self.assertIsNone(report["closest_moving_actor"])
 
+    def test_paired_calibration_requires_matching_recorded_dimensions(self):
+        actor = {"x": 0., "y": 0., "z": 0., "yaw": 0., "dimensions_m": [4., 2., 2.], "blueprint": "vehicle.test"}
+        replacement = {"dimensions_m": [4.01, 2., 2.], "offset_xyz": [0., 0., 0.],
+                       "rotation": [0., 0., 0.], "matched_capture": "test-capture"}
+        self.assertEqual(box_for(actor, {"vehicle.test": replacement}), (None, "actor_origin_only"))
+        replacement["dimensions_m"][0] = 4.
+        _, method = box_for(actor, {"vehicle.test": replacement})
+        self.assertEqual(method, "matched_capture_blueprint_yaw_only")
+
     def test_moving_minimum_is_independent_of_closest_stationary_sample(self):
         audit = Clearance()
         audit.observe({"frame": 1}, 2.1, body(0.), body(2.1), "known")
