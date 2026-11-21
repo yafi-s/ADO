@@ -79,6 +79,44 @@ class ExtractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "incomplete trajectory"):
             ex.decode(f.SerializeToString(), "val")
 
+    def test_optional_rater_paths_accept_short_unequal_and_nonfinite_coordinates(self):
+        group = "c" * 32
+        f = example(group, 1)
+        for score, x, y in [(7.25, [1., 2.], [3.]), (3., [], []),
+                            (9., [float("nan")] * 20, [0.] * 20)]:
+            pref = f.preference_trajectories.add()
+            pref.preference_score = score
+            pref.pos_x.extend(x)
+            pref.pos_y.extend(y)
+        row = ex.decode(f.SerializeToString(), "val")
+        np.testing.assert_equal(row["rater_scores"], [7.25, 3., 9.])
+        np.testing.assert_equal(row["rater_position_lengths"], [[2, 1], [0, 0], [20, 20]])
+        self.assertTrue(np.isnan(row["rater_trajectories"]).all())
+        self.assertTrue(np.isfinite(row["future"]).all())
+        old = example(group, 2)
+        pref = old.preference_trajectories.add()
+        pref.preference_score = 6
+        pref.pos_x.extend(range(20))
+        pref.pos_y.extend(range(20))
+        legacy_row = ex.decode(old.SerializeToString(), "val")
+        del legacy_row["rater_position_lengths"]
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "features").mkdir()
+            ex.Access(root, 0, "adc")
+            receipts = []
+            for i, item in enumerate([legacy_row, row]):
+                target = root / "features" / f"val-{i:05}.npz"
+                np.savez(target, **{key: np.stack([value]) for key, value in item.items()})
+                receipts.append(dict(source="val", shard=i, prefix_bytes=5000))
+            report = ex.summarize(root, receipts)["official_val_ratings"]
+        self.assertEqual(report["valid_candidate_scores"], 4)
+        self.assertEqual(report["scored_candidates_with_short_coordinates"], 2)
+        self.assertEqual(report["scored_candidates_without_dense_trajectory"], 3)
+        f.future_states.ClearField("pos_y")
+        with self.assertRaisesRegex(ValueError, "incomplete trajectory"):
+            ex.decode(f.SerializeToString(), "val")
+
     def test_checkpoint_resume_crc_and_segment_identity(self):
         group = "b" * 32
         raw = b"".join(packed(example(group, i).SerializeToString()) for i in (1, 2))
