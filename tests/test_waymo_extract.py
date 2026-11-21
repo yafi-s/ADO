@@ -1,5 +1,7 @@
 import io
 import json
+import os
+import time
 import struct
 import tempfile
 import unittest
@@ -121,6 +123,53 @@ class ExtractTests(unittest.TestCase):
             default.assert_called_once_with(scopes=["https://www.googleapis.com/auth/devstorage.read_only"])
             credentials.refresh.assert_called_once()
             self.assertNotIn("test-token", access.ledger.read_text())
+
+    def test_job_grant_is_consumed_once_and_stays_scoped(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            file = root / ex.GRANT_FILENAME
+            grant = dict(access_token="test-only-token", expires_at=time.time() + 30,
+                         bucket=ex.BUCKET, allowed_prefixes=sorted(ex.GRANT_PREFIXES))
+            file.write_text(json.dumps(grant))
+            with patch.object(ex, "COLAB_CONTENT", root), patch.dict(
+                    os.environ, {"ADO_WAYMO_GRANT_FILE": str(file)}):
+                client = ex.Access(root, 0, "job-grant")
+            self.assertFalse(file.exists())
+            for prefix in ex.GRANT_PREFIXES:
+                self.assertEqual(client.headers(prefix + "00000-of-00093")["Authorization"],
+                                 "Bearer test-only-token")
+            with self.assertRaisesRegex(ValueError, "outside"):
+                client.headers("test_undisclosed.tfrecord")
+            with patch("time.time", return_value=grant["expires_at"] + 1), self.assertRaisesRegex(
+                    RuntimeError, "expired"):
+                client.headers(sorted(ex.GRANT_PREFIXES)[0] + "00000-of-00263")
+            self.assertNotIn("test-only-token", client.ledger.read_text())
+
+    def test_job_grant_rejects_wrong_scope_expiry_and_path(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            file = root / ex.GRANT_FILENAME
+            sample = dict(access_token="test-only-token", expires_at="2100-01-01T00:00:00Z",
+                          bucket=ex.BUCKET, allowed_prefixes=sorted(ex.GRANT_PREFIXES))
+            with patch.object(ex, "COLAB_CONTENT", root), patch.dict(
+                    os.environ, {"ADO_WAYMO_GRANT_FILE": str(file)}):
+                for changed in ({"bucket": "other"}, {"allowed_prefixes": ["training", "val"]},
+                                {"expires_at": 1}, {"expires_at": float("nan")}):
+                    file.write_text(json.dumps({**sample, **changed}))
+                    with self.assertRaisesRegex(ValueError, "invalid or expired"):
+                        ex.load_job_grant()
+                    self.assertFalse(file.exists())
+                file.write_text(json.dumps(sample))
+                token, expiry = ex.load_job_grant()
+                self.assertEqual(token, "test-only-token")
+                self.assertGreater(expiry, time.time())
+            wrong = root / "ordinary-file.json"
+            wrong.write_text("preserve")
+            with patch.object(ex, "COLAB_CONTENT", root), patch.dict(
+                    os.environ, {"ADO_WAYMO_GRANT_FILE": str(wrong)}), self.assertRaisesRegex(
+                    ValueError, "dedicated"):
+                ex.load_job_grant()
+            self.assertEqual(wrong.read_text(), "preserve")
 
     def test_range_precondition_prevents_full_object_read(self):
         with tempfile.TemporaryDirectory() as folder:

@@ -4,6 +4,7 @@ import collections
 import concurrent.futures
 import hashlib
 import json
+import math
 import os
 import re
 import shutil
@@ -11,6 +12,7 @@ import struct
 import subprocess
 import threading
 import time
+from datetime import datetime
 from pathlib import Path
 
 import cv2
@@ -31,6 +33,9 @@ LIMIT = 5 * 1024 * MIB
 SCHEMA = Path(__file__).with_name("schema") / "e2ed.pb"
 PAST = ("pos_x", "pos_y", "vel_x", "vel_y", "accel_x", "accel_y")
 VIEWS = (1, 2, 3)
+COLAB_CONTENT = Path("/content")
+GRANT_FILENAME = ".ado-waymo-job-grant.json"
+GRANT_PREFIXES = frozenset(base + "-" for base, _ in NAMES.values())
 
 
 def load_schema():
@@ -119,6 +124,45 @@ def decode(payload, source):
                 rater_candidates=np.uint8(len(item.preference_trajectories)))
 
 
+def load_job_grant():
+    """Consume one dedicated Colab job grant without writing credentials into the dataset."""
+    raw = os.environ.get("ADO_WAYMO_GRANT_FILE", "")
+    path = Path(raw)
+    if (not path.is_absolute() or path.name != GRANT_FILENAME or path.is_symlink()
+            or not path.resolve().is_relative_to(COLAB_CONTENT.resolve())):
+        raise ValueError("job grant requires the dedicated ephemeral file under /content")
+    if not path.is_file() or path.stat().st_dev != COLAB_CONTENT.stat().st_dev:
+        raise ValueError("job grant must be on the ephemeral Colab filesystem")
+    with path.open("rb") as stream:
+        payload = stream.read(16385)
+    path.unlink()
+    if len(payload) > 16384:
+        raise ValueError("invalid job grant size")
+    try:
+        grant = json.loads(payload)
+        token = grant["access_token"]
+        expiry = grant["expires_at"]
+        if isinstance(expiry, str):
+            dt = datetime.fromisoformat(expiry.replace("Z", "+00:00"))
+            if dt.tzinfo is None:
+                raise ValueError
+            expiry = dt.timestamp()
+        if (not isinstance(expiry, (int, float)) or not math.isfinite(expiry)
+                or expiry <= time.time()):
+            raise ValueError
+        prefixes = grant["allowed_prefixes"]
+        if not isinstance(prefixes, list) or len(prefixes) != 2:
+            raise ValueError
+        normalized = {prefix.removesuffix("-") + "-" for prefix in prefixes}
+        if (grant["bucket"] != BUCKET or normalized != GRANT_PREFIXES or
+                not isinstance(token, str) or not token or not token.isascii() or
+                not token.isprintable() or any(ch.isspace() for ch in token)):
+            raise ValueError
+    except (ValueError, KeyError, TypeError, AttributeError, OverflowError):
+        raise ValueError("invalid or expired Waymo job grant") from None
+    return token, expiry
+
+
 class Access:
     def __init__(self, root, initial_bytes, auth):
         self.ledger = root / "transfer-budget.json"
@@ -129,11 +173,19 @@ class Access:
         self.expires = 0
         self.credentials = None
         self.refresh_request = None
-        self.use_adc = auth == "adc"
+        self.auth = auth
+        if auth == "job-grant":
+            self.token, self.expires = load_job_grant()
 
-    def headers(self):
+    def headers(self, name=""):
         with self.lock:
-            if self.use_adc:
+            if self.auth == "job-grant":
+                if time.time() >= self.expires:
+                    raise RuntimeError("Waymo job grant expired")
+                if not any(name.startswith(prefix) for prefix in GRANT_PREFIXES):
+                    raise ValueError("object is outside the Waymo job grant")
+                token = self.token
+            elif self.auth == "adc":
                 if self.credentials is None:
                     import google.auth
                     from google.auth.transport.requests import Request
@@ -143,7 +195,7 @@ class Access:
                 if not self.credentials.valid:
                     self.credentials.refresh(self.refresh_request)
                 token = self.credentials.token
-            else:
+            elif self.auth == "gcloud":
                 if time.monotonic() >= self.expires:
                     exe = shutil.which("gcloud.cmd") or shutil.which("gcloud")
                     if not exe:
@@ -152,6 +204,8 @@ class Access:
                         [exe, "auth", "print-access-token"], text=True).strip()
                     self.expires = time.monotonic() + 2400
                 token = self.token
+            else:
+                raise ValueError("unrecognized authorization method")
             return {"Authorization": "Bearer " + token, "Accept-Encoding": "identity"}
 
     def reserve(self, size):
@@ -188,7 +242,7 @@ def extract_one(job, root, prefix, access):
     name = f"{base}-{index:05}-of-{count:05}"
     url = f"https://storage.googleapis.com/storage/v1/b/{BUCKET}/o/{name}"
     with requests.Session() as session:
-        headers = access.headers()
+        headers = access.headers(name)
         response = session.get(url, params={"fields": "generation,size"}, headers=headers, timeout=30)
         response.raise_for_status()
         meta = response.json()
@@ -283,8 +337,8 @@ def main():
     parser.add_argument("--train-shards", type=int, default=112)
     parser.add_argument("--val-shards", type=int, default=40)
     parser.add_argument("--prefix-mib", type=int, default=32)
-    parser.add_argument("--auth", choices=("adc", "gcloud"), default="adc",
-                        help="Use Colab application default credentials, or a signed-in gcloud CLI")
+    parser.add_argument("--auth", choices=("adc", "gcloud", "job-grant"), default="adc",
+                        help="Choose Colab application default credentials, gcloud CLI, or an ephemeral job grant")
     parser.add_argument("--workers", type=int, choices=(1, 2), default=2)
     parser.add_argument("--prior-probe-bytes", type=int, default=0,
                         help="Previously transferred exploratory data charged to this pilot")
