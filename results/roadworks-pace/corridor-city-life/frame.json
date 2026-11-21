@@ -1,0 +1,49 @@
+{
+  "capture": "long-city-drive-dc3q_29s",
+  "requested_station_m": 433.55,
+  "video_index": 1065,
+  "jpeg_sha256": "2f04f73b31f0870abd177469844ca84d95134b761b2e3170a1060ac8b52073db",
+  "phase": "clear road",
+  "frame": 1129,
+  "time_s": 106.5,
+  "station_m": 433.288,
+  "speed_kmh": 37.59,
+  "request_kmh": 39.29,
+  "posted_kmh": 90.0,
+  "commanded_brake": 0.0,
+  "commanded_throttle": 0.25952,
+  "policy": "ado-city-clearance-v1",
+  "front_inference_age_s": 0.1,
+  "latest_front_inference": {
+    "frame": 1128,
+    "detections": [
+      {
+        "box": [
+          0.3405325174331665,
+          0.5110649108886719,
+          0.48527212142944337,
+          0.6467977735731337
+        ],
+        "score": 0.9177944660186768,
+        "label": "car",
+        "detector": "opencv-zoo/yolox-s-2022nov-fp32",
+        "inference_layout": "single",
+        "image_id": 455,
+        "bearing_deg": -9.881506924519044,
+        "range_supported": true,
+        "track_id": 142
+      }
+    ]
+  },
+  "nearby_forward_tracks": [
+    {
+      "id": 142,
+      "label": "car",
+      "x": 11.677881897702447,
+      "y": -2.0670542229762123
+    }
+  ],
+  "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+  "quality": "High",
+  "population_profile": "city-life"
+}

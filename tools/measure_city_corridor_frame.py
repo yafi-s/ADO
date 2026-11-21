@@ -8,13 +8,16 @@ from crosswalk.experiment import fingerprint, write_json
 
 def locate(raw, station):
     selected = None
+    latest_front = None
     with (raw / "perception.jsonl").open("rb") as stream:
         for index, line in enumerate(stream):
             if not line.endswith(b"\n"):
                 break
             row = json.loads(line)
+            if row["camera_inference_age_s"].get("front") == 0.:
+                latest_front = dict(frame=row["frame"], detections=row["camera_detections"].get("front", []))
             if selected is None or abs(row["progress_m"]-station) < abs(selected[1]["progress_m"]-station):
-                selected = index, row
+                selected = index, row, latest_front
             if row["progress_m"] >= station+4.:
                 return selected
     raise ValueError(f"Capture has not reached station {station:g} m")
@@ -43,7 +46,7 @@ def main():
     p.add_argument("--station", type=float, default=433.55)
     a = p.parse_args()
     raw = a.stage / "raw"
-    i, row = locate(raw, a.station)
+    i, row, last_front = locate(raw, a.station)
     jpg = camera_frame(raw / "front.mjpeg", i)
     a.output.mkdir(parents=True, exist_ok=True)
     target = a.output / "front.jpg"
@@ -56,7 +59,10 @@ def main():
                 station_m=row["progress_m"], speed_kmh=round(row["speed_mps"]*3.6,2),
                 request_kmh=round(row["speed_request_mps"]*3.6,2), posted_kmh=row["posted_limit_kmh"],
                 commanded_brake=row["brake"], commanded_throttle=row["throttle"], policy=row["policy"],
-                front_detections=row["camera_detections"]["front"], model_sha256=source["policy"]["sha256"],
+                front_inference_age_s=row["camera_inference_age_s"].get("front"), latest_front_inference=last_front,
+                nearby_forward_tracks=[{k:t[k] for k in ("id","label","x","y") if k in t}
+                                       for t in row.get("tracks", []) if 0 < t.get("x", 0) < 30],
+                model_sha256=source["policy"]["sha256"],
                 quality=source["quality"], population_profile=source.get("population_profile", "standard"))
     write_json(a.output / "frame.json", info)
     print(json.dumps(info))
