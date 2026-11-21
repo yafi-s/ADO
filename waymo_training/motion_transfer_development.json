@@ -1,0 +1,160 @@
+{
+  "stage": "development",
+  "district": "train",
+  "seed": 31,
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town01_Opt"
+  },
+  "motion_sha256": "f1545966dacd33eb1c30726a8ede8997381e58e3035f0173bd95e96e3040d87c",
+  "steering_sha256": "25b7059a6a559ece65e2c8c64ddc1197d95c763f008be9bb31797d69617b1a6c",
+  "source_sha256": {
+    "interaction_transfer.py": "cad8d47764ffdaf33c5b6e8b718aaf20fd5051b8accff365c078e239266b19b8",
+    "interaction.py": "98c3a567c099acf02768742fab4a5d7a4316bbe43491fc5ae88a9322f626e1cb",
+    "drive.py": "fd176496c493ffed8328d246f8d3e208021fd051cfde2c29700cba13a754d61b",
+    "tracking.py": "044402169ddd34bb3e75ba391d2e171684d279f672009f8a17b5d37b3acb854e",
+    "vision.py": "987ba3f37f7f49161bd41b761d21d5ad4e2fd9962ec0d0f54f7118a86bebed2b",
+    "control.py": "dbbdc96268e8450f29a04f42b9b418bfdb2190e262e0d6e889fb31c893eee5c1",
+    "world.py": "d5ac4af996588e502b5222b0538e3cc7ebbce0da395fd8c53f81d25ecbe1790e",
+    "policy.py": "609dc843d6ea52f66301c441b943e75f691702ca502e64d390d95c613d45a907",
+    "behavior_v2.py": "6a496b331b385eada2f0c2c0709914f2b856cb8bc97c0f1ea1128fbedf0b4c63"
+  },
+  "cases": [
+    {
+      "scenario": "clear",
+      "seed": 31,
+      "outcome": "complete",
+      "frames": 143,
+      "duration_s": 14.3,
+      "progress_m": 63.665,
+      "route_length_m": 64.0,
+      "max_lateral_error_m": 0.38,
+      "collision_events": 0,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "contacts": [],
+      "event_triggered": false,
+      "event_cleared": false,
+      "forecast_sources": {
+        "measured_history_warmup": 10,
+        "ado_sensor_fallback": 133
+      },
+      "trace_sha256": "a6410caf9354cbf8f15eb8ff24b49d3368dfd48bab8c306c01dd144a519d4b9e"
+    },
+    {
+      "scenario": "lead",
+      "seed": 31,
+      "outcome": "collision",
+      "frames": 107,
+      "duration_s": 10.7,
+      "progress_m": 31.3,
+      "route_length_m": 64.0,
+      "max_lateral_error_m": 0.38,
+      "collision_events": 1,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "contacts": [
+        "vehicle.tesla.model3"
+      ],
+      "event_triggered": true,
+      "event_cleared": false,
+      "forecast_sources": {
+        "measured_history_warmup": 10,
+        "ado_sensor_fallback": 34,
+        "interaction": 63
+      },
+      "trace_sha256": "4e06b819401cf140996ca406aa42a8777901dd9e658844ce8fb540c44444a3c8",
+      "before_first_contact": {
+        "sim_time": 10.5,
+        "speed_mps": 3.514,
+        "reference_gap_m": 0.0,
+        "throttle": 0.70575,
+        "brake": 0.0,
+        "source": "interaction",
+        "forecast_mps": [
+          6.041763699859842,
+          7.0445031289708995,
+          8.291174473361597
+        ]
+      }
+    },
+    {
+      "scenario": "pedestrian",
+      "seed": 31,
+      "outcome": "collision",
+      "frames": 105,
+      "duration_s": 10.5,
+      "progress_m": 33.759,
+      "route_length_m": 64.0,
+      "max_lateral_error_m": 0.38,
+      "collision_events": 1,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "contacts": [
+        "walker.pedestrian.0015"
+      ],
+      "event_triggered": true,
+      "event_cleared": false,
+      "forecast_sources": {
+        "measured_history_warmup": 10,
+        "ado_sensor_fallback": 72,
+        "interaction": 23
+      },
+      "trace_sha256": "98d4455a33cd9ab65dba209fd2e649cd72a23e0ca72657969818e1021ce8bbf0",
+      "before_first_contact": {
+        "sim_time": 10.3,
+        "speed_mps": 4.126,
+        "reference_gap_m": 0.0,
+        "throttle": 0.62524,
+        "brake": 0.0,
+        "source": "interaction",
+        "forecast_mps": [
+          6.508380260881213,
+          8.475436017710386,
+          9.915776053175932
+        ]
+      }
+    },
+    {
+      "scenario": "occluded",
+      "seed": 31,
+      "outcome": "collision",
+      "frames": 110,
+      "duration_s": 11.0,
+      "progress_m": 33.853,
+      "route_length_m": 64.0,
+      "max_lateral_error_m": 0.38,
+      "collision_events": 1,
+      "yield_violations": 0,
+      "red_light_violations": 0,
+      "contacts": [
+        "walker.pedestrian.0015"
+      ],
+      "event_triggered": true,
+      "event_cleared": false,
+      "forecast_sources": {
+        "measured_history_warmup": 10,
+        "ado_sensor_fallback": 62,
+        "interaction": 38
+      },
+      "trace_sha256": "615cd4082923edbc38f7f0b9a43fcf1b8c115b348e4523689cc9355ea2f107df",
+      "before_first_contact": {
+        "sim_time": 10.8,
+        "speed_mps": 5.079,
+        "reference_gap_m": 0.0,
+        "throttle": 0.58196,
+        "brake": 0.0,
+        "source": "interaction",
+        "forecast_mps": [
+          7.6656293854194555,
+          9.84733672458255,
+          11.430786463837464
+        ]
+      }
+    }
+  ],
+  "dataset": "Waymo Open Motion Dataset v1.3.1",
+  "license": "Waymo Dataset License Agreement for Non-Commercial Use; see WAYMO_DATASET_AGREEMENT.txt",
+  "attribution": "Waymo Open Dataset: An autonomous driving dataset (2019\u20132025), https://www.waymo.com/open"
+}

@@ -56,8 +56,8 @@ function Assert-Town([string]$Pack) {
         throw 'AdditionalMaps requires the CARLA 1.0 Windows release manifest.'
     }
     $manifest = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
-    if ($manifest.base_release -ne 'carla-1.0-Win64' -or 'Town01_Opt' -notin $manifest.maps.name) {
-        throw 'The installed content pack must include Town01_Opt for this CARLA release.'
+    if ($manifest.base_release -ne 'carla-1.0-Win64' -or 'Town01_Opt' -notin $manifest.maps.name -or 'Town03_Opt' -notin $manifest.maps.name) {
+        throw 'The installed content pack must include Town01_Opt and Town03_Opt for this CARLA release.'
     }
     foreach ($name in $manifest.files.PSObject.Properties.Name) {
         $file = Get-Item -LiteralPath (Join-Path $Pack $name) -ErrorAction SilentlyContinue

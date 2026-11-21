@@ -1,0 +1,100 @@
+{
+  "version": "ado-city-policy-v1",
+  "model_sha256": "9d13c4295aa26bfb990441ac87f8f16a8bdd18af23e442459a4e96001ecabc9e",
+  "model_bytes": 70094,
+  "dependencies": {
+    "python": "3.13.18",
+    "numpy": "2.4.6",
+    "scipy": "1.16.3",
+    "sklearn": "1.6.1"
+  },
+  "holdout_before_refit": {
+    "town01_seed48": {
+      "all": {
+        "rows": 1828,
+        "mae_mps": 0.15907848871480465,
+        "median_request_mps": 5.095670700073242
+      },
+      "instructor_stop": {
+        "rows": 233,
+        "mae_mps": 0.34076887500088904,
+        "median_request_mps": 0.0
+      },
+      "instructor_cruise": {
+        "rows": 1532,
+        "mae_mps": 0.13101917594367699,
+        "median_request_mps": 5.1080641746521
+      }
+    },
+    "withheld_city": {
+      "all": {
+        "rows": 1614,
+        "mae_mps": 0.1926203502191683,
+        "median_request_mps": 5.028194427490234
+      },
+      "instructor_stop": {
+        "rows": 64,
+        "mae_mps": 0.24213257916761022,
+        "median_request_mps": 0.0
+      },
+      "instructor_cruise": {
+        "rows": 1467,
+        "mae_mps": 0.19703259372107637,
+        "median_request_mps": 5.059374809265137
+      }
+    }
+  },
+  "validation_city_episodes": [
+    "demonstration-73"
+  ],
+  "town01_rows": 7150,
+  "city_fit": [
+    {
+      "episode": "demonstration-73",
+      "seed": 73,
+      "rows": 1614,
+      "excluded_collision_tail": 30
+    }
+  ],
+  "clearance_weight": 1.0,
+  "clearance_response_mps": {
+    "0": 0.0,
+    "1": 0.0,
+    "2": 0.0,
+    "3": 0.0,
+    "4": 0.0,
+    "5": 1.7095705262541054,
+    "6": 2.507127355878873,
+    "8": 3.706055639732512,
+    "10": 4.650861355265246,
+    "15": 5.089005923645369,
+    "25": 5.089005923645369,
+    "36": 5.089005923645369
+  },
+  "sources": [
+    {
+      "name": "data/behavior-v2/lessons.zip",
+      "sha256": "e507492135560dea7aa8b50a16e38cd2d86048060c06e63b21f4db88d75baa7f"
+    },
+    {
+      "name": "models/behavior-v2/candidate.npz",
+      "sha256": "25b7059a6a559ece65e2c8c64ddc1197d95c763f008be9bb31797d69617b1a6c"
+    },
+    {
+      "name": "/content/ado-city-fit-73/crosswalk/city_policy.py",
+      "sha256": "b67e13c115f31ae9ed256bc36bfebf6ec10c12f298425f7005fe6ef98a49f8bd"
+    },
+    {
+      "name": "out/city-training/demonstration-73/lesson.npz",
+      "sha256": "59ea039d603b1e6eb88caa9cb4c625702553d2cafdb01e907b1cb45642d9cda5"
+    },
+    {
+      "name": "out/city-training/demonstration-73/trace.jsonl.gz",
+      "sha256": "c599e10601ba0bc80162030cd29d505b7a0a9dc471b08d5b1502b7fcc5c62930"
+    },
+    {
+      "name": "out/city-training/demonstration-73/summary.json",
+      "sha256": "abbf50cbc9f434c65d31c15a3ddea93d4e5a5d4ea498008b975fdc376c8b7d98"
+    }
+  ]
+}

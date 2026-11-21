@@ -4,6 +4,8 @@ This offline research workflow trains an independent predictor on recorded Waymo
 
 The completed Colab pilot evaluated 371 windows from 220 held-out Waymo validation segments. History and routing alone achieved 1.780 m ADE, with 1.808 m for the three-camera model and 2.984 m for constant velocity. [Pilot results and simulator transfer checks](RESULTS.md)
 
+The separate Waymo Open Motion Dataset pilot forecasts speed from ego history and nearby road users. It ran four closed-loop development drives with ADO steering. [Motion forecast and CARLA outcomes](MOTION_TRANSFER.md)
+
 ## Run through the Colab CLI
 
 From a full checkout, preview the job with `python -m waymo_training.colab_cli_run --output "A:\ADO-Private-Research\runs" --dry-run`. Remove `--dry-run` to create a dedicated T4 and perform the bounded extraction, fit, evaluation, portable export and verified download. Use your own private output directory. The default cloud job uses an authorized, short-lived read grant limited to the official training and validation object prefixes. The interactive ADC option is available with `--auth adc`. Training and bulk reads run on the remote machine.

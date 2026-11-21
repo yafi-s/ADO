@@ -7,6 +7,7 @@ COMMANDS = {
     "drive": "drive", "study": "experiment", "showcase": "showcase",
     "render-benchmark": "render_benchmark", "traction": "traction",
     "commission": "commission", "report": "report",
+    "city-drive": "city_drive", "city-film": "journey_capture", "compare": "revision_benchmark",
 }
 
 

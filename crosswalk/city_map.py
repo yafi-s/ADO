@@ -13,7 +13,7 @@ def point(v):
     return [round(v.x, 2), round(v.y, 2), round(v.z, 2)]
 
 
-def export(world, path):
+def geometry(world):
     lanes = defaultdict(list)
     for wp in world.get_map().generate_waypoints(2.):
         if wp.lane_type == carla.LaneType.Driving:
@@ -26,11 +26,15 @@ def export(world, path):
             continue
         buildings.append(dict(center=point(box.location),extent=point(box.extent),yaw=round(box.rotation.yaw,2)))
     buildings.sort(key=lambda b:b["center"])
-    result = dict(producer=producer_info(world), roads=roads,buildings=buildings,
+    return dict(producer=producer_info(world), roads=roads,buildings=buildings,
                   units="metres, CARLA world coordinates",building_representation="oriented bounding boxes")
+
+
+def export(world, path):
+    result = geometry(world)
     path.parent.mkdir(parents=True,exist_ok=True)
     path.write_text(json.dumps(result,separators=(",",":"))+"\n",encoding="utf-8")
-    print(f"{len(roads)} lane paths and {len(buildings)} building bounds",flush=True)
+    print(f"{len(result['roads'])} lane paths and {len(result['buildings'])} building bounds",flush=True)
 
 
 if __name__ == "__main__":

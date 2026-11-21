@@ -11,7 +11,7 @@ import carla
 
 CARLA_VERSION = "1.0"
 MAP_NAME = "Town01_Opt"
-MAP_ASSET = f"/Game/Carla/Maps/{MAP_NAME}"
+SUPPORTED_MAPS = ("Town01_Opt", "Town03_Opt")
 DEFAULT_QUALITY = "Low"
 LOCAL = Path(__file__).resolve().parents[1] / ".local"
 _ACTIVE_PRODUCERS = {}
@@ -37,16 +37,19 @@ def _server_executable():
                             f"at the unpacked simulator. Could not find {name} under {root}.")
 
 
-def _launch_args(exe, port, quality, *, physics_only=False):
+def _launch_args(exe, port, quality, *, physics_only=False, map_name=MAP_NAME):
     if quality not in {"Low", "Medium", "High", "Epic"}:
         raise ValueError(f"Unknown CARLA quality level: {quality}")
     # One combined config override follows UE's -ini:<category>: syntax.
     # Shipping builds strip -execcmds. The early -noraytracing flag also
     # disables the RT subsystem before any scene is created.
     map_section = "[/Script/EngineSettings.GameMapsSettings]"
-    map_object = f"{MAP_ASSET}.{MAP_NAME}"
+    if map_name not in SUPPORTED_MAPS:
+        raise ValueError(f"Unsupported city map: {map_name}")
+    map_asset = f"/Game/Carla/Maps/{map_name}"
+    map_object = f"{map_asset}.{map_name}"
     overrides = [f"{map_section}:{key}={map_object}" for key in ("GameDefaultMap", "ServerDefaultMap")]
-    args = [str(exe), MAP_ASSET, "-unattended", "-nosplash", "-nosound", "-notrace",
+    args = [str(exe), map_asset, "-unattended", "-nosplash", "-nosound", "-notrace",
             f"-carla-rpc-port={port}", f"-carla-streaming-port={port + 1}", "-stdout"]
     if physics_only:
         return args + ["-nullrhi", "-corelimit=2", "-ini:Engine:" + ",".join(overrides)]
@@ -114,7 +117,7 @@ def _connect(port, process, log_path):
 
 
 @contextmanager
-def simulator(port=2468, attach=False, quality=DEFAULT_QUALITY, with_manager=False, *, physics_only=False):
+def simulator(port=2468, attach=False, quality=DEFAULT_QUALITY, with_manager=False, *, physics_only=False, map_name=MAP_NAME):
     """Use physics_only for camera-free vehicle work. Spawning a camera with null RHI crashes UE."""
     if attach and physics_only:
         raise ValueError("Physics-only operation requires a freshly launched CARLA server.")
@@ -129,7 +132,7 @@ def simulator(port=2468, attach=False, quality=DEFAULT_QUALITY, with_manager=Fal
             for offset in (0, 1, 2):
                 _check_port_free(port + offset)
             exe = _server_executable()
-            args = _launch_args(exe, port, quality, physics_only=physics_only)
+            args = _launch_args(exe, port, quality, physics_only=physics_only, map_name=map_name)
             LOCAL.mkdir(exist_ok=True)
             log = cleanup.enter_context(log_path.open("ab"))
             flags = 0
@@ -148,18 +151,18 @@ def simulator(port=2468, attach=False, quality=DEFAULT_QUALITY, with_manager=Fal
         client, server_version, client_version = _connect(port, process, log_path)
         world = client.get_world()
         observed_map = _map_name(world.get_map().name)
-        if observed_map != MAP_NAME:
+        if observed_map != map_name:
             if attach:
-                raise RuntimeError(f"An attached server must already be in {MAP_NAME}, found {observed_map}.")
+                raise RuntimeError(f"An attached server must already be in {map_name}, found {observed_map}.")
             maps = client.get_available_maps()
-            target = next((path for path in maps if _map_name(path) == MAP_NAME), None)
+            target = next((path for path in maps if _map_name(path) == map_name), None)
             if target is None:
-                raise RuntimeError(f"{MAP_NAME} is missing from the server. Install the CARLA "
+                raise RuntimeError(f"{map_name} is missing from the server. Install the CARLA "
                                    f"{CARLA_VERSION} AdditionalMaps pack using setup.ps1.")
             world = client.load_world(target)
             observed_map = _map_name(world.get_map().name)
-            if observed_map != MAP_NAME:
-                raise RuntimeError(f"CARLA loaded {observed_map} when {MAP_NAME} was requested.")
+            if observed_map != map_name:
+                raise RuntimeError(f"CARLA loaded {observed_map} when {map_name} was requested.")
 
         if attach:
             cleanup.callback(world.apply_settings, world.get_settings())

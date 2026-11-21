@@ -1,9 +1,14 @@
 # ADO — Autonomous Driver Omniverse
 
+**The Town03 city drive.** ADO drove 1.42 km through eleven junctions in one continuous 5 minute 54 second simulation. It stopped for crossing pedestrians and a red-light queue, changed lanes around a stationary bus, passed a six-cone taper and followed a cyclist. The run scored 10 of 10 encounters with zero contacts, red-light violations or yield violations. The synchronized camera, lidar, radar and control records cover all 3,543 frames. [Watch the drive](https://yafi-s.github.io/ADO/?run=long-city-drive) · [Jump to the bus approach](https://yafi-s.github.io/ADO/?run=long-city-drive&at=202) · [City route and controls](docs/city-driving.md)
+
+The city driver learned speed responses from CARLA sensor observations and training demonstrations. The Market route was used for development, and navigation supplied the path around the bus. The car steered and controlled its pedals throughout the recorded drive. Performance on unfamiliar streets is measured separately in the Town01 comparison. [City model and Colab fit](models/city-v1/README.md) · [Training failures and corrections](results/city-development/README.md) · [Held-out protocol](docs/behavior-v2-protocol.md)
+
+
 **Real-data research track.** ADO's original three-camera trajectory model was trained on the Waymo Open Dataset using a Colab T4. It achieved 1.81 m mean open-loop displacement error, compared with 2.98 m for constant velocity and 1.78 m for history and route intent alone. The first two simulator transfer configurations did not complete a route. [Research results](waymo_training/RESULTS.md) · [Open the Colab notebook](https://colab.research.google.com/github/yafi-s/ADO/blob/main/waymo_training/ADO_Waymo_Colab.ipynb) · [Watch the labeled stopped-car trial](https://yafi-s.github.io/ADO/?run=waymo-research-v2-lead-seed41-start3)
 
 
-[Windows build and checksums](https://github.com/yafi-s/ADO/releases/tag/v0.1.0) · [Scored results and résumé evidence](docs/results.md) · [Real Waymo training on Colab](https://github.com/yafi-s/ADO/tree/research/waymo-e2e/waymo_training)
+[Windows build and checksums](https://github.com/yafi-s/ADO/releases/latest) · [Windows setup and offline replay](docs/release.md) · [Scored results](docs/results.md) · [Real Waymo training on Colab](waymo_training/README.md)
 
 The CARLA-trained policy completed 72 of 100 held-out drives. Seventy finished cleanly. The other outcomes included 17 timeouts, nine lane departures and two collisions. The downloadable logs include all trials. The 1080p Market film re-renders a recorded 184 m drive that stopped for a pedestrian and reached its destination. A separate High-quality pedestrian drive ran the learned policy closed-loop.
 
@@ -17,13 +22,15 @@ A learned robotaxi driving through an interactive CARLA 1.0 city. Select a desti
 
 ## Drive a route
 
-Install Python 3.12 on Windows and clone the repository. From PowerShell in the project, run the setup command once. The installer downloads the official CARLA 1.0 server and Town01_Opt content, installs the matching Python client and keeps downloads resumable.
+On Windows, install Python 3.12 and extract the release ZIP or clone the repository. From PowerShell in the project, run the setup command once. The installer downloads the official CARLA 1.0 server and the Town01_Opt and Town03_Opt maps, installs the matching Python client and keeps downloads resumable.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\setup.ps1
 ```
 
 **Start-ADO.cmd** verifies the installation. **Watch-Live.cmd** starts an offscreen simulator and opens the driving console after local setup and model fitting. Choose Market or Station for a two-intersection trip, or select an individual encounter. Choose a weather preset or a wheel grip setting, keep the seed fixed and change pedestrian entry timing. Press Ctrl+C in the launcher window to stop the simulator. The public site hosts synchronized recordings. The local program runs new drives.
+
+See the [Town03 city drive](docs/city-driving.md) for the longer route and its ten planned encounters. To watch recordings from the ZIP without running CARLA, use the [offline replay instructions](docs/release.md).
 
 The Windows profile uses Direct3D 12 and low graphics settings. Forward RGB stays at native 640×360 for small traffic lights. The side and chase cameras request DLSS Super Resolution at a 50% internal scale. Native depth and segmentation feed an uncalibrated long-wave infrared observer. The rig also includes a 32-channel roof lidar and forward Doppler radar. In a stationary signal-approach benchmark on an 8 GB RTX 3070, this five-view profile processed 10.65 updates per wall-clock second, including perception and JPEG encoding. The benchmark records actor settings and timings. [Measurements](results/rendering.json) · [CARLA rendering controls](https://carla-ue5.readthedocs.io/en/latest/core_dlss/) · [Thermal model](docs/thermal.md)
 

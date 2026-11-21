@@ -4,3 +4,7 @@ models/** -text
 results/** -text
 web/logs/** -text
 web/media/** -text
+
+# Keep generated frame data collapsed in drive reviews.
+web/media/**/telemetry.json linguist-generated=true
+web/media/**/replay.json linguist-generated=true

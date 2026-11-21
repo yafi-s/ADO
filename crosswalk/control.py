@@ -18,7 +18,7 @@ class Navigation:
         self.lengths = np.maximum(lengths, 1e-7)
         self.arc = np.r_[0., np.cumsum(lengths)]
 
-    def read(self, ego):
+    def read(self, ego, lookaheads=(3., 7., 13.)):
         t = ego.get_transform()
         pos = np.array((t.location.x, t.location.y))
         yaw = math.radians(t.rotation.yaw)
@@ -27,7 +27,8 @@ class Navigation:
         residual = offset - self.delta * fraction[:, None]
         idx = int(np.argmin((residual**2).sum(axis=1)))
         progress = self.arc[idx] + fraction[idx] * self.lengths[idx]
-        distances = progress + np.array((3., 7., 13.))
+        self.progress = float(progress)
+        distances = progress + np.asarray(lookaheads)
         # Extend the last route tangent beyond the measured finish so navigation
         # inputs don't collapse in the final metres of an otherwise straight lane.
         extra = np.maximum(0., distances - self.arc[-1])
