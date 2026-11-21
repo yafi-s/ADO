@@ -64,11 +64,17 @@ LIFE_MEDIA = "web/media/city-life"
 LIFE_MASTER = "ADO-City-Life-1080p.mp4"
 LIFE_SCHEMA = "ado-city-clearance-v1"
 LIFE_RESULTS = "results/city-life"
-LIFE_EVIDENCE = {
+PROGRESS_MEDIA = "web/media/city-progress"
+PROGRESS_MASTER = "ADO-City-Progress-1080p.mp4"
+PROGRESS_SCHEMA = "ado-city-progress-v1"
+PROGRESS_RESULTS = "results/city-progress"
+POPULATION_EVIDENCE = {
     "population-reference.jsonl.gz": "population_reference_sha256",
     "population-score.json": "population_score_sha256",
     "capture-source.zip": "capture_source_sha256",
 }
+POPULATED_POLICIES = {LIFE_SCHEMA: (LIFE_RESULTS, "city_clearance.py"),
+                      PROGRESS_SCHEMA: (PROGRESS_RESULTS, "city_progress.py")}
 LIFE_BASELINE = f"{LIFE_RESULTS}/baseline-population-score.json"
 LIFE_CALIBRATION = "results/roadworks-pace/stopping-calibration.json"
 POPULATION_THRESHOLDS = {"car": 1., "pedestrian": .5}
@@ -115,11 +121,17 @@ LIFE_REQUIRED = (
     "crosswalk/traffic_cones.py",
     "models/city-clearance/candidate.npz", "models/city-clearance/fit.json", "web/cone-observations.mjs",
     f"{LIFE_MEDIA}/manifest.json", f"{LIFE_MEDIA}/replay-pack.json.gz", f"{PACE_MEDIA}/{CONE_REVIEW}",
-    LIFE_BASELINE, LIFE_CALIBRATION, *(f"{LIFE_RESULTS}/{name}" for name in LIFE_EVIDENCE),
+    LIFE_BASELINE, LIFE_CALIBRATION, *(f"{LIFE_RESULTS}/{name}" for name in POPULATION_EVIDENCE),
+)
+PROGRESS_REQUIRED = (
+    "crosswalk/city_progress.py", "models/city-progress/candidate.npz", "models/city-progress/fit.json",
+    f"{PROGRESS_MEDIA}/manifest.json", f"{PROGRESS_MEDIA}/replay-pack.json.gz",
+    *(f"{PROGRESS_RESULTS}/{name}" for name in POPULATION_EVIDENCE),
 )
 CITY_MODEL_FOLDERS = {
     "ado-behavior-v2": "behavior-v2", "ado-city-policy-v1": "city-v1",
     SURROUND_SCHEMA: "city-cruise", PACE_SCHEMA: "city-pace", LIFE_SCHEMA: "city-clearance",
+    PROGRESS_SCHEMA: "city-progress",
 }
 SAFETY_COUNTS = {
     "collision_events": "collision_count", "red_light_violations": "red_light_violations",
@@ -166,7 +178,13 @@ def life_release(tag):
     return tuple(map(int, tag[1:].split("."))) >= (0, 5, 0)
 
 
+def progress_release(tag):
+    return tuple(map(int, tag[1:].split("."))) >= (0, 6, 0)
+
+
 def featured_recording(tag):
+    if progress_release(tag):
+        return PROGRESS_MEDIA, PROGRESS_MASTER, PROGRESS_SCHEMA
     if life_release(tag):
         return LIFE_MEDIA, LIFE_MASTER, LIFE_SCHEMA
     if pace_release(tag):
@@ -179,6 +197,8 @@ def release_paths(tag):
 
 
 def required_files(tag):
+    if progress_release(tag):
+        return (*REQUIRED, *BEHAVIOR_REQUIRED, *SURROUND_REQUIRED, *PACE_REQUIRED, *LIFE_REQUIRED, *PROGRESS_REQUIRED)
     if life_release(tag):
         return (*REQUIRED, *BEHAVIOR_REQUIRED, *SURROUND_REQUIRED, *PACE_REQUIRED, *LIFE_REQUIRED)
     if pace_release(tag):
@@ -360,15 +380,15 @@ def verify_city_film(archive, media, capture, scratch, tactical_case=None, *, po
             and capture["source_mode"] == "one closed-loop simulation with simultaneous camera capture",
             f"Wrong Town03 film provenance at {media}")
     policy = capture["policy"]
-    life = policy["schema"] == LIFE_SCHEMA
-    pace = policy["schema"] in {PACE_SCHEMA, LIFE_SCHEMA}
+    populated = policy["schema"] in POPULATED_POLICIES
+    pace = populated or policy["schema"] == PACE_SCHEMA
     surround = pace or policy["schema"] == SURROUND_SCHEMA
     folder = CITY_MODEL_FOLDERS.get(policy["schema"])
     require(folder is not None and re.fullmatch(r"[a-zA-Z0-9_-]+\.npz", policy["path"]),
             f"Invalid Town03 policy path at {media}")
     cameras = SURROUND_CAMERAS if surround else ("chase", "front")
     artifacts = CITY_ARTIFACTS | {f"{camera}.mp4" for camera in cameras}
-    replay_name = capture.get("replay", "replay.json") if life else "replay.json"
+    replay_name = capture.get("replay", "replay.json") if populated else "replay.json"
     require(replay_name in {"replay.json", "replay.json.gz"}, f"Invalid city replay filename: {replay_name}")
     if replay_name == "replay.json.gz":
         artifacts = (artifacts - {"replay.json"}) | {replay_name}
@@ -385,14 +405,18 @@ def verify_city_film(archive, media, capture, scratch, tactical_case=None, *, po
         require(read_json(archive, TACTICAL_MODEL)["format"] == "ado-tactical-pass-v1",
                 f"Invalid tactical model at {media}")
         fit = read_json(archive, f"models/{folder}/fit.json")
-        checkpoint_key = "checkpoint_sha256" if life else "model_sha256"
+        checkpoint_key = "checkpoint_sha256" if populated else "model_sha256"
         require(fit[checkpoint_key] == policy["sha256"] and fit["schema"] == policy["schema"],
                 f"Wrong city model fit at {media}")
-        if life:
+        if policy["schema"] == LIFE_SCHEMA:
             verify_digest(archive, "models/city-pace/candidate.npz", fit["base_sha256"])
             verify_digest(archive, LIFE_CALIBRATION, fit["calibration_sha256"])
-            require(fit["source_sha256"] == policy["code_sha256"]["city_clearance.py"],
-                    "City Life captured a different clearance fit source")
+        if policy["schema"] == PROGRESS_SCHEMA:
+            verify_digest(archive, "models/city-clearance/candidate.npz", fit["base_sha256"])
+        if populated:
+            _, source = POPULATED_POLICIES[policy["schema"]]
+            require(fit["source_sha256"] == policy["code_sha256"][source],
+                    f"The recording captured a different fit source at {media}")
     if pace:
         verify_digest(archive, BARRIER_MODEL, policy["barrier_sha256"])
     for name, digest in capture["sha256"].items():
@@ -431,7 +455,7 @@ def verify_city_film(archive, media, capture, scratch, tactical_case=None, *, po
                     and row["map"].split(".", 1)[0] == CITY_PRODUCER["map"],
                     f"Unsynchronized Town03 film at {media} frame {frame}")
         require(exposure["run_id"] == capture["trial_id"], f"Wrong Town03 replay at {media} frame {frame}")
-    if life:
+    if populated:
         verify_city_life_score(capture, telemetry, replay)
         verify_city_life_evidence(archive, capture, replay)
     if population_baseline:
@@ -473,7 +497,7 @@ def verify_journey_result(capture, media, required_events=CITY_EVENTS):
 
 def verify_city_life_score(capture, telemetry, replay):
     summary = capture["summary"]
-    require(capture["population_profile"] == "city-life" and summary["policy"] == LIFE_SCHEMA
+    require(capture["population_profile"] == "city-life" and summary["policy"] == capture["policy"]["schema"]
             and summary["scenario"] == "journey" and capture["frame_period_s"] == 0.1
             and summary["duration_s"] == round(len(telemetry) * capture["frame_period_s"], 2),
             "City Life summary does not match the recorded route and timeline")
@@ -508,28 +532,43 @@ def verify_city_life_population(capture, archive_capture, baseline):
             "City Life does not improve the share of frames with both types of moving actors within 50 m")
 
 
-def verify_city_life_evidence(archive, capture, replay):
-    for name, digest_field in LIFE_EVIDENCE.items():
-        verify_digest(archive, f"{LIFE_RESULTS}/{name}", capture[digest_field])
+def verify_population_sources(archive, capture, results, policy_source):
     source_hashes = {f"crosswalk/{name}": digest for name, digest in capture["policy"]["code_sha256"].items()
                      if re.fullmatch(r"[a-zA-Z0-9_]+\.py", name)}
     required_sources = {"crosswalk/city_clearance.py", "crosswalk/city_population.py",
-                        "crosswalk/journey_capture.py", "crosswalk/population_score.py"}
-    with archive.open(f"{PREFIX}{LIFE_RESULTS}/capture-source.zip") as source_file, ZipFile(source_file) as source:
+                        "crosswalk/journey_capture.py", "crosswalk/population_score.py", f"crosswalk/{policy_source}"}
+    with archive.open(f"{PREFIX}{results}/capture-source.zip") as source_file, ZipFile(source_file) as source:
         require(required_sources <= source_hashes.keys()
                 and len(source.namelist()) == len(source_hashes) == len(capture["policy"]["code_sha256"])
                 and set(source.namelist()) == source_hashes.keys(), "Incomplete City Life execution sources")
         for name, digest in source_hashes.items():
-            require(hashlib.sha256(source.read(name)).hexdigest() == digest, f"Wrong City Life execution source: {name}")
+            recorded = source.read(name)
+            require(hashlib.sha256(recorded).hexdigest() == digest, f"Wrong recorded execution source: {name}")
+            if capture["policy"]["schema"] == PROGRESS_SCHEMA and name == f"crosswalk/{policy_source}":
+                # Git archives use repository line endings. The simulator snapshot keeps checkout bytes.
+                committed = archive.read(PREFIX + name)
+                require(committed.replace(b"\r\n", b"\n") == recorded.replace(b"\r\n", b"\n"),
+                        f"The release and capture use different fit sources: {name}")
 
-    score = read_json(archive, f"{LIFE_RESULTS}/population-score.json")
+
+def verify_city_life_evidence(archive, capture, replay):
+    results, policy_source = POPULATED_POLICIES[capture["policy"]["schema"]]
+    for name, digest_field in POPULATION_EVIDENCE.items():
+        verify_digest(archive, f"{results}/{name}", capture[digest_field])
+    verify_population_sources(archive, capture, results, policy_source)
+
+    score = read_json(archive, f"{results}/population-score.json")
     verify_population_metadata(score, capture, len(replay))
-    with archive.open(f"{PREFIX}{LIFE_RESULTS}/population-reference.jsonl.gz") as stream, gzip.GzipFile(fileobj=stream) as refs:
+    with archive.open(f"{PREFIX}{results}/population-reference.jsonl.gz") as stream, gzip.GzipFile(fileobj=stream) as refs:
         for ref, row in zip(refs, population_rows(replay), strict=True):
             require(json.loads(ref) == row, f"Population reference differs from City Life exposure at frame {row['frame']}")
     density = population_density(population_rows(replay))
-    require(density == score["radii_m"] == capture["population_density"] and density["35"]["two_of_each_frames"] > 0,
-            "City Life density claims are not supported by six consecutive native actor positions")
+    require(density == score["radii_m"] == capture["population_density"],
+            "Population density claims differ from the recorded actor positions")
+    if capture["passed"]:
+        require(density["35"]["two_of_each_frames"] > 0, "The populated drive has no qualifying frames within 35 m")
+        require(capture["summary"]["background_traffic_activity"]["participant_contacts"] == [],
+                "The populated drive recorded background participant contacts")
 
 
 def verify_population_metadata(score, capture, count):
@@ -713,7 +752,7 @@ def catalog_film(archive, build, viewer_records, media, schema):
                   and row["path"] == directory), None)
     require(entry is not None and tuple(entry["cameras"]) == SURROUND_CAMERAS,
             f"{directory} or its cameras are missing from the viewer catalog")
-    if schema in (PACE_SCHEMA, LIFE_SCHEMA):
+    if schema == PACE_SCHEMA or schema in POPULATED_POLICIES:
         require(entry["benchmark_member"] is False
                 and entry["replay_pack_url"] == showcase["replay_pack_url"] == f"./media/{directory}/replay-pack.json.gz"
                 and entry["replay_pack_sha256"] == capture["sha256"]["replay-pack.json.gz"],
@@ -730,6 +769,20 @@ def verify_master_metadata(capture):
             and master["r_frame_rate"] == "10/1", "Wrong surround master metadata")
 
 
+def verify_populated_catalog(capture, showcase, entry, media):
+    directory = PurePosixPath(media).name
+    summary_keys = ("outcome", "frames", "duration_s", "progress_m", "route_length_m", *SAFETY_COUNTS)
+    require(capture["trial_id"] == directory and (capture["video"]["width"], capture["video"]["height"]) == (1920, 1080)
+            and capture["video"] == capture["camera_videos"]["chase"],
+            f"{directory} requires a synchronized 1080p chase capture")
+    require(capture["passed"] is True and capture["outcome"] == "complete",
+            f"{directory} must pass the native route grade to be a featured drive")
+    require(all(showcase[key] == capture["summary"][key] for key in summary_keys)
+            and showcase["model_sha256"] == capture["policy"]["sha256"]
+            and entry["replay_url"] == showcase["replay_url"] == f"./media/{directory}/{capture['replay']}",
+            f"{directory} catalog differs from the measured capture")
+
+
 def verify_surround_release(archive, build, viewer_records, tag):
     media, asset, schema = featured_recording(tag)
     capture, showcase, entry = catalog_film(archive, build, viewer_records, media, schema)
@@ -739,16 +792,13 @@ def verify_surround_release(archive, build, viewer_records, tag):
             urban, urban_showcase, urban_entry = catalog_film(archive, build, viewer_records, PACE_MEDIA, PACE_SCHEMA)
             verify_master_metadata(urban)
             verify_cone_review(archive, urban, urban_showcase, urban_entry)
-            require(capture["passed"] is True and capture["outcome"] == "complete" and capture["trial_id"] == "city-life"
-                    and (capture["video"]["width"], capture["video"]["height"]) == (1920, 1080)
-                    and capture["video"] == capture["camera_videos"]["chase"],
-                    "The featured City Life drive must be an eligible 1080p capture")
-            summary_keys = ("outcome", "frames", "duration_s", "progress_m", "route_length_m", *SAFETY_COUNTS)
-            require(all(showcase[key] == capture["summary"][key] for key in summary_keys)
-                    and showcase["model_sha256"] == capture["policy"]["sha256"]
-                    and entry["replay_url"] == showcase["replay_url"] == f"./media/city-life/{capture['replay']}",
-                    "City Life catalog differs from the measured capture")
-            verify_city_life_population(capture, urban, read_json(archive, LIFE_BASELINE))
+            verify_populated_catalog(capture, showcase, entry, media)
+            life = capture
+            if progress_release(tag):
+                life, life_showcase, life_entry = catalog_film(archive, build, viewer_records, LIFE_MEDIA, LIFE_SCHEMA)
+                verify_populated_catalog(life, life_showcase, life_entry, LIFE_MEDIA)
+                verify_master_metadata(life)
+            verify_city_life_population(life, urban, read_json(archive, LIFE_BASELINE))
         else:
             urban, urban_showcase, urban_entry = capture, showcase, entry
         report = read_json(archive, BARRIER_VALIDATION)
@@ -911,7 +961,7 @@ def validate_zip(path, files, commit, tag, scratch):
 def build_release(ref, tag, output, film_master=None):
     require(re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", tag), "Use a version tag such as v0.1.0")
     require(film_master is None or surround_release(tag), "--film-master applies to v0.3.0 and newer releases")
-    require(not life_release(tag) or film_master is not None, "City Life requires the native 1080p --film-master")
+    require(not life_release(tag) or film_master is not None, "The featured drive requires the native 1080p --film-master")
     commit = resolve_commit(ref, tag)
     files = package_inventory(commit, tag)
     output = output.resolve()

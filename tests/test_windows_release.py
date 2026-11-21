@@ -80,6 +80,43 @@ def city_film(complete, surround=False, pace=False):
     return media, manifest, members
 
 
+def populated_city_film(schema):
+    old_media, manifest, members = city_film(False, pace=True)
+    folder = release.CITY_MODEL_FOLDERS[schema]
+    media = f"web/media/{'city-life' if schema == release.LIFE_SCHEMA else 'city-progress'}"
+    members = {name.replace(old_media, media).replace("models/city-pace/", f"models/{folder}/"): value
+               for name, value in members.items()}
+    _, source_name = release.POPULATED_POLICIES[schema]
+    source = b"populated checkpoint source"
+    members[f"crosswalk/{source_name}"] = source
+    base = "city-pace" if schema == release.LIFE_SCHEMA else "city-clearance"
+    members[f"models/{base}/candidate.npz"] = b"base checkpoint"
+    members[release.LIFE_CALIBRATION] = b"native calibration trials"
+    run = Path(media).name
+    manifest.update(population_profile="city-life", frame_period_s=.1, trial_id=run, replay="replay.json.gz")
+    manifest["policy"].update(schema=schema, code_sha256={source_name: sha256(source)})
+    summary = manifest["summary"]
+    summary.update(policy=schema, scenario="journey", duration_s=.1)
+    members[f"models/{folder}/fit.json"] = json_bytes(dict(
+        schema=schema, checkpoint_sha256=manifest["policy"]["sha256"], source_sha256=sha256(source),
+        base_sha256=sha256(members[f"models/{base}/candidate.npz"]),
+        calibration_sha256=sha256(members[release.LIFE_CALIBRATION])))
+    score = json.loads(members[f"{media}/telemetry.json"])[0]
+    score.update(sim_time=0., video_time=0., collision_count=0, red_light_violations=0, yield_violations=0,
+                 **{key: summary[key] for key in ("progress_m", "route_length_m", "events")})
+    replay = [dict(score, run_id=run)]
+    original = json_bytes(replay)
+    manifest["raw_sha256"] = {"replay.json": sha256(original)}
+    del members[f"{media}/replay.json"], manifest["sha256"]["replay.json"]
+    artifacts = {"replay.json.gz": gzip.compress(original), "telemetry.json": json_bytes([score]),
+                 "replay-pack.json.gz": gzip.compress(json_bytes(dict(format="ado-replay-pack-v1", replay=replay,
+                                                                       shared_path=None, path_ranges=[])))}
+    for name, data in artifacts.items():
+        members[f"{media}/{name}"] = data
+        manifest["sha256"][name] = sha256(data)
+    return media, manifest, members
+
+
 def benchmark_members(omit_trace=False):
     stream = BytesIO()
     stages = {stage: [dict(seed=seed, case_id="pedestrian", policy="candidate") for seed in range(100)]
@@ -122,6 +159,9 @@ class WindowsReleaseTests(unittest.TestCase):
                          (release.PACE_MEDIA, release.PACE_MASTER, release.PACE_SCHEMA))
         self.assertEqual(release.featured_recording("v0.5.0"),
                          (release.LIFE_MEDIA, release.LIFE_MASTER, release.LIFE_SCHEMA))
+        self.assertEqual(release.featured_recording("v0.6.0"),
+                         (release.PROGRESS_MEDIA, release.PROGRESS_MASTER, release.PROGRESS_SCHEMA))
+        self.assertLess(set(release.required_files("v0.5.0")), set(release.required_files("v0.6.0")))
         self.assertIn(f"{release.PACE_MEDIA}/{release.CONE_REVIEW}", release.required_files("v0.5.0"))
         with self.assertRaisesRegex(ValueError, "native 1080p --film-master"):
             release.build_release("unused", "v0.5.0", Path("unused"))
@@ -189,45 +229,61 @@ class WindowsReleaseTests(unittest.TestCase):
     @patch.object(release, "verify_city_life_evidence")
     @patch.object(release, "verify_video")
     def test_city_life_requires_exact_gzip_replay_and_scored_safety(self, verify_video, _verify_evidence):
-        old_media, manifest, members = city_film(False, pace=True)
-        media = release.LIFE_MEDIA
-        members = {name.replace(old_media, media).replace("models/city-pace/", "models/city-clearance/"): value
-                   for name, value in members.items()}
-        model = manifest["policy"]["sha256"]
-        source = sha256(b"clearance fit source")
-        members["models/city-pace/candidate.npz"] = b"base checkpoint"
-        members[release.LIFE_CALIBRATION] = b"native calibration trials"
-        manifest.update(population_profile="city-life", frame_period_s=.1, trial_id="city-life", replay="replay.json.gz")
-        manifest["policy"].update(schema=release.LIFE_SCHEMA, code_sha256={"city_clearance.py": source})
-        summary = manifest["summary"]
-        summary.update(policy=release.LIFE_SCHEMA, scenario="journey", duration_s=.1)
-        members["models/city-clearance/fit.json"] = json_bytes(dict(
-            schema=release.LIFE_SCHEMA, checkpoint_sha256=model, source_sha256=source,
-            base_sha256=sha256(members["models/city-pace/candidate.npz"]),
-            calibration_sha256=sha256(members[release.LIFE_CALIBRATION])))
-        score = json.loads(members[f"{media}/telemetry.json"])[0]
-        score.update(sim_time=0., video_time=0., collision_count=0, red_light_violations=0, yield_violations=0,
-                     **{key: summary[key] for key in ("progress_m", "route_length_m", "events")})
-        replay = [dict(score, run_id="city-life")]
-        original = json_bytes(replay)
-        manifest["raw_sha256"] = {"replay.json": sha256(original)}
-        del members[f"{media}/replay.json"], manifest["sha256"]["replay.json"]
-        artifacts = {"replay.json.gz": gzip.compress(original), "telemetry.json": json_bytes([score]),
-                     "replay-pack.json.gz": gzip.compress(json_bytes(dict(format="ado-replay-pack-v1", replay=replay,
-                                                                           shared_path=None, path_ranges=[])))}
-        for name, data in artifacts.items():
-            members[f"{media}/{name}"] = data
-            manifest["sha256"][name] = sha256(data)
+        media, manifest, members = populated_city_film(release.LIFE_SCHEMA)
         with fixture_zip(members) as archive:
             release.verify_city_film(archive, media, manifest, Path("unused"))
         self.assertEqual(verify_video.call_count, 6)
 
-        summary["collision_events"] = 1
+        manifest["summary"]["collision_events"] = 1
         with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, "totals differ from the scored telemetry"):
             release.verify_city_film(archive, media, manifest, Path("unused"))
         manifest["raw_sha256"]["replay.json"] = "0" * 64
         with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, "differs from the native recording"):
             release.verify_city_film(archive, media, manifest, Path("unused"))
+
+    @patch.object(release, "verify_city_life_evidence")
+    @patch.object(release, "verify_video")
+    def test_city_progress_checks_the_base_checkpoint(self, verify_video, _verify_evidence):
+        media, manifest, members = populated_city_film(release.PROGRESS_SCHEMA)
+        with fixture_zip(members) as archive:
+            release.verify_city_film(archive, media, manifest, Path("unused"))
+        self.assertEqual(verify_video.call_count, 6)
+        path = "models/city-clearance/candidate.npz"
+        members[path] += b"unexpected edits"
+        with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, f"Wrong SHA-256.*{path}"):
+            release.verify_city_film(archive, media, manifest, Path("unused"))
+
+    def test_city_progress_preserves_captured_source_and_compares_git_line_endings(self):
+        policy_source = "city_progress.py"
+        names = (policy_source, "city_clearance.py", "city_population.py", "journey_capture.py", "population_score.py")
+        recorded = b"model = 'captured source'\r\n"
+        capture = dict(policy=dict(schema=release.PROGRESS_SCHEMA, code_sha256=dict.fromkeys(names, sha256(recorded))))
+        stream = BytesIO()
+        with ZipFile(stream, "w") as snapshot:
+            for name in names:
+                snapshot.writestr(f"crosswalk/{name}", recorded)
+        contents = {f"{release.PROGRESS_RESULTS}/capture-source.zip": stream.getvalue(),
+                    f"crosswalk/{policy_source}": recorded.replace(b"\r\n", b"\n")}
+        with fixture_zip(contents) as archive:
+            release.verify_population_sources(archive, capture, release.PROGRESS_RESULTS, policy_source)
+        contents[f"crosswalk/{policy_source}"] = b"model = 'different source'\n"
+        with fixture_zip(contents) as archive, self.assertRaisesRegex(ValueError, "different fit sources"):
+            release.verify_population_sources(archive, capture, release.PROGRESS_RESULTS, policy_source)
+
+    def test_featured_city_progress_requires_a_pass_and_exact_reported_counters(self):
+        _, capture, _ = populated_city_film(release.PROGRESS_SCHEMA)
+        capture["video"] = capture["camera_videos"]["chase"]
+        capture["video"].update(width=1920, height=1080)
+        capture["outcome"] = capture["summary"]["outcome"] = "complete"
+        entry = dict(replay_url="./media/city-progress/replay.json.gz")
+        showcase = dict(capture["summary"], **entry, model_sha256=capture["policy"]["sha256"])
+        with self.assertRaisesRegex(ValueError, "must pass the native route grade"):
+            release.verify_populated_catalog(capture, showcase, entry, release.PROGRESS_MEDIA)
+        capture["passed"] = True
+        release.verify_populated_catalog(capture, showcase, entry, release.PROGRESS_MEDIA)
+        showcase["yield_violations"] = 1
+        with self.assertRaisesRegex(ValueError, "catalog differs from the measured capture"):
+            release.verify_populated_catalog(capture, showcase, entry, release.PROGRESS_MEDIA)
 
     def test_population_counts_simultaneous_motion_only_after_six_consecutive_exposures(self):
         rows = [dict(frame=i, sim_time=i/10, ego=[0, 0],

@@ -26,7 +26,7 @@ concurrency:
 jobs:
   publish-from-main:
     # The Pages environment permits deployments from main. A release event runs on a tag.
-    if: github.repository == 'yafi-s/ADO' && github.event_name == 'release' && contains(fromJSON('["v0.3.0", "v0.4.0", "v0.5.0"]'), github.event.release.tag_name)
+    if: github.repository == 'yafi-s/ADO' && github.event_name == 'release' && contains(fromJSON('["v0.3.0", "v0.4.0", "v0.5.0", "v0.6.0"]'), github.event.release.tag_name)
     runs-on: ubuntu-latest
     permissions:
       actions: write
@@ -67,13 +67,27 @@ jobs:
       - name: Include the measured turning-camera comparison
         if: ${{ hashFiles('results/perception/rider-turns/right-turn.mp4') != '' }}
         run: cp results/perception/rider-turns/right-turn.mp4 web/media/turn-camera.mp4
+      - name: Restore verified playback encodes
+        id: film-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .local/pages-film
+          key: pages-film-v1-${{ hashFiles('web/media/urban-pace/manifest.json', 'web/media/city-life/manifest.json', 'web/media/city-progress/manifest.json') }}
+          restore-keys: pages-film-v1-
       - name: Fit the verified city recordings within the Pages budget
+        id: films
         run: |
           if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
             sudo apt-get update
             sudo apt-get install -y ffmpeg
           fi
-          python3 tools/prepare_pages_film.py --archive-revision "$GITHUB_SHA"
+          python3 tools/prepare_pages_film.py --archive-revision "$GITHUB_SHA" --cache-dir .local/pages-film
+      - name: Save verified playback encodes
+        if: steps.film-cache.outputs.cache-hit != 'true' && steps.films.outputs.cache-ready == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .local/pages-film
+          key: ${{ steps.film-cache.outputs.cache-primary-key }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web
