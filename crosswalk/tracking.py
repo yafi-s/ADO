@@ -190,7 +190,15 @@ def _across_views(lidar, by_view):
                 break
         else:
             kept.append(item)
+    for item in kept:
+        item["weak_edge"] = (len(item["boxes"]) == 1 and
+                             weak_edge_box(next(iter(item["boxes"].values())), item["confidence"]))
     return kept
+
+
+def weak_edge_box(box, score):
+    """A thin low-confidence sliver at the horizontal image boundary cannot establish class."""
+    return score < .55 and (box[0] <= .005 or box[2] >= .995) and box[2] - box[0] < .075
 
 
 def _course(trail, label):
@@ -337,6 +345,8 @@ class Tracker:
                 # A re-read of the class is not a new object.
                 if item.get("required_track", key) != key:
                     continue
+                if item.get("weak_edge") and (dormant or track.label != item["label"]):
+                    continue
                 if dormant and track.image_keys.isdisjoint(item["image_ids"].items()):
                     continue
                 if "unknown" not in (item["label"], track.label) and _family(item["label"]) != _family(track.label):
@@ -386,6 +396,8 @@ class Tracker:
             updated.add(key)
         for idx, (item, pos) in enumerate(zip(measurements, positions)):
             if idx not in used and "required_track" not in item:
+                if item.get("weak_edge"):
+                    continue
                 size = np.array([item["length"], item["width"], item["height"]])
                 # Road users mostly travel along or across the ego vehicle's own heading.
                 facing = yaw + (90. if item["sideways"] else 0.)
