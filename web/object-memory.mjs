@@ -639,6 +639,36 @@ function sameMovingSurface(a,b,t){
   return false;
 }
 
+// A weak passenger-car fit may put its inferred body behind a surface that
+// later resolves as a striped board. Withdraw only the remembered car whose
+// complete recent returns lie on the *measured* board. The native camera/range
+// records remain available, including the earlier car interpretation.
+function withdrawCarsOnBoard(state,samples,ctx,cos,sin){
+  const confirmed=ctx.frame.barrier_review?.cameras;
+  if(!confirmed?.length)return;
+  for(const {s,mx,mz} of samples){
+    if(s.label!=='barrier'||s.barrier_subtype!=='striped_board'||s.coasting||s.lidar_hits<4||
+       !confirmed.some(c=>c.confirmed&&c.box?.track_id===s.id&&c.box.barrier_subtype==='striped_board'))continue;
+    const points=(s.surface_xyz??[]).filter(p=>Array.isArray(p)&&p.length===3&&p.every(finite))
+      .map(([x,y,h])=>[ctx.x+x*cos-y*sin,ctx.z+x*sin+y*cos,ctx.h+h]);
+    if(points.length<4)continue;
+    const angle=(ctx.degrees+s.heading)*rad,c=Math.cos(angle),n=Math.sin(angle);
+    const onBoard=([x,z,h])=>{
+      const dx=x-mx,dz=z-mz;
+      if(Math.abs(dx*c+dz*n)>s.length/2+.2||Math.abs(dz*c-dx*n)>s.width/2+.2)return false;
+      return points.some(([bx,bz,bh])=>(bx-x)**2+(bz-z)**2+(bh-h)**2<=.4**2);
+    };
+    for(const car of state.objects.values()){
+      if(car.label!=='car'||car.lastHit===ctx.t||ctx.t-car.lastHit>.6||car.surfaceMoving||
+         car.classViews?.size!==1||!finite(car.classPeak)||car.classPeak>=SURE.confidence||
+         Math.hypot(car.raw.x-mx,car.raw.z-mz)>car.length/2+1)continue;
+      const scans=car.surfaces?.filter(scan=>ctx.t-scan.t<=1)??[];
+      if(scans.length>=2&&scans.every(scan=>scan.points.length>=4&&scan.points.every(onBoard)))
+        state.objects.delete(car.key);
+    }
+  }
+}
+
 function stationaryEnvelope(group,state,heading){
   const scans=[];
   for(const entry of group){
@@ -862,6 +892,7 @@ export function advance(state, ctx, deps = {}) {
     measure(object, sample, ctx, deps, state);
   }
 
+  withdrawCarsOnBoard(state,samples,ctx,cos,sin);
   const drawn = [];
   for (const object of state.objects.values()) {
     const unseen = t - object.lastHit;

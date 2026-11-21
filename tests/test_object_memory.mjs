@@ -34,6 +34,32 @@ const repeat = (count, make) => Array.from({length: count}, (_, i) => make(i));
 // A lane centre line along the world x axis, sampled every 2 m as a town export is.
 const lane = repeat(101, i => [i * 2 - 100, 0, 0]);
 
+test('only a coast whose repeated surface belongs to a newly measured striped board loses its car symbol',()=>{
+  const patch=[[-.4,0,.2],[.4,0,.2],[-.4,0,.75],[.4,0,.75],[0,0,.55]];
+  function replay({separation=0,score=.46,fresh=false,approved=true,extraPoint=false}={}){
+    const frames=repeat(6,i=>{
+      const points=patch.map(([u,v,z])=>[8+u,v+separation,z]);
+      if(extraPoint)points.push([10,.3,.7]);
+      const vehicle=car(1,9.9,separation,{confidence:score,cameras:['front'],lidar_hits:9,surface_xyz:points});
+      const board=car(2,8,0,{label:'barrier',barrier_subtype:'striped_board',confidence:.9,
+        length:1.2,width:.35,height:1,z:.5,cameras:['front'],lidar_hits:9,surface_xyz:patch.map(([u,v,z])=>[8+u,v,z])});
+      const observed=i<5||fresh?[vehicle]:[];
+      if(i===5)observed.push(board);
+      const boxes=observed.map(t=>({label:t.label,track_id:t.id,barrier_subtype:t.barrier_subtype,score:t.confidence,
+        image_id:t.id,range_supported:true,box:[.45,.45,.55,.65]}));
+      return {frame:i,sim_time:i/10,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+        tracks:observed,camera_detections:{front:boxes},barrier_review:{cameras:i===5?[{view:'front',box:boxes.at(-1),confirmed:approved}]:[]}};
+    });
+    const memory=new ReplayMemory({});
+    assert.ok(memory.at(frames,4).objects.some(o=>o.label==='car'),'future board classification cannot change earlier history');
+    return memory.at(frames,5).objects.map(o=>o.label);
+  }
+  assert.deepEqual(replay(),['barrier']);
+  for(const control of [{separation:1.15},{extraPoint:true},{score:.85},{fresh:true},{approved:false}]){
+    assert.deepEqual(replay(control),['car','barrier']);
+  }
+});
+
 test('a single ranged rider keeps one identity through intermittent mounted bicycle classifications',()=>{
   const frames=repeat(13,i=>{
     const mounted=i===4||i===8;
