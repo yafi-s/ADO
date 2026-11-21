@@ -1,0 +1,1786 @@
+{
+  "physics": "CARLA 1.0 Town03_Opt, High, fixed 0.1 s",
+  "cases": [
+    {
+      "case": "through",
+      "before": {
+        "directory": "matched-baseline/through",
+        "summary_sha256": "1eac3075bd39b268a9b3287d7c2037eb99215545fef8e7395e6e83993fa0ee36",
+        "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 324,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 32.4,
+        "seed": 621,
+        "progress_m": 744.379,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 650.0,
+            "end_m": 688.0,
+            "frames": 104,
+            "seconds": 10.4,
+            "median_kmh": 13.12,
+            "median_request_kmh": 13.01,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 701.0,
+            "end_m": 731.0,
+            "frames": 82,
+            "seconds": 8.2,
+            "median_kmh": 13.11,
+            "median_request_kmh": 12.98,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": null,
+        "events": [],
+        "nearest_target_footprint": null,
+        "source_front_sha256": "3a765bd3713f730d48dc3b1fe073f3574252d0d4b826ca90b5010fba599783c2"
+      },
+      "after": {
+        "directory": "matched-candidate/through",
+        "summary_sha256": "50892a5df20b51e8223e4015bdd48e4a7b32fb8b51217905e390787bb24bf9f1",
+        "model_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 250,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 25.0,
+        "seed": 621,
+        "progress_m": 744.102,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 650.0,
+            "end_m": 688.0,
+            "frames": 74,
+            "seconds": 7.4,
+            "median_kmh": 16.51,
+            "median_request_kmh": 13.71,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 701.0,
+            "end_m": 731.0,
+            "frames": 59,
+            "seconds": 5.9,
+            "median_kmh": 17.56,
+            "median_request_kmh": 12.98,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": null,
+        "events": [],
+        "nearest_target_footprint": null,
+        "source_front_sha256": "0c95f24e030cba09f6841145cb5b639a074bdd702cfada32437722d76a7ba907"
+      },
+      "differences": [
+        {
+          "start_m": 650.0,
+          "end_m": 688.0,
+          "seconds_saved": 3.0,
+          "median_change_kmh": 3.39
+        },
+        {
+          "start_m": 701.0,
+          "end_m": 731.0,
+          "seconds_saved": 2.3,
+          "median_change_kmh": 4.45
+        }
+      ]
+    },
+    {
+      "case": "bus",
+      "before": {
+        "directory": "matched-baseline/bus",
+        "summary_sha256": "fdec437c094222e8cc18b099ac945b8244000701399f6185eb30267dcbbafa19",
+        "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 413,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 41.3,
+        "seed": 622,
+        "progress_m": 909.048,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 770.0,
+            "end_m": 800.0,
+            "frames": 82,
+            "seconds": 8.2,
+            "median_kmh": 13.11,
+            "median_request_kmh": 13.0,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 800.0,
+            "end_m": 825.0,
+            "frames": 44,
+            "seconds": 4.4,
+            "median_kmh": 21.29,
+            "median_request_kmh": 25.3,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 825.0,
+            "end_m": 855.0,
+            "frames": 49,
+            "seconds": 4.9,
+            "median_kmh": 19.84,
+            "median_request_kmh": 18.45,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 855.0,
+            "end_m": 890.0,
+            "frames": 125,
+            "seconds": 12.5,
+            "median_kmh": 6.83,
+            "median_request_kmh": 5.41,
+            "seconds_below_10_kmh": 7.7
+          },
+          {
+            "start_m": 858.0,
+            "end_m": 872.0,
+            "frames": 77,
+            "seconds": 7.7,
+            "median_kmh": 6.13,
+            "median_request_kmh": 5.41,
+            "seconds_below_10_kmh": 7.4
+          },
+          {
+            "start_m": 872.0,
+            "end_m": 882.0,
+            "frames": 24,
+            "seconds": 2.4,
+            "median_kmh": 15.67,
+            "median_request_kmh": 18.23,
+            "seconds_below_10_kmh": 0.3
+          },
+          {
+            "start_m": 882.0,
+            "end_m": 892.0,
+            "frames": 23,
+            "seconds": 2.3,
+            "median_kmh": 15.83,
+            "median_request_kmh": 13.14,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": "bus",
+        "events": [
+          {
+            "kind": "bus",
+            "station_m": 812.91,
+            "phase": "bus cleared",
+            "triggered": true,
+            "cleared": true,
+            "exposed": true,
+            "passed": true,
+            "handled": true,
+            "violation": false,
+            "stopped_for_event": false,
+            "minimum_gap_m": 60.0,
+            "blueprint": "vehicle.fuso.mitsubishi",
+            "source_lane": [
+              4,
+              3
+            ],
+            "target_lane": [
+              4,
+              2
+            ],
+            "source_lane_seen_s": 14.5,
+            "triggered_s": 18.4,
+            "exposed_s": 18.4,
+            "measured_lane_change_s": 18.9,
+            "measured_lane_change_m": 2.285,
+            "minimum_bus_clearance_m": 0.928,
+            "bus_alongside_s": 26.4,
+            "cleared_s": 33.3,
+            "passed_s": 33.7
+          }
+        ],
+        "nearest_target_footprint": {
+          "frame": 655,
+          "sim_time": 26.3,
+          "gap_m": 0.928,
+          "ego_kmh": 6.1
+        },
+        "source_front_sha256": "6299b6067cbcfecc4c64c9d0e5e43f1a50ae36ecf87f721c0306cd89951aa30d"
+      },
+      "after": {
+        "directory": "matched-candidate/bus",
+        "summary_sha256": "de37af00c92513b4bcab065b6cbb2788157ac5d1c86ff56fe9bda186b2d7e009",
+        "model_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 345,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 34.5,
+        "seed": 622,
+        "progress_m": 909.058,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 770.0,
+            "end_m": 800.0,
+            "frames": 68,
+            "seconds": 6.8,
+            "median_kmh": 14.43,
+            "median_request_kmh": 13.77,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 800.0,
+            "end_m": 825.0,
+            "frames": 37,
+            "seconds": 3.7,
+            "median_kmh": 26.37,
+            "median_request_kmh": 29.65,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 825.0,
+            "end_m": 855.0,
+            "frames": 41,
+            "seconds": 4.1,
+            "median_kmh": 28.27,
+            "median_request_kmh": 27.84,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 855.0,
+            "end_m": 890.0,
+            "frames": 105,
+            "seconds": 10.5,
+            "median_kmh": 9.14,
+            "median_request_kmh": 8.87,
+            "seconds_below_10_kmh": 6.3
+          },
+          {
+            "start_m": 858.0,
+            "end_m": 872.0,
+            "frames": 66,
+            "seconds": 6.6,
+            "median_kmh": 7.09,
+            "median_request_kmh": 5.41,
+            "seconds_below_10_kmh": 6.1
+          },
+          {
+            "start_m": 872.0,
+            "end_m": 882.0,
+            "frames": 21,
+            "seconds": 2.1,
+            "median_kmh": 17.4,
+            "median_request_kmh": 22.86,
+            "seconds_below_10_kmh": 0.2
+          },
+          {
+            "start_m": 882.0,
+            "end_m": 892.0,
+            "frames": 13,
+            "seconds": 1.3,
+            "median_kmh": 26.99,
+            "median_request_kmh": 29.07,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": "bus",
+        "events": [
+          {
+            "kind": "bus",
+            "station_m": 812.91,
+            "phase": "bus cleared",
+            "triggered": true,
+            "cleared": true,
+            "exposed": true,
+            "passed": true,
+            "handled": true,
+            "violation": false,
+            "stopped_for_event": false,
+            "minimum_gap_m": 60.0,
+            "blueprint": "vehicle.fuso.mitsubishi",
+            "source_lane": [
+              4,
+              3
+            ],
+            "target_lane": [
+              4,
+              2
+            ],
+            "source_lane_seen_s": 13.1,
+            "triggered_s": 16.3,
+            "exposed_s": 16.3,
+            "measured_lane_change_s": 16.7,
+            "measured_lane_change_m": 2.167,
+            "minimum_bus_clearance_m": 0.927,
+            "bus_alongside_s": 23.2,
+            "cleared_s": 29.3,
+            "passed_s": 29.6
+          }
+        ],
+        "nearest_target_footprint": {
+          "frame": 577,
+          "sim_time": 26.1,
+          "gap_m": 0.927,
+          "ego_kmh": 6.13
+        },
+        "source_front_sha256": "087bdf2f3d90de1be0e37574fffb0ed3b531013e6bf72c5241587c9a4271ba5c"
+      },
+      "differences": [
+        {
+          "start_m": 770.0,
+          "end_m": 800.0,
+          "seconds_saved": 1.4,
+          "median_change_kmh": 1.32
+        },
+        {
+          "start_m": 800.0,
+          "end_m": 825.0,
+          "seconds_saved": 0.7,
+          "median_change_kmh": 5.08
+        },
+        {
+          "start_m": 825.0,
+          "end_m": 855.0,
+          "seconds_saved": 0.8,
+          "median_change_kmh": 8.43
+        },
+        {
+          "start_m": 855.0,
+          "end_m": 890.0,
+          "seconds_saved": 2.0,
+          "median_change_kmh": 2.31
+        },
+        {
+          "start_m": 858.0,
+          "end_m": 872.0,
+          "seconds_saved": 1.1,
+          "median_change_kmh": 0.96
+        },
+        {
+          "start_m": 872.0,
+          "end_m": 882.0,
+          "seconds_saved": 0.3,
+          "median_change_kmh": 1.73
+        },
+        {
+          "start_m": 882.0,
+          "end_m": 892.0,
+          "seconds_saved": 1.0,
+          "median_change_kmh": 11.16
+        }
+      ]
+    },
+    {
+      "case": "bus-crossing",
+      "before": {
+        "directory": "matched-baseline/bus-crossing",
+        "summary_sha256": "cb780699befdbb0f7a1d96400cccce53e75758db62f9d1464b082f07528579b6",
+        "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 445,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 44.5,
+        "seed": 622,
+        "progress_m": 909.332,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 770.0,
+            "end_m": 800.0,
+            "frames": 82,
+            "seconds": 8.2,
+            "median_kmh": 13.11,
+            "median_request_kmh": 13.0,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 800.0,
+            "end_m": 825.0,
+            "frames": 43,
+            "seconds": 4.3,
+            "median_kmh": 21.57,
+            "median_request_kmh": 25.6,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 825.0,
+            "end_m": 855.0,
+            "frames": 49,
+            "seconds": 4.9,
+            "median_kmh": 19.63,
+            "median_request_kmh": 18.45,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 855.0,
+            "end_m": 890.0,
+            "frames": 158,
+            "seconds": 15.8,
+            "median_kmh": 6.12,
+            "median_request_kmh": 5.41,
+            "seconds_below_10_kmh": 10.9
+          },
+          {
+            "start_m": 858.0,
+            "end_m": 872.0,
+            "frames": 108,
+            "seconds": 10.8,
+            "median_kmh": 5.95,
+            "median_request_kmh": 5.41,
+            "seconds_below_10_kmh": 10.6
+          },
+          {
+            "start_m": 872.0,
+            "end_m": 882.0,
+            "frames": 25,
+            "seconds": 2.5,
+            "median_kmh": 15.92,
+            "median_request_kmh": 18.06,
+            "seconds_below_10_kmh": 0.3
+          },
+          {
+            "start_m": 882.0,
+            "end_m": 892.0,
+            "frames": 22,
+            "seconds": 2.2,
+            "median_kmh": 15.72,
+            "median_request_kmh": 13.1,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": "bus",
+        "events": [
+          {
+            "kind": "bus",
+            "station_m": 812.91,
+            "phase": "bus cleared",
+            "triggered": true,
+            "cleared": true,
+            "exposed": true,
+            "passed": true,
+            "handled": true,
+            "violation": false,
+            "stopped_for_event": false,
+            "minimum_gap_m": 60.0,
+            "blueprint": "vehicle.fuso.mitsubishi",
+            "source_lane": [
+              4,
+              3
+            ],
+            "target_lane": [
+              4,
+              2
+            ],
+            "source_lane_seen_s": 14.5,
+            "triggered_s": 18.3,
+            "exposed_s": 18.3,
+            "measured_lane_change_s": 18.8,
+            "measured_lane_change_m": 2.286,
+            "minimum_bus_clearance_m": 0.927,
+            "bus_alongside_s": 26.4,
+            "cleared_s": 36.5,
+            "passed_s": 36.8
+          }
+        ],
+        "nearest_target_footprint": {
+          "frame": 1086,
+          "sim_time": 27.2,
+          "gap_m": 0.928,
+          "ego_kmh": 6.1
+        },
+        "source_front_sha256": "b4249cd89ab720e5ce73f51fd0dccee53228963e1afbaee0f74c974c85aace11",
+        "crossing": {
+          "hidden_frame": 1010,
+          "moving_frame": 1089,
+          "emerged_frame": 1098,
+          "ego_speed_at_emergence_kmh": 6.12,
+          "front_distance_at_emergence_m": 6.196,
+          "path_occupied_frames": 17,
+          "clear_frame": 1127,
+          "front_at_crossing_frame": 1166,
+          "minimum_body_gap_m": 2.556,
+          "minimum_speed_while_occupied_kmh": 0.0,
+          "passed": true
+        }
+      },
+      "after": {
+        "directory": "matched-candidate/bus-crossing",
+        "summary_sha256": "1994c0b25ee3fcb82ef7ae95d604eaf77e815f081316814be44048461ce0cfb1",
+        "model_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 408,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 40.8,
+        "seed": 622,
+        "progress_m": 909.48,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 770.0,
+            "end_m": 800.0,
+            "frames": 68,
+            "seconds": 6.8,
+            "median_kmh": 14.41,
+            "median_request_kmh": 13.8,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 800.0,
+            "end_m": 825.0,
+            "frames": 37,
+            "seconds": 3.7,
+            "median_kmh": 26.38,
+            "median_request_kmh": 30.0,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 825.0,
+            "end_m": 855.0,
+            "frames": 41,
+            "seconds": 4.1,
+            "median_kmh": 28.27,
+            "median_request_kmh": 27.84,
+            "seconds_below_10_kmh": 0.0
+          },
+          {
+            "start_m": 855.0,
+            "end_m": 890.0,
+            "frames": 175,
+            "seconds": 17.5,
+            "median_kmh": 5.28,
+            "median_request_kmh": 5.41,
+            "seconds_below_10_kmh": 13.4
+          },
+          {
+            "start_m": 858.0,
+            "end_m": 872.0,
+            "frames": 135,
+            "seconds": 13.5,
+            "median_kmh": 3.77,
+            "median_request_kmh": 5.41,
+            "seconds_below_10_kmh": 13.1
+          },
+          {
+            "start_m": 872.0,
+            "end_m": 882.0,
+            "frames": 22,
+            "seconds": 2.2,
+            "median_kmh": 16.21,
+            "median_request_kmh": 21.33,
+            "seconds_below_10_kmh": 0.3
+          },
+          {
+            "start_m": 882.0,
+            "end_m": 892.0,
+            "frames": 14,
+            "seconds": 1.4,
+            "median_kmh": 27.36,
+            "median_request_kmh": 29.07,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": "bus",
+        "events": [
+          {
+            "kind": "bus",
+            "station_m": 812.91,
+            "phase": "bus cleared",
+            "triggered": true,
+            "cleared": true,
+            "exposed": true,
+            "passed": true,
+            "handled": true,
+            "violation": false,
+            "stopped_for_event": false,
+            "minimum_gap_m": 60.0,
+            "blueprint": "vehicle.fuso.mitsubishi",
+            "source_lane": [
+              4,
+              3
+            ],
+            "target_lane": [
+              4,
+              2
+            ],
+            "source_lane_seen_s": 13.1,
+            "triggered_s": 16.3,
+            "exposed_s": 16.3,
+            "measured_lane_change_s": 16.7,
+            "measured_lane_change_m": 2.168,
+            "minimum_bus_clearance_m": 0.927,
+            "bus_alongside_s": 23.2,
+            "cleared_s": 36.2,
+            "passed_s": 36.6
+          }
+        ],
+        "nearest_target_footprint": {
+          "frame": 1003,
+          "sim_time": 33.3,
+          "gap_m": 0.927,
+          "ego_kmh": 4.97
+        },
+        "source_front_sha256": "406bffc13212670d1b0ae5419197254f09490584d9cb77d31ba2369fedf44f10",
+        "crossing": {
+          "hidden_frame": 845,
+          "moving_frame": 909,
+          "emerged_frame": 917,
+          "ego_speed_at_emergence_kmh": 6.71,
+          "front_distance_at_emergence_m": 5.926,
+          "path_occupied_frames": 17,
+          "clear_frame": 947,
+          "front_at_crossing_frame": 1020,
+          "minimum_body_gap_m": 2.556,
+          "minimum_speed_while_occupied_kmh": 0.0,
+          "passed": true
+        }
+      },
+      "differences": [
+        {
+          "start_m": 770.0,
+          "end_m": 800.0,
+          "seconds_saved": 1.4,
+          "median_change_kmh": 1.3
+        },
+        {
+          "start_m": 800.0,
+          "end_m": 825.0,
+          "seconds_saved": 0.6,
+          "median_change_kmh": 4.81
+        },
+        {
+          "start_m": 825.0,
+          "end_m": 855.0,
+          "seconds_saved": 0.8,
+          "median_change_kmh": 8.64
+        },
+        {
+          "start_m": 855.0,
+          "end_m": 890.0,
+          "seconds_saved": -1.7,
+          "median_change_kmh": -0.84
+        },
+        {
+          "start_m": 858.0,
+          "end_m": 872.0,
+          "seconds_saved": -2.7,
+          "median_change_kmh": -2.18
+        },
+        {
+          "start_m": 872.0,
+          "end_m": 882.0,
+          "seconds_saved": 0.3,
+          "median_change_kmh": 0.29
+        },
+        {
+          "start_m": 882.0,
+          "end_m": 892.0,
+          "seconds_saved": 0.8,
+          "median_change_kmh": 11.64
+        }
+      ]
+    },
+    {
+      "case": "adjacent",
+      "before": {
+        "directory": "matched-baseline/adjacent",
+        "summary_sha256": "71d1340af230fd39e4c492285cd130af915fdb12fd31455d951de6db3e32854e",
+        "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "case": "occupied",
+        "frames": 168,
+        "collisions": 0,
+        "yield_s": 7.5,
+        "first_yield_s": 0.3,
+        "first_commit_s": 7.8,
+        "clearance_at_commit_m": 31.62,
+        "first_alongside_s": 15.2,
+        "completed_pass_s": 16.7,
+        "lead_travel_m": 23.082,
+        "lead_speed_during_pass_mps": 1.45,
+        "minimum_passing_clearance_m": 1.535,
+        "minimum_adjacent_gap_while_yielding_m": 0.001,
+        "max_yield_lateral_error_m": 0.0,
+        "ego_travel_m": 53.084,
+        "maximum_source_displacement_m": 3.519,
+        "hold_throttle_frames": 0,
+        "peak_speed_after_stop_mps": 0.013,
+        "unheld_frames_before_commit": 0,
+        "passed": true,
+        "geometry": {
+          "road_id": 67,
+          "source_lane": -2,
+          "target_lane": -1,
+          "station_interval_m": [
+            180,
+            300
+          ],
+          "ego_station_m": 210.0,
+          "native_sample_count": 121,
+          "center_separation_m": 3.499995642911837,
+          "minimum_lane_width_m": 3.5,
+          "maximum_lateral_residual_m": 1.4129763697745545e-05,
+          "length_m": 119.99999781233818,
+          "elevation_change_m": -2.362479901581537
+        }
+      },
+      "after": {
+        "directory": "matched-candidate/adjacent",
+        "summary_sha256": "884caf62fdd68f58b7bc9c2917e6678f8482544f7f319490344d5f05a29162e3",
+        "model_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "case": "occupied",
+        "frames": 165,
+        "collisions": 0,
+        "yield_s": 7.5,
+        "first_yield_s": 0.3,
+        "first_commit_s": 7.8,
+        "clearance_at_commit_m": 31.62,
+        "first_alongside_s": 15.2,
+        "completed_pass_s": 16.4,
+        "lead_travel_m": 22.647,
+        "lead_speed_during_pass_mps": 1.45,
+        "minimum_passing_clearance_m": 1.535,
+        "minimum_adjacent_gap_while_yielding_m": 0.001,
+        "max_yield_lateral_error_m": 0.0,
+        "ego_travel_m": 53.127,
+        "maximum_source_displacement_m": 3.519,
+        "hold_throttle_frames": 0,
+        "peak_speed_after_stop_mps": 0.013,
+        "unheld_frames_before_commit": 0,
+        "passed": true,
+        "geometry": {
+          "road_id": 67,
+          "source_lane": -2,
+          "target_lane": -1,
+          "station_interval_m": [
+            180,
+            300
+          ],
+          "ego_station_m": 210.0,
+          "native_sample_count": 121,
+          "center_separation_m": 3.499995642911837,
+          "minimum_lane_width_m": 3.5,
+          "maximum_lateral_residual_m": 1.4129763697745545e-05,
+          "length_m": 119.99999781233818,
+          "elevation_change_m": -2.362479901581537
+        }
+      }
+    },
+    {
+      "case": "adjacent-camera",
+      "before": {
+        "directory": "matched-baseline/adjacent-camera",
+        "summary_sha256": "53a5c85ab9dd9bfc8c896ddebdc6ca63524b5f9984101d50528ff41faf26dda7",
+        "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "case": "occupied",
+        "frames": 172,
+        "collisions": 0,
+        "yield_s": 7.0,
+        "first_yield_s": 0.3,
+        "first_commit_s": 7.7,
+        "clearance_at_commit_m": 30.723,
+        "first_alongside_s": 15.4,
+        "completed_pass_s": 17.1,
+        "lead_travel_m": 23.663,
+        "lead_speed_during_pass_mps": 1.45,
+        "minimum_passing_clearance_m": 1.535,
+        "minimum_adjacent_gap_while_yielding_m": 0.001,
+        "max_yield_lateral_error_m": 0.0,
+        "ego_travel_m": 53.976,
+        "maximum_source_displacement_m": 3.518,
+        "hold_throttle_frames": 2,
+        "peak_speed_after_stop_mps": 0.032,
+        "unheld_frames_before_commit": 4,
+        "passed": false,
+        "geometry": {
+          "road_id": 67,
+          "source_lane": -2,
+          "target_lane": -1,
+          "station_interval_m": [
+            180,
+            300
+          ],
+          "ego_station_m": 210.0,
+          "native_sample_count": 121,
+          "center_separation_m": 3.499995642911837,
+          "minimum_lane_width_m": 3.5,
+          "maximum_lateral_residual_m": 1.4129763697745545e-05,
+          "length_m": 119.99999781233818,
+          "elevation_change_m": -2.362479901581537
+        }
+      },
+      "after": {
+        "directory": "matched-candidate/adjacent-camera",
+        "summary_sha256": "0dce35a2746e5958a2a41291515512b972ee737de42abdb725fe8ac8aac32828",
+        "model_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "case": "occupied",
+        "frames": 177,
+        "collisions": 0,
+        "yield_s": 7.4,
+        "first_yield_s": 0.3,
+        "first_commit_s": 7.7,
+        "clearance_at_commit_m": 30.722,
+        "first_alongside_s": 14.9,
+        "completed_pass_s": 17.6,
+        "lead_travel_m": 24.389,
+        "lead_speed_during_pass_mps": 1.45,
+        "minimum_passing_clearance_m": 1.534,
+        "minimum_adjacent_gap_while_yielding_m": 0.001,
+        "max_yield_lateral_error_m": 0.0,
+        "ego_travel_m": 54.383,
+        "maximum_source_displacement_m": 3.519,
+        "hold_throttle_frames": 0,
+        "peak_speed_after_stop_mps": 0.013,
+        "unheld_frames_before_commit": 0,
+        "passed": true,
+        "geometry": {
+          "road_id": 67,
+          "source_lane": -2,
+          "target_lane": -1,
+          "station_interval_m": [
+            180,
+            300
+          ],
+          "ego_station_m": 210.0,
+          "native_sample_count": 121,
+          "center_separation_m": 3.499995642911837,
+          "minimum_lane_width_m": 3.5,
+          "maximum_lateral_residual_m": 1.4129763697745545e-05,
+          "length_m": 119.99999781233818,
+          "elevation_change_m": -2.362479901581537
+        }
+      }
+    },
+    {
+      "case": "no-lead",
+      "before": {
+        "directory": "matched-baseline/no-lead",
+        "summary_sha256": "d16e5938ccd144ec5d6042fb5585846fc739206e7cf508fbad64c5a0327b9040",
+        "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "case": "no-lead",
+        "frames": 71,
+        "collisions": 0,
+        "yield_s": 0.0,
+        "first_yield_s": null,
+        "first_commit_s": null,
+        "clearance_at_commit_m": null,
+        "first_alongside_s": null,
+        "completed_pass_s": null,
+        "lead_travel_m": null,
+        "lead_speed_during_pass_mps": null,
+        "minimum_passing_clearance_m": null,
+        "minimum_adjacent_gap_while_yielding_m": null,
+        "max_yield_lateral_error_m": null,
+        "ego_travel_m": 45.804,
+        "maximum_source_displacement_m": 0.0,
+        "passed": true,
+        "geometry": {
+          "road_id": 67,
+          "source_lane": -2,
+          "target_lane": -1,
+          "station_interval_m": [
+            180,
+            300
+          ],
+          "ego_station_m": 210.0,
+          "native_sample_count": 121,
+          "center_separation_m": 3.499995642911837,
+          "minimum_lane_width_m": 3.5,
+          "maximum_lateral_residual_m": 1.4129763697745545e-05,
+          "length_m": 119.99999781233818,
+          "elevation_change_m": -2.362479901581537
+        }
+      },
+      "after": {
+        "directory": "matched-candidate/no-lead",
+        "summary_sha256": "cee0cfdbe69b5ba1d89fe4f098669ac46d87bb1b36db259f643feea27a427375",
+        "model_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "case": "no-lead",
+        "frames": 71,
+        "collisions": 0,
+        "yield_s": 0.0,
+        "first_yield_s": null,
+        "first_commit_s": null,
+        "clearance_at_commit_m": null,
+        "first_alongside_s": null,
+        "completed_pass_s": null,
+        "lead_travel_m": null,
+        "lead_speed_during_pass_mps": null,
+        "minimum_passing_clearance_m": null,
+        "minimum_adjacent_gap_while_yielding_m": null,
+        "max_yield_lateral_error_m": null,
+        "ego_travel_m": 45.682,
+        "maximum_source_displacement_m": 0.0,
+        "passed": true,
+        "geometry": {
+          "road_id": 67,
+          "source_lane": -2,
+          "target_lane": -1,
+          "station_interval_m": [
+            180,
+            300
+          ],
+          "ego_station_m": 210.0,
+          "native_sample_count": 121,
+          "center_separation_m": 3.499995642911837,
+          "minimum_lane_width_m": 3.5,
+          "maximum_lateral_residual_m": 1.4129763697745545e-05,
+          "length_m": 119.99999781233818,
+          "elevation_change_m": -2.362479901581537
+        }
+      }
+    },
+    {
+      "case": "departing-lead",
+      "before": {
+        "directory": "matched-baseline/departing-lead",
+        "summary_sha256": "31a324d8ab991c8ce962fbe0a9490c6208d6c93df44cd47eb421a0985a4b57a2",
+        "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "case": "departing-lead",
+        "frames": 131,
+        "collisions": 0,
+        "yield_s": 5.2,
+        "first_yield_s": 0.3,
+        "first_commit_s": null,
+        "clearance_at_commit_m": null,
+        "first_alongside_s": null,
+        "completed_pass_s": null,
+        "lead_travel_m": null,
+        "lead_speed_during_pass_mps": null,
+        "minimum_passing_clearance_m": null,
+        "minimum_adjacent_gap_while_yielding_m": 2.876,
+        "max_yield_lateral_error_m": 0.0,
+        "ego_travel_m": 30.416,
+        "maximum_source_displacement_m": 0.0,
+        "lead_accelerated_s": 4.3,
+        "resumed_following_s": 6.9,
+        "premature_throttle_frames": 0,
+        "minimum_lead_gap_m": 19.121,
+        "passed": true,
+        "geometry": {
+          "road_id": 67,
+          "source_lane": -2,
+          "target_lane": -1,
+          "station_interval_m": [
+            180,
+            300
+          ],
+          "ego_station_m": 210.0,
+          "native_sample_count": 121,
+          "center_separation_m": 3.499995642911837,
+          "minimum_lane_width_m": 3.5,
+          "maximum_lateral_residual_m": 1.4129763697745545e-05,
+          "length_m": 119.99999781233818,
+          "elevation_change_m": -2.362479901581537
+        }
+      },
+      "after": {
+        "directory": "matched-candidate/departing-lead",
+        "summary_sha256": "ccbdd421de30e34c4d38a9ff1b4ac96ba16596eb9d897d89d1c6aa54fca473a4",
+        "model_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "case": "departing-lead",
+        "frames": 130,
+        "collisions": 0,
+        "yield_s": 5.4,
+        "first_yield_s": 0.3,
+        "first_commit_s": null,
+        "clearance_at_commit_m": null,
+        "first_alongside_s": null,
+        "completed_pass_s": null,
+        "lead_travel_m": null,
+        "lead_speed_during_pass_mps": null,
+        "minimum_passing_clearance_m": null,
+        "minimum_adjacent_gap_while_yielding_m": 2.876,
+        "max_yield_lateral_error_m": 0.0,
+        "ego_travel_m": 30.542,
+        "maximum_source_displacement_m": 0.0,
+        "lead_accelerated_s": 4.3,
+        "resumed_following_s": 7.1,
+        "premature_throttle_frames": 0,
+        "minimum_lead_gap_m": 19.121,
+        "passed": true,
+        "geometry": {
+          "road_id": 67,
+          "source_lane": -2,
+          "target_lane": -1,
+          "station_interval_m": [
+            180,
+            300
+          ],
+          "ego_station_m": 210.0,
+          "native_sample_count": 121,
+          "center_separation_m": 3.499995642911837,
+          "minimum_lane_width_m": 3.5,
+          "maximum_lateral_residual_m": 1.4129763697745545e-05,
+          "length_m": 119.99999781233818,
+          "elevation_change_m": -2.362479901581537
+        }
+      }
+    },
+    {
+      "case": "left",
+      "before": {
+        "directory": "matched-baseline/left",
+        "summary_sha256": "b584fbd41ba6e7dc1fec1e515c2fc74380ba735bd4f7915863351b7e9e198947",
+        "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 271,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 27.1,
+        "seed": 624,
+        "progress_m": 1085.507,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 1025.0,
+            "end_m": 1045.0,
+            "frames": 87,
+            "seconds": 8.7,
+            "median_kmh": 8.24,
+            "median_request_kmh": 8.48,
+            "seconds_below_10_kmh": 4.9
+          },
+          {
+            "start_m": 1046.0,
+            "end_m": 1077.0,
+            "frames": 89,
+            "seconds": 8.9,
+            "median_kmh": 12.64,
+            "median_request_kmh": 12.99,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": "left",
+        "events": [
+          {
+            "kind": "left",
+            "station_m": 1044.17,
+            "phase": "oncoming cleared",
+            "triggered": true,
+            "cleared": true,
+            "exposed": true,
+            "passed": true,
+            "handled": true,
+            "violation": false,
+            "stopped_for_event": true,
+            "minimum_gap_m": 2.2,
+            "triggered_s": 6.6,
+            "exposed_s": 6.9,
+            "cleared_s": 13.3,
+            "passed_s": 19.9
+          }
+        ],
+        "nearest_target_footprint": {
+          "frame": 1782,
+          "sim_time": 15.4,
+          "gap_m": 4.684,
+          "ego_kmh": 11.06
+        },
+        "source_front_sha256": "8bc6278fcf130bf71ce1e9aa1f0b19f54070490d7afa42534947a804d30b87ea"
+      },
+      "after": {
+        "directory": "matched-candidate/left",
+        "summary_sha256": "dbf0ca7aff778467f23b0a4811cc469f5ba66e92bd5d55260795beb78b54fb90",
+        "model_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 220,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 22.0,
+        "seed": 624,
+        "progress_m": 1085.512,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 1025.0,
+            "end_m": 1045.0,
+            "frames": 78,
+            "seconds": 7.8,
+            "median_kmh": 9.11,
+            "median_request_kmh": 7.94,
+            "seconds_below_10_kmh": 4.2
+          },
+          {
+            "start_m": 1046.0,
+            "end_m": 1077.0,
+            "frames": 55,
+            "seconds": 5.5,
+            "median_kmh": 20.67,
+            "median_request_kmh": 24.86,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": "left",
+        "events": [
+          {
+            "kind": "left",
+            "station_m": 1044.17,
+            "phase": "oncoming cleared",
+            "triggered": true,
+            "cleared": true,
+            "exposed": true,
+            "passed": true,
+            "handled": true,
+            "violation": false,
+            "stopped_for_event": true,
+            "minimum_gap_m": 0.34,
+            "triggered_s": 6.5,
+            "exposed_s": 6.8,
+            "cleared_s": 13.2,
+            "passed_s": 18.2
+          }
+        ],
+        "nearest_target_footprint": {
+          "frame": 1599,
+          "sim_time": 15.0,
+          "gap_m": 4.645,
+          "ego_kmh": 11.14
+        },
+        "source_front_sha256": "617fc20e84792730f0a9a58ebaf86ce4d7fa2a056d869f43bce6fdb1479823e1"
+      },
+      "differences": [
+        {
+          "start_m": 1025.0,
+          "end_m": 1045.0,
+          "seconds_saved": 0.9,
+          "median_change_kmh": 0.87
+        },
+        {
+          "start_m": 1046.0,
+          "end_m": 1077.0,
+          "seconds_saved": 3.4,
+          "median_change_kmh": 8.03
+        }
+      ]
+    },
+    {
+      "case": "occluded",
+      "before": {
+        "directory": "matched-baseline/occluded",
+        "summary_sha256": "cdde25289f81297acb6329e3954abb0df24f67d305df9a662f36bbd3a543f27d",
+        "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 197,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 19.7,
+        "seed": 623,
+        "progress_m": 171.732,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 124.0,
+            "end_m": 148.0,
+            "frames": 109,
+            "seconds": 10.9,
+            "median_kmh": 4.46,
+            "median_request_kmh": 5.41,
+            "seconds_below_10_kmh": 6.9
+          },
+          {
+            "start_m": 150.0,
+            "end_m": 168.0,
+            "frames": 26,
+            "seconds": 2.6,
+            "median_kmh": 26.27,
+            "median_request_kmh": 30.0,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": "occluded",
+        "events": [
+          {
+            "kind": "occluded",
+            "station_m": 147.99,
+            "phase": "leaving",
+            "triggered": true,
+            "cleared": true,
+            "exposed": true,
+            "passed": true,
+            "handled": true,
+            "violation": false,
+            "stopped_for_event": true,
+            "minimum_gap_m": 3.58,
+            "curb_origin_lateral_m": 6.135,
+            "approach_s": 4.1,
+            "blocked_view_s": 4.5,
+            "triggered_s": 4.6,
+            "emerged_s": 7.1,
+            "exposed_s": 8.3,
+            "cleared_s": 13.5,
+            "passed_s": 17.4
+          }
+        ],
+        "nearest_target_footprint": {
+          "frame": 2356,
+          "sim_time": 14.6,
+          "gap_m": 3.514,
+          "ego_kmh": 6.21
+        },
+        "source_front_sha256": "a6952af6ce16b768f87a3b6b9f8be2ed9eeeab27710f31037af9bdbcef7401c4"
+      },
+      "after": {
+        "directory": "matched-candidate/occluded",
+        "summary_sha256": "97a26eba6dd8c4e7ef937c6c3f11a1b3679843cb53c2013332671103da662b67",
+        "model_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 194,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 19.4,
+        "seed": 623,
+        "progress_m": 171.278,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 124.0,
+            "end_m": 148.0,
+            "frames": 106,
+            "seconds": 10.6,
+            "median_kmh": 3.91,
+            "median_request_kmh": 5.0,
+            "seconds_below_10_kmh": 6.6
+          },
+          {
+            "start_m": 150.0,
+            "end_m": 168.0,
+            "frames": 26,
+            "seconds": 2.6,
+            "median_kmh": 25.72,
+            "median_request_kmh": 30.0,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": "occluded",
+        "events": [
+          {
+            "kind": "occluded",
+            "station_m": 147.99,
+            "phase": "leaving",
+            "triggered": true,
+            "cleared": true,
+            "exposed": true,
+            "passed": true,
+            "handled": true,
+            "violation": false,
+            "stopped_for_event": true,
+            "minimum_gap_m": 2.21,
+            "curb_origin_lateral_m": 6.135,
+            "approach_s": 4.1,
+            "blocked_view_s": 4.5,
+            "triggered_s": 4.6,
+            "emerged_s": 7.1,
+            "exposed_s": 8.3,
+            "cleared_s": 13.5,
+            "passed_s": 17.1
+          }
+        ],
+        "nearest_target_footprint": {
+          "frame": 2062,
+          "sim_time": 9.1,
+          "gap_m": 2.331,
+          "ego_kmh": 0.27
+        },
+        "source_front_sha256": "0bd3beae17c74741191f54c284f987c6421aeee368340c222df3ce2a408f0d05"
+      },
+      "differences": [
+        {
+          "start_m": 124.0,
+          "end_m": 148.0,
+          "seconds_saved": 0.3,
+          "median_change_kmh": -0.55
+        },
+        {
+          "start_m": 150.0,
+          "end_m": 168.0,
+          "seconds_saved": 0.0,
+          "median_change_kmh": -0.55
+        }
+      ]
+    },
+    {
+      "case": "delayed",
+      "before": {
+        "directory": "matched-baseline/delayed",
+        "summary_sha256": "fbf2ae6ad1abb91eab5b62fdc1b527b57c68c9e16a5615b083e4831d28f236f5",
+        "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 329,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 32.9,
+        "seed": 626,
+        "progress_m": 1333.222,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 1256.0,
+            "end_m": 1278.0,
+            "frames": 91,
+            "seconds": 9.1,
+            "median_kmh": 9.64,
+            "median_request_kmh": 10.45,
+            "seconds_below_10_kmh": 4.7
+          },
+          {
+            "start_m": 1286.0,
+            "end_m": 1325.0,
+            "frames": 107,
+            "seconds": 10.7,
+            "median_kmh": 13.1,
+            "median_request_kmh": 13.01,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": "pedestrian-delayed",
+        "events": [
+          {
+            "kind": "pedestrian-delayed",
+            "station_m": 1276.65,
+            "phase": "leaving",
+            "triggered": true,
+            "cleared": true,
+            "exposed": true,
+            "passed": true,
+            "handled": true,
+            "violation": false,
+            "stopped_for_event": true,
+            "minimum_gap_m": 3.66,
+            "curb_origin_lateral_m": 6.635,
+            "approach_s": 3.8,
+            "triggered_s": 5.9,
+            "exposed_s": 10.0,
+            "cleared_s": 15.2,
+            "passed_s": 19.3
+          }
+        ],
+        "nearest_target_footprint": {
+          "frame": 2581,
+          "sim_time": 16.5,
+          "gap_m": 3.326,
+          "ego_kmh": 9.74
+        },
+        "source_front_sha256": "c2b77cd16d4f222ab8756e812ed7fd10b85b5b8b961e16015a7442a00e58ba9d"
+      },
+      "after": {
+        "directory": "matched-candidate/delayed",
+        "summary_sha256": "36ebb303a4122f56dd0ce734ce7f784a64f76392f8ab04f599ba3c8686ba20be",
+        "model_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 285,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 28.5,
+        "seed": 626,
+        "progress_m": 1333.733,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 1256.0,
+            "end_m": 1278.0,
+            "frames": 115,
+            "seconds": 11.5,
+            "median_kmh": 2.5,
+            "median_request_kmh": 2.66,
+            "seconds_below_10_kmh": 7.4
+          },
+          {
+            "start_m": 1286.0,
+            "end_m": 1325.0,
+            "frames": 71,
+            "seconds": 7.1,
+            "median_kmh": 20.34,
+            "median_request_kmh": 22.33,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": "pedestrian-delayed",
+        "events": [
+          {
+            "kind": "pedestrian-delayed",
+            "station_m": 1276.65,
+            "phase": "leaving",
+            "triggered": true,
+            "cleared": true,
+            "exposed": true,
+            "passed": true,
+            "handled": true,
+            "violation": false,
+            "stopped_for_event": true,
+            "minimum_gap_m": 4.35,
+            "curb_origin_lateral_m": 6.635,
+            "approach_s": 3.6,
+            "triggered_s": 5.7,
+            "exposed_s": 9.8,
+            "cleared_s": 15.0,
+            "passed_s": 19.5
+          }
+        ],
+        "nearest_target_footprint": {
+          "frame": 2343,
+          "sim_time": 16.9,
+          "gap_m": 4.152,
+          "ego_kmh": 10.92
+        },
+        "source_front_sha256": "059eac0b012205fe1b6bdf8b4983e0bdd5431d663fff567a56cb21eb9be74e44"
+      },
+      "differences": [
+        {
+          "start_m": 1256.0,
+          "end_m": 1278.0,
+          "seconds_saved": -2.4,
+          "median_change_kmh": -7.14
+        },
+        {
+          "start_m": 1286.0,
+          "end_m": 1325.0,
+          "seconds_saved": 3.6,
+          "median_change_kmh": 7.24
+        }
+      ]
+    },
+    {
+      "case": "signal",
+      "before": {
+        "directory": "matched-baseline/signal",
+        "summary_sha256": "c2c15a446e5a6d3c83523c6407ca31852ec3fc44c79d0f3cf9f546755c55a7e4",
+        "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 293,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 29.3,
+        "seed": 625,
+        "progress_m": 363.189,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 299.0,
+            "end_m": 323.0,
+            "frames": 120,
+            "seconds": 12.0,
+            "median_kmh": 8.43,
+            "median_request_kmh": 9.05,
+            "seconds_below_10_kmh": 6.3
+          },
+          {
+            "start_m": 324.0,
+            "end_m": 352.0,
+            "frames": 77,
+            "seconds": 7.7,
+            "median_kmh": 12.8,
+            "median_request_kmh": 13.01,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": "signal",
+        "events": [
+          {
+            "kind": "signal",
+            "station_m": 321.27,
+            "phase": "green",
+            "triggered": true,
+            "cleared": true,
+            "exposed": true,
+            "passed": true,
+            "handled": true,
+            "violation": false,
+            "stopped_for_event": true,
+            "minimum_gap_m": 3.74,
+            "queue_exposed_s": 2.9,
+            "triggered_s": 4.8,
+            "exposed_s": 4.8,
+            "cleared_s": 12.0,
+            "queue_departed_green_s": 13.5,
+            "crossed_green_s": 17.7,
+            "passed_s": 20.0
+          }
+        ],
+        "nearest_target_footprint": {
+          "frame": 1996,
+          "sim_time": 8.8,
+          "gap_m": 3.669,
+          "ego_kmh": 0.01
+        },
+        "source_front_sha256": "d58d6726f0aa16b264a21ac35a0012356de3b63fe25d1f8b32df582c06eaa83a"
+      },
+      "after": {
+        "directory": "matched-candidate/signal",
+        "summary_sha256": "4b4980cd6029beb99553fedb2891554b3c32b81fc928659ae99fcc5a3d922043",
+        "model_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 284,
+        "outcome": "restarted",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 28.4,
+        "seed": 625,
+        "progress_m": 363.337,
+        "passed": true,
+        "windows": [
+          {
+            "start_m": 299.0,
+            "end_m": 323.0,
+            "frames": 123,
+            "seconds": 12.3,
+            "median_kmh": 8.36,
+            "median_request_kmh": 9.07,
+            "seconds_below_10_kmh": 6.7
+          },
+          {
+            "start_m": 324.0,
+            "end_m": 352.0,
+            "frames": 70,
+            "seconds": 7.0,
+            "median_kmh": 13.49,
+            "median_request_kmh": 13.36,
+            "seconds_below_10_kmh": 0.0
+          }
+        ],
+        "target_event": "signal",
+        "events": [
+          {
+            "kind": "signal",
+            "station_m": 321.27,
+            "phase": "green",
+            "triggered": true,
+            "cleared": true,
+            "exposed": true,
+            "passed": true,
+            "handled": true,
+            "violation": false,
+            "stopped_for_event": true,
+            "minimum_gap_m": 3.73,
+            "queue_exposed_s": 2.8,
+            "triggered_s": 4.4,
+            "exposed_s": 4.4,
+            "cleared_s": 11.6,
+            "queue_departed_green_s": 13.1,
+            "crossed_green_s": 17.5,
+            "passed_s": 19.8
+          }
+        ],
+        "nearest_target_footprint": {
+          "frame": 1761,
+          "sim_time": 8.3,
+          "gap_m": 3.659,
+          "ego_kmh": 0.02
+        },
+        "source_front_sha256": "bbfc0b075173e881762d900b29e39b75d67f49d0f424dd2a0ea578d53647851d"
+      },
+      "differences": [
+        {
+          "start_m": 299.0,
+          "end_m": 323.0,
+          "seconds_saved": -0.3,
+          "median_change_kmh": -0.07
+        },
+        {
+          "start_m": 324.0,
+          "end_m": 352.0,
+          "seconds_saved": 0.7,
+          "median_change_kmh": 0.69
+        }
+      ]
+    },
+    {
+      "case": "reopened-board",
+      "before": {
+        "directory": "matched-baseline/reopened-board",
+        "summary_sha256": "3393ea8975d51952e750e881e7ea0a177970ad84403dc310bbeec27e81c74955",
+        "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 292,
+        "outcome": "complete",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 29.2,
+        "seed": 621,
+        "progress_m": 79.628,
+        "longest_stop_s": 9.9,
+        "minimum_stopped_gap_m": 3.182681702000508,
+        "intersects_board": false,
+        "passed": true,
+        "path_reopening": {
+          "time_s": 18.6,
+          "frame": 2940,
+          "seconds_to_kmh": {
+            "5": 4.5,
+            "10": 5.7,
+            "15": 6.4,
+            "20": 7.2
+          }
+        }
+      },
+      "after": {
+        "directory": "matched-candidate/reopened-board",
+        "summary_sha256": "f5c772d4cb95e4e63686d85f1e7aa36b687cd001cf80acfe320fd81b3268c700",
+        "model_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+        "producer": {
+          "server_version": "1.0",
+          "client_version": "1.0",
+          "map": "Town03_Opt"
+        },
+        "frames": 290,
+        "outcome": "complete",
+        "collision_events": 0,
+        "red_light_violations": 0,
+        "yield_violations": 0,
+        "duration_s": 29.0,
+        "seed": 621,
+        "progress_m": 79.815,
+        "longest_stop_s": 9.9,
+        "minimum_stopped_gap_m": 3.182681702000508,
+        "intersects_board": false,
+        "passed": true,
+        "path_reopening": {
+          "time_s": 18.6,
+          "frame": 2654,
+          "seconds_to_kmh": {
+            "5": 4.5,
+            "10": 5.4,
+            "15": 6.2,
+            "20": 6.9
+          }
+        }
+      }
+    }
+  ],
+  "passed": true
+}

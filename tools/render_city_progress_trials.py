@@ -12,7 +12,8 @@ import numpy as np
 
 SECTIONS = (("through", 650., 688., "Straight through junction 82"),
             ("through", 701., 731., "Straight through junction 1932"),
-            ("bus", 855., 882., "Stopped bus and return to pace"))
+            ("bus", 855., 882., "Stopped bus and return to pace"),
+            ("bus-crossing", 862., 878., "A pedestrian crosses from behind the bus"))
 
 
 def fingerprint(path):
