@@ -4,15 +4,17 @@
 
 import {recordedChapters} from './encounter-chapters.mjs';
 import {loadReplay} from './replay-pack.mjs';
+import {cornerReturns, lidarCount} from './sensor-returns.mjs';
+import {cameraBoxes, cameraLamp, measuredHeads, LAMP_COLOURS} from './lamp-observations.mjs';
 
 const CAR_URL = './vehicle-assets/waymo-ipace.glb';
 const TOWN_URL = './media/town.json';
-const CAMERA_LABELS = {front: 'Front', chase: 'Chase'};
-const CAMERA_ORDER = ['front', 'chase'];
+const CAMERA_LABELS = {front: 'Front', chase: 'Chase', left: 'Left', right: 'Right', rear_left: 'Rear left', rear_right: 'Rear right', infrared: 'Thermal'};
+const CAMERA_ORDER = Object.keys(CAMERA_LABELS);
 const LOCAL_CONSOLE = ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname);
 const POLICY_LABELS = {
   fusion: 'Learned multisensor', camera: 'Learned vision',
-  'ado-city-policy-v1': 'ADO city driver', 'ado-behavior-v2': 'ADO behavior v2',
+  'ado-city-cruise-v1': 'ADO urban cruise', 'ado-city-policy-v1': 'ADO city driver', 'ado-behavior-v2': 'ADO behavior v2',
   demonstrator: 'Training instructor', teacher: 'Training instructor'
 };
 const OUTCOME_LABELS = {complete: 'Route complete', red_light: 'Red-light violation'};
@@ -205,7 +207,7 @@ async function loadSceneMap(url = TOWN_URL, mapName = null) {
   const request = {url, mapName, control: new AbortController()};
   stage.mapRequest = request;
   try {
-    if (typeof url !== 'string' || !/^\.\/media\/(?:[\w-]+\/)*[\w-]+\.json$/i.test(url)) throw new Error('Invalid road map path');
+    if (typeof url !== 'string' || (url !== './api/map' && !/^\.\/media\/(?:[\w-]+\/)*[\w-]+\.json$/i.test(url))) throw new Error('Invalid road map path');
     const data = await getJson(url, {timeout: 30000, signal: request.control.signal});
     if (stage.mapRequest !== request) return;
     if (!Array.isArray(data.roads) || !data.roads.length || (mapName && data.producer?.map !== mapName)) {
@@ -244,7 +246,8 @@ async function bootScene() {
   $('view').dataset.scene = 'on';
   sceneCall('setView', state.view);
   for (const [layer, visible] of Object.entries(state.layers)) sceneCall('setLayer', layer, visible);
-  if (state.frame) sceneCall('update', state.frame);
+  if (state.replay) presentAt(position());
+  else if (state.frame) sceneCall('update', state.frame);
 
   note('note-scene', 'Loading the vehicle…');
   const scene = stage.scene;
@@ -253,7 +256,8 @@ async function bootScene() {
     .then(() => true, error => { console.error(error); return false; });
   const [carReady] = await Promise.all([car, loadSceneMap(stage.mapUrl, stage.mapName)]);
   if (!stage.faulted) note('note-scene', carReady ? '' : 'The vehicle model could not be loaded.');
-  if (state.frame) sceneCall('update', state.frame);
+  if (state.replay) presentAt(position());
+  else if (state.frame) sceneCall('update', state.frame);
 }
 
 function setView(view) {
@@ -264,6 +268,7 @@ function setView(view) {
 
 function setLayer(layer, visible) {
   state.layers[layer] = visible;
+  if(layer==='tracks')renderCameraBoxes();
   sceneCall('setLayer', layer, visible);
   for (const button of layerButtons) {
     if (button.dataset.layer === layer) attr(button, 'aria-pressed', String(visible));
@@ -274,7 +279,7 @@ function renderLayers(frame) {
   const available = {
     path: !frame || (Array.isArray(frame.observer_map?.path) && frame.observer_map.path.length > 1),
     tracks: !frame || Array.isArray(frame.tracks),
-    returns: !frame || Array.isArray(frame.lidar) || Array.isArray(frame.radar)
+    returns: !frame || Array.isArray(frame.lidar_xyz) || Array.isArray(frame.lidar) || Array.isArray(frame.radar) || Boolean(frame.corner_radar)
   };
   for (const button of layerButtons) {
     const ready = available[button.dataset.layer];
@@ -355,6 +360,9 @@ function trackMeta(track) {
   } else if (Array.isArray(track.sources) && track.sources.length) {
     parts.push(track.sources.map(source => SOURCE_LABELS[source] ?? sentence(String(source))).join(' + '));
   }
+  if (Array.isArray(track.cameras) && track.cameras.length) {
+    parts.push(track.cameras.map(view => String(view).replaceAll('_', ' ')).join(' / '));
+  }
   if (finite(track.speed_mps)) parts.push(`${whole.format(track.speed_mps * 3.6)} km/h`);
   if (finite(track.radial_mps)) parts.push(`Doppler ${signedTenth.format(track.radial_mps)} m/s`);
   return parts.join(' · ');
@@ -363,6 +371,23 @@ function trackMeta(track) {
 function renderSensing(frame) {
   const visible = Boolean(frame) && state.source !== 'training';
   show('sensing', visible);
+  const counts=new Map();
+  for(const head of measuredHeads(frame)){
+    const lamp=cameraLamp(head);
+    if(lamp==='unknown')continue;
+    const key=`${lamp}/${head.view??''}`;
+    counts.set(key,(counts.get(key)??0)+1);
+  }
+  const lights=$('camera-lights');
+  lights.hidden=!counts.size;
+  lights.replaceChildren(...[...counts].map(([key,count])=>{
+    const [lamp,view]=key.split('/');
+    const row=document.createElement('li');
+    row.style.setProperty('--lamp',LAMP_COLOURS[lamp]);
+    const label=count>1?`${count} ${lamp} lights`:`${sentence(lamp)} light`;
+    row.textContent=`${label} · ${CAMERA_LABELS[view]??'RGB'} camera`;
+    return row;
+  }));
   if (!visible) {
     show('ahead', false);
     trackSignature = '';
@@ -427,8 +452,8 @@ function renderSensing(frame) {
     $('ahead').dataset.kind = trackKind(lead.track.label);
   }
 
-  const lidar = Array.isArray(frame.lidar) ? frame.lidar.length : null;
-  const radar = Array.isArray(frame.radar) ? frame.radar.length : null;
+  const lidar = lidarCount(frame);
+  const radar = frame.corner_radar || Array.isArray(frame.radar) ? (frame.radar?.length??0)+cornerReturns(frame).length : null;
   show('returns-line', lidar != null || radar != null);
   text('lidar-count', lidar == null ? null : whole.format(lidar));
   text('radar-count', radar == null ? null : whole.format(radar));
@@ -538,6 +563,7 @@ function renderTelemetry(frame) {
   text('live-clock', clockLabel(frame?.sim_time));
   text('live-frame', finite(frame?.frame) ? String(frame.frame) : null);
   renderSensing(frame);
+  renderCameraBoxes();
   renderLayers(frame);
   renderFrameFacts(frame);
 }
@@ -557,7 +583,7 @@ function renderSource() {
     attr(button, 'aria-pressed', String(live ? state.source === 'live' : state.source !== 'live'));
     if (live) button.dataset.active = String(state.liveActive && state.source !== 'live');
   }
-  show('idle-hint', state.local && !state.liveActive);
+  show('idle-hint', state.local && !state.liveActive && state.source !== 'recorded');
   show('idle-link', state.controls);
 }
 
@@ -682,7 +708,7 @@ function renderRun() {
   hashFact('checkpoint', recorded ? run?.model_sha256 : null,
     checkpoint?.sha256 && checkpoint.sha256 === run?.model_sha256 ? checkpoint.url : null);
   const revision = run?.source ?? build?.legacy_run_source ?? build?.source;
-  hashFact('revision', source === 'recorded' || source === 'training' ? revision?.commit : null, revision?.url);
+  hashFact('revision', source === 'recorded' || source === 'training' ? (revision?.commit ?? revision?.fingerprint) : null, revision?.url);
   renderFrameFacts(state.frame);
   renderChapters();
   renderRunLinks();
@@ -730,7 +756,7 @@ function isPlaying() {
   return videoPending() ? clock.pendingPlay : clock.playing;
 }
 
-function frameAt(time) {
+function presentAt(time) {
   const {frames, times} = state.replay;
   let low = 0;
   let high = times.length - 1;
@@ -739,7 +765,13 @@ function frameAt(time) {
     if (times[middle] <= time + .001) low = middle;
     else high = middle - 1;
   }
-  return frames[low];
+  const frame = frames[low];
+  const fraction = times[low + 1] > times[low] ? clamp((time - times[low]) / (times[low + 1] - times[low]), 0, 1) : 0;
+  if (state.frame !== frame) {
+    state.frame = frame;
+    renderTelemetry(frame);
+  }
+  sceneCall('updateReplay', frames, low, fraction);
 }
 
 // Frames without their own video timestamps map one-to-one onto the video's frames.
@@ -755,7 +787,7 @@ function alignToVideo(replay, length) {
 function syncNow() {
   if (state.source === 'live') return;
   // The training log only ever follows its own footage.
-  if (state.replay && (clock.video || timerDriven())) present(frameAt(position()));
+  if (state.replay && (clock.video || timerDriven())) presentAt(position());
   renderClock();
 }
 
@@ -865,6 +897,7 @@ function videoUrl() {
 function setCameras(cameras) {
   state.cameras = cameras;
   state.camera = cameras.includes(state.preferredCamera) ? state.preferredCamera : cameras[0] ?? null;
+  $('camera-list').replaceChildren(...cameras.map(camera => new Option(CAMERA_LABELS[camera], camera)));
   renderFeed();
 }
 
@@ -875,7 +908,29 @@ function setFeed(size, chosen = false) {
   renderFeed();
 }
 
+function renderCameraBoxes() {
+  const overlay=$('feed-observations');
+  const live=state.source==='live';
+  const width=live?still.naturalWidth:film.videoWidth;
+  const height=live?still.naturalHeight:film.videoHeight;
+  const boxes=state.layers.tracks && (live||clock.video) && width && height ? cameraBoxes(state.frame,state.camera) : [];
+  overlay.replaceChildren();
+  if(!boxes.length)return;
+  // SVG's default meet alignment matches the media element's object-fit: contain.
+  overlay.setAttribute('viewBox',`0 0 ${width} ${height}`);
+  for(const item of boxes){
+    const [x0,y0,x1,y1]=item.box.map(n=>clamp(n,0,1));
+    const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x',x0*width);rect.setAttribute('y',y0*height);
+    rect.setAttribute('width',(x1-x0)*width);rect.setAttribute('height',(y1-y0)*height);
+    rect.setAttribute('stroke',item.lamp?LAMP_COLOURS[item.lamp]:trackKind(item.label)==='vru'?'#ffb76b':'#9edbd6');
+    if(item.range_supported===false)rect.setAttribute('stroke-dasharray','3 2');
+    overlay.append(rect);
+  }
+}
+
 function renderFeed() {
+  renderCameraBoxes();
   const source = state.source;
   const camera = state.camera ? CAMERA_LABELS[state.camera] : '';
   const live = state.liveActive ? 'Live' : state.frame ? 'Last frame' : '';
@@ -887,7 +942,10 @@ function renderFeed() {
   tagElement.hidden = !tag;
   tagElement.dataset.mode = source === 'live' && !state.liveActive ? 'idle' : source;
 
-  show('cam-switch', state.cameras.length > 1);
+  const list = state.cameras.some(camera => !['front','chase'].includes(camera));
+  show('cam-switch', !list && state.cameras.length > 1);
+  show('camera-list', list);
+  if (state.camera) $('camera-list').value = state.camera;
   for (const button of cameraButtons) {
     attr(button, 'aria-pressed', String(button.dataset.camera === state.camera));
     button.hidden = !state.cameras.includes(button.dataset.camera);
@@ -924,6 +982,7 @@ function videoReady() {
 }
 film.addEventListener('loadedmetadata', videoReady);
 film.addEventListener('canplay', videoReady);
+still.addEventListener('load', renderCameraBoxes);
 
 film.addEventListener('error', () => {
   if (!film.hasAttribute('src')) return;
@@ -1099,14 +1158,14 @@ async function openRecorded(entry, startSeconds = 0) {
   state.replay = replay;
   setMode('recorded', 'Recorded');
 
-  const listed = Array.isArray(entry.cameras) ? entry.cameras : Array.isArray(replay?.cameras) ? replay.cameras : CAMERA_ORDER;
+  const listed = Array.isArray(entry.cameras) ? entry.cameras : Array.isArray(replay?.cameras) ? replay.cameras : ['front','chase'];
   setCameras([...new Set(listed.filter(camera => CAMERA_ORDER.includes(camera)))]);
   const start = replay && finite(startSeconds) ? Math.max(0, Math.min(startSeconds, replay.end)) : 0;
-  if (replay) present(frameAt(start));
+  if (replay) presentAt(start);
   if (state.camera) {
     loadVideo(videoUrl(), start, !reducedMotion);
   } else {
-    feedNote('No front or chase footage is listed for this run.');
+    feedNote('No camera footage is listed for this run.');
     clock.playing = Boolean(replay) && !reducedMotion;
     if (!replay) setMode('unavailable', 'Unavailable');
   }
@@ -1232,7 +1291,7 @@ function showLive(frame) {
   setMode('live', 'Live');
   if (frame.run_id !== state.liveRun) {
     state.liveRun = frame.run_id;
-    void loadSceneMap(frame.map_url ?? TOWN_URL, frame.map ?? null);
+    void loadSceneMap(frame.map_url ?? TOWN_URL, frame.map?.split('/').at(-1) ?? null);
     renderRun();
   }
   showLiveImage(frame);
@@ -1395,20 +1454,19 @@ function bind() {
     button.addEventListener('click', () => setLayer(button.dataset.layer, !state.layers[button.dataset.layer]));
   }
 
-  for (const button of cameraButtons) {
-    button.addEventListener('click', () => {
-      const camera = button.dataset.camera;
-      if (camera === state.camera || !state.cameras.includes(camera)) return;
-      state.preferredCamera = camera;
-      state.camera = camera;
-      if (state.source === 'live') {
-        showLiveImage(state.frame);
-        renderFeed();
-      } else if (state.source === 'recorded') {
-        loadVideo(videoUrl(), position(), isPlaying());
-      }
-    });
+  function selectCamera(camera) {
+    if (camera === state.camera || !state.cameras.includes(camera)) return;
+    state.preferredCamera = camera;
+    state.camera = camera;
+    if (state.source === 'live') {
+      showLiveImage(state.frame);
+      renderFeed();
+    } else if (state.source === 'recorded') {
+      loadVideo(videoUrl(), position(), isPlaying());
+    }
   }
+  for (const button of cameraButtons) button.addEventListener('click', () => selectCamera(button.dataset.camera));
+  $('camera-list').addEventListener('change', event => selectCamera(event.target.value));
 
   $('feed-size').addEventListener('click', () => setFeed(state.feed === 'dock' ? 'inset' : 'dock', true));
   $('play').addEventListener('click', togglePlay);

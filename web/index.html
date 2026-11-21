@@ -126,10 +126,12 @@
           <div class="feed-frame">
             <video id="film" muted playsinline preload="auto" hidden></video>
             <img id="still" alt="" hidden>
+            <svg id="feed-observations" aria-hidden="true"></svg>
             <p class="feed-note" id="feed-note" role="status">Waiting for footage…</p>
             <span class="feed-tag" id="feed-tag" hidden></span>
           </div>
           <div class="feed-bar">
+            <select id="camera-list" aria-label="Camera view" hidden></select>
             <div class="seg seg-small" id="cam-switch" role="group" aria-label="Camera" hidden>
               <button type="button" data-camera="front" aria-pressed="true">Front</button>
               <button type="button" data-camera="chase" aria-pressed="false">Chase</button>
@@ -148,6 +150,7 @@
             <h2 class="label" id="sensing-h">Tracked <span id="track-count"></span></h2>
             <ul class="tracks" id="tracks"></ul>
             <p class="quiet" id="tracks-empty" hidden></p>
+            <ul id="camera-lights" aria-label="Camera-read traffic lights" hidden></ul>
             <p class="returns" id="returns-line" hidden>
               <span>LiDAR <b id="lidar-count">—</b></span>
               <span>Radar <b id="radar-count">—</b></span>

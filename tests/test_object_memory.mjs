@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import {ObjectMemory, advance, contextOf, createState, laneAxes} from '../web/object-memory.mjs';
+import {ObjectMemory, ReplayMemory, advance, contextOf, createState, laneAxes} from '../web/object-memory.mjs';
+import {measuredHeads, cameraLamp, cameraBoxes} from '../web/lamp-observations.mjs';
+import {cornerReturns, lidarCount} from '../web/sensor-returns.mjs';
 
 // A tracker sample as recordings carry it. Positions are in the vehicle frame, x ahead and y to the right.
 const car = (id, x, y, more = {}) => ({id, label: 'car', x, y, z: .76, length: 4.4, width: 1.85, height: 1.52,
@@ -30,6 +32,67 @@ function play(frames, deps = {}) {
 const repeat = (count, make) => Array.from({length: count}, (_, i) => make(i));
 // A lane centre line along the world x axis, sampled every 2 m as a town export is.
 const lane = repeat(101, i => [i * 2 - 100, 0, 0]);
+
+test('continuous playback, cold chapter jumps and reverse seeks reconstruct identical rear tracks', () => {
+  const frames = repeat(235, i => ({
+    frame: i, sim_time: i / 10, scenario: 'test', perception_version: 'surround-v1',
+    observer_map: {ego: [0, 0, 0]}, tracks: i < 200 ? [car(8,-14,3,{cameras:['rear_right']})] : []
+  }));
+  const memory = new ReplayMemory({});
+  const continuous = frames.map((_,i) => memory.at(frames,i).objects);
+  assert.equal(continuous[182].length, 1);
+  const seek = new ReplayMemory({});
+  for (const i of [182,8,234,214,50,181,102,99,100]) assert.deepEqual(seek.at(frames,i).objects, continuous[i]);
+  assert.ok(!continuous.at(-1).length || continuous.at(-1)[0].leaving);
+});
+
+test('a range-supported nearby pedestrian appears on its first RGB and Doppler observation', () => {
+  const output = play([...repeat(15,()=>({})),{tracks:[person(6,9,.1,{sources:['rgb','lidar','radar'],speed_mps:null,confidence:.39})]}]);
+  assert.equal(output.at(-1)[0].label,'person');
+  assert.ok(output.at(-1)[0].opacity>.65);
+});
+
+test('a lidar-only mover gains a camera class under its original display identity', () => {
+  const frames = repeat(20, i => ({
+    frame:i,sim_time:i/10,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+    tracks:[car(31,-12,2,{label:i<10?'unknown':'car',cameras:i<10?[]:['rear_right'],
+      sources:i<10?['lidar']:['rgb','lidar']})]
+  }));
+  const memory = new ReplayMemory({});
+  const first = memory.at(frames,8).objects;
+  const later = memory.at(frames,15).objects;
+  assert.equal(first.length,1); assert.equal(later.length,1);
+  assert.equal(first[0].label,'unknown'); assert.equal(later[0].label,'car');
+  assert.equal(first[0].key,later[0].key);
+});
+
+test('signals retain distinct surveyed head locations and require an explicit camera color', () => {
+  const heads = [{id:'l/1',map_id:7,x:4,y:5,z:4,state:'green',source:'camera'},
+    {id:'l/2',map_id:7,x:4,y:9,z:4,state:'green',source:'map'}];
+  const frame = {phase:'red signal',signals:[...heads,{id:8,x:1,y:2}],observer_map:{signals:[{id:7,state:'red'}]}};
+  assert.deepEqual(measuredHeads(frame),heads);
+  assert.deepEqual(measuredHeads(frame).map(cameraLamp),['green','unknown']);
+  assert.deepEqual(measuredHeads({phase:'red signal'}),[]);
+});
+
+test('a colored head and a bearing-only object overlay only their contributing camera', () => {
+  const measurement={id:'h1',x:10,y:3,z:5,view:'right',state:'yellow',source:'camera',
+    pixel_size:[320,180],pixel_box:[96,18,112,36]};
+  const frame={signals:[measurement],camera_detections:{right:[{label:'person',box:[.8,.4,.9,.7],range_supported:false}]}};
+  assert.deepEqual(cameraBoxes(frame,'front'),[]);
+  assert.deepEqual(cameraBoxes(frame,'chase'),[]);
+  const right=cameraBoxes(frame,'right');
+  assert.equal(right[0].range_supported,false);
+  assert.equal(right[1].lamp,'yellow');
+  assert.deepEqual(right[1].box,[.3,.1,.35,.2]);
+});
+
+test('corner radar height and signed Doppler stay distinct and XYZ takes precedence for lidar counts', () => {
+  const frame = {lidar:[[1,2]],lidar_xyz:[[1,2,.5],[3,4,1.1]],
+    corner_radar:{radar_rear_left:[[-5,-3,1.4,-3.2]],radar_front_right:[[2,3,NaN,4]]}};
+  assert.deepEqual(cornerReturns(frame),[[-5,-3,1.4,-3.2]]);
+  assert.equal(lidarCount(frame),2);
+});
 
 test('a single detection is never drawn', () => {
   const drawn = play([{tracks: [car(1, 20, -4, {speed_mps: null})]}, ...repeat(8, () => ({tracks: [coasting(car(1, 20, -4, {speed_mps: null}))]}))]);

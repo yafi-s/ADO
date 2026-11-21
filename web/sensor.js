@@ -1,10 +1,12 @@
+import {measuredHeads, cameraLamp, LAMP_COLOURS} from './lamp-observations.mjs';
+
 function isCoordinate(value, size) {
   return Array.isArray(value) && value.length === size && value.every(Number.isFinite);
 }
 
 function observerRoute(data) {
   if (!Array.isArray(data?.path) || data.path.length < 2 ||
-      !data.path.every(point => isCoordinate(point, 2)) || !isCoordinate(data.ego, 3)) return;
+      !data.path.every(point => isCoordinate(point, 2) || isCoordinate(point, 3)) || !isCoordinate(data.ego, 3)) return;
   return {
     path: data.path,
     ego: data.ego,
@@ -48,9 +50,12 @@ export class SensorView {
     });
   }
 
-  update(lidar, radar, map) {
+  update(lidar, radar, map, frame) {
     this.lidar = lidar;
     this.radar = radar;
+    this.signals = measuredHeads(frame);
+    this.surround = frame?.perception_version === 'surround-v1';
+    this.egoPose = map?.ego;
     this.route = observerRoute(map);
     if (!this.route) this.view = 'returns';
     this.draw();
@@ -96,8 +101,8 @@ export class SensorView {
   drawReturns(ctx, width, height) {
     // The returns use local forward x and right y, with the ego pointing up.
     const x0 = width / 2;
-    const y0 = height * .72;
-    const scale = Math.min(width / 47, height / 56);
+    const y0 = height * (this.surround ? .52 : .72);
+    const scale = this.surround ? Math.min(width,height) / 62 : Math.min(width / 47, height / 56);
     this.projection = {x0, y0, scale};
     const color = this.palette();
 
@@ -146,6 +151,14 @@ export class SensorView {
     const egoW = Math.max(scale * 1.85, 8);
     const egoH = Math.max(scale * 4.3, 17);
     ctx.fillStyle = color.ego;
+    if (isCoordinate(this.egoPose, 3)) {
+      const [ex, ey, yaw] = this.egoPose;
+      const c = Math.cos(yaw * Math.PI / 180), s = Math.sin(yaw * Math.PI / 180);
+      this.drawSignals(ctx, (x,y) => [
+        x0 + ((y-ey)*c - (x-ex)*s)*scale, y0 - ((x-ex)*c + (y-ey)*s)*scale
+      ]);
+      ctx.fillStyle = color.ego;
+    }
     ctx.beginPath();
     ctx.roundRect(x0 - egoW / 2, y0 - egoH / 2, egoW, egoH, 3);
     ctx.fill();
@@ -226,6 +239,7 @@ export class SensorView {
       ctx.stroke();
     }
 
+    this.drawSignals(ctx, (x,y) => project([x,y]));
     ctx.translate(...project(ego));
     ctx.rotate(ego[2] * Math.PI / 180);
     ctx.fillStyle = color.ego;
@@ -238,6 +252,20 @@ export class SensorView {
     ctx.stroke();
     ctx.fill();
     ctx.restore();
+  }
+
+  drawSignals(ctx, project) {
+    for (const head of this.signals || []) {
+      const [x,y] = project(head.x,head.y);
+      const state = cameraLamp(head);
+      ctx.fillStyle = '#202b39';
+      ctx.fillRect(x-3.5,y-6,7,12);
+      ctx.fillStyle = LAMP_COLOURS[state];
+      ctx.beginPath();
+      ctx.arc(x,y+(state==='red'?-2.5:state==='green'?2.5:0),2.25,0,Math.PI*2);
+      if (state==='unknown') { ctx.strokeStyle = LAMP_COLOURS.unknown; ctx.lineWidth = 1; ctx.stroke(); }
+      else ctx.fill();
+    }
   }
 
   inspect() {
