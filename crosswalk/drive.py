@@ -45,12 +45,18 @@ def _xy(location):
 def _observer_map(scene, path):
     pose = scene.ego.get_transform()
     hazard = scene.hazard
+    if hasattr(scene, "observer_positions"):
+        others = scene.observer_positions()
+        hazard_type = next((a["type"] for a in others if hazard and a["actor_id"] == hazard.id), None)
+    else:
+        others = scene.ambient.observer_positions() if scene.ambient else []
+        hazard_type = ("pedestrian" if hazard.type_id.startswith("walker.") else "vehicle") if hazard else None
     return {
         "path": path, "ego": [*_xy(pose.location), round(pose.rotation.yaw, 2)], "ego_z": round(pose.location.z,2),
-        "others": scene.ambient.observer_positions() if scene.ambient else [],
+        "others": others,
         "traffic": _xy(scene.traffic.get_location()) if scene.traffic else None,
         "hazard": _xy(hazard.get_location()) if hazard else None,
-        "hazard_type": ("pedestrian" if hazard.type_id.startswith("walker.") else "vehicle") if hazard else None,
+        "hazard_type": hazard_type,
     }
 
 
@@ -151,16 +157,18 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
         teacher_speed = None
         pending = None
         detections = []
+        sensor_lamp = getattr(model, "sensor_lamp_classifier", None)
         if teacher is not None:
             stack.callback(scene.ego.set_autopilot, False, teacher.get_port())
             start_demonstration(scene, teacher)
         else:
             lamp_expert = getattr(model, "lamp_expert", None)
             route_lamps = None
-            if lamp_expert is not None and not range_only:
+            if (lamp_expert is not None or sensor_lamp is not None) and not range_only:
                 from .lamp import RouteLamps
-                lamp_expert = lamp_expert.for_episode()
                 route_lamps = RouteLamps(world, scene.route)
+            if lamp_expert is not None:
+                lamp_expert = lamp_expert.for_episode()
         start = perf_counter()
         best_journey_progress = 0.
         last_forward_step = 0
@@ -190,6 +198,10 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                                          for start, end in scene._junction_ranges if end >= navigation.progress), 60.)
                     x = observer.observe(obs, detections, local_route, speed,
                                          route_preview=points[6:], stopline_gap=max(-2., min(60., junction_gap)))
+            if sensor_lamp is not None:
+                signal = route_lamps.observe(scene.ego, obs)
+                light = (sensor_lamp.red_probability(signal[1]), signal[0]) if signal is not None else (0., 60.)
+                x = np.asarray([*x, *light], dtype=np.float32)
             if teacher is not None:
                 applied = scene.ego.get_control()
                 steer, throttle, brake = applied.steer, applied.throttle, applied.brake
@@ -206,7 +218,7 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                         sim_time=step*DT, detection_fresh=step % 2 == 0)
                 else:
                     predicted = model.predict_range(x) if range_only else model.predict(x)
-                if route_lamps is not None:
+                if lamp_expert is not None and route_lamps is not None:
                     predicted = lamp_expert.apply(route_lamps.observe(scene.ego, obs), speed, predicted)
                 steer, throttle, brake = (float(v) for v in predicted)
                 scene.ego.apply_control(carla.VehicleControl(steer=steer, throttle=throttle, brake=brake))

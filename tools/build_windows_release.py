@@ -75,7 +75,7 @@ def behavior_release(tag):
 
 
 def release_paths(tag):
-    return (*PACKAGE_PATHS, "waymo_training") if behavior_release(tag) else PACKAGE_PATHS
+    return (*PACKAGE_PATHS, "waymo_training", "Watch-City.cmd") if behavior_release(tag) else PACKAGE_PATHS
 
 
 def required_files(tag):

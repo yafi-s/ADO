@@ -196,20 +196,20 @@ def _source_checksums(scene_factory, model_type):
 
 
 def _load_inputs(model_path):
-    from .behavior_v2 import BehaviorModel, Observer
+    from .city_drive import load_driver
     from .journey import JourneyScenario
 
     path = Path(model_path).resolve(strict=True)
     saved_sha = fingerprint(path)
-    model = BehaviorModel.load(path)
+    model, _, schema = load_driver(path)
     if fingerprint(path) != saved_sha:
         raise ValueError("The driving checkpoint changed while it was loading")
     fit_path = PROJECT / "models" / "fit.json"
     fit = read_json(fit_path)
-    policy = dict(path=path.name, sha256=saved_sha, schema="ado-behavior-v2",
+    policy = dict(path=path.name, sha256=saved_sha, schema=schema,
                   camera_profile=fit["render_profile"], camera_profile_source_sha256=fingerprint(fit_path),
-                  code_sha256=_source_checksums(JourneyScenario, BehaviorModel))
-    return model, JourneyScenario, Observer, policy
+                  code_sha256=_source_checksums(JourneyScenario, type(model)))
+    return model, JourneyScenario, model.new_observer, policy
 
 
 def _capture(world, stage, output, model, scene_factory, observer_factory, policy, seed, max_steps, destination,
@@ -227,7 +227,7 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
     town = read_json(raw / MAP_ASSET)
     if town["producer"] != producer or not town["roads"]:
         raise ValueError("Viewer road geometry must come from the recording world")
-    trial_id = NAME
+    trial_id = NAME if output.name == NAME else f"city-{seed}-{policy['sha256'][:8]}"
     with ((raw / "chase.mjpeg").open("wb") as chase, (raw / "front.mjpeg").open("wb") as front,
           (raw / "perception.jsonl").open("w", encoding="utf-8", newline="\n") as rows,
           policy_profile(policy["camera_profile"])):
@@ -236,7 +236,7 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
         observed = JourneyWorld(world, camera)
         try:
             summary, trace, *_ = episode(
-                observed, KIND, seed, "fusion", model, weather="ClearNoon", district="townwide",
+                observed, KIND, seed, policy.get("schema", "ado-behavior-v2"), model, weather="ClearNoon", district="townwide",
                 recording=perception, run_id=trial_id, max_steps=max_steps, destination=destination,
                 scene_factory=partial(_new_scene, scene_factory), observation_factory=observer_factory,
             )
@@ -270,7 +270,7 @@ def _install_delivery(stage):
     return install_staged(stage, artifacts=artifacts, retry_module=MODULE)
 
 
-def finalize_staged(stage):
+def finalize_staged(stage, *, include_attempt=False):
     """Encode and install a synchronized capture without opening a simulator."""
     _need_video_tools()
     stage = Path(stage).resolve(strict=True)
@@ -313,8 +313,9 @@ def finalize_staged(stage):
     if map_asset:
         map_url = f"./media/{directory}/{map_asset}" if directory is not None else f"./{map_asset}"
         artifacts += (MAP_ASSET,)
-    if source["passed"] and directory is not None:
-        catalog = dict(label="Long city drive", path=directory, cameras=["chase", "front"], trial_id=NAME,
+    if (source["passed"] or include_attempt) and directory is not None:
+        label = "Long city drive" if source["passed"] else f'City development drive · {source["summary"]["outcome"]}'
+        catalog = dict(label=label, path=directory, cameras=["chase", "front"], trial_id=source["trial_id"],
                        manifest=f"./media/{directory}/manifest.json", **disclosure)
         if map_url:
             catalog.update(map_url=map_url, map=map_name)
@@ -328,7 +329,7 @@ def finalize_staged(stage):
                     pose_coordinates="CARLA world metres and Euler degrees", map_url=map_url, map=map_name,
                     sha256={name: fingerprint(final / name) for name in artifacts})
     write_json(final / "manifest.json", manifest)
-    if source["passed"]:
+    if source["passed"] or include_attempt:
         write_json(final / "install.json", dict(output=str(output), manifest_sha256=fingerprint(final / "manifest.json")))
         print(f"Installing verified city drive from {final}", flush=True)
         return _install_delivery(final)
@@ -378,10 +379,11 @@ def run(world, output=DEFAULT_OUTPUT, *, model_path, seed=SEED, max_steps=DEFAUL
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--model", type=Path, help="Behavior V2 policy checkpoint")
+    group.add_argument("--model", type=Path, help="CARLA-trained driving policy checkpoint")
     group.add_argument("--finalize-staged", type=Path, metavar="CAPTURE", help="Encode a saved source without CARLA")
     group.add_argument("--install-staged", type=Path, metavar="DELIVERY", help="Install verified files without CARLA")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--include-attempt", action="store_true", help="Also export an unsuccessful drive with its actual score")
     parser.add_argument("--seed", type=int, default=SEED)
     parser.add_argument("--max-steps", type=int, default=DEFAULT_MAX_STEPS)
     parser.add_argument("--map", dest="map_name", choices=CAPTURE_MAPS, default=URBAN_MAP)
@@ -394,7 +396,7 @@ def main():
     if args.install_staged:
         manifest = _install_delivery(args.install_staged)
     elif args.finalize_staged:
-        manifest = finalize_staged(args.finalize_staged)
+        manifest = finalize_staged(args.finalize_staged, include_attempt=args.include_attempt)
     else:
         if not 1 <= args.port <= 65533:
             parser.error("Choose a port between 1 and 65533")
@@ -409,7 +411,7 @@ def main():
             parser.error(f"Destination {args.destination!r} is unavailable on {args.map_name}")
         with simulator(args.port, attach=False, quality=args.quality, map_name=args.map_name) as world:
             stage = _record(world, output, inputs, args.seed, args.max_steps, args.destination, args.map_name)
-        manifest = finalize_staged(stage)
+        manifest = finalize_staged(stage, include_attempt=args.include_attempt)
     status = "passed" if manifest["passed"] else "review required"
     print(f"{NAME}: {status}, {manifest['outcome']}, {manifest['summary']['frames']} frames", flush=True)
     return 0 if manifest["passed"] else 1

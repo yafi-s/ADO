@@ -14,7 +14,7 @@ For each encounter, the log distinguishes the planned location, actual exposure,
 
 ## Run it locally
 
-Run the project's Windows setup to install CARLA 1.0, its matching Python client and the AdditionalMaps pack. From the project root, this starts the learned driver and opens a live view of its cameras and measurements.
+Double-click **Watch-City.cmd** on Windows to install or verify CARLA 1.0 and open the local perception display. After setup, the equivalent command from the project root is below.
 
 ```powershell
 .\.venv-city\Scripts\python.exe -m ado city-drive --serve --open-browser --seed 211
@@ -23,10 +23,12 @@ Run the project's Windows setup to install CARLA 1.0, its matching Python client
 Each attempt writes its own summary and compressed frame log under `out/city-drives`. The lower-cost live profile is the default. To record a simultaneous 1080p chase camera and forward camera at High quality, run the film command with a fresh output path. This captures one ego car over one continuous simulation.
 
 ```powershell
-.\.venv-city\Scripts\python.exe -m ado city-film --model models/behavior-v2/candidate.npz --map Town03_Opt --destination market --seed 211 --output out/my-city-film
+.\.venv-city\Scripts\python.exe -m ado city-film --model models/city-v1/candidate-73-74.npz --map Town03_Opt --destination market --seed 211 --output out/my-city-film
 ```
 
 ## Training and evaluation
+
+The city policy retains the Town01 steering and pedal feedback and learns speed from range measurements, measured traffic-light color and map geometry. Its Colab fit includes two Town03 teaching episodes using this course. The public recording is a development demonstration with staged traffic. [City model](../models/city-v1/README.md) · [Native fixture checks and recorded failures](../results/city-development/README.md)
 
 The Town01-trained controller uses 17,236 examples from 80 CARLA driving demonstrations. The public Colab recipe reproduces the saved model and training report byte-for-byte. Town03 is a separate city integration test. The model also has a controlled Town01 comparison using ten encounter types. The real Waymo research track has its own Colab training, validation and simulator transfer results. [CARLA training and Colab notebook](../data/behavior-v2/README.md) · [Matched comparison protocol](behavior-v2-protocol.md) · [Real Waymo model and transfer trial](../waymo_training/MOTION_TRANSFER.md)
 
