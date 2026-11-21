@@ -26,8 +26,8 @@ from .world import _raised
 LOOK = (3.,7.,13.,18.,25.,32.,40.)
 
 
-def _spawn(world, road_map, stack, blueprint, lane, station):
-    wp = road_map.get_waypoint_xodr(4,lane,station)
+def _spawn(world, road_map, stack, blueprint, lane, station, *, road=4):
+    wp = road_map.get_waypoint_xodr(road,lane,station)
     actor = world.spawn_actor(world.get_blueprint_library().find(blueprint), _raised(wp.transform,.35))
     stack.callback(actor.destroy)
     actor.apply_control(carla.VehicleControl(brake=1.))
@@ -90,17 +90,22 @@ def _score(rows, case):
     return result
 
 
-def evaluate(world, case, model_path, folder, record=False):
+def evaluate(world, case, model_path, folder, record=False, *,
+             source_lane=(4, 3), ego_s=86., corridor=None):
     model, _, _ = load_driver(model_path)
     observer = model.new_observer()
     road_map = world.get_map()
-    corridor = PassingCorridor.from_map(road_map)
+    if corridor is None:
+        corridor = PassingCorridor.from_map(road_map, source_lane)
     planner = TacticalPass(corridor, measured_hold=hasattr(model, 'tactical_speed_limit'))
+    road, lane = source_lane
+    direction = -1. if lane > 0 else 1.
+    target = road_map.get_waypoint_xodr(road, lane, ego_s).get_left_lane().lane_id
     with ExitStack() as stack:
-        ego = _spawn(world,road_map,stack,'vehicle.lincoln.mkz',3,86.)
-        lead = _spawn(world,road_map,stack,'vehicle.tesla.model3',3,62.) if case!='no-lead' else None
-        other = _spawn(world,road_map,stack,'vehicle.mini.cooper',2,84.) if case=='occupied' else None
-        navigation = Navigation([road_map.get_waypoint_xodr(4,3,float(s)).transform.location for s in range(89,0,-1)])
+        ego = _spawn(world,road_map,stack,'vehicle.lincoln.mkz',lane,ego_s,road=road)
+        lead = _spawn(world,road_map,stack,'vehicle.tesla.model3',lane,ego_s+direction*24.,road=road) if case!='no-lead' else None
+        other = _spawn(world,road_map,stack,'vehicle.mini.cooper',target,ego_s+direction*2.,road=road) if case=='occupied' else None
+        navigation = Navigation([road_map.get_waypoint_xodr(road,lane,ego_s+direction*i).transform.location for i in range(-3,86)])
         rig = Rig(world,ego,range_only=True)
         stack.callback(rig.close)
         chase = None

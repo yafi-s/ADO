@@ -1,5 +1,7 @@
 import unittest
 from pathlib import Path
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
 import numpy as np
 
@@ -73,6 +75,17 @@ class CityPaceTests(unittest.TestCase):
         self.assertIsNone(self.model.signed_speed_limit)
         self.model.predict(self.clear)
         self.assertGreater(self.model.last_speed_request, 10.)
+
+    def test_normal_city_entry_selects_verified_checkpoint(self):
+        from crosswalk import city_drive
+        class BeforeServerLaunch(Exception):
+            pass
+        with TemporaryDirectory() as output, patch("sys.argv", ["city-drive","--output",output]), \
+                patch.object(city_drive, "load_driver", wraps=load_driver) as load, \
+                patch.object(city_drive, "simulator", side_effect=BeforeServerLaunch):
+            with self.assertRaises(BeforeServerLaunch):
+                city_drive.main()
+        load.assert_called_once_with(ROOT/"models/city-pace/candidate.npz")
 
 
 if __name__ == "__main__":

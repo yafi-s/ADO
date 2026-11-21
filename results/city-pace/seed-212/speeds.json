@@ -1,0 +1,245 @@
+{
+  "seed": 212,
+  "frames": 3354,
+  "duration_s": 335.4,
+  "outcome": "complete",
+  "collision_events": 0,
+  "progress_m": 1416.32,
+  "route_length_m": 1416.438,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "moving_within_1m_frames": 0,
+  "turns_completed": {
+    "left": 1,
+    "right": 2,
+    "straight": 8
+  },
+  "clear_straights": {
+    "frames": 393,
+    "seconds": 39.3,
+    "p10_kmh": 23.78,
+    "median_kmh": 29.72,
+    "p90_kmh": 36.93,
+    "peak_kmh": 38.45,
+    "sd_kmh": 4.284,
+    "variance_kmh2": 18.352,
+    "mean_absolute_change_kmh_per_s": 1.937,
+    "seconds_35_to_40_kmh": 5.2,
+    "longest_continuous_seconds_35_to_40_kmh": 4.4,
+    "seconds_at_or_above_35": 5.2,
+    "longest_continuous_seconds_at_or_above_35": 4.4,
+    "longest_interval": {
+      "from_m": 423.7,
+      "to_m": 468.8,
+      "from_s": 113.8,
+      "to_s": 118.1
+    }
+  },
+  "inside_left_and_right_turns": {
+    "frames": 253,
+    "seconds": 25.3,
+    "p10_kmh": 12.38,
+    "median_kmh": 12.86,
+    "p90_kmh": 13.66,
+    "peak_kmh": 13.77,
+    "sd_kmh": 0.451,
+    "variance_kmh2": 0.203,
+    "mean_absolute_change_kmh_per_s": 0.142,
+    "seconds_35_to_40_kmh": 0.0,
+    "longest_continuous_seconds_35_to_40_kmh": 0.0,
+    "seconds_at_or_above_35": 0.0,
+    "longest_continuous_seconds_at_or_above_35": 0.0,
+    "longest_interval": null
+  },
+  "whole_drive": {
+    "frames": 3354,
+    "seconds": 335.4,
+    "p10_kmh": 5.14,
+    "median_kmh": 13.42,
+    "p90_kmh": 28.68,
+    "peak_kmh": 39.77,
+    "sd_kmh": 8.141,
+    "variance_kmh2": 66.276,
+    "mean_absolute_change_kmh_per_s": 1.845,
+    "seconds_35_to_40_kmh": 7.7,
+    "longest_continuous_seconds_35_to_40_kmh": 4.4,
+    "seconds_at_or_above_35": 7.7,
+    "longest_continuous_seconds_at_or_above_35": 4.4,
+    "longest_interval": {
+      "from_m": 423.7,
+      "to_m": 468.8,
+      "from_s": 113.8,
+      "to_s": 118.1
+    }
+  },
+  "events": {
+    "pedestrian": {
+      "handled": true,
+      "stopped": true,
+      "exposed": true,
+      "passed": true,
+      "violation": false,
+      "minimum_gap_m": 3.62,
+      "seconds_from_clear_to_5_kmh": 0.6
+    },
+    "occluded": {
+      "handled": true,
+      "stopped": true,
+      "exposed": true,
+      "passed": true,
+      "violation": false,
+      "minimum_gap_m": 3.71,
+      "seconds_from_clear_to_5_kmh": 1.3
+    },
+    "signal": {
+      "handled": true,
+      "stopped": true,
+      "exposed": true,
+      "passed": true,
+      "violation": false,
+      "minimum_gap_m": 3.74,
+      "seconds_from_clear_to_5_kmh": 1.7
+    },
+    "roadworks": {
+      "handled": true,
+      "stopped": false,
+      "exposed": true,
+      "passed": true,
+      "violation": false,
+      "minimum_gap_m": 60.0,
+      "minimum_cone_clearance_m": 0.269
+    },
+    "barrier": {
+      "handled": true,
+      "stopped": false,
+      "exposed": true,
+      "passed": true,
+      "violation": false,
+      "minimum_gap_m": 60.0,
+      "minimum_barrier_clearance_m": 1.047
+    },
+    "lead": {
+      "handled": true,
+      "stopped": true,
+      "exposed": true,
+      "passed": true,
+      "violation": false,
+      "minimum_gap_m": 3.71,
+      "seconds_from_clear_to_5_kmh": 0.0
+    },
+    "bus": {
+      "handled": true,
+      "stopped": false,
+      "exposed": true,
+      "passed": true,
+      "violation": false,
+      "minimum_gap_m": 60.0,
+      "minimum_bus_clearance_m": 0.927
+    },
+    "braking": {
+      "handled": true,
+      "stopped": false,
+      "exposed": true,
+      "passed": true,
+      "violation": false,
+      "minimum_gap_m": 4.37,
+      "peak_lead_deceleration_mps2": 9.99
+    },
+    "left": {
+      "handled": true,
+      "stopped": true,
+      "exposed": true,
+      "passed": true,
+      "violation": false,
+      "minimum_gap_m": 2.24,
+      "seconds_from_clear_to_5_kmh": 0.8
+    },
+    "cyclist": {
+      "handled": true,
+      "stopped": false,
+      "exposed": true,
+      "passed": true,
+      "violation": false,
+      "minimum_gap_m": 5.83
+    },
+    "pedestrian-delayed": {
+      "handled": true,
+      "stopped": true,
+      "exposed": true,
+      "passed": true,
+      "violation": false,
+      "minimum_gap_m": 3.75,
+      "seconds_from_clear_to_5_kmh": 0.7
+    }
+  },
+  "matched_boulevard_interior": {
+    "from_m": 420.16,
+    "to_m": 501.65,
+    "active_encounter_frames": 10,
+    "frames": 80,
+    "seconds": 8.0,
+    "p10_kmh": 33.47,
+    "median_kmh": 37.74,
+    "p90_kmh": 38.39,
+    "peak_kmh": 39.08,
+    "sd_kmh": 1.889,
+    "variance_kmh2": 3.569,
+    "mean_absolute_change_kmh_per_s": 2.245,
+    "seconds_35_to_40_kmh": 6.2,
+    "longest_continuous_seconds_35_to_40_kmh": 4.4,
+    "seconds_at_or_above_35": 6.2,
+    "longest_continuous_seconds_at_or_above_35": 4.4,
+    "longest_interval": {
+      "from_m": 423.7,
+      "to_m": 468.8,
+      "from_s": 113.8,
+      "to_s": 118.1
+    }
+  },
+  "max_request_above_posted_kmh": -0.0,
+  "native_limit_frames": {
+    "30.0": 2759,
+    "60.0": 101,
+    "90.0": 494
+  },
+  "permissive_clear_straights": {
+    "frames": 100,
+    "seconds": 10.0,
+    "p10_kmh": 22.81,
+    "median_kmh": 35.53,
+    "p90_kmh": 38.27,
+    "peak_kmh": 38.45,
+    "sd_kmh": 6.02,
+    "variance_kmh2": 36.234,
+    "mean_absolute_change_kmh_per_s": 3.336,
+    "seconds_35_to_40_kmh": 5.2,
+    "longest_continuous_seconds_35_to_40_kmh": 4.4,
+    "seconds_at_or_above_35": 5.2,
+    "longest_continuous_seconds_at_or_above_35": 4.4,
+    "longest_interval": {
+      "from_m": 423.7,
+      "to_m": 468.8,
+      "from_s": 113.8,
+      "to_s": 118.1
+    }
+  },
+  "seconds_measured_above_posted_plus_1_kmh": 0.0,
+  "seconds_measured_above_posted": 9.0,
+  "max_measured_excess_above_posted_kmh": 0.564,
+  "longitudinal_comfort": {
+    "raw_peak_deceleration_mps2": 5.97,
+    "half_second_peak_deceleration_mps2": 4.462,
+    "half_second_peak_acceleration_mps2": 2.242,
+    "raw_seconds_braking_harder_than_3_mps2": 4.0,
+    "clear_straight_seconds_braking_harder_than_3_mps2": 0.0,
+    "half_second_seconds_braking_harder_than_3_mps2": 3.9,
+    "strongest_half_second_end": {
+      "sim_time_s": 135.8,
+      "progress_m": 567.856,
+      "active_event": "lead"
+    },
+    "moving_p95_abs_half_second_acceleration_mps2": 1.895
+  },
+  "first_10_kmh_at_s": 1.3,
+  "seconds_measured_above_40_kmh": 0.0
+}

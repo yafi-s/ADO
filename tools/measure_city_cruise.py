@@ -86,6 +86,10 @@ def measure(folder):
         row = result["events"][event["kind"]]
         row.update(exposed=event.get("exposed", False), passed=event.get("passed", False),
                    violation=event.get("violation", False), minimum_gap_m=event.get("minimum_gap_m"))
+        for name in ("minimum_barrier_clearance_m", "minimum_cone_clearance_m", "minimum_bus_clearance_m",
+                     "peak_lead_deceleration_mps2"):
+            if name in event:
+                row[name] = event[name]
         if row["stopped"] and "cleared_s" in event and "passed_s" in event:
             # A zero delay means the vehicle was already rolling at the first clear frame.
             resumed = np.flatnonzero((time >= event["cleared_s"]) & (time <= event["passed_s"]) & (speed >= 5.))
