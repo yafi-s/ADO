@@ -2,7 +2,11 @@
 
 The rider display and camera movies share the same CARLA frame clock. Select **Front**, **Left**, **Right**, **Rear left** or **Rear right** to see the measurements that supplied a track. **Chase** is an independent spectator camera. The center screen renders the revised I-PACE from Blender; the camera movies show CARLA's Lincoln carrying the simulated sensors.
 
-## Two moving overtakes
+## Current rider recording
+
+The v0.4 replay pairs all 3,354 native exposures with the rider display and vehicle pose. At frame 3460 the front camera shows the approach to the striped barricades. The full drive scored eleven encounters and eleven junctions. Separate work-zone films compare stopping for a board across the lane with continuing alongside a board at the curb. [Watch the v0.4 drive](https://yafi-s.github.io/ADO/?run=urban-pace) · [Inspect the barricade exposure](https://yafi-s.github.io/ADO/inspect.html?run=urban-pace&frame=3460&camera=front) · [Work-zone films](../results/workzone-stop/README.md) · [Current perception and motion review](../results/urban-pace/README.md)
+
+## Two moving overtakes from v0.3
 
 [Open-lane pass](https://yafi-s.github.io/ADO/?run=overtake-clear) · [Wait for adjacent traffic](https://yafi-s.github.io/ADO/?run=overtake-yield) · [Physical measurements and no-lead control](../results/tactical-pass/paired-4fppmp4k/summary.json)
 
