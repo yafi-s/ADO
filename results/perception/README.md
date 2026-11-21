@@ -78,7 +78,7 @@ A native capture's raw stage directory can be scored as soon as it contains `tow
 $probes = '--probe','118','--probe','132','--probe','434','--probe','2212','--probe','3048','--probe','3208'
 $parked = 'results/perception/town03-static-vehicles.json'
 node tools/audit_city_perception.mjs web/media/long-city-drive --static-map $parked --memory-revision 0ff276b --output results/perception/long-city-v02.json @probes
-node tools/audit_city_perception.mjs web/media/long-city-drive --static-map $parked --output results/perception/long-city-current.json @probes
+node tools/audit_city_perception.mjs web/media/long-city-drive --memory-revision a7e516c --static-map $parked --output results/perception/long-city-current.json @probes
 node --test tests/test_audit_city_perception.mjs
 ```
 
@@ -86,7 +86,7 @@ The original commissioning journal is included as `preflight/perception.jsonl.gz
 
 ```powershell
 node tools/audit_city_perception.mjs web/media/long-city-drive --memory-revision 0ff276b --output v02-summary.json --frames v02-frames.jsonl
-node tools/audit_city_perception.mjs results/perception/preflight --town web/media/long-city-drive/town.json --static-map $parked --output preflight-summary.json --frames preflight-frames.jsonl
+node tools/audit_city_perception.mjs results/perception/preflight --town web/media/long-city-drive/town.json --memory-revision a7e516c --static-map $parked --output preflight-summary.json --frames preflight-frames.jsonl
 node tools/compare_city_encounters.mjs v02-frames.jsonl preflight-frames.jsonl aligned.json
 ```
 

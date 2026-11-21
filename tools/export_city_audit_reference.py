@@ -31,5 +31,5 @@ if __name__ == "__main__":
     carla_client = carla.Client("127.0.0.1", args.port)
     carla_client.set_timeout(4)
     info = read_static(carla_client)
-    args.destination.write_text(json.dumps(info, indent=2)+"\n", encoding="utf-8")
+    args.destination.write_text(json.dumps(info, indent=2)+"\n", encoding="utf-8", newline="\n")
     print(f"{info['map']} returned {len(info['actors'])} static road users")
