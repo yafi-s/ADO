@@ -80,7 +80,7 @@ def city_film(complete, surround=False, pace=False):
     return media, manifest, members
 
 
-def populated_city_film(schema):
+def populated_city_film(schema, revision=3):
     old_media, manifest, members = city_film(False, pace=True)
     folder = release.CITY_MODEL_FOLDERS[schema]
     media = f"web/media/{'city-life' if schema == release.LIFE_SCHEMA else 'city-progress'}"
@@ -105,6 +105,10 @@ def populated_city_film(schema):
         crossing = b"crossing observer source"
         manifest["policy"]["code_sha256"][release.PROGRESS_CROSSING_SOURCE] = sha256(crossing)
         fit["crossing_source_sha256"] = sha256(crossing)
+        if revision >= 4:
+            grade = b"grade estimator source"
+            manifest["policy"]["code_sha256"][release.PROGRESS_GRADE_SOURCE] = sha256(grade)
+            fit.update(revision=revision, grade_source_sha256=sha256(grade))
     members[f"models/{folder}/fit.json"] = json_bytes(fit)
     score = json.loads(members[f"{media}/telemetry.json"])[0]
     score.update(sim_time=0., video_time=0., collision_count=0, red_light_violations=0, yield_violations=0,
@@ -223,6 +227,42 @@ class WindowsReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Wrong surround master metadata"):
             release.verify_master_metadata(capture)
 
+    def test_release_oversize_relocates_only_optional_sweeps_and_pins_exact_bytes(self):
+        root = release.PROGRESS_RESULTS
+        small = f"{root}/first/candidate/sensor-sweeps.zip"
+        large = f"{root}/second/candidate/sensor-sweeps.zip"
+        linked = f"{root}/linked/candidate/sensor-sweeps.zip"
+        build = {"evidence": [{"url": f"../{linked}"}]}
+        members = {small: b"s" * 300, large: b"l" * 500, linked: b"t" * 201,
+                   f"{root}/first/candidate/front.mp4": b"native video" * 100,
+                   "web/media/build.json": json_bytes(build), "docs/release.md": b"Release checks"}
+        commit = "a" * 40
+        with TemporaryDirectory() as folder, fixture_zip(members) as package:
+            out = Path(folder) / "ADO-v0.6.0-Windows.zip"
+            out.write_bytes(package.fp.getvalue())
+            size = out.stat().st_size
+            with patch.object(release, "MAX_UPLOAD_BYTES", size + 1):
+                self.assertEqual(release.external_sweep_inventory(out, commit), [])
+            with patch.object(release, "MAX_UPLOAD_BYTES", size - 200), patch.object(release, "SWEEP_INDEX_RESERVE", 0):
+                omitted = release.external_sweep_inventory(out, commit)
+            expected = dict(path=small, url=f"https://raw.githubusercontent.com/yafi-s/ADO/{commit}/{small}",
+                            bytes=len(members[small]), sha256=sha256(members[small]))
+            self.assertEqual(omitted, [expected])
+
+            del members[small]
+            with fixture_zip(members) as compact:
+                out.write_bytes(compact.fp.getvalue())
+            with ZipFile(out, "a") as compact:
+                compact.comment = commit.encode()
+            release.add_sweep_index(out, commit, omitted)
+            with ZipFile(out) as compact:
+                self.assertEqual(compact.comment, commit.encode())
+                self.assertEqual(set(compact.namelist()), {release.PREFIX + item for item in members} |
+                                 {release.PREFIX + release.EXTERNAL_SWEEPS_INDEX})
+                index = compact.read(release.PREFIX + release.EXTERNAL_SWEEPS_INDEX).decode()
+                self.assertIn(expected["url"], index)
+                self.assertIn(expected["sha256"], index)
+
     @patch.object(release, "verify_video")
     def test_pace_film_verifies_eleven_events_and_an_exact_replay_pack(self, verify_video):
         media, manifest, members = city_film(True, pace=True)
@@ -266,7 +306,7 @@ class WindowsReleaseTests(unittest.TestCase):
         hashes = manifest["policy"]["code_sha256"]
         digest = hashes[release.PROGRESS_CROSSING_SOURCE]
         hashes[release.PROGRESS_CROSSING_SOURCE] = "0" * 64
-        with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, "different crossing observer"):
+        with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, "different fitted module.*city_crossing.py"):
             release.verify_city_film(archive, media, manifest, Path("unused"))
         hashes[release.PROGRESS_CROSSING_SOURCE] = digest
         path = "models/city-clearance/candidate.npz"
@@ -274,9 +314,23 @@ class WindowsReleaseTests(unittest.TestCase):
         with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, f"Wrong SHA-256.*{path}"):
             release.verify_city_film(archive, media, manifest, Path("unused"))
 
+    @patch.object(release, "verify_city_life_evidence")
+    @patch.object(release, "verify_video")
+    def test_city_progress_grade_revision_requires_the_fitted_grade_module(self, _verify_video, verify_evidence):
+        media, capture, members = populated_city_film(release.PROGRESS_SCHEMA, revision=4)
+        with fixture_zip(members) as archive:
+            release.verify_city_film(archive, media, capture, Path("unused"))
+        self.assertIn(release.PROGRESS_GRADE_SOURCE, verify_evidence.call_args.args[-1])
+        path = "models/city-progress/fit.json"
+        fit = json.loads(members[path])
+        del fit["grade_source_sha256"]
+        members[path] = json_bytes(fit)
+        with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, "grade fit differs from the checkpoint revision"):
+            release.verify_city_film(archive, media, capture, Path("unused"))
+
     def test_city_progress_preserves_captured_source_and_compares_git_line_endings(self):
         policy_source = "city_progress.py"
-        fitted_sources = (policy_source, release.PROGRESS_CROSSING_SOURCE)
+        fitted_sources = (policy_source, release.PROGRESS_CROSSING_SOURCE, release.PROGRESS_GRADE_SOURCE)
         names = (*fitted_sources, "city_clearance.py", "city_population.py", "journey_capture.py", "population_score.py")
         recorded = b"model = 'captured source'\r\n"
         capture = dict(policy=dict(schema=release.PROGRESS_SCHEMA, code_sha256=dict.fromkeys(names, sha256(recorded))))
@@ -287,12 +341,12 @@ class WindowsReleaseTests(unittest.TestCase):
         contents = {f"{release.PROGRESS_RESULTS}/capture-source.zip": stream.getvalue(),
                     **{f"crosswalk/{name}": recorded.replace(b"\r\n", b"\n") for name in fitted_sources}}
         with fixture_zip(contents) as archive:
-            release.verify_population_sources(archive, capture, release.PROGRESS_RESULTS, policy_source)
+            release.verify_population_sources(archive, capture, release.PROGRESS_RESULTS, policy_source, fitted_sources)
         for name in fitted_sources:
             changed = {**contents, f"crosswalk/{name}": b"model = 'different source'\n"}
             with self.subTest(name=name), fixture_zip(changed) as archive, \
                     self.assertRaisesRegex(ValueError, "different fit sources"):
-                release.verify_population_sources(archive, capture, release.PROGRESS_RESULTS, policy_source)
+                release.verify_population_sources(archive, capture, release.PROGRESS_RESULTS, policy_source, fitted_sources)
 
     def test_featured_city_progress_requires_a_pass_and_exact_reported_counters(self):
         _, capture, _ = populated_city_film(release.PROGRESS_SCHEMA)

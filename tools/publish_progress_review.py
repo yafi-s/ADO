@@ -62,6 +62,21 @@ def create():
         f'{a["median_kmh"]:.1f} km/h before and {b["median_kmh"]:.1f} km/h after. '
         f'Total time inside them was {a["seconds"]:.1f} s before and {b["seconds"]:.1f} s after.',
         ("Every junction", TAG+"audit/README.md"), ("Test protocol", TAG+"audit/PROTOCOL.md"))
+    heldout = read(STUDY / "junction-transfer/transfer-r3-first/audit.json")
+    arms = ("candidate-clear", "candidate-crossing", "candidate-stops-short")
+    if any(heldout[arm]["policy_sha256"] != manifest["policy"]["sha256"] for arm in arms):
+        raise ValueError("Off-route comparison used a different checkpoint")
+    old_approach = heldout["baseline-clear"]["exact_station_speeds"]["-12.0"]["actual_kmh"]
+    new_approach = heldout["candidate-clear"]["exact_station_speeds"]["-12.0"]["actual_kmh"]
+    crossing = heldout["candidate-crossing"]["grade"]
+    short = heldout["candidate-stops-short"]["grade"]
+    add("Cross traffic on a different road",
+        f'On the empty approach, speed 12 m before the conflict rose from {old_approach:.1f} to '
+        f'{new_approach:.1f} km/h. When a Mini crossed, ADO yielded, leaving '
+        f'{crossing["physical_min_body_gap_m"]:.2f} m minimum clearance. When the Mini stopped short, '
+        f'ADO continued at a minimum of {short["near_center_min_speed_kmh"]:.1f} km/h near the crossing.',
+        ("Matched camera evidence", TAG+"junction-transfer/README.md"),
+        ("Five trials", TAG+"junction-transfer/transfer-r3-first/audit.json"))
     for title, lo, hi, view in (("Beside the bus", 858, 872, "chase"), ("Past the bus", 872, 882, "front")):
         a, b = section(old, lo, hi), section(new, lo, hi)
         result = (f'At {lo}–{hi} m along the route, the car drove at a median '

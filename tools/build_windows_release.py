@@ -11,7 +11,8 @@ import re
 import shutil
 import subprocess
 from tempfile import TemporaryDirectory
-from zipfile import BadZipFile, ZipFile
+from urllib.parse import quote
+from zipfile import BadZipFile, ZIP_DEFLATED, ZipFile, ZipInfo
 
 
 REPO = Path(__file__).resolve().parents[1]
@@ -69,6 +70,7 @@ PROGRESS_MASTER = "ADO-City-Progress-1080p.mp4"
 PROGRESS_SCHEMA = "ado-city-progress-v1"
 PROGRESS_RESULTS = "results/city-progress"
 PROGRESS_CROSSING_SOURCE = "city_crossing.py"
+PROGRESS_GRADE_SOURCE = "city_grade.py"
 POPULATION_EVIDENCE = {
     "population-reference.jsonl.gz": "population_reference_sha256",
     "population-score.json": "population_score_sha256",
@@ -81,6 +83,8 @@ LIFE_CALIBRATION = "results/roadworks-pace/stopping-calibration.json"
 POPULATION_THRESHOLDS = {"car": 1., "pedestrian": .5}
 POPULATION_RADII = ("35", "50", "65", "100")
 MAX_UPLOAD_BYTES = 2 * 1024**3
+EXTERNAL_SWEEPS_INDEX = f"{PROGRESS_RESULTS}/EXTERNAL-SWEEPS.md"
+SWEEP_INDEX_RESERVE = 1024**2
 BARRIER_MODEL = "models/barrier-appearance.json"
 BARRIER_DATA = "data/barrier-recognition/town03-native.zip"
 BARRIER_VALIDATION = "results/barrier-recognition/validation.json"
@@ -376,6 +380,16 @@ def verify_packed_replay(archive, media, replay):
     require(frames == replay, f"Replay pack differs from the original recording at {media}")
 
 
+def progress_fit_sources(fit):
+    revision = fit.get("revision", 3)
+    require(type(revision) is int and revision >= 3, "Unsupported City Progress checkpoint revision")
+    require((revision >= 4) == ("grade_source_sha256" in fit), "City Progress grade fit differs from the checkpoint revision")
+    sources = {"city_progress.py": fit["source_sha256"], PROGRESS_CROSSING_SOURCE: fit["crossing_source_sha256"]}
+    if revision >= 4:
+        sources[PROGRESS_GRADE_SOURCE] = fit["grade_source_sha256"]
+    return sources
+
+
 def verify_city_film(archive, media, capture, scratch, tactical_case=None, *, population_baseline=False):
     require(capture["producer"] == CITY_PRODUCER and capture["benchmark_member"] is False
             and capture["teacher"] is False and capture["map_asset"] == "town.json"
@@ -385,6 +399,7 @@ def verify_city_film(archive, media, capture, scratch, tactical_case=None, *, po
     populated = policy["schema"] in POPULATED_POLICIES
     pace = populated or policy["schema"] == PACE_SCHEMA
     surround = pace or policy["schema"] == SURROUND_SCHEMA
+    progress_sources = {}
     folder = CITY_MODEL_FOLDERS.get(policy["schema"])
     require(folder is not None and re.fullmatch(r"[a-zA-Z0-9_-]+\.npz", policy["path"]),
             f"Invalid Town03 policy path at {media}")
@@ -415,9 +430,11 @@ def verify_city_film(archive, media, capture, scratch, tactical_case=None, *, po
             verify_digest(archive, LIFE_CALIBRATION, fit["calibration_sha256"])
         if policy["schema"] == PROGRESS_SCHEMA:
             verify_digest(archive, "models/city-clearance/candidate.npz", fit["base_sha256"])
-            require(fit["crossing_source_sha256"] == policy["code_sha256"][PROGRESS_CROSSING_SOURCE],
-                    f"The recording captured a different crossing observer at {media}")
-        if populated:
+            progress_sources = progress_fit_sources(fit)
+            for source, digest in progress_sources.items():
+                require(digest == policy["code_sha256"].get(source),
+                        f"The recording captured a different fitted module at {media}: {source}")
+        if populated and policy["schema"] != PROGRESS_SCHEMA:
             _, source = POPULATED_POLICIES[policy["schema"]]
             require(fit["source_sha256"] == policy["code_sha256"][source],
                     f"The recording captured a different fit source at {media}")
@@ -461,7 +478,7 @@ def verify_city_film(archive, media, capture, scratch, tactical_case=None, *, po
         require(exposure["run_id"] == capture["trial_id"], f"Wrong Town03 replay at {media} frame {frame}")
     if populated:
         verify_city_life_score(capture, telemetry, replay)
-        verify_city_life_evidence(archive, capture, replay)
+        verify_city_life_evidence(archive, capture, replay, progress_sources)
     if population_baseline:
         score = read_json(archive, LIFE_BASELINE)
         verify_population_metadata(score, capture, len(replay))
@@ -536,15 +553,13 @@ def verify_city_life_population(capture, archive_capture, baseline):
             "City Life does not improve the share of frames with both types of moving actors within 50 m")
 
 
-def verify_population_sources(archive, capture, results, policy_source):
+def verify_population_sources(archive, capture, results, policy_source, progress_sources=()):
     source_hashes = {f"crosswalk/{name}": digest for name, digest in capture["policy"]["code_sha256"].items()
                      if re.fullmatch(r"[a-zA-Z0-9_]+\.py", name)}
-    fitted_sources = {f"crosswalk/{policy_source}"}
-    progress = capture["policy"]["schema"] == PROGRESS_SCHEMA
-    if progress:
-        fitted_sources.add(f"crosswalk/{PROGRESS_CROSSING_SOURCE}")
-    required_sources = fitted_sources | {"crosswalk/city_clearance.py", "crosswalk/city_population.py",
-                                         "crosswalk/journey_capture.py", "crosswalk/population_score.py"}
+    fitted_sources = {f"crosswalk/{name}" for name in progress_sources}
+    required_sources = fitted_sources | {f"crosswalk/{policy_source}", "crosswalk/city_clearance.py",
+                                         "crosswalk/city_population.py", "crosswalk/journey_capture.py",
+                                         "crosswalk/population_score.py"}
     with archive.open(f"{PREFIX}{results}/capture-source.zip") as source_file, ZipFile(source_file) as source:
         require(required_sources <= source_hashes.keys()
                 and len(source.namelist()) == len(source_hashes) == len(capture["policy"]["code_sha256"])
@@ -552,18 +567,18 @@ def verify_population_sources(archive, capture, results, policy_source):
         for name, digest in source_hashes.items():
             recorded = source.read(name)
             require(hashlib.sha256(recorded).hexdigest() == digest, f"Wrong recorded execution source: {name}")
-            if progress and name in fitted_sources:
+            if name in fitted_sources:
                 # Git archives use repository line endings. The simulator snapshot keeps checkout bytes.
                 committed = archive.read(PREFIX + name)
                 require(committed.replace(b"\r\n", b"\n") == recorded.replace(b"\r\n", b"\n"),
                         f"The release and capture use different fit sources: {name}")
 
 
-def verify_city_life_evidence(archive, capture, replay):
+def verify_city_life_evidence(archive, capture, replay, progress_sources=()):
     results, policy_source = POPULATED_POLICIES[capture["policy"]["schema"]]
     for name, digest_field in POPULATION_EVIDENCE.items():
         verify_digest(archive, f"{results}/{name}", capture[digest_field])
-    verify_population_sources(archive, capture, results, policy_source)
+    verify_population_sources(archive, capture, results, policy_source, progress_sources)
 
     score = read_json(archive, f"{results}/population-score.json")
     verify_population_metadata(score, capture, len(replay))
@@ -838,7 +853,7 @@ def stage_release_master(source, archive, target, media=SURROUND_MEDIA):
     return digest
 
 
-def validate_zip(path, files, commit, tag, scratch):
+def validate_zip(path, files, commit, tag, scratch, external_sweeps=()):
     require(path.stat().st_size < MAX_UPLOAD_BYTES, f"{path.name} exceeds the release asset size limit")
     with ZipFile(path) as archive:
         entries = [member for member in archive.infolist() if not member.is_dir()]
@@ -854,6 +869,10 @@ def validate_zip(path, files, commit, tag, scratch):
 
         def load(path):
             return read_json(archive, path)
+
+        if external_sweeps:
+            require(read(EXTERNAL_SWEEPS_INDEX) == sweep_index(commit, external_sweeps),
+                    "External sweep download index differs from the verified archival inventory")
 
         for required in required_files(tag):
             with archive.open(PREFIX + required) as item:
@@ -966,6 +985,58 @@ def validate_zip(path, files, commit, tag, scratch):
         verify_video(archive, "web/media/training-drive.mp4", len(training["frames"]), scratch)
 
 
+def archive_release(path, commit, tag, external_sweeps=()):
+    excluded = [f":(exclude,top,literal){item['path']}" for item in external_sweeps]
+    git("archive", "--format=zip", f"--prefix={PREFIX}", "-1", f"--output={path}",
+        commit, "--", *release_paths(tag), *excluded)
+
+
+def external_sweep_inventory(path, commit):
+    size = path.stat().st_size
+    if size < MAX_UPLOAD_BYTES:
+        return []
+    required_savings = size - MAX_UPLOAD_BYTES + SWEEP_INDEX_RESERVE
+    with ZipFile(path) as archive:
+        build = read_json(archive, "web/media/build.json")
+        linked = {item["url"][3:] for item in build["evidence"] if item["url"].startswith("../results/")}
+        candidates = [member for member in archive.infolist()
+                      if not member.is_dir() and member.filename.startswith(f"{PREFIX}{PROGRESS_RESULTS}/")
+                      and PurePosixPath(member.filename).name == "sensor-sweeps.zip"
+                      and member.filename.removeprefix(PREFIX) not in linked]
+        candidates.sort(key=lambda member: (member.compress_size, member.filename))
+        external = []
+        while required_savings > 0:
+            require(candidates, "Windows ZIP exceeds 2 GiB after allowing for all optional progress sweep archives")
+            index = next((i for i, member in enumerate(candidates) if member.compress_size >= required_savings),
+                         len(candidates) - 1)
+            member = candidates.pop(index)
+            relative = member.filename.removeprefix(PREFIX)
+            with archive.open(member) as stream:
+                digest = hashlib.file_digest(stream, "sha256").hexdigest()
+            url = f"https://raw.githubusercontent.com/yafi-s/ADO/{commit}/{quote(relative, safe='/')}"
+            external.append(dict(path=relative, url=url, bytes=member.file_size, sha256=digest))
+            required_savings -= member.compress_size
+    return sorted(external, key=lambda item: item["path"])
+
+
+def sweep_index(commit, external_sweeps):
+    lines = ["# Optional native sensor sweeps", "",
+             f"These raw development sweep archives are available from Git commit `{commit}`.",
+             "To reproduce a raw-sweep study, download its archive and save it to the listed path relative to `ADO`.",
+             "Verify the downloaded file with `Get-FileHash -Algorithm SHA256` before unpacking it.", ""]
+    lines.extend(f"- {item['bytes']:,} bytes · SHA-256 `{item['sha256']}`. [{item['path']}]({item['url']})"
+                 for item in external_sweeps)
+    return ("\n".join(lines) + "\n").encode("utf8")
+
+
+def add_sweep_index(path, commit, external_sweeps):
+    with ZipFile(path, "a") as package:
+        timestamp = package.getinfo(PREFIX + "docs/release.md").date_time
+        index = ZipInfo(PREFIX + EXTERNAL_SWEEPS_INDEX, date_time=timestamp)
+        index.external_attr = 0o100644 << 16
+        package.writestr(index, sweep_index(commit, external_sweeps), compress_type=ZIP_DEFLATED, compresslevel=1)
+
+
 def build_release(ref, tag, output, film_master=None):
     require(re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", tag), "Use a version tag such as v0.1.0")
     require(film_master is None or surround_release(tag), "--film-master applies to v0.3.0 and newer releases")
@@ -977,14 +1048,22 @@ def build_release(ref, tag, output, film_master=None):
     with TemporaryDirectory(prefix=".ado-release-", dir=output) as folder:
         scratch = Path(folder)
         archive = scratch / f"ADO-{tag}-Windows.zip"
-        git("archive", "--format=zip", f"--prefix={PREFIX}", "-1", f"--output={archive}",
-            commit, "--", *release_paths(tag))
-        validate_zip(archive, files, commit, tag, scratch)
+        archive_release(archive, commit, tag)
+        external = external_sweep_inventory(archive, commit) if progress_release(tag) else []
+        if external:
+            require(EXTERNAL_SWEEPS_INDEX not in files, f"Conflicting generated path {EXTERNAL_SWEEPS_INDEX}")
+            archive_release(archive, commit, tag, external)
+            add_sweep_index(archive, commit, external)
+            files.difference_update(item["path"] for item in external)
+            files.add(EXTERNAL_SWEEPS_INDEX)
+        validate_zip(archive, files, commit, tag, scratch, external)
         with archive.open("rb") as stream:
             sha256 = hashlib.file_digest(stream, "sha256").hexdigest()
         checksums = f"{sha256}  {archive.name}\n"
         artifacts = [archive]
         metadata = dict(tag=tag, commit=commit, archive=archive.name, bytes=archive.stat().st_size, sha256=sha256)
+        if external:
+            metadata["external_sweeps"] = dict(index=EXTERNAL_SWEEPS_INDEX, archives=external)
         if film_master is not None:
             media, asset, _ = featured_recording(tag)
             film = scratch / asset
