@@ -129,9 +129,12 @@ def load_job_grant():
     raw = os.environ.get("ADO_WAYMO_GRANT_FILE", "")
     path = Path(raw)
     if (not path.is_absolute() or path.name != GRANT_FILENAME or path.is_symlink()
-            or not path.resolve().is_relative_to(COLAB_CONTENT.resolve())):
+            or path.resolve().parent != COLAB_CONTENT.resolve()):
         raise ValueError("job grant requires the dedicated ephemeral file under /content")
-    if not path.is_file() or path.stat().st_dev != COLAB_CONTENT.stat().st_dev:
+    # Colab's ephemeral overlay can assign different device IDs to regular
+    # files and their enclosing directories. Only the exact root-level private
+    # filename is accepted; mounted subdirectories (including Drive) are out.
+    if not path.is_file():
         raise ValueError("job grant must be on the ephemeral Colab filesystem")
     with path.open("rb") as stream:
         payload = stream.read(16385)
