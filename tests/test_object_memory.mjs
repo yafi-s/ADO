@@ -81,6 +81,17 @@ test('a stopped object in clear view leaves once nothing recorded vouches for it
   assert.equal(play([...seen, ...repeat(140, () => ({lidar: returnsOn(20, -4)}))])[149].length, 0, 'but not for ever');
 });
 
+test('a remembered object leaves when something farther off is seen where it stood', () => {
+  // A car waits 8 m ahead, then pulls away unmeasured. The detector still boxes it, ever smaller.
+  const waiting = repeat(10, i => ({tracks: [i % 2 ? coasting(car(1, 8, 0)) : car(1, 8, 0)]}));
+  const boxAt = range => ({label: 'car', score: .5, box: [.5 - .46 / (range - 1.3), .4, .5 + .46 / (range - 1.3), .6]});
+  const stays = play([...waiting, ...repeat(15, () => ({detections: [boxAt(8)]}))]);
+  assert.equal(stays[24].length, 1, 'a box its own size keeps it');
+  const leaves = play([...waiting, ...repeat(15, i => ({detections: [boxAt(8 + (i + 1) * 1.5)]}))]);
+  const gone = leaves.findIndex((objects, index) => index >= 10 && !objects.some(object => !object.leaving));
+  assert.ok(gone > 0 && gone <= 20, `still held at frame ${gone}`);
+});
+
 test('a stopped object stays put in the world as the vehicle passes, then leaves behind it', () => {
   const frames = repeat(60, i => {
     const ego = [i * .5, 0, 0];   // 5 m/s

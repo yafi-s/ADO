@@ -2,8 +2,8 @@
 
 The town geometry exported by ``city_map`` holds lane centre lines and building bounds.
 This adds what the road description itself records about those lanes: which way each one
-is driven, how its two edges are painted, and where each traffic signal stands and which
-way the traffic it governs is heading. Lanes are keyed by their end points, so the file matches a town export
+is driven, how its two edges are painted, where each traffic signal's post stands, which
+way the traffic it governs is heading and how far the governed lanes are from the post. Lanes are keyed by their end points, so the file matches a town export
 however that export orders its lanes.
 """
 from collections import defaultdict
@@ -11,6 +11,7 @@ from pathlib import Path
 import argparse
 import hashlib
 import json
+import math
 
 import carla
 
@@ -53,19 +54,30 @@ def _lanes(road_map):
 
 
 def _signals(road_map):
-    signals = {}
+    """One entry per signal post. The road description lists a post once for every junction lane it governs."""
+    posts = defaultdict(list)
     for landmark in road_map.get_all_landmarks_of_type(SIGNAL):
-        if landmark.id in signals:
-            continue    # one entry per junction movement it governs; the post itself is the same
-        post = landmark.transform
-        lane = road_map.get_waypoint(post.location, project_to_road=True, lane_type=carla.LaneType.Driving)
-        # A post stands beside the lane it governs. That lane's direction is the direction of
-        # the traffic that obeys it, and its lamps face the other way.
-        beside = lane is not None and lane.transform.location.distance(post.location) < 8.
-        yaw = lane.transform.rotation.yaw if beside else post.rotation.yaw
-        signals[landmark.id] = {"id": int(landmark.id), "post": _xy(post.location),
-                                "governs_yaw": round((yaw + 180.) % 360. - 180., 1)}
-    return [signals[key] for key in sorted(signals, key=int)]
+        posts[int(landmark.id)].append(landmark)
+    signals = []
+    for key in sorted(posts):
+        post = posts[key][0].transform
+        # The landmark points the way the traffic it governs is heading. Its lamps face the other way.
+        yaw = math.radians(post.rotation.yaw)
+        entry = {"id": key, "post": _xy(post.location), "governs_yaw": round((post.rotation.yaw + 180.) % 360. - 180., 1)}
+        offsets = []
+        for landmark in posts[key]:
+            for first, last in landmark.get_lane_validities():
+                for lane_id in range(min(first, last), max(first, last) + 1):
+                    governed = road_map.get_waypoint_xodr(landmark.road_id, lane_id, landmark.s) if lane_id else None
+                    if governed is not None:
+                        delta = governed.transform.location - post.location
+                        # Metres from the post to that lane's centre, positive to the left of its traffic.
+                        offsets.append(delta.x * math.sin(yaw) - delta.y * math.cos(yaw))
+        if offsets:
+            # A head hangs over the governed lanes: out as far as the middle of them.
+            entry["reach"] = round((min(offsets) + max(offsets)) / 2, 2)
+        signals.append(entry)
+    return signals
 
 
 def features(name, xodr):

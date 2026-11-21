@@ -33,7 +33,7 @@ const VIEW_RANGE_M = 40;
 
 const GRACE_S = .25;            // the detector idles on alternate frames
 const CANDIDATE_S = .7;         // an unconfirmed measurement waits this long for a second one
-const SURE = {confidence: .6, range: 15}, FAIR = .5;
+const SURE = {confidence: .6, range: 15}, FAIR = .42;   // the detector reports boxes from .35 up
 const GATE_M = {person: 1.2, wheeled: 2.4, unknown: 1.5};
 const DRIFT_MPS = {person: 2, wheeled: 1.5, unknown: 1.5};   // how far an unseen object may have moved, per second
 const TRAVEL_DRIFT_MPS = 8;
@@ -42,16 +42,19 @@ const CARRY_S = 1;              // a travelling object continues this long witho
 const CARRY_AFTER_S = .4;       // once it has been seen travelling for this long
 const CARRY_LIMIT_S = 3;        // and no longer than this, even with lidar returns keeping pace
 const UNSEEN_IN_VIEW_S = 2;     // held in clear view with no detection over it
+const SEEN_SHARE = .6;          // a box narrower than this share of the object's expected width is not it
+const SEEN_PAST_S = .4;         // something farther off seen where it would stand, for this long: it has gone
 const LIDAR_EXTENDS_S = {wheeled: 8, person: 2, unknown: 2};   // returns on its footprint extend that
-const BESIDE_S = {near: 3, far: 6};   // out of the camera's view, with no lidar returns on it
+const BESIDE_S = {near: 2, far: 6};   // out of the camera's view, with no lidar returns on it
+const NEAR_SILENT_S = 1;        // in view and close by, with neither a box nor lidar returns
 const NEAR_M = 12;
 const PERSON_BESIDE_S = 3;
 const BEHIND_M = 6, RANGE_M = 60;
 const EGO_HALF = {length: 2.7, width: 1.3};
-// A vehicle-class detection this far from every mapped lane centre is not drawn. A lane is 4 m
-// wide and a car parked at its kerb sits about 3 m out; in the recordings, "vehicles" farther
-// out than this were kiosks, sheds and street furniture.
-const OFF_ROAD_M = 3.6;
+// A vehicle-class detection this far from every mapped driving-lane centre is not drawn. A van
+// in a parking lane sits up to 3.7 m out; in the recordings, "vehicles" farther out than this
+// were planters, a kiosk, a shed and street furniture.
+const OFF_ROAD_M = 4.5;
 const FADE_IN_S = .3, FADE_OUT_S = .6, DIM_S = .4;
 const REMEMBERED = .6;          // how solid a remembered object is drawn
 
@@ -142,16 +145,18 @@ function validSample(sample) {
 function evidence(object, fx, fy, local, frame) {
   const depth = fx - CAMERA_X;
   const inView = depth > 2.5 && Math.abs(fy) < VIEW_SLOPE * depth && Math.hypot(fx, fy) < VIEW_RANGE_M;
-  let box = false;
+  let box = false, past = false;
   if (inView) {
-    // Where the object would sit across the camera image, 0 at the left edge and 1 at the right.
+    // Where the object would sit across the camera image, 0 at the left edge and 1 at the right,
+    // and the least share of the image's width it would fill at this range.
     const u = .5 + .5 * fy / depth;
+    const fills = .5 * (object.family === 'person' ? .5 : Math.min(object.width, 1.8)) / depth;
     for (const item of Array.isArray(frame.detections) ? frame.detections : []) {
       const span = item?.box;
-      if (Array.isArray(span) && familyOf(item.label) === object.family && u >= span[0] - .02 && u <= span[2] + .02) {
-        box = true;
-        break;
-      }
+      if (!Array.isArray(span) || familyOf(item.label) !== object.family || u < span[0] - .02 || u > span[2] + .02) continue;
+      // A box far too small to be this object is something farther off, seen where it would stand.
+      if (span[2] - span[0] >= SEEN_SHARE * fills) box = true;
+      else past = true;
     }
   }
   // Lidar returns are recorded in the vehicle frame. Count those on the object's footprint.
@@ -159,11 +164,12 @@ function evidence(object, fx, fy, local, frame) {
   const half = object.family === 'person' ? [.5, .5] : [object.length / 2 + .35, object.width / 2 + .35];
   let returns = 0;
   for (const p of Array.isArray(frame.lidar) ? frame.lidar : []) {
-    if (!Array.isArray(p)) continue;
+    // Returns from the vehicle's own body are not evidence of anything else.
+    if (!Array.isArray(p) || (Math.abs(p[0]) < EGO_HALF.length && Math.abs(p[1]) < EGO_HALF.width)) continue;
     const dx = p[0] - fx, dy = p[1] - fy;
     if (Math.abs(dx * c + dy * s) <= half[0] && Math.abs(dy * c - dx * s) <= half[1]) returns++;
   }
-  return {inView, box, lidar: returns >= (object.family === 'person' ? 1 : 2)};
+  return {inView, box, past: past && !box, lidar: returns >= (object.family === 'person' ? 1 : 2)};
 }
 
 // A travelling object was carried along its course and nothing returns from where that put it.
@@ -298,14 +304,15 @@ function witnessed(object, sample, ctx, state) {
   const {s, range} = sample;
   object.hits++;
   object.lastHit = object.lastBox = object.lastLidar = ctx.t;
-  object.leaving = false; object.why = null;
+  object.leaving = false; object.why = null; object.pastFor = 0;
   object.peak = Math.max(object.peak, finite(s.confidence) ? s.confidence : 0);
   if (sample.joining) object.lastHit = ctx.t - (finite(s.age_s) ? clamp(s.age_s, 0, 1) : GRACE_S + .05);
   // Two measurements confirm an object the detector was fairly sure of, three one it was not:
   // boxes near the detector's threshold, twice in a row, were bollards. Joining a drive part-way,
   // the tracker's own second measurement stands in; it reports a speed only from then on.
   const sure = s.confidence >= SURE.confidence && range <= SURE.range;
-  if (sure || object.hits >= 3 || (object.hits >= 2 && object.peak >= FAIR) || (sample.joining && finite(s.speed_mps))) {
+  const joined = state.warm < GRACE_S && finite(s.speed_mps);
+  if (sure || joined || object.hits >= 3 || (object.hits >= 2 && object.peak >= FAIR)) {
     if (!object.confirmed && state.warm < GRACE_S) object.alpha = 1 - 1e-9;   // joining mid-drive: show what is tracked at once
     object.confirmed = true;
   }
@@ -390,7 +397,7 @@ export function advance(state, ctx, deps = {}) {
       continue;
     }
     const object = {key: state.next++, family: sample.family, label: sample.label, votes: {}, hits: 0, confirmed: false,
-      leaving: false, why: null, peak: 0, alpha: 0, solid: 1, x: sample.mx, z: sample.mz, y: 0, vx: 0, vz: 0, heading: 0, against: 0, across: 0,
+      leaving: false, why: null, peak: 0, pastFor: 0, alpha: 0, solid: 1, x: sample.mx, z: sample.mz, y: 0, vx: 0, vz: 0, heading: 0, against: 0, across: 0,
       length: sample.s.length, width: sample.s.width, height: sample.s.height, seen: [], travelling: false, travelFor: 0, stillFor: 0, rest: null, turned: true,
       raw: {x: sample.mx, z: sample.mz}, lastHit: t, lastBox: t, lastLidar: t, t, speed: null};
     state.objects.set(object.key, object);
@@ -425,7 +432,10 @@ export function advance(state, ctx, deps = {}) {
         const seen = evidence(object, fx, fy, (object.heading - degrees) * rad, frame);
         if (seen.box) object.lastBox = t;
         if (seen.lidar) object.lastLidar = t;
-        if (object.travelling) {
+        // Something farther off, seen where the object would stand, means it is no longer there.
+        object.pastFor = seen.inView && seen.past ? object.pastFor + dt : 0;
+        if (object.pastFor > SEEN_PAST_S) leave(object, 'seen past');
+        else if (object.travelling) {
           if (unseen > CARRY_S / 2 && !seen.lidar) {
             // Nothing returns from where its course has taken it. Returns from a point it has
             // already passed mean it stopped there; none at all, a second on, mean it has gone.
@@ -436,8 +446,11 @@ export function advance(state, ctx, deps = {}) {
             } else if (unseen > CARRY_S) leave(object, 'course ran out');
           } else if (unseen > CARRY_LIMIT_S) leave(object, 'course ran out');   // returns keep pace with it for a while
         } else if (seen.inView) {
+          const near = Math.hypot(fx, fy) < NEAR_M && object.family !== 'person';
           const patience = UNSEEN_IN_VIEW_S + (t - object.lastLidar <= .5 ? LIDAR_EXTENDS_S[object.family] : 0);
-          if (t - object.lastBox > patience) leave(object, 'no longer detected');
+          // Close by, a vehicle returns many lidar points. With none, and no box either, it has gone.
+          if (near && t - object.lastBox > NEAR_SILENT_S && t - object.lastLidar > NEAR_SILENT_S) leave(object, 'no returns');
+          else if (t - object.lastBox > patience) leave(object, 'no longer detected');
         } else if (object.family === 'person') {
           if (unseen > PERSON_BESIDE_S) leave(object, 'out of view');
         } else if (t - object.lastLidar > (Math.hypot(fx, fy) < NEAR_M ? BESIDE_S.near : BESIDE_S.far)) {

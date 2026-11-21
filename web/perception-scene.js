@@ -371,7 +371,7 @@ function townFeatures(name) {
 // A traffic signal is drawn as a symbol, half again as large as life so its lamps read from the
 // follow camera. Its position and facing are the map's. A lamp is lit only from a recorded state.
 const LAMPS=['red','amber','green'];
-const SIGNAL={scale:1.5, post:3.3, reach:1.5};
+const SIGNAL={scale:1.5, post:3.3, tall:5.2, reach:1.5};
 function signalParts(look) {
   const lit=color=>new T.MeshBasicMaterial({color,toneMapped:false});
   const glow=color=>new T.ShaderMaterial({
@@ -386,21 +386,25 @@ function signalParts(look) {
     body:paint(look.signalBody,{roughness:.7,metalness:.2}), off:paint(look.signalOff,{roughness:.6}),
     lit:Object.fromEntries(LAMPS.map(name=>[name,lit(look[name])])),
     glow:Object.fromEntries(LAMPS.map(name=>[name,glow(look[name])])),
-    pole:new T.CylinderGeometry(.06,.08,SIGNAL.post,10), arm:new T.CylinderGeometry(.045,.045,SIGNAL.reach,8),
+    pole:new T.CylinderGeometry(.06,.08,1,10), arm:new T.CylinderGeometry(.045,.045,1,8),
     housing:new T.RoundedBoxGeometry(.3,1.2,.42,2,.07), lamp:new T.SphereGeometry(.13,16,10), halo:new T.PlaneGeometry(1,1)
   };
 }
 function buildSignal(parts, record, height) {
   const group=new T.Group();
-  // Local +X points at the traffic the signal governs, which approaches from that side.
+  // Local +X points at the traffic the signal governs, which approaches from that side, and
+  // local +Z to that traffic's left, where the lanes it governs lie.
   group.position.set(record.post[0],height,record.post[1]);
   group.rotation.y=-(record.governs_yaw+180)*rad;
-  add(group,parts.pole,parts.body,0,SIGNAL.post/2,0);
-  // An arm carries the head from the roadside post out over the lane it governs.
-  const arm=add(group,parts.arm,parts.body,0,SIGNAL.post-.05,-SIGNAL.reach/2);
-  arm.rotation.x=Math.PI/2;
+  const reach=finite(record.reach)?clamp(record.reach,-14,14):SIGNAL.reach;
+  // A long mast stands taller, so its head clears a bus.
+  const top=Math.abs(reach)>5?SIGNAL.tall:SIGNAL.post;
+  add(group,parts.pole,parts.body,0,top/2,0).scale.y=top;
+  // An arm carries the head from the roadside post out over the lanes it governs.
+  const arm=add(group,parts.arm,parts.body,0,top-.05,reach/2);
+  arm.rotation.x=Math.PI/2;arm.scale.y=Math.abs(reach);
   const head=new T.Group();
-  head.position.set(0,SIGNAL.post-.1,-SIGNAL.reach);head.scale.setScalar(SIGNAL.scale);
+  head.position.set(0,top-.1,reach);head.scale.setScalar(SIGNAL.scale);
   group.add(head);
   add(head,parts.housing,parts.body,0,0,0);
   const lamps=LAMPS.map((name,i)=>{
@@ -410,7 +414,10 @@ function buildSignal(parts, record, height) {
   });
   const halo=add(head,parts.halo,parts.glow.red,.2,0,0);
   halo.visible=false;halo.renderOrder=5;
-  return {id:record.id,x:record.post[0],z:record.post[1],yaw:record.governs_yaw,group,lamps,halo,state:null};
+  // Where the head hangs, in world coordinates: `reach` to the left of the governed traffic.
+  const yaw=record.governs_yaw*rad;
+  return {id:record.id,x:record.post[0]+reach*Math.sin(yaw),z:record.post[1]-reach*Math.cos(yaw),
+    yaw:record.governs_yaw,post:record.post,group,lamps,halo,state:null};
 }
 function showSignal(parts, signal, state) {
   if(signal.state===state)return;
@@ -620,34 +627,38 @@ export class PerceptionScene {
     this.redraw();
   }
   // Light each signal from the frame. A recording can list lamp states around the vehicle as
-  // observer_map.signals: [{x, y, state}]. Recordings made before that field say less: the signal
-  // scenario records the phase of the signal the vehicle waits at, and the trip scenario holds
-  // every signal on the route at green (crosswalk/world.py; the recorded cameras show both).
-  // A signal with no recorded state is drawn unlit.
+  // observer_map.signals: [{id, state}] or [{x, y, state}]. Recordings made before that field
+  // say less. The signal scenario, alone or as an event in a journey, records the phase of the
+  // signal the vehicle waits at, and the trip scenario holds every signal on the route at green
+  // (crosswalk/world.py and journey.py; the Town01 recordings' cameras show both). A signal with
+  // no recorded state is drawn unlit.
   lightSignals(frame,ctx) {
     if(!this.signals?.length)return;
     const states=new Map(), listed=frame.observer_map?.signals;
+    const phase=/^(?:signal: )?(red|green)(?: signal)?$/.exec(frame.phase||'');
     if(Array.isArray(listed)){
       for(const entry of listed){
-        if(!finite(entry?.x)||!finite(entry?.y))continue;
-        let nearest=null, distance=6;
-        for(const signal of this.signals){
-          const d=Math.hypot(signal.x-entry.x,signal.z-entry.y);
-          if(d<distance){distance=d;nearest=signal;}
+        let match=entry?.id==null?null:this.signals.find(signal=>String(signal.id)===String(entry.id));
+        if(!match&&finite(entry?.x)&&finite(entry?.y)){
+          let distance=6;
+          for(const signal of this.signals){
+            const d=Math.hypot(signal.post[0]-entry.x,signal.post[1]-entry.y);
+            if(d<distance){distance=d;match=signal;}
+          }
         }
-        if(nearest)states.set(nearest,lampState(entry.state));
+        if(match)states.set(match,lampState(entry.state));
       }
-    }else if(ctx.located&&(frame.scenario==='trip'||(frame.scenario==='signal'&&/^(red|green) signal$/.test(frame.phase)))){
-      // The signals ahead that govern traffic heading the vehicle's way, nearest first.
+    }else if(ctx.located&&(frame.scenario==='trip'||(phase&&(frame.scenario==='signal'||frame.scenario==='journey')))){
+      // The heads ahead that govern traffic heading the vehicle's way, nearest first.
       const c=Math.cos(ctx.degrees*rad), n=Math.sin(ctx.degrees*rad), ahead=[];
       for(const signal of this.signals){
         const dx=signal.x-ctx.x, dz=signal.z-ctx.z, fx=c*dx+n*dz, fy=-n*dx+c*dz;
         const along=Math.abs((((signal.yaw-ctx.degrees)%360)+540)%360-180)<35;
-        if(along&&fx>2&&fx<70&&Math.abs(fy)<8)ahead.push([fx,signal]);
+        if(along&&fx>2&&fx<70&&Math.abs(fy)<7)ahead.push([fx,signal]);
       }
       ahead.sort((a,b)=>a[0]-b[0]);
       if(frame.scenario==='trip')for(const [,signal] of ahead)states.set(signal,'green');
-      else if(ahead.length)states.set(ahead[0][1],frame.phase.startsWith('red')?'red':'green');
+      else if(ahead.length)states.set(ahead[0][1],phase[1]);
     }
     const cos=Math.cos(ctx.degrees*rad), sin=Math.sin(ctx.degrees*rad), follow=this.view==='follow';
     for(const signal of this.signals){
