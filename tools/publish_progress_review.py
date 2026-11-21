@@ -53,7 +53,16 @@ def create():
         f'{sum(bool(e["handled"]) for e in events)}/{len(events)} encounters handled. '
         f'{grade["collision_events"]} ego contacts, {grade["red_light_violations"]} red-light violations '
         f'and {grade["yield_violations"]} missed yields.',
-        ("Watch the drive", "./?run=city-progress"), ("All measurements", TAG+"audit/README.md"))
+        ("Watch the drive", "./?run=city-progress"), ("All measurements", TAG+"audit/V06.md"))
+    repeat = read(STUDY / "generalization/comparison.json")
+    earlier, revised = repeat["arms"]
+    if revised["model_sha256"] != manifest["policy"]["sha256"] or not all(run["passed"] for run in repeat["arms"]):
+        raise ValueError("The additional populated trial does not match this release")
+    add("Different pedestrian timing",
+        f'With seed {repeat["seed"]} and a {repeat["departure_delay_s"]:.2f} s departure delay, the same route '
+        f'took {earlier["duration_s"]:.1f} s with the earlier driver and {revised["duration_s"]:.1f} s with the '
+        'revised driver. Both completed the route and passed the encounter checks.',
+        ("Both independent runs", TAG+"generalization/comparison.json"))
     a, b = (run["near_straight_junctions"] for run in (old, new))
     if sorted(a["junction_ids"]) != sorted(b["junction_ids"]):
         raise ValueError("Straight junction groups differ across the two drives")
@@ -61,7 +70,7 @@ def create():
         f'Across the same {len(a["junction_ids"])} nearly straight junctions, measured median speed was '
         f'{a["median_kmh"]:.1f} km/h before and {b["median_kmh"]:.1f} km/h after. '
         f'Total time inside them was {a["seconds"]:.1f} s before and {b["seconds"]:.1f} s after.',
-        ("Every junction", TAG+"audit/README.md"), ("Test protocol", TAG+"audit/PROTOCOL.md"))
+        ("Every junction", TAG+"audit/V06.md"), ("Test protocol", TAG+"audit/PROTOCOL.md"))
     original_transfer = read(STUDY / "junction-transfer/transfer-r3-first/audit.json")
     heldout = original_transfer
     transfer_path = "junction-transfer/transfer-r3-first/audit.json"
@@ -113,7 +122,7 @@ def create():
         f'Strongest half-second deceleration was {a["max_decel_half_s"]:.2f} m/s² before and '
         f'{b["max_decel_half_s"]:.2f} m/s² after. The revised car spent '
         f'{b["overspeed_posted_plus_1_seconds"]:.1f} s more than 1 km/h above the posted limit.',
-        ("Controls and limitations", TAG+"audit/README.md"))
+        ("Controls and limitations", TAG+"audit/V06.md"))
     return {"checks": checks, "scope": "The two drivers ran the same populated route. Arriving at a different time "
             "can change which people and vehicles occupy a junction. Matched open and occupied trials supplement the route comparison."}
 
