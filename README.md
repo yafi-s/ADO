@@ -24,7 +24,7 @@ A learned robotaxi driving through an interactive CARLA 1.0 city. Select a desti
 
 [Watch the perception display](https://yafi-s.github.io/ADO/) · [Builds and run logs](https://yafi-s.github.io/ADO/builds.html) · [3D city observer](https://yafi-s.github.io/ADO/city.html) · [Waymo Jaguar I-PACE model](https://yafi-s.github.io/ADO/vehicle.html?model=ipace) · [Benchmark design](docs/city-study.md) · [Research and asset credits](docs/research.md)
 
-[![ADO tracking a bus beside its planned route, with a synchronized native CARLA camera inset](docs/media/town03-perception.png)](https://yafi-s.github.io/ADO/?run=long-city-drive&at=212)
+[![ADO following its measured passing path around the stopped bus with the same native CARLA chase exposure](docs/media/surround-city-perception.png)](https://yafi-s.github.io/ADO/?run=surround-city&at=187.8)
 
 ## Drive a route
 

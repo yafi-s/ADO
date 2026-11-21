@@ -295,7 +295,13 @@ function motorcycle(b) {
 }
 
 function unknown(b) {
-  b.box(.94, .94, .94, .12, b.paints.body, 0, .5, 0);
+  // A cluster without a reliable class gets a footprint. The return layer shows its observed surface.
+  for (const x of [-1, 1]) {
+    for (const z of [-1, 1]) {
+      b.box(.23, .035, .024, .009, b.paints.body, x * .375, .055, z * .48);
+      b.box(.024, .035, .23, .009, b.paints.body, x * .48, .055, z * .375);
+    }
+  }
   return b.finish(1, 1, 1);
 }
 

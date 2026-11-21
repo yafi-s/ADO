@@ -1,5 +1,6 @@
 import {ReplayMemory, laneAxes} from './object-memory.mjs';
 import {loadReplay} from './replay-pack.mjs';
+import {bicycleAssociations} from './rider-association.mjs';
 
 const $ = id => document.getElementById(id);
 const finite = Number.isFinite;
@@ -170,7 +171,8 @@ function local(x,y,ctx) {
 }
 
 function observations(frame, ctx, objects) {
-  const drawn = objects.map(o => ({id:o.key, name:`Display ${o.key} · ${o.label}`, xy:local(o.x,o.z,ctx),
+  const riders = bicycleAssociations(session.frames,index);
+  const drawn = objects.map(o => ({id:o.key, name:`Display ${o.key} · ${o.label==='person' && riders.has(o.sourceId) ? 'bicycle rider' : o.label}`, xy:local(o.x,o.z,ctx),
     length:o.length, width:o.width, angle:o.heading-ctx.degrees, opacity:o.opacity, source:o.sourceId}));
   const measured = (frame.tracks || []).filter(t => !t.coasting && finite(t.x) && finite(t.y) &&
     t.sources?.some(s => s === 'lidar' || s === 'radar')).map(t => ({
