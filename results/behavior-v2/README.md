@@ -56,10 +56,8 @@ The fresh seeds sample a single district on one map and can reuse road geometry.
 
 ## Downloadable evidence
 
-The [closed-loop evidence archive](closed-loop-evidence.zip) includes the 200 new per-drive summaries and compressed frame traces, frozen code and weights, and the original v0.1 traces. All 643 archive members were read back and checked. The archive is 6,115,585 bytes, with SHA-256 `08b4288f26c4aaefca5b0522bbc093418d778d9f65a0b905f97fcd32c76ab0b5`. [Study manifest](study.json)
+The [closed-loop evidence archive](closed-loop-evidence.zip) includes all 200 new per-drive summaries and compressed frame traces, the weights, and the original v0.1 traces. The current archive is derived from v0.2.0. It removes one prose section from the archived report generator and preserves the original execution manifest, scores, traces, and other source files byte-for-byte. All 644 members were read back and checked. The resulting archive is 6,116,180 bytes with SHA-256 `7d4f663ac8c5188f999fe25c5597a44f6aacaa333feeae56e6726d50b6c96594`. The member hashes and the original snapshot hash are recorded in `derivation.json` and the [study manifest](study.json).
+
+The [original v0.2.0 archive](https://github.com/yafi-s/ADO/raw/refs/tags/v0.2.0/results/behavior-v2/closed-loop-evidence.zip) is 6,115,585 bytes with SHA-256 `08b4288f26c4aaefca5b0522bbc093418d778d9f65a0b905f97fcd32c76ab0b5`.
 
 To recompute the arm counts and matched pairs without CARLA, extract `verify_evidence.py` from the archive and run `python verify_evidence.py closed-loop-evidence.zip`. The published pairing uses the per-case JSON checkpoints for both policies.
-
-## Résumé bullet
-
-- Built a camera, LiDAR and radar driving policy that finished 97/100 CARLA regression drives cleanly against a 70/100 baseline across 39 reused layouts. Froze the policy for a prospective comparison on 50 additional seed–case pairs (47/50 clean vs. 32/50 baseline) and published complete frame traces for all 200 new drives.

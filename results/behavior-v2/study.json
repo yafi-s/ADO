@@ -98,9 +98,9 @@
   },
   "archive": {
     "file": "closed-loop-evidence.zip",
-    "bytes": 6115585,
-    "sha256": "08b4288f26c4aaefca5b0522bbc093418d778d9f65a0b905f97fcd32c76ab0b5",
-    "verified_members": 643,
+    "bytes": 6116180,
+    "sha256": "7d4f663ac8c5188f999fe25c5597a44f6aacaa333feeae56e6726d50b6c96594",
+    "verified_members": 644,
     "new_trials": 200,
     "historical_primary_trials": 100,
     "new_frames": {
@@ -118,6 +118,23 @@
         }
       }
     },
-    "historical_primary_frames": 24199
+    "historical_primary_frames": 24199,
+    "derivation": {
+      "original_archive": {
+        "url": "https://github.com/yafi-s/ADO/raw/refs/tags/v0.2.0/results/behavior-v2/closed-loop-evidence.zip",
+        "bytes": 6115585,
+        "sha256": "08b4288f26c4aaefca5b0522bbc093418d778d9f65a0b905f97fcd32c76ab0b5"
+      },
+      "original_manifest_sha256": "f3742e11e373b8ebe545aa32023d30c6b0f53672b22ae501f01500a55677876e",
+      "modified_member": {
+        "path": "execution/crosswalk/report.py",
+        "original_sha256": "5d83b9fc3cf6ffaf7c04fea9b119893069fbefd403972ffb079c19ed0443e979",
+        "derivative_sha256": "912e4a9c1dc3eb525b68be33915bf22ad66418b069e5dcac98e640f7953c30d9",
+        "change": "Removed the résumé heading and bullet from the archived report writer."
+      },
+      "new_member": "derivation.json",
+      "regenerated_member": "SHA256SUMS",
+      "unchanged": "All other members retain their original contents, including the execution manifest, trial evidence, scores, and verification script."
+    }
   }
 }

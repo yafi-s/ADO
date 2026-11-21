@@ -477,13 +477,7 @@ def build_report(root):
     development_section(lines, results)
     training_section(lines, collection, fits, manifest)
     traction_section(lines, read_json(results / "traction.json"))
-    lines.extend([
-        "", "## Résumé bullet", "",
-        f"- Built a camera, lidar and radar behavior-cloning driver for CARLA {producer['map']}, logging "
-        f"{len(primary) - failures} clean finishes in {len(primary)} closed-loop trials across "
-        f"{len(case_names)} cases in a held-out district and running a {len(camera)}-trial camera-only comparison.",
-        "", "Regenerate this report with `python -m crosswalk.report --root .` using the published results.",
-    ])
+    lines.extend(["", "Regenerate this report with `python -m crosswalk.report --root .` using the published results."])
     return "\n".join(lines) + "\n"
 
 
