@@ -26,6 +26,12 @@ Surround recordings put each surveyed luminous head at its own world-space XYZ p
 
 The rider display and console offer the cameras included with each recorded or live drive. On a multi-view recording the rider camera picker switches views at the same video time. The Console overlay shows detections from the selected RGB camera and labels bearing-only boxes when the detector lacks depth support. A moving lidar cluster without a camera class appears as a neutral obstacle, and later classification keeps the display identity. Three-dimensional range returns use their measured elevations when available.
 
+On a surround recording, select a numbered track in the sidebar to inspect its native camera, image box and 3D identity at the same instant. A camera-only detection appears immediately with its label and contributing view. Its image box can stay for one skipped inference with the age shown. A bicycle and person detected together receive one rider symbol only after their camera boxes move together over several observations. The displayed distance comes from the person's lidar track.
+
+Recordings with a per-frame planner preview show its selected near-term path in Follow. Overview keeps the destination route visible beyond it. A link can open a run, time, camera and scene view together, for example `?run=surround-city&at=270.8&camera=front&view=follow`.
+
+The surround rider display checks vehicle motion against recorded radar rays after compensating for ego motion. It registers overlapping lidar surfaces across camera handoffs and uses surveyed road elevation under grounded objects. Once a stationary vehicle has been observed from both ends, its accumulated surface returns can refine its center and dimensions. The [continuous-frame comparison](../results/perception/rider-motion/README.md) includes the original camera frames, display comparisons and acquisition-time checks.
+
 ![Earlier day display at a signal with a yellow centre line and a blue path](media/ado-display-day.png)
 
 The public site reads recorded evidence. A local session reads the live simulator. The camera inset, graph and controls share the original recorded frame numbers and simulation times. The Builds & Logs page identifies the source revision and checkpoint and exposes the control trace behind each published drive. The driving benchmark, development recordings and higher-quality showcase runs have separate labels.

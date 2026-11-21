@@ -116,6 +116,7 @@
               <button class="chip" type="button" data-layer="tracks" aria-pressed="true" aria-keyshortcuts="T"><i aria-hidden="true"></i>Tracks</button>
               <button class="chip" type="button" data-layer="returns" aria-pressed="true" aria-keyshortcuts="R"><i aria-hidden="true"></i>Returns</button>
             </div>
+            <button class="chip" id="footage-toggle" type="button" aria-pressed="true" aria-controls="feed" hidden>Footage</button>
             <a class="chip more-link" href="#brief" title="Run details">Details</a>
           </div>
         </div>
@@ -147,9 +148,10 @@
 
         <div class="brief" id="brief" tabindex="-1">
           <section class="block card" id="sensing" aria-labelledby="sensing-h" hidden>
-            <h2 class="label" id="sensing-h">Tracked <span id="track-count"></span></h2>
+            <h2 class="label" id="sensing-h">Sensor tracks <span id="track-count"></span></h2>
             <ul class="tracks" id="tracks"></ul>
             <p class="quiet" id="tracks-empty" hidden></p>
+            <ul id="bearing-observations" aria-label="Camera-only observations" hidden></ul>
             <ul id="camera-lights" aria-label="Camera-read traffic lights" hidden></ul>
             <p class="returns" id="returns-line" hidden>
               <span>LiDAR <b id="lidar-count">—</b></span>
@@ -190,6 +192,7 @@
               </dl>
             </details>
             <p class="run-links">
+              <a id="link-inspect" hidden>Inspect frame</a>
               <a id="link-log" hidden>Run log</a>
               <a id="link-replay" hidden>Telemetry</a>
               <a id="link-mp4" download hidden>MP4</a>

@@ -86,7 +86,7 @@ export function laneAxes(lanes, forward = []) {
       const key = Math.floor((a[0] + b[0]) / 2 / size) + ',' + Math.floor((a[1] + b[1]) / 2 / size);
       if (!cells.has(key)) cells.set(key, []);
       const degrees = Math.atan2(b[1] - a[1], b[0] - a[0]) / rad;
-      cells.get(key).push([a[0], a[1], b[0], b[1], degrees, way === null ? null : degrees + way]);
+      cells.get(key).push([a[0], a[1], b[0], b[1], degrees, way === null ? null : degrees + way, a[2], b[2]]);
     }
   });
   // Every lane segment within reach of a point, as [distance, direction, driven direction].
@@ -96,7 +96,7 @@ export function laneAxes(lanes, forward = []) {
       const dx = lane[2] - lane[0], dz = lane[3] - lane[1];
       const along = clamp(((x - lane[0]) * dx + (z - lane[1]) * dz) / (dx * dx + dz * dz || 1), 0, 1);
       const distance = Math.hypot(lane[0] + along * dx - x, lane[1] + along * dz - z);
-      if (distance <= LANE_REACH) found.push([distance, lane[4], lane[5]]);
+      if (distance <= LANE_REACH) found.push([distance, lane[4], lane[5],lane[6]+along*(lane[7]-lane[6])]);
     }
     return found;
   };
@@ -117,6 +117,16 @@ export function laneAxes(lanes, forward = []) {
   };
   // Metres from a point to the nearest lane centre, or Infinity beyond reach of any lane.
   lookup.distance = (x, z) => Math.min(Infinity, ...around(x, z).map(entry => entry[0]));
+  lookup.ground = (x,z,estimate) => {
+    let best=Infinity, altitude=null;
+    for(const [distance,,,height] of around(x,z)){
+      // Restrict surveyed pavement to the carriageway, reject another bridge deck.
+      if(!finite(height)||distance>1.9||Math.abs(height-estimate)>1.5)continue;
+      const score=distance+.2*Math.abs(height-estimate);
+      if(score<best){best=score;altitude=height;}
+    }
+    return altitude;
+  };
   return lookup;
 }
 
@@ -133,7 +143,10 @@ export function contextOf(frame, previous = null, heightAt = () => 0, clock = 0)
     frame.seed !== before.seed || located !== previous.located || dt <= 0 || dt > .8 ||
     (finite(before.frame) && finite(frame.frame) && frame.frame <= before.frame) ||
     (located && Math.hypot(previous.x - x, previous.z - z) > 9);
-  return {frame, t, dt, x, z, degrees, h, located, reset};
+  const yaw=degrees*rad, vx=reset?0:(x-previous.x)/dt, vz=reset?0:(z-previous.z)/dt;
+  return {frame,t,dt,x,z,degrees,h,located,reset,
+    forwardV:vx*Math.cos(yaw)+vz*Math.sin(yaw),rightV:vz*Math.cos(yaw)-vx*Math.sin(yaw),
+    yawRate:reset?0:turn(previous.degrees,degrees)*rad/dt};
 }
 
 export function createState() {
@@ -200,11 +213,48 @@ function leave(object, why) {
   object.leaving = true;
 }
 
+const MASTS={radar:[2,0,.9],radar_front_left:[1.85,-.85,.82],radar_front_right:[1.85,.85,.82],
+  radar_rear_left:[-2.05,-.85,.82],radar_rear_right:[-2.05,.85,.82]};
+const motorVehicle=label=>label==='car'||label==='truck'||label==='bus';
+
+// A changing visible surface can move a fitted box several metres while the car is
+// stationary. Measure motion independently on the Doppler rays assigned to the box.
+// Poor side-on viewing geometry cannot resolve speed along a lane.
+function laneSpeed(sample,ctx,axis){
+  const {s}=sample;
+  const sources=s.doppler??(s.sources?.includes('radar')&&finite(s.radial_mps)?{radar:{radial_mps:s.radial_mps}}:null);
+  if(ctx.reset||axis==null||!sources||!motorVehicle(s.label))return null;
+  const angle=(axis-ctx.degrees)*rad,c=Math.cos(angle),sn=Math.sin(angle);
+  const speeds=[];
+  for(const [sensor,hit] of Object.entries(sources)){
+    const mount=MASTS[sensor];
+    if(!mount||!finite(hit.radial_mps))continue;
+    const front=sensor==='radar', rays=front?ctx.frame.radar:ctx.frame.corner_radar?.[sensor];
+    for(const p of rays??[]){
+      const v=p[front?2:3];
+      if(!finite(v)||Math.abs(v-hit.radial_mps)>.65)continue;
+      const x=p[0]-s.x,y=p[1]-s.y;
+      if(Math.abs(x*c+y*sn)>s.length/2+.55||Math.abs(y*c-x*sn)>s.width/2+.45)continue;
+      const dx=p[0]-mount[0],dy=p[1]-mount[1],dz=front?0:p[2]-mount[2];
+      const r=Math.hypot(dx,dy,dz), projection=(dx*c+dy*sn)/r;
+      if(r<2||Math.abs(projection)<.55)continue;
+      const ego=((ctx.forwardV-ctx.yawRate*mount[1])*dx+(ctx.rightV+ctx.yawRate*mount[0])*dy)/r;
+      speeds.push((v+ego)/projection);
+    }
+  }
+  if(speeds.length<3)return null;
+  speeds.sort((a,b)=>a-b);
+  if(speeds[Math.floor(speeds.length*.75)]-speeds[Math.floor(speeds.length*.25)]>1.3)return null;
+  return speeds[Math.floor(speeds.length/2)];
+}
+
 // Fold one measurement into an object: where it is, which way it faces, how big it is.
 function measure(object, sample, ctx, deps, state) {
   const {s, label, mx, mz} = sample;
   const {t, degrees, h, located} = ctx;
   const fresh = object.hits === 0;
+  const surround=ctx.frame.perception_version==='surround-v1';
+  const motor=surround&&motorVehicle(label);
   const sinceHit = fresh ? 0 : clamp(t - object.lastHit, 0, 1.5);
   const sinceDrawn = fresh ? 0 : clamp(t - object.t, 0, .8);
 
@@ -251,22 +301,51 @@ function measure(object, sample, ctx, deps, state) {
       }
     }
   }
+  // Use a locally observable lane-speed component only for longitudinal motion.
+  // Sustained travel across the lane keeps its unconstrained two-dimensional course.
+  const axis=located&&motorVehicle(label)?deps.laneAxis?.(mx,mz,fresh?degrees:object.heading):null;
+  const along=axis==null?null:laneSpeed(sample,ctx,axis);
+  const ac=Math.cos((axis??0)*rad),as=Math.sin((axis??0)*rad);
+  const lateralTravel=Math.abs((latest.z-first.z)*ac-(latest.x-first.x)*as);
+  const stationaryRay=!surround&&along!=null&&Math.abs(along)<.42;
+  if(stationaryRay)object.legacyStaticAt=t;
+  else if(along!=null&&Math.abs(along)>1.1)object.legacyStaticAt=null;
+  const radialStill=!surround&&object.legacyStaticAt!=null&&t-object.legacyStaticAt<=1.0&&lateralTravel<1.2;
+  if(radialStill)travelling=false;
+  const stabilized=motor||radialStill;
+  const corroborated=(surround||radialStill)&&along!=null&&lateralTravel<Math.max(.8,.65*Math.hypot(latest.z-first.z,latest.x-first.x));
+  if(corroborated){
+    const prior=object.dopplerAt==null?Infinity:t-object.dopplerAt;
+    object.dopplerSpeed=prior>.6?along:object.dopplerSpeed+(along-object.dopplerSpeed)*ease(prior,.26);
+    object.dopplerAt=t;
+    if(Math.abs(object.dopplerSpeed)<.42)travelling=false;
+    else if(Math.abs(object.dopplerSpeed)>.75)travelling=true;
+  }
   object.travelFor = travelling ? object.travelFor + sinceHit : 0;
   object.stillFor = travelling ? 0 : object.stillFor + sinceHit;
   object.travelling = travelling;
 
-  if (fresh || sinceHit <= 0 || Math.hypot(mx - object.x, mz - object.z) >= 3.5) {
+  if (fresh || sinceHit <= 0 || (!surround&&!radialStill&&Math.hypot(mx-object.x,mz-object.z)>=3.5)) {
     object.x = mx; object.z = mz;
     if (!travelling || fresh) object.vx = object.vz = 0;
   } else if (travelling) {
     // Travelling: an alpha-beta filter keeps up with it and sheds frame-to-frame jitter.
+    if(corroborated){
+      const velocity=object.dopplerSpeed;
+      object.vx=ac*velocity;object.vz=as*velocity;
+    }
     const px = object.x + object.vx * sinceDrawn, pz = object.z + object.vz * sinceDrawn;
     const rx = mx - px, rz = mz - pz;
-    object.x = px + TRACK_ALPHA * rx; object.z = pz + TRACK_ALPHA * rz;
-    object.vx += TRACK_BETA * rx / sinceHit; object.vz += TRACK_BETA * rz / sinceHit;
+    // A depth/identity handoff is an uncertain correction, never an instantaneous jump.
+    const correction=motor?Math.min(1,Math.max(.10,1.8*sinceDrawn)/(Math.hypot(rx,rz)||1)):1;
+    object.x = px + TRACK_ALPHA * correction*rx; object.z = pz + TRACK_ALPHA * correction*rz;
+    if(!corroborated){
+      object.vx += TRACK_BETA * correction*rx / sinceHit; object.vz += TRACK_BETA * correction*rz / sinceHit;
+    }
   } else {
     // Staying put: drift only slowly toward where it is measured.
-    const follow = ease(sinceHit, STILL_SECONDS);
+    const residual=Math.hypot(mx-object.x,mz-object.z);
+    const follow = stabilized ? (residual<.15?0:Math.min(ease(sinceHit,STILL_SECONDS),.45*sinceDrawn/(residual||1))) : ease(sinceHit, STILL_SECONDS);
     object.x += (mx - object.x) * follow; object.z += (mz - object.z) * follow;
     object.vx = object.vz = 0;
   }
@@ -295,18 +374,26 @@ function measure(object, sample, ctx, deps, state) {
   if (!fresh && Math.abs(turn(object.heading, facing)) > 90) facing += 180;
   object.against = underway && Math.abs(turn(course, object.heading)) > 110 ? object.against + sinceHit : 0;
   object.turned = fresh;
-  if (object.against >= .5) {
-    object.heading += 180; facing += 180; object.against = 0; object.turned = true;
+  if(object.against>=.5){
+    if(!surround){object.heading+=180;facing+=180;object.against=0;object.turned=true;}
+    else facing=course;
   }
-  object.heading = fresh ? facing : object.heading + turn(object.heading, facing) * ease(sinceHit, HEADING_SECONDS);
+  const rotation=turn(object.heading,facing)*ease(sinceHit,HEADING_SECONDS);
+  const maxTurn=Math.min(70,18+7*speed)*sinceDrawn;
+  object.heading = fresh ? facing : object.heading + (motor?(travelling?clamp(rotation,-maxTurn,maxTurn):0):rotation);
 
   // Length, width and height are estimates too; ease them so the shape does not pump.
-  const settle = fresh ? 1 : ease(sinceHit, SHAPE_SECONDS);
+  const settle = fresh ? 1 : ease(motor?sinceDrawn:sinceHit,motor?1.1:SHAPE_SECONDS);
   object.length += (s.length - object.length) * settle;
   object.width += (s.width - object.width) * settle;
   object.height += (s.height - object.height) * settle;
   // Track Z is the estimated centre. The shape stands on its measured base.
-  object.y = h + s.z - s.height / 2;
+  const measuredBase=h+s.z-s.height/2;
+  const surface=(deps.groundAt??deps.laneAxis?.ground)?.(object.x,object.z,measuredBase);
+  object.onPavement=surface!=null&&finite(surface);
+  if(object.onPavement)object.y=surface+.015;
+  else if(fresh)object.y=measuredBase;
+  else object.y+=clamp(measuredBase-object.y,-.4*sinceDrawn,.4*sinceDrawn)*ease(sinceHit,.28);
 
   object.raw = {x: mx, z: mz};
   object.rest = null;
@@ -317,6 +404,29 @@ function measure(object, sample, ctx, deps, state) {
 // The object was measured in this frame.
 function witnessed(object, sample, ctx, state) {
   const {s, range} = sample;
+  object.sourceId = s.id;
+  object.support=s.lidar_hits??0;
+  object.boxes=s.rgb_boxes;
+  object.classReadings=(s.cameras??[]).flatMap(view=>{
+    const box=ctx.frame.camera_detections?.[view]?.find(d=>d.track_id===s.id&&d.range_supported);
+    return box&&motorVehicle(box.label)?[[box.label,box.score]]:[];
+  });
+  if(motorVehicle(object.label)&&Array.isArray(s.surface_xyz)&&s.surface_xyz.length>=3){
+    // A stationary object's exposed faces accumulate in world space. Moving
+    // objects retain only the current scan so their past positions cannot elongate them.
+    const moving=ctx.t-object.dopplerAt<.65&&Math.abs(object.dopplerSpeed)>.75;
+    const history=object.surfaces??=[];
+    if(moving||object.surfaceMoving)history.length=0;
+    object.surfaceMoving=moving;
+    while(history.length&&(ctx.t-history[0].t>8||history.length>=40))history.shift();
+    if(!history.length||ctx.t-history.at(-1).t>=.18){
+      const yaw=ctx.degrees*rad,c=Math.cos(yaw),n=Math.sin(yaw);
+      const points=s.surface_xyz.filter(p=>Array.isArray(p)&&p.length===3&&p.every(finite)).map(([x,y,h])=>
+        [ctx.x+x*c-y*n,ctx.z+x*n+y*c,ctx.h+h]);
+      history.push({t:ctx.t,x:ctx.x,z:ctx.z,base:ctx.h+s.z-s.height/2,points});
+      object.surfaceCells=new Set(history.flatMap(scan=>scan.points.map(p=>Math.floor(p[0]/.55)+','+Math.floor(p[1]/.55))));
+    }
+  }
   object.hits++;
   object.lastHit = object.lastBox = object.lastLidar = ctx.t;
   object.leaving = false; object.why = null; object.pastFor = 0;
@@ -327,16 +437,175 @@ function witnessed(object, sample, ctx, state) {
   // the tracker's own second measurement stands in; it reports a speed only from then on.
   // A near pedestrian with a camera class, lidar depth and independent Doppler
   // deserves an immediate symbol, even if this is its first camera box.
-  const closePerson = s.label === 'person' && range <= 12 && s.confidence >= .35 &&
-    ['rgb','lidar','radar'].every(source => s.sources?.includes(source));
-  const sure = (s.confidence >= SURE.confidence && range <= SURE.range) || closePerson;
+  const fusedPerson = s.label === 'person' && ['rgb','lidar','radar'].every(source => s.sources?.includes(source));
+  // A resolved camera class supported by a lidar surface and actual Doppler can
+  // localize a pedestrian beyond the range at which a class score alone is trusted.
+  const resolvedPerson = fusedPerson && s.confidence >= SURE.confidence && s.lidar_hits >= 4 &&
+    s.cameras?.length > 0 && finite(s.radial_mps);
+  const immediatePerson = resolvedPerson || (fusedPerson && range <= 12 && s.confidence >= .35);
+  const sure = (s.confidence >= SURE.confidence && range <= SURE.range) || immediatePerson;
   const joined = state.warm < GRACE_S && finite(s.speed_mps);
   if (sure || joined || object.hits >= 3 || (object.hits >= 2 && object.peak >= FAIR)) {
-    if (!object.confirmed && closePerson) object.alpha = .72;
+    if (!object.confirmed && immediatePerson) object.alpha = .72;
     if (!object.confirmed && state.warm < GRACE_S) object.alpha = 1 - 1e-9;   // joining mid-drive: show what is tracked at once
     object.confirmed = true;
   }
   state.ids.set(s.id, object.key);
+}
+
+// Cameras can fit different faces of one parked vehicle under separate tracker
+// IDs. Suppress only overlapping, aligned body centres, and keep independent boxes
+// from a common camera distinct. The sidebar can inspect either contributing ID.
+function sameFootprint(a,b,state,t,wasTogether) {
+  if(!motorVehicle(a.label)||!motorVehicle(b.label)||Math.abs(a.y-b.y)>.65)return false;
+  const angle=a.heading*rad,dx=b.x-a.x,dz=b.z-a.z;
+  const lengthwise=Math.abs(dx*Math.cos(angle)+dz*Math.sin(angle)),across=Math.abs(dz*Math.cos(angle)-dx*Math.sin(angle));
+  if(Math.abs(Math.cos((b.heading-a.heading)*rad))<.86||lengthwise>Math.max(a.length,b.length)+1||across>3.2)return false;
+  const x=state.objects.get(a.key),y=state.objects.get(b.key);
+  if(t-x.lastHit<.12&&t-y.lastHit<.12){
+    for(const [view,p] of Object.entries(x.boxes??{})){
+      const q=y.boxes?.[view];
+      if(q && (p[2]<=q[0]||q[2]<=p[0]||p[3]<=q[1]||q[3]<=p[1]))return false;
+    }
+  }
+  if(lengthwise<=Math.min(3.8,.84*Math.min(a.length,b.length))&&across<=Math.min(1,.55*Math.min(a.width,b.width)))return true;
+  if(wasTogether&&(a.held||b.held)&&lengthwise<Math.min(a.length,b.length)&&across<1.7)return true;
+  if((t-x.lastHit<=.12&&b.held&&Math.hypot(x.raw.x-b.x,x.raw.z-b.z)<1.25)||
+     (t-y.lastHit<=.12&&a.held&&Math.hypot(y.raw.x-a.x,y.raw.z-a.z)<1.25))return true;
+  if(x.surfaceMoving||y.surfaceMoving)return sameMovingSurface(x,y,t);
+  // Partially visible front and rear fits can have very different inferred
+  // centres while repeatedly hitting the very same patches of bodywork.
+  if(!x.surfaceCells||!y.surfaceCells)return false;
+  let common=0,low=Infinity,high=-Infinity;
+  const [small,large]=x.surfaceCells.size<y.surfaceCells.size?[x.surfaceCells,y.surfaceCells]:[y.surfaceCells,x.surfaceCells];
+  for(const key of small)if(large.has(key)){
+    const [x,z]=key.split(',').map(Number),station=.55*(x*Math.cos(angle)+z*Math.sin(angle));
+    common++;low=Math.min(low,station);high=Math.max(high,station);
+    if(common>=4&&high-low>.8)return true;
+  }
+  return false;
+}
+
+function sameMovingSurface(a,b,t){
+  const x=a.surfaces?.at(-1),y=b.surfaces?.at(-1);
+  if(!x||!y||Math.min(x.points.length,y.points.length)<4||
+     t-Math.min(x.t,y.t)>.85||Math.abs(x.t-y.t)>.55||Math.hypot(a.vx-b.vx,a.vz-b.vz)>1.6)return false;
+  // Compare the actual surfaces at one exposure time. A different class prior
+  // can displace the fitted centre without moving any of the lidar returns.
+  const dt=y.t-x.t;
+  const dx=(a.vx+b.vx)*.5*dt,dz=(a.vz+b.vz)*.5*dt;
+  const hits=new Set(),otherHits=new Set();
+  for(const p of x.points)for(const q of y.points){
+    if((p[0]+dx-q[0])**2+(p[1]+dz-q[1])**2+(p[2]-q[2])**2<.55**2){hits.add(p);otherHits.add(q);}
+  }
+  if(hits.size<Math.max(4,.60*x.points.length)||otherHits.size<Math.max(4,.60*y.points.length))return false;
+  // Require overlap along a patch of bodywork, rather than one corner or bumper tip.
+  for(const p of hits)for(const q of hits)if(Math.hypot(p[0]-q[0],p[1]-q[1])>1)return true;
+  return false;
+}
+
+function stationaryEnvelope(group,state,heading){
+  const scans=[];
+  for(const entry of group){
+    const o=state.objects.get(entry.key);
+    if(o.surfaceMoving)return null;
+    if(o.surfaces)scans.push(...o.surfaces);
+  }
+  if(scans.length<4)return null;
+  const c=Math.cos(heading*rad),s=Math.sin(heading*rad),along=[],across=[],heights=[];
+  let viewerMin=Infinity,viewerMax=-Infinity;
+  for(const scan of scans){
+    const viewer=c*scan.x+s*scan.z;
+    viewerMin=Math.min(viewerMin,viewer);viewerMax=Math.max(viewerMax,viewer);
+    for(const [x,z,y] of scan.points){along.push(c*x+s*z);across.push(c*z-s*x);heights.push(y);}
+  }
+  if(along.length<24)return null;
+  for(const values of [along,across,heights])values.sort((a,b)=>a-b);
+  const last=along.length-1,lo=Math.floor(last*.01),hi=Math.ceil(last*.99);
+  const l=along[hi]-along[lo],w=across[hi]-across[lo];
+  if(viewerMin>=along[lo]||viewerMax<=along[hi]||l<2.5||l>15||w<1||w>3.6)return null;
+  const mid=(along[lo]+along[hi])/2, side=(across[lo]+across[hi])/2;
+  const bases=scans.map(scan=>scan.base).sort((a,b)=>a-b);
+  return {x:c*mid-s*side,z:s*mid+c*side,length:l,width:w,roof:heights[hi],base:bases[Math.floor(bases.length*.10)]};
+}
+
+function stillOnBody(object,envelope,heading,t){
+  if(!envelope||object.surfaceMoving||t-object.lastHit>.8||t-envelope.t>4)return false;
+  const points=object.surfaces?.at(-1)?.points??[],c=Math.cos(heading*rad),s=Math.sin(heading*rad);
+  if(points.length<3)return false;
+  let supported=0;
+  for(const [x,z] of points){
+    const dx=x-envelope.x,dz=z-envelope.z;
+    if(Math.abs(dx*c+dz*s)<=envelope.length/2+.4&&Math.abs(dz*c-dx*s)<=envelope.width/2+.4)supported++;
+  }
+  return supported>=.75*points.length;
+}
+
+function distinctVehicles(drawn,state,ctx){
+  const {t,dt}=ctx;
+  const prior=ctx.reset?new Map():state.presented??new Map();
+  state.presented=new Map();
+  const priorKeys=new Map();
+  for(const [key,old] of prior)for(const member of old.members)priorKeys.set(member,key);
+  const remaining=new Set(drawn),result=[];
+  for(const a of drawn){
+    if(!remaining.delete(a))continue;
+    const group=[a];
+    for(const b of remaining){
+      const previous=priorKeys.get(a.key);
+      if(sameFootprint(a,b,state,t,previous!=null&&previous===priorKeys.get(b.key))){group.push(b);remaining.delete(b);}
+    }
+    if(!motorVehicle(a.label)){result.push(a);continue;}
+    const weight=p=>{
+      const o=state.objects.get(p.key);
+      return (1+Math.log1p(o.support))*Math.exp(-3*(t-o.lastHit));
+    };
+    const best=group.reduce((winner,p)=>weight(p)>weight(winner)?p:winner);
+    const members=group.map(p=>p.key);
+    let key=priorKeys.get(a.key)??a.key;
+    if(state.presented.has(key))key=members.find(k=>!state.presented.has(k))??a.key;
+    const out={...best,key,sourceIds:group.length>1?group.map(p=>p.sourceId):undefined};
+    const old=prior.get(out.key);
+    // The selected surface may switch from the front fit to a new rear-camera ID.
+    // Its first class vote cannot replace the established body's dimensions. Only
+    // fresh, linked camera classifications vote, with older votes decaying over time.
+    const votes={};
+    for(const [label,weight] of Object.entries(old?.votes??{}))votes[label]=weight*Math.exp(-dt/8);
+    for(const member of group){
+      const o=state.objects.get(member.key);
+      if(o.lastHit===t)for(const [label,score] of o.classReadings??[])votes[label]=(votes[label]??0)+score;
+    }
+    if(old&&best.label!==old.pose.label&&(old.owner!==best.key||old.retainingLabel||group.length>1)){
+      const priorLabel=old.pose.label;
+      // Stabilize the owner's own settled class at a handoff. Votes are only a
+      // check on a requested reclassification, never a source of a third label.
+      out.label=(votes[best.label]??0)>1.35*(votes[priorLabel]??0)+1?best.label:priorLabel;
+    }
+    out.opacity=group.reduce((opacity,p)=>Math.max(opacity,p.opacity),out.opacity);
+    let envelope=stationaryEnvelope(group,state,out.heading);
+    if(envelope)envelope.t=t;
+    else if(stillOnBody(state.objects.get(best.key),old?.envelope,out.heading,t))envelope=old.envelope;
+    if(envelope){
+      out.x=envelope.x;out.z=envelope.z;out.length=envelope.length;out.width=envelope.width;
+      if(!state.objects.get(best.key).onPavement)out.y=envelope.base;
+      out.height=Math.max(out.height,envelope.roof-out.y);
+    }
+    // Radius/extent differences between overlapping fits must not instantly teleport
+    // or resize the same on-screen identity when a different camera wins the vote.
+    if(old&&(envelope||group.length>1||old.blending||old.pose.sourceId!==out.sourceId)){
+      const o=state.objects.get(best.key),p=old.pose;
+      const px=p.x+(envelope?0:o.vx)*dt,pz=p.z+(envelope?0:o.vz)*dt;
+      const dx=out.x-px,dz=out.z-pz,gain=Math.min(1,.9*dt/(Math.hypot(dx,dz)||1));
+      out.x=px+gain*dx;out.z=pz+gain*dz;
+      for(const field of ['length','width','height','y'])out[field]=toward(p[field],out[field],.65*dt);
+      out.heading=p.heading+clamp(turn(p.heading,best.heading),-40*dt,40*dt);
+    }
+    const blending=group.length>1||Math.hypot(out.x-best.x,out.z-best.z)>.03||
+      ['length','width','height','y'].some(field=>Math.abs(out[field]-best[field])>.03);
+    state.presented.set(out.key,{pose:out,blending,members,envelope,votes,owner:best.key,retainingLabel:out.label!==best.label});
+    result.push(out);
+  }
+  return result;
 }
 
 // Advance the memory by one frame and return the objects to draw.
@@ -397,6 +666,9 @@ export function advance(state, ctx, deps = {}) {
       const drift = (object.travelling ? TRAVEL_DRIFT_MPS : DRIFT_MPS[object.family]) * (t - object.lastHit);
       const gate = Math.min(GATE_LIMIT_M, Math.max(GATE_M[object.family], object.length / 2 + .5) + drift);
       const distance = Math.hypot(sample.mx - px, sample.mz - pz);
+      if(frame.perception_version==='surround-v1'&&motorVehicle(object.label)&&
+        Math.hypot(sample.mx-object.x,sample.mz-object.z)>Math.max(3.2,.7*object.length)+
+        Math.hypot(object.vx,object.vz)*Math.min(.5,t-object.lastHit))continue;
       if (distance <= gate) pairs.push([distance, sample, object]);
     }
   }
@@ -460,6 +732,9 @@ export function advance(state, ctx, deps = {}) {
         const seen = evidence(object, fx, fy, (object.heading - degrees) * rad, frame);
         if (seen.box) object.lastBox = t;
         if (seen.lidar) object.lastLidar = t;
+        if(frame.perception_version==='surround-v1'&&object.family==='unknown'&&(!seen.lidar||unseen>.65)){
+          leave(object,'surface support expired');
+        }
         // Something farther off, seen where the object would stand, means it is no longer there.
         object.pastFor = seen.inView && seen.past ? object.pastFor + dt : 0;
         if (object.pastFor > SEEN_PAST_S) leave(object, 'seen past');
@@ -498,7 +773,8 @@ export function advance(state, ctx, deps = {}) {
     const held = unseen > GRACE_S;
     const offRoad = frame.perception_version !== 'surround-v1' && object.family === 'wheeled' && deps.laneDistance ? deps.laneDistance(object.x, object.z) > OFF_ROAD_M : false;
     const shown = !object.leaving && !offRoad;
-    object.alpha = toward(object.alpha, shown ? 1 : 0, dt / (shown ? FADE_IN_S : overrun ? .15 : FADE_OUT_S));
+    const fadeOut=overrun?.15:object.why==='surface support expired'?.25:FADE_OUT_S;
+    object.alpha = toward(object.alpha, shown ? 1 : 0, dt / (shown ? FADE_IN_S : fadeOut));
     object.solid = toward(object.solid, held ? REMEMBERED : 1, dt / DIM_S);
     object.t = t;
     if (object.leaving && object.alpha <= 0) {
@@ -507,14 +783,14 @@ export function advance(state, ctx, deps = {}) {
     }
     if (object.alpha <= 0) continue;
     const speed = object.speed;
-    drawn.push({key: object.key, label: object.label, family: object.family, x: object.x, y: object.y, z: object.z,
+    drawn.push({key: object.key, sourceId: object.sourceId, label: object.label, family: object.family, x: object.x, y: object.y, z: object.z,
       heading: object.heading, length: object.length, width: object.width, height: object.height,
       opacity: object.alpha * object.solid, held, leaving: object.leaving, why: object.why, turned: object.turned,
       moving: located && !held && object.travelling && finite(speed) && speed > (object.label === 'person' ? .30 : .55),
       speed});
   }
   for (const [id, key] of state.ids) if (!state.objects.has(key)) state.ids.delete(id);
-  return drawn;
+  return frame.perception_version==='surround-v1'?distinctVehicles(drawn,state,ctx):drawn;
 }
 
 // The page's memory. Frames may arrive in any order: a frame reached again, or reached with
