@@ -194,11 +194,17 @@ class WindowsReleaseTests(unittest.TestCase):
         members = {name.replace(old_media, media).replace("models/city-pace/", "models/city-clearance/"): value
                    for name, value in members.items()}
         model = manifest["policy"]["sha256"]
+        source = sha256(b"clearance fit source")
+        members["models/city-pace/candidate.npz"] = b"base checkpoint"
+        members[release.LIFE_CALIBRATION] = b"native calibration trials"
         manifest.update(population_profile="city-life", frame_period_s=.1, trial_id="city-life", replay="replay.json.gz")
-        manifest["policy"]["schema"] = release.LIFE_SCHEMA
+        manifest["policy"].update(schema=release.LIFE_SCHEMA, code_sha256={"city_clearance.py": source})
         summary = manifest["summary"]
         summary.update(policy=release.LIFE_SCHEMA, scenario="journey", duration_s=.1)
-        members["models/city-clearance/fit.json"] = json_bytes(dict(schema=release.LIFE_SCHEMA, model_sha256=model))
+        members["models/city-clearance/fit.json"] = json_bytes(dict(
+            schema=release.LIFE_SCHEMA, checkpoint_sha256=model, source_sha256=source,
+            base_sha256=sha256(members["models/city-pace/candidate.npz"]),
+            calibration_sha256=sha256(members[release.LIFE_CALIBRATION])))
         score = json.loads(members[f"{media}/telemetry.json"])[0]
         score.update(sim_time=0., video_time=0., collision_count=0, red_light_violations=0, yield_violations=0,
                      **{key: summary[key] for key in ("progress_m", "route_length_m", "events")})

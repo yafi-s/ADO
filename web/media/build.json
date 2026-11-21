@@ -1,16 +1,16 @@
 {
   "status": "evaluated",
-  "title": "Urban pace, work zones and turning-camera verification",
+  "title": "City Life driving and perception evaluation",
   "simulator": {
     "server_version": "1.0",
     "client_version": "1.0",
     "map": "Town01_Opt"
   },
   "release": {
-    "label": "v0.4.0",
-    "url": "https://github.com/yafi-s/ADO/releases/tag/v0.4.0",
-    "zip_url": "https://github.com/yafi-s/ADO/releases/download/v0.4.0/ADO-v0.4.0-Windows.zip",
-    "sha256_url": "https://github.com/yafi-s/ADO/releases/download/v0.4.0/SHA256SUMS.txt"
+    "label": "v0.5.0",
+    "url": "https://github.com/yafi-s/ADO/releases/tag/v0.5.0",
+    "zip_url": "https://github.com/yafi-s/ADO/releases/download/v0.5.0/ADO-v0.5.0-Windows.zip",
+    "sha256_url": "https://github.com/yafi-s/ADO/releases/download/v0.5.0/SHA256SUMS.txt"
   },
   "checkpoints": {
     "fusion": {
@@ -48,9 +48,37 @@
     "town01-yield-gated-v04": {
       "sha256": "afe8a3c2ffeb811bd30d7689941c7fb50cc3c4f7748b4e7e843cb6cb9a3a4746",
       "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.4.0/models/town01-yield-gated-v04/calibration.json"
+    },
+    "city-clearance": {
+      "sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+      "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.5.0/models/city-clearance/candidate.npz"
     }
   },
   "evidence": [
+    {
+      "label": "Original 1080p City Life film",
+      "url": "https://github.com/yafi-s/ADO/releases/download/v0.5.0/ADO-City-Life-1080p.mp4"
+    },
+    {
+      "label": "City Life driving and perception findings",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.5.0/results/city-life/README.md"
+    },
+    {
+      "label": "Speed through the roadworks, side by side",
+      "url": "./media/roadworks-pace/roadside-comparison.mp4"
+    },
+    {
+      "label": "Vehicle and pedestrian first sightings",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.5.0/results/distant-awareness/README.md"
+    },
+    {
+      "label": "Published cone observations",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.5.0/results/cone-perception/README.md"
+    },
+    {
+      "label": "Physical clearances and simultaneous road users",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.5.0/results/city-life/interactions/README.md"
+    },
     {
       "label": "Original 1080p urban pace drive",
       "url": "https://github.com/yafi-s/ADO/releases/download/v0.4.0/ADO-Urban-Pace-1080p.mp4"
@@ -1798,6 +1826,53 @@
     }
   ],
   "showcases": [
+    {
+      "scenario": "journey",
+      "policy": "ado-city-clearance-v1",
+      "seed": 212,
+      "destination": "market",
+      "district": "townwide",
+      "outcome": "complete",
+      "frames": 3320,
+      "duration_s": 332.0,
+      "route_length_m": 1416.438,
+      "progress_m": 1416.064,
+      "collision_events": 0,
+      "red_light_violations": 0,
+      "yield_violations": 0,
+      "label": "City Life",
+      "trial_id": "city-life",
+      "case_id": "journey",
+      "recording_path": "city-life",
+      "model_sha256": "40273f7c760cb1a9406b0845377f461b7b8808b3bbeb6027f183f6849ebae01e",
+      "benchmark_member": false,
+      "selection_note": "One continuous Town03 development drive with moving neighborhood traffic and the roadside-clearance driver.",
+      "cohort": "showcase",
+      "quality_requested": "High",
+      "map": "Town03_Opt",
+      "map_url": "./media/city-life/town.json",
+      "width": 1920,
+      "height": 1080,
+      "manifest_url": "./media/city-life/manifest.json",
+      "log_url": "./media/city-life/telemetry.json",
+      "video_url": "./media/city-life/chase.mp4",
+      "cameras": [
+        "chase",
+        "front",
+        "left",
+        "right",
+        "rear_left",
+        "rear_right"
+      ],
+      "replay_url": "./media/city-life/replay.json",
+      "encounters_handled": 11,
+      "encounters_planned": 11,
+      "source": {
+        "commit": "d4a10b9cc9bfa6e6f40ee2dd6b5690cf508df5c9",
+        "url": "https://github.com/yafi-s/ADO/tree/d4a10b9cc9bfa6e6f40ee2dd6b5690cf508df5c9"
+      },
+      "replay_pack_url": "./media/city-life/replay-pack.json.gz"
+    },
     {
       "scenario": "journey",
       "policy": "ado-city-pace-v1",

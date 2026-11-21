@@ -40,6 +40,7 @@ def publish(web, directory, *, feature=False, source_revision=None, source_snaps
         entry["selection_note"] = ("Town03 development course with staged traffic. The fitted pass planner "
                                    "uses measured clearance in the current and neighboring lanes.")
     if manifest["policy"]["schema"] == "ado-city-clearance-v1" and folder == "city-life":
+        entry["label"] = "City Life"
         entry["selection_note"] = ("One continuous Town03 development drive with moving neighborhood traffic "
                                    "and the roadside-clearance driver.")
     base = f"./media/{folder}"
@@ -108,6 +109,8 @@ def publish(web, directory, *, feature=False, source_revision=None, source_snaps
         manifest["sha256"][sidecar.name] = h
         write_json(recording / "manifest.json", manifest)
     build_path = media / "build.json"
+    if folder == "city-life":
+        write_json(recording / "manifest.json", manifest)
     catalog_path = media / "viewer-catalog.json"
     build = json.loads(build_path.read_bytes())
     section = "development_runs" if tactical else "showcases"

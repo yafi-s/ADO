@@ -1,0 +1,121 @@
+{
+  "checks": [
+    {
+      "test": "Closed-loop drive",
+      "result": "1.42 km and 11/11 staged encounters in 332.0 simulated seconds. CARLA recorded 0 ego contacts, 0 red-light violations and 0 missed yields.",
+      "evidence": [
+        {
+          "label": "Watch City Life",
+          "url": "./?run=city-life"
+        },
+        {
+          "label": "Recorded grade",
+          "url": "./media/city-life/manifest.json"
+        }
+      ]
+    },
+    {
+      "test": "Moving traffic",
+      "result": "A moving vehicle and a moving pedestrian were both within 50 m for 49.9% of the drive, versus 3.4% previously. One exposure had 2 moving vehicles and 6 moving pedestrians nearby.",
+      "evidence": [
+        {
+          "label": "See mixed traffic",
+          "url": "./?run=city-life&at=12.1"
+        },
+        {
+          "label": "Native movement",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.5.0/results/city-life/POPULATION.md"
+        }
+      ]
+    },
+    {
+      "test": "Distant drawings",
+      "result": "At 50–100 m, correctly placed 3D road-user drawings increased from 59 to 181 on the same drive, across 9,070 front-sector actor-frames including occlusions. Across all ranges, unmatched drawings increased from 435 to 454.",
+      "evidence": [
+        {
+          "label": "See the 76.7 m vehicle",
+          "url": "./?run=city-life&frame=281&camera=front&track=20"
+        },
+        {
+          "label": "Camera-only pedestrian at 64.4 m",
+          "url": "./inspect.html?run=city-life&frame=1358&camera=front"
+        },
+        {
+          "label": "Raw range study",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.5.0/results/distant-awareness/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Roadside pace",
+      "result": "In a matched test, median speed alongside the six drums rose from 5.1 to 14.7 km/h. Minimum body clearance was 0.27 m. The driver held a stop for 9.9 seconds at the blocked lane.",
+      "evidence": [
+        {
+          "label": "Synchronized before and after",
+          "url": "./media/roadworks-pace/roadside-comparison.mp4"
+        },
+        {
+          "label": "Conditions and limits",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.5.0/results/roadworks-pace/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Remaining slowdown",
+      "result": "On the original route, median speed on a different boulevard segment fell from 37.7 to 31.6 km/h. At 434 m the front detector reported a person. The three-camera test retained its input features and controls but has no image to verify that classification.",
+      "evidence": [
+        {
+          "label": "Frame-level measurements",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.5.0/results/roadworks-pace/optical-slowdown-434m.json"
+        },
+        {
+          "label": "Other route sections",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.5.0/results/roadworks-pace/matched-route-intervals.json"
+        }
+      ]
+    },
+    {
+      "test": "Cone identification",
+      "result": "On the original film, 420 fresh camera-and-lidar readings matched the six drums. 0 were unmatched. Fresh readings covered 420/1185 nearby drum-frames.",
+      "evidence": [
+        {
+          "label": "Inspect the original exposure",
+          "url": "./inspect.html?run=urban-pace&frame=3195&camera=front"
+        },
+        {
+          "label": "Held-out checks",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.5.0/results/cone-perception/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Cones in traffic",
+      "result": "The populated drive produced 237 fresh RGB-and-lidar matches to the six real props. 0 readings missed the position gate. Within 20 m, 236 of 621 drum-frames had fresh measurements.",
+      "evidence": [
+        {
+          "label": "Watch the taper",
+          "url": "./?run=city-life&at=97.2&camera=front"
+        },
+        {
+          "label": "Position errors and missed observations",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.5.0/results/cone-perception/city-life.json"
+        }
+      ]
+    },
+    {
+      "test": "First ranged vehicle",
+      "result": "On the same Urban Pace sensor tape, the lead car first appeared as a correctly placed 3D body at 49.8 m, versus 43.1 m with the older display. The front camera can also show a bearing before the sensors have enough range evidence for a 3D body.",
+      "evidence": [
+        {
+          "label": "See the selected lead car",
+          "url": "./?run=urban-pace&frame=3452&track=106&camera=front"
+        },
+        {
+          "label": "By class and distance",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.5.0/results/distant-awareness/README.md"
+        }
+      ]
+    }
+  ],
+  "scope": "The site replays closed-loop simulated drives. Population counts include occluded traffic. A 3D symbol needs measured range. First-sighting distances depend on the individual road user, view and occlusion."
+}

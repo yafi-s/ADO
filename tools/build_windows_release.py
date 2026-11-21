@@ -70,6 +70,7 @@ LIFE_EVIDENCE = {
     "capture-source.zip": "capture_source_sha256",
 }
 LIFE_BASELINE = f"{LIFE_RESULTS}/baseline-population-score.json"
+LIFE_CALIBRATION = "results/roadworks-pace/stopping-calibration.json"
 POPULATION_THRESHOLDS = {"car": 1., "pedestrian": .5}
 POPULATION_RADII = ("35", "50", "65", "100")
 MAX_UPLOAD_BYTES = 2_000_000_000
@@ -114,7 +115,7 @@ LIFE_REQUIRED = (
     "crosswalk/traffic_cones.py",
     "models/city-clearance/candidate.npz", "models/city-clearance/fit.json", "web/cone-observations.mjs",
     f"{LIFE_MEDIA}/manifest.json", f"{LIFE_MEDIA}/replay-pack.json.gz", f"{PACE_MEDIA}/{CONE_REVIEW}",
-    LIFE_BASELINE, *(f"{LIFE_RESULTS}/{name}" for name in LIFE_EVIDENCE),
+    LIFE_BASELINE, LIFE_CALIBRATION, *(f"{LIFE_RESULTS}/{name}" for name in LIFE_EVIDENCE),
 )
 CITY_MODEL_FOLDERS = {
     "ado-behavior-v2": "behavior-v2", "ado-city-policy-v1": "city-v1",
@@ -384,8 +385,14 @@ def verify_city_film(archive, media, capture, scratch, tactical_case=None, *, po
         require(read_json(archive, TACTICAL_MODEL)["format"] == "ado-tactical-pass-v1",
                 f"Invalid tactical model at {media}")
         fit = read_json(archive, f"models/{folder}/fit.json")
-        require(fit["model_sha256"] == policy["sha256"] and fit["schema"] == policy["schema"],
+        checkpoint_key = "checkpoint_sha256" if life else "model_sha256"
+        require(fit[checkpoint_key] == policy["sha256"] and fit["schema"] == policy["schema"],
                 f"Wrong city model fit at {media}")
+        if life:
+            verify_digest(archive, "models/city-pace/candidate.npz", fit["base_sha256"])
+            verify_digest(archive, LIFE_CALIBRATION, fit["calibration_sha256"])
+            require(fit["source_sha256"] == policy["code_sha256"]["city_clearance.py"],
+                    "City Life captured a different clearance fit source")
     if pace:
         verify_digest(archive, BARRIER_MODEL, policy["barrier_sha256"])
     for name, digest in capture["sha256"].items():
