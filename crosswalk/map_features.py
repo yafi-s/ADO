@@ -3,7 +3,8 @@
 The town geometry exported by ``city_map`` holds lane centre lines and building bounds.
 This adds what the road description itself records about those lanes: which way each one
 is driven, how its two edges are painted, where each traffic signal's post stands, which
-way the traffic it governs is heading and how far the governed lanes are from the post. Lanes are keyed by their end points, so the file matches a town export
+way the traffic it governs is heading and how far the governed lanes are from the post,
+and the outline of each marked crosswalk. Lanes are keyed by their end points, so the file matches a town export
 however that export orders its lanes.
 """
 from collections import defaultdict
@@ -80,11 +81,23 @@ def _signals(road_map):
     return signals
 
 
+def _crosswalks(road_map):
+    """Each marked crossing as its corners. The road description closes one by repeating its first corner."""
+    crossings, corners = [], []
+    for point in road_map.get_crosswalks():
+        if corners and point.distance(corners[0]) < .01:
+            crossings.append([[round(c.x, 2), round(c.y, 2), round(c.z, 2)] for c in corners])
+            corners = []
+        else:
+            corners.append(point)
+    return crossings
+
+
 def features(name, xodr):
     road_map = carla.Map(name, xodr)
     return {"map": name, "source_sha256": hashlib.sha256(xodr.encode("utf-8")).hexdigest(),
             "units": "metres and degrees, CARLA world coordinates",
-            "lanes": _lanes(road_map), "signals": _signals(road_map)}
+            "lanes": _lanes(road_map), "signals": _signals(road_map), "crosswalks": _crosswalks(road_map)}
 
 
 if __name__ == "__main__":
@@ -97,4 +110,4 @@ if __name__ == "__main__":
     output = args.output or Path("web/media/map-features") / f"{args.map}.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, separators=(",", ":")) + "\n", encoding="utf-8")
-    print(f"{len(result['lanes'])} lanes and {len(result['signals'])} signals", flush=True)
+    print(f"{len(result['lanes'])} lanes, {len(result['signals'])} signals and {len(result['crosswalks'])} crosswalks", flush=True)

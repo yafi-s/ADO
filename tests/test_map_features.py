@@ -74,6 +74,12 @@ class MapFeatureTests(unittest.TestCase):
         self.assertAlmostEqual(signals[2024]["reach"], 11.2, delta=.3)
         self.assertTrue(all(signal["reach"] > 4. for signal in signals.values()))
 
+    def test_crosswalks_are_the_outlines_the_road_description_lists(self):
+        self.assertEqual(described("Town01_Opt")[0]["crosswalks"], [])
+        crosswalks = described("Town03_Opt")[0]["crosswalks"]
+        self.assertEqual(len(crosswalks), 73)
+        self.assertTrue(all(len(corners) == 4 and all(len(corner) == 3 for corner in corners) for corners in crosswalks))
+
 
 if __name__ == "__main__":
     unittest.main()

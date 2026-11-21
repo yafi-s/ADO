@@ -201,6 +201,41 @@ function streetMaterial(tones) {
       }`
   });
 }
+// Marked crosswalks, as the road description outlines them. These towns paint a crossing as two
+// lines across the road, one along each long side of its outline, and so does this.
+function crossingGeometry(crossings) {
+  const xyz=[],across=[],indices=[];
+  for(const corners of crossings){
+    if(corners.length!==4||!corners.every(p=>coord(p,3)))continue;
+    const [a,b,c]=corners, first=Math.hypot(b[0]-a[0],b[1]-a[1]), second=Math.hypot(c[0]-b[0],c[1]-b[1]);
+    // Metres from one long side, and the crossing's width, at each corner.
+    const along=first>=second, width=along?second:first, offset=xyz.length/3;
+    corners.forEach((p,i)=>{
+      xyz.push(p[0],p[2]+.016,p[1]);
+      across.push((along?i>=2:i===0||i===3)?width:0,width);
+    });
+    indices.push(offset,offset+1,offset+2,offset,offset+2,offset+3);
+  }
+  const geometry=new T.BufferGeometry();
+  geometry.setAttribute('position',new T.Float32BufferAttribute(xyz,3));
+  geometry.setAttribute('across',new T.Float32BufferAttribute(across,2));
+  geometry.setIndex(indices);
+  return geometry;
+}
+function crossingMaterial(tones) {
+  return new T.ShaderMaterial({
+    uniforms:{uSky:{value:tones.sky},uMark:{value:tones.marking}},transparent:true,depthWrite:false,side:T.DoubleSide,
+    vertexShader:`attribute vec2 across; varying vec2 vAcross; varying vec3 vWorld;
+      void main(){vAcross=across;vec4 p=modelMatrix*vec4(position,1.);vWorld=p.xyz;gl_Position=projectionMatrix*viewMatrix*p;}`,
+    fragmentShader:`uniform vec3 uSky,uMark; varying vec2 vAcross; varying vec3 vWorld;
+      ${haze}
+      void main(){
+        float d=min(vAcross.x,vAcross.y-vAcross.x), w=clamp(fwidth(vAcross.x),.001,.3);
+        float line=1.-smoothstep(.26-w,.26+w,d);
+        gl_FragColor=vec4(aerial(uMark,vWorld),line*.8);${endColor}
+      }`
+  });
+}
 function pathMaterial(tones) {
   return new T.ShaderMaterial({
     uniforms:{uSky:{value:tones.sky},uStation:{value:0},uOverview:{value:0},uFar:{value:tones.pathFar},uNear:{value:tones.pathNear}},
@@ -533,8 +568,9 @@ export class PerceptionScene {
     this.renderer.toneMappingExposure=look.exposure;
     this.shadow.material.uniforms.uStrength.value=look.shadowOpacity;
     // Signals and track shapes carry their own materials, so build them again in the new colours.
-    if(this.signals?.length)this.buildMap();
-    else this.redraw();
+    // What is remembered does not depend on the colours, so the memory is left alone.
+    this.buildSignals();
+    this.redraw();
   }
   // Draw the current frame again from scratch, after something it is drawn with has changed.
   redraw(){
@@ -583,7 +619,7 @@ export class PerceptionScene {
   buildMap() {
     const town=this.town, features=this.features;
     if(this.map){release(this.map);this.map=null;this.buildings=null;this.curbs=null;}
-    this.signals=[];this.signalParts=null;
+    this.signals=[];this.signalParts=null;   // released with the map
     this.laneAxis=null;
     this.elevation=new Map();
     this.mapKey=town?.producer?.map;
@@ -612,12 +648,9 @@ export class PerceptionScene {
         this.buildings.material.uniforms.uOverview.value=Number(this.view==='overview');
         this.map.add(this.buildings);
       }
-      const posts=(features?.signals||[]).filter(record=>coord(record.post)&&finite(record.governs_yaw));
-      if(posts.length){
-        this.signalParts=signalParts(this.look);
-        this.signals=posts.map(record=>buildSignal(this.signalParts,record,this.height(record.post[0],record.post[1])));
-        for(const signal of this.signals)this.map.add(signal.group);
-      }
+      const crossings=Array.isArray(features?.crosswalks)?features.crosswalks:[];
+      if(crossings.length)this.map.add(new T.Mesh(crossingGeometry(crossings),crossingMaterial(this.tones)));
+      this.buildSignals();
       this.map.visible=Boolean(this.localized);
       this.scene.add(this.map);
     }
@@ -625,6 +658,19 @@ export class PerceptionScene {
     // Headings follow the mapped lanes, so what is remembered is worked out again with this map.
     this.memory.reset();
     this.redraw();
+  }
+  // The town's signals, in the current palette.
+  buildSignals() {
+    for(const signal of this.signals||[])release(signal.group);
+    for(const part of Object.values(this.signalParts||{})){
+      for(const item of part.isMaterial||part.isBufferGeometry?[part]:Object.values(part))item.dispose();
+    }
+    this.signals=[];this.signalParts=null;
+    const posts=(this.features?.signals||[]).filter(record=>coord(record.post)&&finite(record.governs_yaw));
+    if(!this.map||!posts.length)return;
+    this.signalParts=signalParts(this.look);
+    this.signals=posts.map(record=>buildSignal(this.signalParts,record,this.height(record.post[0],record.post[1])));
+    for(const signal of this.signals)this.map.add(signal.group);
   }
   // Light each signal from the frame. A recording can list lamp states around the vehicle as
   // observer_map.signals: [{id, state}] or [{x, y, state}]. Recordings made before that field

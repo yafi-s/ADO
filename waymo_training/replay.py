@@ -27,11 +27,13 @@ import webbrowser
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_FILES = (
     "index.html", "ado-home.css", "ado-home.js", "perception-scene.js",
+    "display.css", "display.js", "road-users.js", "object-memory.mjs",
+    "encounter-chapters.mjs", "replay-pack.mjs",
     "builds.html", "builds.css", "builds.js", "build-data.js",
-    "benchmarks.html", "benchmarks.css", "benchmarks.js",
+    "benchmarks.html", "benchmarks.css", "benchmarks.js", "benchmarks-v2.mjs",
     "city.html", "city.css", "city-view.js",
     "drive.html", "console.css", "console.js", "sensor.js",
-    "vehicle.html", "vehicle.css", "media/town.json",
+    "vehicle.html", "vehicle.css", "media/town.json", "media/map-features/Town01_Opt.json",
     "fonts/Barlow-Regular.ttf", "fonts/Barlow-SemiBold.ttf",
     "fonts/BarlowCondensed-SemiBold.ttf",
     "vendor/city-view/three-view.js", "vendor/model-viewer/model-viewer.min.js",
@@ -48,6 +50,7 @@ SCENARIO_PRIORITY = {"lead": 0, "pedestrian": 1, "clear": 2}
 MIME_TYPES = {
     ".glb": "model/gltf-binary",
     ".js": "text/javascript",
+    ".mjs": "text/javascript",
     ".json": "application/json",
     ".mp4": "video/mp4",
     ".ttf": "font/ttf",

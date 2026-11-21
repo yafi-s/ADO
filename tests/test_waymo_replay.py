@@ -1,11 +1,12 @@
 from http.client import HTTPConnection
 import json
 from pathlib import Path
+import re
 from tempfile import TemporaryDirectory
 from threading import Thread
 from unittest import TestCase
 
-from waymo_training.replay import ReplayServer, _routes
+from waymo_training.replay import PUBLIC_FILES, ROOT, ReplayServer, _routes
 
 
 def make_archive(root, tracker=None):
@@ -114,6 +115,18 @@ class WaymoReplayTests(TestCase):
         ):
             self.assertEqual(self.request(path)[0], 404, path)
         self.assertEqual(self.request("/api/drive", "POST")[0], 501)
+
+    def test_every_file_a_page_loads_is_served(self):
+        # The viewer serves a fixed list. A page that imports a module outside it does not load.
+        loads = re.compile(r"""(?:from\s+|import\(\s*|\ssrc=|\shref=)["']\./([\w./-]+\.(?:m?js|css))["']""")
+        for name in PUBLIC_FILES:
+            if not name.endswith((".html", ".js", ".mjs")) or name.startswith("vendor/"):
+                continue
+            for wanted in loads.findall((ROOT / "web" / name).read_text(encoding="utf-8")):
+                self.assertIn((Path(name).parent / wanted).as_posix(), PUBLIC_FILES, f"{name} loads {wanted}")
+        for module in ("/object-memory.mjs", "/replay-pack.mjs"):
+            status, headers, _ = self.request(module)
+            self.assertEqual((status, headers["Content-Type"]), (200, "text/javascript"), module)
 
     def test_refuses_archive_if_trial_summary_disagrees_with_report(self):
         summary = self.baseline / "lead-seed41-start3" / "summary.json"
