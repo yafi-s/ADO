@@ -240,8 +240,8 @@ def _load_inputs(model_path):
                   camera_profile=fit["render_profile"], camera_profile_source_sha256=fingerprint(fit_path),
                   code_sha256=_source_checksums(JourneyScenario, type(model)))
     if schema == "ado-city-cruise-v1":
-        from . import camera_geometry, overtake, radar_geometry, signal_observer, surround, surround_vision, tracking
-        for module in (camera_geometry, overtake, radar_geometry, signal_observer, surround, surround_vision, tracking):
+        from . import camera_geometry, lidar_motion, overtake, radar_geometry, robotaxi, signal_observer, surround, surround_vision, tracking
+        for module in (camera_geometry, lidar_motion, overtake, radar_geometry, robotaxi, signal_observer, surround, surround_vision, tracking):
             source = Path(module.__file__)
             policy["code_sha256"][source.name] = fingerprint(source)
         policy["tactical_sha256"] = fingerprint(overtake.MODEL)

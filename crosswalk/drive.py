@@ -117,7 +117,7 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
         map_name = world.get_map().name.rsplit("/", 1)[-1]
         if not range_only:
             from .robotaxi import BodyKit
-            body = BodyKit(world, scene.ego)
+            body = BodyKit(world, scene.ego, surround=True) if surround else BodyKit(world, scene.ego)
             stack.callback(body.close)
         visuals = live is not None or recording is not None
         display_path = [_xy(p) for p in scene.route[:-1:4]] + [_xy(scene.route[-1])] if visuals else []
