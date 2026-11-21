@@ -12,7 +12,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const rad = Math.PI / 180;
 const limit = 35, gate = 3;
 const truthLabels = {pedestrian:'person', car:'car', cyclist:'bicycle', van:'car', bus:'bus',
-  bicycle:'bicycle', motorcycle:'motorcycle', truck:'truck'};
+  bicycle:'bicycle', motorcycle:'motorcycle', truck:'truck', barrier:'barrier'};
 const rounded = value => Number(value.toFixed(3));
 const family = label => label === 'person' ? 'person' : ['car','vehicle','bus','van','truck','bicycle','motorcycle'].includes(label) ? 'wheeled' : label;
 const sum = values => values.reduce((a,b) => a+b, 0);

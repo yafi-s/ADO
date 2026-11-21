@@ -19,10 +19,20 @@ test('native High sample combines only one bike and person, after their joint mo
     assert.ok(f.tracks.some(t=>t.id===id && t.label==='person'));
     return f.frame;
   }));
-  assert.deepEqual(active,Array.from({length:23},(_,i)=>3435+i));
+  // The archived excerpt ends while the same measured person is still
+  // continuous in the left camera. Only the front camera saw the wheels.
+  assert.deepEqual(active,Array.from({length:3470-3435+1},(_,i)=>3435+i));
   const e=bicycleAssociations(native,selected).get(143);
   assert.equal(e.depth_source,'person lidar');
   assert.deepEqual(bicycleAssociations(native.slice(0,selected+1)),bicycleAssociations(native,selected));
+});
+
+test('a break in the ranged person identity invalidates a remembered bicycle even after the ID returns',()=>{
+  const frames=structuredClone(native.filter(f=>f.frame>=3430&&f.frame<=3468));
+  assert.ok(bicycleAssociations(frames).get(143).classification_age_s>1);
+  const gap=frames.find(f=>f.frame===3462);
+  gap.tracks=gap.tracks.filter(t=>t.id!==143);
+  assert.equal(bicycleAssociations(frames).size,0);
 });
 
 test('ambiguous people, independently ranged bikes and absent sensor depth cannot create a composite',()=>{

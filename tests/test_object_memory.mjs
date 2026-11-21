@@ -34,6 +34,52 @@ const repeat = (count, make) => Array.from({length: count}, (_, i) => make(i));
 // A lane centre line along the world x axis, sampled every 2 m as a town export is.
 const lane = repeat(101, i => [i * 2 - 100, 0, 0]);
 
+test('a weak car box on a long measured surface stays inspectable as an unclassified footprint',()=>{
+  const frames=repeat(8,i=>{
+    const clear=i>=4;
+    const surface=clear?[[9,-.7,0],[10,.8,.7],[11,0,1.2]]:[[6,0,0],[10,.1,.5],[15,.1,.7]];
+    const score=clear?.82:.44;
+    return {frame:i,sim_time:i/10,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+      tracks:[car(2,10,0,{confidence:score,cameras:['front'],surface_xyz:surface,lidar_hits:8})],
+      camera_detections:{front:[{label:'car',image_id:10,score,range_supported:true,track_id:2}]}};
+  });
+  const memory=new ReplayMemory({});
+  assert.equal(memory.at(frames,3).objects[0].label,'unknown');
+  assert.equal(memory.at(frames,3).objects[0].sourceId,2);
+  assert.equal(memory.at(frames,7).objects[0].label,'car');
+  assert.equal(frames[3].tracks[0].label,'car');
+});
+
+test('the first ranging observation can confirm a repeatedly seen pedestrian while image-only boxes stay unplaced',()=>{
+  const frames=repeat(10,i=>({frame:i,sim_time:i/10,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+    camera_detections:{front:[{image_id:11,label:'person',score:i===9?.46:.73,track_id:i===9?9:null,range_supported:i===9}]},
+    tracks:i===9?[person(9,24,4,{cameras:['front'],confidence:.46,lidar_hits:4,
+      sources:['rgb','lidar','radar'],radial_mps:-3})]:[]}));
+  const memory=new ReplayMemory({});
+  assert.deepEqual(memory.at(frames,8).objects,[]);
+  assert.equal(memory.at(frames,9).objects[0].label,'person');
+});
+
+test('a confirmed post-and-chain subtype reaches the renderer with measured confidence',()=>{
+  const frames=repeat(4,i=>({frame:i,sim_time:i/10,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+    camera_detections:{front:[]},tracks:[car(2,8,0,{label:'barrier',barrier_subtype:'chain',subtype_confidence:.68,
+      length:1.64,width:.24,height:.70,cameras:['front'],sources:['rgb','lidar'],confidence:.68,lidar_hits:8})]}));
+  const drawn=new ReplayMemory({}).at(frames,3).objects[0];
+  assert.equal(drawn.label,'barrier');
+  assert.equal(drawn.barrierSubtype,'chain');
+  assert.equal(drawn.barrierSubtypeConfidence,.68);
+});
+
+test('a range-supported work-zone barrier stays distinct from people and vehicles and expires when its depth stops',()=>{
+  const frames=repeat(19,i=>({frame:i,sim_time:i/10,perception_version:'surround-v1',observer_map:{ego:[0,0,0]},
+    camera_detections:{front:[]},tracks:i<4?[car(2,8,0,{label:'barrier',length:1.19,width:.40,height:1.09,
+      cameras:['front'],sources:['rgb','lidar'],confidence:.8,lidar_hits:8}),person(5,8,1)]:[]}));
+  const memory=new ReplayMemory({});
+  assert.equal(memory.at(frames,3).objects.filter(p=>p.family==='barrier').length,1);
+  assert.equal(memory.at(frames,3).objects.filter(p=>p.family==='person').length,1);
+  assert.ok(!memory.at(frames,18).objects.some(p=>p.family==='barrier'));
+});
+
 test('continuous playback, cold chapter jumps and reverse seeks reconstruct identical rear tracks', () => {
   const frames = repeat(235, i => ({
     frame: i, sim_time: i / 10, scenario: 'test', perception_version: 'surround-v1',

@@ -200,14 +200,12 @@ def source_files(revision, folder):
         "sensor-returns.mjs", "lamp-observations.mjs", "vendor/city-view/three-view.js",
         "media/map-features/Town03_Opt.json",
     ]
-    optional = "rider-association.mjs"
+    optional = ("rider-association.mjs", "follow-heading.mjs")
     if revision:
-        exists = subprocess.check_output(["git", "ls-tree", "--name-only", revision, f"web/{optional}"], cwd=ROOT)
-        if exists:
-            files.append(optional)
+        available = subprocess.check_output(["git", "ls-tree", "--name-only", revision, "web/"], cwd=ROOT).decode().splitlines()
+        files.extend(name for name in optional if f"web/{name}" in available)
         return {name: subprocess.check_output(["git", "show", f"{revision}:web/{name}"], cwd=ROOT) for name in files}
-    if (folder / optional).is_file():
-        files.append(optional)
+    files.extend(name for name in optional if (folder / name).is_file())
     return {name: (folder / name).read_bytes() for name in files}
 
 
