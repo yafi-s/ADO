@@ -4,15 +4,34 @@ import json
 import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 import unittest
 
 import carla
 
 from crosswalk.city_population import CARS, WALKS, lane_segment, sidewalk_segment
+from crosswalk.journey import JourneyScenario
 from crosswalk.population_score import score_population
 
 
 class CityPopulationTests(unittest.TestCase):
+    def test_reference_radius_is_centered_on_ego_for_every_actor(self):
+        # Deliberately put the ego far from map origin and use local bbox offsets
+        # near zero. Changing the origin during iteration drops genuine neighbors.
+        origin = carla.Location(235., -160., 0.)
+        actors = []
+        for i, dx in enumerate((6., 12., 34., 50., 65., 99., 101., -250.)):
+            pose = carla.Transform(origin + carla.Vector3D(dx, 0., 0.))
+            bounds = carla.BoundingBox(carla.Location(.2, .1, .9), carla.Vector3D(1., .6, .9))
+            actors.append(SimpleNamespace(id=i+1, type_id="walker.pedestrian.0001", is_alive=True,
+                                          get_transform=lambda p=pose:p, bounding_box=bounds))
+        scene = SimpleNamespace(ego=SimpleNamespace(get_location=lambda:origin), events=[],
+                                ambient=SimpleNamespace(_actors=actors), occluder=None, population_profile="city-life")
+        for radius, ids in ((35., [1,2,3]), (50., [1,2,3,4]), (65., [1,2,3,4,5]), (100., [1,2,3,4,5,6])):
+            rows = JourneyScenario.observer_positions(scene, radius)
+            self.assertEqual([row["actor_id"] for row in rows], ids)
+            self.assertTrue(all(row["bbox_offset_m"] == [.2,.1,.9] for row in rows))
+
     def test_native_town03_population_geometry(self):
         root = Path(__file__).resolve().parents[1] / ".local" / "carla-1.0"
         configured = os.environ.get("CARLA_TOWN03_XODR")

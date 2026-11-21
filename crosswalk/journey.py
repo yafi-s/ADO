@@ -1033,9 +1033,9 @@ class JourneyScenario(Scenario):
                                       x=round(p.x,2),y=round(p.y,2),z=round(p.z,2),
                                       yaw=round(pose.rotation.yaw,2)))
                 if getattr(self, "population_profile", None) == "city-life":
-                    center = bounds.location
+                    box_center = bounds.location
                     local = bounds.rotation
-                    positions[-1].update(bbox_offset_m=[round(v, 3) for v in (center.x, center.y, center.z)],
+                    positions[-1].update(bbox_offset_m=[round(v, 3) for v in (box_center.x, box_center.y, box_center.z)],
                                          bbox_rotation_deg=[round(v, 2) for v in (local.pitch, local.yaw, local.roll)],
                                          pitch=round(pose.rotation.pitch, 2), roll=round(pose.rotation.roll, 2))
         return positions
