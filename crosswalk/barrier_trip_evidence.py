@@ -54,6 +54,7 @@ def score(journal, sidecar):
     coordinates=np.array([[r[2],r[3]] for r in registry])
     native_boards=[r for r in registry if "streetbarrier" in r[0].lower()]
     counts=Counter()
+    matched_map_assets=Counter()
     board_misses=[]
     chains=[]
     with journal_stream(journal) as source:
@@ -85,6 +86,8 @@ def score(journal, sidecar):
                     elif error<=.65:
                         counts["striped_map_asset_matches"]+=1
                         counts["confirmed_striped_map_asset_matches"]+=int(grade["confirmed"])
+                        if grade["confirmed"]:
+                            matched_map_assets[level[0]]+=1
                     else:
                         board_misses.append(dict(frame=frame,id=t["id"],center_xy=[round(x,3),round(y,3)],
                                                 nearest_named_board=level[0],center_distance_m=round(error,3),
@@ -115,6 +118,7 @@ def score(journal, sidecar):
     return dict(schema="ado-full-city-barrier-score-v1",capture_frames=summary["journal_frames"],
         native_journal_sha256=native_sha,raw_counts=dict(counts),
         named_map_barriers=len(native_boards),named_chain_map_objects=sum("chain" in r[0].lower() for r in registry),
+        confirmed_named_map_boards=dict(matched_map_assets),
         planted_boards=summary["actors"],unmatched_striped_measurements=board_misses,
         chain_candidates=chains)
 

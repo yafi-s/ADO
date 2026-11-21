@@ -61,6 +61,12 @@ PACE_SCHEMA = "ado-city-pace-v1"
 BARRIER_MODEL = "models/barrier-appearance.json"
 BARRIER_DATA = "data/barrier-recognition/town03-native.zip"
 BARRIER_VALIDATION = "results/barrier-recognition/validation.json"
+BARRIER_REVIEW = "barrier-review.json"
+BARRIER_WITNESS = "data/barrier-recognition/hero-post-proposals.zip"
+BARRIER_POST_MODEL = "models/barrier-post-appearance.npz"
+BARRIER_POST_FIT = "results/barrier-recognition/post-appearance-fit.json"
+BARRIER_POST_SOURCE = "crosswalk/barrier_posts.py"
+BARRIER_REVIEW_SOURCE = "crosswalk/barrier_review.py"
 PERIMETER_VIEWS = ("left", "right", "rear_left", "rear_right")
 SURROUND_CAMERAS = ("chase", "front", *PERIMETER_VIEWS)
 TACTICAL_MODEL = "models/tactical-pass/choice.json"
@@ -83,7 +89,9 @@ PACE_REQUIRED = (
     "crosswalk/barrier_chain.py", "crosswalk/barrier.py", "crosswalk/barrier_collect.py", "crosswalk/barrier_scene.py",
     "crosswalk/barrier_study.py", "models/city-pace/candidate.npz", "models/city-pace/fit.json",
     BARRIER_MODEL, BARRIER_DATA, BARRIER_VALIDATION,
-    "web/follow-heading.mjs", f"{PACE_MEDIA}/manifest.json",
+    BARRIER_POST_SOURCE, BARRIER_REVIEW_SOURCE, BARRIER_POST_MODEL, BARRIER_POST_FIT, BARRIER_WITNESS,
+    "web/barrier-review.mjs", "web/follow-heading.mjs", "web/inspect.mjs",
+    f"{PACE_MEDIA}/manifest.json", f"{PACE_MEDIA}/{BARRIER_REVIEW}",
 )
 CITY_EVENTS = {"pedestrian", "pedestrian-delayed", "occluded", "lead", "braking", "left",
                "signal", "cyclist", "roadworks", "bus"}
@@ -430,13 +438,54 @@ def verify_tactical_recordings(archive, build, viewer_records, scratch):
         verify_city_film(archive, media, capture, scratch, tactical_case=case)
 
 
+def verify_barrier_review(archive, capture, showcase, entry):
+    relative = f"{PACE_MEDIA}/{BARRIER_REVIEW}"
+    url = f"./{relative.removeprefix('web/')}"
+    expected = capture["sha256"][BARRIER_REVIEW]
+    require(all(ref["barrier_review_url"] == url and ref["barrier_review_sha256"] == expected
+                for ref in (capture, showcase, entry)), "Barrier review links differ from the recorded artifact")
+    verify_digest(archive, relative, expected)
+    review = read_json(archive, relative)
+    first, last = capture["first_frame"], capture["last_frame"]
+    frames = capture["summary"]["frames"]
+    raw = capture["raw_sha256"]
+    cameras = {camera: {"sha256": raw[f"{camera}.mjpeg"], "images": frames}
+               for camera in SURROUND_CAMERAS if camera != "chase"}
+    require(review["schema"] == "ado-barrier-post-review-v1" and review["partial"] is False
+            and (review["first_frame"], review["last_frame"], review["capture_frames"]) == (first, last, frames)
+            and review["native_journal_sha256"] == raw["perception.jsonl"] and review["native_mjpeg"] == cameras
+            and all(first <= int(frame) <= last for frame in review["frames"]),
+            "Barrier review does not match the complete native urban recording")
+    verify_digest(archive, BARRIER_POST_MODEL, review["model_sha256"])
+    fit = read_json(archive, BARRIER_POST_FIT)
+    require(fit["schema"] == "ado-post-appearance-fit-v1"
+            and fit["model_sha256"] == review["model_sha256"] and fit["threshold"] == review["threshold"],
+            "The barrier review uses a different post appearance fit")
+    for path, key in ((BARRIER_POST_SOURCE, "post_classifier_lf_sha256"),
+                      (BARRIER_REVIEW_SOURCE, "review_code_lf_sha256")):
+        source = archive.read(PREFIX + path).replace(b"\r\n", b"\n")
+        require(hashlib.sha256(source).hexdigest() == review[key], f"Wrong barrier review source: {path}")
+    verify_digest(archive, BARRIER_WITNESS, review["witness_sha256"])
+    with archive.open(PREFIX + BARRIER_WITNESS) as stream, ZipFile(stream) as witness:
+        inputs = json.loads(witness.read("inputs.json"))
+        require(inputs["schema"] == "ado-barrier-post-witness-v1" and inputs["partial"] is False
+                and (inputs["first_frame"], inputs["last_frame"], inputs["frames"]) == (first, last, frames)
+                and inputs["raw_journal_sha256"] == raw["perception.jsonl"] and inputs["native_mjpeg"] == cameras,
+                "Barrier witness does not match the complete native urban recording")
+        for observation in inputs["packets"]:
+            name = observation["source_jpeg"]
+            require(hashlib.sha256(witness.read(name)).hexdigest() == observation["source_jpeg_sha256"],
+                    f"Wrong native barrier witness exposure: {name}")
+
+
 def verify_surround_release(archive, build, viewer_records, tag):
     media, asset, schema = featured_recording(tag)
     directory = PurePosixPath(media).name
     capture = read_json(archive, f"{media}/manifest.json")
     require(capture["policy"]["schema"] == schema, f"Featured drive is missing the {schema} policy")
-    require(any(row["trial_id"] == capture["trial_id"] and row["recording_path"] == directory
-                for row in build["showcases"]), f"{directory} is missing from the build catalog")
+    showcase = next((row for row in build["showcases"]
+                     if row["trial_id"] == capture["trial_id"] and row["recording_path"] == directory), None)
+    require(showcase is not None, f"{directory} is missing from the build catalog")
     require(any(row["trial_id"] == capture["trial_id"] and row["path"] == directory
                 and tuple(row["cameras"]) == SURROUND_CAMERAS for row in viewer_records),
             f"{directory} or its cameras are missing from the viewer catalog")
@@ -451,6 +500,7 @@ def verify_surround_release(archive, build, viewer_records, tag):
                 and report["model_sha256"] == capture["policy"]["barrier_sha256"],
                 "The barrier validation uses a different recognition model")
         verify_digest(archive, BARRIER_DATA, report["archive_sha256"])
+        verify_barrier_review(archive, capture, showcase, entry)
     master = capture["master"]["chase"]
     require(master["path"] == "master/chase.mp4" and (master["width"], master["height"]) == (1920, 1080)
             and master["file_bytes"] > 0 and re.fullmatch(r"[0-9a-f]{64}", master["sha256"])
