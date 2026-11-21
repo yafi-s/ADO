@@ -7,6 +7,15 @@
   "memory_sha256_lf": "602884d383e8c56f0991356ef731b5875f9f968711e3b7ed07ce705bcf69a8ff",
   "paired_optics_sha256": null,
   "method": "Front camera sector, reference center within 100 m and projected body in image; geometric opportunities include occluded actors. Optical requires exact class and one-to-one projected-box IoU >= 0.25. Unmatched optical boxes have no assigned distance. 3D requires exact class, >=0.5 opacity and a unique center within 3 m. Distances are horizontal ego-to-reference-center range.",
+  "projection": {
+    "sha256": "41d3f48f9976e20db6e63696be0b91320f75c98c61cd243e63bbfcd6853e1d58",
+    "telemetry_sha256": "98027c41a9df43453987d896efe8c7b25b58ee69644a1a4160ba28143fa8283e",
+    "body_sources": {
+      "calibrated_actor_yaw_only": 3080,
+      "parked_map_box": 2041,
+      "actor_origin_only": 1077
+    }
+  },
   "bands": {
     "native_optical": {
       "0–30 m": {
@@ -15,11 +24,11 @@
       },
       "30–50 m": {
         "opportunities": 544,
-        "matched": 124
+        "matched": 179
       },
       "50–100 m": {
         "opportunities": 1886,
-        "matched": 43
+        "matched": 44
       }
     },
     "native_full_only": {
@@ -29,11 +38,11 @@
       },
       "30–50 m": {
         "opportunities": 544,
-        "matched": 124
+        "matched": 179
       },
       "50–100 m": {
         "opportunities": 1886,
-        "matched": 43
+        "matched": 44
       }
     },
     "display": {
@@ -70,11 +79,11 @@
       "car": {
         "30–50 m": {
           "opportunities": 389,
-          "matched": 111
+          "matched": 166
         },
         "50–100 m": {
           "opportunities": 1215,
-          "matched": 43
+          "matched": 44
         },
         "0–30 m": {
           "opportunities": 290,
@@ -120,11 +129,11 @@
       "car": {
         "30–50 m": {
           "opportunities": 389,
-          "matched": 111
+          "matched": 166
         },
         "50–100 m": {
           "opportunities": 1215,
-          "matched": 43
+          "matched": 44
         },
         "0–30 m": {
           "opportunities": 290,
@@ -205,18 +214,18 @@
   },
   "unmatched": {
     "native_optical": {
-      "total": 317,
+      "total": 261,
       "by_class": {
-        "car": 154,
+        "car": 98,
         "bus": 41,
         "truck": 18,
         "person": 104
       }
     },
     "native_full_only": {
-      "total": 317,
+      "total": 261,
       "by_class": {
-        "car": 154,
+        "car": 98,
         "bus": 41,
         "truck": 18,
         "person": 104
@@ -241,7 +250,7 @@
           "frame": 2248,
           "time_s": 3.6,
           "range_m": 17.26,
-          "iou": 0.698,
+          "iou": 0.672,
           "box": [
             0.5772,
             0.5215,
@@ -255,7 +264,7 @@
           "frame": 2248,
           "time_s": 3.6,
           "range_m": 17.26,
-          "iou": 0.698,
+          "iou": 0.672,
           "box": [
             0.5772,
             0.5215,
@@ -285,7 +294,7 @@
           "frame": 2212,
           "time_s": 0,
           "range_m": 44.14,
-          "iou": 0.382,
+          "iou": 0.437,
           "box": [
             0.7042,
             0.4906,
@@ -299,7 +308,7 @@
           "frame": 2212,
           "time_s": 0,
           "range_m": 44.14,
-          "iou": 0.382,
+          "iou": 0.437,
           "box": [
             0.7042,
             0.4906,
@@ -337,7 +346,7 @@
           "frame": 2244,
           "time_s": 3.2,
           "range_m": 31.51,
-          "iou": 0.505,
+          "iou": 0.563,
           "box": [
             0.9183,
             0.4909,
@@ -351,7 +360,7 @@
           "frame": 2244,
           "time_s": 3.2,
           "range_m": 31.51,
-          "iou": 0.505,
+          "iou": 0.563,
           "box": [
             0.9183,
             0.4909,
@@ -374,7 +383,7 @@
           "frame": 2424,
           "time_s": 21.2,
           "range_m": 78.59,
-          "iou": 0.536,
+          "iou": 0.539,
           "box": [
             0.5004,
             0.4871,
@@ -388,7 +397,7 @@
           "frame": 2424,
           "time_s": 21.2,
           "range_m": 78.59,
-          "iou": 0.536,
+          "iou": 0.539,
           "box": [
             0.5004,
             0.4871,
@@ -418,7 +427,7 @@
           "frame": 2552,
           "time_s": 34,
           "range_m": 13.16,
-          "iou": 0.727,
+          "iou": 0.752,
           "box": [
             0.6122,
             0.4555,
@@ -432,7 +441,7 @@
           "frame": 2552,
           "time_s": 34,
           "range_m": 13.16,
-          "iou": 0.727,
+          "iou": 0.752,
           "box": [
             0.6122,
             0.4555,
@@ -458,40 +467,40 @@
       "role": "lead",
       "label": "car",
       "first": {
+        "native_optical": {
+          "frame": 3450,
+          "time_s": 123.8,
+          "range_m": 51.25,
+          "iou": 0.74,
+          "box": [
+            0.4908,
+            0.4979,
+            0.5097,
+            0.523
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "native_full_only": {
+          "frame": 3450,
+          "time_s": 123.8,
+          "range_m": 51.25,
+          "iou": 0.74,
+          "box": [
+            0.4908,
+            0.4979,
+            0.5097,
+            0.523
+          ],
+          "source": "single",
+          "range_supported": false
+        },
         "display": {
           "frame": 3465,
           "time_s": 125.3,
           "range_m": 43.14,
           "error_m": 0.059,
           "source": 106
-        },
-        "native_optical": {
-          "frame": 3516,
-          "time_s": 130.4,
-          "range_m": 32.81,
-          "iou": 0.259,
-          "box": [
-            0.4851,
-            0.5065,
-            0.5141,
-            0.5451
-          ],
-          "source": "single",
-          "range_supported": true
-        },
-        "native_full_only": {
-          "frame": 3516,
-          "time_s": 130.4,
-          "range_m": 32.81,
-          "iou": 0.259,
-          "box": [
-            0.4851,
-            0.5065,
-            0.5141,
-            0.5451
-          ],
-          "source": "single",
-          "range_supported": true
         }
       },
       "first_reference_m": 99.89,
@@ -514,7 +523,7 @@
           "frame": 2548,
           "time_s": 33.6,
           "range_m": 78.32,
-          "iou": 0.319,
+          "iou": 0.318,
           "box": [
             0.5938,
             0.4828,
@@ -528,7 +537,7 @@
           "frame": 2548,
           "time_s": 33.6,
           "range_m": 78.32,
-          "iou": 0.319,
+          "iou": 0.318,
           "box": [
             0.5938,
             0.4828,
@@ -566,7 +575,7 @@
           "frame": 2696,
           "time_s": 48.4,
           "range_m": 47.84,
-          "iou": 0.495,
+          "iou": 0.456,
           "box": [
             0.1365,
             0.4638,
@@ -580,7 +589,7 @@
           "frame": 2696,
           "time_s": 48.4,
           "range_m": 47.84,
-          "iou": 0.495,
+          "iou": 0.456,
           "box": [
             0.1365,
             0.4638,
@@ -618,7 +627,7 @@
           "frame": 2698,
           "time_s": 48.6,
           "range_m": 82.47,
-          "iou": 0.302,
+          "iou": 0.304,
           "box": [
             0.0497,
             0.4936,
@@ -632,7 +641,7 @@
           "frame": 2698,
           "time_s": 48.6,
           "range_m": 82.47,
-          "iou": 0.302,
+          "iou": 0.304,
           "box": [
             0.0497,
             0.4936,
@@ -655,7 +664,7 @@
           "frame": 3348,
           "time_s": 113.6,
           "range_m": 30.36,
-          "iou": 0.436,
+          "iou": 0.733,
           "box": [
             0.8123,
             0.476,
@@ -669,7 +678,7 @@
           "frame": 3348,
           "time_s": 113.6,
           "range_m": 30.36,
-          "iou": 0.436,
+          "iou": 0.733,
           "box": [
             0.8123,
             0.476,
@@ -699,7 +708,7 @@
           "frame": 3222,
           "time_s": 101,
           "range_m": 51.2,
-          "iou": 0.318,
+          "iou": 0.809,
           "box": [
             0.5032,
             0.4955,
@@ -713,7 +722,7 @@
           "frame": 3222,
           "time_s": 101,
           "range_m": 51.2,
-          "iou": 0.318,
+          "iou": 0.809,
           "box": [
             0.5032,
             0.4955,
@@ -743,7 +752,7 @@
           "frame": 2880,
           "time_s": 66.8,
           "range_m": 21.96,
-          "iou": 0.731,
+          "iou": 0.822,
           "box": [
             0.4704,
             0.499,
@@ -757,7 +766,7 @@
           "frame": 2880,
           "time_s": 66.8,
           "range_m": 21.96,
-          "iou": 0.731,
+          "iou": 0.822,
           "box": [
             0.4704,
             0.499,
@@ -787,7 +796,7 @@
           "frame": 3956,
           "time_s": 174.4,
           "range_m": 31.97,
-          "iou": 0.681,
+          "iou": 0.623,
           "box": [
             0.9743,
             0.4698,
@@ -801,7 +810,7 @@
           "frame": 3956,
           "time_s": 174.4,
           "range_m": 31.97,
-          "iou": 0.681,
+          "iou": 0.623,
           "box": [
             0.9743,
             0.4698,
@@ -831,7 +840,7 @@
           "frame": 4172,
           "time_s": 196,
           "range_m": 43.6,
-          "iou": 0.659,
+          "iou": 0.78,
           "box": [
             0.6094,
             0.4642,
@@ -845,7 +854,7 @@
           "frame": 4172,
           "time_s": 196,
           "range_m": 43.6,
-          "iou": 0.659,
+          "iou": 0.78,
           "box": [
             0.6094,
             0.4642,
@@ -875,7 +884,7 @@
           "frame": 5150,
           "time_s": 293.8,
           "range_m": 29.73,
-          "iou": 0.561,
+          "iou": 0.612,
           "box": [
             0.5913,
             0.4654,
@@ -889,7 +898,7 @@
           "frame": 5150,
           "time_s": 293.8,
           "range_m": 29.73,
-          "iou": 0.561,
+          "iou": 0.612,
           "box": [
             0.5913,
             0.4654,
@@ -919,7 +928,7 @@
           "frame": 4490,
           "time_s": 227.8,
           "range_m": 30.87,
-          "iou": 0.403,
+          "iou": 0.836,
           "box": [
             0.4835,
             0.5002,
@@ -933,7 +942,7 @@
           "frame": 4490,
           "time_s": 227.8,
           "range_m": 30.87,
-          "iou": 0.403,
+          "iou": 0.836,
           "box": [
             0.4835,
             0.5002,
@@ -963,7 +972,7 @@
           "frame": 4938,
           "time_s": 272.6,
           "range_m": 21.72,
-          "iou": 0.567,
+          "iou": 0.695,
           "box": [
             0.3424,
             0.5056,
@@ -977,7 +986,7 @@
           "frame": 4938,
           "time_s": 272.6,
           "range_m": 21.72,
-          "iou": 0.567,
+          "iou": 0.695,
           "box": [
             0.3424,
             0.5056,
@@ -1004,32 +1013,32 @@
       "label": "car",
       "first": {
         "native_optical": {
-          "frame": 4574,
-          "time_s": 236.2,
-          "range_m": 42.32,
-          "iou": 0.25,
+          "frame": 4570,
+          "time_s": 235.8,
+          "range_m": 43.8,
+          "iou": 0.4,
           "box": [
-            0.0843,
-            0.4789,
-            0.1274,
-            0.5154
+            0.1111,
+            0.479,
+            0.1456,
+            0.5135
           ],
           "source": "single",
-          "range_supported": false
+          "range_supported": true
         },
         "native_full_only": {
-          "frame": 4574,
-          "time_s": 236.2,
-          "range_m": 42.32,
-          "iou": 0.25,
+          "frame": 4570,
+          "time_s": 235.8,
+          "range_m": 43.8,
+          "iou": 0.4,
           "box": [
-            0.0843,
-            0.4789,
-            0.1274,
-            0.5154
+            0.1111,
+            0.479,
+            0.1456,
+            0.5135
           ],
           "source": "single",
-          "range_supported": false
+          "range_supported": true
         },
         "display": {
           "frame": 4579,
@@ -1051,7 +1060,7 @@
           "frame": 4606,
           "time_s": 239.4,
           "range_m": 25.57,
-          "iou": 0.726,
+          "iou": 0.766,
           "box": [
             0.7017,
             0.456,
@@ -1065,7 +1074,7 @@
           "frame": 4606,
           "time_s": 239.4,
           "range_m": 25.57,
-          "iou": 0.726,
+          "iou": 0.766,
           "box": [
             0.7017,
             0.456,
@@ -1111,7 +1120,7 @@
           "frame": 4690,
           "time_s": 247.8,
           "range_m": 33.4,
-          "iou": 0.695,
+          "iou": 0.818,
           "box": [
             0.3772,
             0.5012,
@@ -1125,7 +1134,7 @@
           "frame": 4690,
           "time_s": 247.8,
           "range_m": 33.4,
-          "iou": 0.695,
+          "iou": 0.818,
           "box": [
             0.3772,
             0.5012,
@@ -1155,7 +1164,7 @@
           "frame": 4996,
           "time_s": 278.4,
           "range_m": 34.13,
-          "iou": 0.34,
+          "iou": 0.595,
           "box": [
             0.6094,
             0.469,
@@ -1169,7 +1178,7 @@
           "frame": 4996,
           "time_s": 278.4,
           "range_m": 34.13,
-          "iou": 0.34,
+          "iou": 0.595,
           "box": [
             0.6094,
             0.469,

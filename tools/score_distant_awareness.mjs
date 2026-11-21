@@ -7,10 +7,12 @@ import {bearingObservations,frontBearingCue} from '../web/lamp-observations.mjs'
 
 const {positionals:[directory,output],values}=parseArgs({allowPositionals:true,options:{
   paired:{type:'string'},reference:{type:'string'},review:{type:'string'},examples:{type:'string'},
-  'memory-revision':{type:'string'}}});
+  projection:{type:'string'},'memory-revision':{type:'string'}}});
 if(!directory||!output)throw Error('Pass capture folder and report file');
 const offsets=JSON.parse(fs.readFileSync(new URL('../results/perception/town03-body-offsets.json',import.meta.url)));
 const reference=values.reference??'results/perception/town03-static-vehicles.json';
+const registration=values.projection?JSON.parse(fs.readFileSync(values.projection)):null;
+const projections=registration?new Map(registration.frames):null;
 const paired=values.paired?new Map(fs.readFileSync(values.paired,'utf8').trim().split('\n').map(line=>{
   const row=JSON.parse(line);return [row.frame,row.boxes];
 })):null;
@@ -79,7 +81,10 @@ function scoreBoxes(stage,boxes,actors,frame){
 }
 let acquisitions=0;
 const result=await audit(directory,{staticFile:reference,memoryRevision:values['memory-revision'],barrierReviewFile:values.review,onFrame({frame,actors,display}){
-  const eligible=actors.filter(a=>roadUser(a.label)&&ahead(a)).map(a=>({...a,pixels:projected(a,frame)})).filter(a=>a.pixels);
+  const registered=projections?.get(frame.frame);
+  if(projections&&!registered)throw Error('Missing frame-synchronized reference projection '+frame.frame);
+  const eligible=actors.filter(a=>roadUser(a.label)&&ahead(a))
+    .map(a=>({...a,pixels:registered?registered[a.id]:projected(a,frame)})).filter(a=>a.pixels);
   for(const a of eligible){
     if(!actorsSeen.has(a.id))actorsSeen.set(a.id,{id:a.id,role:a.role,label:a.label,first:{},first_reference_m:+near(a).toFixed(2),minimum_m:near(a)});
     stat(a).minimum_m=Math.min(stat(a).minimum_m,near(a));
@@ -117,6 +122,8 @@ const sha=path=>createHash('sha256').update(fs.readFileSync(path)).digest('hex')
 const report={schema:1,frames:result.frames,front_acquisitions:acquisitions,journal_sha256:result.sha256,
   registered_parked_sha256:sha(reference),memory_sha256_lf:result.memory_sha256_lf,paired_optics_sha256:values.paired?sha(values.paired):null,
   method:'Front camera sector, reference center within 100 m and projected body in image; geometric opportunities include occluded actors. Optical requires exact class and one-to-one projected-box IoU >= 0.25. Unmatched optical boxes have no assigned distance. 3D requires exact class, >=0.5 opacity and a unique center within 3 m. Distances are horizontal ego-to-reference-center range.',
+  projection:registration?{sha256:sha(values.projection),telemetry_sha256:registration.telemetry_sha256,
+    body_sources:registration.body_sources}:null,
   bands,class_bands:classBands,unmatched:extras,encounters:[...actorsSeen.values()].map(a=>({...a,minimum_m:+a.minimum_m.toFixed(2)}))};
 fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n');
 if(values.examples)fs.writeFileSync(values.examples,samples.map(x=>JSON.stringify(x)).join('\n')+'\n');
