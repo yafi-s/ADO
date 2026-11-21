@@ -24,19 +24,34 @@
         <h1>Drive monitor</h1>
       </div>
       <div class="monitor-settings">
-        <div class="source-picker">
+        <div class="source-picker" id="source-picker" hidden>
           <label for="source">Data source</label>
-          <select id="source"><option value="auto">Automatic</option><option value="replay">Recorded drive</option></select>
+          <select id="source"><option value="auto">Live simulator</option><option value="replay">Recorded drive</option></select>
         </div>
         <div class="source-picker" id="encounter-picker" hidden>
-          <label for="encounter">Encounter</label>
-          <select id="encounter">
-            <option value="pedestrian">Pedestrian crossing</option>
-            <option value="turn">Intersection turn</option>
-            <option value="braking">Braking vehicle</option>
-          </select>
+          <label for="encounter">Recording</label>
+          <select id="encounter"></select>
         </div>
       </div>
+    </section>
+    <section class="panel run-panel" id="run-panel" aria-labelledby="run-heading" hidden>
+      <div class="run-heading">
+        <h2 id="run-heading">New simulation run</h2>
+        <p id="run-status" role="status">Checking simulator status…</p>
+      </div>
+      <p id="run-request-error" role="alert" hidden></p>
+      <form class="run-form" id="run-form">
+        <label>Scenario <select id="run-scenario" name="scenario"></select></label>
+        <label id="destination-field" hidden>Destination <select id="run-destination" name="destination"></select></label>
+        <label>Seed <input id="run-seed" name="seed" type="number" min="0" max="2147483647" step="1" required></label>
+        <label id="delay-field" hidden>Crossing delay (s) <input id="run-delay" name="crossing_delay" type="number" min="0" max="5" step="any" required></label>
+        <label id="weather-field" hidden>Weather <select id="run-weather" name="weather"></select></label>
+        <label id="grip-field" hidden>Wheel grip <select id="run-grip" name="grip"></select></label>
+        <div class="run-actions">
+          <button class="action-button action-primary" id="run-start" type="submit" disabled>Start run</button>
+          <button class="action-button" id="run-repeat" type="button" hidden>Rerun with +1 s delay</button>
+        </div>
+      </form>
     </section>
     <div class="workspace">
       <section class="panel camera-panel" aria-labelledby="camera-heading">
@@ -46,6 +61,8 @@
             <button data-camera="chase" aria-pressed="true" disabled>Chase</button>
             <button data-camera="front" aria-pressed="false" disabled>Front</button>
             <button data-camera="infrared" aria-pressed="false" disabled>Thermal</button>
+            <button data-camera="left" aria-pressed="false" disabled>Left</button>
+            <button data-camera="right" aria-pressed="false" disabled>Right</button>
           </div>
         </header>
         <div class="viewport" id="viewport">
@@ -61,6 +78,7 @@
           <span id="clock">0:00</span>
           <input id="seek" type="range" min="0" max="1" step="0.01" value="0" aria-label="Replay position" disabled>
           <span id="end-clock">–:––</span>
+          <button class="action-button" id="loop" type="button" aria-pressed="false" disabled>Loop</button>
         </div>
         <div class="live-strip" id="live-strip" hidden>Simulation elapsed <span id="live-clock">0:00</span></div>
         <p class="ir-note" id="ir-note" hidden>Simulated long-wave infrared. Material temperatures are assumed.</p>
@@ -99,12 +117,18 @@
         <div><dt>Seed</dt><dd id="seed">—</dd></div>
         <div><dt>Phase</dt><dd id="phase">—</dd></div>
         <div><dt>Weather</dt><dd id="weather">—</dd></div>
+        <div id="telemetry-grip" hidden><dt>Wheel grip</dt><dd id="grip">—</dd></div>
+        <div id="telemetry-destination" hidden><dt>Destination</dt><dd id="destination">—</dd></div>
+        <div id="telemetry-delay" hidden><dt>Crossing delay</dt><dd id="crossing-delay">—</dd></div>
+        <div id="telemetry-red-light" hidden><dt>Red-light violations</dt><dd id="red-light-count">—</dd></div>
+        <div id="telemetry-yield" hidden><dt>Yield violations</dt><dd id="yield-count">—</dd></div>
       </dl>
     </section>
     <footer>
       <span>Simulation imagery by CARLA and its contributors</span>
       <nav aria-label="Project links">
         <a href="./benchmarks.html">Benchmark results</a>
+        <a href="./vehicle.html">3D vehicle view</a>
         <a href="https://github.com/yafi-s/crosswalk-lab/blob/main/docs/research.md">Research &amp; credits</a>
         <a href="https://github.com/yafi-s/crosswalk-lab">Source code</a>
       </nav>

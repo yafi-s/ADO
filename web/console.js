@@ -1,23 +1,33 @@
 import {SensorView} from './sensor.js';
 
 const ids = [
-  'source', 'source-state', 'encounter-picker', 'encounter', 'viewport', 'film', 'stream',
+  'source', 'source-picker', 'source-state', 'encounter-picker', 'encounter', 'viewport', 'film', 'stream',
   'detections', 'camera-empty', 'view-label', 'frame-label',
-  'playback', 'play', 'clock', 'seek', 'end-clock', 'live-strip', 'live-clock', 'ir-note', 'front-note',
+  'playback', 'play', 'clock', 'seek', 'end-clock', 'loop', 'live-strip', 'live-clock', 'ir-note', 'front-note',
   'sensor', 'radar-reading', 'lidar-count', 'radar-count', 'map', 'frame', 'speed',
   'steer', 'steer-direction', 'throttle', 'brake',
-  'progress', 'route-total', 'lateral', 'collisions', 'scenario', 'policy', 'seed', 'phase', 'weather'
+  'progress', 'route-total', 'lateral', 'collisions', 'scenario', 'policy', 'seed', 'phase', 'weather',
+  'run-panel', 'run-form', 'run-scenario', 'run-destination', 'run-seed', 'run-delay', 'run-start',
+  'run-repeat', 'run-status', 'run-request-error', 'destination-field', 'delay-field',
+  'weather-field', 'grip-field', 'run-weather', 'run-grip', 'telemetry-grip', 'grip',
+  'telemetry-destination', 'destination', 'telemetry-delay', 'crossing-delay',
+  'telemetry-red-light', 'red-light-count', 'telemetry-yield', 'yield-count'
 ];
 const ui = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 const cameraButtons = [...document.querySelectorAll('[data-camera]')];
-const cameraLabels = {chase: 'Chase camera', front: 'Front camera', infrared: 'Thermal proxy'};
+const cameraLabels = {
+  chase: 'Chase camera', front: 'Front camera', infrared: 'Thermal proxy',
+  left: 'Left camera', right: 'Right camera'
+};
 const policyLabels = {fusion: 'Learned multisensor', camera: 'Learned vision'};
-const replayDirectories = {pedestrian: 'media', turn: 'media/turn', braking: 'media/braking'};
+const delayScenarios = new Set(['trip', 'pedestrian', 'occluded']);
+const terminalStates = new Set(['complete', 'error']);
 const recordings = new Map();
 const sensor = new SensorView(ui.sensor, ui['radar-reading']);
 const integer = new Intl.NumberFormat(undefined, {maximumFractionDigits: 0});
 const decimal = new Intl.NumberFormat(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1});
 const precision = new Intl.NumberFormat(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const delayFormat = new Intl.NumberFormat(undefined, {maximumFractionDigits: 3});
 const percent = new Intl.NumberFormat(undefined, {style: 'percent'});
 const signedPercent = new Intl.NumberFormat(undefined, {style: 'percent', signDisplay: 'exceptZero'});
 
@@ -32,16 +42,24 @@ let mediaReady = false;
 let pendingPosition = 0;
 let pendingPlay = false;
 let animation;
+let catalog;
+let options;
+let runStatus;
+let runError;
+let submitting = false;
+let submittal = 0;
 
 function setText(id, value) {
-  ui[id].textContent = value ?? '—';
+  const text = String(value ?? '—');
+  if (ui[id].textContent !== text) ui[id].textContent = text;
 }
 
 function setMode(nextMode, label) {
   mode = nextMode;
   ui['source-state'].dataset.mode = mode;
   setText('source-state', label);
-  ui['encounter-picker'].hidden = mode !== 'replay';
+  ui['encounter-picker'].hidden = mode !== 'replay' || !ui.encounter.options.length;
+  ui['run-panel'].hidden = mode !== 'live' || !options;
   ui.playback.hidden = mode === 'live';
   ui['live-strip'].hidden = mode !== 'live';
 }
@@ -152,18 +170,32 @@ function renderTelemetry(frame) {
   setText('seed', Number.isFinite(frame?.seed) ? String(frame.seed) : '—');
   setText('phase', words(frame?.phase));
   setText('weather', words(frame?.weather));
+  ui['telemetry-grip'].hidden = !Number.isFinite(frame?.grip);
+  setText('grip', numeric(frame?.grip, percent));
+  ui['telemetry-destination'].hidden = !frame?.destination;
+  const destination = options?.destinations.find(item => item.id === frame?.destination)?.label;
+  setText('destination', destination ?? words(frame?.destination));
+  const showDelay = delayScenarios.has(frame?.scenario) && Number.isFinite(frame?.crossing_delay);
+  ui['telemetry-delay'].hidden = !showDelay;
+  setText('crossing-delay', `${numeric(frame?.crossing_delay, delayFormat)} s`);
+  ui['telemetry-red-light'].hidden = !Number.isFinite(frame?.red_light_violations);
+  setText('red-light-count', numeric(frame?.red_light_violations));
+  ui['telemetry-yield'].hidden = !Number.isFinite(frame?.yield_violations);
+  setText('yield-count', numeric(frame?.yield_violations));
   setText('live-clock', timeLabel(frame?.sim_time));
   sensor.update(lidar, radar);
   renderDetections();
 }
 
-async function readJson(url, signal, timeout) {
+async function readJson(url, signal, timeout, request = {}) {
   const response = await fetch(url, {
+    ...request,
     cache: 'no-store',
     signal: AbortSignal.any([signal, AbortSignal.timeout(timeout)])
   });
   if (!response.ok) {
-    const error = new Error(`${url} returned ${response.status}`);
+    const body = request.method === 'POST' ? await response.json().catch(() => ({})) : {};
+    const error = new Error(body.error || `${url} returned ${response.status}`);
     error.status = response.status;
     throw error;
   }
@@ -187,35 +219,182 @@ function renderLiveCamera() {
   showMessage('');
 }
 
+function setScenarioFields(scenario) {
+  ui['destination-field'].hidden = scenario !== 'trip';
+  ui['delay-field'].hidden = !delayScenarios.has(scenario);
+}
+
+function installEnvironmentOptions(key, values, defaultValue, labelForId) {
+  if (!Array.isArray(values) || !values.length) return;
+  const field = ui[`run-${key}`];
+  const choices = values.map(value => {
+    const id = value?.id ?? value;
+    return new Option(value?.label ?? labelForId(id), id);
+  });
+  field.replaceChildren(...choices);
+  field.value = String(defaultValue);
+  if (field.selectedIndex < 0) field.selectedIndex = 0;
+  field.dataset.defaultValue = field.value;
+  ui[`${key}-field`].hidden = false;
+}
+
+function environmentSettings(previous) {
+  const settings = {};
+  for (const key of ['weather', 'grip']) {
+    const field = ui[`run-${key}`];
+    if (!field.options.length) continue;
+    if (previous) {
+      field.value = String(previous[key] ?? field.dataset.defaultValue);
+      if (field.selectedIndex < 0) field.value = field.dataset.defaultValue;
+    }
+    settings[key] = key === 'grip' ? Number(field.value) : field.value;
+  }
+  return settings;
+}
+
+function installOptions(settings) {
+  if (!settings?.scenarios?.length || !settings?.destinations?.length || !settings.defaults) return;
+  const toOptions = values => values.map(({label, id}) => new Option(label, id));
+  options = settings;
+  const defaults = settings.defaults;
+  ui['run-scenario'].replaceChildren(...toOptions(settings.scenarios));
+  ui['run-scenario'].value = defaults.scenario;
+  ui['run-destination'].replaceChildren(...toOptions(settings.destinations));
+  ui['run-destination'].value = defaults.destination;
+  ui['run-seed'].value = defaults.seed;
+  ui['run-delay'].value = defaults.crossing_delay;
+  installEnvironmentOptions('weather', settings.weather, defaults.weather ?? 'seeded',
+    id => id === 'seeded' ? 'Seeded weather' : words(id));
+  installEnvironmentOptions('grip', settings.grip, defaults.grip ?? 1, id => percent.format(id));
+  for (const [field, key] of [['run-seed', 'seed'], ['run-delay', 'crossing_delay']]) {
+    for (const bound of ['min', 'max']) {
+      if (Number.isFinite(settings.limits?.[key]?.[bound])) ui[field][bound] = settings.limits[key][bound];
+    }
+  }
+  setScenarioFields(defaults.scenario);
+  renderRunStatus();
+}
+
+function renderRunStatus() {
+  const state = runStatus?.state;
+  const settings = runStatus?.settings;
+  const busy = submitting || state === 'queued';
+  const canRerun = terminalStates.has(state) && delayScenarios.has(settings?.scenario) &&
+    Number.isFinite(settings.crossing_delay) && settings.crossing_delay + 1 <= (Number(ui['run-delay'].max) || Infinity);
+  const outcome = runStatus?.outcome;
+  const outcomeCode = typeof outcome === 'string' ? outcome : outcome?.outcome ?? outcome?.outcome_code;
+  const scenario = options?.scenarios.find(item => item.id === settings?.scenario)?.label;
+  const runName = scenario ? `${scenario} · seed ${settings.seed}` : 'Drive';
+  const outcomeLabel = outcomeCode === 'complete'
+    ? 'Route complete' + (outcome?.yield_violations > 0 ? ' · Yield violation' : '')
+    : words(outcomeCode);
+  const messages = {
+    idle: 'Ready to start a drive.',
+    queued: `${runName} is queued.`,
+    running: `${runName} is running.`,
+    complete: outcomeCode ? `${runName} · ${outcomeLabel}` : `${runName} finished.`,
+    error: runStatus?.error || `${runName} stopped with an error.`
+  };
+  setText('run-status', submitting ? 'Submitting drive…' : messages[state] || 'Checking simulator status…');
+  setText('run-request-error', runError ?? '');
+  ui['run-request-error'].hidden = !runError;
+  ui['run-start'].disabled = busy || !state;
+  ui['run-repeat'].hidden = !canRerun;
+  ui['run-repeat'].disabled = busy;
+}
+
+function clearLiveFrame() {
+  latestFrame = undefined;
+  ui.stream.hidden = true;
+  ui.stream.removeAttribute('src');
+  setCameras([]);
+  renderTelemetry();
+  showMessage('Waiting for the first simulator frame…');
+}
+
+async function monitorStatus(signal) {
+  while (!signal.aborted) {
+    const requested = submittal;
+    try {
+      const status = await readJson('/api/status', signal, 1800);
+      if (signal.aborted) return;
+      if (requested === submittal && !submitting) {
+        if (status.state === 'queued' && status.run_id !== runStatus?.run_id) clearLiveFrame();
+        runStatus = status;
+        renderRunStatus();
+      }
+    } catch {
+      if (signal.aborted) return;
+    }
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }
+}
+
+async function submitDrive(settings) {
+  if (submitting || runStatus?.state === 'queued') return;
+  submittal++;
+  submitting = true;
+  runError = undefined;
+  renderRunStatus();
+  try {
+    const result = await readJson('/api/drive', new AbortController().signal, 5000, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(settings)
+    });
+    runStatus = {state: 'queued', run_id: result.run_id, settings};
+    if (mode === 'live') clearLiveFrame();
+  } catch (error) {
+    runError = error.message;
+  } finally {
+    submitting = false;
+    renderRunStatus();
+  }
+}
+
 async function monitorLive(signal) {
   let failedPolls = 0;
+  let local = Boolean(options);
   while (!signal.aborted) {
     try {
       const frame = await readJson('/api/frame', signal, 1800);
       if (!Number.isFinite(frame?.frame)) throw new Error('No current simulation frame');
       if (signal.aborted) return;
       failedPolls = 0;
-      latestFrame = frame;
       const cameras = frameCameras(frame);
+      local = true;
+      ui['source-picker'].hidden = false;
       setMode('live', 'Live simulator');
-      setCameras(Object.keys(cameraLabels).filter(camera => typeof cameras[camera] === 'string' && cameras[camera]));
-      renderLiveCamera();
-      renderTelemetry(frame);
+      const sameRun = frame.run_id == null || runStatus?.run_id == null || frame.run_id === runStatus.run_id;
+      if (runStatus?.state !== 'queued' && !submitting && sameRun) {
+        latestFrame = frame;
+        setCameras(Object.keys(cameraLabels).filter(camera => typeof cameras[camera] === 'string' && cameras[camera]));
+        renderLiveCamera();
+        renderTelemetry(frame);
+      }
     } catch (error) {
       if (signal.aborted) return;
       if (error.status === 503) {
-        setMode(mode, 'Waiting for simulator');
-        if (mode !== 'live') showMessage('Waiting for the first simulator frame…');
+        local = true;
+        ui['source-picker'].hidden = false;
+        setMode('live', 'Simulator connected');
+        if (!latestFrame && !terminalStates.has(runStatus?.state)) showMessage(
+          runStatus?.state === 'idle' ? 'Start a run to see the simulator cameras.' : 'Waiting for the first simulator frame…'
+        );
       } else {
         failedPolls++;
-        if (mode !== 'live' || failedPolls >= 3) {
+        if (!local || (!options && failedPolls >= 3)) {
+          if (!local) ui['source-picker'].hidden = true;
+          ui.source.value = 'replay';
           await openReplay(signal);
           return;
         }
         setMode('live', 'Reconnecting');
+        if (failedPolls >= 3) showMessage('The live connection was interrupted.');
       }
     }
-    await new Promise(resolve => setTimeout(resolve, mode === 'live' ? 100 : 350));
+    const interval = latestFrame && (!options || runStatus?.state === 'running') ? 100 : 500;
+    await new Promise(resolve => setTimeout(resolve, interval));
   }
 }
 
@@ -232,7 +411,7 @@ function parseReplay(recording) {
   if (times.some((time, index) => !Number.isFinite(time) || (index > 0 && time < times[index - 1]))) {
     throw new Error('Recorded telemetry timestamps are invalid');
   }
-  return {frames, times};
+  return {frames, times, cameras: recording.cameras};
 }
 
 function getReplayFrame(time) {
@@ -255,6 +434,7 @@ function updateControls() {
   ui.play.setAttribute('aria-label', label);
   ui.play.title = label;
   ui.seek.disabled = !ready;
+  ui.loop.disabled = !ready;
   ui.seek.max = ready ? ui.film.duration : 1;
   setText('end-clock', timeLabel(ready ? ui.film.duration : NaN));
 }
@@ -288,8 +468,51 @@ function loadCamera(position, resume) {
   ui.film.src = `${replay.directory}/${selectedCamera}.mp4`;
 }
 
+async function loadCatalog(signal) {
+  if (catalog) return catalog;
+  let entries;
+  try {
+    const data = await readJson('./media/catalog.json', signal, 4000);
+    entries = Array.isArray(data) ? data : data.records;
+  } catch {
+    if (signal.aborted) return [];
+    // Older releases have telemetry and video files but no catalog.
+    const legacy = [
+      {label: 'Pedestrian crossing', path: ''},
+      {label: 'Destination trip', path: 'trip'},
+      {label: 'Destination trip · delayed crossing', path: 'trip-delayed'},
+      {label: 'Traffic signal', path: 'signal'},
+      {label: 'Occluded pedestrian', path: 'occluded'},
+      {label: 'Protected left turn', path: 'left'},
+      {label: 'Intersection turn', path: 'turn'},
+      {label: 'Braking vehicle', path: 'braking'}
+    ];
+    const available = await Promise.all(legacy.map(async entry => {
+      try {
+        const folder = entry.path ? `./media/${entry.path}` : './media';
+        const response = await fetch(`${folder}/replay.json`, {
+          method: 'HEAD',
+          signal: AbortSignal.any([signal, AbortSignal.timeout(3000)])
+        });
+        return response.ok ? entry : null;
+      } catch {
+        return null;
+      }
+    }));
+    entries = available.filter(Boolean);
+  }
+  if (signal.aborted || !Array.isArray(entries)) return [];
+  const paths = new Set();
+  catalog = entries.flatMap(entry => {
+    if (typeof entry?.label !== 'string' || !entry.label.trim() || typeof entry.path !== 'string' ||
+        (entry.path && !/^[a-z0-9_-]+(?:\/[a-z0-9_-]+)*$/i.test(entry.path)) || paths.has(entry.path)) return [];
+    paths.add(entry.path);
+    return [entry];
+  });
+  return catalog;
+}
+
 async function openReplay(signal) {
-  const directory = replayDirectories[ui.encounter.value];
   ui.stream.hidden = true;
   ui.stream.removeAttribute('src');
   setMode('replay', 'Loading replay');
@@ -298,6 +521,18 @@ async function openReplay(signal) {
   setCameras([]);
   renderTelemetry();
   showMessage('Loading recorded drive…');
+  const entries = await loadCatalog(signal);
+  if (signal.aborted) return;
+  const entry = entries.find(item => item.path === ui.encounter.value) ?? entries[0];
+  if (!entry) {
+    setMode('replay', 'Replay unavailable');
+    showMessage('No recorded drives are available.');
+    return;
+  }
+  ui.encounter.replaceChildren(...entries.map(item => new Option(item.label, item.path)));
+  ui.encounter.value = entry.path;
+  ui['encounter-picker'].hidden = false;
+  const directory = entry.path ? `./media/${entry.path}` : './media';
   try {
     const recording = recordings.get(directory) ??
       parseReplay(await readJson(`${directory}/replay.json`, signal, 15000));
@@ -311,7 +546,12 @@ async function openReplay(signal) {
     return;
   }
   setMode('replay', 'Recorded drive');
-  setCameras(Object.keys(cameraLabels));
+  const cameras = entry.cameras ?? replay.cameras;
+  setCameras(Array.isArray(cameras) ? Object.keys(cameraLabels).filter(camera => cameras.includes(camera)) : Object.keys(cameraLabels));
+  if (!availableCameras.length) {
+    showMessage('No camera tracks are listed for this recording.');
+    return;
+  }
   loadCamera(0, false);
 }
 
@@ -335,7 +575,7 @@ function resetPlayback() {
   updateControls();
 }
 
-function connect() {
+async function connect() {
   const signal = connectionSignal();
   if (ui.source.value === 'replay') {
     openReplay(signal);
@@ -347,6 +587,18 @@ function connect() {
     setCameras([]);
     renderTelemetry();
     showMessage('Connecting to the drive…');
+    try {
+      const settings = await readJson('/api/options', signal, 1800);
+      if (signal.aborted) return;
+      if (!options) installOptions(settings);
+    } catch {
+      if (signal.aborted) return;
+    }
+    if (options) {
+      ui['source-picker'].hidden = false;
+      setMode('live', 'Simulator connected');
+      monitorStatus(signal);
+    }
     monitorLive(signal);
   }
 }
@@ -367,6 +619,32 @@ for (const button of cameraButtons) {
 
 ui.source.addEventListener('change', connect);
 ui.encounter.addEventListener('change', () => openReplay(connectionSignal()));
+ui['run-scenario'].addEventListener('change', () => setScenarioFields(ui['run-scenario'].value));
+ui['run-form'].addEventListener('submit', event => {
+  event.preventDefault();
+  const scenario = ui['run-scenario'].value;
+  submitDrive({
+    scenario,
+    seed: ui['run-seed'].valueAsNumber,
+    crossing_delay: delayScenarios.has(scenario) ? ui['run-delay'].valueAsNumber : options.defaults.crossing_delay,
+    destination: ui['run-destination'].value,
+    ...environmentSettings()
+  });
+});
+ui['run-repeat'].addEventListener('click', () => {
+  const previous = runStatus.settings;
+  const {scenario, seed, crossing_delay, destination} = previous;
+  const delay = Number((crossing_delay + 1).toFixed(6));
+  ui['run-scenario'].value = scenario;
+  ui['run-seed'].value = seed;
+  ui['run-delay'].value = delay;
+  ui['run-destination'].value = destination ?? options.defaults.destination;
+  setScenarioFields(scenario);
+  submitDrive({
+    scenario, seed, crossing_delay: delay, destination: ui['run-destination'].value,
+    ...environmentSettings(previous)
+  });
+});
 ui.stream.addEventListener('load', renderDetections);
 new ResizeObserver(renderDetections).observe(ui.viewport);
 ui.film.addEventListener('loadedmetadata', () => {
@@ -411,6 +689,10 @@ ui.play.addEventListener('click', () => {
   }
   if (ui.film.ended) ui.film.currentTime = 0;
   ui.film.play().catch(updateControls);
+});
+ui.loop.addEventListener('click', () => {
+  ui.film.loop = !ui.film.loop;
+  ui.loop.setAttribute('aria-pressed', ui.film.loop);
 });
 ui.seek.addEventListener('input', () => {
   ui.film.currentTime = Number(ui.seek.value);

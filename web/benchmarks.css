@@ -46,6 +46,7 @@
 .results tbody th { font-weight: 600; }
 #policy-totals td { font: 600 14px var(--mono); }
 .result-note { padding: 10px 20px 13px; font-size: 13px; color: var(--muted); line-height: 1.4; }
+.matched-note { padding-top: 0; font-weight: 600; color: var(--ink); }
 .comparison-context { margin-top: 5px; color: var(--muted); font-size: 13px; }
 .compare-controls { display: flex; flex-wrap: wrap; gap: 6px 14px; }
 .comparison-grid {
@@ -54,6 +55,7 @@
   background: #edf1e9;
   border-bottom: 1px solid var(--line);
 }
+.comparison-grid[data-single="true"] { grid-template-columns: 1fr; }
 .episode-card { min-width: 0; padding: 16px 20px; }
 .episode-card + .episode-card { border-left: 1px solid var(--line); }
 .episode-card h3 { margin: 0 0 8px; font-size: 16px; }
@@ -69,8 +71,10 @@
 }
 .outcome[data-value="complete"] { color: #194d35; background: #d9ebdb; }
 .outcome[data-value="collision"] { color: #80312b; background: #f4dfd9; }
+.outcome[data-value="red_light"] { color: #80312b; background: #f4dfd9; }
 .outcome[data-value="timeout"] { color: #634c22; background: #f3e8cc; }
 .outcome[data-value="lane_departure"] { color: #663962; background: #eee1ed; }
+.outcome[data-value="yield_violation"] { color: #634c22; background: #f3e8cc; }
 .episode-card dl { display: grid; gap: 4px; margin-top: 10px; }
 .episode-card dl div { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .episode-card dd { white-space: nowrap; font: 12px var(--mono); }

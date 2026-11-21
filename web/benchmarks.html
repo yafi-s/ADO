@@ -23,7 +23,7 @@
       <div>
         <div class="eyebrow"><i class="small-rule" aria-hidden="true"></i> Held-out evaluation</div>
         <h1 id="results-title">Evaluation results</h1>
-        <p>Two policies learn steering, throttle and braking from demonstrations on short routes in stock CARLA Town01. Both receive the same navigation inputs.</p>
+        <p>Recorded Town01 simulation trials evaluate learned steering, throttle and braking. The camera-only policy runs on a subset of the multisensor cases with the same navigation inputs.</p>
       </div>
     </section>
     <p class="result-state" id="result-state" role="status">Loading recorded episodes…</p>
@@ -36,19 +36,21 @@
         <div class="table-wrap" role="region" aria-labelledby="totals-title" tabindex="0">
           <table aria-labelledby="totals-title">
             <thead><tr>
-              <th scope="col">Policy</th><th scope="col">Episodes</th><th scope="col">Clean finishes</th>
-              <th scope="col">Collisions</th><th scope="col">Timeouts</th><th scope="col">Lane departures</th>
+              <th scope="col">Trial group</th><th scope="col">Episodes</th><th scope="col">Clean finishes</th>
+              <th scope="col">Collisions</th><th scope="col">Red-light violations</th>
+              <th scope="col">Timeouts</th><th scope="col">Lane departures</th><th scope="col">Yield violations</th>
             </tr></thead>
             <tbody id="policy-totals"></tbody>
           </table>
         </div>
-        <p class="result-note">Counts are by episode. A clean finish reached the route end without a collision or lane departure.</p>
+        <p class="result-note">Each count is the number of episodes. A clean finish reached the route end with no collisions, red-light violations, lane departures or yield violations.</p>
+        <p class="result-note matched-note" id="matched-note" hidden></p>
       </section>
       <section class="panel" aria-labelledby="compare-title">
         <header class="panel-head result-head comparison-head">
-          <div><h2 id="compare-title">Paired drives</h2><p id="comparison-context" class="comparison-context" aria-live="polite"></p></div>
+          <div><h2 id="compare-title">Drives by case and seed</h2><p id="comparison-context" class="comparison-context" aria-live="polite"></p></div>
           <div class="compare-controls">
-            <div class="source-picker"><label for="encounter">Encounter</label><select id="encounter"></select></div>
+            <div class="source-picker"><label for="encounter">Case</label><select id="encounter"></select></div>
             <div class="source-picker"><label for="seed">Seed</label><select id="seed"></select></div>
           </div>
         </header>
@@ -60,7 +62,7 @@
             <tbody id="encounter-outcomes"></tbody>
           </table>
         </div>
-        <p class="result-note">Each row groups policies by encounter and seed, including the same starting pose offset. The evaluation used held-out seeds and a braking encounter held out during training.</p>
+        <p class="result-note">Each row groups recorded outcomes for the same case and seed. The case distinguishes the standard and delayed crossing trials.</p>
       </section>
     </div>
     <footer>

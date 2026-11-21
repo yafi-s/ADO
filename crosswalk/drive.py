@@ -17,35 +17,73 @@ from .vision import Detector
 from .world import Scenario
 
 DT = 0.1
+SCENARIOS = {
+    "trip": "City trip", "pedestrian": "Pedestrian crossing", "lead": "Stopped vehicle",
+    "occluded": "Pedestrian behind a van", "signal": "Red light", "left": "Unprotected left turn",
+    "braking": "Braking traffic", "turn": "Intersection turn", "clear": "Clear street",
+}
+DESTINATIONS = {"market": "Market", "station": "Station"}
+WEATHER = {"seeded": "From seed", "ClearNoon": "Clear noon", "WetNoon": "Wet noon",
+           "CloudySunset": "Cloudy sunset", "ClearNight": "Clear night"}
+GRIP = (0.5, 0.75, 1.0)
 
 
 def _sensor_plot(lidar, radar):
     # Drop road plane from display only. Render a bounded sample around the car.
     returns = lidar[(lidar[:, 2] > -2.05) & (lidar[:, 2] < 1.5), :2]
-    points = returns[::max(1, math.ceil(len(returns) / 600))]
-    v, az, alt, depth = radar[::max(1, math.ceil(len(radar) / 180))].T
+    points = returns[::max(1, math.ceil(len(returns) / 300))]
+    v, az, alt, depth = radar[::max(1, math.ceil(len(radar) / 85))].T
     xyv = np.column_stack([2 + depth*np.cos(alt)*np.cos(az), depth*np.cos(alt)*np.sin(az), v])
-    return points.round(2).tolist(), xyv.round(2).tolist()
+    return points.astype(float).round(1).tolist(), xyv.astype(float).round(1).tolist()
 
 
 def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
-            recording=None, realtime=False, max_steps=340):
+            recording=None, realtime=False, max_steps=None, district=None, crossing_delay=0.,
+            destination=None, run_id=None, change_request=None, weather="seeded", grip=1.0):
     """Apply t's observation to t+1. Oracle labels and metrics are isolated from inference."""
     cv2.setNumThreads(1)
     data, targets = [], []
     trace = []
     outcome = "timeout"
+    if max_steps is None:
+        max_steps = 1000 if kind == "trip" else 360
     with ExitStack() as stack:
         if teacher is not None:
             teacher.set_random_device_seed(seed)
-        scene = Scenario(world, kind, seed, perturb=True)
+        scene = Scenario(world, kind, seed, perturb=True, district=district,
+                         crossing_delay=crossing_delay, destination=destination)
         stack.callback(scene.close)
+        if weather != "seeded":
+            if weather not in WEATHER:
+                raise ValueError("Unknown weather preset")
+            scene.weather = weather
+            world.set_weather(getattr(carla.WeatherParameters, weather))
+        map_name = world.get_map().name.rsplit("/", 1)[-1]
+        from .robotaxi import BodyKit
+        body = BodyKit(world, scene.ego)
+        stack.callback(body.close)
         visuals = live is not None or recording is not None
         rig = Rig(world, scene.ego, visuals=visuals)
         stack.callback(rig.close)
         # Settle the suspension and prime the GPU cameras while all actors wait.
         for _ in range(8):
             rig.read(world.tick())
+        if grip != 1.0:
+            if grip not in GRIP:
+                raise ValueError("Unknown wheel-grip factor")
+            physics = scene.ego.get_physics_control()
+            wheels = physics.wheels
+            if len(wheels) != 4:
+                raise RuntimeError("The sedan has no initialized four-wheel configuration.")
+            requested = [w.friction_force_multiplier * grip for w in wheels]
+            for wheel, value in zip(wheels, requested):
+                wheel.friction_force_multiplier = value
+            physics.wheels = wheels
+            scene.ego.apply_physics_control(physics)
+            rig.read(world.tick())
+            measured = [w.friction_force_multiplier for w in scene.ego.get_physics_control().wheels]
+            if not np.allclose(requested, measured):
+                raise RuntimeError("CARLA did not apply the requested wheel grip.")
         detector = Detector()
         navigation = Navigation(scene.route)
         pending = None
@@ -56,20 +94,25 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             teacher.auto_lane_change(scene.ego, False)
             teacher.set_desired_speed(scene.ego, 21.6)
             teacher.distance_to_leading_vehicle(scene.ego, 3.)
-            if kind == "turn":
+            if kind in ("turn", "trip", "left"):
                 # The isolated turning trial is staged with green signals.
                 teacher.ignore_lights_percentage(scene.ego, 100)
-            teacher.set_path(scene.ego, [*scene.route[6:-1:10], scene.route[-1]])
+            teacher.set_path(scene.ego, [*scene.route[5:-1:7], scene.route[-1]])
         start = perf_counter()
         for step in range(max_steps):
             scene.before_tick()
+            if teacher is not None and kind in ("signal", "left"):
+                # Provide the instructor with a stop point. The training car still
+                # uses Traffic Manager to select its own throttle, brake and steer.
+                available = max(0., scene.expert_gap() - 2.8)
+                teacher.set_desired_speed(scene.ego, 3.6 * min(6., math.sqrt(4.5 * available)))
             frame = world.tick()
             obs = rig.read(frame)
             speed = vehicle_speed(scene.ego)
             if step % 2 == 0:
                 detections = detector.detect(obs["front"])
             x = features(obs["front"], obs["lidar"], obs["radar"], speed, detections,
-                         navigation=navigation.read(scene.ego))
+                         navigation=navigation.read(scene.ego), side_views=(obs["left"], obs["right"]))
             if teacher is not None:
                 applied = scene.ego.get_control()
                 steer, throttle, brake = applied.steer, applied.throttle, applied.brake
@@ -87,17 +130,21 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             contacts = rig.collisions()
             row = {
                 "frame": int(frame), "sim_time": round(step * DT, 2), "scenario": kind,
-                "seed": seed, "policy": policy, "map": "Town01", "weather": scene.weather,
+                "seed": seed, "policy": policy, "map": map_name, "weather": scene.weather, "grip":grip,
                 "phase": state["phase"], "speed_mps": round(speed, 3), "steer": round(steer, 5),
                 "throttle": round(throttle, 5), "brake": round(brake, 5),
                 "progress_m": round(state["progress_m"], 3), "route_length_m": round(state["route_length_m"], 3),
                 "lat_error_m": round(state["lateral_error_m"], 3), "collision_count": len(contacts),
                 "reference_gap_m": round(gap, 3),
+                "red_light_violations": state["red_light_violations"],
+                "yield_violations": state["yield_violations"],
+                "event_triggered": state["event_triggered"], "event_cleared": state["event_cleared"],
             }
             trace.append(row)
             if visuals:
                 lp, rp = _sensor_plot(obs["lidar"], obs["radar"])
-                telemetry = dict(row, lidar=lp, radar=rp, detections=detections, detection_age_s=(step % 2)*DT)
+                telemetry = dict(row, lidar=lp, radar=rp, detections=detections, detection_age_s=(step % 2)*DT,
+                                 run_id=run_id, destination=state["destination"], crossing_delay=crossing_delay)
                 if recording:
                     recording.append(telemetry, obs)
                 if live:
@@ -105,16 +152,24 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             if contacts:
                 outcome = "collision"
                 break
-            if state["lateral_error_m"] > 1.85:
+            if state["red_light_violations"]:
+                outcome = "red_light"
+                break
+            if state["route_departure"]:
                 outcome = "lane_departure"
                 break
             if state["progress_m"] >= state["route_length_m"] - 0.6:
                 outcome = "complete"
                 break
+            if change_request and change_request():
+                outcome = "restarted"
+                break
             if realtime:
                 sleep(max(0, start + (step + 1)*DT - perf_counter()))
-        # Recheck the asynchronous event stream after processing the last camera frame.
-        contacts = rig.collisions()
+        # Read the next synchronized frame as a delivery barrier for asynchronous
+        # collision notifications. Count events only through the final scored frame.
+        rig.read(world.tick())
+        contacts = [(f, actor) for f, actor in rig.collisions() if f <= frame]
         if contacts:
             outcome = "collision"
         summary = dict(scenario=kind, seed=seed, policy=policy, weather=scene.weather, road_id=scene.road_id,
@@ -128,6 +183,15 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                        moving_within_1m_frames=sum(r["reference_gap_m"] < 1.0 and r["speed_mps"] > 0.5
                                                    for r in trace),
                        turn_direction=getattr(scene, "turn_direction", None),
+                       district=district, destination=state["destination"], crossing_delay_s=crossing_delay,
+                       camera_rendering=rig.rendering, ego_blueprint=scene.ego.type_id,
+                       route_id=state["route_id"], road_ids=state["road_ids"], junction_ids=state["junction_ids"],
+                       event_triggered=state["event_triggered"], event_cleared=state["event_cleared"],
+                       red_light_violations=state["red_light_violations"],
+                       yield_violations=state["yield_violations"],
+                       stopped_for_hazard=any(r["speed_mps"] < 0.35 and r["reference_gap_m"] < 12.
+                                              and r["progress_m"] > 2. for r in trace),
+                       closest_in_path_speed_mps=min(trace, key=lambda r:r["reference_gap_m"])["speed_mps"],
                        wall_seconds=round(perf_counter()-start, 3))
         return summary, trace, np.asarray(data, np.float32), np.asarray(targets, np.float32)
 
@@ -135,7 +199,11 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
 def main():
     from .viewio import Live, Recording
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--scenario", choices=["pedestrian", "lead", "braking", "clear", "turn"], default="pedestrian")
+    parser.add_argument("--scenario", choices=list(SCENARIOS), default="trip")
+    parser.add_argument("--destination", choices=list(DESTINATIONS), default="market")
+    parser.add_argument("--crossing-delay", type=float, default=0., help="Delay the pedestrian's entry by 0–5 simulated seconds")
+    parser.add_argument("--weather", choices=list(WEATHER), default="seeded")
+    parser.add_argument("--grip", choices=GRIP, type=float, default=1.0)
     parser.add_argument("--seed", type=int, default=101)
     parser.add_argument("--policy", choices=["fusion", "camera"], default="fusion")
     parser.add_argument("--model", help="Override the default models/<policy>.npz")
@@ -143,11 +211,16 @@ def main():
     parser.add_argument("--attach", action="store_true", help="Use an existing, idle Town01 server")
     parser.add_argument("--serve", action="store_true", help="Watch the run at http://127.0.0.1:8765")
     parser.add_argument("--open-browser", action="store_true", help="Open the local live console")
+    parser.add_argument("--interactive", action="store_true", help="Accept new drives after a run completes")
     parser.add_argument("--http-port", type=int, default=8765)
     parser.add_argument("--record", metavar="DIRECTORY")
     parser.add_argument("--loop", action="store_true", help="Repeat the live scenario until Ctrl+C")
     parser.add_argument("--tour", action="store_true", help="Cycle through pedestrian, turn, braking, lead and clear encounters")
     args = parser.parse_args()
+    if not 0 <= args.crossing_delay <= 5 or not 0 <= args.seed <= 2147483647:
+        parser.error("Use a seed in [0,2147483647] and a crossing delay in [0,5].")
+    if args.interactive and (not args.serve or args.record):
+        parser.error("Interactive drives require --serve and single-run captures require omitting --interactive.")
     if args.open_browser and not args.serve:
         parser.error("--open-browser requires --serve")
     if args.loop and (not args.serve or args.record):
@@ -155,8 +228,15 @@ def main():
     if args.tour and not args.loop:
         parser.error("--tour requires --loop")
     model = Model.load(args.model or f"models/{args.policy}.npz")
+    settings = dict(scenario=args.scenario, seed=args.seed, crossing_delay=args.crossing_delay,
+                    destination=args.destination, weather=args.weather, grip=args.grip)
+    options = dict(scenarios=[dict(id=k, label=v) for k,v in SCENARIOS.items()],
+                   destinations=[dict(id=k, label=v) for k,v in DESTINATIONS.items()], defaults=settings.copy(),
+                   weather=[dict(id=k,label=v) for k,v in WEATHER.items()],
+                   grip=[dict(id=g,label=f"{g:.0%}") for g in GRIP],
+                   limits={"seed":{"min":0,"max":2147483647},"crossing_delay":{"min":0.,"max":5.}})
     with ExitStack() as stack:
-        live = stack.enter_context(Live(args.http_port)) if args.serve else None
+        live = stack.enter_context(Live(args.http_port, options=options if args.interactive else None)) if args.serve else None
         if live:
             print(f"Live console at http://127.0.0.1:{args.http_port}", flush=True)
             if args.open_browser:
@@ -165,17 +245,43 @@ def main():
         world = stack.enter_context(simulator(args.port, args.attach))
         rec = stack.enter_context(Recording(args.record)) if args.record else None
         index = 0
-        tour = ("pedestrian", "turn", "braking", "lead", "clear")
+        tour = tuple(SCENARIOS)
         while True:
-            kind = tour[index % len(tour)] if args.tour else args.scenario
-            seed = args.seed + (index // len(tour) if args.tour else 0)
-            result, *_ = episode(world, kind, seed, args.policy, model,
-                                 live=live, recording=rec, realtime=bool(live))
+            if args.tour:
+                settings.update(scenario=tour[index % len(tour)], seed=args.seed + index // len(tour))
+            pending = None
+            def changed():
+                nonlocal pending
+                pending = live.next_request()
+                return pending is not None
+            if live:
+                live.clear()
+                live.set_status("running", run_id=index, settings=settings, outcome=None, error=None)
+            try:
+                result, *_ = episode(world, settings["scenario"], settings["seed"], args.policy, model,
+                                     live=live, recording=rec, realtime=bool(live), district="heldout",
+                                     destination=settings["destination"], crossing_delay=settings["crossing_delay"],
+                                     weather=settings.get("weather","seeded"), grip=settings.get("grip",1.0),
+                                     run_id=index, change_request=changed if args.interactive else None)
+            except Exception as error:
+                if not args.interactive:
+                    raise
+                live.set_status("error", run_id=index, settings=settings, error=str(error), outcome=None)
+                result = {"outcome": "error", "error": str(error)}
+            else:
+                if live and pending is None:
+                    live.set_status("complete", run_id=index, settings=settings, outcome=result, error=None)
             print(json.dumps(result), flush=True)
-            if not args.loop:
+            if args.interactive:
+                while pending is None:
+                    sleep(0.1)
+                    pending = live.next_request()
+                settings = pending
+            elif not args.loop:
                 break
             index += 1
-            sleep(1.)
+            if args.loop:
+                sleep(1.)
 
 
 if __name__ == "__main__":

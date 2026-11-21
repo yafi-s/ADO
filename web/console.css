@@ -97,3 +97,28 @@ footer a:hover{color:#182620;text-decoration-color:currentColor}
 @media(max-width:420px){.brand{font-size:21px}.brand-mark{width:21px;height:18px;margin-right:8px}.connection{white-space:normal;text-align:right;line-height:1.2;letter-spacing:.5px}.connection::before{flex:none}h1{font-size:clamp(35px,11vw,47px)}.source-picker select{padding:5px 4px;font-size:12px}.camera-controls button{padding:5px 6px}.readouts{grid-template-columns:1fr 1fr}.readouts>div:nth-child(even){border:0}.readouts>div:nth-child(5){grid-column:auto}.sensor-stage{height:235px}}
 @media(max-width:550px){.intro:has(#encounter-picker:not([hidden])){flex-wrap:wrap}.monitor-settings:has(#encounter-picker:not([hidden])){justify-content:flex-start;width:100%}.monitor-settings:has(#encounter-picker:not([hidden])) .source-picker{align-items:start}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.run-panel { gap: 12px; padding: 14px 20px; margin-bottom: 18px; }
+.run-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 5px 18px; }
+#run-status { color: var(--muted); font-size: 14px; }
+#run-request-error { color: #80312b; font-size: 14px; }
+.run-form { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
+.run-form label { display: grid; gap: 5px; font-size: 13px; color: var(--muted); }
+.run-form input, .run-form select, .action-button {
+  min-height: 34px; border: 1px solid #adbba8; border-radius: 4px; padding: 6px 9px;
+  background: #f9faf4; color: var(--ink); font-size: 14px;
+}
+.run-form input { width: 108px; }
+.run-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.action-button { font-weight: 600; white-space: nowrap; }
+.action-button:hover:enabled, .action-button[aria-pressed=true] { background: #dfe8da; }
+.action-primary, .action-primary:hover:enabled { background: #294537; border-color: #294537; color: #f6faef; }
+.action-primary:hover:enabled { background: #1b6b4b; }
+.action-button:disabled { opacity: .55; }
+#loop { min-height: 27px; padding: 3px 8px; font-size: 12px; }
+@media (max-width: 850px) {
+  .camera-panel .panel-head { flex-wrap: wrap; }
+}
+@media (max-width: 690px) {
+  .run-panel { padding: 12px; margin-bottom: 12px; }
+}

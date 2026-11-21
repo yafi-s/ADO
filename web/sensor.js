@@ -7,14 +7,19 @@ export class SensorView {
     this.radar = [];
     this.observer = new ResizeObserver(() => this.draw());
     this.observer.observe(canvas);
-    canvas.addEventListener('pointermove', event => this.inspect(event));
-    canvas.addEventListener('pointerleave', () => { reading.hidden = true; });
+    canvas.addEventListener('pointermove', event => {
+      this.pointer = {x: event.clientX, y: event.clientY};
+      this.inspect();
+    });
+    canvas.addEventListener('pointerleave', () => {
+      this.pointer = undefined;
+      reading.hidden = true;
+    });
   }
 
   update(lidar, radar) {
     this.lidar = lidar;
     this.radar = radar;
-    this.reading.hidden = true;
     this.draw();
   }
 
@@ -87,14 +92,15 @@ export class SensorView {
     ctx.fill();
     ctx.fillStyle = '#374c40';
     ctx.fillRect(x0 - egoW * .33, y0 - egoH * .28, egoW * .66, egoH * .23);
+    if (this.pointer) this.inspect();
   }
 
-  inspect(event) {
+  inspect() {
     if (!this.projection) return;
     const {x0, y0, scale} = this.projection;
     const bounds = this.canvas.getBoundingClientRect();
-    const px = event.clientX - bounds.left;
-    const py = event.clientY - bounds.top;
+    const px = this.pointer.x - bounds.left;
+    const py = this.pointer.y - bounds.top;
     let selected;
     let distance = 9;
     for (const point of this.radar) {
@@ -104,7 +110,7 @@ export class SensorView {
         distance = d;
       }
     }
-    this.reading.hidden = !selected;
-    if (selected) this.reading.textContent = 'Radial velocity ' + selected[2].toFixed(1) + ' m/s';
+    this.reading.hidden = !Number.isFinite(selected?.[2]);
+    if (!this.reading.hidden) this.reading.textContent = 'Radial velocity ' + selected[2].toFixed(1) + ' m/s';
   }
 }

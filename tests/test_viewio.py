@@ -13,13 +13,14 @@ from urllib.request import Request, urlopen
 import cv2
 import numpy as np
 
-from crosswalk.viewio import CAMERAS, Live, Recording
+from crosswalk.viewio import CAMERAS, POSTERS, Live, Recording
 
 
 def shots(red):
-    image = np.zeros((16, 18, 3), dtype=np.uint8)
-    image[:, :, 0] = red
-    return {name: image for name in CAMERAS} | {"lidar": None}
+    return {
+        name: np.broadcast_to(np.array([red, 0, index * 30], np.uint8), (16, 18, 3)).copy()
+        for index, name in enumerate(CAMERAS)
+    } | {"lidar": None}
 
 
 def poster_rgb(data):
@@ -45,14 +46,109 @@ class LiveTests(unittest.TestCase):
                 frame = json.load(response)
             self.assertEqual(frame["sim_time"], 0.1)
             self.assertEqual(set(frame["cameras"]), set(CAMERAS))
-            for image in frame["cameras"].values():
-                np.testing.assert_allclose(poster_rgb(base64.b64decode(image)), [180, 0, 0], atol=2)
+            for index, name in enumerate(CAMERAS):
+                image = frame["cameras"][name]
+                np.testing.assert_allclose(poster_rgb(base64.b64decode(image)),
+                                           [180, 0, index * 30], atol=2)
 
             live.clear()
             with self.assertRaises(HTTPError) as cleared:
                 urlopen(endpoint, timeout=5)
             self.assertEqual(cleared.exception.code, 503)
             cleared.exception.close()
+
+    def test_local_drive_requests_and_latest_status(self):
+        options = {"scenarios": [{"id": "pedestrian", "label": "Pedestrian"}], "destinations": ["station"]}
+        initial = {"scenario": "pedestrian", "destination": "station", "seed": 0, "crossing_delay": 0}
+        final = dict(initial, seed=2**31 - 1, crossing_delay=5)
+        with Live(0, options) as live:
+            def get(path):
+                with urlopen(live.url + path, timeout=5) as response:
+                    return json.load(response)
+
+            def submit(payload, **headers):
+                request = Request(live.url + "api/drive", json.dumps(payload).encode(), {
+                    "Content-Type": "application/json", **headers,
+                })
+                return urlopen(request, timeout=5)
+
+            self.assertEqual(get("api/options"), options)
+            self.assertEqual(get("api/status")["state"], "idle")
+            with submit(initial, Origin=live.url.rstrip("/")) as response:
+                self.assertEqual(response.status, 202)
+                self.assertEqual(json.load(response), {"queued": True})
+            with submit(final) as response:
+                self.assertEqual(response.status, 202)
+            live.set_status("complete", run_id=1, outcome="reached")
+            self.assertEqual(get("api/status")["settings"], final)
+            self.assertEqual(get("api/status")["state"], "queued")
+            self.assertEqual(live.next_request(), final)
+            self.assertIsNone(live.next_request())
+            live.set_status("running", run_id=2, settings=final)
+            self.assertEqual(get("api/status"), {
+                "state": "running", "run_id": 2, "settings": final, "outcome": None, "error": None,
+            })
+
+    def test_drive_weather_and_grip_follow_option_lists(self):
+        options = {
+            "scenarios": ["pedestrian"], "destinations": ["station"],
+            "weather": [{"id": "WetNoon", "label": "Wet midday"}], "grip": [1, 0.75],
+        }
+        required = {"scenario": "pedestrian", "destination": "station", "seed": 101, "crossing_delay": 1}
+        with Live(0, options) as live:
+            def submit(**optional):
+                payload = json.dumps(required | optional).encode()
+                request = Request(live.url + "api/drive", payload, {"Content-Type": "application/json"})
+                return urlopen(request, timeout=5)
+
+            with submit(weather="WetNoon", grip=1) as response:
+                self.assertEqual(response.status, 202)
+            for fields in (
+                {"weather": "ClearNoon"}, {"weather": None}, {"weather": ["WetNoon"]},
+                {"grip": 0.5}, {"grip": 0.750001}, {"grip": True}, {"grip": "0.75"},
+                {"grip": float("nan")}, {"grip": float("inf")},
+            ):
+                with self.subTest(fields=fields), self.assertRaises(HTTPError) as rejected:
+                    submit(**fields)
+                with rejected.exception as response:
+                    self.assertEqual(response.code, 400)
+            accepted = live.next_request()
+            self.assertEqual(accepted, required | {"weather": "WetNoon", "grip": 1.0})
+            self.assertIsInstance(accepted["grip"], float)
+
+        live = Live(0, {"scenarios": ["pedestrian"], "destinations": ["station"]})
+        for optional in ({"weather": "ClearNight"}, {"grip": 0.5}):
+            live.queue_drive(required | optional)
+            self.assertEqual(live.next_request(), required | optional)
+
+    def test_rejects_invalid_or_cross_origin_drive_submissions(self):
+        options = {"scenarios": ["pedestrian"], "destinations": ["station"]}
+        valid = {"scenario": "pedestrian", "destination": "station", "seed": 101, "crossing_delay": 2.5}
+        with Live(0, options) as live:
+            def expect_error(payload, code, **headers):
+                request = Request(live.url + "api/drive", json.dumps(payload).encode(), {
+                    "Content-Type": "application/json", **headers,
+                })
+                with self.assertRaises(HTTPError) as rejected:
+                    urlopen(request, timeout=5)
+                with rejected.exception as response:
+                    self.assertEqual(response.code, code)
+                    self.assertIn("error", json.load(response))
+
+            for change in (
+                {"scenario": "unknown"}, {"destination": ["station"]}, {"destination": "unknown"},
+                {"seed": -1}, {"seed": 2**31}, {"seed": True}, {"seed": 4.0},
+                {"crossing_delay": -1}, {"crossing_delay": 5.1}, {"crossing_delay": False},
+                {"crossing_delay": float("nan")}, {"crossing_delay": float("inf")}, {"other": "value"},
+            ):
+                with self.subTest(change=change):
+                    expect_error(valid | change, 400)
+            expect_error(valid, 403, Origin="https://example.org")
+            expect_error(valid, 403, Origin="null")
+            expect_error(valid, 403, Host="example.org")
+            expect_error(valid, 403, **{"Sec-Fetch-Site": "cross-site"})
+            expect_error(valid, 415, **{"Content-Type": "text/plain"})
+            self.assertIsNone(live.next_request())
 
     def test_video_byte_ranges(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -65,10 +161,33 @@ class LiveTests(unittest.TestCase):
                     self.assertEqual(response.headers["Content-Range"], "bytes 2-5/10")
                     self.assertEqual(response.read(), b"2345")
 
+    def test_local_vehicle_assets_are_whitelisted(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / "assets"
+            assets.mkdir()
+            (assets / "meridian.glb").write_bytes(b"glTF")
+            (assets / "meridian-studio.png").write_bytes(b"studio")
+            (assets / "meridian.blend").write_bytes(b"source asset")
+            with patch("crosswalk.viewio.VEHICLE_ROOT", assets), Live(0) as live:
+                base = live.url + "vehicle-assets/"
+                with urlopen(base + "meridian.glb?v=1", timeout=5) as response:
+                    self.assertEqual(response.headers["Content-Type"], "model/gltf-binary")
+                    self.assertEqual(response.read(), b"glTF")
+                with urlopen(Request(base + "meridian-studio.png", method="HEAD"), timeout=5) as response:
+                    self.assertEqual(response.headers["Content-Type"], "image/png")
+                    self.assertEqual(response.headers["Content-Length"], "6")
+                    self.assertEqual(response.read(), b"")
+                for path in ("", "meridian.blend", "%2e%2e/meridian.blend"):
+                    with self.subTest(path=path), self.assertRaises(HTTPError) as missing:
+                        urlopen(base + path, timeout=5)
+                    with missing.exception as response:
+                        self.assertEqual(response.code, 404)
+
 
 @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "Requires FFmpeg")
 class RecordingTests(unittest.TestCase):
-    def test_three_synchronized_tracks(self):
+    def test_five_synchronized_tracks(self):
         rows = [{"sim_time": step / 10, "frame": step + 17} for step in range(3)]
         with tempfile.TemporaryDirectory() as directory:
             parent = Path(directory)
@@ -90,9 +209,9 @@ class RecordingTests(unittest.TestCase):
                     "codec_name": "h264", "pix_fmt": "yuv420p",
                     "avg_frame_rate": "10/1", "nb_read_frames": str(len(rows)),
                 })
-            for name in ("front", "chase"):
+            for name in POSTERS:
                 np.testing.assert_allclose(poster_rgb((target / f"{name}.jpg").read_bytes()),
-                                           [120, 0, 0], atol=2)
+                                           [120, 0, CAMERAS.index(name) * 30], atol=2)
 
     def test_failure_preserves_existing_recording(self):
         with tempfile.TemporaryDirectory() as directory:

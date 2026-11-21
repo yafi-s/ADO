@@ -4,6 +4,7 @@ from pathlib import Path
 
 import numpy as np
 
+from .signal_vision import SIGNAL_NAMES, SIDE_NAMES, signal_candidates, side_features
 from .vision import VISION_NAMES, summarize
 
 
@@ -14,9 +15,9 @@ LIDAR_Z = 2.3
 RADAR_X = 2.0
 RADAR_Z = 0.9
 CORRIDOR_HALF_WIDTH = 1.35
-MODEL_VERSION = 4
+MODEL_VERSION = 6
 NAV_NAMES = tuple(f"route_{distance}m_{axis}_m" for distance in (3, 7, 13) for axis in ("x", "y"))
-FEATURE_NAMES = (
+LEGACY_FEATURE_NAMES = (
     "corridor_gap_m", "lidar_gap_m", "radar_gap_m", "left_lidar_gap_m",
     "right_lidar_gap_m", "radar_velocity_mps", "lidar_hits_log", "radar_hits_log",
     "ego_speed_mps",
@@ -26,6 +27,37 @@ FEATURE_NAMES = (
     for column in ("left", "center", "right")
     for measure in ("r", "g", "b", "gray_std")
 ) + VISION_NAMES + NAV_NAMES
+
+PATH_OBJECT_NAMES = tuple(f"rgb_path_{group}_{measure}" for group in ("person", "vehicle")
+                          for measure in ("height", "offset_in_heights", "confidence"))
+RANGE_NAMES = ("lidar_inverse_gap", "radar_inverse_gap", "ego_speed_over_gap")
+GRID_FORWARD_EDGES = (0, 4, 8, 14, 22, 36, 60)
+GRID_LATERAL_EDGES = (-9, -3.6, -1.35, 1.35, 3.6, 9)
+GRID_LANES = ("far_left", "left", "center", "right", "far_right")
+GRID_MEASURES = ("lidar_density", "radar_density", "radar_radial_velocity")
+GRID_NAMES = tuple(
+    f"bev_{measure}_{low}_{high}m_{lane}"
+    for measure in GRID_MEASURES
+    for low, high in zip(GRID_FORWARD_EDGES[:-1], GRID_FORWARD_EDGES[1:])
+    for lane in GRID_LANES
+)
+FEATURE_NAMES = (LEGACY_FEATURE_NAMES + SIGNAL_NAMES + SIDE_NAMES + PATH_OBJECT_NAMES
+                 + RANGE_NAMES + GRID_NAMES)
+
+
+def _path_objects(detections):
+    # A large oncoming car can dominate a center crop. Measure lateral offset
+    # relative to apparent height, so that a parallel lane stays off axis at range.
+    best = {group: (0., 0., 0., 0.) for group in ("person", "vehicle")}
+    for item in detections:
+        x1, y1, x2, y2 = item["box"]
+        height = max(float(y2 - y1), 1.e-4)
+        offset = abs(float(x1 + x2 - 1.)) / height
+        group = "person" if item["label"] == "person" else "vehicle"
+        priority = height * item["score"] / (1. + offset**2)
+        best[group] = max(best[group], (priority, height, min(offset, 12.), float(item["score"])))
+    return [value for candidate in best.values() for value in candidate[1:]]
+
 
 
 def _returns(data):
@@ -39,6 +71,34 @@ def _returns(data):
 
 def _gap(distances):
     return float(np.clip(distances.min(initial=MAX_RANGE), 0.0, MAX_RANGE))
+
+
+def _grid_cells(forward, right, height):
+    """Bin obstacle-height sensor returns, in meters from the front bumper."""
+    keep = ((height > .24) & (height < 2.6)
+            & (forward >= GRID_FORWARD_EDGES[0]) & (forward < GRID_FORWARD_EDGES[-1])
+            & (right >= GRID_LATERAL_EDGES[0]) & (right < GRID_LATERAL_EDGES[-1]))
+    rows = np.searchsorted(GRID_FORWARD_EDGES[1:], forward[keep], side="right")
+    cols = np.searchsorted(GRID_LATERAL_EDGES[1:], right[keep], side="right")
+    return rows * len(GRID_LANES) + cols, keep
+
+
+def _spatial_grid(lidar_x, lidar_y, lidar_z, radar_x, radar_y, radar_z, velocity):
+    """Lidar density, radar density and signed mean Doppler on the same 6 x 5 grid."""
+    num_cells = (len(GRID_FORWARD_EDGES) - 1) * len(GRID_LANES)
+    lidar_cell, _ = _grid_cells(lidar_x, lidar_y, lidar_z)
+    radar_cell, radar_keep = _grid_cells(radar_x, radar_y, radar_z)
+    lidar_counts = np.bincount(lidar_cell, minlength=num_cells)
+    radar_counts = np.bincount(radar_cell, minlength=num_cells)
+    # Compress dense near-field scans, keeping weak single-hit evidence.
+    counts = np.concatenate((lidar_counts, radar_counts))
+    log_density = np.log1p(np.minimum(counts, 64)) / np.log(65.)
+    # Keep the native signed radial velocity. An occupied stationary cell
+    # and an unobserved cell have different radar density measurements.
+    scaled_velocity = np.clip(velocity[radar_keep] / 15., -1., 1.)
+    sums = np.bincount(radar_cell, weights=scaled_velocity, minlength=num_cells)
+    mean_velocity = sums / np.maximum(radar_counts, 1)
+    return np.concatenate((log_density, mean_velocity)).tolist()
 
 
 def _camera_features(image):
@@ -57,7 +117,7 @@ def _camera_features(image):
     return values
 
 
-def features(rgb, lidar, radar, speed, detections=(), navigation=None):
+def features(rgb, lidar, radar, speed, detections=(), navigation=None, *, side_views):
     """Encode a synchronized RGB image, lidar sweep, Doppler scan and ego speed.
 
     Lidar is mounted at (0, 0, 2.3) and radar at (2, 0, 0.9), both level.
@@ -91,7 +151,13 @@ def features(rgb, lidar, radar, speed, detections=(), navigation=None):
     nav = np.asarray(navigation, dtype=np.float32)
     if nav.shape != (6,) or not np.isfinite(nav).all():
         raise ValueError("expected three ego-local route points [x3,y3,x7,y7,x13,y13]")
-    return np.asarray(geometry + _camera_features(rgb) + summarize(detections) + nav.tolist(),
+    if len(side_views) != 2:
+        raise ValueError("expected synchronized left and right RGB camera images")
+    side = [value for image in side_views for value in side_features(image)]
+    proximity = [1./(1.+gap_lidar), 1./(1.+gap_radar), speed/(1.+min(gap_lidar, gap_radar))]
+    grid = _spatial_grid(x - BUMPER_X, y, height, rx, ry, rz, vel)
+    return np.asarray(geometry + _camera_features(rgb) + summarize(detections) + nav.tolist()
+                      + signal_candidates(rgb) + side + _path_objects(detections) + proximity + grid,
                       dtype=np.float32)
 
 
@@ -105,7 +171,7 @@ def input_mask(inputs):
 def head_columns(inputs):
     nav = np.asarray([name in NAV_NAMES for name in FEATURE_NAMES])
     speed = np.asarray([name == "ego_speed_mps" for name in FEATURE_NAMES])
-    return np.flatnonzero(nav | speed), np.flatnonzero(input_mask(inputs) & ~nav)
+    return np.flatnonzero(nav | speed), np.flatnonzero(input_mask(inputs))
 
 
 def linear(x, w):
@@ -129,7 +195,7 @@ class Model:
         self.mean = np.asarray(mean, dtype=np.float32)
         self.scale = np.asarray(scale, dtype=np.float32)
         self.heads = heads
-        if (self.mean.shape != self.mask.shape or self.scale.shape != self.mask.shape
+        if (self.mean.shape != (2, len(self.mask)) or self.scale.shape != self.mean.shape
                 or not np.isfinite(self.mean).all() or not np.isfinite(self.scale).all()
                 or not (self.scale > 0).all()):
             raise ValueError("invalid model normalization")
@@ -146,8 +212,8 @@ class Model:
         if X.ndim != 2 or X.shape[1] != len(FEATURE_NAMES) or not np.isfinite(X[:, self.mask]).all():
             raise ValueError("invalid neural policy inputs")
         outputs = []
-        for columns, weights in zip(self.columns, self.heads):
-            z = np.clip((X[:, columns] - self.mean[columns]) / self.scale[columns], -8, 8)
+        for head, (columns, weights) in enumerate(zip(self.columns, self.heads)):
+            z = np.clip((X[:, columns] - self.mean[head, columns]) / self.scale[head, columns], -8, 8)
             _, output = forward(z, weights)
             outputs.append(np.clip(output[:, 0], -1, 1))
         steer, drive = outputs

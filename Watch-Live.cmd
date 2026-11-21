@@ -2,7 +2,7 @@
 setlocal
 pushd "%~dp0" || exit /b 1
 
-if not exist ".venv\Scripts\python.exe" (
+if not exist ".venv-city\Scripts\python.exe" (
     echo Run setup.ps1 before opening the live console.
     popd
     exit /b 1
@@ -14,7 +14,7 @@ if not exist "models\fusion.npz" (
 )
 
 echo Starting the live console. Press Ctrl+C to stop the run.
-".venv\Scripts\python.exe" -m crosswalk.drive --serve --loop --tour --open-browser
+".venv-city\Scripts\python.exe" -m crosswalk.drive --serve --interactive --open-browser
 set "result=%errorlevel%"
 popd
 exit /b %result%
