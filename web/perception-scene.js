@@ -157,6 +157,39 @@ function surfaceGeometry(lines, halfWidth, elevation = 0, index = null, reach = 
   geo.setIndex(indices);
   return geo;
 }
+// Which way the lane runs at a point. Lane centre lines are not stored in a known driving
+// direction, so this is an axis: it is returned turned to agree with `hint`, in degrees.
+// Where lanes overlap inside a junction, the one that best agrees with `hint` wins.
+const LANE_REACH=10;
+function laneAxes(lanes) {
+  const cells=new Map(), size=10;
+  for(const lane of lanes)for(let i=1;i<lane.length;i++){
+    const a=lane[i-1], b=lane[i];
+    const key=Math.floor((a[0]+b[0])/2/size)+','+Math.floor((a[1]+b[1])/2/size);
+    if(!cells.has(key))cells.set(key,[]);
+    cells.get(key).push([a[0],a[1],b[0],b[1],Math.atan2(b[1]-a[1],b[0]-a[0])/rad]);
+  }
+  return (x,z,hint) => {
+    const cx=Math.floor(x/size), cz=Math.floor(z/size), found=[];
+    let nearest=Infinity;
+    for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++)for(const lane of cells.get((cx+i)+','+(cz+j))||[]){
+      const dx=lane[2]-lane[0], dz=lane[3]-lane[1];
+      const along=clamp(((x-lane[0])*dx+(z-lane[1])*dz)/(dx*dx+dz*dz||1),0,1);
+      const distance=Math.hypot(lane[0]+along*dx-x,lane[1]+along*dz-z);
+      if(distance<=LANE_REACH){found.push([distance,lane[4]]);nearest=Math.min(nearest,distance);}
+    }
+    let best=null, score=Infinity;
+    for(const [distance,degrees] of found){
+      if(distance>nearest+1)continue;
+      const axis=Math.abs(turn(hint,degrees))>90?degrees+180:degrees;
+      const disagreement=Math.abs(turn(hint,axis))+distance*.01;
+      if(disagreement<score){score=disagreement;best=axis;}
+    }
+    return best;
+  };
+}
+const WHEELED=new Set(['car','truck','bus','motorcycle','bicycle']);
+
 const ribbonVertex = `
 attribute float inner, calm;
 varying vec2 vLane; varying vec3 vWorld; varying float vInner, vCalm;
@@ -482,6 +515,7 @@ export class PerceptionScene {
   setMap(town) {
     if(this.disposed)return;
     if(this.map){release(this.map);this.map=null;this.buildings=null;this.curbs=null;}
+    this.laneAxis=null;
     this.elevation=new Map();
     this.mapKey=town?.producer?.map;
     const lanes=(town?.roads||[]).map(l=>(Array.isArray(l)?l:l.points||[]).filter(p=>coord(p,3))).filter(l=>l.length>1);
@@ -493,6 +527,7 @@ export class PerceptionScene {
       // A sidewalk band beside every lane; under the street surface it also closes junction corners.
       const curbs=new T.Mesh(surfaceGeometry(lanes,3.75,-.028,null,2.4),sidewalks);
       this.map.add(curbs,streets);
+      this.laneAxis=laneAxes(lanes);
       for(const lane of lanes)for(const p of lane){
         const key=Math.floor(p[0]/8)+','+Math.floor(p[1]/8);
         if(!this.elevation.has(key))this.elevation.set(key,[]);
@@ -581,7 +616,7 @@ export class PerceptionScene {
     trail.renderOrder=1;
     this.trackGroup.add(group,trail);
     const track={id,label,group,foot,trail,materials:shape.materials,history:[],from:V(),to:V(),fromAngle:0,toAngle:0,pulse:-Infinity,
-      size:V(),fromSize:V(),toSize:V(),heading:0,against:0,velocity:{x:0,z:0}};
+      size:V(),fromSize:V(),toSize:V(),heading:0,against:0,across:0,velocity:{x:0,z:0}};
     this.tracks.set(id,track);return track;
   }
 
@@ -648,13 +683,29 @@ export class PerceptionScene {
           track.velocity.x+=TRACK_BETA*rx/step;track.velocity.z+=TRACK_BETA*rz/step;
         }else track.velocity.x=track.velocity.z=0;
       }else track.velocity.x=track.velocity.z=0;
-      // Heading is an estimate with a front/back ambiguity. Keep the facing the shape already has.
-      // Swap ends only after the object has plainly travelled the other way for half a second.
+      // Heading is an estimate with a front/back ambiguity, and in recordings it can sit far off
+      // the road's direction. A vehicle on or beside a mapped lane is drawn along that lane; its
+      // own travel decides which way it faces and overrides the lane when it is crossing or turning.
       let facing=degrees+(finite(sample.heading)?sample.heading:0);
-      if(!fresh&&Math.abs(turn(track.heading,facing))>90)facing+=180;
       const travelling=Math.hypot(track.velocity.x,track.velocity.z);
-      const against=!fresh&&travelling>1.5&&sample.speed_mps>1.5&&
-        Math.abs(turn(Math.atan2(track.velocity.z,track.velocity.x)/rad,track.heading))>110;
+      const underway=!fresh&&travelling>1.5&&sample.speed_mps>1.5;
+      const course=Math.atan2(track.velocity.z,track.velocity.x)/rad;
+      if(located&&this.laneAxis&&WHEELED.has(label)){
+        const lane=this.laneAxis(tx,tz,underway?course:fresh?facing:track.heading);
+        if(lane!==null){
+          // One noisy velocity sample is not a turn: travel must stay off the lane for half a second.
+          track.across=underway&&Math.abs(turn(course,lane))>35?track.across+1:0;
+          facing=track.across>=5?course:lane;
+        }
+      }else if(label==='person'&&!fresh){
+        // A pedestrian turns to face the way they have been walking, and otherwise stays as drawn.
+        track.across=travelling>.6&&sample.speed_mps>.5?track.across+1:0;
+        facing=track.across>=4?course:track.heading;
+      }
+      // Keep the facing the shape already has. Swap ends only after the object has plainly
+      // travelled the other way for half a second.
+      if(!fresh&&Math.abs(turn(track.heading,facing))>90)facing+=180;
+      const against=underway&&Math.abs(turn(course,track.heading))>110;
       track.against=against?track.against+1:0;
       const swap=track.against>=5;
       if(swap){track.heading+=180;facing+=180;track.against=0;}
