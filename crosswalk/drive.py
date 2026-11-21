@@ -209,6 +209,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             frame = world.tick()
             obs = rig.read(frame)
             if surround_perception is not None:
+                surround_pose = scene.ego.get_transform()
+                ego_xy_yaw = (surround_pose.location.x, surround_pose.location.y, surround_pose.rotation.yaw)
                 surround_obs = dict(obs)
                 # The rider display has longer lidar reach. Preserve the controller's trained 60 m input.
                 scan = surround_obs["lidar"]
@@ -220,7 +222,7 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                         x0,y0,x1,y1 = horizon_region(optical)
                         image = dict(horizon_rgb=optical[y0:y1,x0:x1], horizon_xyxy=[x0,y0,x1,y1],
                                      front_size_wh=[optical.shape[1],optical.shape[0]])
-                    np.savez(range_tape / f"{frame}.npz", lidar=scan,
+                    np.savez(range_tape / f"{frame}.npz", lidar=scan, ego_xy_yaw=ego_xy_yaw,
                              **{name: surround_obs[name] for name in RADARS}, **image)
             speed = vehicle_speed(scene.ego)
             if observer is None:
@@ -239,11 +241,10 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 if step % 2 == 0:
                     detections = detector.detect(obs["front"])
                 if surround_perception is not None:
-                    pose = scene.ego.get_transform()
                     measured_front = surround_detector.detect_front(
                         obs["front"], surround_obs.get("front_optical")) if step % 2 == 0 else []
                     obs["surround_tracks"] = surround_perception.update(
-                        surround_detector, surround_obs, measured_front, (pose.location.x, pose.location.y, pose.rotation.yaw),
+                        surround_detector, surround_obs, measured_front, ego_xy_yaw,
                         step * DT, step)
                 if observer is None:
                     x = features(obs["front"], obs["lidar"], obs["radar"], speed, detections,
