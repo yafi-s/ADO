@@ -27,8 +27,6 @@ SECTIONS = [(420.16,501.65), (734,770), (770,800), (800,825), (825,855), (855,89
             (150,250), (420,500), (600,645), (1080,1180), (1365,1415),
             (858,872), (872,882), (882,892)]
 VULNERABLE = {"pedestrian", "cyclist", "bicycle", "motorcycle"}
-FROZEN = ROOT / "web/media/city-life"
-BASE_REFERENCE = ROOT / "results/city-life/population-reference.jsonl.gz"
 
 
 def read(path):
@@ -225,6 +223,17 @@ def audit(folder, reference):
         boundaries = [(j["id"],j["direction"],j["from_m"],j["to_m"]) for j in baseline["junctions"]]
     bins = [window(a,a+25,True) for a in range(0, math.ceil(length),25)]
     junctions = [dict(id=jid, direction=direction, **window(lo,hi,True)) for jid,direction,lo,hi in boundaries]
+    # These six physical junctions had <=5 degrees measured heading span in
+    # the sealed v0.5 tape. Preserve their stations even if the new steering differs.
+    near_straight_ids = {103,82,238,861,1820,1901}
+    true_straights = np.zeros(len(rows), dtype=bool)
+    for jid, _, lo, hi in boundaries:
+        if jid in near_straight_ids:
+            true_straights |= (station>=lo)&(station<hi)
+    straight_stats = stats(true_straights)
+    straight_stats["junction_ids"] = sorted(near_straight_ids)
+    straight_stats["no_path_actor_recorded"] = stats(true_straights & no_actor)
+    straight_stats["no_current_or_later_path_actor_or_near_vru"] = stats(true_straights & no_actor & ~later_hit)
     releases=[]
     event_moments={}
     for e in s["events"]:
@@ -262,9 +271,12 @@ def audit(folder, reference):
                        sensor_configuration=s["sensor_configuration"],seed=s["seed"],crossing_delay_s=s["crossing_delay_s"],
                        population_profile=manifest.get("population_profile"),quality=manifest.get("quality_requested"),
                        telemetry_sha256=expected,population_sha256=sha(reference),raw_replay_sha256=manifest["raw_sha256"]["replay.json"]),
-           grade={k:s[k] for k in ["outcome","duration_s","progress_m","route_length_m","collision_events","red_light_violations",
-                                  "yield_violations","turns_completed","moving_within_1m_frames","max_lateral_error_m"]},
+           grade=dict(capture_passed=manifest.get("passed"),capture_failure_reasons=manifest.get("failure_reasons"),
+                      participant_contacts=s["background_traffic_activity"].get("participant_contacts"),
+                      **{k:s[k] for k in ["outcome","duration_s","progress_m","route_length_m","collision_events","red_light_violations",
+                                          "yield_violations","turns_completed","moving_within_1m_frames","max_lateral_error_m"]}),
            events=s["events"],event_moments=event_moments,whole=stats(np.ones(len(rows),bool)),station_bins=bins,junctions=junctions,
+           near_straight_junctions=straight_stats,
            sections=[window(a,b,True) for a,b in SECTIONS],releases=releases,under_15_spells=spells,
            comfort=dict(max_accel_half_s=rounded(np.nanmax(accel5)),max_decel_half_s=rounded(-np.nanmin(accel5)),
                         raw_max_decel=rounded(-np.nanmin(accel)),raw_max_accel=rounded(np.nanmax(accel)),
