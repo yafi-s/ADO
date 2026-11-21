@@ -24,6 +24,9 @@ def load_driver(path):
     if version == "ado-city-policy-v1":
         from .city_policy import CityModel, FEATURE_NAMES as city_names
         return CityModel.load(path), city_names, version
+    if version == "ado-city-cruise-v1":
+        from .city_cruise import UrbanCruiseModel, FEATURE_NAMES as city_names
+        return UrbanCruiseModel.load(path), city_names, version
     raise ValueError(f"Unknown driving model: {version}")
 
 
@@ -34,12 +37,24 @@ class LoggedDriver:
         self.new_observer = policy.new_observer
         self.lamp_expert = policy.lamp_expert
         self.sensor_lamp_classifier = getattr(policy, "sensor_lamp_classifier", None)
+        self.uses_posted_limit = getattr(policy, "uses_posted_limit", False)
         self.observations = []
         self.requested_speed = []
+        self.posted_limits = []
+
+    @property
+    def posted_limit_kmh(self):
+        return self.policy.posted_limit_kmh
+
+    @posted_limit_kmh.setter
+    def posted_limit_kmh(self, value):
+        self.policy.posted_limit_kmh = value
 
     def predict(self, x):
         action = self.policy.predict(x)
         self.observations.append(x.copy())
+        if self.uses_posted_limit:
+            self.posted_limits.append(self.posted_limit_kmh)
         if hasattr(self.policy, "last_speed_request"):
             self.requested_speed.append(self.policy.last_speed_request)
         else:
@@ -52,7 +67,7 @@ class LoggedDriver:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", type=Path, default=PROJECT / "models/city-v1/candidate-73-74.npz")
+    parser.add_argument("--model", type=Path, default=PROJECT / "models/city-cruise/candidate.npz")
     parser.add_argument("--seed", type=int, default=211)
     parser.add_argument("--max-steps", type=int, default=9000)
     parser.add_argument("--output", type=Path, help="Parent directory for a new attempt")
@@ -60,6 +75,10 @@ def main():
     parser.add_argument("--port", type=int, default=2468)
     parser.add_argument("--attach", action="store_true", help="Use an idle Town03_Opt server")
     parser.add_argument("--serve", action="store_true", help="Stream the live cameras and measured controls")
+    parser.add_argument("--surround", action=argparse.BooleanOptionalAction, default=None,
+                        help="Run the five-camera perception rig (on by default for the live urban cruise driver)")
+    parser.add_argument("--tactical", action=argparse.BooleanOptionalAction, default=None,
+                        help="Enable the tactical pass planner (on by default for the live urban cruise driver)")
     parser.add_argument("--http-port", type=int, default=8765)
     parser.add_argument("--open-browser", action="store_true")
     args = parser.parse_args()
@@ -69,6 +88,13 @@ def main():
         parser.error("Choose a positive step limit and a seed in [0, 2147483647]")
     model_sha = fingerprint(args.model)
     driver, names, schema = load_driver(args.model)
+    live_cruise = args.serve and schema == "ado-city-cruise-v1"
+    options = {key: True for key, value in (("surround", args.surround), ("tactical", args.tactical))
+               if (live_cruise if value is None else value)}
+    tactical_sha = None
+    if options.get("tactical"):
+        from .overtake import MODEL as tactical_checkpoint
+        tactical_sha = fingerprint(tactical_checkpoint)
     model = LoggedDriver(driver)
     root = args.output or PROJECT / "out/city-drives"
     root.mkdir(parents=True, exist_ok=True)
@@ -84,14 +110,17 @@ def main():
                     webbrowser.open(url)
             summary, trace, _, _ = episode(world, "journey", args.seed, schema, model,
                 live=live, realtime=bool(live), max_steps=args.max_steps, destination="market", run_id=folder.name,
-                scene_factory=JourneyScenario)
+                scene_factory=JourneyScenario, **options)
     write_trace(folder / "trace.jsonl.gz", trace)
     if len(model.observations) != len(trace):
         raise RuntimeError("Scored frames and model observations differ")
     save_arrays(folder / "observations.npz", frame=[row["frame"] for row in trace],
                 features=np.asarray(model.observations), feature_names=names,
-                speed_request_mps=model.requested_speed)
-    summary.update(producer=producer, model_sha256=model_sha, policy_schema=schema)
+                speed_request_mps=model.requested_speed,
+                **({"posted_limit_kmh": model.posted_limits} if model.uses_posted_limit else {}))
+    summary.update(producer=producer, model_sha256=model_sha, policy_schema=schema,
+                   surround=bool(options.get("surround")), tactical=bool(options.get("tactical")),
+                   tactical_model_sha256=tactical_sha)
     write_json(folder / "summary.json", summary)
     passed = sum(event["handled"] for event in summary["events"])
     print(f'{summary["outcome"]}: {summary["progress_m"]:.1f}/{summary["route_length_m"]:.1f} m, '
