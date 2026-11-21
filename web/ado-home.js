@@ -699,6 +699,11 @@ function renderFrameFacts(frame) {
   const lateral = frame?.lat_error_m ?? frame?.lateral_error_m;
   const progress = frame?.progress_evidence;
   const hasProgress = finite(progress?.base_request_mps) && finite(frame?.speed_request_mps);
+  const baseReasons = {
+    unconfirmed: 'Observations unconfirmed', signal_approach: 'Signal approach',
+    opposing_traffic: 'Opposing traffic detected', vulnerable_road_user: 'Pedestrian or rider detected',
+    occupied_corridor: 'Object within the forward corridor'
+  };
   const destination = state.options?.destinations?.find?.(item => item?.id === frame?.destination)?.label;
   const extras = {
     lateral: finite(lateral) ? `${hundredth.format(lateral)} m` : null,
@@ -707,7 +712,8 @@ function renderFrameFacts(frame) {
     yield: finite(frame?.yield_violations) ? whole.format(frame.yield_violations) : null,
     request: finite(frame?.speed_request_mps) ? `${tenth.format(frame.speed_request_mps*3.6)} km/h` : null,
     progress: hasProgress ? (frame.speed_request_mps > progress.base_request_mps + .001
-      ? `Raised from ${tenth.format(progress.base_request_mps * 3.6)} km/h` : 'Base request retained') : null,
+      ? `Raised from ${tenth.format(progress.base_request_mps * 3.6)} km/h`
+      : baseReasons[progress.binding] ?? 'Base request retained') : null,
     sight: progress?.supported_scans >= 3 && finite(progress.sight_m) && progress.sight_m > 0
       ? `${tenth.format(progress.sight_m)} m` : null,
     limit: finite(frame?.posted_limit_kmh) && frame.posted_limit_kmh>0 ? `${whole.format(frame.posted_limit_kmh)} km/h` : null,
