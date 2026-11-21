@@ -253,7 +253,7 @@
       "frame": 3050,
       "native": 3050,
       "f": 0,
-      "c": 0.5619999999999923,
+      "c": 0.10299999999999986,
       "paused": false
     },
     "turn_rewound": {
@@ -291,7 +291,7 @@
         "decoded_s": 124.8
       }
     ],
-    "results_rows": 12,
+    "results_rows": 13,
     "results_links": [
       {
         "label": "Watch the drive",
@@ -369,6 +369,11 @@
         "exists_in_release_tree": true
       },
       {
+        "label": "Cyclist and range evidence",
+        "tag_target": "results/perception/cycle-range-v04/README.md",
+        "exists_in_release_tree": true
+      },
+      {
         "label": "Second-road scores and videos",
         "tag_target": "results/tactical-pass/v04-road67/README.md",
         "exists_in_release_tree": true
@@ -388,7 +393,7 @@
   },
   "screenshot": {
     "file": "docs/media/urban-pace.png",
-    "sha256": "ead100bb4b8825a18ca5fd4c78dcdb0cb9adf6d97e5901bcc5516511bff1df84",
+    "sha256": "24235ba3e0478151810f51683ccd3d1c72b27badeecb3eb1f166cc744112c78b",
     "pixels": [
       1440,
       900
@@ -414,6 +419,61 @@
       104,
       108
     ],
-    "selected_camera_boxes": 1
+    "selected_camera_boxes": 1,
+    "object_memory_sha256_lf": "602884d383e8c56f0991356ef731b5875f9f968711e3b7ed07ce705bcf69a8ff",
+    "native_board_ownership": [
+      {
+        "actor": 617,
+        "objects": [
+          {
+            "key": 84,
+            "id": 104,
+            "label": "barrier",
+            "x": 130.1249137507015,
+            "z": 190.71467952882716,
+            "opacity": 1
+          }
+        ]
+      },
+      {
+        "actor": 618,
+        "objects": [
+          {
+            "key": 88,
+            "id": 108,
+            "label": "barrier",
+            "x": 123.20818162097152,
+            "z": 190.5952287294592,
+            "opacity": 0.3333333333333144
+          }
+        ]
+      }
+    ],
+    "all_drawn": [
+      {
+        "key": 84,
+        "id": 104,
+        "label": "barrier",
+        "x": 130.1249137507015,
+        "z": 190.71467952882716,
+        "opacity": 1
+      },
+      {
+        "key": 87,
+        "id": 107,
+        "label": "car",
+        "x": 86.42466416412519,
+        "z": 193.31179240921057,
+        "opacity": 0.3333333333333144
+      },
+      {
+        "key": 88,
+        "id": 108,
+        "label": "barrier",
+        "x": 123.20818162097152,
+        "z": 190.5952287294592,
+        "opacity": 0.3333333333333144
+      }
+    ]
   }
 }
