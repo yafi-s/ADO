@@ -2,7 +2,7 @@
 
 **Watch City Progress.** ADO drove the same populated 1.42 km Market route in **4 minutes 58.7 seconds**, down from 5 minutes 32 seconds. Both drives handled all 11 encounters and all 11 junctions with zero recorded collisions, red-light violations or missed yields. Across six nearly straight intersections, median speed increased from **13.1 to 17.5 km/h**. [Watch the new drive](https://yafi-s.github.io/ADO/?run=city-progress) · [Compare both controllers in the same road situations](https://yafi-s.github.io/ADO/media/city-progress-tests/comparison.mp4) · [Full route audit and tradeoffs](results/city-progress/README.md)
 
-[![The City Progress rider screen and synchronized camera after the stopped-bus pass](docs/media/city-progress.png)](https://yafi-s.github.io/ADO/?run=city-progress&frame=2022&camera=rear_right)
+[![The City Progress rider screen and synchronized camera after the stopped-bus pass](docs/media/city-progress.png)](https://yafi-s.github.io/ADO/?run=city-progress&frame=2017&camera=rear_right)
 
 Alongside the stopped bus, median speed rose from **6.1 to 7.2 km/h**. The driver still slowed near the blind nose. In the 10 m approaching the next junction it recovered to a median **25.9 km/h**, compared with 15.1 km/h previously. In a separate occupied test it stopped for a pedestrian emerging from behind the bus. The Results timeline links the current camera to the previous driver's exposure at the same route position. [Inspect the bus pass](https://yafi-s.github.io/ADO/inspect.html?run=city-progress&frame=1960&camera=chase) · [Explore the timeline](https://yafi-s.github.io/ADO/benchmarks.html#traffic-study)
 
