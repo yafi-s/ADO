@@ -183,7 +183,9 @@ def run_case(world, trial, folder, model, version, producer, profile, verify_inp
     ex.write_json(folder / "summary.json", row)
     ex.write_json(folder / "checkpoint.json", dict(study=version, trial=asdict(trial), sha256={
         name: ex.fingerprint(folder / name) for name in ("summary.json", "trace.jsonl.gz")}))
-    return row
+    # CARLA provides route identifiers as tuples; published and resumed JSON uses lists.
+    # Compare the same representation on the initial run and every resume.
+    return ex.read_json(folder / "summary.json")
 
 
 def arm_stats(rows):

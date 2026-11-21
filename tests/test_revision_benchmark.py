@@ -92,11 +92,16 @@ class RevisionBenchmarkTests(unittest.TestCase):
         row = next(r for r in bench.ex.read_json(bench.PROJECT / "results/primary.json")
                    if (r["seed"], r["case_id"]) == (trial.seed, trial.case_id))
         row.update(frames=1, outcome="collision", collision_events=1, policy=trial.policy)
+        archived = dict(row)
+        row["road_ids"] = tuple(row["road_ids"])
+        row["junction_ids"] = tuple(row["junction_ids"])
         trace = [{"frame": 123, "collision_count": 1}]
         with TemporaryDirectory() as tmp, patch.object(bench, "episode", return_value=(row, trace, [], [])) as drive:
             folder = Path(tmp)
             self.assertIsNone(bench.read_case(folder, "version", trial))
-            bench.run_case(None, trial, folder, object(), "version", row["producer"], row["render_profile"])
+            initial = bench.run_case(None, trial, folder, object(), "version", row["producer"], row["render_profile"])
+            self.assertEqual(initial, bench.read_case(folder, "version", trial))
+            self.assertEqual(bench.comparison("regression", [initial], [archived])["matched_pairs"], 1)
             drive.assert_called_once()
             self.assertEqual(bench.read_case(folder, "version", trial)["outcome"], "collision")
             with gzip.open(folder / "trace.jsonl.gz", "rt") as stream:
