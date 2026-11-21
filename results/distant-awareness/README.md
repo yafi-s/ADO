@@ -4,6 +4,22 @@ ADO’s surround observer acquires a registered 1280 × 720 front image with a 9
 
 The 32-channel roof lidar reaches 100 m in surround mode at its original 160,000 rays per second. The driving policy receives returns inside its trained 60 m envelope. A small unsupported optical box appears in the front camera inset as **Camera only**. The scene needs measured depth. A distant car can qualify on its first frame with an independently associated radar return, at least five lidar hits on a compact upright face, and a compatible current front camera box. The range-only input can sustain the existing tracking rules. It cannot supply a new pedestrian class.
 
+## Native populated city drive
+
+Across **3,320 synchronized exposures** in the corrected City Life recording, ADO optically identified a sidewalk pedestrian at **64.39 m**, 8.6 s earlier than the full-frame detector’s first correct reading at **32.57 m**. The rider sees **Person · camera only** at that first exposure. The first correctly located 3D symbol for that particular walker appeared at **13.68 m**. A different sidewalk pedestrian received a measured 3D symbol at **36.51 m**, compared with **21.18 m** using the 60 m, single-scale baseline. A moving car was first optically identified at **98.29 m** versus **67.08 m** and first drawn accurately at **41.98 m** in both variants. The van at the occluded crossing first appeared accurately in 3D at **76.66 m**, compared with **58.42 m**. [64.39 m walker exposure](https://yafi-s.github.io/ADO/inspect.html?run=city-life&frame=1358&camera=front) · [76.66 m van drawing](https://yafi-s.github.io/ADO/?run=city-life&at=21.7&camera=front) · [36.51 m pedestrian drawing](https://yafi-s.github.io/ADO/?run=city-life&at=20.6&camera=front)
+
+The two optical scales matched **893 of 1,002** projected opportunities within 30 m (baseline 794), **561 of 1,235** at 30–50 m (455), and **312 of 4,537** at 50–100 m (167). This adds **350 matched actor-exposures with zero losses**. Unmatched camera boxes increased from **322 to 341**. At 50–100 m there were **22 matched pedestrian exposures** versus zero at full scale. These counts include all in-sector reference opportunities, including occlusion. The unchanged 3 m display accuracy gate and 50% opacity threshold measure actual rider symbols. [Representative original camera exposures](city-optics/first-optical.jpg) · [Additional unmatched optical sample](city-optics/unmatched-optical.jpg)
+
+The baseline rider matched **1,394 of 2,002** projected actor-frames within 30 m, **558 of 2,472** at 30–50 m, and **59 of 9,070** at 50–100 m. The candidate matched **1,516**, **661** and **181** respectively. It gained **358** exact actor/frame pairs, lost **11**, and increased unmatched forward symbol-frames from **435 to 454**. All 11 losses belong to one member of a close pair of sidewalk pedestrians. That pedestrian was first drawn earlier, at 33.06 m instead of 25.05 m, but lost intermittent matches while the neighboring pedestrian gained coverage. The two nearby walking controls retained their 12.62 m and 12.36 m first symbols. The first crossing walker retained its 14.33 m first symbol. There were **32** accurate pedestrian symbol-frames at 30–50 m versus zero in the baseline, and **zero** at 50–100 m in both variants. [Every paired encounter](city-comparison.json) · [Candidate scores](city-after.json) · [Baseline scores](city-before.json) · [Sensor and display contributions](city-stage-ablation.json)
+
+All 3,320 original track dictionaries reproduced exactly from the full-resolution lidar, five radars, ego odometry and registered camera boxes. On 26 sampled HD exposures, re-inferring the lossless crop reproduced every added box, label and confidence score. These images show the actual independent sensor pixels at the early car and pedestrian matches. [Native track reconstruction](city-native-verification.json) · [Sampled HD inference verification](city-crop-check.json)
+
+![Native HD crops for the distant car and walker, plus sparse-depth controls including a misclassified cyclist](city-hd-evidence.png)
+
+### Sparse pedestrian depth research
+
+Of **327** high-confidence pedestrian boxes with unsupported depth, the frozen supplemental observer emitted **27** estimates. **23** matched seven distinct pedestrians within 1.5 m. Median horizontal error was **0.12 m**, worst **0.41 m**, with correct ranges from **21.66 to 36.44 m**. All four other estimates belonged to **one cyclist**. Their surveyed range was accurate to within 0.54 m, but using a pedestrian symbol would misclassify the cyclist. Shifting the radar azimuth by 12° produced one unmatched estimate and zero correct estimates. These results support further investigation of vulnerable-road-user range. The published 3D scene uses the native tracks above, and the supplemental observer remains a research result. [Frozen method and controls](sparse-depth-protocol.md) · [Every accepted and shifted-control reading](sparse-depth-city.json)
+
 ## Sealed High city drive
 
 The High v0.4 drive has 3,354 camera exposures and 1,677 fresh front detections. For the optical comparison both variants saw the **same decoded 640 × 360 native MJPEG exposures**. The High movie retains its originally recorded detections. Its new horizon boxes are an offline counterfactual. The 3D comparison instead replays the **identical original native camera, range and track journal** through the previous and current rider displays. Neither reconstructed range nor new simulated returns enter this historical score.
@@ -53,3 +69,26 @@ node tools/score_distant_awareness.mjs $capture out/distant-awareness/after.json
 python tools/illustrate_distant_optics.py $capture out/distant-awareness/after.json out/distant-awareness/unmatched.jsonl out/distant-awareness
 python tools/check_distant_visibility.py $capture out/distant-awareness/after.json out/distant-awareness/laptop --review $review --targets 606 604 621
 ```
+
+### Populated city release sensor tape
+
+Run from the matching ADO source release with Python, its bundled model dependencies and Node installed. Extract the optional native range/crop asset, then set `$tape` to the directory containing `raw`, `sweeps` and `reference`. The numeric studies use the sensor journal, each frame’s full range sweep and the synchronized ego pose. Each HD optical check uses the original lossless sensor crop saved alongside that exposure. The normal front movie is a 640 × 360 presentation view.
+
+```powershell
+$tape = 'A:/ADO-City-Life-Range-Sweeps'
+$raw = Join-Path $tape 'raw'
+$sweeps = Join-Path $tape 'sweeps'
+$baseMemory = Join-Path $tape 'reference/object-memory-before.mjs'
+$work = 'out/city-life-range-reproduction'
+New-Item -ItemType Directory -Force $work | Out-Null
+python tools/project_distant_reference.py $raw "$work/registration.json"
+python tools/ablate_distant_range.py $raw $sweeps "$work/native-verification" --verification-only
+python tools/ablate_distant_range.py $raw $sweeps "$work/sixty-metre-single-scale"
+node tools/score_distant_awareness.mjs "$work/sixty-metre-single-scale" "$work/before.json" --memory-file $baseMemory --projection "$work/registration.json"
+node tools/score_distant_awareness.mjs $raw "$work/after.json" --projection "$work/registration.json"
+python tools/summarize_distant_comparison.py "$work/before.json" "$work/after.json" "$work/paired.json"
+python tools/replay_distant_optics.py $raw "$work/crop-check.json" --native-sweeps $sweeps --stride 128
+python tools/measure_sparse_pedestrians.py $raw $sweeps "$work/sparse-depth.json"
+```
+
+The ablation reads the identical native radar and camera exposures, removes the second-scale optical boxes, clips lidar to 60 m, then redoes associations and tracking from the first frame. Its full-frame camera input is the same registered 640 × 360 image used by the new observer. The native verification independently reconstructs every original track dictionary using the recorded 100 m sweep and all the original boxes. The sparse-depth study has its own frozen observer and controls. [Sparse-depth protocol](sparse-depth-protocol.md)

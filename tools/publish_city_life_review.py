@@ -51,6 +51,18 @@ def scorecard():
         f'{peak["simultaneous_cars"]} moving vehicles and {peak["simultaneous_pedestrians"]} moving pedestrians nearby.',
         ("See mixed traffic", f'./?run=city-life&at={timeline["mixed_at_s"]}'),
         ("Native movement", TAG + "results/city-life/POPULATION.md"))
+    comparison = read("results/distant-awareness/city-comparison.json")
+    if comparison["candidate_journal_sha256"] != new["raw_sha256"]["perception.jsonl"]:
+        raise ValueError("Long-range results belong to a different drive")
+    drawing = comparison["stages"]["display"]
+    far = drawing["bands"]["50–100 m"]
+    add("Distant drawings",
+        f'At 50–100 m, correctly placed 3D road-user drawings increased from {far["before"]} to {far["after"]} '
+        f'on the same drive, across {far["opportunities"]:,} front-sector actor-frames including occlusions. '
+        f'Across all ranges, unmatched drawings increased from {drawing["unmatched_before"]} to {drawing["unmatched_after"]}.',
+        ("See the 76.7 m vehicle", "./?run=city-life&frame=281&camera=front&track=20"),
+        ("Camera-only pedestrian at 64.4 m", "./inspect.html?run=city-life&frame=1358&camera=front"),
+        ("Raw range study", TAG + "results/distant-awareness/README.md"))
     add("Roadside pace",
         f'In a matched test, median speed alongside the six drums rose from {slower["median_speed_kmh"]:.1f} to '
         f'{faster["alongside"]["median_speed_kmh"]:.1f} km/h. Minimum body clearance was '
@@ -73,6 +85,13 @@ def scorecard():
         f'{cones["matched_within_20m"]}/{cones["within_20m_reference_actor_frames"]} nearby drum-frames.',
         ("Inspect the original exposure", f"./inspect.html?run=urban-pace&frame={old_frame}&camera=front"),
         ("Held-out checks", TAG + "results/cone-perception/README.md"))
+    live_cones = read("results/cone-perception/city-life.json")["journey"]
+    add("Cones in traffic",
+        f'The populated drive produced {live_cones["matched"]} fresh RGB-and-lidar matches to the six real props. '
+        f'{len(live_cones["unmatched"])} readings missed the position gate. Within 20 m, '
+        f'{live_cones["matched_within_20m"]} of {live_cones["within_20m_reference_actor_frames"]} drum-frames had fresh measurements.',
+        ("Watch the taper", f'./?run=city-life&at={timeline["cones_at_s"]}&camera=front'),
+        ("Position errors and missed observations", TAG + "results/cone-perception/city-life.json"))
     prior = read("results/distant-awareness/high-before.json")
     updated = read("results/distant-awareness/high-after.json")
     lead_old, = (e for e in prior["encounters"] if e["role"] == "lead")

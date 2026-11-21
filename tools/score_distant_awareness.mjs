@@ -7,7 +7,7 @@ import {bearingObservations,frontBearingCue} from '../web/lamp-observations.mjs'
 
 const {positionals:[directory,output],values}=parseArgs({allowPositionals:true,options:{
   paired:{type:'string'},reference:{type:'string'},review:{type:'string'},examples:{type:'string'},
-  projection:{type:'string'},'memory-revision':{type:'string'}}});
+  projection:{type:'string'},'memory-revision':{type:'string'},'memory-file':{type:'string'}}});
 if(!directory||!output)throw Error('Pass capture folder and report file');
 const offsets=JSON.parse(fs.readFileSync(new URL('../results/perception/town03-body-offsets.json',import.meta.url)));
 const reference=values.reference??'results/perception/town03-static-vehicles.json';
@@ -85,7 +85,8 @@ function scoreBoxes(stage,boxes,actors,frame){
   for(const box of observations)if(!used.has(box))unmatched(stage,box,frame);
 }
 let acquisitions=0;
-const result=await audit(directory,{staticFile:reference,memoryRevision:values['memory-revision'],barrierReviewFile:values.review,onFrame({frame,actors,display}){
+const result=await audit(directory,{staticFile:reference,memoryRevision:values['memory-revision'],memoryFile:values['memory-file'],
+  barrierReviewFile:values.review,onFrame({frame,actors,display}){
   const registered=projections?.get(frame.frame);
   if(projections&&!registered)throw Error('Missing frame-synchronized reference projection '+frame.frame);
   const eligible=actors.filter(a=>roadUser(a.label)&&ahead(a))
@@ -98,7 +99,7 @@ const result=await audit(directory,{staticFile:reference,memoryRevision:values['
   if(frame.camera_inference_age_s?.front===0){
     acquisitions++;
     scoreBoxes('native_optical',frame.camera_detections?.front??[],eligible,frame);
-    if(!values['memory-revision']){
+    if(!values['memory-revision']&&!values['memory-file']){
       const cue=frontBearingCue(bearingObservations(frame,null,['front']));
       scoreBoxes('native_front_callout',cue?[cue]:[],eligible,frame);
     }

@@ -1,0 +1,4139 @@
+{
+  "schema": 1,
+  "frames": 3320,
+  "front_acquisitions": 1660,
+  "candidate_journal_sha256": "44c96460a62213b93ce35400ec1f3e1c207862d14cbd54cf4962e8e64a97f47f",
+  "baseline_journal_sha256": "a82b1aad425a8f299aca427c2db5e62d64863923a4dd5548bb319ff6eee9b6f5",
+  "projection": {
+    "sha256": "7c863d32209cdf151232806076021ffafb9a015f418883087fab06c428261a6d",
+    "telemetry_sha256": "477458dfe62392e3111bb3a96f2db5a431d395617ca3ad69bc6663fbd76dfbb7",
+    "body_sources": {
+      "native_actor_box": 11996,
+      "parked_map_box": 2104
+    }
+  },
+  "stages": {
+    "optical": {
+      "bands": {
+        "0–30 m": {
+          "opportunities": 1002,
+          "before": 794,
+          "after": 893
+        },
+        "50–100 m": {
+          "opportunities": 4537,
+          "before": 167,
+          "after": 312
+        },
+        "30–50 m": {
+          "opportunities": 1235,
+          "before": 455,
+          "after": 561
+        }
+      },
+      "unmatched_before": 322,
+      "unmatched_after": 341,
+      "gained_actor_frames": 350,
+      "lost_actor_frames": 0
+    },
+    "display": {
+      "bands": {
+        "0–30 m": {
+          "opportunities": 2002,
+          "before": 1394,
+          "after": 1516
+        },
+        "50–100 m": {
+          "opportunities": 9070,
+          "before": 59,
+          "after": 181
+        },
+        "30–50 m": {
+          "opportunities": 2472,
+          "before": 558,
+          "after": 661
+        }
+      },
+      "unmatched_before": 435,
+      "unmatched_after": 454,
+      "gained_actor_frames": 358,
+      "lost_actor_frames": 11
+    }
+  },
+  "encounters": [
+    {
+      "id": 112,
+      "label": "person",
+      "role": "pedestrian",
+      "optical": {
+        "first_before": {
+          "frame": 106,
+          "time_s": 4.2,
+          "range_m": 20.15,
+          "iou": 0.605,
+          "box": [
+            0.5465,
+            0.515,
+            0.561,
+            0.57
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 72,
+          "time_s": 0.8,
+          "range_m": 28.93,
+          "iou": 0.66,
+          "box": [
+            0.5977,
+            0.5081,
+            0.6093,
+            0.5486
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 14,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 122,
+          "time_s": 5.8,
+          "range_m": 14.33,
+          "error_m": 0.137,
+          "source": 13
+        },
+        "first_after": {
+          "frame": 122,
+          "time_s": 5.8,
+          "range_m": 14.33,
+          "error_m": 0.137,
+          "source": 10
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 72,
+        "time_s": 0.8,
+        "range_m": 28.93,
+        "iou": 0.66,
+        "box": [
+          0.5977,
+          0.5081,
+          0.6093,
+          0.5486
+        ]
+      }
+    },
+    {
+      "id": 129,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 18.18,
+          "iou": 0.864,
+          "box": [
+            0.3142,
+            0.4923,
+            0.406,
+            0.5963
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 18.18,
+          "iou": 0.864,
+          "box": [
+            0.3142,
+            0.4923,
+            0.406,
+            0.5963
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "gains": 1,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 65,
+          "time_s": 0.1,
+          "range_m": 18.17,
+          "error_m": 0.457,
+          "source": 1
+        },
+        "first_after": {
+          "frame": 65,
+          "time_s": 0.1,
+          "range_m": 18.17,
+          "error_m": 0.457,
+          "source": 1
+        },
+        "gains": 2,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 3376,
+        "time_s": 331.2,
+        "range_m": 55.6,
+        "iou": 0.901,
+        "box": [
+          0.4567,
+          0.4942,
+          0.478,
+          0.5225
+        ]
+      }
+    },
+    {
+      "id": 151,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.62,
+          "iou": 0.632,
+          "box": [
+            0.8116,
+            0.4659,
+            0.8379,
+            0.6335
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.62,
+          "iou": 0.632,
+          "box": [
+            0.8116,
+            0.4659,
+            0.8379,
+            0.6335
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.62,
+          "error_m": 0.029,
+          "source": 3
+        },
+        "first_after": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.62,
+          "error_m": 0.029,
+          "source": 3
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": 152,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.36,
+          "iou": 0.634,
+          "box": [
+            0.8969,
+            0.458,
+            0.9372,
+            0.6521
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.36,
+          "iou": 0.634,
+          "box": [
+            0.8969,
+            0.458,
+            0.9372,
+            0.6521
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.36,
+          "error_m": 0.205,
+          "source": 2
+        },
+        "first_after": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 12.36,
+          "error_m": 0.205,
+          "source": 2
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": 154,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 200,
+          "time_s": 13.6,
+          "range_m": 43.43,
+          "iou": 0.858,
+          "box": [
+            0.1173,
+            0.4848,
+            0.1334,
+            0.5351
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 200,
+          "time_s": 13.6,
+          "range_m": 43.43,
+          "iou": 0.858,
+          "box": [
+            0.1173,
+            0.4848,
+            0.1334,
+            0.5351
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 200,
+        "time_s": 13.6,
+        "range_m": 43.43,
+        "iou": 0.858,
+        "box": [
+          0.1173,
+          0.4848,
+          0.1334,
+          0.5351
+        ]
+      }
+    },
+    {
+      "id": "level-12166413250794706622",
+      "label": "car",
+      "role": "parked-map-vehicle",
+      "optical": {
+        "first_before": {
+          "frame": 66,
+          "time_s": 0.2,
+          "range_m": 44.1,
+          "iou": 0.457,
+          "box": [
+            0.706,
+            0.4939,
+            0.7403,
+            0.535
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 64,
+          "time_s": 0,
+          "range_m": 44.14,
+          "iou": 0.453,
+          "box": [
+            0.7047,
+            0.4942,
+            0.7401,
+            0.5323
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": true
+        },
+        "gains": 1,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 79,
+          "time_s": 1.5,
+          "range_m": 41.98,
+          "error_m": 1.156,
+          "source": 7
+        },
+        "first_after": {
+          "frame": 73,
+          "time_s": 0.9,
+          "range_m": 43.36,
+          "error_m": 1.332,
+          "source": 6
+        },
+        "gains": 6,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 66,
+        "time_s": 0.2,
+        "range_m": 44.1,
+        "iou": 0.457,
+        "box": [
+          0.706,
+          0.4939,
+          0.7403,
+          0.535
+        ]
+      }
+    },
+    {
+      "id": "level-4955879825875038965",
+      "label": "car",
+      "role": "parked-map-vehicle",
+      "optical": {
+        "first_before": {
+          "frame": 276,
+          "time_s": 21.2,
+          "range_m": 34.05,
+          "iou": 0.454,
+          "box": [
+            0.0376,
+            0.4902,
+            0.0869,
+            0.5435
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 276,
+          "time_s": 21.2,
+          "range_m": 34.05,
+          "iou": 0.454,
+          "box": [
+            0.0376,
+            0.4902,
+            0.0869,
+            0.5435
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 278,
+          "time_s": 21.4,
+          "range_m": 33.48,
+          "error_m": 2.038,
+          "source": 17
+        },
+        "first_after": {
+          "frame": 278,
+          "time_s": 21.4,
+          "range_m": 33.48,
+          "error_m": 2.038,
+          "source": 21
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": "level-6183424760014961521",
+      "label": "car",
+      "role": "parked-map-vehicle",
+      "optical": {
+        "first_before": {
+          "frame": 90,
+          "time_s": 2.6,
+          "range_m": 34.71,
+          "iou": 0.295,
+          "box": [
+            0.8601,
+            0.4914,
+            0.8985,
+            0.5463
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 90,
+          "time_s": 2.6,
+          "range_m": 34.71,
+          "iou": 0.295,
+          "box": [
+            0.8601,
+            0.4914,
+            0.8985,
+            0.5463
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 96,
+          "time_s": 3.2,
+          "range_m": 33.78,
+          "error_m": 2.99,
+          "source": 9
+        },
+        "first_after": {
+          "frame": 94,
+          "time_s": 3,
+          "range_m": 34.07,
+          "error_m": 2.983,
+          "source": 11
+        },
+        "gains": 3,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 90,
+        "time_s": 2.6,
+        "range_m": 34.71,
+        "iou": 0.295,
+        "box": [
+          0.8601,
+          0.4914,
+          0.8985,
+          0.5463
+        ]
+      }
+    },
+    {
+      "id": 156,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 280,
+          "time_s": 21.6,
+          "range_m": 34.2,
+          "iou": 0.7,
+          "box": [
+            0.3071,
+            0.4893,
+            0.3235,
+            0.5387
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 264,
+          "time_s": 20,
+          "range_m": 37.89,
+          "iou": 0.711,
+          "box": [
+            0.3213,
+            0.4901,
+            0.335,
+            0.533
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 16,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 335,
+          "time_s": 27.1,
+          "range_m": 21.18,
+          "error_m": 1.657,
+          "source": 21
+        },
+        "first_after": {
+          "frame": 270,
+          "time_s": 20.6,
+          "range_m": 36.51,
+          "error_m": 0.026,
+          "source": 19
+        },
+        "gains": 55,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 264,
+        "time_s": 20,
+        "range_m": 37.89,
+        "iou": 0.711,
+        "box": [
+          0.3213,
+          0.4901,
+          0.335,
+          0.533
+        ]
+      }
+    },
+    {
+      "id": 155,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 314,
+          "time_s": 25,
+          "range_m": 25.73,
+          "iou": 0.723,
+          "box": [
+            0.2693,
+            0.4869,
+            0.287,
+            0.554
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 280,
+          "time_s": 21.6,
+          "range_m": 33.52,
+          "iou": 0.632,
+          "box": [
+            0.3208,
+            0.4854,
+            0.3312,
+            0.5392
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 15,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 317,
+          "time_s": 25.3,
+          "range_m": 25.05,
+          "error_m": 0.291,
+          "source": 19
+        },
+        "first_after": {
+          "frame": 282,
+          "time_s": 21.8,
+          "range_m": 33.06,
+          "error_m": 1.428,
+          "source": 19
+        },
+        "gains": 3,
+        "losses": 11
+      },
+      "first_camera_only_callout": {
+        "frame": 280,
+        "time_s": 21.6,
+        "range_m": 33.52,
+        "iou": 0.632,
+        "box": [
+          0.3208,
+          0.4854,
+          0.3312,
+          0.5392
+        ]
+      }
+    },
+    {
+      "id": 167,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1444,
+          "time_s": 138,
+          "range_m": 32.57,
+          "iou": 0.478,
+          "box": [
+            0.5826,
+            0.4611,
+            0.5978,
+            0.5438
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1358,
+          "time_s": 129.4,
+          "range_m": 64.39,
+          "iou": 0.336,
+          "box": [
+            0.541,
+            0.4728,
+            0.5505,
+            0.51
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 29,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1474,
+          "time_s": 141,
+          "range_m": 13.68,
+          "error_m": 1.142,
+          "source": 182
+        },
+        "first_after": {
+          "frame": 1474,
+          "time_s": 141,
+          "range_m": 13.68,
+          "error_m": 1.142,
+          "source": 191
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1358,
+        "time_s": 129.4,
+        "range_m": 64.39,
+        "iou": 0.336,
+        "box": [
+          0.541,
+          0.4728,
+          0.5505,
+          0.51
+        ]
+      }
+    },
+    {
+      "id": 168,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1440,
+          "time_s": 137.6,
+          "range_m": 33.97,
+          "iou": 0.608,
+          "box": [
+            0.59,
+            0.4667,
+            0.6053,
+            0.5373
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1430,
+          "time_s": 136.6,
+          "range_m": 40.39,
+          "iou": 0.796,
+          "box": [
+            0.5785,
+            0.4821,
+            0.5885,
+            0.5276
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 3,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1454,
+          "time_s": 139,
+          "range_m": 25.07,
+          "error_m": 0.612,
+          "source": 179
+        },
+        "first_after": {
+          "frame": 1454,
+          "time_s": 139,
+          "range_m": 25.07,
+          "error_m": 0.612,
+          "source": 189
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1440,
+        "time_s": 137.6,
+        "range_m": 33.97,
+        "iou": 0.608,
+        "box": [
+          0.59,
+          0.4667,
+          0.6053,
+          0.5373
+        ]
+      }
+    },
+    {
+      "id": 132,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 252,
+          "time_s": 18.8,
+          "range_m": 74.29,
+          "iou": 0.589,
+          "box": [
+            0.4541,
+            0.4888,
+            0.4754,
+            0.5172
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 214,
+          "time_s": 15,
+          "range_m": 88.32,
+          "iou": 0.882,
+          "box": [
+            0.4803,
+            0.4932,
+            0.4939,
+            0.5128
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 14,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 303,
+          "time_s": 23.9,
+          "range_m": 55.79,
+          "error_m": 0.333,
+          "source": 18
+        },
+        "first_after": {
+          "frame": 303,
+          "time_s": 23.9,
+          "range_m": 55.79,
+          "error_m": 0.333,
+          "source": 22
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 230,
+        "time_s": 16.6,
+        "range_m": 82.37,
+        "iou": 0.88,
+        "box": [
+          0.4765,
+          0.4932,
+          0.4908,
+          0.514
+        ]
+      }
+    },
+    {
+      "id": 133,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 342,
+          "time_s": 27.8,
+          "range_m": 44.26,
+          "iou": 0.52,
+          "box": [
+            0.4525,
+            0.4942,
+            0.4723,
+            0.5279
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 340,
+          "time_s": 27.6,
+          "range_m": 46.27,
+          "iou": 0.604,
+          "box": [
+            0.4557,
+            0.4965,
+            0.4724,
+            0.5304
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 1,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 355,
+          "time_s": 29.1,
+          "range_m": 29.58,
+          "error_m": 1.122,
+          "source": 27
+        },
+        "first_after": {
+          "frame": 354,
+          "time_s": 29,
+          "range_m": 30.75,
+          "error_m": 0.672,
+          "source": 30
+        },
+        "gains": 1,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 342,
+        "time_s": 27.8,
+        "range_m": 44.26,
+        "iou": 0.52,
+        "box": [
+          0.4525,
+          0.4942,
+          0.4723,
+          0.5279
+        ]
+      }
+    },
+    {
+      "id": 116,
+      "label": "car",
+      "role": "occluder",
+      "optical": {
+        "first_before": {
+          "frame": 276,
+          "time_s": 21.2,
+          "range_m": 78.48,
+          "iou": 0.645,
+          "box": [
+            0.5025,
+            0.4835,
+            0.5227,
+            0.5129
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 276,
+          "time_s": 21.2,
+          "range_m": 78.48,
+          "iou": 0.645,
+          "box": [
+            0.5025,
+            0.4835,
+            0.5227,
+            0.5129
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 331,
+          "time_s": 26.7,
+          "range_m": 58.42,
+          "error_m": 0.72,
+          "source": 22
+        },
+        "first_after": {
+          "frame": 281,
+          "time_s": 21.7,
+          "range_m": 76.66,
+          "error_m": 0.702,
+          "source": 20
+        },
+        "gains": 22,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 286,
+        "time_s": 22.2,
+        "range_m": 74.85,
+        "iou": 0.773,
+        "box": [
+          0.5088,
+          0.4856,
+          0.5255,
+          0.514
+        ]
+      }
+    },
+    {
+      "id": 117,
+      "label": "person",
+      "role": "occluded",
+      "optical": {
+        "first_before": {
+          "frame": 424,
+          "time_s": 36,
+          "range_m": 15.17,
+          "iou": 0.675,
+          "box": [
+            0.5882,
+            0.488,
+            0.6144,
+            0.5982
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 424,
+          "time_s": 36,
+          "range_m": 15.17,
+          "iou": 0.675,
+          "box": [
+            0.5882,
+            0.488,
+            0.6144,
+            0.5982
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 428,
+          "time_s": 36.4,
+          "range_m": 12.79,
+          "error_m": 0.455,
+          "source": 39
+        },
+        "first_after": {
+          "frame": 428,
+          "time_s": 36.4,
+          "range_m": 12.79,
+          "error_m": 0.455,
+          "source": 42
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": 114,
+      "label": "car",
+      "role": "lead",
+      "optical": {
+        "first_before": {
+          "frame": 1216,
+          "time_s": 115.2,
+          "range_m": 56.45,
+          "iou": 0.904,
+          "box": [
+            0.4908,
+            0.4966,
+            0.509,
+            0.5207
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1186,
+          "time_s": 112.2,
+          "range_m": 85.31,
+          "iou": 0.823,
+          "box": [
+            0.5977,
+            0.5192,
+            0.6097,
+            0.5356
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 18,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1237,
+          "time_s": 117.3,
+          "range_m": 45.42,
+          "error_m": 0.122,
+          "source": 155
+        },
+        "first_after": {
+          "frame": 1237,
+          "time_s": 117.3,
+          "range_m": 45.42,
+          "error_m": 0.122,
+          "source": 162
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1186,
+        "time_s": 112.2,
+        "range_m": 85.31,
+        "iou": 0.823,
+        "box": [
+          0.5977,
+          0.5192,
+          0.6097,
+          0.5356
+        ]
+      }
+    },
+    {
+      "id": 157,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 544,
+          "time_s": 48,
+          "range_m": 17.13,
+          "iou": 0.649,
+          "box": [
+            0.7249,
+            0.4779,
+            0.7479,
+            0.5917
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 518,
+          "time_s": 45.4,
+          "range_m": 31.88,
+          "iou": 0.705,
+          "box": [
+            0.611,
+            0.4882,
+            0.6212,
+            0.5443
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": true
+        },
+        "gains": 5,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 546,
+          "time_s": 48.2,
+          "range_m": 15.84,
+          "error_m": 0.077,
+          "source": 58
+        },
+        "first_after": {
+          "frame": 518,
+          "time_s": 45.4,
+          "range_m": 31.88,
+          "error_m": 0.094,
+          "source": 59
+        },
+        "gains": 28,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 524,
+        "time_s": 46,
+        "range_m": 29.22,
+        "iou": 0.742,
+        "box": [
+          0.621,
+          0.4838,
+          0.6332,
+          0.5506
+        ]
+      }
+    },
+    {
+      "id": "level-15868581652540848558",
+      "label": "car",
+      "role": "parked-map-vehicle",
+      "optical": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": 158,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 566,
+          "time_s": 50.2,
+          "range_m": 27.71,
+          "iou": 0.604,
+          "box": [
+            0.1239,
+            0.4893,
+            0.1428,
+            0.5705
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 542,
+          "time_s": 47.8,
+          "range_m": 42.7,
+          "iou": 0.622,
+          "box": [
+            0.3081,
+            0.4909,
+            0.3176,
+            0.5294
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 4,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 542,
+        "time_s": 47.8,
+        "range_m": 42.7,
+        "iou": 0.622,
+        "box": [
+          0.3081,
+          0.4909,
+          0.3176,
+          0.5294
+        ]
+      }
+    },
+    {
+      "id": "level-6664586185198452187",
+      "label": "car",
+      "role": "parked-map-vehicle",
+      "optical": {
+        "first_before": {
+          "frame": 426,
+          "time_s": 36.2,
+          "range_m": 76.88,
+          "iou": 0.361,
+          "box": [
+            0.6053,
+            0.4816,
+            0.6373,
+            0.5261
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 426,
+          "time_s": 36.2,
+          "range_m": 76.88,
+          "iou": 0.361,
+          "box": [
+            0.6053,
+            0.4816,
+            0.6373,
+            0.5261
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 11,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": {
+          "frame": 527,
+          "time_s": 46.3,
+          "range_m": 57.44,
+          "error_m": 1.294,
+          "source": 60
+        },
+        "gains": 46,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 426,
+        "time_s": 36.2,
+        "range_m": 76.88,
+        "iou": 0.361,
+        "box": [
+          0.6053,
+          0.4816,
+          0.6373,
+          0.5261
+        ]
+      }
+    },
+    {
+      "id": 134,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 550,
+          "time_s": 48.6,
+          "range_m": 48.42,
+          "iou": 0.778,
+          "box": [
+            0.3028,
+            0.4999,
+            0.3454,
+            0.5339
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 550,
+          "time_s": 48.6,
+          "range_m": 48.42,
+          "iou": 0.778,
+          "box": [
+            0.3028,
+            0.4999,
+            0.3454,
+            0.5339
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 553,
+          "time_s": 48.9,
+          "range_m": 45.15,
+          "error_m": 2.082,
+          "source": 63
+        },
+        "first_after": {
+          "frame": 553,
+          "time_s": 48.9,
+          "range_m": 45.15,
+          "error_m": 2.082,
+          "source": 72
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": 135,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 570,
+          "time_s": 50.6,
+          "range_m": 44.7,
+          "iou": 0.859,
+          "box": [
+            0.0868,
+            0.496,
+            0.1582,
+            0.5491
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 570,
+          "time_s": 50.6,
+          "range_m": 44.7,
+          "iou": 0.859,
+          "box": [
+            0.0868,
+            0.496,
+            0.1582,
+            0.5491
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 580,
+          "time_s": 51.6,
+          "range_m": 33.98,
+          "error_m": 0.683,
+          "source": 77
+        },
+        "first_after": {
+          "frame": 580,
+          "time_s": 51.6,
+          "range_m": 33.98,
+          "error_m": 0.683,
+          "source": 86
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 574,
+        "time_s": 51,
+        "range_m": 40.5,
+        "iou": 0.877,
+        "box": [
+          0.077,
+          0.5031,
+          0.1506,
+          0.5555
+        ]
+      }
+    },
+    {
+      "id": 165,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1188,
+          "time_s": 112.4,
+          "range_m": 24.98,
+          "iou": 0.605,
+          "box": [
+            0.6967,
+            0.4945,
+            0.7119,
+            0.5756
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 1166,
+          "time_s": 110.2,
+          "range_m": 47.52,
+          "iou": 0.661,
+          "box": [
+            0.6994,
+            0.5095,
+            0.7076,
+            0.5516
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 7,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1192,
+          "time_s": 112.8,
+          "range_m": 20.57,
+          "error_m": 0.135,
+          "source": 149
+        },
+        "first_after": {
+          "frame": 1184,
+          "time_s": 112,
+          "range_m": 29.36,
+          "error_m": 0.194,
+          "source": 158
+        },
+        "gains": 8,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1166,
+        "time_s": 110.2,
+        "range_m": 47.52,
+        "iou": 0.661,
+        "box": [
+          0.6994,
+          0.5095,
+          0.7076,
+          0.5516
+        ]
+      }
+    },
+    {
+      "id": "level-4507162520621995511",
+      "label": "car",
+      "role": "parked-map-vehicle",
+      "optical": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": "level-11906624848723412420",
+      "label": "car",
+      "role": "parked-map-vehicle",
+      "optical": {
+        "first_before": {
+          "frame": 578,
+          "time_s": 51.4,
+          "range_m": 74.98,
+          "iou": 0.53,
+          "box": [
+            0.068,
+            0.5074,
+            0.1017,
+            0.5388
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 578,
+          "time_s": 51.4,
+          "range_m": 74.98,
+          "iou": 0.53,
+          "box": [
+            0.068,
+            0.5074,
+            0.1017,
+            0.5388
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 2,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": {
+          "frame": 629,
+          "time_s": 56.5,
+          "range_m": 35.03,
+          "error_m": 1.102,
+          "source": 95
+        },
+        "gains": 16,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 578,
+        "time_s": 51.4,
+        "range_m": 74.98,
+        "iou": 0.53,
+        "box": [
+          0.068,
+          0.5074,
+          0.1017,
+          0.5388
+        ]
+      }
+    },
+    {
+      "id": 162,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1070,
+          "time_s": 100.6,
+          "range_m": 26.14,
+          "iou": 0.801,
+          "box": [
+            0.6349,
+            0.4825,
+            0.6494,
+            0.5464
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1032,
+          "time_s": 96.8,
+          "range_m": 43.49,
+          "iou": 0.776,
+          "box": [
+            0.5928,
+            0.4866,
+            0.6007,
+            0.5246
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 20,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1079,
+          "time_s": 101.5,
+          "range_m": 22.63,
+          "error_m": 0.497,
+          "source": 144
+        },
+        "first_after": {
+          "frame": 1076,
+          "time_s": 101.2,
+          "range_m": 23.88,
+          "error_m": 0.511,
+          "source": 154
+        },
+        "gains": 3,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1032,
+        "time_s": 96.8,
+        "range_m": 43.49,
+        "iou": 0.776,
+        "box": [
+          0.5928,
+          0.4866,
+          0.6007,
+          0.5246
+        ]
+      }
+    },
+    {
+      "id": 138,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 920,
+          "time_s": 85.6,
+          "range_m": 89.04,
+          "iou": 0.644,
+          "box": [
+            0.9122,
+            0.4817,
+            0.9409,
+            0.5088
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 920,
+          "time_s": 85.6,
+          "range_m": 89.04,
+          "iou": 0.644,
+          "box": [
+            0.9122,
+            0.4817,
+            0.9409,
+            0.5088
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 19,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1007,
+          "time_s": 94.3,
+          "range_m": 55.47,
+          "error_m": 0.779,
+          "source": 132
+        },
+        "first_after": {
+          "frame": 1007,
+          "time_s": 94.3,
+          "range_m": 55.47,
+          "error_m": 0.779,
+          "source": 142
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 920,
+        "time_s": 85.6,
+        "range_m": 89.04,
+        "iou": 0.644,
+        "box": [
+          0.9122,
+          0.4817,
+          0.9409,
+          0.5088
+        ]
+      }
+    },
+    {
+      "id": 136,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 968,
+          "time_s": 90.4,
+          "range_m": 67.08,
+          "iou": 0.739,
+          "box": [
+            0.4131,
+            0.4861,
+            0.4387,
+            0.5152
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 932,
+          "time_s": 86.8,
+          "range_m": 98.29,
+          "iou": 0.641,
+          "box": [
+            0.592,
+            0.4825,
+            0.6166,
+            0.5011
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 7,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 993,
+          "time_s": 92.9,
+          "range_m": 41.98,
+          "error_m": 2.153,
+          "source": 128
+        },
+        "first_after": {
+          "frame": 993,
+          "time_s": 92.9,
+          "range_m": 41.98,
+          "error_m": 2.153,
+          "source": 138
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 974,
+        "time_s": 91,
+        "range_m": 61.22,
+        "iou": 0.775,
+        "box": [
+          0.4025,
+          0.4916,
+          0.4267,
+          0.5193
+        ]
+      }
+    },
+    {
+      "id": 137,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 980,
+          "time_s": 91.6,
+          "range_m": 75.27,
+          "iou": 0.592,
+          "box": [
+            0.4296,
+            0.4861,
+            0.4515,
+            0.5101
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 968,
+          "time_s": 90.4,
+          "range_m": 86.52,
+          "iou": 0.786,
+          "box": [
+            0.4535,
+            0.4877,
+            0.4782,
+            0.5082
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 4,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1007,
+          "time_s": 94.3,
+          "range_m": 50.21,
+          "error_m": 1.668,
+          "source": 134
+        },
+        "first_after": {
+          "frame": 1007,
+          "time_s": 94.3,
+          "range_m": 50.21,
+          "error_m": 1.668,
+          "source": 144
+        },
+        "gains": 4,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 998,
+        "time_s": 93.4,
+        "range_m": 58.01,
+        "iou": 0.842,
+        "box": [
+          0.3744,
+          0.4936,
+          0.4081,
+          0.5227
+        ]
+      }
+    },
+    {
+      "id": 111,
+      "label": "car",
+      "role": "signal_queue",
+      "optical": {
+        "first_before": {
+          "frame": 746,
+          "time_s": 68.2,
+          "range_m": 22.76,
+          "iou": 0.829,
+          "box": [
+            0.4729,
+            0.5019,
+            0.5203,
+            0.5716
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 746,
+          "time_s": 68.2,
+          "range_m": 22.76,
+          "iou": 0.829,
+          "box": [
+            0.4729,
+            0.5019,
+            0.5203,
+            0.5716
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "gains": 10,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 748,
+          "time_s": 68.4,
+          "range_m": 22.02,
+          "error_m": 0.209,
+          "source": 104
+        },
+        "first_after": {
+          "frame": 748,
+          "time_s": 68.4,
+          "range_m": 22.02,
+          "error_m": 0.209,
+          "source": 115
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": 159,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 706,
+          "time_s": 64.2,
+          "range_m": 31.63,
+          "iou": 0.697,
+          "box": [
+            0.9485,
+            0.4882,
+            0.9652,
+            0.5617
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 706,
+          "time_s": 64.2,
+          "range_m": 31.63,
+          "iou": 0.697,
+          "box": [
+            0.9485,
+            0.4882,
+            0.9652,
+            0.5617
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 3,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 719,
+          "time_s": 65.5,
+          "range_m": 25.73,
+          "error_m": 2.043,
+          "source": 94
+        },
+        "first_after": {
+          "frame": 719,
+          "time_s": 65.5,
+          "range_m": 25.73,
+          "error_m": 2.043,
+          "source": 105
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 712,
+        "time_s": 64.8,
+        "range_m": 29.02,
+        "iou": 0.82,
+        "box": [
+          0.7977,
+          0.4794,
+          0.8139,
+          0.5513
+        ]
+      }
+    },
+    {
+      "id": 160,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 702,
+          "time_s": 63.8,
+          "range_m": 31.59,
+          "iou": 0.745,
+          "box": [
+            0.9851,
+            0.4837,
+            0.9994,
+            0.5581
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 702,
+          "time_s": 63.8,
+          "range_m": 31.59,
+          "iou": 0.745,
+          "box": [
+            0.9851,
+            0.4837,
+            0.9994,
+            0.5581
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 1,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 717,
+          "time_s": 65.3,
+          "range_m": 24.92,
+          "error_m": 2.042,
+          "source": 93
+        },
+        "first_after": {
+          "frame": 717,
+          "time_s": 65.3,
+          "range_m": 24.92,
+          "error_m": 2.042,
+          "source": 104
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 702,
+        "time_s": 63.8,
+        "range_m": 31.59,
+        "iou": 0.745,
+        "box": [
+          0.9851,
+          0.4837,
+          0.9994,
+          0.5581
+        ]
+      }
+    },
+    {
+      "id": 161,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 942,
+          "time_s": 87.8,
+          "range_m": 37.26,
+          "iou": 0.647,
+          "box": [
+            0.1818,
+            0.4558,
+            0.1992,
+            0.5301
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 932,
+          "time_s": 86.8,
+          "range_m": 41.23,
+          "iou": 0.637,
+          "box": [
+            0.3447,
+            0.4776,
+            0.3536,
+            0.5175
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 2,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 932,
+        "time_s": 86.8,
+        "range_m": 41.23,
+        "iou": 0.637,
+        "box": [
+          0.3447,
+          0.4776,
+          0.3536,
+          0.5175
+        ]
+      }
+    },
+    {
+      "id": 163,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1146,
+          "time_s": 108.2,
+          "range_m": 25.12,
+          "iou": 0.672,
+          "box": [
+            0.0146,
+            0.5042,
+            0.0298,
+            0.5707
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1146,
+          "time_s": 108.2,
+          "range_m": 25.12,
+          "iou": 0.672,
+          "box": [
+            0.0146,
+            0.5042,
+            0.0298,
+            0.5707
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1146,
+        "time_s": 108.2,
+        "range_m": 25.12,
+        "iou": 0.672,
+        "box": [
+          0.0146,
+          0.5042,
+          0.0298,
+          0.5707
+        ]
+      }
+    },
+    {
+      "id": 164,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1142,
+          "time_s": 107.8,
+          "range_m": 29.08,
+          "iou": 0.827,
+          "box": [
+            0.154,
+            0.4842,
+            0.1707,
+            0.5515
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1142,
+          "time_s": 107.8,
+          "range_m": 29.08,
+          "iou": 0.827,
+          "box": [
+            0.154,
+            0.4842,
+            0.1707,
+            0.5515
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1142,
+        "time_s": 107.8,
+        "range_m": 29.08,
+        "iou": 0.827,
+        "box": [
+          0.154,
+          0.4842,
+          0.1707,
+          0.5515
+        ]
+      }
+    },
+    {
+      "id": 166,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1340,
+          "time_s": 127.6,
+          "range_m": 37.55,
+          "iou": 0.818,
+          "box": [
+            0.1672,
+            0.4781,
+            0.1809,
+            0.5408
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1340,
+          "time_s": 127.6,
+          "range_m": 37.55,
+          "iou": 0.818,
+          "box": [
+            0.1672,
+            0.4781,
+            0.1809,
+            0.5408
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1340,
+        "time_s": 127.6,
+        "range_m": 37.55,
+        "iou": 0.818,
+        "box": [
+          0.1672,
+          0.4781,
+          0.1809,
+          0.5408
+        ]
+      }
+    },
+    {
+      "id": 140,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1218,
+          "time_s": 115.4,
+          "range_m": 59.31,
+          "iou": 0.859,
+          "box": [
+            0.3621,
+            0.4896,
+            0.3895,
+            0.5217
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1212,
+          "time_s": 114.8,
+          "range_m": 66.84,
+          "iou": 0.781,
+          "box": [
+            0.3783,
+            0.4936,
+            0.4025,
+            0.5179
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 4,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1227,
+          "time_s": 116.3,
+          "range_m": 49.47,
+          "error_m": 0.816,
+          "source": 154
+        },
+        "first_after": {
+          "frame": 1226,
+          "time_s": 116.2,
+          "range_m": 50.48,
+          "error_m": 0.312,
+          "source": 165
+        },
+        "gains": 1,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1212,
+        "time_s": 114.8,
+        "range_m": 66.84,
+        "iou": 0.781,
+        "box": [
+          0.3783,
+          0.4936,
+          0.4025,
+          0.5179
+        ]
+      }
+    },
+    {
+      "id": 139,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1226,
+          "time_s": 116.2,
+          "range_m": 68.46,
+          "iou": 0.907,
+          "box": [
+            0.4098,
+            0.4939,
+            0.4307,
+            0.5163
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1222,
+          "time_s": 115.8,
+          "range_m": 72.83,
+          "iou": 0.91,
+          "box": [
+            0.4166,
+            0.4943,
+            0.4343,
+            0.5159
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 2,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1273,
+          "time_s": 120.9,
+          "range_m": 32.71,
+          "error_m": 1.493,
+          "source": 161
+        },
+        "first_after": {
+          "frame": 1244,
+          "time_s": 118,
+          "range_m": 52.74,
+          "error_m": 0.436,
+          "source": 167
+        },
+        "gains": 6,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1226,
+        "time_s": 116.2,
+        "range_m": 68.46,
+        "iou": 0.907,
+        "box": [
+          0.4098,
+          0.4939,
+          0.4307,
+          0.5163
+        ]
+      }
+    },
+    {
+      "id": 169,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1750,
+          "time_s": 168.6,
+          "range_m": 32.22,
+          "iou": 0.585,
+          "box": [
+            0.9665,
+            0.4825,
+            0.9798,
+            0.5625
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1750,
+          "time_s": 168.6,
+          "range_m": 32.22,
+          "iou": 0.585,
+          "box": [
+            0.9665,
+            0.4825,
+            0.9798,
+            0.5625
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1772,
+          "time_s": 170.8,
+          "range_m": 24.83,
+          "error_m": 0.143,
+          "source": 195
+        },
+        "first_after": {
+          "frame": 1772,
+          "time_s": 170.8,
+          "range_m": 24.83,
+          "error_m": 0.143,
+          "source": 204
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1750,
+        "time_s": 168.6,
+        "range_m": 32.22,
+        "iou": 0.585,
+        "box": [
+          0.9665,
+          0.4825,
+          0.9798,
+          0.5625
+        ]
+      }
+    },
+    {
+      "id": 153,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": 141,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1718,
+          "time_s": 165.4,
+          "range_m": 55.83,
+          "iou": 0.796,
+          "box": [
+            0.8997,
+            0.5019,
+            0.9636,
+            0.5323
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1718,
+          "time_s": 165.4,
+          "range_m": 55.83,
+          "iou": 0.796,
+          "box": [
+            0.8997,
+            0.5019,
+            0.9636,
+            0.5323
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1729,
+          "time_s": 166.5,
+          "range_m": 48.38,
+          "error_m": 1.586,
+          "source": 190
+        },
+        "first_after": {
+          "frame": 1729,
+          "time_s": 166.5,
+          "range_m": 48.38,
+          "error_m": 1.586,
+          "source": 199
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1734,
+        "time_s": 167,
+        "range_m": 44.79,
+        "iou": 0.371,
+        "box": [
+          0.7268,
+          0.5088,
+          0.7617,
+          0.5341
+        ]
+      }
+    },
+    {
+      "id": 142,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1718,
+          "time_s": 165.4,
+          "range_m": 55.08,
+          "iou": 0.789,
+          "box": [
+            0.8158,
+            0.5015,
+            0.8723,
+            0.5295
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1718,
+          "time_s": 165.4,
+          "range_m": 55.08,
+          "iou": 0.789,
+          "box": [
+            0.8158,
+            0.5015,
+            0.8723,
+            0.5295
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1731,
+          "time_s": 166.7,
+          "range_m": 46.37,
+          "error_m": 2.027,
+          "source": 191
+        },
+        "first_after": {
+          "frame": 1731,
+          "time_s": 166.7,
+          "range_m": 46.37,
+          "error_m": 2.027,
+          "source": 200
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1718,
+        "time_s": 165.4,
+        "range_m": 55.08,
+        "iou": 0.789,
+        "box": [
+          0.8158,
+          0.5015,
+          0.8723,
+          0.5295
+        ]
+      }
+    },
+    {
+      "id": 150,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1804,
+          "time_s": 174,
+          "range_m": 58.38,
+          "iou": 0.734,
+          "box": [
+            0.3748,
+            0.4974,
+            0.4135,
+            0.5267
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 1750,
+          "time_s": 168.6,
+          "range_m": 78.01,
+          "iou": 0.882,
+          "box": [
+            0.6898,
+            0.4936,
+            0.7239,
+            0.5172
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 18,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1823,
+          "time_s": 175.9,
+          "range_m": 45.77,
+          "error_m": 0.307,
+          "source": 199
+        },
+        "first_after": {
+          "frame": 1801,
+          "time_s": 173.7,
+          "range_m": 60.21,
+          "error_m": 0.692,
+          "source": 207
+        },
+        "gains": 24,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1770,
+        "time_s": 170.6,
+        "range_m": 72.33,
+        "iou": 0.894,
+        "box": [
+          0.5937,
+          0.4942,
+          0.628,
+          0.5191
+        ]
+      }
+    },
+    {
+      "id": 180,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 3264,
+          "time_s": 320,
+          "range_m": 30.16,
+          "iou": 0.566,
+          "box": [
+            0.4918,
+            0.481,
+            0.5117,
+            0.5414
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 3250,
+          "time_s": 318.6,
+          "range_m": 36.59,
+          "iou": 0.854,
+          "box": [
+            0.4873,
+            0.4854,
+            0.4976,
+            0.5328
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 8,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 3282,
+          "time_s": 321.8,
+          "range_m": 21.97,
+          "error_m": 0.481,
+          "source": 314
+        },
+        "first_after": {
+          "frame": 3278,
+          "time_s": 321.4,
+          "range_m": 23.78,
+          "error_m": 1.459,
+          "source": 316
+        },
+        "gains": 4,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 3250,
+        "time_s": 318.6,
+        "range_m": 36.59,
+        "iou": 0.854,
+        "box": [
+          0.4873,
+          0.4854,
+          0.4976,
+          0.5328
+        ]
+      }
+    },
+    {
+      "id": 179,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 3252,
+          "time_s": 318.8,
+          "range_m": 32.75,
+          "iou": 0.57,
+          "box": [
+            0.4951,
+            0.4789,
+            0.5137,
+            0.5383
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 3220,
+          "time_s": 315.6,
+          "range_m": 42.4,
+          "iou": 0.868,
+          "box": [
+            0.523,
+            0.4845,
+            0.5328,
+            0.5293
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 18,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 3298,
+          "time_s": 323.4,
+          "range_m": 19.99,
+          "error_m": 0.34,
+          "source": 316
+        },
+        "first_after": {
+          "frame": 3272,
+          "time_s": 320.8,
+          "range_m": 27.14,
+          "error_m": 0.695,
+          "source": 316
+        },
+        "gains": 9,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 3220,
+        "time_s": 315.6,
+        "range_m": 42.4,
+        "iou": 0.868,
+        "box": [
+          0.523,
+          0.4845,
+          0.5328,
+          0.5293
+        ]
+      }
+    },
+    {
+      "id": 170,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1942,
+          "time_s": 187.8,
+          "range_m": 20.77,
+          "iou": 0.786,
+          "box": [
+            0.6514,
+            0.5082,
+            0.6642,
+            0.5684
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1916,
+          "time_s": 185.2,
+          "range_m": 27.79,
+          "iou": 0.771,
+          "box": [
+            0.6049,
+            0.4948,
+            0.6132,
+            0.5357
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 12,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1953,
+          "time_s": 188.9,
+          "range_m": 15.45,
+          "error_m": 0.636,
+          "source": 209
+        },
+        "first_after": {
+          "frame": 1935,
+          "time_s": 187.1,
+          "range_m": 23.24,
+          "error_m": 0.142,
+          "source": 215
+        },
+        "gains": 18,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1916,
+        "time_s": 185.2,
+        "range_m": 27.79,
+        "iou": 0.771,
+        "box": [
+          0.6049,
+          0.4948,
+          0.6132,
+          0.5357
+        ]
+      }
+    },
+    {
+      "id": 126,
+      "label": "bus",
+      "role": "stopped_bus",
+      "optical": {
+        "first_before": {
+          "frame": 1948,
+          "time_s": 188.4,
+          "range_m": 58.35,
+          "iou": 0.864,
+          "box": [
+            0.4863,
+            0.4747,
+            0.5149,
+            0.53
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 1910,
+          "time_s": 184.6,
+          "range_m": 74.61,
+          "iou": 0.89,
+          "box": [
+            0.4793,
+            0.4659,
+            0.501,
+            0.5105
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 20,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1965,
+          "time_s": 190.1,
+          "range_m": 46.36,
+          "error_m": 0.722,
+          "source": 212
+        },
+        "first_after": {
+          "frame": 1927,
+          "time_s": 186.3,
+          "range_m": 68.51,
+          "error_m": 0.775,
+          "source": 214
+        },
+        "gains": 38,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1910,
+        "time_s": 184.6,
+        "range_m": 74.61,
+        "iou": 0.89,
+        "box": [
+          0.4793,
+          0.4659,
+          0.501,
+          0.5105
+        ]
+      }
+    },
+    {
+      "id": 144,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1964,
+          "time_s": 190,
+          "range_m": 50.76,
+          "iou": 0.721,
+          "box": [
+            0.476,
+            0.5144,
+            0.5023,
+            0.5414
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1954,
+          "time_s": 189,
+          "range_m": 61.03,
+          "iou": 0.778,
+          "box": [
+            0.3983,
+            0.5109,
+            0.4194,
+            0.5371
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 8,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1984,
+          "time_s": 192,
+          "range_m": 26.13,
+          "error_m": 0.919,
+          "source": 217
+        },
+        "first_after": {
+          "frame": 1984,
+          "time_s": 192,
+          "range_m": 26.13,
+          "error_m": 0.919,
+          "source": 221
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1960,
+        "time_s": 189.6,
+        "range_m": 55.22,
+        "iou": 0.877,
+        "box": [
+          0.4462,
+          0.5115,
+          0.4726,
+          0.5378
+        ]
+      }
+    },
+    {
+      "id": 143,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 1972,
+          "time_s": 190.8,
+          "range_m": 46.27,
+          "iou": 0.819,
+          "box": [
+            0.5122,
+            0.5149,
+            0.5382,
+            0.5478
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 1954,
+          "time_s": 189,
+          "range_m": 68.01,
+          "iou": 0.68,
+          "box": [
+            0.4378,
+            0.5193,
+            0.4565,
+            0.5367
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 2,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 1979,
+          "time_s": 191.5,
+          "range_m": 37.14,
+          "error_m": 2.064,
+          "source": 215
+        },
+        "first_after": {
+          "frame": 1979,
+          "time_s": 191.5,
+          "range_m": 37.14,
+          "error_m": 2.064,
+          "source": 219
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 1972,
+        "time_s": 190.8,
+        "range_m": 46.27,
+        "iou": 0.819,
+        "box": [
+          0.5122,
+          0.5149,
+          0.5382,
+          0.5478
+        ]
+      }
+    },
+    {
+      "id": 178,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": 149,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 2128,
+          "time_s": 206.4,
+          "range_m": 47.29,
+          "iou": 0.837,
+          "box": [
+            0.1826,
+            0.4758,
+            0.2472,
+            0.5197
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 2074,
+          "time_s": 201,
+          "range_m": 61.05,
+          "iou": 0.899,
+          "box": [
+            0.27,
+            0.483,
+            0.3169,
+            0.5143
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": true
+        },
+        "gains": 4,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 2131,
+          "time_s": 206.7,
+          "range_m": 45.95,
+          "error_m": 0.731,
+          "source": 230
+        },
+        "first_after": {
+          "frame": 2079,
+          "time_s": 201.5,
+          "range_m": 60.27,
+          "error_m": 0.742,
+          "source": 228
+        },
+        "gains": 37,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 2148,
+        "time_s": 208.4,
+        "range_m": 39.83,
+        "iou": 0.814,
+        "box": [
+          0.0926,
+          0.4809,
+          0.1768,
+          0.5338
+        ]
+      }
+    },
+    {
+      "id": 113,
+      "label": "person",
+      "role": "pedestrian-delayed",
+      "optical": {
+        "first_before": {
+          "frame": 2970,
+          "time_s": 290.6,
+          "range_m": 29.02,
+          "iou": 0.57,
+          "box": [
+            0.5933,
+            0.4684,
+            0.6068,
+            0.5487
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 2968,
+          "time_s": 290.4,
+          "range_m": 29.77,
+          "iou": 0.737,
+          "box": [
+            0.5951,
+            0.4804,
+            0.6056,
+            0.5488
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 3,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 2982,
+          "time_s": 291.8,
+          "range_m": 24.51,
+          "error_m": 0.06,
+          "source": 296
+        },
+        "first_after": {
+          "frame": 2982,
+          "time_s": 291.8,
+          "range_m": 24.51,
+          "error_m": 0.06,
+          "source": 302
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 2968,
+        "time_s": 290.4,
+        "range_m": 29.77,
+        "iou": 0.737,
+        "box": [
+          0.5951,
+          0.4804,
+          0.6056,
+          0.5488
+        ]
+      }
+    },
+    {
+      "id": 173,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 2256,
+          "time_s": 219.2,
+          "range_m": 23.19,
+          "iou": 0.685,
+          "box": [
+            0.7266,
+            0.4764,
+            0.7464,
+            0.5646
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 2202,
+          "time_s": 213.8,
+          "range_m": 36.39,
+          "iou": 0.561,
+          "box": [
+            0.635,
+            0.4962,
+            0.6445,
+            0.5404
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 7,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 2259,
+          "time_s": 219.5,
+          "range_m": 22.52,
+          "error_m": 0.373,
+          "source": 234
+        },
+        "first_after": {
+          "frame": 2244,
+          "time_s": 218,
+          "range_m": 25.82,
+          "error_m": 0.465,
+          "source": 237
+        },
+        "gains": 15,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 2202,
+        "time_s": 213.8,
+        "range_m": 36.39,
+        "iou": 0.561,
+        "box": [
+          0.635,
+          0.4962,
+          0.6445,
+          0.5404
+        ]
+      }
+    },
+    {
+      "id": 115,
+      "label": "car",
+      "role": "braking",
+      "optical": {
+        "first_before": {
+          "frame": 2290,
+          "time_s": 222.6,
+          "range_m": 29.91,
+          "iou": 0.815,
+          "box": [
+            0.4832,
+            0.4993,
+            0.5187,
+            0.5494
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 2290,
+          "time_s": 222.6,
+          "range_m": 29.91,
+          "iou": 0.815,
+          "box": [
+            0.4832,
+            0.4993,
+            0.5187,
+            0.5494
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "gains": 7,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 2293,
+          "time_s": 222.9,
+          "range_m": 28.98,
+          "error_m": 0.42,
+          "source": 239
+        },
+        "first_after": {
+          "frame": 2290,
+          "time_s": 222.6,
+          "range_m": 29.91,
+          "error_m": 0.17,
+          "source": 245
+        },
+        "gains": 3,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 2386,
+        "time_s": 232.2,
+        "range_m": 25.06,
+        "iou": 0.818,
+        "box": [
+          0.4782,
+          0.4913,
+          0.5277,
+          0.55
+        ]
+      }
+    },
+    {
+      "id": 148,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 2680,
+          "time_s": 261.6,
+          "range_m": 58.88,
+          "iou": 0.646,
+          "box": [
+            0.0297,
+            0.5235,
+            0.0672,
+            0.5631
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 2680,
+          "time_s": 261.6,
+          "range_m": 58.88,
+          "iou": 0.646,
+          "box": [
+            0.0297,
+            0.5235,
+            0.0672,
+            0.5631
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 2711,
+          "time_s": 264.7,
+          "range_m": 26.24,
+          "error_m": 2.486,
+          "source": 266
+        },
+        "first_after": {
+          "frame": 2711,
+          "time_s": 264.7,
+          "range_m": 26.24,
+          "error_m": 2.486,
+          "source": 272
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 2688,
+        "time_s": 262.4,
+        "range_m": 50.39,
+        "iou": 0.428,
+        "box": [
+          0.1217,
+          0.5186,
+          0.145,
+          0.5546
+        ]
+      }
+    },
+    {
+      "id": "level-12109274621266969479",
+      "label": "car",
+      "role": "parked-map-vehicle",
+      "optical": {
+        "first_before": {
+          "frame": 2336,
+          "time_s": 227.2,
+          "range_m": 50.3,
+          "iou": 0.544,
+          "box": [
+            0.1637,
+            0.4782,
+            0.1969,
+            0.5112
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 2336,
+          "time_s": 227.2,
+          "range_m": 50.3,
+          "iou": 0.544,
+          "box": [
+            0.1637,
+            0.4782,
+            0.1969,
+            0.5112
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": {
+          "frame": 2378,
+          "time_s": 231.4,
+          "range_m": 39.67,
+          "error_m": 0.522,
+          "source": 248
+        },
+        "gains": 6,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 2336,
+        "time_s": 227.2,
+        "range_m": 50.3,
+        "iou": 0.544,
+        "box": [
+          0.1637,
+          0.4782,
+          0.1969,
+          0.5112
+        ]
+      }
+    },
+    {
+      "id": 145,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 2282,
+          "time_s": 221.8,
+          "range_m": 46.67,
+          "iou": 0.828,
+          "box": [
+            0.364,
+            0.4986,
+            0.3946,
+            0.5301
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 2278,
+          "time_s": 221.4,
+          "range_m": 51,
+          "iou": 0.888,
+          "box": [
+            0.3774,
+            0.499,
+            0.4049,
+            0.5302
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 1,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 2295,
+          "time_s": 223.1,
+          "range_m": 33.04,
+          "error_m": 2.078,
+          "source": 238
+        },
+        "first_after": {
+          "frame": 2295,
+          "time_s": 223.1,
+          "range_m": 33.04,
+          "error_m": 2.078,
+          "source": 244
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 2278,
+        "time_s": 221.4,
+        "range_m": 51,
+        "iou": 0.888,
+        "box": [
+          0.3774,
+          0.499,
+          0.4049,
+          0.5302
+        ]
+      }
+    },
+    {
+      "id": 172,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 2356,
+          "time_s": 229.2,
+          "range_m": 34.68,
+          "iou": 0.779,
+          "box": [
+            0.2012,
+            0.478,
+            0.2151,
+            0.5327
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 2322,
+          "time_s": 225.8,
+          "range_m": 47.25,
+          "iou": 0.719,
+          "box": [
+            0.299,
+            0.4812,
+            0.307,
+            0.5166
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 7,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 2322,
+        "time_s": 225.8,
+        "range_m": 47.25,
+        "iou": 0.719,
+        "box": [
+          0.299,
+          0.4812,
+          0.307,
+          0.5166
+        ]
+      }
+    },
+    {
+      "id": 171,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 2392,
+          "time_s": 232.8,
+          "range_m": 32.7,
+          "iou": 0.842,
+          "box": [
+            0.2083,
+            0.4709,
+            0.2216,
+            0.5317
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 2346,
+          "time_s": 228.2,
+          "range_m": 49.79,
+          "iou": 0.803,
+          "box": [
+            0.3265,
+            0.4729,
+            0.3342,
+            0.512
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 15,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 2414,
+          "time_s": 235,
+          "range_m": 23.54,
+          "error_m": 0.07,
+          "source": 246
+        },
+        "first_after": {
+          "frame": 2414,
+          "time_s": 235,
+          "range_m": 23.54,
+          "error_m": 0.07,
+          "source": 252
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 2346,
+        "time_s": 228.2,
+        "range_m": 49.79,
+        "iou": 0.803,
+        "box": [
+          0.3265,
+          0.4729,
+          0.3342,
+          0.512
+        ]
+      }
+    },
+    {
+      "id": "level-9076146201990380525",
+      "label": "car",
+      "role": "parked-map-vehicle",
+      "optical": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": "level-327314708892034233",
+      "label": "car",
+      "role": "parked-map-vehicle",
+      "optical": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": 147,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 2668,
+          "time_s": 260.4,
+          "range_m": 48.65,
+          "iou": 0.706,
+          "box": [
+            0.081,
+            0.5244,
+            0.132,
+            0.5622
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 2668,
+          "time_s": 260.4,
+          "range_m": 48.65,
+          "iou": 0.706,
+          "box": [
+            0.081,
+            0.5244,
+            0.132,
+            0.5622
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 2683,
+          "time_s": 261.9,
+          "range_m": 32.5,
+          "error_m": 1.381,
+          "source": 261
+        },
+        "first_after": {
+          "frame": 2683,
+          "time_s": 261.9,
+          "range_m": 32.5,
+          "error_m": 1.381,
+          "source": 267
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 2668,
+        "time_s": 260.4,
+        "range_m": 48.65,
+        "iou": 0.706,
+        "box": [
+          0.081,
+          0.5244,
+          0.132,
+          0.5622
+        ]
+      }
+    },
+    {
+      "id": 175,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 2672,
+          "time_s": 260.8,
+          "range_m": 28.28,
+          "iou": 0.542,
+          "box": [
+            0.0353,
+            0.4976,
+            0.0521,
+            0.58
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 2672,
+          "time_s": 260.8,
+          "range_m": 28.28,
+          "iou": 0.542,
+          "box": [
+            0.0353,
+            0.4976,
+            0.0521,
+            0.58
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 2672,
+        "time_s": 260.8,
+        "range_m": 28.28,
+        "iou": 0.542,
+        "box": [
+          0.0353,
+          0.4976,
+          0.0521,
+          0.58
+        ]
+      }
+    },
+    {
+      "id": 176,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": 174,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": 146,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": 118,
+      "label": "car",
+      "role": "oncoming",
+      "optical": {
+        "first_before": {
+          "frame": 2468,
+          "time_s": 240.4,
+          "range_m": 51.47,
+          "iou": 0.737,
+          "box": [
+            0.4253,
+            0.5136,
+            0.4517,
+            0.542
+          ],
+          "source": "single",
+          "range_supported": false
+        },
+        "first_after": {
+          "frame": 2456,
+          "time_s": 239.2,
+          "range_m": 61.56,
+          "iou": 0.857,
+          "box": [
+            0.439,
+            0.5104,
+            0.4608,
+            0.5357
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 6,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 2479,
+          "time_s": 241.5,
+          "range_m": 40.65,
+          "error_m": 1.762,
+          "source": 252
+        },
+        "first_after": {
+          "frame": 2479,
+          "time_s": 241.5,
+          "range_m": 40.65,
+          "error_m": 1.762,
+          "source": 258
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 2474,
+        "time_s": 241,
+        "range_m": 45.48,
+        "iou": 0.683,
+        "box": [
+          0.4138,
+          0.5118,
+          0.4428,
+          0.5443
+        ]
+      }
+    },
+    {
+      "id": 177,
+      "label": "person",
+      "role": "background",
+      "optical": {
+        "first_before": {
+          "frame": 2752,
+          "time_s": 268.8,
+          "range_m": 25.79,
+          "iou": 0.781,
+          "box": [
+            0.5759,
+            0.4805,
+            0.5915,
+            0.5539
+          ],
+          "source": "single",
+          "range_supported": true
+        },
+        "first_after": {
+          "frame": 2750,
+          "time_s": 268.6,
+          "range_m": 27.55,
+          "iou": 0.854,
+          "box": [
+            0.5553,
+            0.4856,
+            0.5671,
+            0.5476
+          ],
+          "source": "front-horizon-2x",
+          "range_supported": false
+        },
+        "gains": 1,
+        "losses": 0
+      },
+      "display": {
+        "first_before": {
+          "frame": 2755,
+          "time_s": 269.1,
+          "range_m": 23.18,
+          "error_m": 0.251,
+          "source": 272
+        },
+        "first_after": {
+          "frame": 2755,
+          "time_s": 269.1,
+          "range_m": 23.18,
+          "error_m": 0.251,
+          "source": 278
+        },
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": {
+        "frame": 2750,
+        "time_s": 268.6,
+        "range_m": 27.55,
+        "iou": 0.854,
+        "box": [
+          0.5553,
+          0.4856,
+          0.5671,
+          0.5476
+        ]
+      }
+    },
+    {
+      "id": "level-7657102941645856090",
+      "label": "car",
+      "role": "parked-map-vehicle",
+      "optical": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": "level-16725571583500344474",
+      "label": "truck",
+      "role": "parked-map-vehicle",
+      "optical": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": "level-4272565134478960206",
+      "label": "car",
+      "role": "parked-map-vehicle",
+      "optical": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    },
+    {
+      "id": 131,
+      "label": "car",
+      "role": "background",
+      "optical": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "display": {
+        "first_before": null,
+        "first_after": null,
+        "gains": 0,
+        "losses": 0
+      },
+      "first_camera_only_callout": null
+    }
+  ]
+}

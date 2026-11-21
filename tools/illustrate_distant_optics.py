@@ -32,22 +32,32 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ("raw","report","unmatched","output"):
         parser.add_argument(name,type=Path)
+    parser.add_argument("--targets",nargs="+",help="Optional reference IDs for the first-observation figure")
+    parser.add_argument("--max-misses",type=int,default=24)
     args=parser.parse_args()
     report=json.loads(args.report.read_bytes())
     f0=json.loads((args.raw/"perception.jsonl").open().readline())["frame"]
     changed=[]
+    full,combined=("same_jpeg_full","same_jpeg_multiscale") if "same_jpeg_full" in report["bands"] else (
+        "native_full_only","native_optical")
     for a in report["encounters"]:
-        before=a["first"].get("same_jpeg_full");after=a["first"].get("same_jpeg_multiscale")
+        if args.targets and str(a["id"]) not in args.targets:
+            continue
+        before=a["first"].get(full);after=a["first"].get(combined)
         if before and after and before["frame"]!=after["frame"]:
             for source,r in [("Full frame",before),("Full frame + horizon",after)]:
                 changed.append((r["frame"],r["box"],f"{source} · {a['label']} {a['id']}",
                                 f"Frame {r['frame']} · {r['range_m']:.2f} m · {a['role']}"))
     negatives=[json.loads(line) for line in args.unmatched.open()]
     def key(r):return (r["frame"],r["label"],tuple(r["box"]))
-    base={key(r) for r in negatives if r["stage"]=="same_jpeg_full"}
+    base={key(r) for r in negatives if r["stage"]==full}
     misses=[(r["frame"],r["box"],f"Unmatched · {r['label']}",f"Frame {r['frame']}") for r in negatives
-            if r["stage"]=="same_jpeg_multiscale" and key(r) not in base]
+            if r["stage"]==combined and key(r) not in base]
+    if len(misses)>args.max_misses:
+        misses=[misses[round(i*(len(misses)-1)/max(1,args.max_misses-1))] for i in range(args.max_misses)]
     selections={r[0] for r in changed+misses}; images={}
+    if not selections:return
+    args.output.mkdir(parents=True,exist_ok=True)
     camera=cv2.VideoCapture(str(args.raw/"front.mjpeg"))
     try:
         for frame in range(f0,max(selections)+1):

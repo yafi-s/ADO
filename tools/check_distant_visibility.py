@@ -99,7 +99,9 @@ def main():
             d=ImageDraw.Draw(annotated);cx=(extent[0]+extent[2])//2
             d.line((cx,extent[1]-29,cx,extent[1]-5), fill="#ef8d27",width=2)
             annotated.save(args.output / f"frame-{row['frame']}.jpg",quality=92)
-    (args.output / "visibility.json").write_text(json.dumps(selected,indent=2)+"\n")
+    with (args.output / "visibility.json").open("w",encoding="utf8",newline="\n") as output:
+        json.dump(selected,output,indent=2)
+        output.write("\n")
 
 
 if __name__=="__main__":
