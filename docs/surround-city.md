@@ -14,6 +14,12 @@ Both recordings place a slower moving car in the original lane on a Town03 boule
 
 These are paired development scenarios on one legal two-lane segment. The viewer's path comes from the recorded tactical commitment and corridor geometry. Its vehicle outlines are estimates from the cameras and range sensors. CARLA supplies independent actor footprints for scoring. [Tactical training and inference](../crosswalk/overtake.py) · [Training objective](../crosswalk/overtake_fit.py)
 
+## Inspect a single exposure
+
+[Inspect the moving-lead pass one frame at a time](https://yafi-s.github.io/ADO/inspect.html?run=overtake-yield&frame=8057&camera=chase). The inspector opens paused. Step forward or backward by one recorded exposure and switch between cameras at that instant. The overhead view independently toggles the rider drawing, sensor measurements and CARLA actor footprints. Each uses the same metric coordinate frame. This reference overlay is available only for inspection and scoring.
+
+For example, on frame 8057 the native chase image shows the ego beside the white lead car. The inspector reports the actor's body center, the track estimate, and the displayed center in metres ahead and right of the ego. The box uses the native blueprint's measured offset from the actor origin. These positions allow a reviewer to separate an actual moving vehicle from a wobbling estimate. [Actor body calibration](../web/media/map-features/Town03_Opt-bodies.json)
+
 ## What the screen measures
 
 Five overlapping RGB cameras cover the horizontal circle. A full-sweep lidar and five Doppler radars supply range and relative-motion measurements. The display can follow the same object across views, briefly extrapolate an occluded track and show a camera box while depth is unresolved. An object behind the vehicle can therefore remain visible even when the front camera loses sight of it.
