@@ -9,7 +9,7 @@ import numpy as np
 from crosswalk.sensors import Rig, render_profile
 
 
-def stub_rig(test, *, visuals=False, ue5=False, range_only=False):
+def stub_rig(test, *, visuals=False, ue5=False, range_only=False, surround=False):
     world, ego = Mock(), Mock()
     actors = []
 
@@ -34,17 +34,61 @@ def stub_rig(test, *, visuals=False, ue5=False, range_only=False):
 
     world.get_blueprint_library.return_value.find.side_effect = blueprint
     world.spawn_actor.side_effect = spawn
-    rig = Rig(world, ego, visuals, range_only=range_only)
+    rig = Rig(world, ego, visuals, range_only=range_only, surround=surround)
     test.addCleanup(rig.close)
     names = ("lidar", "radar", "collision")
+    if surround:
+        names = ("lidar", "radar", "radar_front_left", "radar_front_right",
+                 "radar_rear_left", "radar_rear_right", "collision")
     if not range_only:
-        names = ("front", "left", "right") + names
+        names = ("front", "left", "right") + (("rear_left", "rear_right") if surround else ()) + names
     if visuals:
         names += ("chase", "tags", "depth")
     return rig, dict(zip(names, actors, strict=True))
 
 
 class RigTests(unittest.TestCase):
+    def test_surround_camera_and_lidar_coverage(self):
+        rig, streams = stub_rig(self, surround=True)
+        geometry = rig.rendering["surround"]
+        self.assertEqual(geometry["lidar_horizontal_fov_deg"], 360)
+        self.assertEqual(geometry["lidar_rotation_hz"], 10)
+        bearings = np.arange(-180, 180, .1)
+        covered = np.zeros(len(bearings), dtype=bool)
+        for name, cam in geometry["camera_mounts"].items():
+            mount, actor = streams[name]
+            self.assertEqual(mount.rotation.yaw, cam["yaw"])
+            np.testing.assert_allclose([mount.location.x, mount.location.y, mount.location.z],
+                                       [cam["x"], cam["y"], cam["z"]], atol=1e-5)
+            angle = (bearings - mount.rotation.yaw + 180) % 360 - 180
+            covered |= abs(angle) <= float(actor.attributes["fov"]) / 2
+        self.assertTrue(covered.all())
+        covered[:] = False
+        for name in geometry["corner_radars"]:
+            mount, actor = streams[name]
+            self.assertEqual(actor.type_id, "sensor.other.radar")
+            angle = (bearings - mount.rotation.yaw + 180) % 360 - 180
+            covered |= abs(angle) <= float(actor.attributes["horizontal_fov"]) / 2
+        self.assertTrue(covered.all())
+
+    def test_surround_calibration_uses_native_exposure_poses(self):
+        from crosswalk.sensors import pose
+        rig, streams = stub_rig(self, surround=True)
+        rig._calibration_ego.get_transform.return_value = pose()
+        for name, (mount, actor) in streams.items():
+            if name == "collision":
+                continue
+            raw = bytes(4) if name in rig.rendering["cameras"] else b""
+            actor.listen.call_args.args[0](SimpleNamespace(frame=17, transform=mount, width=1, height=1,
+                                                          raw_data=raw))
+        rig.read(17, timeout=0)
+        readback = rig.rendering["surround"]["mount_readback"]
+        self.assertEqual(readback["frame"], 17)
+        self.assertEqual(len(readback["sensors"]), 11)
+        for source in readback["sensors"].values():
+            self.assertLess(source["rotation_error_deg"], .05)
+            self.assertLess(source["translation_error_m"], .001)
+
     def test_range_only_rig_skips_all_camera_blueprints(self):
         with patch("crosswalk.sensors.render_profile", side_effect=AssertionError("Accessed camera settings")):
             rig, streams = stub_rig(self, range_only=True)
