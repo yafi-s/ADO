@@ -11,7 +11,7 @@ import cv2
 import numpy as np
 
 from .barrier import detect
-from .barrier_study import read_rgb, ROOT
+from .barrier_study import read_rgb
 from .surround_vision import SurroundDetector
 from .tracking import Tracker
 
@@ -75,10 +75,14 @@ def evaluate(archive_path):
                     seen[case].add((row["road"],row["station"],row["distance_m"]))
             rows.append(dict(name=n, condition=case, target_subtype=expected, measurements=predicted,
                              reference_range=witness(row,cloud)))
-    for case in seen:
-        tally[case]["distinct_matched_site_distance_pairs"] = len(seen[case])
+    for case, counts in tally.items():
+        for field in ("fresh_predictions", "unmatched_predictions", "matched", "missed"):
+            counts.setdefault(field, 0)
+        counts["distinct_matched_site_distance_pairs"] = len(seen[case])
+    source = Path(__file__).with_name("barrier_chain.py")
+    canonical = hashlib.sha256(source.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
     return dict(schema="ado-chain-recognition-v1",archive_sha256=checksum(archive_path),
-                detector_source_sha256=checksum(Path(__file__).with_name("barrier_chain.py")),
+                detector_source_sha256=checksum(source), detector_source_lf_sha256=canonical,
                 exposures=len(rows),by_condition={k:dict(v) for k,v in tally.items()},
                 unmatched_predictions=totals["unmatched_predictions"],frames=rows)
 
