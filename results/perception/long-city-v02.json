@@ -1509,6 +1509,7 @@
         -1.4
       ],
       "progress_m": 13.167,
+      "active_event": "pedestrian",
       "event_stations": {
         "pedestrian": 28,
         "occluded": 146.99,
@@ -1539,16 +1540,30 @@
           {
             "id": 2,
             "label": "car",
+            "x": 21.277,
+            "y": 20.491,
             "sector": "front",
             "range_m": 29.539,
-            "status": "coasting"
+            "status": "coasting",
+            "nearest": {
+              "id": 112,
+              "role": "pedestrian",
+              "error_m": 20.725
+            }
           },
           {
             "id": 3,
             "label": "car",
+            "x": 26.052,
+            "y": 23.16,
             "sector": "front",
             "range_m": 34.858,
-            "status": "coasting"
+            "status": "coasting",
+            "nearest": {
+              "id": 112,
+              "role": "pedestrian",
+              "error_m": 25.022
+            }
           }
         ]
       },
@@ -1646,6 +1661,7 @@
         -1.27
       ],
       "progress_m": 19.03,
+      "active_event": "pedestrian",
       "event_stations": {
         "pedestrian": 28,
         "occluded": 146.99,
@@ -1681,9 +1697,16 @@
           {
             "id": 5,
             "label": "car",
+            "x": 20.902,
+            "y": 19.293,
             "sector": "front",
             "range_m": 28.445,
-            "status": "coasting"
+            "status": "coasting",
+            "nearest": {
+              "id": 112,
+              "role": "pedestrian",
+              "error_m": 22.601
+            }
           }
         ]
       },
@@ -1776,6 +1799,7 @@
         -0.81
       ],
       "progress_m": 132.034,
+      "active_event": "occluded",
       "event_stations": {
         "pedestrian": 28,
         "occluded": 146.99,
@@ -1874,6 +1898,7 @@
         -90.14
       ],
       "progress_m": 858.637,
+      "active_event": "bus",
       "event_stations": {
         "pedestrian": 28,
         "occluded": 146.99,
@@ -1950,6 +1975,7 @@
         90.03
       ],
       "progress_m": 1202.979,
+      "active_event": "cyclist",
       "event_stations": {
         "pedestrian": 28,
         "occluded": 146.99,
@@ -2036,6 +2062,7 @@
         90.03
       ],
       "progress_m": 1261.829,
+      "active_event": "pedestrian-delayed",
       "event_stations": {
         "pedestrian": 28,
         "occluded": 146.99,
