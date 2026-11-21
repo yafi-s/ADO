@@ -11,6 +11,8 @@ on:
       - 'assets/waymo-ipace/waymo-ipace.glb'
       - 'assets/waymo-ipace/studio.png'
       - '.github/workflows/pages.yml'
+  release:
+    types: [published]
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,13 +23,15 @@ concurrency:
   cancel-in-progress: false
 jobs:
   deploy:
-    if: github.repository == 'yafi-s/ADO'
+    if: github.repository == 'yafi-s/ADO' && (github.event_name != 'release' || github.event.release.tag_name == 'v0.3.0')
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.publish.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'release' && 'main' || github.ref }}
       - uses: actions/configure-pages@v5
       - name: Include the Blender design in the public viewer
         run: |
@@ -39,7 +43,12 @@ jobs:
         if: ${{ hashFiles('results/behavior-v2/study.json') != '' }}
         run: cp -r results/behavior-v2 web/media/behavior-v2
       - name: Serve the full-quality city recording when published
-        run: python3 tools/prepare_pages_film.py
+        run: |
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+          python3 tools/prepare_pages_film.py
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web
