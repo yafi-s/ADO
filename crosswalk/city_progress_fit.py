@@ -8,7 +8,7 @@ import zipfile
 
 import numpy as np
 
-from . import city_progress
+from . import city_crossing, city_progress
 from .city_policy import FEATURE_NAMES, INDEX
 from .city_progress import PARAMETERS, ProgressModel, VERSION, curvature
 
@@ -75,7 +75,8 @@ def main():
                   braking_holdout_signed_errors_m=errors, brake_response_tested_through_mps=float(model.stopping[-1]),
                   demonstration="Town03 native instructor seed 75; fitted speeds, curvature and acceleration are measured.",
                   scope="Offline fit. Controller comparisons require new closed-loop runs.",
-                  inputs={str(p.as_posix()):digest(p) for p in (args.base, args.lesson, args.stops, Path(__file__))})
+                  inputs={str(p.as_posix()):digest(p) for p in (args.base, args.lesson, args.stops, Path(__file__))},
+                  crossing_source_sha256=digest(Path(city_crossing.__file__)))
     # Store the portable source path in the report regardless of the caller's checkout location.
     report["inputs"]["crosswalk/city_progress_fit.py"] = report["inputs"].pop(Path(__file__).as_posix())
     (args.output/"fit.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")

@@ -255,6 +255,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 elif not hasattr(observer, "observe_and_predict"):
                     if getattr(observer, "uses_conflict_profile", False):
                         obs["progress_frame"] = frame
+                        pose = scene.ego.get_transform()
+                        obs["progress_ego_pose"] = (pose.location.x, pose.location.y, pose.rotation.yaw)
                         obs["progress_camera_age_s"] = (step % 2) * DT
                         obs["progress_tactical"] = tactical_pass.info if tactical_pass is not None else {}
                     junction_gap = next((start - navigation.progress - 2.25

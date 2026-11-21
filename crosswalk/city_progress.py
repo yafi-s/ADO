@@ -7,13 +7,15 @@ import numpy as np
 from . import behavior_v2 as v2
 from .city_clearance import BODY, ClearanceModel, EdgeObserver, FEATURE_NAMES as CLEARANCE_NAMES
 from .city_cruise import CRUISE_MAX
+from .city_crossing import CrossingObserver
 from .city_policy import INDEX
 from .policy import _returns, LIDAR_Z
 
 
 VERSION = "ado-city-progress-v1"
 PROFILE = ("observed_corridor_m", "observed_conflict_m", "observed_blind_corner_m",
-           "adjacent_clearance_m", "confirmed_scans")
+           "adjacent_clearance_m", "confirmed_scans", "crossing_stop_gap_m",
+           "crossing_entry_s", "crossing_inward_mps", "crossing_age_s")
 FEATURE_NAMES = (*CLEARANCE_NAMES[:-2], *PROFILE, *CLEARANCE_NAMES[-2:])
 PARAMETERS = ("free_speed_mps", "lateral_acceleration_mps2", "recovery_acceleration_mps2")
 CELL = 4.
@@ -125,6 +127,7 @@ class ProgressObserver(EdgeObserver):
         self.recent = deque(maxlen=3)
         self.prior_frame = None
         self.flank = FlankMotion()
+        self.crossing = CrossingObserver()
 
     def observe(self, obs, detections, local_route, speed, *, route_preview=None, stopline_gap=None):
         x = super().observe(obs, detections, local_route, speed, route_preview=route_preview, stopline_gap=stopline_gap)
@@ -132,6 +135,8 @@ class ProgressObserver(EdgeObserver):
         if frame is None or self.prior_frame is None or frame != self.prior_frame + 1:
             self.recent.clear()
         self.prior_frame = frame
+        path = v2._checked_route(local_route, route_preview)
+        cross = self.crossing.observe(obs["lidar"], obs.get("progress_ego_pose"), frame, speed, path)
         image = obs.get("front")
         camera_ok = False
         if image is not None and image.ndim == 3 and image.size:
@@ -143,12 +148,11 @@ class ProgressObserver(EdgeObserver):
                 or near_person or not len(_returns(obs["radar"]))):
             self.recent.clear()
         else:
-            path = v2._checked_route(local_route, route_preview)
             measured = _profile(obs["lidar"], path, obs.get("progress_tactical", {}),
                                 motion=self.flank, frame=frame, travel=self.travel)
             self.recent.append(measured)
         profile = np.min(self.recent, axis=0) if len(self.recent) == self.recent.maxlen else np.zeros(4)
-        return np.r_[x, profile, len(self.recent)].astype(np.float32)
+        return np.r_[x, profile, len(self.recent), cross].astype(np.float32)
 
 
 class ProgressModel(ClearanceModel):
@@ -181,9 +185,12 @@ class ProgressModel(ClearanceModel):
         distance = max(0., budget - slack)
         return min(tested, 2. * distance / max(1.e-9, b + np.sqrt(b*b + 4.*a*distance)))
 
+    def _actuation_distance(self, x):
+        return min(super()._actuation_distance(x), self.profile[5])
+
     def _finish_request(self, x, baseline, requested):
         frozen = super()._finish_request(x, baseline, requested)
-        corridor, sides, corner, margin, scans = map(float, self.profile)
+        corridor, sides, corner, margin, scans, conflict, eta, inward, age = map(float, self.profile)
         bend = float(curvature(x))
         turn_speed = np.sqrt(self.coefficients[1] / max(.001, bend))
         visibility = min(corridor, max(sides, corner))
@@ -194,8 +201,15 @@ class ProgressModel(ClearanceModel):
         self.progress_evidence = dict(binding="legacy", base_request_mps=float(frozen),
             proposal_mps=float(frozen), sight_m=float(visibility), corridor_m=corridor,
             cross_sight_m=sides, blind_end_m=corner, adjacent_margin_m=margin,
-            curvature_per_m=bend, supported_scans=int(scans))
+            curvature_per_m=bend, supported_scans=int(scans), crossing_gap_m=conflict,
+            crossing_entry_s=eta, crossing_inward_mps=inward, crossing_age_s=age)
         evidence = self.progress_evidence
+        if conflict < 60.:
+            # An approaching lateral surface is an independent braking constraint;
+            # it may command a complete stop even when both cruise heads prefer motion.
+            cap = self._stoppable_speed(conflict - self.standoff)
+            evidence.update(binding="crossing_yield", proposal_mps=cap)
+            return min(frozen, cap)
         if scans < 3:
             evidence["binding"] = "unconfirmed"
             return frozen
@@ -235,13 +249,13 @@ class ProgressModel(ClearanceModel):
         return float(max(frozen, proposal))
 
     def save(self, path):
-        np.savez_compressed(path, version=VERSION, revision=2, feature_names=FEATURE_NAMES, parameters=PARAMETERS,
+        np.savez_compressed(path, version=VERSION, revision=3, feature_names=FEATURE_NAMES, parameters=PARAMETERS,
                             coefficients=self.coefficients, base=np.frombuffer(self.parent_checkpoint, dtype=np.uint8))
 
     @classmethod
     def load(cls, path):
         with np.load(path, allow_pickle=False) as d:
-            if (str(d["version"].item()) != VERSION or "revision" not in d or int(d["revision"].item()) != 2
+            if (str(d["version"].item()) != VERSION or "revision" not in d or int(d["revision"].item()) != 3
                     or tuple(d["feature_names"]) != FEATURE_NAMES
                     or tuple(d["parameters"]) != PARAMETERS):
                 raise ValueError("Incompatible city progress checkpoint")

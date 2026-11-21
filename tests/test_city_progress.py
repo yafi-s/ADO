@@ -5,6 +5,7 @@ import numpy as np
 
 from crosswalk.city_drive import load_driver
 from crosswalk.city_progress import FEATURE_NAMES, PROFILE, FlankMotion, ProgressObserver, _profile
+from crosswalk.city_crossing import CrossingObserver
 from crosswalk.experiment import PROJECT
 from crosswalk.overtake import TacticalPass
 
@@ -33,7 +34,7 @@ def roadrow():
     row[NAMES["mapped_lamp_gap_m"]] = 60.
     row[NAMES["ego_speed_mps"]] = 4.
     row[NAMES["open_edge_margin_m"]] = -1.
-    row[[NAMES[n] for n in PROFILE]] = [24., 24., 0., 0., 3.]
+    row[[NAMES[n] for n in PROFILE]] = [24., 24., 0., 0., 3., 60., 6., 0., 0.]
     return row
 
 
@@ -48,7 +49,7 @@ class ProgressTests(unittest.TestCase):
         observer = ProgressObserver()
         def observe(data, detections=()):
             return observer.observe(data, detections, PATH[1:4].ravel(), 4.,
-                                    route_preview=PATH[4:].ravel(), stopline_gap=-2.)[-len(PROFILE):]
+                                    route_preview=PATH[4:].ravel(), stopline_gap=-2.)[-len(PROFILE):][:5]
         scan = pavement()
         for i in range(3):
             result = observe(packet(i, scan))
@@ -128,6 +129,44 @@ class ProgressTests(unittest.TestCase):
         for expected in (False,False,True):
             planner._source_motion(0., 60., visible)
             self.assertEqual(planner.source_clear, expected)
+
+    def test_world_compensated_lateral_traffic_from_both_sides_and_stationary_control(self):
+        def samples(direction):
+            guard = CrossingObserver()
+            history = []
+            for frame in range(23):
+                travel = frame * .25
+                center_y = direction * (12. - frame * .43) if direction else -7.
+                surface = np.array([[16.-travel+dx, center_y+dy, h-2.3, 1.]
+                                    for dx in [-.7,0.,.7] for dy in np.arange(-2.,2.,.25)
+                                    for h in [.4,.8,1.2,1.6]])
+                cloud = np.vstack((pavement(),surface))
+                history.append(guard.observe(cloud, [travel,0.,0.], frame, 2.5, PATH))
+            return guard, history
+        for side in (-1.,1.):
+            guard, history = samples(side)
+            first = next(row for row in history if row[0] < 60.)
+            self.assertGreater(first[0], 6.)
+            self.assertGreater(first[1], .6)
+            self.assertGreater(first[2], 2.)
+            prior = history[-1][0]
+            for frame in range(23,26):
+                tracked = guard.observe(np.empty((0,4)), None, frame, 2.5, PATH)
+                self.assertLess(tracked[0], prior)
+                prior = tracked[0]
+        self.assertTrue(all(row[0] == 60. for row in samples(0.)[1]))
+
+    def test_positive_crossing_can_command_full_stop_below_both_cruise_heads(self):
+        model = self.model()
+        x = roadrow()
+        x[NAMES["crossing_stop_gap_m"]] = 2.
+        x[NAMES["crossing_inward_mps"]] = 3.
+        _, throttle, brake = model.predict(x)
+        self.assertEqual(model.last_speed_request,0.)
+        self.assertEqual(throttle,0.)
+        self.assertGreater(brake,.5)
+        self.assertEqual(model.progress_evidence["binding"],"crossing_yield")
+        self.assertGreater(model.progress_evidence["base_request_mps"], 3.)
 
     def test_vetoes_signed_and_tactical_guards_preserve_full_action(self):
         x = roadrow()
