@@ -36,3 +36,35 @@ py -3.12 tools/build_windows_release.py --ref v0.1.0 --tag v0.1.0 --output .loca
 ```
 
 `--film-master` supplies the verified chase master produced by the capture and is required for v0.5. The build checks its size, hash, frame count and encoding against the committed manifest, stages it alongside the ZIP, and includes both files in `SHA256SUMS.txt`. The v0.5 ZIP also checks City Life safety and density totals against the native frame data and verifies the historical Urban Pace review. Keep each release asset below 2 GB. Upload the versioned ZIP, checksum file and staged chase master to the matching GitHub release. `release-metadata.json` records the archived commit and each v0.5 upload's size and SHA-256. The ZIP uses the selected Git tree for the committed source, media and evidence. The external CARLA runtime, virtual environments, local experiments and private Waymo records stay outside the ZIP.
+
+## Reproduce the City Life range study
+
+`ADO-City-Life-Range-Sweeps.zip` is a separate download for reproducing the offline perception study. Its `raw` directory contains the original perception journal, road geometry and scored telemetry. `sweeps` contains one native lidar and radar packet per recorded frame, plus the original front-horizon crop on acquisition frames. `manifest.json` lists frame coverage and the byte length and SHA-256 of every evidence file. `reference/object-memory-before.mjs` preserves the baseline renderer from its pinned Git commit. [City Life range study download](https://github.com/yafi-s/ADO/releases/download/v0.5.0/ADO-City-Life-Range-Sweeps.zip)
+
+From the extracted v0.5 Windows package or the tagged ADO source, use Python 3.12 with the packages in `requirements.txt` and Node.js for the display score. These commands verify the archive and reproduce the full-range tracker, the 60 m single-scale comparison and a sampled check of the native front-horizon boxes. The offline study uses the recorded sensor packets and can run without CARLA. [Scoring method and complete results](../results/distant-awareness/README.md)
+
+```powershell
+$asset = 'C:\Downloads\ADO-City-Life-Range-Sweeps.zip'
+$study = 'C:\ADO-City-Life-Range-Sweeps'
+$work = 'C:\ADO-City-Life-Range-Results'
+Get-FileHash $asset -Algorithm SHA256
+py -3.12 tools/package_city_range_study.py verify $asset
+Expand-Archive -LiteralPath $asset -DestinationPath $study
+New-Item -ItemType Directory -Path $work
+$env:OPENBLAS_NUM_THREADS = '1'
+py -3.12 tools/ablate_distant_range.py "$study/raw" "$study/sweeps" "$work/native-verification" --verification-only
+py -3.12 tools/ablate_distant_range.py "$study/raw" "$study/sweeps" "$work/sixty-metre-single-scale"
+py -3.12 tools/project_distant_reference.py "$study/raw" "$work/registration.json"
+node tools/score_distant_awareness.mjs "$work/sixty-metre-single-scale" "$work/before.json" --memory-file "$study/reference/object-memory-before.mjs" --projection "$work/registration.json"
+node tools/score_distant_awareness.mjs "$study/raw" "$work/after.json" --projection "$work/registration.json"
+py -3.12 tools/replay_distant_optics.py "$study/raw" "$work/crop-check.json" --native-sweeps "$study/sweeps" --stride 128
+```
+
+To build the optional asset, pass the sealed capture directory, its matching sweep directory and a new output path. After the Windows ZIP and chase master have passed their own checks, attach the range asset to add its checksum to `SHA256SUMS.txt`. The attach step checks that both ZIPs contain evidence from the same City Life recording.
+
+```powershell
+$release = '.local/release/v0.5.0'
+$studyZip = "$release/ADO-City-Life-Range-Sweeps.zip"
+py -3.12 tools/package_city_range_study.py build 'C:\Path\To\SealedCapture' 'C:\Path\To\NativeSweeps' $studyZip
+py -3.12 tools/package_city_range_study.py attach $studyZip $release
+```
