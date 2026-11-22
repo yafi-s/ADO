@@ -21,6 +21,7 @@ RELEASE_FILMS = {
     "v0.4.0": ("urban-pace", "ADO-Urban-Pace-1080p.mp4"),
     "v0.5.0": ("city-life", "ADO-City-Life-1080p.mp4"),
     "v0.6.0": ("city-progress", "ADO-City-Progress-1080p.mp4"),
+    "v0.7.0": ("city-maneuvers", "ADO-City-Maneuvers-1080p.mp4"),
 }
 LARGE_RECORDINGS = ("urban-pace", "surround-city", "long-city-drive")
 SITE_LIMIT = 1_000_000_000
@@ -31,6 +32,7 @@ URBAN_CHASE_BUDGET = 108_000_000
 CITY_LIFE_CHASE_BUDGET = 125_000_000
 ARCHIVED_CITY_LIFE_CHASE_BUDGET = 133_000_000
 CITY_PROGRESS_CHASE_BUDGET = 125_000_000
+CITY_MANEUVERS_CHASE_BUDGET = 145_000_000
 PAGES_ORIGIN = "https://yafi-s.github.io"
 VIDEO_FIELDS = ("width", "height", "codec_name", "nb_read_frames", "pix_fmt", "r_frame_rate")
 # Exact playback encodes from the completed v0.5 Pages deployment, keyed by native master SHA-256.
@@ -215,12 +217,13 @@ def fit_archive_data(web, build, revision, *, limit=None, directories=LARGE_RECO
             print(f"Linked the original {directory}/{name} at the checkout commit.")
 
 
-def fit_archive_cameras(web, build, revision, limit, *, directories=LARGE_RECORDINGS):
+def fit_archive_cameras(web, build, revision, limit, *, directories=LARGE_RECORDINGS,
+                        retained_chases=("urban-pace", "city-life")):
     if site_size(web) <= limit:
         return
     catalog = web / "media/viewer-catalog.json"
     records = json.loads(catalog.read_bytes())
-    # Keep Urban Pace and City Life chase videos on Pages. Prefer to keep City Life's onboard cameras local.
+    # Prefer to keep onboard footage from newer recordings local.
     candidates = []
     for entry in records:
         directory = entry["path"]
@@ -229,11 +232,11 @@ def fit_archive_cameras(web, build, revision, limit, *, directories=LARGE_RECORD
         for camera in entry["cameras"]:
             if camera not in {"chase", "front", "left", "right", "rear_left", "rear_right"}:
                 raise ValueError(f"Unknown historical camera: {camera}")
-            if directory in {"urban-pace", "city-life"} and camera == "chase":
+            if directory in retained_chases and camera == "chase":
                 continue
             path = web / "media" / directory / f"{camera}.mp4"
             if path.is_file():
-                priority = 2 if directory == "city-life" else int(camera == "chase")
+                priority = 2 if directory in {"city-life", "city-progress"} else int(camera == "chase")
                 candidates.append((priority, -path.stat().st_size, directory, camera, path, entry))
     runs = catalog_runs(build)
     for _, _, directory, camera, path, entry in sorted(candidates, key=lambda row: row[:4]):
@@ -361,26 +364,44 @@ def stage_city_life(web, build, revision, cache_dir=None):
     return urban_ready and life_ready
 
 
-def stage_city_progress(web, build, revision, cache_dir=None):
-    budgets = {
+def stage_recent_city_films(web, build, revision, tag, cache_dir=None):
+    chase_budgets = {
         "v0.4.0": URBAN_CHASE_BUDGET,
         "v0.5.0": ARCHIVED_CITY_LIFE_CHASE_BUDGET,
         "v0.6.0": CITY_PROGRESS_CHASE_BUDGET,
     }
-    limit = SITE_LIMIT - SITE_RESERVE
-    for tag, budget in budgets.items():
-        directory, _ = RELEASE_FILMS[tag]
-        size = (web / "media" / directory / "chase.mp4").stat().st_size
-        budgets[tag] = max(budget, size)
-        limit -= budgets[tag] - size
     archived = (*LARGE_RECORDINGS, "city-life")
-    fit_archive_data(web, build, revision, limit=limit, directories=(*archived, "city-progress"), verify_remote=True)
-    fit_archive_cameras(web, build, revision, limit, directories=archived)
+    if tag == "v0.7.0":
+        chase_budgets[tag] = CITY_MANEUVERS_CHASE_BUDGET
+        archived = (*archived, "city-progress")
+    featured = RELEASE_FILMS[tag][0]
+    retained_chases = tuple(RELEASE_FILMS[version][0] for version in chase_budgets)
+    limit = SITE_LIMIT - SITE_RESERVE
+    compact_sizes = {}
+    for version, budget in chase_budgets.items():
+        directory, _ = RELEASE_FILMS[version]
+        size = (web / "media" / directory / "chase.mp4").stat().st_size
+        compact_sizes[version] = size
+        chase_budgets[version] = max(budget, size)
+        limit -= chase_budgets[version] - size
+    archive_data = archived if tag == "v0.7.0" else (*archived, featured)
+    fit_archive_data(web, build, revision, limit=limit, directories=archive_data, verify_remote=True)
+    fit_archive_cameras(web, build, revision, limit, directories=archived, retained_chases=retained_chases)
+    if tag == "v0.7.0":
+        fit_archive_data(web, build, revision, limit=limit, directories=(featured,), verify_remote=True)
     total = site_size(web)
+    if tag == "v0.7.0":
+        # Native resolution and sequence still fit if the bitrate allowance is reduced.
+        for version, size in compact_sizes.items():
+            if total <= limit:
+                break
+            reduction = min(total - limit, chase_budgets[version] - size)
+            chase_budgets[version] -= reduction
+            limit += reduction
     if total > limit:
         raise ValueError(f"The city films and their evidence exceed the Pages budget ({total} bytes)")
-    staged = [stage_chase(web, build, tag, budget=budget, archive_revision=revision,
-                          require_1080=True, cache_dir=cache_dir) for tag, budget in budgets.items()]
+    staged = [stage_chase(web, build, version, budget=budget, archive_revision=revision,
+                          require_1080=True, cache_dir=cache_dir) for version, budget in chase_budgets.items()]
     return all(staged)
 
 
@@ -390,8 +411,8 @@ def prepare(web, archive_revision=None, cache_dir=None):
         return
     build = json.loads(build_path.read_bytes())
     tag = build.get("release", {}).get("label")
-    if tag == "v0.6.0":
-        return stage_city_progress(web, build, archive_revision, cache_dir)
+    if tag in {"v0.6.0", "v0.7.0"}:
+        return stage_recent_city_films(web, build, archive_revision, tag, cache_dir)
     if tag == "v0.5.0":
         return stage_city_life(web, build, archive_revision, cache_dir)
     if tag == "v0.4.0":

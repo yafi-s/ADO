@@ -172,6 +172,45 @@ class PagesFilmTests(unittest.TestCase):
             manifest = json.loads(chase.with_name("manifest.json").read_bytes())
             self.assertEqual(manifest["camera_videos"]["chase"], self.master_info)
 
+    def test_city_maneuvers_keeps_latest_cameras_and_all_recent_lossless_replays(self):
+        records = []
+        for tag in ("v0.4.0", "v0.5.0", "v0.6.0", "v0.7.0"):
+            self.fixture(tag)
+            directory = self.folder.name
+            pack = self.folder / "replay-pack.json.gz"
+            pack.write_bytes(b"lossless capture")
+            records.append(dict(path=directory, cameras=["chase", "front"],
+                                replay_pack_url=f"./media/{directory}/{pack.name}",
+                                replay_pack_sha256=pages.sha256(pack)))
+            if tag in {"v0.6.0", "v0.7.0"}:
+                front = self.folder / "front.mp4"
+                front.write_bytes(b"same exposure as chase" * 500)
+                manifest = json.loads(self.manifest.read_bytes())
+                manifest["sha256"][front.name] = pages.sha256(front)
+                pages.write_json(self.manifest, manifest)
+        catalog = self.web / "media/viewer-catalog.json"
+        pages.write_json(catalog, records)
+        revision = "d" * 40
+        capacity = pages.site_size(self.web) + pages.SITE_RESERVE + 4 * (len(self.master) - len(self.compact)) - 1000
+        budgets = dict.fromkeys(("URBAN_CHASE_BUDGET", "ARCHIVED_CITY_LIFE_CHASE_BUDGET",
+                                 "CITY_PROGRESS_CHASE_BUDGET", "CITY_MANEUVERS_CHASE_BUDGET"), len(self.master))
+        with patch.multiple(pages, SITE_LIMIT=capacity, **budgets), \
+                patch.object(pages, "verify_archive_url") as verify, \
+                patch.object(pages, "urlopen", side_effect=lambda *_args, **_kwargs: BytesIO(self.master)):
+            self.assertTrue(pages.prepare(self.web, archive_revision=revision))
+        old_front = self.web / "media/city-progress/front.mp4"
+        old_url = pages.archive_revision_url(revision, "city-progress", "front.mp4")
+        verify.assert_called_once_with(old_url, old_front)
+        self.assertFalse(old_front.exists())
+        self.assertTrue(front.is_file())
+        archived = json.loads(catalog.read_bytes())
+        self.assertEqual(archived[2]["camera_urls"], {"front": old_url})
+        self.assertNotIn("camera_urls", archived[3])
+        for record in records:
+            folder = self.web / "media" / record["path"]
+            self.assertEqual((folder / "chase.mp4").read_bytes(), self.master)
+            self.assertTrue((folder / "replay-pack.json.gz").is_file())
+
     def test_cached_release_encode_is_verified_and_recovers_from_damage(self):
         self.fixture("v0.6.0")
         cache = self.web.parent / "playback-cache"

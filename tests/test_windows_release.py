@@ -170,7 +170,10 @@ class WindowsReleaseTests(unittest.TestCase):
                          (release.LIFE_MEDIA, release.LIFE_MASTER, release.LIFE_SCHEMA))
         self.assertEqual(release.featured_recording("v0.6.0"),
                          (release.PROGRESS_MEDIA, release.PROGRESS_MASTER, release.PROGRESS_SCHEMA))
+        self.assertEqual(release.featured_recording("v0.7.0"),
+                         (release.MANEUVERS_MEDIA, release.MANEUVERS_MASTER, release.MANEUVERS_SCHEMA))
         self.assertLess(set(release.required_files("v0.5.0")), set(release.required_files("v0.6.0")))
+        self.assertLess(set(release.required_files("v0.6.0")), set(release.required_files("v0.7.0")))
         self.assertIn(f"{release.PACE_MEDIA}/{release.CONE_REVIEW}", release.required_files("v0.5.0"))
         with self.assertRaisesRegex(ValueError, "native 1080p --film-master"):
             release.build_release("unused", "v0.5.0", Path("unused"))
@@ -262,6 +265,153 @@ class WindowsReleaseTests(unittest.TestCase):
                 index = compact.read(release.PREFIX + release.EXTERNAL_SWEEPS_INDEX).decode()
                 self.assertIn(expected["url"], index)
                 self.assertIn(expected["sha256"], index)
+
+    def test_maneuvers_package_archives_only_the_optional_pinned_research_needed_to_fit(self):
+        root = release.PROGRESS_RESULTS
+        sweep = f"{root}/trials/candidate/sensor-sweeps.zip"
+        clip = f"{root}/trials/candidate/front.mp4"
+        linked = f"{root}/trials/linked/front.mp4"
+        current = f"{root}/trials/current/front.mp4"
+        contents = {sweep: b"s" * 300, clip: b"c" * 200, linked: b"l" * 500, current: b"n" * 500,
+                    "web/media/build.json": json_bytes({"evidence": [{"url": f"../{linked}"}]})}
+        with TemporaryDirectory() as folder, fixture_zip(contents) as package:
+            archive = Path(folder) / "ADO-v0.7.0-Windows.zip"
+            archive.write_bytes(package.fp.getvalue())
+            size = archive.stat().st_size
+            with patch.object(release, "historical_research_paths", return_value={sweep, clip, linked}), \
+                    patch.object(release, "SWEEP_INDEX_RESERVE", 0):
+                with patch.object(release, "MAX_UPLOAD_BYTES", size - 100):
+                    selected = release.external_sweep_inventory(archive, "a" * 40, historical=True)
+                    self.assertEqual([member["path"] for member in selected], [sweep])
+                with patch.object(release, "MAX_UPLOAD_BYTES", size - 400):
+                    selected = release.external_sweep_inventory(archive, "a" * 40, historical=True)
+                    self.assertEqual({member["path"] for member in selected}, {sweep, clip})
+                for member in selected:
+                    path = member["path"]
+                    self.assertIn(f"/{release.PROGRESS_ARCHIVE_COMMIT}/{path}", member["url"])
+                    self.assertEqual(member["sha256"], sha256(contents[path]))
+
+    def test_maneuver_witness_requires_actual_return_and_waiting_for_slow_traffic(self):
+        witness = dict(before_target_s=1., alternate_alongside_s=5., rear_cleared_target_s=6., returned_to_route_s=8.,
+                       passed_s=10., station_m=300., rejoin_station_m=322., rejoin_rear_clear_m=4.,
+                       minimum_body_clearance_m=.8, alongside_minimum_body_gap_m=1.2, alongside_ego_lane=[67, -1],
+                       source_lane=[67, -2], passing_lane=[67, -1])
+        stationary = dict(witness, kind="in-lane-obstruction", target_count=3, maximum_target_displacement_m=.02)
+        moving = dict(witness, kind="slow-traffic", occupied_gap_wait_s=2., adjacent_traffic_cleared_s=4.,
+                      occupied_gap_frames=2, moving_target_s=1., moving_alongside_s=5., alongside_target_mps=2.,
+                      target_traveled_m=14., target_maximum_step_m=.4)
+        capture = dict(events=[stationary, moving], summary=dict(duration_s=15.))
+        release.verify_maneuver_events(capture)
+        moving["adjacent_traffic_cleared_s"] = 5.2
+        with self.assertRaisesRegex(ValueError, "wait for the occupied passing lane"):
+            release.verify_maneuver_events(capture)
+        moving["adjacent_traffic_cleared_s"] = 4.
+        stationary["returned_to_route_s"] = 5.7
+        with self.assertRaisesRegex(ValueError, "native frame sequence"):
+            release.verify_maneuver_events(capture)
+
+    def test_maneuver_audit_verifies_measured_pace_above_forty_and_legal_lane_witnesses(self):
+        route = json_bytes(dict(route_id="surveyed route", opendrive_sha256="native geometry"))
+        events = [dict(kind=kind, alongside_ego_lane=[67, -1]) for kind in sorted(release.MANEUVER_EVENTS)]
+        telemetry = [dict(speed_mps=speed, posted_limit_kmh=90) for speed in (10, 12, 15, 8)]
+        summary = dict(frames=4, outcome="complete", progress_m=300., route_length_m=300., route_id="surveyed route",
+                       events=events, **dict.fromkeys(release.SAFETY_COUNTS, 0))
+        capture = dict(summary=summary, capture_id="native-receipt", quality_requested="High", policy={"sha256": "model"},
+                       sha256={"telemetry.json": "telemetry"}, population_reference_sha256="population",
+                       first_frame=100, last_frame=103, frame_period_s=.1)
+        moves = []
+        for frame, event in zip((100, 102), events, strict=True):
+            moves.append(dict(road=67, alternate_lane=-1, whole_body_in_alternate={"frame": frame},
+                              restored_source={"frame": frame + 1}, shoulder_or_departure_samples=0,
+                              first_native_legality_failure=None,
+                              alongside={"14": dict(first={"frame": frame, "role": event["kind"]},
+                                                    nearest={"body_clearance_m": .8})},
+                              ahead_with_sampled_clearance={"14": {"frame": frame + 1}}))
+        audit = dict(schema="ado-city-maneuver-audit-v1",
+                     source=dict(seal_verified=True, quality="High", producer=release.CITY_PRODUCER,
+                                 capture_id=capture["capture_id"], route_id=summary["route_id"], policy_sha256="model",
+                                 map_sha256="native geometry",
+                                 route_sha256=sha256(route), telemetry_sha256="telemetry", population_sha256="population"),
+                     whole=dict(entry={"frame": 100}, exit={"frame": 103}, frames=4),
+                     grade=dict(summary, participant_contacts=[]),
+                     independent_clearance={"cars": {"overlap_samples": 0}}, actual_lateral_departures=moves,
+                     posted_90=dict(frames=4, seconds=.4, kmh_p10_p50_p95_max=[0, 0, 0, 54.],
+                                    seconds_at_or_above_35=.3, seconds_at_or_above_37=.2, over_40_kmh_seconds=.2))
+        with fixture_zip({release.MANEUVERS_AUDIT: json_bytes(audit), release.MANEUVERS_ROUTE: route}) as archive:
+            release.verify_maneuver_audit(archive, capture, telemetry)
+            telemetry[3]["posted_limit_kmh"] = 26
+            with self.assertRaisesRegex(ValueError, "pace scores"):
+                release.verify_maneuver_audit(archive, capture, telemetry)
+            telemetry[3]["posted_limit_kmh"] = 90
+        moves[0]["first_native_legality_failure"] = {"frame": 100}
+        with fixture_zip({release.MANEUVERS_AUDIT: json_bytes(audit), release.MANEUVERS_ROUTE: route}) as archive:
+            with self.assertRaisesRegex(ValueError, "legal alternate lane"):
+                release.verify_maneuver_audit(archive, capture, telemetry)
+
+    def test_maneuver_sequence_matches_the_witnessed_wait_to_actual_controls(self):
+        capture = dict(events=[dict(kind="in-lane-obstruction", returned_to_route_s=1.),
+                               dict(kind="slow-traffic", occupied_gap_wait_s=2.)],
+                       maneuver_sequence=dict(passed=True, obstruction_rejoin_precedes_occupied_wait=True,
+                                              actual_wait_policy_frames=1, first_actual_wait_frame=51,
+                                              last_actual_wait_frame=51))
+        yield_control = dict(maneuver_phase="yield", committed=False)
+        frames = [dict(frame=50 + i, events=[dict(kind="slow-traffic", occupied_gap_frames=count)],
+                       tactical_pass=yield_control) for i, count in enumerate((0, 1, 1))]
+        release.verify_maneuver_sequence(capture, frames)
+        frames[1]["tactical_pass"] = dict(maneuver_phase="yield", committed=True)
+        with self.assertRaisesRegex(ValueError, "controls do not show a wait"):
+            release.verify_maneuver_sequence(capture, frames)
+
+    def test_maneuvers_fit_binds_its_raw_sources_and_retains_inherited_source_checks(self):
+        base = "models/city-progress/candidate.npz"
+        parent_fit = "models/city-progress/fit.json"
+        raw_base = b"City Progress checkpoint"
+        fit = dict(base_sha256=sha256(raw_base), inputs={
+            base: sha256(raw_base), "crosswalk/city_maneuvers.py": "model", "crosswalk/city_maneuvers_fit.py": "trainer"})
+        sources = {"city_maneuvers.py": "model", "city_maneuvers_fit.py": "trainer", "city_progress.py": "current CRLF"}
+        parent = dict(revision=4, checkpoint_sha256=sha256(raw_base), source_sha256="historical LF",
+                      crossing_source_sha256="crossing", grade_source_sha256="grade")
+        with fixture_zip({base: raw_base, parent_fit: json_bytes(parent)}) as archive:
+            names = release.maneuver_fit_sources(archive, fit, {"code_sha256": sources})
+            self.assertEqual(names, set(sources) | {"city_crossing.py", "city_grade.py"})
+            sources["city_maneuvers.py"] = "unsupported source"
+            with self.assertRaisesRegex(ValueError, "different execution source"):
+                release.maneuver_fit_sources(archive, fit, {"code_sha256": sources})
+
+    @patch.object(release, "verify_video")
+    @patch.object(release, "MANEUVERS_TRIAL_CASES", {"slow"})
+    def test_maneuver_trials_verify_complete_recording_even_if_baseline_stops(self, verify_video):
+        base_model, candidate_model = b"baseline weights", b"candidate weights"
+        artifacts = {"trace.jsonl.gz": gzip.compress(b'{"frame": 21}\n'),
+                     "reference.jsonl.gz": gzip.compress(b'{"frame": 21}\n'),
+                     "observations.npz": b"inference features"}
+        members = {"models/city-maneuvers/fit.json": json_bytes({"base_sha256": sha256(base_model)})}
+        for arm, schema, model in (("baseline", release.PROGRESS_SCHEMA, base_model),
+                                   ("candidate", release.MANEUVERS_SCHEMA, candidate_model)):
+            folder = f"{release.MANEUVERS_TRIALS}/{arm}"
+            trial = f"{folder}/slow"
+            common = dict(seed=212, policy_schema=schema, model_sha256=sha256(model),
+                          execution_source_sha256=sha256(b"source snapshot"))
+            protocol = dict(common, cases=["slow"], windows={"slow": [67, -2, 94., 215.]}, step_s=.1,
+                            requested_quality="High", map="Town03_Opt", weather="ClearNoon",
+                            tactical_model_sha256=sha256(b"tactics"))
+            summary = dict(common, first_frame=21, last_frame=21, frames=1, case="slow", capture_complete=True,
+                           outcome="max_steps" if arm == "baseline" else "complete", producer=release.CITY_PRODUCER,
+                           geometry=dict(road_id=67, lane_id=-2, start_s=94., end_s=215.), front_sha256=sha256(b"camera"),
+                           artifact_sha256={name: sha256(data) for name, data in artifacts.items()})
+            members.update({f"{folder}/checkpoint.npz": model, f"{folder}/study-source.zip": b"source snapshot",
+                            f"{folder}/tactical-model.json": b"tactics", f"{folder}/protocol.json": json_bytes(protocol),
+                            f"{folder}/capture-status.json": json_bytes({"slow": True}), f"{trial}/front.mp4": b"camera",
+                            f"{trial}/summary.json": json_bytes(summary)})
+            members.update({f"{trial}/{name}": data for name, data in artifacts.items()})
+        capture = dict(policy={"sha256": sha256(candidate_model)}, quality_requested="High", frame_period_s=.1)
+        with fixture_zip(members) as archive:
+            release.verify_maneuver_trials(archive, capture, Path("unused"))
+        self.assertEqual(verify_video.call_count, 2)
+        protocol["windows"]["slow"][-1] = 214.
+        members[f"{folder}/protocol.json"] = json_bytes(protocol)
+        with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, "trial identity"):
+            release.verify_maneuver_trials(archive, capture, Path("unused"))
 
     @patch.object(release, "verify_video")
     def test_pace_film_verifies_eleven_events_and_an_exact_replay_pack(self, verify_video):

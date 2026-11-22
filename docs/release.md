@@ -3,8 +3,8 @@
 Download the ZIP and `SHA256SUMS.txt` from the same release. With both files in the same folder, run the following command in PowerShell and compare the full hash with the value in `SHA256SUMS.txt`.
 
 ```powershell
-Get-FileHash .\ADO-v0.6.0-Windows.zip -Algorithm SHA256
-Get-FileHash .\ADO-City-Progress-1080p.mp4 -Algorithm SHA256
+Get-FileHash .\ADO-v0.7.0-Windows.zip -Algorithm SHA256
+Get-FileHash .\ADO-City-Maneuvers-1080p.mp4 -Algorithm SHA256
 ```
 
 Extract the entire ZIP to a writable folder and double-click `ADO\Start-ADO.cmd`. The first launch installs the official CARLA 1.0 Windows server, Town01_Opt and Town03_Opt map content, the matching Python client, and the project's Python dependencies. The two simulator downloads total about 20.8 GB. Allow around 50 GB of free space on the extraction drive for the downloads and unpacked simulator. If a download is interrupted, run `Start-ADO.cmd` again to resume. After setup, use `Start-ADO.cmd` or `Watch-Live.cmd` to open the original Town01 live driving console. Press Ctrl+C in the launcher window to stop it. To open the Town03 console, follow the [city driving instructions](city-driving.md#run-it-locally).
@@ -17,7 +17,15 @@ The ZIP includes trained checkpoints, source code, Blender vehicle assets, synch
 py -3.12 -m http.server 8765 --bind 127.0.0.1
 ```
 
-The v0.6 Windows ZIP includes City Progress, its driving checkpoint, six synchronized camera tracks, and the frame-aligned population reference and execution sources. `ADO-City-Progress-1080p.mp4` is the native 1920 × 1080 chase master. City Progress, City Life, and Urban Pace keep their 1080p chase playback and compressed replay packs on Pages. Pages can serve other historical camera tracks and original replay or telemetry downloads from the exact checkout commit to stay within its 1 GB limit. [v0.6 release](https://github.com/yafi-s/ADO/releases/tag/v0.6.0) · [City Progress replay](https://yafi-s.github.io/ADO/?run=city-progress)
+The v0.7 Windows ZIP includes City Maneuvers, its driving checkpoint, six synchronized cameras, and the evidence for its passing and pace tests. `ADO-City-Maneuvers-1080p.mp4` is the native 1920 × 1080 chase master. City Maneuvers is the default drive on Pages. Pages hosts the six City Maneuvers camera tracks and the lossless replay packs. It keeps 1080p chase playback for City Progress, City Life, and Urban Pace. If older cameras or original replay and telemetry downloads exceed the site's 1 GB budget, Pages links them to the exact checkout commit after checking that the archived copy supports browser seeking. [v0.7 release](https://github.com/yafi-s/ADO/releases/tag/v0.7.0) · [City Maneuvers replay](https://yafi-s.github.io/ADO/?run=city-maneuvers)
+
+To run City Maneuvers live, open PowerShell in the extracted `ADO` folder and run this command.
+
+```powershell
+.\Watch-City.cmd --model models/city-maneuvers/candidate.npz --population-profile city-maneuvers
+```
+
+The v0.6 Windows ZIP includes City Progress, its driving checkpoint, six synchronized camera tracks, and the frame-aligned population reference and execution sources. `ADO-City-Progress-1080p.mp4` is its native chase master. [v0.6 release](https://github.com/yafi-s/ADO/releases/tag/v0.6.0) · [City Progress replay](https://yafi-s.github.io/ADO/?run=city-progress)
 
 The v0.5 Windows ZIP includes City Life with six synchronized cameras, the roadside-clearance checkpoint, and the frame-aligned population reference and execution sources. `ADO-City-Life-1080p.mp4` is its native chase master. The standalone range study remains available from the same release. [v0.5 release](https://github.com/yafi-s/ADO/releases/tag/v0.5.0) · [City Life replay](https://yafi-s.github.io/ADO/?run=city-life)
 
@@ -30,6 +38,7 @@ The [v0.3 release](https://github.com/yafi-s/ADO/releases/tag/v0.3.0) includes t
 Install Git and Python 3.12 or later. Put `ffprobe` from FFmpeg on PATH for the video checks. Commit the evaluated manifest, summaries, compressed traces, recordings, and Builds & logs index with the code and models. Build from the exact release commit or from the tag after it has been created. Use a separate output folder for each version so its checksum file stays with the matching archive.
 
 ```powershell
+py -3.12 tools/build_windows_release.py --ref v0.7.0 --tag v0.7.0 --output "$env:LOCALAPPDATA\ADO\city-maneuvers\release\v0.7.0" --film-master "C:\Path\To\Capture\master\chase.mp4"
 py -3.12 tools/build_windows_release.py --ref v0.6.0 --tag v0.6.0 --output .local/release/v0.6.0 --film-master "C:\Path\To\Capture\master\chase.mp4"
 py -3.12 tools/build_windows_release.py --ref v0.5.0 --tag v0.5.0 --output .local/release/v0.5.0 --film-master "C:\Path\To\Capture\master\chase.mp4"
 py -3.12 tools/build_windows_release.py --ref v0.4.0 --tag v0.4.0 --output .local/release/v0.4.0 --film-master "C:\Path\To\Capture\master\chase.mp4"
@@ -38,9 +47,11 @@ py -3.12 tools/build_windows_release.py --ref v0.2.0 --tag v0.2.0 --output .loca
 py -3.12 tools/build_windows_release.py --ref v0.1.0 --tag v0.1.0 --output .local/release/v0.1.0
 ```
 
-`--film-master` supplies the chase master from the featured capture and is required from v0.5 onward. The build checks its size, hash, frame count and encoding against the committed manifest. It also checks the populated drives' safety and density totals against the native frame data and verifies the historical Urban Pace review. Keep each release asset below 2 GiB. Upload the versioned ZIP, `SHA256SUMS.txt` and staged chase master to the matching GitHub release. `release-metadata.json` records the archived commit and the sizes and SHA-256 hashes of the ZIP and chase master. The ZIP uses the selected Git tree for the committed source, media and evidence. The external CARLA runtime, virtual environments, local experiments and private Waymo records stay outside the ZIP.
+`--film-master` supplies the chase master from the featured capture and is required from v0.5 onward. The build checks its size, hash, frame count and encoding against the committed manifest. It also checks the populated drives' safety and density totals against the native frame data and verifies the historical Urban Pace review. For v0.7 it verifies the matched trial captures and checks the two passes, the occupied-gap wait, and the return to lane against the full drive's native evidence. Keep each release asset below 2 GiB. Upload the versioned ZIP, `SHA256SUMS.txt` and staged chase master to the matching GitHub release. `release-metadata.json` records the archived commit and the sizes and SHA-256 hashes of the ZIP and chase master. The ZIP uses the selected Git tree for the committed source, media and evidence. The external CARLA runtime, virtual environments, local experiments and private Waymo records stay outside the ZIP.
 
-If optional City Progress raw sensor sweeps would put the Windows ZIP over GitHub’s limit, the build adds `ADO/results/city-progress/EXTERNAL-SWEEPS.md`. That index lists the affected raw sweep archives with their download URLs pinned to the release commit, byte lengths, and SHA-256 hashes. The Windows ZIP includes the films, controller logs, and synchronized replay needed to review the drives locally.
+If optional City Progress raw sensor sweeps would put the v0.6 Windows ZIP over GitHub’s limit, the build adds `ADO/results/city-progress/EXTERNAL-SWEEPS.md`. That index lists the affected raw sweep archives with their download URLs pinned to the release commit, byte lengths, and SHA-256 hashes. The Windows ZIP includes the films, controller logs, and synchronized replay needed to review the drives locally.
+
+The v0.7 Windows ZIP keeps the historical showcase films, controller logs, and synchronized replays. If the measured ZIP would exceed 2 GiB, the build moves optional v0.6 raw sensor sweeps and then exploratory trial clips into the external research index at `ADO/results/city-progress/EXTERNAL-RESEARCH.md`. Each record gives a download URL pinned to the published v0.6 commit, the byte length, and a SHA-256 hash. Building the v0.7 ZIP requires that published commit in the local Git history. [Archived City Progress trials](https://github.com/yafi-s/ADO/tree/51b1cbb25837eb43693b775ccb14e68bffc4084b/results/city-progress)
 
 ## Reproduce the City Life range study
 
