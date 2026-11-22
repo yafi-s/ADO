@@ -124,3 +124,14 @@ of the physical maneuver demonstration.
   453 logged yield exposures. The scene records 167 native
   occupied-gap samples. The run timed out before its finish.
   [Sealed focused audit](blocked-pinned-v07.json)
+
+The amended pair uses the same release driving source `9bd6dafa`
+and fixture evaluator `0e9fa722`. In the moving-lead test, the ego
+waited through 33 occupied samples with 1.6 seconds stopped. It passed
+with 1.701 m of native moving-lead clearance and restored its full body
+to source at frame 24844. The minimum body gap across 34 moving
+straddle samples was 12.439 m. The amended blocked case reached the
+specified end and stayed in the source lane through all 167 occupied
+samples. Both completed with zero contacts and sampled overlaps.
+[Amended moving-lead audit](slow-amended-v07.json) ·
+[Amended blocked-control audit](blocked-amended-v07.json)

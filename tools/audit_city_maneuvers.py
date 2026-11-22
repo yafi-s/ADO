@@ -886,9 +886,12 @@ def audit(folder, reference, route_path, ranges=None, inventory=None, range_fram
                 braking_peak_mps2=rnd(-accel[motion_windows].min()),
                 braking_peak_location=stamp(rows[brake_spot]),
                 braking_harder_than_3_seconds=duration(accel < -3.),
+                braking_harder_than_4_seconds=duration(accel < -4.),
                 lateral_p95_mps2=rnd(np.quantile(lateral[motion_windows], .95)),
                 lateral_peak_mps2=rnd(lateral[motion_windows].max()),
                 lateral_peak_location=stamp(rows[lateral_spot]),
+                lateral_above_3_mps2_seconds=duration(lateral > 3.),
+                lateral_above_4_mps2_seconds=duration(lateral > 4.),
             )
         return report
 

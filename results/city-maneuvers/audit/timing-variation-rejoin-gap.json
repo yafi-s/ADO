@@ -1976,5 +1976,89 @@
       "passed_surface_tracked": true,
       "reported_phase": "wait_rejoin"
     }
-  ]
+  ],
+  "after_station_570": {
+    "scored_samples": 487,
+    "by_original_sedan_position": {
+      "ahead": {
+        "samples": 3,
+        "first": {
+          "frame": 28102,
+          "time_s": 76.7,
+          "station_m": 570.331,
+          "actual_kmh": 18.965,
+          "target_kmh": 18.394,
+          "front_bumper_room_m": 1.459,
+          "rear_bumper_room_m": -11.072
+        },
+        "last": {
+          "frame": 28104,
+          "time_s": 76.9,
+          "station_m": 571.388,
+          "actual_kmh": 19.08,
+          "target_kmh": 18.394,
+          "front_bumper_room_m": 0.399,
+          "rear_bumper_room_m": -10.012
+        },
+        "maximum_front_room_m": 1.459,
+        "maximum_rear_room_m": -10.012
+      },
+      "longitudinal_overlap": {
+        "samples": 23,
+        "first": {
+          "frame": 28105,
+          "time_s": 77.0,
+          "station_m": 571.918,
+          "actual_kmh": 19.138,
+          "target_kmh": 18.394,
+          "front_bumper_room_m": -0.131,
+          "rear_bumper_room_m": -9.482
+        },
+        "last": {
+          "frame": 28127,
+          "time_s": 79.2,
+          "station_m": 581.254,
+          "actual_kmh": 13.237,
+          "target_kmh": 12.01,
+          "front_bumper_room_m": -9.471,
+          "rear_bumper_room_m": -0.142
+        },
+        "maximum_front_room_m": -0.131,
+        "maximum_rear_room_m": -0.142
+      },
+      "behind": {
+        "samples": 461,
+        "first": {
+          "frame": 28128,
+          "time_s": 79.3,
+          "station_m": 581.62,
+          "actual_kmh": 13.111,
+          "target_kmh": 11.224,
+          "front_bumper_room_m": -9.831,
+          "rear_bumper_room_m": 0.218
+        },
+        "last": {
+          "frame": 28588,
+          "time_s": 125.3,
+          "station_m": 584.724,
+          "actual_kmh": 0.0,
+          "target_kmh": 0.0,
+          "front_bumper_room_m": -12.941,
+          "rear_bumper_room_m": 3.328
+        },
+        "maximum_front_room_m": -9.831,
+        "maximum_rear_room_m": 3.328
+      }
+    },
+    "stationary_sedan_pose_range_m": 0.0,
+    "first_ego_standstill": {
+      "frame": 28142,
+      "time_s": 80.7,
+      "station_m": 584.721,
+      "actual_kmh": 0.104,
+      "target_kmh": 0.0
+    },
+    "actual_ego_standstill_seconds": 44.7,
+    "source_lidar_gap_accept_samples": 0
+  }
 }
