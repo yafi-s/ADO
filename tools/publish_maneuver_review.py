@@ -65,6 +65,17 @@ def create():
         ("Yield to adjacent traffic", exposure(sequence["first_actual_wait_frame"], "rear_left")),
         ("Pass the moving car", camera(lead["moving_alongside_s"], "chase")),
         ("Return", camera(lead["returned_to_route_s"], "rear_right")))
+    variant = read(STUDY / "qualification/timing-variation/grade.json")
+    variant_run = read(STUDY / "qualification/timing-variation/summary.json")
+    variant_lead = next(event for event in variant["events"] if event["kind"] == "slow-traffic")
+    if variant["passed"] or variant_lead.get("returned_to_route_s") is not None:
+        raise ValueError("The recorded timing-variation outcome changed")
+    add("Later gap and faster lead",
+        f'When the adjacent gap opened later and the lead traveled at {variant_lead["alongside_target_mps"]*3.6:.1f} km/h, '
+        f'ADO yielded and overtook, then stopped in the passing lane. The second return failed. '
+        f'The trial timed out after {variant_run["duration_s"]:.1f} s with {variant_run["collision_events"]} recorded ego contacts.',
+        ("Native grade and events", TAG + "qualification/timing-variation/grade.json"),
+        ("Stopped position and controls", TAG + "qualification/timing-variation/summary.json"))
     before, after = old["posted_90"], new["posted_90"]
     add("90 km/h posted section",
         f'On the featured drive, actual speed on this section peaked at {after["kmh_p10_p50_p95_max"][3]:.1f} km/h '
