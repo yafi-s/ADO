@@ -2,6 +2,98 @@
   "schema": "ado-city-maneuvers-native-pace-comparison-v1",
   "case_count": 5,
   "pending_native_pairs": [],
+  "negative_controls": [
+    {
+      "case": "hidden",
+      "seed": 623,
+      "v06": {
+        "passed": true,
+        "exposed": true,
+        "handled": true,
+        "stopped_for_event": true,
+        "event_minimum_gap_m": 3.65,
+        "minimum_sampled_target_body_gap_m": 3.766,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+        "evidence": "results/city-progress/trials/matched-candidate-v4/occluded/summary.json"
+      },
+      "v07": {
+        "passed": true,
+        "exposed": true,
+        "handled": true,
+        "stopped_for_event": true,
+        "event_minimum_gap_m": 3.43,
+        "minimum_sampled_target_body_gap_m": 3.541,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "checkpoint_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+        "evidence": "results/city-maneuvers/pace/native-v07-safety/hidden/summary.json"
+      }
+    },
+    {
+      "case": "left",
+      "seed": 624,
+      "v06": {
+        "passed": true,
+        "exposed": true,
+        "handled": true,
+        "stopped_for_event": true,
+        "event_minimum_gap_m": 0.36,
+        "minimum_sampled_target_body_gap_m": 4.645,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+        "evidence": "results/city-progress/trials/matched-candidate-v4/left/summary.json"
+      },
+      "v07": {
+        "passed": true,
+        "exposed": true,
+        "handled": true,
+        "stopped_for_event": true,
+        "event_minimum_gap_m": 0.19,
+        "minimum_sampled_target_body_gap_m": 4.642,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "checkpoint_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+        "evidence": "results/city-maneuvers/pace/native-v07-safety/left/summary.json"
+      }
+    },
+    {
+      "case": "red",
+      "seed": 625,
+      "v06": {
+        "passed": true,
+        "exposed": true,
+        "handled": true,
+        "stopped_for_event": true,
+        "event_minimum_gap_m": 3.72,
+        "minimum_sampled_target_body_gap_m": 3.642,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+        "evidence": "results/city-progress/trials/matched-candidate-v4/signal/summary.json"
+      },
+      "v07": {
+        "passed": true,
+        "exposed": true,
+        "handled": true,
+        "stopped_for_event": true,
+        "event_minimum_gap_m": 3.74,
+        "minimum_sampled_target_body_gap_m": 3.662,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "checkpoint_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+        "evidence": "results/city-maneuvers/pace/native-v07-safety/red/summary.json"
+      }
+    }
+  ],
   "method": "Original City Life seed 212, identical geometry, actors, approach and rig within each pair. Bend uses primary driving cameras and lidar; boulevard runs use the five-camera rig. Props use the native event scorer. Pedestrian gaps use 10Hz sampled physical footprints with a level ego reconstruction. Whole-arm violations exposed per window.",
   "cases": [
     {

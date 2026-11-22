@@ -1,5 +1,17 @@
 # Route maneuver decision
 
+## Independent transfer on Town03 road 65
+
+The frozen driver used native lane +3, passed to its left in lane +2 and returned to +3. This road is outside the Market route and runs toward decreasing OpenDRIVE station. All four normal-episode controls passed, with zero contacts and at least 1.534 m of native body clearance to every test vehicle in every recorded frame. The controller and classifier hashes, whole-body measurements and trace/video hashes are in the [transfer score](road65-pinned-r2/qualification.json).
+
+- With an open lane, the driver signaled, passed the moving car and returned ahead. Minimum body clearance was 1.536 m. [Open-lane film](road65-pinned-r2/clear/front.mp4)
+- With adjacent traffic, it yielded for 89 frames. It spent 30 frames rolling behind the slow car during physical adjacent occupancy. It entered at a measured 63.59 m adjacent bumper gap once the other vehicle went ahead. It drew alongside the moving lead for 64 frames and returned to the requested lane. [Occupied-lane film](road65-pinned-r2/occupied/front.mp4)
+- With no lead, it never signaled or changed lanes. With a rolling lead that braked and an occupied adjacent lane, it rolled for 33 qualifying yield frames and came to a held stop without changing lanes. [Empty lane](road65-pinned-r2/no-lead/front.mp4) · [Lead brakes](road65-pinned-r2/rebrake/front.mp4)
+
+An earlier Road 65 capture stopped before the planner's final settled phase. A second investigation found that the per-ID CARLA actor-list query reported destroyed handles after each episode. The final evaluator writes native evidence first, then checks the IDs against the live vehicle fleet. The original artifacts and finite scores remain separate. The evaluation correction did not change the driving model or native scene.
+
+## Model and offline checks
+
 The opt-in driver learns four choices from independent traffic simulations: keep the route lane, follow its lead, yield to adjoining traffic, and pass. Its normal city entry point selects the new planner only when the loaded controller requests route maneuvers. The earlier city-progress controller still selects its original tactical tree.
 
 The four-action tree was fitted on 56,000 generated traffic situations and scored on 16,000 situations from a separate seed. It agreed with the simulated teacher on 98.49%. Of 1,909 teacher-yield examples it proposed passing 93 times. A separate deployment check requires measured front and rear pavement, a conservative projected gap, a legal native lane and enough remaining route before the vehicle can signal and move. These figures describe agreement with a synthetic teacher.

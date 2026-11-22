@@ -1,0 +1,136 @@
+{
+  "source_revision": "5510f55c2115f7600b4d56816ce66ffc31121775",
+  "controller_qualification_revision": "9bd6dafa0348d37e163a3acf8de553f642bebf45",
+  "planner_sha256": "18c7543ed01beb2fce9b94abd9aac0db426df72dbf3877702e106741da059ada",
+  "evaluator_sha256": "bc4ddee032df39c1a590f62cff7ee9ba98964c5bfe0577e6dcd54c029efa6582",
+  "model_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+  "tactical_choice_sha256": "52e04b5ab64550e5f8116e51f8bd3e9614e9740bc8379e0b942b3f2378c6a624",
+  "scope": "Independent whole-body 1 m minimum over all recorded frames for the moving lead and adjacent vehicle, including periods when a vehicle is stopped. No-lead has no other test participants. The evaluator-only correction checks live actor IDs and preserves trace before checking cleanup.",
+  "all_cases_passed": true,
+  "cases": {
+    "clear": {
+      "passed": true,
+      "all_frame_body_minima_m": {
+        "lead_body_gap_m": 1.5359977233406192
+      },
+      "contacts": 0,
+      "score": {
+        "passed": true,
+        "physical_rolling_yield_frames": 0,
+        "committed_frames": 144,
+        "waiting_frames": 0,
+        "held_while_physically_occupied_frames": 0,
+        "moving_alongside_frames": 18,
+        "first_actual_rejoin_frame": 21200,
+        "active_signal_bits_seen": [
+          0,
+          16,
+          32
+        ],
+        "first_commit_frame": 21061,
+        "lead_speed_at_commit_mps": 0.9882091879844666,
+        "adjacent_bumper_gap_at_commit_m": null,
+        "minimum_lead_body_clearance_m": 1.5359977233406192,
+        "all_committed_footprints_legal": true,
+        "maximum_source_offset_m": 3.5178704030258814
+      },
+      "duration_s": 17.5,
+      "first_actual_rejoin_time_s": 14.7,
+      "rejoined_phase_confirmed": true,
+      "front_mp4_sha256": "05081f413befb008f625923af7e83ca514c05ef83b005fed35eb21fb169d8874",
+      "trace_sha256": "070f05f9226e089d2337e7c462056d2483fb197cc2969dea630f0e4b7eb9d10b"
+    },
+    "no-lead": {
+      "passed": true,
+      "all_frame_body_minima_m": {},
+      "contacts": 0,
+      "score": {
+        "passed": true,
+        "physical_rolling_yield_frames": 0,
+        "committed_frames": 0,
+        "waiting_frames": 0,
+        "held_while_physically_occupied_frames": 0,
+        "moving_alongside_frames": 0,
+        "first_actual_rejoin_frame": null,
+        "active_signal_bits_seen": [
+          0
+        ],
+        "first_commit_frame": null,
+        "lead_speed_at_commit_mps": null,
+        "adjacent_bumper_gap_at_commit_m": null,
+        "minimum_lead_body_clearance_m": null,
+        "all_committed_footprints_legal": true,
+        "maximum_source_offset_m": 0.0004074400585523108
+      },
+      "duration_s": 11.2,
+      "first_actual_rejoin_time_s": null,
+      "rejoined_phase_confirmed": false,
+      "front_mp4_sha256": "ebfab8baef715a7bd2846320ef9d289e7b6d71e9cf36e99b84363a16b65184c4",
+      "trace_sha256": "997d8341cda2f607fd88567effa30158acce972822b23fd86d32f4dbde842b46"
+    },
+    "occupied": {
+      "passed": true,
+      "all_frame_body_minima_m": {
+        "lead_body_gap_m": 1.5349205040182066,
+        "adjacent_body_gap_m": 1.5340477231626064
+      },
+      "contacts": 0,
+      "score": {
+        "passed": true,
+        "physical_rolling_yield_frames": 30,
+        "committed_frames": 200,
+        "waiting_frames": 89,
+        "held_while_physically_occupied_frames": 11,
+        "moving_alongside_frames": 64,
+        "first_actual_rejoin_frame": 21030,
+        "active_signal_bits_seen": [
+          0,
+          16,
+          32
+        ],
+        "first_commit_frame": 20835,
+        "lead_speed_at_commit_mps": 1.4318695068359375,
+        "adjacent_bumper_gap_at_commit_m": 63.592766651192505,
+        "minimum_lead_body_clearance_m": 1.5349205040182066,
+        "all_committed_footprints_legal": true,
+        "maximum_source_offset_m": 3.5179777990761067
+      },
+      "duration_s": 34.6,
+      "first_actual_rejoin_time_s": 33.4,
+      "rejoined_phase_confirmed": true,
+      "front_mp4_sha256": "f8eb7edb1252ed5d22830f4a2360f6ff18f16ce2fdf4508dde177c12e1bb94dc",
+      "trace_sha256": "f120e582dfbcf01cbaa955179073c7e5597708b308777b82b0082207a72647b8"
+    },
+    "rebrake": {
+      "passed": true,
+      "all_frame_body_minima_m": {
+        "lead_body_gap_m": 25.152119412191364,
+        "adjacent_body_gap_m": 1.5340477231626064
+      },
+      "contacts": 0,
+      "score": {
+        "passed": true,
+        "physical_rolling_yield_frames": 33,
+        "committed_frames": 0,
+        "waiting_frames": 88,
+        "held_while_physically_occupied_frames": 39,
+        "moving_alongside_frames": 0,
+        "first_actual_rejoin_frame": null,
+        "active_signal_bits_seen": [
+          0
+        ],
+        "first_commit_frame": null,
+        "lead_speed_at_commit_mps": null,
+        "adjacent_bumper_gap_at_commit_m": null,
+        "minimum_lead_body_clearance_m": 25.152119412191364,
+        "all_committed_footprints_legal": true,
+        "maximum_source_offset_m": 0.00024450758155580843
+      },
+      "duration_s": 9.1,
+      "first_actual_rejoin_time_s": null,
+      "rejoined_phase_confirmed": false,
+      "front_mp4_sha256": "dd6ceea80858fe92af6aa174186974664ec904d47abce36d4f8614dfff1c7ccb",
+      "trace_sha256": "18ee0220007b5f0bd3dc3e70d52562e786223663d1bf2f534c1716b56da07d4f"
+    }
+  }
+}

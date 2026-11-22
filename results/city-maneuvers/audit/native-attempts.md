@@ -68,11 +68,11 @@ bus was still about 42.4 m ahead by lidar. The attempt ended there.
 ## The integrated section completed both passes and the bus bypass
 
 The revised run began near 278 m and continued to its planned stop near
-907 m. The first whole-body return was at 475.035 m. The fast adjacent
+907 m. The first whole-body return was at 475.280 m. The fast adjacent
 vehicle passed after the ego was fully in its source lane and the closest
 sample measured 1.561 m of side clearance. The next outbound and return
 motions cleared the moving car and restored the whole body to its lane at
-556.944 m. Both passes together recorded 103 straddling samples near
+557.112 m. Both passes together recorded 105 straddling samples near
 moving vehicles. Every measured body gap in those samples met 1 m.
 The sequence includes 30 verified waiting samples and passes the original
 bus with 0.926 m of sampled clearance.
@@ -102,3 +102,25 @@ of the physical maneuver demonstration.
 
 [Independent section grade](integrated-section01.json) ·
 [Speed, steering, and comfort exposures](integrated-section01-comfort.json)
+
+## Focused qualification results
+
+- **Uncooperative rear car.** The full ego footprint returned to its
+  source lane before the rear car drew alongside. The ego was stopped
+  at frame 18164, where independent body clearance was 1.509 m and
+  native rear-car movement was 11.423 m/s. All 45 moving-vehicle
+  straddle samples cleared 1 m. The focused run ends on the next
+  outbound maneuver. [Sealed focused audit](uncooperative-pinned-v07.json)
+- **In-lane board.** The ego passed the physical board in the alternate
+  lane and restored its full body to source at frame 18382. The
+  fixture contains no moving vehicles in the divider comparisons.
+  [Sealed focused audit](board-pinned-v07.json)
+- **Slow vehicle.** The ego drew physically alongside and restored
+  its full body to the source lane at frame 18853. The minimum
+  moving-vehicle gap was 2.89 m across 64 straddle comparisons. The run
+  timed out and failed its declared occupied-gap and completion checks.
+  [Sealed focused audit](slow-pinned-v07.json)
+- **Blocked alternate.** The ego stayed in the source lane through
+  453 logged yield exposures. The scene records 167 native
+  occupied-gap samples. The run timed out before its finish.
+  [Sealed focused audit](blocked-pinned-v07.json)

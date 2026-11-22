@@ -78,6 +78,21 @@ def load_capture(folder, reference, position_journal, focused=False):
     source = {"telemetry_sha256": digest, "population_sha256": ref_hash,
               "capture_id": manifest.get("capture_id", folder.name),
               "seal_verified": expected is not None and expected_reference is not None}
+    if isinstance(checkout := manifest.get("capture_checkout"), dict):
+        source["source_pin"] = checkout.get("head_at_capture_start")
+        source["source_archive_sha256"] = checkout.get("source_sha256")
+        archive = folder / checkout["source_archive"]
+        if archive.is_file() and sha256(archive) != checkout.get("source_sha256"):
+            raise ValueError("The native source archive differs from its sealed digest")
+    qualification = (folder.parent if focused else folder) / "qualification.json"
+    if qualification.is_file():
+        evidence = read(qualification)
+        source["source_pin"] = evidence.get("pin")
+        if evidence.get("evaluator_pin"):
+            source["evaluator_pin"] = evidence["evaluator_pin"]
+        archive = qualification.with_name("study-source.zip" if focused else "source.zip")
+        if archive.is_file():
+            source["source_archive_sha256"] = sha256(archive)
     if focused:
         hashes = manifest["summary"].get("artifact_sha256", {})
         if (hashes.get(telemetry.name) != digest or hashes.get(reference.name) != ref_hash):
@@ -337,7 +352,7 @@ def actual_maneuver(geometry, idx, corridor, ego):
         side=side, road=point["road"], source_lane=point["lane"], alternate_lane=alternative["lane"],
         ego_rear_m=float(along[1:].min()), ego_front_m=float(along[1:].max()),
         center_in_alternate=bool(centers > edge), body_in_alternate=bool(body.min() > edge),
-        body_in_source=bool(body.max() <= edge + .05),
+        body_in_source=bool(body.max() <= edge),
         body_within_legal_union=bool(body.min() >= limits[0] - .05 and body.max() <= limits[1] + .05),
     )
 
@@ -621,6 +636,91 @@ def tactical_phases(rows):
     return dict(frame_counts=dict(counts), non_keep_periods=sorted(periods, key=lambda p: p["first"]["frame"]))
 
 
+def maneuver_speed_consistency(rows, physical, summary):
+    """Cross-check the pace command against actual lateral states, waits, and late hazards."""
+    def exposure(i):
+        row = rows[i]
+        tactical = row.get("tactical_pass", {})
+        pace = row.get("progress_evidence", {})
+        out = stamp(row)
+        out.update(
+            phase=tactical.get("maneuver_phase"), event=row.get("active_event"),
+            source_front_m=tactical.get("source_gap_m"), adjacent_rear_m=tactical.get("target_rear_m"),
+            source_rear_m=tactical.get("source_rear_m"), adjacent_front_m=tactical.get("target_front_m"),
+            target_gap_accepted=tactical.get("target_gap_accepted"),
+            return_gap_accepted=tactical.get("return_gap_accepted"),
+            rear_occupancy_forecast=tactical.get("rear_occupancy_forecast"),
+            explicit_limit_kmh=None if tactical.get("tactical_speed_limit_mps") is None else
+            rnd(3.6 * tactical["tactical_speed_limit_mps"]),
+            speed_regime=pace.get("speed_regime"), braking=row.get("brake"),
+        )
+        return out
+
+    groups = {
+        "independent_divider_straddle": [], "source_lane_yield": [],
+        "alternate_lane_return_wait": [], "mandatory_navigation_wait": [],
+        "reported_lateral_motion_including_bus_merge": [],
+    }
+    for i, (row, sample) in enumerate(zip(rows, physical, strict=True)):
+        alignment = sample["actual_maneuver"]
+        t = row.get("tactical_pass", {})
+        phase = t.get("maneuver_phase")
+        cap = t.get("tactical_speed_limit_mps")
+        if phase in ("change_left", "change_right", "route_merge"):
+            groups["reported_lateral_motion_including_bus_merge"].append(i)
+        if alignment:
+            if not alignment["body_in_source"] and not alignment["body_in_alternate"]:
+                groups["independent_divider_straddle"].append(i)
+            if (alignment["body_in_source"] and phase in ("yield", "signal_left")
+                    and (cap is not None or t.get("target_gap_accepted") is False)):
+                groups["source_lane_yield"].append(i)
+            if (alignment["center_in_alternate"] and phase in ("wait_rejoin", "signal_right")
+                    and (cap is not None or t.get("return_gap_accepted") is False)):
+                groups["alternate_lane_return_wait"].append(i)
+        if t.get("navigation_merge") and phase in ("yield", "signal_left"):
+            groups["mandatory_navigation_wait"].append(i)
+
+    for event in summary.get("events", []):
+        kind = event["kind"]
+        if kind not in {"lead", "braking", "left", "cyclist", "pedestrian-delayed"}:
+            continue
+        onset = event.get("exposed_s", event.get("triggered_s"))
+        if onset is None:
+            continue
+        release = event.get("cleared_s", event.get("passed_s", math.inf))
+        groups["late_" + kind] = [i for i, row in enumerate(rows) if onset <= row["sim_time"] <= release]
+        if "restarted_s" in event:
+            groups["before_late_" + kind + "_released"] = [
+                i for i, row in enumerate(rows) if onset <= row["sim_time"] <= event["restarted_s"]
+            ]
+    groups["mapped_left_and_right_turns"] = [
+        i for i, row in enumerate(rows) if any(
+            junction["entry_m"] <= row["progress_m"] <= junction["exit_m"]
+            for junction in summary.get("junction_traversals", []) if junction["direction"] in ("left", "right")
+        )
+    ]
+    report = {}
+    for label, frames in groups.items():
+        if not frames:
+            report[label] = {"frames": 0}
+            continue
+        achieved = [i for i in frames if rows[i]["speed_mps"] * 3.6 > 40.]
+        requested = [i for i in frames if rows[i]["speed_request_mps"] * 3.6 > 40.]
+        report[label] = dict(
+            frames=len(frames), sampled_seconds=rnd(DT * len(frames)),
+            first=exposure(frames[0]), last=exposure(frames[-1]),
+            actual_median_kmh=rnd(3.6 * np.median([rows[i]["speed_mps"] for i in frames])),
+            request_median_kmh=rnd(3.6 * np.median([rows[i]["speed_request_mps"] for i in frames])),
+            zero_or_crawl_seconds=rnd(DT * sum(rows[i]["speed_mps"] < .3 for i in frames)),
+            highest_speed=exposure(max(frames, key=lambda i: rows[i]["speed_mps"])),
+            highest_request=exposure(max(frames, key=lambda i: rows[i]["speed_request_mps"])),
+            actual_above_40_frames=len(achieved), request_above_40_frames=len(requested),
+            first_actual_above_40=exposure(achieved[0]) if achieved else None,
+            first_request_above_40=exposure(requested[0]) if requested else None,
+        )
+    return report
+
+
 def inspect_range(rows, geometry, ranges, inventory, wanted):
     """Read sealed sweeps only at registered exposures around a possible pass."""
     hashes = {entry["frame"]: entry["sha256"] for entry in read(inventory)["files"]}
@@ -836,6 +936,7 @@ def audit(folder, reference, route_path, ranges=None, inventory=None, range_fram
         sections=sections, independent_clearance=clearance_records, unresolved_close_actor_samples=unresolved,
         moving_population_exposure=density, passing_screen=checks, actual_lateral_departures=departures(rows, physical),
         straddling_moving_separation=moving_separation(rows, physical),
+        maneuver_speed_consistency=maneuver_speed_consistency(rows, physical, summary),
     )
     phases = tactical_phases(rows)
     if phases["frame_counts"]:

@@ -1,0 +1,241 @@
+{
+  "source_scope": "Full closed-loop primary-camera/range rehearsal",
+  "model_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+  "source_sha256": "9647e1581077c575811a51db04c4333efdb94be021ea9585be325d8575503eb0",
+  "outcome": "complete",
+  "distance_m": 1416.438,
+  "length_m": 1416.438,
+  "frames": 3112,
+  "duration_s": 311.2,
+  "encounters_handled": 13,
+  "encounters": 13,
+  "junctions": 11,
+  "expected_junctions": 11,
+  "contacts": 0,
+  "red_violations": 0,
+  "yield_violations": 0,
+  "actor_counts": {
+    "vehicles": 27,
+    "walkers": 32
+  },
+  "background_moving_near_ego": 23,
+  "background_contacts": [],
+  "moving_lane_departures": 0,
+  "missing_pedestrians": 0,
+  "special_vehicles": [
+    {
+      "role": "slow-traffic",
+      "actor_id": 5703,
+      "blueprint": "vehicle.lincoln.mkz",
+      "traveled_m": 75.859,
+      "maximum_step_m": 0.165,
+      "maximum_lane_center_error_m": 0.498
+    },
+    {
+      "role": "adjacent-front",
+      "actor_id": 5704,
+      "blueprint": "vehicle.mini.cooper",
+      "traveled_m": 124.946,
+      "maximum_step_m": 0.701,
+      "maximum_lane_center_error_m": 0.495
+    },
+    {
+      "role": "adjacent-rear",
+      "actor_id": 5705,
+      "blueprint": "vehicle.tesla.model3",
+      "traveled_m": 229.089,
+      "maximum_step_m": 1.196,
+      "maximum_lane_center_error_m": 0.496
+    }
+  ],
+  "sequence": {
+    "passed": true,
+    "obstruction_rejoin_precedes_occupied_wait": true,
+    "actual_wait_policy_frames": 28,
+    "first_actual_wait_frame": 22607,
+    "last_actual_wait_frame": 22634
+  },
+  "population": {
+    "35": {
+      "scored_frames": 3107,
+      "moving_car_frames": 1310,
+      "moving_pedestrian_frames": 2299,
+      "both_frames": 1107,
+      "two_of_each_frames": 299,
+      "peak": {
+        "cars": 4,
+        "pedestrians": 4,
+        "simultaneous_frame": 21766,
+        "simultaneous_cars": 3,
+        "simultaneous_pedestrians": 3
+      }
+    },
+    "50": {
+      "scored_frames": 3107,
+      "moving_car_frames": 1792,
+      "moving_pedestrian_frames": 2767,
+      "both_frames": 1690,
+      "two_of_each_frames": 814,
+      "peak": {
+        "cars": 5,
+        "pedestrians": 5,
+        "simultaneous_frame": 21781,
+        "simultaneous_cars": 3,
+        "simultaneous_pedestrians": 4
+      }
+    },
+    "65": {
+      "scored_frames": 3107,
+      "moving_car_frames": 1931,
+      "moving_pedestrian_frames": 3015,
+      "both_frames": 1907,
+      "two_of_each_frames": 1294,
+      "peak": {
+        "cars": 5,
+        "pedestrians": 7,
+        "simultaneous_frame": 22839,
+        "simultaneous_cars": 4,
+        "simultaneous_pedestrians": 5
+      }
+    },
+    "100": {
+      "scored_frames": 3107,
+      "moving_car_frames": 2090,
+      "moving_pedestrian_frames": 3107,
+      "both_frames": 2090,
+      "two_of_each_frames": 1569,
+      "peak": {
+        "cars": 6,
+        "pedestrians": 12,
+        "simultaneous_frame": 22727,
+        "simultaneous_cars": 6,
+        "simultaneous_pedestrians": 8
+      }
+    }
+  },
+  "maneuvers": {
+    "in-lane-obstruction": {
+      "kind": "in-lane-obstruction",
+      "station_m": 420.41,
+      "phase": "back in route lane",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": true,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 8.62,
+      "blueprint": "static.prop.trafficcone01",
+      "target_count": 3,
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 88.8,
+      "before_target_s": 88.8,
+      "moving_neighbor_search_radius_m": 65.0,
+      "minimum_moving_participant_gap_m": 8.0661,
+      "nearest_moving_participant": {
+        "frame": 22487,
+        "actor_id": 5744,
+        "role": "background",
+        "blueprint": "walker.pedestrian.0050",
+        "speed_mps": 1.024,
+        "ego_speed_mps": 8.879
+      },
+      "minimum_body_clearance_m": 1.677,
+      "maximum_target_displacement_m": 0.0,
+      "exposed_s": 95.6,
+      "alternate_alongside_s": 102.0,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.677,
+      "rear_cleared_target_s": 103.1,
+      "minimum_moving_passing_lane_car_gap_m": 39.1359,
+      "returned_to_route_s": 107.2,
+      "cleared_s": 107.2,
+      "rejoin_station_m": 463.758,
+      "rejoin_rear_clear_m": 33.84,
+      "passed_s": 107.2
+    },
+    "slow-traffic": {
+      "kind": "slow-traffic",
+      "station_m": 489.69,
+      "phase": "back in route lane",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": true,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 7.93,
+      "blueprint": "vehicle.lincoln.mkz",
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 102.9,
+      "before_target_s": 102.9,
+      "moving_neighbor_search_radius_m": 65.0,
+      "minimum_moving_participant_gap_m": 1.5644,
+      "nearest_moving_participant": {
+        "frame": 22628,
+        "actor_id": 5705,
+        "role": "adjacent-rear",
+        "blueprint": "vehicle.tesla.model3",
+        "speed_mps": 11.537,
+        "ego_speed_mps": 1.678
+      },
+      "minimum_body_clearance_m": 1.673,
+      "target_traveled_m": 43.311,
+      "target_maximum_step_m": 0.165,
+      "adjacent_front_minimum_gap_m": 36.448,
+      "adjacent_rear_minimum_gap_m": 1.564,
+      "minimum_moving_passing_lane_car_gap_m": 1.5644,
+      "exposed_s": 106.0,
+      "moving_target_s": 106.0,
+      "occupied_gap_wait_s": 114.0,
+      "occupied_gap_frames": 29,
+      "minimum_ego_while_occupied_mps": 1.677,
+      "stopped_while_occupied_s": 0.0,
+      "adjacent_gap_witness": {
+        "rear_relative_m": -17.58,
+        "front_relative_m": 64.37,
+        "rear_mps": 11.43,
+        "front_mps": 6.95,
+        "source_bumper_gap_m": 10.0,
+        "moving_lead_mps": 1.59,
+        "ego_mps": 1.69
+      },
+      "adjacent_traffic_cleared_s": 116.8,
+      "alternate_alongside_s": 123.8,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.673,
+      "moving_alongside_s": 123.8,
+      "alongside_target_mps": 1.645,
+      "rear_cleared_target_s": 125.2,
+      "returned_to_route_s": 133.6,
+      "cleared_s": 133.6,
+      "rejoin_station_m": 556.546,
+      "rejoin_rear_clear_m": 17.907,
+      "passed_s": 133.6
+    }
+  },
+  "full_grade": true,
+  "qualified_for_camera_confirmation": true
+}
