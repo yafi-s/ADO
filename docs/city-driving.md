@@ -1,8 +1,8 @@
 # City driving in ADO
 
-The v0.6 Town03 launcher runs City Progress on the populated Market route. Start `Watch-City.cmd` to see its cameras and decisions live. To run the previous City Life controller on the same streets, use `Watch-City.cmd --model models/city-clearance/candidate.npz --population-profile city-life`. [Watch the v0.6 recording](https://yafi-s.github.io/ADO/?run=city-progress) · [Compare driving pace](../results/city-progress/README.md)
+City Maneuvers adds two decisions on the Market route. Three cones block the travel lane. Farther along, a moving car leads ADO while traffic approaches in the adjacent lane. The recording logs the turn signal, lane choice and physical clearance through each pass and return. The bus farther down the route has a separate, preplanned lane change. [How the maneuvers are scored](../results/city-maneuvers/README.md)
 
-The earlier v0.5 Town03 live launcher ran the fitted clearance driver through City Life. Start `Watch-City.cmd` for the populated streets or `Watch-City.cmd --population-profile standard` for the earlier traffic layout. The hosted film includes the five onboard cameras and a separate spectator view. [Watch City Life](https://yafi-s.github.io/ADO/?run=city-life) · [Route, model and traffic evaluation](../results/city-life/README.md)
+For the previous City Progress driver use `Watch-City.cmd --model models/city-progress/candidate.npz --population-profile city-life`. For City Life use `Watch-City.cmd --model models/city-clearance/candidate.npz --population-profile city-life`. Both recordings include five onboard cameras and a chase view. [Watch City Progress](https://yafi-s.github.io/ADO/?run=city-progress) · [Watch City Life](https://yafi-s.github.io/ADO/?run=city-life)
 
 The Town03 Market route covers roughly 1.42 km and passes through 11 junctions. CARLA advances the car from its measured steering, throttle and brake inputs. Its cameras, roof lidar and forward radar observe the resulting world on the next simulation tick. A website recording can therefore be checked against what the sensors saw and what the driver commanded.
 
@@ -38,13 +38,15 @@ For each encounter, the log distinguishes the planned location, actual exposure,
 Double-click **Watch-City.cmd** on Windows to install or verify CARLA 1.0 and open the local perception display. After setup, the equivalent command from the project root is below.
 
 ```powershell
-.\.venv-city\Scripts\python.exe -m ado city-drive --serve --open-browser --seed 212 --crossing-delay 0.5
+.\.venv-city\Scripts\python.exe -m ado city-drive --serve --open-browser --model models/city-maneuvers/candidate.npz --population-profile city-maneuvers --seed 212 --crossing-delay 0.5
 ```
 
-Each attempt writes its own summary and compressed frame log under `out/city-drives`. The lower-cost live profile is the default. To record the current five onboard views and a 1080p chase camera at High quality, run the film command with a fresh output path. This captures one ego car over one continuous simulation.
+Add `--urban-cap` to keep the 39.6 km/h ceiling throughout a live drive. With the usual settings, the controller can request more speed on a higher-posted road when the vehicle can observe enough clear pavement to stop. The screen distinguishes the road sign, the controller's ceiling, its request and the measured speed. [Measured cruising and stopping distances](../results/city-maneuvers/speed/README.md)
+
+Each attempt writes its own summary and compressed frame log under `out/city-drives`. The lower-cost live profile is the default. To record five onboard views and a 1080p chase camera at High quality, run the film command with a fresh output path. This captures one ego car over one continuous simulation.
 
 ```powershell
-.\.venv-city\Scripts\python.exe -m ado city-film --model models/city-pace/candidate.npz --map Town03_Opt --destination market --seed 212 --crossing-delay 0.5 --output out/my-city-film
+.\.venv-city\Scripts\python.exe -m ado city-film --model models/city-maneuvers/candidate.npz --population-profile city-maneuvers --map Town03_Opt --destination market --seed 212 --crossing-delay 0.5 --output out/my-city-film
 ```
 
 ## Training and evaluation
