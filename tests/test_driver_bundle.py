@@ -130,7 +130,8 @@ class CanonicalQueueTests(unittest.TestCase):
         for boxes, expected in ((data["detections"], "follow"), ([], "pass")):
             for bound in (False, True):
                 canonical = VehicleQueuePlanner.from_route(road, route, intent=head, choice=ManeuverChoice(),
-                                                           defer_confirm_frames=1, follow_hold_frames=0)
+                                                           defer_confirm_frames=1, follow_hold_frames=0,
+                                                           stationary_witness=False)
                 research = research_type.from_route(road, route)
                 for i in range(22):
                     camera = dict(frame=121 + i, boxes=boxes, box_frame=121 + i - i % 2, box_pose=pose, radar=data["radar"])
@@ -177,12 +178,12 @@ FOLLOW, DEFER = "follow", "defer_to_existing_choice"
 class FollowHoldTests(unittest.TestCase):
     def test_disabled_hold_is_the_research_rule(self):
         rng = random.Random(3)
-        hold = FollowHold(1, 0)
+        hold = FollowHold(1, 0, False)
         self.assertFalse(hold.enabled)
         for frame in range(2000):
             associated = rng.random() > .3
             preference = rng.choice((FOLLOW, DEFER, None))
-            self.assertEqual(hold.step(frame, associated, preference, rng.random() > .8),
+            self.assertEqual(hold.step(frame, associated, preference, rng.random() > .8, rng.random() > .5),
                              associated and preference == FOLLOW)
 
     def test_recorded_flips_never_reach_the_planner(self):
@@ -198,7 +199,7 @@ class FollowHoldTests(unittest.TestCase):
         }
         for name, runs in recorded.items():
             self.assertTrue(all(_replay(FollowHold(), runs)), name)
-            self.assertFalse(all(_replay(FollowHold(1, 0), runs)), name)
+            self.assertFalse(all(_replay(FollowHold(1, 0, False), runs)), name)
 
     def test_sustained_deferral_is_confirmed(self):
         kept = _replay(FollowHold(), [(True, FOLLOW, 10), (True, DEFER, 40)])
@@ -231,6 +232,31 @@ class FollowHoldTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             FollowHold(1, -1)
 
+    def test_stationary_witness_holds_until_the_track_confirms(self):
+        # prefix-hold-01 frames 1223-1232: camera and radar saw the stopped sedan on
+        # exposures 1225, 1227 and 1229 while lidar speed noise delayed the track.
+        sightings = {1225: 1225, 1226: 1225, 1227: 1227, 1228: 1227, 1229: 1229, 1230: 1229, 1231: 1231, 1232: 1231}
+        hold, kept = FollowHold(), {}
+        for frame in range(1223, 1233):
+            sighting = sightings.get(frame) and dict(box_frame=sightings[frame], stationary_doppler=True)
+            witnessed = hold.witness(frame, sighting)
+            associated = frame >= 1231
+            kept[frame] = hold.step(frame, associated, FOLLOW if associated else None, False, witnessed)
+        self.assertEqual([f for f, k in kept.items() if not k], [1223, 1224, 1225, 1226])
+        # One exposure (native02 frames 1080-1081 at the cones) does not hold, nor does a moving vehicle.
+        hold = FollowHold()
+        for frame, sighting in ((1080, dict(box_frame=1080, stationary_doppler=True)),
+                                (1081, dict(box_frame=1080, stationary_doppler=True)),
+                                (1082, dict(box_frame=1082, stationary_doppler=False)),
+                                (1083, None)):
+            self.assertFalse(hold.step(frame, False, None, False, hold.witness(frame, sighting)))
+        # Sightings older than the window lapse, and a witness never cancels a lane change.
+        hold = FollowHold()
+        hold.witness(10, dict(box_frame=10, stationary_doppler=True))
+        self.assertTrue(hold.step(12, False, None, False, hold.witness(12, dict(box_frame=12, stationary_doppler=True))))
+        self.assertFalse(hold.step(13, False, None, True, hold.witness(13, None)))
+        self.assertFalse(hold.step(22, False, None, False, hold.witness(22, None)))
+
     def test_planner_keeps_following_through_an_unconfirmed_deferral(self):
         from tests.test_maneuver_source_vehicle import surface
         from tests.test_urban_map import MAP
@@ -249,7 +275,8 @@ class FollowHoldTests(unittest.TestCase):
         choices = {}
         for hold in ((1, 0), (30, 30)):
             planner = VehicleQueuePlanner.from_route(road, route, intent=head, choice=ManeuverChoice(),
-                                                     defer_confirm_frames=hold[0], follow_hold_frames=hold[1])
+                                                     defer_confirm_frames=hold[0], follow_hold_frames=hold[1],
+                                                     stationary_witness=hold != (1, 0))
             rows = []
             for i in range(22):
                 planner.bind_camera(dict(frame=121 + i, boxes=data["detections"], box_frame=121 + i - i % 2,

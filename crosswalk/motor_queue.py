@@ -13,8 +13,13 @@ from .source_vehicle import source_surface_vehicle
 # A deferral therefore reaches the lane-change planner only after the head has
 # recommended it on 30 consecutive frames, and losing the track of a stationary
 # car the planner was following keeps that following decision for 30 frames.
+# Before the lidar track confirms, a vehicle that the front camera and forward
+# radar report as stationary on the source-lane surface on two exposures within
+# 0.9 s also keeps the planner following. None of these rules starts, cancels
+# or shortens a lane change that is already under way.
 DEFER_CONFIRM_FRAMES = 30
 FOLLOW_HOLD_FRAMES = 30
+WITNESS_WINDOW_FRAMES = 9
 
 
 class MotorQueue:
@@ -123,28 +128,38 @@ class MotorQueue:
 
 
 class FollowHold:
-    """Confirm the head's deferral and briefly keep a following decision after a lost track."""
+    """Confirm the head's deferral and hold following around a stationary vehicle's track (fixed, not fitted)."""
 
-    def __init__(self, confirm_frames=DEFER_CONFIRM_FRAMES, hold_frames=FOLLOW_HOLD_FRAMES):
+    def __init__(self, confirm_frames=DEFER_CONFIRM_FRAMES, hold_frames=FOLLOW_HOLD_FRAMES, witnessed=True):
         if int(confirm_frames) != confirm_frames or confirm_frames < 1:
             raise ValueError("The deferral confirmation must be at least one frame")
         if int(hold_frames) != hold_frames or hold_frames < 0:
             raise ValueError("The follow hold cannot be negative")
-        # (1, 0) reproduces the natively qualified research harness exactly.
+        # (1, 0, False) reproduces the natively qualified research harness exactly.
         self.confirm_frames = int(confirm_frames)
         self.hold_frames = int(hold_frames)
+        self.witnessed = bool(witnessed)
         self.reset()
 
     @property
     def enabled(self):
-        return self.confirm_frames > 1 or self.hold_frames > 0
+        return self.confirm_frames > 1 or self.hold_frames > 0 or self.witnessed
 
     def reset(self):
         self.deferrals = 0
         self.until = None
         self.last = None
+        self.exposures = deque(maxlen=8)
 
-    def step(self, frame, associated, preference, changing_lanes):
+    def witness(self, frame, sighting):
+        """Record a camera exposure whose matched source-lane vehicle the radar reports as stationary."""
+        if sighting and sighting.get("stationary_doppler"):
+            if not self.exposures or self.exposures[-1] != sighting["box_frame"]:
+                self.exposures.append(sighting["box_frame"])
+        recent = {exposure for exposure in self.exposures if 0 <= frame - exposure <= WITNESS_WINDOW_FRAMES}
+        return self.witnessed and len(recent) >= 2
+
+    def step(self, frame, associated, preference, changing_lanes, witnessed=False):
         """Return whether the planner must keep following the source-lane vehicle on this frame."""
         if self.last is None or frame - self.last > 1:
             self.deferrals = 0
@@ -154,13 +169,13 @@ class FollowHold:
             follow = preference == "follow" or self.deferrals < self.confirm_frames
             self.until = frame + self.hold_frames if follow and self.hold_frames else None
             return follow
-        # A lost track keeps a following decision briefly. It never cancels
-        # a lane change that is already under way.
+        # A lost track keeps a following decision briefly, and an unconfirmed
+        # stationary vehicle witness holds it. Neither cancels a lane change.
         self.deferrals = 0
-        follow = not changing_lanes and self.until is not None and frame <= self.until
-        if not follow:
+        held = not changing_lanes and self.until is not None and frame <= self.until
+        if not held:
             self.until = None
-        return follow
+        return held or (not changing_lanes and self.witnessed and witnessed)
 
 
 class _VehicleChoice:
@@ -185,10 +200,10 @@ class VehicleQueuePlanner(RouteManeuvers):
     """Apply the selected stationary-intent head before a discretionary lane change."""
 
     def __init__(self, corridors, *, intent, choice, defer_confirm_frames=DEFER_CONFIRM_FRAMES,
-                 follow_hold_frames=FOLLOW_HOLD_FRAMES):
+                 follow_hold_frames=FOLLOW_HOLD_FRAMES, stationary_witness=True):
         if intent is None or choice is None:
             raise ValueError("The queue planner requires a loaded intent head and route-choice model")
-        self.hold = FollowHold(defer_confirm_frames, follow_hold_frames)
+        self.hold = FollowHold(defer_confirm_frames, follow_hold_frames, stationary_witness)
         self.intent = intent
         self.stationary_intent_checkpoint = intent.checkpoint_path
         self.stationary_intent_sha256 = intent.sha256
@@ -233,8 +248,9 @@ class VehicleQueuePlanner(RouteManeuvers):
         features = self.queue.preference_features(data["frame"], gap, speed, source.speed, gain)
         queue = self.queue
         queue.learned_preference(self.intent, features)
+        witnessed = self.hold.witness(data["frame"], witness)
         self.defer_source = self.hold.step(data["frame"], queue.anchor is not None, queue.preference,
-                                           self.start is not None)
+                                           self.start is not None, witnessed)
         if self.defer_source and self.start is not None:
             # An early signal can be cancelled while the body is still in
             # the source lane. The lateral guard above protects an active crossing.
