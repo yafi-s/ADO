@@ -11,8 +11,9 @@ import numpy as np
 
 BODY_MARGIN = .015
 MIN_BODY_GAP = .25
+MIN_ADJACENT_GAP = 1.
 MOTION_MPS = .65
-ADJACENT_CASES = {"cones", "board", "slow", "blocked", "no-lead", "departing", "closing-rejoin"}
+ADJACENT_CASES = {"cones", "board", "slow", "blocked", "no-lead", "departing", "closing-rejoin", "uncooperative-rear"}
 STAY_CASES = {"no-lead", "departing", "clear-bend", "inside-curb", "outside-curb", "person", "reopened"}
 
 
@@ -65,7 +66,7 @@ def measures(row, reference, native):
         targets.setdefault(target["role"], []).append(measured)
     corners = native["corner_lanes"]
     lane = native["source_lane"]
-    return dict(row=row, targets=targets, ego=ego, native=native,
+    return dict(row=row, targets=targets, ego=ego, ego_polygon=reference["ego_polygon_xy"], native=native,
                 source_only=all(lane in ids for ids in corners),
                 legal=len(corners) >= 4 and all(corners), adjacent_body=any(lane + 1 in ids and lane not in ids for ids in corners),
                 entirely_adjacent=native["adjacent_legal"] and all(lane + 1 in ids for ids in corners))
@@ -212,6 +213,149 @@ def closing_rejoin_evidence(frames, geometry):
                                                frames[-1]["entirely_adjacent"]))
 
 
+def adjacent_exposures(frames):
+    """Recompute clearance from synchronized polygons for adjacent-traffic actors."""
+    from .city_progress_bus import body_gap
+
+    roles = ("adjacent-front", "adjacent-rear")
+    by_frame = {}
+    for f in frames:
+        samples = []
+        for role in roles:
+            for target in f["targets"].get(role, ()):
+                gap = body_gap(np.asarray(f["ego_polygon"], dtype=np.float32),
+                               np.asarray(target["polygon_xy"], dtype=np.float32))
+                samples.append(dict(target, polygon_gap_m=gap))
+        by_frame[f["row"]["frame"]] = samples
+    return by_frame
+
+
+def closest_adjacent(frames, exposures, *, moving=None):
+    closest = min(((f, t) for f in frames for t in exposures[f["row"]["frame"]]
+                   if moving is None or (t["speed_mps"] > 0.) == moving),
+                  key=lambda pair: pair[1]["polygon_gap_m"], default=None)
+    if closest is None:
+        return None
+    f, t = closest
+    return dict(frame=f["row"]["frame"], native_s=f["row"]["native_s"], actor_id=t["actor_id"],
+                role=t["role"], body_gap_m=round(t["polygon_gap_m"], 6), ego_mps=f["row"]["speed_mps"],
+                adjacent_vehicle_mps=t["speed_mps"])
+
+
+def source_hazards(f):
+    return [t for role in ("in-lane-obstruction", "slow-traffic") for t in f["targets"].get(role, ())]
+
+
+def unsafe_source_return(f, hazards):
+    """Detect physical obstruction of the source gap while moving right."""
+    rear, nose = f["ego"]
+    ego_speed = f["row"]["speed_mps"]
+    return any(t["longitudinal"][0] - nose <= max(2., 2. * (ego_speed - t["speed_mps"]))
+               and rear - t["longitudinal"][1] <= max(2., 2. * (t["speed_mps"] - ego_speed))
+               for t in hazards)
+
+
+def aggressive_rear_evidence(frames, exposures, geometry):
+    """Score both lane changes against the measured motion of the uncooperative rear car."""
+    phases = {name: [] for name in ("run_up", "initial_choice", "outbound", "target_occupation", "right_return")}
+    unsafe_entry, unsafe_return = [], []
+    prior_rear = {}
+    follow_through = set()
+    reached_adjacent = False
+    completed_pass_lane = False
+    prior_source = True
+    held_left = False
+    for f in frames:
+        row = f["row"]
+        frame = row["frame"]
+        rear, nose = f["ego"]
+        hazards = source_hazards(f)
+        near_hazard = any(-2. <= t["longitudinal"][0] - nose <= 50. for t in hazards)
+        cleared_hazard = any(1. < rear - t["longitudinal"][1] <= 25. for t in hazards)
+        reached_adjacent |= f["adjacent_body"]
+        completed_pass_lane |= f["entirely_adjacent"]
+        straddling = not f["source_only"] and not f["entirely_adjacent"]
+        # Body geometry establishes crossings. The control phase helps mark a
+        # return opportunity during fully adjacent waits, before any right motion.
+        choice = row.get("tactical_pass", {}).get("maneuver_phase")
+        return_wait = completed_pass_lane and (cleared_hazard or choice in ("wait_rejoin", "signal_right", "change_right"))
+        if completed_pass_lane and (straddling or return_wait or f["source_only"] and not prior_source):
+            phase = "right_return"
+        elif completed_pass_lane:
+            phase = "target_occupation"
+        elif straddling:
+            phase = "outbound"
+        else:
+            phase = "initial_choice" if near_hazard else "run_up"
+        if f["source_only"]:
+            completed_pass_lane = False
+        prior_source = f["source_only"]
+        if phase == "right_return" and straddling and unsafe_source_return(f, hazards):
+            unsafe_return.append(frame)
+        for t in exposures[frame]:
+            native = t.get("native_lane") or {}
+            if t["role"] != "adjacent-rear" or (native.get("road_id"), native.get("lane_id")) != (
+                    geometry["road_id"], geometry["lane_id"] + 1):
+                continue
+            actor = t["actor_id"]
+            lo, hi = t["longitudinal"]
+            rear_gap, front_gap = rear - hi, lo - nose
+            overlap = rear_gap <= 0. and front_gap <= 0.
+            speed, ego_speed = t["speed_mps"], row["speed_mps"]
+            previous = prior_rear.get(actor)
+            prior_rear[actor] = (row["sim_time"], rear_gap)
+            closing = (previous[1] - rear_gap) / (row["sim_time"] - previous[0]) if previous and (
+                .05 <= row["sim_time"] - previous[0] <= .15) else None
+            fast = closing is not None and closing >= 1. and speed >= 5. and speed > ego_speed + .5
+            if fast and 0. < rear_gap <= max(12., 2. * speed, 5. * closing):
+                follow_through.add(actor)
+            if rear_gap > max(12., 2. * speed, 5. * max(0., closing or 0.)) or front_gap > 5.:
+                follow_through.discard(actor)
+            threatened = actor in follow_through
+            ttc = rear_gap / closing if rear_gap > 0. and closing is not None and closing > 0. else None
+            headway = rear_gap / speed if rear_gap > 0. and speed > MOTION_MPS else None
+            if overlap and threatened:
+                ttc = headway = 0.
+            phases[phase].append(dict(frame=frame, rear_gap=rear_gap, front_gap=front_gap, closing=closing,
+                                      ttc=ttc, headway=headway, fast=fast, threatened=threatened, aligned=overlap,
+                                      polygon_gap=t["polygon_gap_m"], source_only=f["source_only"]))
+            if threatened and phase == "outbound":
+                unsafe_entry.append(frame)
+        held_left = phase in ("target_occupation", "right_return") and f["entirely_adjacent"]
+    report = {}
+    for name, samples in phases.items():
+        threatened = [s for s in samples if s["threatened"]]
+        closing = [s for s in threatened if s["fast"] and s["rear_gap"] > 0.]
+        report[name] = dict(reference_frames=len(samples), threatened_frames=len(threatened),
+                            measured_fast_closing_frames=len(closing),
+                            peak_measured_closing_mps=round(max((s["closing"] for s in closing), default=0.), 3),
+                            first_threat_frame=threatened[0]["frame"] if threatened else None,
+                            last_threat_frame=threatened[-1]["frame"] if threatened else None,
+                            minimum_projected_rear_ttc_s=min((s["ttc"] for s in samples if s["ttc"] is not None), default=None),
+                            minimum_projected_rear_headway_s=min((s["headway"] for s in samples if s["headway"] is not None),
+                                                                  default=None),
+                            minimum_longitudinally_aligned_body_gap_m=min((s["polygon_gap"] for s in samples if s["aligned"]),
+                                                                           default=None),
+                            source_lane_hold_frames=sum(s["source_only"] for s in threatened))
+    initial = report["initial_choice"]
+    returning = report["right_return"]
+    # A rear closure can begin during the adjacent-lane pass and remain active
+    # during the right-return decision, so include that measured history.
+    right_threat = bool(returning["threatened_frames"] >= 2 and (
+        returning["measured_fast_closing_frames"] or report["target_occupation"]["measured_fast_closing_frames"]))
+    abstained = not reached_adjacent and initial["source_lane_hold_frames"] >= 2
+    conclusive = abstained or (reached_adjacent and right_threat)
+    tail_frame = frames[-1]["row"]["frame"]
+    ended_waiting = ((abstained and initial["last_threat_frame"] == tail_frame) or
+                     (held_left and returning["last_threat_frame"] == tail_frame))
+    mitigation = abstained or (right_threat and not unsafe_entry and not unsafe_return)
+    return dict(phases=report, unsafe_target_entry_frames=sorted(set(unsafe_entry)),
+                unsafe_source_return_frames=sorted(set(unsafe_return)), safe_abstention=abstained,
+                threatened_return_confirmed=right_threat,
+                physical_rear_threat_confirmed=conclusive, positive_mitigation=mitigation,
+                ended_in_measured_safe_wait=bool(conclusive and mitigation and ended_waiting))
+
+
 def reopened_evidence(frames, geometry):
     blocked_stop = [f["row"]["board_in_ego_path"] and 0. < f["row"]["bumper_gap_m"] < 20. and
                     f["row"]["speed_mps"] <= .3 and bool(f["targets"].get("reopened")) for f in frames]
@@ -284,6 +428,13 @@ def control_evidence(case, frames, geometry):
         minimum_board_body_gap_m=floor)
 
 
+def evaluation_active(geometry, row):
+    """Keep episode time intact while applying the corridor's two location gates."""
+    if "evaluation_start_s" not in geometry:
+        return True
+    return row["native_s"] >= geometry["evaluation_start_s"] and row["progress_m"] >= geometry["evaluation_route_start_m"]
+
+
 def grade_case(summary, trace, reference, road=None):
     """Report positive evidence, prerequisites and failure reasons for one completed capture."""
     case = summary["case"]
@@ -292,28 +443,58 @@ def grade_case(summary, trace, reference, road=None):
             a["frame"] != b["frame"] or a["sim_time"] != b["sim_time"] or
             a["frame"] != trace[0]["frame"] + i for i, (a, b) in enumerate(zip(trace, reference))):
         return dict(passed=False, failures=["missing or unsynchronized evidence"])
-    frames = []
-    for row, ref in zip(trace, reference):
-        native = ref.get("native_geometry")
-        if native is None:
-            if road is None:
-                return dict(passed=False, failures=["native corner geometry missing; reopen with --opendrive"])
-            native = native_body(road, ref, geometry["road_id"], geometry["lane_id"], case in ADJACENT_CASES)
-        frames.append(measures(row, ref, native))
     failures = []
     if (not summary.get("capture_complete") or not summary.get("front_sha256") or
             summary["outcome"] in ("collision", "red_light", "lane_departure", "capture_error") or
             any(summary.get(key) for key in ("collision_events", "yield_violations", "red_light_violations")) or
             any(r.get("collision_count") for r in trace)):
         failures.append("capture incomplete or unsafe outcome")
+    frames = []
+    for row, ref in zip(trace, reference):
+        if not evaluation_active(geometry, row):
+            continue
+        native = ref.get("native_geometry")
+        if native is None:
+            if road is None:
+                return dict(passed=False, failures=[*failures, "native corner geometry missing; reopen with --opendrive"])
+            native = native_body(road, ref, geometry["road_id"], geometry["lane_id"], case in ADJACENT_CASES)
+        frames.append(measures(row, ref, native))
+    clock = {}
+    if "evaluation_start_s" in geometry:
+        clock = dict(captured_frames=len(trace), preroll_frames=len(trace) - len(frames), corridor_frames=len(frames),
+                     first_evaluated_frame=frames[0]["row"]["frame"] if frames else None,
+                     first_evaluated_sim_time=frames[0]["row"]["sim_time"] if frames else None)
+    if not frames:
+        return dict(passed=False, inconclusive=True, failures=[*failures, "ego never reached the grading corridor"], **clock)
     off_road = [f["row"]["frame"] for f in frames if not f["legal"]]
     if off_road:
         failures.append("ego body outside legal driving pavement")
     left_source = [f["row"]["frame"] for f in frames if not f["source_only"]]
     if case in STAY_CASES and left_source:
         failures.append("ego body left the source lane")
-    evidence = dict(illegal_body_frames=len(off_road), first_illegal_body_frame=off_road[0] if off_road else None,
+    evidence = dict(**clock, illegal_body_frames=len(off_road), first_illegal_body_frame=off_road[0] if off_road else None,
                     source_boundary_crossing_frames=len(left_source), reached_end=summary["reached_end"])
+    if case in ("cones", "board", "slow", "uncooperative-rear"):
+        exposures = adjacent_exposures(frames)
+        evidence["closest_moving_adjacent_vehicle"] = closest_adjacent(frames, exposures, moving=True)
+        evidence["closest_parked_adjacent_vehicle"] = closest_adjacent(frames, exposures, moving=False)
+        evidence["closest_adjacent_vehicle_all_exposures"] = closest_adjacent(frames, exposures)
+        evidence["minimum_required_adjacent_body_gap_m"] = MIN_ADJACENT_GAP
+        if any(t["speed_mps"] > 0. and t["polygon_gap_m"] < MIN_ADJACENT_GAP
+               for targets in exposures.values() for t in targets):
+            failures.append("moving adjacent vehicle came within 1.0 m of the ego footprint")
+        if any(t["speed_mps"] == 0. and t["polygon_gap_m"] < MIN_BODY_GAP
+               for targets in exposures.values() for t in targets):
+            failures.append("parked adjacent vehicle came within the standard body clearance")
+    if case == "uncooperative-rear":
+        evidence.update(aggressive_rear_evidence(frames, exposures, geometry))
+        evidence["inconclusive"] = not evidence["physical_rear_threat_confirmed"]
+        if evidence["inconclusive"]:
+            failures.append("no confirmed fast rear closure during a declined outbound merge or return from the adjacent lane")
+        if evidence["unsafe_target_entry_frames"] or evidence["unsafe_source_return_frames"]:
+            failures.append("physical crossing into an occupied lane during the rear-traffic challenge")
+        if not evidence["inconclusive"] and not evidence["positive_mitigation"]:
+            failures.append("no positive physical mitigation of the measured rear threat")
     if case == "closing-rejoin":
         evidence.update(closing_rejoin_evidence(frames, geometry))
         evidence["inconclusive"] = not evidence["threatened_rejoin_confirmed"]

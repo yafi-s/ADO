@@ -1,0 +1,286 @@
+{
+  "development_run": "probe-v7-duo07",
+  "description": "The car rolled behind the moving lead while the passing lane was occupied, then overtook. It began a return toward the source lane, then withdrew while still in the alternate lane as headway closed on the next stopped car.",
+  "seed": 212,
+  "policy_schema": "ado-city-maneuvers-v1",
+  "outcome": "restarted",
+  "frames": 384,
+  "first_frame": 6942,
+  "last_frame": 7325,
+  "start_m": 384.164,
+  "finish_m": 571.967,
+  "collision_events": 0,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "source_note": "Development run before source pin. Exact full trace and sensor windows retained in local scratch.",
+  "source_trace_sha256": "4da1deb044bb641a34c07c3d6c424efa29e58e236a05e5fd508c9f18bdc1b4dc",
+  "maneuver_stages": [
+    {
+      "frame": 6942,
+      "sim_time": 0.0,
+      "progress_m": 384.164,
+      "speed_mps": 0.059,
+      "phase": "keep"
+    },
+    {
+      "frame": 6972,
+      "sim_time": 3.0,
+      "progress_m": 390.065,
+      "speed_mps": 3.94,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 6977,
+      "sim_time": 3.5,
+      "progress_m": 392.206,
+      "speed_mps": 4.491,
+      "phase": "change_left"
+    },
+    {
+      "frame": 7015,
+      "sim_time": 7.3,
+      "progress_m": 408.588,
+      "speed_mps": 6.815,
+      "phase": "passing"
+    },
+    {
+      "frame": 7043,
+      "sim_time": 10.1,
+      "progress_m": 428.858,
+      "speed_mps": 7.991,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 7061,
+      "sim_time": 11.9,
+      "progress_m": 442.317,
+      "speed_mps": 8.042,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 7065,
+      "sim_time": 12.3,
+      "progress_m": 445.14,
+      "speed_mps": 7.094,
+      "phase": "change_right"
+    },
+    {
+      "frame": 7097,
+      "sim_time": 15.5,
+      "progress_m": 465.237,
+      "speed_mps": 7.61,
+      "phase": "rejoined"
+    },
+    {
+      "frame": 7098,
+      "sim_time": 15.6,
+      "progress_m": 465.998,
+      "speed_mps": 7.616,
+      "phase": "yield"
+    },
+    {
+      "frame": 7148,
+      "sim_time": 20.6,
+      "progress_m": 478.262,
+      "speed_mps": 1.408,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 7153,
+      "sim_time": 21.1,
+      "progress_m": 478.965,
+      "speed_mps": 1.408,
+      "phase": "change_left"
+    },
+    {
+      "frame": 7185,
+      "sim_time": 24.3,
+      "progress_m": 490.608,
+      "speed_mps": 6.748,
+      "phase": "passing"
+    },
+    {
+      "frame": 7219,
+      "sim_time": 27.7,
+      "progress_m": 517.002,
+      "speed_mps": 8.522,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 7240,
+      "sim_time": 29.8,
+      "progress_m": 534.797,
+      "speed_mps": 7.384,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 7244,
+      "sim_time": 30.2,
+      "progress_m": 537.487,
+      "speed_mps": 6.152,
+      "phase": "change_right"
+    },
+    {
+      "frame": 7251,
+      "sim_time": 30.9,
+      "progress_m": 541.235,
+      "speed_mps": 4.782,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 7252,
+      "sim_time": 31.0,
+      "progress_m": 541.702,
+      "speed_mps": 4.617,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 7261,
+      "sim_time": 31.9,
+      "progress_m": 545.228,
+      "speed_mps": 3.468,
+      "phase": "change_right"
+    },
+    {
+      "frame": 7263,
+      "sim_time": 32.1,
+      "progress_m": 545.911,
+      "speed_mps": 3.394,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 7264,
+      "sim_time": 32.2,
+      "progress_m": 546.251,
+      "speed_mps": 3.408,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 7270,
+      "sim_time": 32.8,
+      "progress_m": 548.229,
+      "speed_mps": 3.229,
+      "phase": "change_right"
+    },
+    {
+      "frame": 7281,
+      "sim_time": 33.9,
+      "progress_m": 552.035,
+      "speed_mps": 4.039,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 7282,
+      "sim_time": 34.0,
+      "progress_m": 552.437,
+      "speed_mps": 4.066,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 7303,
+      "sim_time": 36.1,
+      "progress_m": 560.721,
+      "speed_mps": 4.79,
+      "phase": "wait_rejoin"
+    }
+  ],
+  "physical_wait_and_policy_yield_frames": 30,
+  "minimum_ego_mps_during_graded_wait": 1.442,
+  "stopped_seconds_during_graded_wait": 0.0,
+  "events": [
+    {
+      "kind": "in-lane-obstruction",
+      "station_m": 420.41,
+      "phase": "back in route lane",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": true,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 15.03,
+      "blueprint": "static.prop.trafficcone01",
+      "target_count": 3,
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 0.0,
+      "before_target_s": 0.0,
+      "minimum_body_clearance_m": 1.674,
+      "maximum_target_displacement_m": 0.0,
+      "exposed_s": 2.3,
+      "alternate_alongside_s": 8.7,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.674,
+      "rear_cleared_target_s": 10.0,
+      "returned_to_route_s": 15.0,
+      "cleared_s": 15.0,
+      "rejoin_station_m": 460.781,
+      "rejoin_rear_clear_m": 31.262,
+      "passed_s": 15.0
+    },
+    {
+      "kind": "slow-traffic",
+      "station_m": 489.69,
+      "phase": "rear clear of target",
+      "triggered": true,
+      "cleared": false,
+      "exposed": true,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 12.86,
+      "blueprint": "vehicle.lincoln.mkz",
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 9.7,
+      "before_target_s": 9.7,
+      "minimum_body_clearance_m": 1.703,
+      "target_traveled_m": 38.368,
+      "target_maximum_step_m": 0.165,
+      "adjacent_front_minimum_gap_m": 37.451,
+      "adjacent_rear_minimum_gap_m": 1.552,
+      "moving_target_s": 13.8,
+      "exposed_s": 14.0,
+      "occupied_gap_wait_s": 16.6,
+      "occupied_gap_frames": 30,
+      "minimum_ego_while_occupied_mps": 1.442,
+      "stopped_while_occupied_s": 0.0,
+      "adjacent_gap_witness": {
+        "rear_relative_m": -17.78,
+        "front_relative_m": 42.69,
+        "rear_mps": 11.41,
+        "front_mps": 6.35,
+        "source_bumper_gap_m": 17.3,
+        "moving_lead_mps": 1.36,
+        "ego_mps": 3.82
+      },
+      "adjacent_traffic_cleared_s": 19.5,
+      "alternate_alongside_s": 26.2,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.703,
+      "moving_alongside_s": 26.2,
+      "alongside_target_mps": 1.657,
+      "rear_cleared_target_s": 27.9
+    }
+  ]
+}

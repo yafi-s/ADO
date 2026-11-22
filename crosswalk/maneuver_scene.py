@@ -56,12 +56,13 @@ class MovingVehicle:
     path: list
     activate_at: float
     speed: float
+    lane: int
     last: object = None
     distance: float = 0.
     maximum_step: float = 0.
     corridor_error: float = 0.
 
-    def drive(self, scene, progress, leaders=()):
+    def drive(self, scene, progress, leaders=(), late_clearance=False):
         pose = self.actor.get_location()
         if self.last is not None:
             step = math.hypot(pose.x-self.last.x, pose.y-self.last.y)
@@ -77,13 +78,35 @@ class MovingVehicle:
         for leader in leaders:
             delta = leader.get_location() - pose
             ahead = delta.dot(transform.get_forward_vector())
-            across = abs(delta.dot(transform.get_right_vector()))
-            if 0. < ahead < 32. and across < self.actor.bounding_box.extent.y + leader.bounding_box.extent.y + .20:
-                room = ahead - self.actor.bounding_box.extent.x - leader.bounding_box.extent.x
-                leader_speed = leader.get_velocity().length()
-                target = min(target, max(0., leader_speed + (room-7.)*.45))
-                if room < 3.5:
-                    target = 0.
+            if not 0. < ahead < 50.:
+                continue
+            leader_speed = leader.get_velocity().length()
+            room = ahead - self.actor.bounding_box.extent.x - leader.bounding_box.extent.x
+            if late_clearance:
+                # Reproduce the former follower for the uncooperative rear-car control.
+                across = abs(delta.dot(transform.get_right_vector()))
+                if ahead < 32. and across < self.actor.bounding_box.extent.y + leader.bounding_box.extent.y + .20:
+                    target = min(target, max(0., leader_speed + (room-7.)*.45))
+                    if room < 3.5:
+                        target = 0.
+                continue
+            native = scene._map.get_waypoint(leader.get_location(), project_to_road=True,
+                                             lane_type=carla.LaneType.Driving)
+            if native is None or native.road_id != 67:
+                continue
+            # The leader can straddle a dashed line on a curve. Test its full
+            # footprint in the follower lane's frame at the leader's station.
+            point = scene._map.get_waypoint_xodr(67, self.lane, native.s)
+            axis, origin = point.transform.get_right_vector(), point.transform.location
+            sides = (_polygon(leader) - [origin.x, origin.y]) @ [axis.x, axis.y]
+            half = self.actor.bounding_box.extent.y + 1.10
+            if min(sides) > half or max(sides) < -half:
+                continue
+            current = self.actor.get_velocity().length()
+            desired_gap = max(13., 4.5 + 1.5 * current)
+            target = min(target, max(0., leader_speed + (room-desired_gap)*.40))
+            if room < 4.:
+                target = 0.
         scene._drive_to(self.actor, self.path[min(index + 6, len(self.path) - 1)], target)
 
 
@@ -106,11 +129,11 @@ class ManeuverFixture:
         self.stations = {round(wp.s): i for i, wp in enumerate(scene._points)
                          if (wp.road_id, wp.lane_id) == (67, -2)}
         if case not in ("continuous", "cones", "board", "slow", "blocked", "no-lead", "departing",
-                        "clear-bend", "inside-curb", "outside-curb", "closing-rejoin"):
+                        "clear-bend", "inside-curb", "outside-curb", "closing-rejoin", "uncooperative-rear", "later-gap"):
             raise ValueError(f"Unsupported maneuver fixture {case}")
-        if case in ("continuous", "cones", "board"):
+        if case in ("continuous", "cones", "board", "uncooperative-rear", "later-gap"):
             self._workzone("board" if case == "board" else "cones")
-        if case in ("continuous", "slow", "blocked", "no-lead", "departing", "closing-rejoin"):
+        if case in ("continuous", "slow", "blocked", "no-lead", "departing", "closing-rejoin", "uncooperative-rear", "later-gap"):
             self._traffic(case)
 
     def _event(self, kind, station):
@@ -146,14 +169,15 @@ class ManeuverFixture:
         actor = scene._required(bp, _raised(waypoints[0].transform,.35))
         actor.apply_control(carla.VehicleControl(brake=1.))
         self.moving[role] = MovingVehicle(role, actor, [w.transform.location for w in waypoints],
-                                          scene._station[self.stations[release]], speed)
+                                          scene._station[self.stations[release]], speed, lane)
         return actor
 
     def _traffic(self, case):
         if case != "no-lead":
             e = self._event("slow-traffic", 149)
             e.actor = self._car("slow-traffic", "vehicle.lincoln.mkz", -2, 149,
-                                229, 90 if case=="departing" else 105, 8.0 if case=="departing" else 1.65)
+                                229, 90 if case=="departing" else 105,
+                                8.0 if case=="departing" else 1.90 if case=="later-gap" else 1.65)
             e.observed.update(blueprint=e.actor.type_id, source_lane=[67,-2], passing_lane=[67,-1])
         self._car("adjacent-front", "vehicle.mini.cooper", -1, 166, 293, 111, 7.)
         if case == "blocked":
@@ -161,7 +185,9 @@ class ManeuverFixture:
         else:
             # Short control runs start the hero at s94; preserve the closing
             # rear approach with a matching local run-up in both model arms.
-            start, activation = (17, 81) if case == "continuous" else (72, 94)
+            start, activation = (17, 81) if case in ("continuous", "uncooperative-rear", "later-gap") else (72, 94)
+            if case == "later-gap":
+                activation += 6
             self._car("adjacent-rear", "vehicle.tesla.model3", -1, start, 256, activation, 12.0)
 
     def before_tick(self):
@@ -180,7 +206,8 @@ class ManeuverFixture:
                 leaders.extend(e.actor for e in self.scene.events if e.kind == "lead")
             if role == "adjacent-rear":
                 leaders.append(self.moving["adjacent-front"].actor)
-            car.drive(self.scene, self.scene._last_progress, leaders)
+            car.drive(self.scene, self.scene._last_progress, leaders,
+                      late_clearance=self.case == "uncooperative-rear" and role == "adjacent-rear")
 
     def legal_roadside_pass(self, event):
         """A continued overtake past the roadside boards must still use legal pavement."""
@@ -206,6 +233,36 @@ class ManeuverFixture:
     def spectator_actors(self):
         return ([(a, "barrier" if a.type_id.endswith("streetbarrier") else "cone", "in-lane-obstruction")
                  for a, _ in self.obstacles] + [(v.actor, "car", role) for role, v in self.moving.items()])
+
+    def _score_moving_neighbors(self, event, ego_polygon):
+        scene = self.scene
+        if not hasattr(self, "_participants"):
+            people = [(v.actor, v.role) for v in self.moving.values()]
+            people += [(a, "background") for a in scene.ambient._actors]
+            people += [(e.actor, e.kind) for e in scene.events if e.actor is not None and
+                       e.actor.type_id.startswith(("walker.", "vehicle."))]
+            self._participants = {a.id: (a, role) for a, role in reversed(people)}.values()
+        position = scene.ego.get_location()
+        for actor, role in self._participants:
+            if not actor.is_alive or actor.get_location().distance(position) >= 12.:
+                continue
+            speed = actor.get_velocity().length()
+            if speed <= .5:
+                continue
+            gap = body_gap(ego_polygon, _polygon(actor))
+            observed = event.observed
+            if gap < observed.get("minimum_moving_participant_gap_m", 60.):
+                observed["minimum_moving_participant_gap_m"] = round(gap, 4)
+                observed["nearest_moving_participant"] = dict(frame=scene.world.get_snapshot().frame,
+                    actor_id=actor.id, role=role, blueprint=actor.type_id, speed_mps=round(speed, 3),
+                    ego_speed_mps=round(scene.ego.get_velocity().length(), 3))
+            lane = scene._map.get_waypoint(actor.get_location(), project_to_road=True,
+                                           lane_type=carla.LaneType.Driving) if actor.type_id.startswith("vehicle.") else None
+            if lane and (lane.road_id, lane.lane_id) == (67, -1):
+                key = "minimum_moving_passing_lane_car_gap_m"
+                observed[key] = round(min(observed.get(key, 60.), gap), 4)
+                if gap < 1.0:
+                    event.violation = True
 
     def observe(self, event, progress):
         scene, o = self.scene, event.observed
@@ -240,6 +297,7 @@ class ManeuverFixture:
             event.mark("before_target_s",scene._time)
             if headway < 30.:
                 event.mark("exposed_s", scene._time)
+        self._score_moving_neighbors(event, ego_poly)
         distances = [body_gap(ego_poly, poly) for poly in polygons]
         o["minimum_body_clearance_m"] = round(min(o.get("minimum_body_clearance_m", 60.), *distances),3)
         if min(distances) < .25:

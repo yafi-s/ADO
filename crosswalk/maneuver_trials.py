@@ -16,7 +16,7 @@ from .drive import episode
 from .experiment import PROJECT, fingerprint, save_arrays, write_json, write_trace
 from .journey import JourneyScenario
 from .maneuver_scene import _polygon
-from .maneuver_trial_grade import ADJACENT_CASES, grade_case, native_body
+from .maneuver_trial_grade import ADJACENT_CASES, evaluation_active, grade_case, native_body
 from .overtake import MODEL as TACTICAL_MODEL
 from .runtime import producer_info, simulator
 from .showcase import encode_and_check
@@ -31,11 +31,12 @@ TRAFFIC = (67, -2, 94., 231.)
 OPEN_TRAFFIC = (67, -2, 94., 185.)  # Finish before the unrelated original stopped lead enters pass range.
 PERSON = (76, -1, 43., 112.)
 REOPENED = (76, -1, 47., 133.)
+REAR_LAUNCH_ROUTE_M = 278.
 WINDOWS = {
     "cones": BEND, "board": BEND, "slow": TRAFFIC, "blocked": TRAFFIC,
     "no-lead": OPEN_TRAFFIC, "departing": OPEN_TRAFFIC, "clear-bend": BEND,
     "inside-curb": BEND, "outside-curb": BEND, "person": PERSON,
-    "reopened": REOPENED, "closing-rejoin": TRAFFIC,
+    "reopened": REOPENED, "closing-rejoin": TRAFFIC, "uncooperative-rear": (67, -2, 6., 166.),
 }
 CASES = tuple(WINDOWS)
 CURB_CASES = ("inside-curb", "outside-curb")
@@ -43,6 +44,20 @@ CURB_CASES = ("inside-curb", "outside-curb")
 
 def lateral(origin, point, axis):
     return (point.x - origin.x) * axis.x + (point.y - origin.y) * axis.y
+
+
+def route_pose_at(scene, station):
+    """Interpolate the exact departure along the same route polyline the driver uses."""
+    index = int(np.searchsorted(scene._station, station, side="right"))
+    left, right = (scene._points[i].transform for i in (index - 1, index))
+    fraction = (station - scene._station[index - 1]) / (scene._station[index] - scene._station[index - 1])
+    location = left.location + (right.location - left.location) * fraction
+    yaw_delta = (right.rotation.yaw - left.rotation.yaw + 180.) % 360. - 180.
+    rotation = carla.Rotation(
+        yaw=left.rotation.yaw + fraction * yaw_delta,
+        pitch=left.rotation.pitch + fraction * (right.rotation.pitch - left.rotation.pitch),
+        roll=left.rotation.roll + fraction * (right.rotation.roll - left.rotation.roll))
+    return carla.Transform(location, rotation)
 
 
 def add_curb_board(scene, case):
@@ -150,8 +165,13 @@ class Witness:
                          others=row["observer_map"]["others"], ego_polygon_xy=ego_poly.round(4).tolist(),
                          ego_lateral_extents_m=[round(min(sides), 3), round(max(sides), 3)],
                          left_driving_edge_m=-source.lane_width / 2, right_driving_edge_m=source.lane_width / 2)
-        reference["native_geometry"] = native_body(
-            self.road, reference, *WINDOWS[self.case][:2], self.case in ADJACENT_CASES)
+        evaluate = evaluation_active(self.geometry, dict(row, native_s=reference["native_s"]))
+        if self.case == "uncooperative-rear":
+            reference.update(route_progress_m=row["progress_m"], corridor_evaluation_active=evaluate,
+                             road67_station_available=row["progress_m"] >= self.station_map[0][0])
+        if evaluate:
+            reference["native_geometry"] = native_body(
+                self.road, reference, *WINDOWS[self.case][:2], self.case in ADJACENT_CASES)
         targets = []
         if self.extra_actor is not None:
             targets.append((self.case, self.extra_actor))
@@ -177,6 +197,9 @@ class Witness:
         trace.pop("observer_map")
         trace["native_s"] = reference["native_s"]
         trace["ego_native_lane"] = reference["ego_native_lane"]
+        if self.case == "uncooperative-rear":
+            trace["corridor_evaluation_active"] = evaluate
+            trace["road67_station_available"] = reference["road67_station_available"]
         trace["nearest_target_body_gap_m"] = min((r["body_gap_m"] for r in target_polygons), default=None)
         if self.case == "reopened":
             trace.update(scene.rows[frame])
@@ -205,8 +228,11 @@ class Witness:
             else:
                 samples = [(scene._station[i], wp.s) for i, wp in enumerate(scene._points)
                            if (wp.road_id, wp.lane_id) == (road_id, lane_id)]
-                spawn = world.get_map().get_waypoint_xodr(road_id, lane_id, start)
-                scene.ego.set_transform(_raised(spawn.transform, .35))
+                if self.case == "uncooperative-rear":
+                    spawn = route_pose_at(scene, REAR_LAUNCH_ROUTE_M)
+                else:
+                    spawn = self.road.get_waypoint_xodr(road_id, lane_id, start).transform
+                scene.ego.set_transform(_raised(spawn, .35))
                 scene.spawn_lateral_m = scene.spawn_yaw_deg = 0.
                 if self.case in CURB_CASES:
                     self.extra_actor, self.geometry = add_curb_board(scene, self.case)
@@ -217,6 +243,12 @@ class Witness:
             self.station_map = (route_m, native_s)
             self.geometry.update(road_id=road_id, lane_id=lane_id, start_s=start, end_s=finish,
                                  route_start_m=float(self.route_range[0]), route_end_m=float(self.route_range[1]))
+            if self.case == "uncooperative-rear":
+                self.geometry.update(launch_route_m=REAR_LAUNCH_ROUTE_M, launch_native_lane=native_lane(self.road, spawn.location),
+                                     evaluation_start_s=start, evaluation_route_start_m=float(self.route_range[0]),
+                                     evaluation_clock="Full episode from launch. Road 67 grade starts at both evaluation gates.",
+                                     native_station_clock="Road 67 route projection, clamped before the first road sample. "
+                                                          "See road67_station_available and ego_native_lane for pre-roll.")
             self.scene = scene
             return scene
         except BaseException:
@@ -242,7 +274,9 @@ def record_case(world, checkpoint, folder, case, protocol):
                 world, "workzone" if case == "reopened" else "journey", SEED, schema, model,
                 scene_factory=witness.create_scene, destination="market", weather=WEATHER,
                 crossing_delay=.5, recording=witness, tactical=True, change_request=witness.finished,
-                max_steps=560 if case in ("blocked", "person", "closing-rejoin") else 450, run_id=folder.name)
+                max_steps=800 if case == "uncooperative-rear" else
+                          560 if case in ("blocked", "person", "closing-rejoin") else 450,
+                run_id=folder.name)
             if len(trace) != len(witness.partial_trace) or len(trace) != len(model.observations):
                 raise RuntimeError("Native frame, trace and policy tape counts differ")
             for row, captured in zip(trace, witness.partial_trace, strict=True):
@@ -312,6 +346,8 @@ def freeze_inputs(args):
                     seed=SEED, model_sha256=digest, execution_source_sha256=fingerprint(snapshot),
                     tactical_model_sha256=fingerprint(root / "tactical-model.json"), step_s=.1, weather=WEATHER,
                     port=args.port, attach=args.attach, requested_quality="High", map="Town03_Opt")
+    if "uncooperative-rear" in args.cases:
+        protocol["launch_route_stations_m"] = {"uncooperative-rear": REAR_LAUNCH_ROUTE_M}
     write_json(root / "protocol.json", protocol)
     return checkpoint, protocol
 
@@ -330,6 +366,8 @@ def main():
     outcomes = {}
     with simulator(args.port, args.attach, "High", map_name="Town03_Opt") as world:
         for case in args.cases:
+            # Make the preceding case's destruction visible to native actor snapshots.
+            world.tick()
             outcomes[case] = record_case(world, checkpoint, args.output / case, case, protocol)
     write_json(args.output / "capture-status.json", outcomes)
     return 0 if all(outcomes.values()) else 1

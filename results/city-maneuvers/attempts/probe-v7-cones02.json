@@ -1,0 +1,217 @@
+{
+  "development_run": "probe-v7-cones02",
+  "description": "Development lane planner on the v0.6 longitudinal model. Isolated cone at native s83. The test ended while the car was returning to the source lane.",
+  "seed": 212,
+  "policy_schema": "ado-city-progress-v1",
+  "outcome": "restarted",
+  "frames": 105,
+  "first_frame": 488,
+  "last_frame": 592,
+  "start_m": 400.164,
+  "finish_m": 463.352,
+  "collision_events": 0,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "source_note": "Development run before source pin. Exact full trace and sensor windows retained in local scratch.",
+  "source_trace_sha256": "9bd242d2f848fd3addb09c8e68232a445e0db4f401212c5db09f26b2dc00f086",
+  "maneuver_stages": [
+    {
+      "frame": 488,
+      "sim_time": 0.0,
+      "progress_m": 400.164,
+      "speed_mps": 0.059,
+      "phase": "keep"
+    },
+    {
+      "frame": 496,
+      "sim_time": 0.8,
+      "progress_m": 400.862,
+      "speed_mps": 1.729,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 498,
+      "sim_time": 1.0,
+      "progress_m": 401.252,
+      "speed_mps": 2.153,
+      "phase": "keep"
+    },
+    {
+      "frame": 499,
+      "sim_time": 1.1,
+      "progress_m": 401.478,
+      "speed_mps": 2.36,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 503,
+      "sim_time": 1.5,
+      "progress_m": 402.585,
+      "speed_mps": 3.141,
+      "phase": "keep"
+    },
+    {
+      "frame": 504,
+      "sim_time": 1.6,
+      "progress_m": 402.909,
+      "speed_mps": 3.326,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 506,
+      "sim_time": 1.8,
+      "progress_m": 403.614,
+      "speed_mps": 3.712,
+      "phase": "keep"
+    },
+    {
+      "frame": 507,
+      "sim_time": 1.9,
+      "progress_m": 403.996,
+      "speed_mps": 3.915,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 508,
+      "sim_time": 2.0,
+      "progress_m": 404.399,
+      "speed_mps": 4.125,
+      "phase": "keep"
+    },
+    {
+      "frame": 509,
+      "sim_time": 2.1,
+      "progress_m": 404.823,
+      "speed_mps": 4.335,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 511,
+      "sim_time": 2.3,
+      "progress_m": 405.733,
+      "speed_mps": 4.745,
+      "phase": "keep"
+    },
+    {
+      "frame": 512,
+      "sim_time": 2.4,
+      "progress_m": 406.218,
+      "speed_mps": 4.943,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 514,
+      "sim_time": 2.6,
+      "progress_m": 407.247,
+      "speed_mps": 5.325,
+      "phase": "keep"
+    },
+    {
+      "frame": 515,
+      "sim_time": 2.7,
+      "progress_m": 407.789,
+      "speed_mps": 5.505,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 520,
+      "sim_time": 3.2,
+      "progress_m": 410.742,
+      "speed_mps": 6.213,
+      "phase": "change_left"
+    },
+    {
+      "frame": 539,
+      "sim_time": 5.1,
+      "progress_m": 423.81,
+      "speed_mps": 7.808,
+      "phase": "passing"
+    },
+    {
+      "frame": 560,
+      "sim_time": 7.2,
+      "progress_m": 439.353,
+      "speed_mps": 8.018,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 566,
+      "sim_time": 7.8,
+      "progress_m": 443.862,
+      "speed_mps": 8.033,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 570,
+      "sim_time": 8.2,
+      "progress_m": 446.831,
+      "speed_mps": 8.038,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 571,
+      "sim_time": 8.3,
+      "progress_m": 447.574,
+      "speed_mps": 8.039,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 572,
+      "sim_time": 8.4,
+      "progress_m": 448.317,
+      "speed_mps": 8.042,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 577,
+      "sim_time": 8.9,
+      "progress_m": 452.094,
+      "speed_mps": 8.045,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 581,
+      "sim_time": 9.3,
+      "progress_m": 455.082,
+      "speed_mps": 8.049,
+      "phase": "change_right"
+    }
+  ],
+  "events": [
+    {
+      "kind": "in-lane-obstruction",
+      "station_m": 431.4,
+      "phase": "waiting",
+      "triggered": true,
+      "cleared": false,
+      "exposed": true,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 9.93,
+      "blueprint": "static.prop.trafficcone01",
+      "target_count": 3,
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 0.0,
+      "before_target_s": 0.0,
+      "exposed_s": 0.0,
+      "minimum_body_clearance_m": 1.809,
+      "maximum_target_displacement_m": 0.0,
+      "alternate_alongside_s": 5.9,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.809,
+      "rear_cleared_target_s": 7.2
+    }
+  ]
+}

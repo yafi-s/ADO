@@ -1,0 +1,48 @@
+{
+  "development_run": "probe-base-cones",
+  "description": "Published v0.6 policy. Isolated cone approach with no added lane traffic, native s83. Limited 34-second run.",
+  "seed": 212,
+  "policy_schema": "ado-city-progress-v1",
+  "outcome": "timeout",
+  "frames": 340,
+  "first_frame": 136,
+  "last_frame": 475,
+  "start_m": 400.164,
+  "finish_m": 424.973,
+  "collision_events": 0,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "source_note": "Development run before source pin. Exact full trace and sensor windows retained in local scratch.",
+  "source_trace_sha256": "0babba3149b1f7a629bbb0450e8d418ba69a1af616bf7bf9f11f25df2bcb119f",
+  "maneuver_stages": [],
+  "events": [
+    {
+      "kind": "in-lane-obstruction",
+      "station_m": 431.4,
+      "phase": "waiting",
+      "triggered": true,
+      "cleared": false,
+      "exposed": true,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": true,
+      "minimum_gap_m": 3.35,
+      "blueprint": "static.prop.trafficcone01",
+      "target_count": 3,
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 0.0,
+      "before_target_s": 0.0,
+      "exposed_s": 0.0,
+      "minimum_body_clearance_m": 3.37,
+      "maximum_target_displacement_m": 0.0
+    }
+  ]
+}

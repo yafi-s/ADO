@@ -1,0 +1,123 @@
+{
+  "development_run": "probe-v7-duo08",
+  "description": "Both physical overtakes and returns completed. Adjacent rear traffic passed during the previous return signal, resulting in no distinct policy yield exposure. The continuous sequence grade correctly declined promotion.",
+  "source_trace_sha256": "d2458be18963d7f54644e890fb6b835fd6df1b91dce3f48c13e0c6f9729ad311",
+  "frame_range": [
+    7699,
+    8123
+  ],
+  "start_m": 384.164,
+  "finish_m": 572.149,
+  "outcome": "restarted",
+  "sequence": {
+    "passed": false,
+    "obstruction_rejoin_precedes_occupied_wait": false,
+    "actual_wait_policy_frames": 0,
+    "first_actual_wait_frame": null,
+    "last_actual_wait_frame": null
+  },
+  "events": [
+    {
+      "kind": "in-lane-obstruction",
+      "station_m": 420.41,
+      "phase": "back in route lane",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": true,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 15.21,
+      "blueprint": "static.prop.trafficcone01",
+      "target_count": 3,
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 0.0,
+      "before_target_s": 0.0,
+      "minimum_body_clearance_m": 1.675,
+      "maximum_target_displacement_m": 0.0,
+      "exposed_s": 2.3,
+      "alternate_alongside_s": 8.7,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.675,
+      "rear_cleared_target_s": 10.1,
+      "returned_to_route_s": 16.9,
+      "cleared_s": 16.9,
+      "rejoin_station_m": 461.79,
+      "rejoin_rear_clear_m": 32.112,
+      "passed_s": 16.9
+    },
+    {
+      "kind": "slow-traffic",
+      "station_m": 489.69,
+      "phase": "back in route lane",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": true,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 18.84,
+      "blueprint": "vehicle.lincoln.mkz",
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 9.7,
+      "before_target_s": 9.7,
+      "minimum_body_clearance_m": 1.702,
+      "target_traveled_m": 34.414,
+      "target_maximum_step_m": 0.165,
+      "adjacent_front_minimum_gap_m": 44.467,
+      "adjacent_rear_minimum_gap_m": 1.046,
+      "moving_target_s": 13.9,
+      "exposed_s": 14.6,
+      "occupied_gap_wait_s": 16.9,
+      "occupied_gap_frames": 17,
+      "minimum_ego_while_occupied_mps": 0.006,
+      "stopped_while_occupied_s": 0.3,
+      "adjacent_gap_witness": {
+        "rear_relative_m": -6.07,
+        "front_relative_m": 50.02,
+        "rear_mps": 11.41,
+        "front_mps": 6.19,
+        "source_bumper_gap_m": 26.25,
+        "moving_lead_mps": 1.37,
+        "ego_mps": 3.02
+      },
+      "adjacent_traffic_cleared_s": 18.5,
+      "alternate_alongside_s": 26.5,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.702,
+      "moving_alongside_s": 26.5,
+      "alongside_target_mps": 1.645,
+      "rear_cleared_target_s": 28.2,
+      "returned_to_route_s": 36.1,
+      "cleared_s": 36.1,
+      "rejoin_station_m": 552.417,
+      "rejoin_rear_clear_m": 22.676,
+      "passed_s": 36.1
+    }
+  ],
+  "collision_events": 0,
+  "red_light_violations": 0,
+  "yield_violations": 0
+}

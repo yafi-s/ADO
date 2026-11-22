@@ -326,6 +326,7 @@ def _load_inputs(model_path):
         if hashlib.sha256(model.capture_checkpoint).hexdigest() != saved_sha:
             raise RuntimeError("Maneuver checkpoint changed before it could be archived")
         policy["maneuver_choice_sha256"] = hashlib.sha256(model.capture_maneuver_choice).hexdigest()
+        policy["tactical_sha256"] = policy["maneuver_choice_sha256"]
         policy["control_inputs"] += " Discretionary lane changes use the surveyed adjacent lane and ego-motion-compensated lidar returns."
     return model, JourneyScenario, model.new_observer, policy
 
