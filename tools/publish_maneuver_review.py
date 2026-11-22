@@ -12,8 +12,20 @@ def read(path):
     return json.loads(path.read_bytes())
 
 
+def event_frame(rows, event, mark):
+    """Find the first camera exposure whose scorer has recorded this milestone."""
+    stamp = event[mark]
+    if stamp is not None:
+        for row in rows:
+            for measured in row["events"]:
+                if measured["kind"] == event["kind"] and measured.get(mark) == stamp:
+                    return row["frame"]
+    raise ValueError(f'Missing native exposure for {event["kind"]}/{mark}')
+
+
 def create():
     manifest = read(MEDIA / "city-maneuvers/manifest.json")
+    rows = read(MEDIA / "city-maneuvers/telemetry.json")
     old = read(STUDY / "audit/v06.json")
     new = read(STUDY / "audit/v07.json")
     if (not manifest["passed"] or manifest["trial_id"] != "city-maneuvers"
@@ -34,8 +46,8 @@ def create():
             raise ValueError("Event outside the camera recording")
         return f"./?run=city-maneuvers&frame={frame}&camera={view}"
 
-    def camera(stamp, view):
-        return exposure(manifest["first_frame"] + round(stamp / manifest["frame_period_s"]), view)
+    def camera(event, mark, view):
+        return exposure(event_frame(rows, event, mark), view)
 
     checks = []
 
@@ -54,17 +66,17 @@ def create():
         f'ADO passed {obstacle["target_count"]} physical props in the neighboring lane, with '
         f'{obstacle["alongside_minimum_body_gap_m"]:.2f} m minimum body clearance while alongside. '
         f'It then returned to the original lane, {obstacle["rejoin_rear_clear_m"]:.1f} m clear of the obstruction.',
-        ("See the obstruction", camera(obstacle["exposed_s"], "front")),
-        ("Alongside", camera(obstacle["alternate_alongside_s"], "chase")),
-        ("Back in lane", camera(obstacle["returned_to_route_s"], "rear_right")))
+        ("See the obstruction", camera(obstacle, "exposed_s", "front")),
+        ("Alongside", camera(obstacle, "alternate_alongside_s", "chase")),
+        ("Back in lane", camera(obstacle, "returned_to_route_s", "rear_right")))
     add("Yield and overtake",
         f'The vehicle ahead was moving at {lead["alongside_target_mps"]*3.6:.1f} km/h at first measured moving overlap. '
         f'For {sequence["actual_wait_policy_frames"] * manifest["frame_period_s"]:.1f} s of native exposures '
         f'ADO selected yield while adjacent traffic occupied the gap. It then passed the lead and returned '
         f'{lead["rejoin_rear_clear_m"]:.1f} m ahead, measured between the two bodies.',
         ("Yield to adjacent traffic", exposure(sequence["first_actual_wait_frame"], "rear_left")),
-        ("Pass the moving car", camera(lead["moving_alongside_s"], "chase")),
-        ("Return", camera(lead["returned_to_route_s"], "rear_right")))
+        ("Pass the moving car", camera(lead, "moving_alongside_s", "chase")),
+        ("Return", camera(lead, "returned_to_route_s", "rear_right")))
     variant = read(STUDY / "qualification/timing-variation/grade.json")
     variant_run = read(STUDY / "qualification/timing-variation/summary.json")
     variant_lead = next(event for event in variant["events"] if event["kind"] == "slow-traffic")
