@@ -274,8 +274,8 @@ def record_case(world, checkpoint, folder, case, protocol):
                 world, "workzone" if case == "reopened" else "journey", SEED, schema, model,
                 scene_factory=witness.create_scene, destination="market", weather=WEATHER,
                 crossing_delay=.5, recording=witness, tactical=True, change_request=witness.finished,
-                max_steps=800 if case == "uncooperative-rear" else
-                          560 if case in ("blocked", "person", "closing-rejoin") else 450,
+                max_steps=850 if case == "blocked" else 800 if case == "uncooperative-rear" else
+                          560 if case in ("person", "closing-rejoin", "slow") else 450,
                 run_id=folder.name)
             if len(trace) != len(witness.partial_trace) or len(trace) != len(model.observations):
                 raise RuntimeError("Native frame, trace and policy tape counts differ")

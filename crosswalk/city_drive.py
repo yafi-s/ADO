@@ -99,6 +99,8 @@ def main():
     parser.add_argument("--serve", action="store_true", help="Stream the live cameras and measured controls")
     parser.add_argument("--population-profile", choices=("standard", "city-life", "city-maneuvers"),
                         help="Street population and staged encounters for this drive")
+    parser.add_argument("--urban-cap", action="store_true",
+                        help="Keep the City Maneuvers driver at its urban cruise ceiling on high-posted roads")
     parser.add_argument("--surround", action=argparse.BooleanOptionalAction, default=None,
                         help="Run the five-camera perception rig (on by default for the live urban cruise driver)")
     parser.add_argument("--tactical", action=argparse.BooleanOptionalAction, default=None,
@@ -114,6 +116,8 @@ def main():
         parser.error("Crossing delay must be finite and nonnegative")
     model_sha = fingerprint(args.model)
     driver, names, schema = load_driver(args.model)
+    if args.urban_cap and hasattr(driver, "allow_high_speed"):
+        driver.allow_high_speed = False
     pace_schema = schema in ("ado-city-pace-v1", "ado-city-clearance-v1", "ado-city-progress-v1", "ado-city-maneuvers-v1")
     maneuver_driver = schema == "ado-city-maneuvers-v1"
     default_rig_and_planner = maneuver_driver or (args.serve and (pace_schema or schema == "ado-city-cruise-v1"))
@@ -158,6 +162,8 @@ def main():
     summary.update(producer=producer, model_sha256=model_sha, policy_schema=schema, population_profile=population_profile,
                    surround=bool(options.get("surround")), tactical=bool(options.get("tactical")),
                    tactical_model_sha256=tactical_sha)
+    if schema == "ado-city-maneuvers-v1":
+        summary["open_road_cruise_enabled"] = bool(driver.allow_high_speed)
     write_json(folder / "summary.json", summary)
     passed = sum(event["handled"] for event in summary["events"])
     print(f'{summary["outcome"]}: {summary["progress_m"]:.1f}/{summary["route_length_m"]:.1f} m, '

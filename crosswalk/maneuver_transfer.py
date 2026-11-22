@@ -193,14 +193,6 @@ def run(world, args, case):
         summary,rows,_,_ = episode(world,"boulevard",7401,schema,LoggedDriver(driver),max_steps=480,
                                    scene_factory=create,tactical=True,weather="ClearNoon",recording=FrontVideo(stream,folder/"sensor-evidence",scenes),
                                    change_request=lambda:scenes[0].finished())
-    # CARLA's actor cache advances with a snapshot. Check just the IDs this
-    # test spawned, leaving all other actors untouched.
-    for _ in range(3):
-        world.tick()
-        if not list(world.get_actors(scenes[0].owned_actor_ids)):
-            break
-    else:
-        raise RuntimeError("The transfer's vehicle destruction was not acknowledged")
     assert len(rows)==len(scenes[0].rows) and all(r["frame"]==truth["frame"] for r,truth in zip(rows,scenes[0].rows))
     for r,truth in zip(rows,scenes[0].rows):
         r.update(truth)
@@ -209,6 +201,14 @@ def run(world, args, case):
                    raw_front_sha256=fingerprint(raw))
     write_json(folder/"summary.json",summary)
     encode_and_check(raw,folder/"front.mp4",(640,360),0,len(rows))
+    # CARLA's actor cache advances with a snapshot. Check just the IDs this
+    # test spawned, leaving all other actors untouched.
+    for _ in range(3):
+        world.tick()
+        if not set(scenes[0].owned_actor_ids).intersection(a.id for a in world.get_actors().filter("vehicle.*")):
+            break
+    else:
+        raise RuntimeError("The transfer's vehicle destruction was not acknowledged")
     print(case,summary["outcome"],summary["score"],flush=True)
     return summary["score"]["passed"]
 
@@ -224,11 +224,14 @@ def main():
     a.output.mkdir(parents=True,exist_ok=False)
     src=Path(__file__).parent
     files=list(src.glob("*.py"))
+    sources = {p.name:fingerprint(p) for p in files}
+    sources["maneuver_transfer.py"] = fingerprint(Path(__file__))
+    (a.output/"executed-transfer.py").write_bytes(Path(__file__).read_bytes())
     write_json(a.output/"protocol.json",dict(road=65,source_lane=3,initial_ego_s=210,
         initial_lead_s=180,lead_speed_mps=1.55,occupied_adjacent_s=208,adjacent_release_tick=36,
         checks="moving lead at commitment and alongside, return with body clear, native signal readback, legal envelopes",
         rebrake_starts_tick=59,cases=a.cases,seed=7401,model_sha256=fingerprint(a.model),tactical_sha256=fingerprint(MODEL),
-        source_sha256={p.name:fingerprint(p) for p in files}))
+        source_sha256=sources))
     passed=[]
     with simulator(a.port,a.attach,"High",map_name="Town03_Opt") as world:
         for case in a.cases:

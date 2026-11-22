@@ -174,12 +174,19 @@ class ManeuverFixture:
 
     def _traffic(self, case):
         if case != "no-lead":
-            e = self._event("slow-traffic", 149)
-            e.actor = self._car("slow-traffic", "vehicle.lincoln.mkz", -2, 149,
-                                229, 90 if case=="departing" else 105,
-                                8.0 if case=="departing" else 1.90 if case=="later-gap" else 1.65)
+            start = 133 if case == "slow" else 149
+            release = {"departing": 90, "slow": 93}.get(case, 105)
+            speed = {"departing": 8.0, "later-gap": 1.90}.get(case, 1.65)
+            e = self._event("slow-traffic", start)
+            e.actor = self._car("slow-traffic", "vehicle.lincoln.mkz", -2, start,
+                                285 if case == "blocked" else 229, release, speed)
             e.observed.update(blueprint=e.actor.type_id, source_lane=[67,-2], passing_lane=[67,-1])
-        self._car("adjacent-front", "vehicle.mini.cooper", -1, 166, 293, 111, 7.)
+        self._car("adjacent-front", "vehicle.mini.cooper", -1, 166, 293, 93 if case == "slow" else 111, 7.)
+        if case == "slow":
+            # The short cut starts the ego at road s94. Let the lead and front
+            # neighbour begin rolling under native tire forces during rig warm-up.
+            for role in ("slow-traffic", "adjacent-front"):
+                self.moving[role].actor.apply_control(carla.VehicleControl(throttle=.45))
         if case == "blocked":
             self._car("adjacent-rear", "vehicle.tesla.model3", -1, 143, 262, 105, 1.65)
         else:
@@ -191,6 +198,16 @@ class ManeuverFixture:
             self._car("adjacent-rear", "vehicle.tesla.model3", -1, start, 256, activation, 12.0)
 
     def before_tick(self):
+        if self.case == "blocked" and self.scene._time >= 25.:
+            # A following queue must not depend on the ego reaching a stopped
+            # car through an occupied lane. The downstream sedan leaves on its
+            # own clock; both slow cars continue their parallel physical runouts.
+            downstream = next(e for e in self.scene.events if e.kind == "lead")
+            if downstream.state in ("waiting", "stopped"):
+                downstream.state = "departing"
+                downstream.release_pos = downstream.actor.get_location()
+                downstream.mark("release_command_s", self.scene._time)
+                downstream.observed["scheduled_downstream_departure"] = True
         if self.case == "closing-rejoin" and not self.accelerated_after_pass:
             lead = self.moving["slow-traffic"]
             pose = lead.actor.get_transform()
