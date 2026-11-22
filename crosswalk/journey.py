@@ -13,7 +13,7 @@ WALKERS = {"pedestrian", "pedestrian-delayed", "occluded"}
 LEADS = {"lead", "braking"}
 
 
-def required_event_kinds(map_name, *, barriers=False):
+def required_event_kinds(map_name, *, barriers=False, maneuvers=False):
     """Immutable encounter contract for each supported continuous journey course."""
     town = map_name.rsplit("/",1)[-1].lower()
     base = ("pedestrian","pedestrian-delayed","occluded","lead","braking",
@@ -21,7 +21,8 @@ def required_event_kinds(map_name, *, barriers=False):
     if town in ("town01","town01_opt"):
         return base
     if town in ("town03","town03_opt"):
-        return (*base,"bus","barrier") if barriers else (*base,"bus")
+        fixed = (*base,"bus","barrier") if barriers else (*base,"bus")
+        return (*fixed, "in-lane-obstruction", "slow-traffic") if maneuvers else fixed
     raise ValueError(f"No commissioned journey layout for {map_name}")
 
 
@@ -193,6 +194,10 @@ class Encounter:
                 evidence.append("lead_stopped_s")
         elif self.kind == "cyclist":
             evidence.extend(("moving_ahead_s", "left_route_s"))
+        elif self.kind in ("in-lane-obstruction", "slow-traffic"):
+            evidence.extend(("before_target_s", "alternate_alongside_s", "rear_cleared_target_s", "returned_to_route_s"))
+            if self.kind == "slow-traffic":
+                evidence.extend(("moving_target_s", "moving_alongside_s", "occupied_gap_wait_s", "adjacent_traffic_cleared_s"))
         elif self.kind == "barrier":
             evidence.append("all_barriers_passed_s")
         elif self.kind == "roadworks":
@@ -211,10 +216,11 @@ class Encounter:
 class JourneyScenario(Scenario):
     """All movement commands target NPCs. The caller drives and samples the single ego."""
     def __init__(self, world, kind, seed, perturb=False, district=None, crossing_delay=0., destination=None, *,
-                 barriers=False, population_profile="standard"):
-        if population_profile not in ("standard", "city-life"):
+                 barriers=False, population_profile="standard", maneuver_case="continuous"):
+        if population_profile not in ("standard", "city-life", "city-maneuvers"):
             raise ValueError(f"Unknown journey population profile: {population_profile}")
         self.population_profile = population_profile
+        self.maneuver_fixture = None
         if kind != "journey":
             raise ValueError("JourneyScenario expects kind='journey'")
         self.kind = self.name = kind
@@ -337,10 +343,17 @@ class JourneyScenario(Scenario):
                 if barriers:
                     from .barrier_scene import spawn_barriers
                     spawn_barriers(self)
+            if population_profile == "city-maneuvers":
+                from .maneuver_scene import ManeuverFixture
+                self.maneuver_fixture = ManeuverFixture(self, maneuver_case)
+                required = (*required, *self.maneuver_fixture.event_names)
             self.events.sort(key=lambda e:e.s)
             if sorted(e.kind for e in self.events) != sorted(required):
                 raise RuntimeError("Journey setup does not match the course encounter contract")
-            if population_profile == "city-life":
+            if population_profile == "city-maneuvers":
+                from .maneuver_scene import ManeuverPopulation
+                self.ambient = ManeuverPopulation(self)
+            elif population_profile == "city-life":
                 from .city_population import CityPopulation
                 self.ambient = CityPopulation(self)
             else:
@@ -880,11 +893,13 @@ class JourneyScenario(Scenario):
         for e in self.events:
             distance = e.s-progress
             trailing_lead = e.kind in LEADS and e.state=="departing" and "passed_s" not in e.observed
-            if not trailing_lead and not (-140 if e.kind in ("bus","cyclist") else -65) < distance < 65:
+            if e.kind not in ("in-lane-obstruction", "slow-traffic") and not trailing_lead and not (-140 if e.kind in ("bus","cyclist") else -65) < distance < 65:
                 continue
             if "passed_s" in e.observed:
                 continue
-            if e.kind in WALKERS:
+            if e.kind in ("in-lane-obstruction", "slow-traffic"):
+                gap = self.maneuver_fixture.observe(e, progress)
+            elif e.kind in WALKERS:
                 gap = self._walker_gap(e, distance, lateral, nose)
             elif e.kind in LEADS:
                 gap = self._lead_gap(e, distance, progress, lateral, nose)
@@ -971,6 +986,8 @@ class JourneyScenario(Scenario):
     def before_tick(self):
         self._observe()
         self.ambient.before_tick()
+        if self.maneuver_fixture is not None:
+            self.maneuver_fixture.before_tick()
         for e in self.events:
             if e.kind in WALKERS:
                 if e.state == "leaving":
@@ -1002,7 +1019,11 @@ class JourneyScenario(Scenario):
     def observer_positions(self, radius=100.):
         """Nearby ground-truth actors for the spectator map only."""
         actors = [(self.occluder, "van", "occluder")]
+        if self.maneuver_fixture is not None:
+            actors.extend(self.maneuver_fixture.spectator_actors())
         for event in self.events:
+            if event.kind in ("in-lane-obstruction", "slow-traffic"):
+                continue
             if event.kind == "roadworks":
                 actors.extend((cone,"cone","roadworks") for cone in event.cones)
             elif event.kind == "barrier":
@@ -1032,7 +1053,7 @@ class JourneyScenario(Scenario):
                                       dimensions_m=[round(2*box.x, 2), round(2*box.z, 2), round(2*box.y, 2)],
                                       x=round(p.x,2),y=round(p.y,2),z=round(p.z,2),
                                       yaw=round(pose.rotation.yaw,2)))
-                if getattr(self, "population_profile", None) == "city-life":
+                if getattr(self, "population_profile", None) in ("city-life", "city-maneuvers"):
                     box_center = bounds.location
                     local = bounds.rotation
                     positions[-1].update(bbox_offset_m=[round(v, 3) for v in (box_center.x, box_center.y, box_center.z)],
