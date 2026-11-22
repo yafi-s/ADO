@@ -35,6 +35,9 @@ def load_driver(path):
     if version == "ado-city-clearance-v1":
         from .city_clearance import ClearanceModel, FEATURE_NAMES as clearance_names
         return ClearanceModel.load(path), clearance_names, version
+    if version == "ado-city-maneuvers-v1":
+        from .city_maneuvers import ManeuverModel, FEATURE_NAMES as maneuver_names
+        return ManeuverModel.load(path), maneuver_names, version
     if version == "ado-city-progress-v1":
         if revision == 4:
             from .city_grade import GradeModel, FEATURE_NAMES as grade_names
@@ -111,7 +114,7 @@ def main():
         parser.error("Crossing delay must be finite and nonnegative")
     model_sha = fingerprint(args.model)
     driver, names, schema = load_driver(args.model)
-    pace_schema = schema in ("ado-city-pace-v1", "ado-city-clearance-v1", "ado-city-progress-v1")
+    pace_schema = schema in ("ado-city-pace-v1", "ado-city-clearance-v1", "ado-city-progress-v1", "ado-city-maneuvers-v1")
     live_cruise = args.serve and (pace_schema or schema == "ado-city-cruise-v1")
     options = {key: True for key, value in (("surround", args.surround), ("tactical", args.tactical))
                if (live_cruise if value is None else value)}
@@ -121,7 +124,7 @@ def main():
         tactical_sha = fingerprint(tactical_checkpoint)
     model = LoggedDriver(driver)
     population_profile = args.population_profile or (
-        "city-life" if args.serve and schema in ("ado-city-clearance-v1", "ado-city-progress-v1") else "standard")
+        "city-life" if args.serve and schema in ("ado-city-clearance-v1", "ado-city-progress-v1", "ado-city-maneuvers-v1") else "standard")
     scene_factory = partial(JourneyScenario, population_profile=population_profile,
                             barriers=pace_schema)
     root = args.output or PROJECT / "out/city-drives"

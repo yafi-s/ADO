@@ -1,0 +1,59 @@
+{
+  "schema": "ado-city-maneuvers-v1",
+  "revision": 1,
+  "checkpoint_sha256": "a2bc9081e305a1db590274e0355239da65fcb23886e94886e20b1e503801176e",
+  "base_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+  "inputs": {
+    "web/media/city-life/replay.json": "e1823a4929368d12e49240981edcf0b42c7364a9be11937def768b8ae340c2ef",
+    "models/city-progress/candidate.npz": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+    "results/city-maneuvers/speed/stopping-envelope.json": "3d2bb34260ab7a6752d773374d4109b3731a86e29f1104ca055de033af672e75",
+    "crosswalk/city_open_road.py": "0758faea57193ac9e8a20a09cce53ea7c7214eb3b864d501ef7114baae5031b2",
+    "crosswalk/speed_signs.py": "dbad81aedd4f480361a2382ee0056ff79e570c8b3ab440544f524163e0e5c9e8",
+    "crosswalk/city_maneuvers.py": "037de6511b249d8da401bcda1502724a600b34318cf2c4e79b2a36fb48fd5f01",
+    "crosswalk/city_maneuvers_fit.py": "92b6faadff1f75104e75cdb61f18f7cbd9bc1995978b6895105502eb9fce3d45"
+  },
+  "camera_and_range": "At runtime only current and preceding native images, range scans, navigation and odometry.",
+  "fit": "Nonnegative 0.8 quantile of measured absolute yaw per route metre. Upcoming travel is a training label only.",
+  "near_window_m": [
+    0,
+    7
+  ],
+  "upcoming_window_m": [
+    7,
+    20
+  ],
+  "samples": 1394,
+  "fit_metres": 1045,
+  "holdout_metres": 349,
+  "holdout_median_absolute_error_per_m": [
+    0.00038702227339473816,
+    0.00032667155826469137
+  ],
+  "holdout_coverage": [
+    0.8510028653295129,
+    0.8853868194842407
+  ],
+  "coefficients": [
+    [
+      0.000264818978925745,
+      1.034272297403949,
+      0.0,
+      0.005851468922185996
+    ],
+    [
+      4.849931998465195e-05,
+      0.6612582980498976,
+      0.8587239383367771,
+      0.04110470789918502
+    ]
+  ],
+  "urban_request_ceiling_kmh": 39.6,
+  "max_operating_request_kmh": 60.00000000000001,
+  "high_speed_stopping": [
+    0.5,
+    0.12363543931032234,
+    2.2584937461676224,
+    16.689027447446836
+  ],
+  "stopping_calibration_tested_to_mps": 8.075061167814589
+}

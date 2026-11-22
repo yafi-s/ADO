@@ -1,0 +1,164 @@
+{
+  "schema": "ado-city-maneuvers-pace-replay-v1",
+  "native_capture": "long-city-drive-9fs22_82",
+  "caveat": "Fixed native motion and original base tape. Camera boxes reconstructed from compressed front RGB. Region exposure and policy responses can differ in closed loop. Camera brightness/contrast checked on each synchronized JPEG.",
+  "all": {
+    "frames": 2987,
+    "old_median_requested_kmh": 17.375,
+    "new_median_requested_kmh": 17.729,
+    "measured_unchanged_ego_kmh": 16.78,
+    "additional_request_frames": 161,
+    "additions_with_crossing": 0,
+    "median_camera_horizon_m": 60.0,
+    "max_base_replay_error_kmh": 1.7994416708688732e-05
+  },
+  "windows": {
+    "J1932": {
+      "frames": 88,
+      "old_median_requested_kmh": 12.978,
+      "new_median_requested_kmh": 12.98,
+      "measured_unchanged_ego_kmh": 13.531,
+      "additional_request_frames": 9,
+      "additions_with_crossing": 0,
+      "median_camera_horizon_m": 0.0,
+      "max_base_replay_error_kmh": 1.7858551027316594e-05
+    },
+    "boards": {
+      "frames": 95,
+      "old_median_requested_kmh": 5.408,
+      "new_median_requested_kmh": 9.138,
+      "measured_unchanged_ego_kmh": 6.808,
+      "additional_request_frames": 28,
+      "additions_with_crossing": 0,
+      "median_camera_horizon_m": 60.0,
+      "max_base_replay_error_kmh": 1.7368919580817987e-05
+    },
+    "bus_exit": {
+      "frames": 51,
+      "old_median_requested_kmh": 15.805,
+      "new_median_requested_kmh": 16.481,
+      "measured_unchanged_ego_kmh": 17.294,
+      "additional_request_frames": 8,
+      "additions_with_crossing": 0,
+      "median_camera_horizon_m": 60.0,
+      "max_base_replay_error_kmh": 1.798049926904355e-05
+    },
+    "occluded_approach": {
+      "frames": 116,
+      "old_median_requested_kmh": 5.408,
+      "new_median_requested_kmh": 5.408,
+      "measured_unchanged_ego_kmh": 4.091,
+      "additional_request_frames": 0,
+      "additions_with_crossing": 0,
+      "median_camera_horizon_m": 0.0,
+      "max_base_replay_error_kmh": 1.5164978027115694e-05
+    },
+    "moving_lead": {
+      "frames": 83,
+      "old_median_requested_kmh": 18.414,
+      "new_median_requested_kmh": 18.414,
+      "measured_unchanged_ego_kmh": 18.817,
+      "additional_request_frames": 0,
+      "additions_with_crossing": 0,
+      "median_camera_horizon_m": 0.0,
+      "max_base_replay_error_kmh": 1.666351318263537e-05
+    },
+    "boulevard": {
+      "frames": 79,
+      "old_median_requested_kmh": 39.294,
+      "new_median_requested_kmh": 39.294,
+      "measured_unchanged_ego_kmh": 37.649,
+      "additional_request_frames": 0,
+      "additions_with_crossing": 0,
+      "median_camera_horizon_m": 60.0,
+      "max_base_replay_error_kmh": 1.7450354960146797e-05
+    },
+    "bus_flank": {
+      "frames": 67,
+      "old_median_requested_kmh": 5.408,
+      "new_median_requested_kmh": 5.408,
+      "measured_unchanged_ego_kmh": 7.193,
+      "additional_request_frames": 0,
+      "additions_with_crossing": 0,
+      "median_camera_horizon_m": 60.0,
+      "max_base_replay_error_kmh": 1.7965203580772027e-05
+    }
+  },
+  "abrupt_fallbacks": [
+    {
+      "frame": 1607,
+      "station_m": 697.294,
+      "ego_kmh": 22.082400000000003,
+      "old_kmh": 12.976704,
+      "base_replay_kmh": 12.976695442199707,
+      "candidate_kmh": 12.976695442199707,
+      "added_this_frame_kmh": 0.0,
+      "control": "unconfirmed",
+      "camera_candidates": 1,
+      "camera_stop_horizon_m": 0.0,
+      "shoulder_sight_m": 0.0,
+      "binding": "prior",
+      "crossing_gap_m": 60.0
+    },
+    {
+      "frame": 1615,
+      "station_m": 701.497,
+      "ego_kmh": 17.0964,
+      "old_kmh": 17.639388,
+      "base_replay_kmh": 17.63937549591065,
+      "candidate_kmh": 17.63937549591065,
+      "added_this_frame_kmh": 0.0,
+      "control": "recovery",
+      "camera_candidates": 0,
+      "camera_stop_horizon_m": 60.0,
+      "shoulder_sight_m": 0.0,
+      "binding": "prior",
+      "crossing_gap_m": 60.0
+    },
+    {
+      "frame": 2021,
+      "station_m": 887.012,
+      "ego_kmh": 27.471600000000002,
+      "old_kmh": 12.999024,
+      "base_replay_kmh": 12.999007987976075,
+      "candidate_kmh": 12.999007987976075,
+      "added_this_frame_kmh": 0.0,
+      "control": "unconfirmed",
+      "camera_candidates": 1,
+      "camera_stop_horizon_m": 3.08,
+      "shoulder_sight_m": 0.0,
+      "binding": "prior",
+      "crossing_gap_m": 60.0
+    },
+    {
+      "frame": 2033,
+      "station_m": 894.404,
+      "ego_kmh": 19.674,
+      "old_kmh": 13.007340000000001,
+      "base_replay_kmh": 13.007339572906494,
+      "candidate_kmh": 13.007339572906494,
+      "added_this_frame_kmh": 0.0,
+      "control": "unconfirmed",
+      "camera_candidates": 1,
+      "camera_stop_horizon_m": 0.0,
+      "shoulder_sight_m": 0.0,
+      "binding": "prior",
+      "crossing_gap_m": 60.0
+    },
+    {
+      "frame": 2045,
+      "station_m": 900.056,
+      "ego_kmh": 17.488799999999998,
+      "old_kmh": 21.400631999999998,
+      "base_replay_kmh": 21.400614795684824,
+      "candidate_kmh": 21.400614795684824,
+      "added_this_frame_kmh": 0.0,
+      "control": "recovery",
+      "camera_candidates": 0,
+      "camera_stop_horizon_m": 60.0,
+      "shoulder_sight_m": 0.0,
+      "binding": "prior",
+      "crossing_gap_m": 60.0
+    }
+  ]
+}

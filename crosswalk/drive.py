@@ -147,7 +147,12 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
         pace = getattr(model, "policy", model)
         if tactical:
             from .overtake import TacticalPass
-            if getattr(pace, "confirmed_tactical_release", False):
+            if getattr(pace, "uses_route_maneuvers", False):
+                from .route_maneuvers import RouteManeuvers
+                tactical_pass = RouteManeuvers.from_route(world.get_map(), scene.route)
+                if getattr(scene, "_urban", None) is not None:
+                    scene.tactical_lane_scoring = True
+            elif getattr(pace, "confirmed_tactical_release", False):
                 tactical_pass = TacticalPass.from_scene_map(scene, measured_hold=True, confirmed_release=True)
             else:
                 tactical_pass = (TacticalPass.from_scene_map(scene, measured_hold=True) if hasattr(pace, "tactical_speed_limit")
@@ -261,6 +266,9 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                         obs["progress_tactical"] = tactical_pass.info if tactical_pass is not None else {}
                     junction_gap = next((start - navigation.progress - 2.25
                                          for start, end in scene._junction_ranges if end >= navigation.progress), 60.)
+                    if getattr(observer, "uses_long_sight", False):
+                        obs["long_sight_lidar"] = surround_obs["lidar"] if surround_perception is not None else obs["lidar"]
+                        obs["long_sight_preview"] = navigation.read(scene.ego,(50.,60.,72.)).reshape(-1,2)
                     x = observer.observe(obs, detections, local_route, speed,
                                          route_preview=points[6:], stopline_gap=max(-2., min(60., junction_gap)))
             if sensor_lamp is not None:
@@ -282,7 +290,10 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 if getattr(model, "uses_posted_limit", False):
                     model.posted_limit_kmh = scene.ego.get_speed_limit()
                     if signed_limits is not None:
-                        signed_approach = signed_limits.approach(navigation.progress, speed, model.posted_limit_kmh)
+                        preview_options = ({"cruise_ceiling_mps": pace.signed_preview_ceiling_mps}
+                                           if hasattr(pace, "signed_preview_ceiling_mps") else {})
+                        signed_approach = signed_limits.approach(navigation.progress, speed, model.posted_limit_kmh,
+                                                               **preview_options)
                         pace.signed_speed_limit = signed_approach[0] if signed_approach else None
                 if observer is not None and hasattr(observer, "observe_and_predict"):
                     pose = scene.ego.get_transform()
@@ -295,10 +306,17 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                     predicted = lamp_expert.apply(route_lamps.observe(scene.ego, obs), speed, predicted)
                 if tactical_pass is not None:
                     predicted = tactical_pass.apply(predicted, speed)
+                    if getattr(pace, "uses_route_maneuvers", False):
+                        tactical_pass.update_lights(scene.ego)
                 steer, throttle, brake = (float(v) for v in predicted)
                 scene.ego.apply_control(carla.VehicleControl(steer=steer, throttle=throttle, brake=brake))
             # Actor geometry below this line is only consulted for scoring.
             state = scene.metrics()
+            if (tactical_pass is not None and getattr(pace, "uses_route_maneuvers", False)
+                    and tactical_pass.info.get("committed")):
+                legal = tactical_pass.legal_footprint(scene.ego, scene._map)
+                state["route_departure"] = not legal
+                state["passing_footprint_in_legal_lanes"] = legal
             gap = state["hazard_gap_m"]
             received = rig.collisions()
             if any(f <= warmup_frame for f, _ in received):
@@ -342,6 +360,8 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 row["planner"] = observer.last_info
             if tactical_pass is not None:
                 row["tactical_pass"] = dict(tactical_pass.info)
+                if "passing_footprint_in_legal_lanes" in state:
+                    row["passing_footprint_in_legal_lanes"] = state["passing_footprint_in_legal_lanes"]
             trace.append(row)
             if visuals:
                 lp, rp = _sensor_plot(obs["lidar"], obs["radar"])
