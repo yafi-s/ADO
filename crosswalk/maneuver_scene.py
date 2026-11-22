@@ -27,6 +27,28 @@ class ManeuverPopulation(CityPopulation):
     )
 
 
+    def __init__(self, scene):
+        super().__init__(scene)
+        sensor = scene._catalog.find("sensor.other.collision")
+        try:
+            for participant in scene.maneuver_fixture.moving.values():
+                monitor = scene.world.spawn_actor(sensor, carla.Transform(), attach_to=participant.actor)
+                self._contact_sensors.append(monitor)
+                monitor.listen(self._contact)
+        except BaseException:
+            self.close()
+            raise
+
+    @property
+    def traffic_activity(self):
+        report = super().traffic_activity
+        report["maneuver_vehicles"] = [
+            dict(role=v.role, actor_id=v.actor.id, blueprint=v.actor.type_id, traveled_m=round(v.distance, 3),
+                 maximum_step_m=round(v.maximum_step, 3), maximum_lane_center_error_m=round(v.corridor_error, 3))
+            for v in self._scene.maneuver_fixture.moving.values()]
+        return report
+
+
 @dataclass
 class MovingVehicle:
     role: str
@@ -37,6 +59,7 @@ class MovingVehicle:
     last: object = None
     distance: float = 0.
     maximum_step: float = 0.
+    corridor_error: float = 0.
 
     def drive(self, scene, progress, leaders=()):
         pose = self.actor.get_location()
@@ -46,6 +69,8 @@ class MovingVehicle:
             self.distance += step
         self.last = pose
         index = min(range(len(self.path)), key=lambda i: pose.distance(self.path[i]))
+        nearest = self.path[index]
+        self.corridor_error = max(self.corridor_error, math.hypot(pose.x-nearest.x, pose.y-nearest.y))
         remaining = len(self.path) - 1 - index
         target = min(self.speed, math.sqrt(2.5 * remaining)) if progress >= self.activate_at and remaining > 2 else 0.
         transform = self.actor.get_transform()
@@ -76,15 +101,16 @@ class ManeuverFixture:
     def __init__(self, scene, case):
         self.scene, self.case = scene, case
         self.moving, self.obstacles = {}, []
+        self.accelerated_after_pass = False
         self.event_names = []
         self.stations = {round(wp.s): i for i, wp in enumerate(scene._points)
                          if (wp.road_id, wp.lane_id) == (67, -2)}
         if case not in ("continuous", "cones", "board", "slow", "blocked", "no-lead", "departing",
-                        "clear-bend", "inside-curb", "outside-curb"):
+                        "clear-bend", "inside-curb", "outside-curb", "closing-rejoin"):
             raise ValueError(f"Unsupported maneuver fixture {case}")
         if case in ("continuous", "cones", "board"):
             self._workzone("board" if case == "board" else "cones")
-        if case in ("continuous", "slow", "blocked", "no-lead", "departing"):
+        if case in ("continuous", "slow", "blocked", "no-lead", "departing", "closing-rejoin"):
             self._traffic(case)
 
     def _event(self, kind, station):
@@ -125,19 +151,33 @@ class ManeuverFixture:
 
     def _traffic(self, case):
         if case != "no-lead":
-            e = self._event("slow-traffic", 164)
-            e.actor = self._car("slow-traffic", "vehicle.lincoln.mkz", -2, 164,
-                                229, 90, 8.0 if case=="departing" else 1.65)
+            e = self._event("slow-traffic", 149)
+            e.actor = self._car("slow-traffic", "vehicle.lincoln.mkz", -2, 149,
+                                229, 90 if case=="departing" else 105, 8.0 if case=="departing" else 1.65)
             e.observed.update(blueprint=e.actor.type_id, source_lane=[67,-2], passing_lane=[67,-1])
         self._car("adjacent-front", "vehicle.mini.cooper", -1, 166, 293, 111, 7.)
         if case == "blocked":
-            self._car("adjacent-rear", "vehicle.tesla.model3", -1, 158, 262, 90, 1.65)
+            self._car("adjacent-rear", "vehicle.tesla.model3", -1, 143, 262, 105, 1.65)
         else:
-            self._car("adjacent-rear", "vehicle.tesla.model3", -1, 17, 256, 56, 12.0)
+            # Short control runs start the hero at s94; preserve the closing
+            # rear approach with a matching local run-up in both model arms.
+            start, activation = (17, 81) if case == "continuous" else (72, 94)
+            self._car("adjacent-rear", "vehicle.tesla.model3", -1, start, 256, activation, 12.0)
 
     def before_tick(self):
+        if self.case == "closing-rejoin" and not self.accelerated_after_pass:
+            lead = self.moving["slow-traffic"]
+            pose = lead.actor.get_transform()
+            delta = self.scene.ego.get_location() - pose.location
+            # A lead notices the passing car level with its front door and
+            # accelerates along its own lane. This NPC receives no policy state.
+            if -1. <= delta.dot(pose.get_forward_vector()) <= 5. and -4.6 < delta.dot(pose.get_right_vector()) < -2.3:
+                self.accelerated_after_pass = True
+                lead.speed = 12.
         for role, car in self.moving.items():
             leaders = [self.scene.ego]
+            if role == "slow-traffic":
+                leaders.extend(e.actor for e in self.scene.events if e.kind == "lead")
             if role == "adjacent-rear":
                 leaders.append(self.moving["adjacent-front"].actor)
             car.drive(self.scene, self.scene._last_progress, leaders)
@@ -182,15 +222,20 @@ class ManeuverFixture:
         right = transform.get_right_vector()
         lateral = (ego.get_location()-origin).dot(right)
         ego_s = (ego_poly - [origin.x, origin.y]) @ [forward.x, forward.y]
+        footprint_lateral = (ego_poly - [origin.x, origin.y]) @ [right.x, right.y]
+        centered_in_source = (wp.lane_id == -2 and abs(lateral) < .60 and
+                              max(abs(footprint_lateral)) < original.lane_width/2)
         moving = event.kind == "slow-traffic"
         targets = [event.actor] if moving else [a for a, _ in self.obstacles]
         polygons = [_polygon(actor) for actor in targets]
         stations = np.concatenate([(poly - [origin.x, origin.y]) @ [forward.x, forward.y] for poly in polygons])
         rear, front = min(stations), max(stations)
         headway = float(rear-max(ego_s))
-        if headway > 38.:
+        if headway > 50.:
             return 60.
         event.mark("triggered_s", scene._time)
+        if headway > 0.:
+            event.state = "approaching moving traffic" if moving else "approaching lane obstruction"
         if headway > 0.:
             event.mark("before_target_s",scene._time)
             if headway < 30.:
@@ -218,12 +263,21 @@ class ManeuverFixture:
                     event.violation = True
             if target.maximum_step > 3.:
                 event.violation = True
-            if 0 < headway <= 28. and wp.lane_id == -2 and -18 <= deltas[1] <= 10 and speeds[1] > 1. and speeds[0] > 1.:
+            # The driver can begin following early. The immediate beside/behind
+            # envelope of the passing lane determines occupancy; record the measured
+            # forward headway independently, within the 60 m control lidar range.
+            if 0 < headway <= 35. and speed > .65 and centered_in_source and -18 <= deltas[1] <= 10 and speeds[1] > 1. and speeds[0] > 1.:
+                event.state = "beside moving adjacent traffic"
                 event.mark("occupied_gap_wait_s",scene._time)
                 o["occupied_gap_frames"] = o.get("occupied_gap_frames",0)+1
+                ego_speed = ego.get_velocity().length()
+                o["minimum_ego_while_occupied_mps"] = round(min(ego_speed, o.get("minimum_ego_while_occupied_mps", 100.)), 3)
+                o["stopped_while_occupied_s"] = round(o.get("stopped_while_occupied_s", 0.)
+                                                    + (scene._dt if ego_speed <= .30 else 0.), 2)
                 o.setdefault("adjacent_gap_witness", dict(rear_relative_m=round(deltas[1],2),
                              front_relative_m=round(deltas[0],2), rear_mps=round(speeds[1],2),
-                             front_mps=round(speeds[0],2), ego_mps=round(ego.get_velocity().length(),2)))
+                             front_mps=round(speeds[0],2), source_bumper_gap_m=round(headway,2),
+                             moving_lead_mps=round(speed,2), ego_mps=round(ego.get_velocity().length(),2)))
             if "occupied_gap_wait_s" in o and deltas[1] > 9.:
                 event.mark("adjacent_traffic_cleared_s",scene._time)
         else:
@@ -231,6 +285,7 @@ class ManeuverFixture:
             o["maximum_target_displacement_m"] = round(max(o.get("maximum_target_displacement_m",0.),drift),4)
             event.violation |= drift > .12
         if min(ego_s) <= front and max(ego_s) >= rear and wp.lane_id == -1:
+            event.state = "alongside in the passing lane"
             event.mark("alternate_alongside_s",scene._time)
             o["alongside_ego_lane"] = [wp.road_id,wp.lane_id]
             o["alongside_minimum_body_gap_m"] = round(min(o.get("alongside_minimum_body_gap_m",60.),*distances),3)
@@ -238,12 +293,36 @@ class ManeuverFixture:
                 event.mark("moving_alongside_s",scene._time)
                 o.setdefault("alongside_target_mps",round(speed,3))
         if "alternate_alongside_s" in o and min(ego_s) - front > 1.:
+            event.state = "rear clear of target"
             event.mark("rear_cleared_target_s",scene._time)
-            footprint_lateral = (ego_poly - [origin.x, origin.y]) @ [right.x, right.y]
-            if wp.lane_id == -2 and max(abs(footprint_lateral)) < original.lane_width/2 and abs(lateral) < .60:
+            if centered_in_source:
                 event.mark("returned_to_route_s",scene._time)
                 event.mark("cleared_s",scene._time)
                 o["rejoin_station_m"] = round(progress,3)
                 o["rejoin_rear_clear_m"] = round(float(min(ego_s) - front),3)
                 event.state = "back in route lane"
         return max(0., min(60., headway)) if headway > 0 and abs(lateral)<1.3 else 60.
+
+
+def score_sequence(events, trace):
+    """Match physical evidence to applied control decisions from the same trial."""
+    by_kind = {e["kind"]: e for e in events}
+    obstruction = by_kind["in-lane-obstruction"]
+    slow = by_kind["slow-traffic"]
+    before = obstruction.get("returned_to_route_s")
+    wait = slow.get("occupied_gap_wait_s")
+    waited_frames = []
+    previous = 0
+    for row in trace:
+        target = next(e for e in row["events"] if e["kind"] == "slow-traffic")
+        count = target.get("occupied_gap_frames", 0)
+        tactical = row.get("tactical_pass", {})
+        if count > previous and tactical.get("maneuver_phase") == "yield" and not tactical.get("committed"):
+            waited_frames.append(row["frame"])
+        previous = count
+    distinct = before is not None and wait is not None and before < wait
+    return dict(passed=bool(obstruction["handled"] and slow["handled"] and distinct and waited_frames),
+                obstruction_rejoin_precedes_occupied_wait=distinct,
+                actual_wait_policy_frames=len(waited_frames),
+                first_actual_wait_frame=waited_frames[0] if waited_frames else None,
+                last_actual_wait_frame=waited_frames[-1] if waited_frames else None)

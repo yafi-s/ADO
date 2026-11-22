@@ -202,10 +202,19 @@ class Encounter:
             evidence.append("all_barriers_passed_s")
         elif self.kind == "roadworks":
             evidence.append("all_cones_passed_s")
+        physically_ordered = True
+        if self.kind in ("in-lane-obstruction", "slow-traffic"):
+            phases = ["before_target_s"]
+            if self.kind == "slow-traffic":
+                phases.extend(("occupied_gap_wait_s", "adjacent_traffic_cleared_s"))
+                physically_ordered = o.get("occupied_gap_frames", 0) >= 3
+            phases.extend(("alternate_alongside_s", "rear_cleared_target_s", "returned_to_route_s"))
+            physically_ordered = physically_ordered and all(key in o for key in phases) and all(
+                o[a] < o[b] for a, b in zip(phases, phases[1:]))
         return dict(kind=self.kind, station_m=round(self.s, 2), phase=self.state,
                     triggered="triggered_s" in o, cleared="cleared_s" in o,
                     exposed="exposed_s" in o, passed="passed_s" in o,
-                    handled=all(k in o for k in evidence)
+                    handled=physically_ordered and all(k in o for k in evidence)
                             and not self.violation and "runout_reentered_s" not in o,
                     violation=self.violation, stopped_for_event=self.stopped,
                     minimum_gap_m=round(self.min_gap, 2), **o,

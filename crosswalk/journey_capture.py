@@ -102,6 +102,7 @@ class PerimeterCapture(PerceptionCapture):
                 pose = self.observer.ego.get_transform()
                 save_arrays(self.witness / filename, frame=telemetry["frame"], lidar=observations["lidar"],
                             ego_xyz=[pose.location.x, pose.location.y, pose.location.z],
+                            ego_xy_yaw=[pose.location.x, pose.location.y, pose.rotation.yaw],
                             pitch_yaw_roll=[pose.rotation.pitch, pose.rotation.yaw, pose.rotation.roll],
                             **{r: observations[r] for r in RADARS})
                 self.witness_samples[key] = filename
@@ -320,7 +321,11 @@ def _load_inputs(model_path):
         model = LoggedDriver(model)
     if schema == "ado-city-maneuvers-v1":
         from .maneuver_choice import MODEL as maneuver_model
-        policy["maneuver_choice_sha256"] = fingerprint(maneuver_model)
+        model.capture_checkpoint = path.read_bytes()
+        model.capture_maneuver_choice = maneuver_model.read_bytes()
+        if hashlib.sha256(model.capture_checkpoint).hexdigest() != saved_sha:
+            raise RuntimeError("Maneuver checkpoint changed before it could be archived")
+        policy["maneuver_choice_sha256"] = hashlib.sha256(model.capture_maneuver_choice).hexdigest()
         policy["control_inputs"] += " Discretionary lane changes use the surveyed adjacent lane and ego-motion-compensated lidar returns."
     return model, JourneyScenario, model.new_observer, policy
 
@@ -345,6 +350,11 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
             path = Path(module.__file__)
             policy["code_sha256"][path.name] = fingerprint(path)
         _snapshot(stage, policy)
+        if population_profile == "city-maneuvers":
+            if policy["schema"] != "ado-city-maneuvers-v1":
+                raise ValueError("The featured maneuver scene requires its declared driver checkpoint")
+            (stage / "checkpoint.npz").write_bytes(model.capture_checkpoint)
+            (stage / "tactical-model.json").write_bytes(model.capture_maneuver_choice)
     if with_barriers:
         scene_factory = partial(scene_factory, barriers=True)
     settings = _observed_settings(world)
@@ -394,6 +404,11 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
                   **_result(summary, expected_events))
     source["perimeter_views"] = list(views)
     if population_profile == "city-maneuvers":
+        from .maneuver_scene import score_sequence
+        sequence = score_sequence(summary["events"], trace)
+        source["maneuver_sequence"] = sequence
+        if not sequence["passed"]:
+            source["failure_reasons"].append("separate_physical_maneuvers_unconfirmed")
         source["maneuver_sweeps"] = {name: fingerprint(stage / "maneuver-sweeps" / name)
                                      for name in perception.witness_samples.values()}
     if policy.get("schema") in ("ado-city-progress-v1", "ado-city-maneuvers-v1"):
@@ -417,6 +432,15 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
         source["capture_checkout"] = read_json(stage / "source-checkout.json")
         if summary["background_traffic_activity"]["participant_contacts"]:
             source["failure_reasons"].append("background_participant_contact")
+        if population_profile == "city-maneuvers":
+            traffic = summary["background_traffic_activity"]
+            if any(v["left_corridor"] for v in traffic["vehicles"]):
+                source["failure_reasons"].append("background_vehicle_outside_corridor")
+            if any(v["maximum_step_m"] > 3. or v["maximum_lane_center_error_m"] > 1.75
+                   for v in traffic["maneuver_vehicles"]):
+                source["failure_reasons"].append("maneuver_vehicle_discontinuous_or_outside_corridor")
+            if summary["sidewalk_activity"]["missing_pedestrians"]:
+                source["failure_reasons"].append("background_walker_missing")
         if not score["radii_m"]["35"]["two_of_each_frames"]:
             source["failure_reasons"].append("no_close_simultaneous_population")
         source["passed"] = not source["failure_reasons"]

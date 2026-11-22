@@ -16,6 +16,7 @@ from .drive import episode
 from .experiment import PROJECT, fingerprint, save_arrays, write_json, write_trace
 from .journey import JourneyScenario
 from .maneuver_scene import _polygon
+from .maneuver_trial_grade import ADJACENT_CASES, grade_case, native_body
 from .overtake import MODEL as TACTICAL_MODEL
 from .runtime import producer_info, simulator
 from .showcase import encode_and_check
@@ -26,14 +27,15 @@ from .world import _raised
 SEED = 212
 WEATHER = "ClearNoon"
 BEND = (67, -2, 48., 145.)
-TRAFFIC = (67, -2, 94., 215.)
+TRAFFIC = (67, -2, 94., 231.)
+OPEN_TRAFFIC = (67, -2, 94., 185.)  # Finish before the unrelated original stopped lead enters pass range.
 PERSON = (76, -1, 43., 112.)
 REOPENED = (76, -1, 47., 133.)
 WINDOWS = {
     "cones": BEND, "board": BEND, "slow": TRAFFIC, "blocked": TRAFFIC,
-    "no-lead": TRAFFIC, "departing": TRAFFIC, "clear-bend": BEND,
+    "no-lead": OPEN_TRAFFIC, "departing": OPEN_TRAFFIC, "clear-bend": BEND,
     "inside-curb": BEND, "outside-curb": BEND, "person": PERSON,
-    "reopened": REOPENED,
+    "reopened": REOPENED, "closing-rejoin": TRAFFIC,
 }
 CASES = tuple(WINDOWS)
 CURB_CASES = ("inside-curb", "outside-curb")
@@ -148,6 +150,8 @@ class Witness:
                          others=row["observer_map"]["others"], ego_polygon_xy=ego_poly.round(4).tolist(),
                          ego_lateral_extents_m=[round(min(sides), 3), round(max(sides), 3)],
                          left_driving_edge_m=-source.lane_width / 2, right_driving_edge_m=source.lane_width / 2)
+        reference["native_geometry"] = native_body(
+            self.road, reference, *WINDOWS[self.case][:2], self.case in ADJACENT_CASES)
         targets = []
         if self.extra_actor is not None:
             targets.append((self.case, self.extra_actor))
@@ -238,7 +242,7 @@ def record_case(world, checkpoint, folder, case, protocol):
                 world, "workzone" if case == "reopened" else "journey", SEED, schema, model,
                 scene_factory=witness.create_scene, destination="market", weather=WEATHER,
                 crossing_delay=.5, recording=witness, tactical=True, change_request=witness.finished,
-                max_steps=560 if case in ("blocked", "person") else 450, run_id=folder.name)
+                max_steps=560 if case in ("blocked", "person", "closing-rejoin") else 450, run_id=folder.name)
             if len(trace) != len(witness.partial_trace) or len(trace) != len(model.observations):
                 raise RuntimeError("Native frame, trace and policy tape counts differ")
             for row, captured in zip(trace, witness.partial_trace, strict=True):
@@ -268,6 +272,8 @@ def record_case(world, checkpoint, folder, case, protocol):
             movie = folder / "front.mp4"
             encode_and_check(raw, movie, (640, 360), 0, count)
             summary["front_sha256"] = fingerprint(movie)
+            if summary["capture_complete"]:
+                summary["case_score"] = grade_case(summary, frames, witness.reference)
         except Exception:
             failure = "\n".join(filter(None, (failure, traceback.format_exc())))
             summary["capture_complete"] = False
@@ -297,9 +303,14 @@ def freeze_inputs(args):
         renderer = PROJECT / "tools/render_maneuver_trials.py"
         if renderer.is_file():
             archive.write(renderer, renderer.relative_to(PROJECT))
-    protocol = dict(cases=args.cases, windows={case: WINDOWS[case] for case in args.cases},
+    driver, _, schema = load_driver(checkpoint)
+    tactical_path = TACTICAL_MODEL
+    if getattr(driver, "uses_route_maneuvers", False):
+        from .maneuver_choice import MODEL as tactical_path
+    shutil.copyfile(tactical_path, root / "tactical-model.json")
+    protocol = dict(policy_schema=schema, cases=args.cases, windows={case: WINDOWS[case] for case in args.cases},
                     seed=SEED, model_sha256=digest, execution_source_sha256=fingerprint(snapshot),
-                    tactical_model_sha256=fingerprint(TACTICAL_MODEL), step_s=.1, weather=WEATHER,
+                    tactical_model_sha256=fingerprint(root / "tactical-model.json"), step_s=.1, weather=WEATHER,
                     port=args.port, attach=args.attach, requested_quality="High", map="Town03_Opt")
     write_json(root / "protocol.json", protocol)
     return checkpoint, protocol
