@@ -72,6 +72,15 @@ def create():
         f'{before["kmh_p10_p50_p95_max"][3]:.1f} km/h. The two recordings have different traffic and obstructions.',
         ("Matched road sections", TAG + "audit/README.md"),
         ("Stopping and higher-speed tests", TAG + "speed/README.md"))
+    matched = {case["name"]: case for case in read(STUDY / "pace/comparison.json")["cases"]}
+    bend, boards, drums = (matched[name] for name in ("J1932 bend", "Original roadside boards", "Original roadside drums"))
+    add("Original bend and roadside objects",
+        f'In paired runs, median speed on the bend changed from {bend["v06"]["median_kmh"]:.1f} to '
+        f'{bend["v07"]["median_kmh"]:.1f} km/h. At the roadside boards it changed from '
+        f'{boards["v06"]["median_kmh"]:.1f} to {boards["v07"]["median_kmh"]:.1f} km/h. The six roadside '
+        f'drums measured {drums["v06"]["median_kmh"]:.1f} and {drums["v07"]["median_kmh"]:.1f} km/h respectively.',
+        ("Paired tests and explanations", TAG + "pace/README.md"),
+        ("Native speed and clearance", TAG + "pace/comparison.json"))
     speed_study = read(STUDY / "speed/comparison.json")["town03"]
     capped, higher = speed_study["capped"], speed_study["higher"]
     add("Higher-speed control",
@@ -80,6 +89,7 @@ def create():
         f'The faster configuration peaked at {higher["actual_peak_kmh"]:.1f} km/h and held above 40 for '
         f'{higher["longest_above_40_in_90_s"]:.1f} consecutive seconds in the 90 zone. '
         f'In the occupied trial it stopped {speed_study["occupied"]["stationary_queue"]["final_gap_m"]:.2f} m behind the queue.',
+        ("Native higher-speed footage", "./media/city-maneuvers-tests/boulevard.mp4"),
         ("Cruise, lower limits and braking", TAG + "speed/README.md"),
         ("Full matched measurements", TAG + "speed/comparison.json"))
     a, b = old["moving_population_exposure"]["50"], new["moving_population_exposure"]["50"]

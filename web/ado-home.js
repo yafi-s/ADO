@@ -702,7 +702,8 @@ function renderFrameFacts(frame) {
 
   const lateral = frame?.lat_error_m ?? frame?.lateral_error_m;
   const progress = frame?.progress_evidence;
-  const hasProgress = finite(progress?.base_request_mps) && finite(frame?.speed_request_mps);
+  const priorRequest = progress?.maneuver_prior_request_mps ?? progress?.base_request_mps;
+  const hasProgress = finite(priorRequest) && finite(frame?.speed_request_mps);
   const baseReasons = {
     unconfirmed: 'Observations unconfirmed', signal_approach: 'Signal approach',
     opposing_traffic: 'Opposing traffic detected', vulnerable_road_user: 'Pedestrian or rider detected',
@@ -710,9 +711,9 @@ function renderFrameFacts(frame) {
   };
   let speedSelection = null;
   if (hasProgress) {
-    const delta = frame.speed_request_mps - progress.base_request_mps;
+    const delta = frame.speed_request_mps - priorRequest;
     if (Math.abs(delta) > .001) {
-      speedSelection = `${delta > 0 ? 'Raised' : 'Reduced'} from ${tenth.format(progress.base_request_mps * 3.6)} km/h`;
+      speedSelection = `${delta > 0 ? 'Raised' : 'Reduced'} from ${tenth.format(priorRequest * 3.6)} km/h`;
     } else {
       speedSelection = baseReasons[progress.binding] ?? 'Base request retained';
     }
@@ -725,7 +726,9 @@ function renderFrameFacts(frame) {
     yield: finite(frame?.yield_violations) ? whole.format(frame.yield_violations) : null,
     request: finite(frame?.speed_request_mps) ? `${tenth.format(frame.speed_request_mps*3.6)} km/h` : null,
     progress: speedSelection,
-    sight: progress?.supported_scans >= 3 && finite(progress.sight_m) && progress.sight_m > 0
+    sight: progress?.speed_regime === 'verified_open_road' && finite(progress.high_speed_sight_m)
+      ? `${tenth.format(progress.high_speed_sight_m)} m`
+      : progress?.supported_scans >= 3 && finite(progress.sight_m) && progress.sight_m > 0
       ? `${tenth.format(progress.sight_m)} m` : null,
     ceiling: finite(progress?.cruise_ceiling_mps) && progress.cruise_ceiling_mps > 0
       ? `${tenth.format(progress.cruise_ceiling_mps * 3.6)} km/h` : null,
