@@ -4,6 +4,16 @@ from tools.city_traffic_timeline import compare_by_position, moving_nearby
 
 
 class CityTrafficTests(unittest.TestCase):
+    def test_extended_film_compares_only_the_surveyed_common_stretch(self):
+        prior = {"trial": "city-progress", "label": "Prior", "samples": []}
+        latest = {"trial": "city-maneuvers", "label": "Extended", "samples": [[2, 16, 10], [4, 35, 15.1]]}
+        logs = {
+            "city-progress": {"route": [[0, 0], [10, 0], [15, 0]], "frames": [(10., 57, 30), (15., 90, 34)]},
+            "city-maneuvers": {"route": [[0, 0], [10, 0], [20, 0], [30, 0]], "frames": []},
+        }
+        compare_by_position([prior, latest], logs)
+        self.assertEqual(latest["comparison"]["frames"], [(57, 10., 30), None])
+
     def test_maneuver_film_compares_with_previous_driver_only_on_matching_route(self):
         prior = {"trial": "city-progress", "label": "City Progress", "samples": [[0.1, 101, 2.0]]}
         latest = {"trial": "city-maneuvers", "label": "City Maneuvers", "samples": [[2.8, 28, 2.1]]}

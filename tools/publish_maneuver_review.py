@@ -101,13 +101,28 @@ def create():
             ("Watch the failed return", TAG.replace("/blob/", "/raw/") + "attempts/high01/incomplete-return.mp4"),
             ("First High recording audit", TAG + "audit/high01-failed.json"),
             ("Registered scene change", TAG + "qualification/spaced-registration.json"))
-    before, after = old["posted_90"], new["posted_90"]
-    add("90 km/h posted section",
-        f'On the featured drive, actual speed on this section peaked at {after["kmh_p10_p50_p95_max"][3]:.1f} km/h '
+    comparison = new.get("route_comparison")
+    if new["source"]["route_id"] != old["source"]["route_id"] and (
+            not comparison or comparison["original_route_id"] != old["source"]["route_id"]):
+        raise ValueError("A changed course needs an audited shared route before comparison")
+    shared = comparison["shared_prefix"] if comparison else new
+    before, after = old["posted_90"], shared["posted_90"]
+    add("Original 90 km/h posted section",
+        f'On the shared stretch, actual speed in the featured drive peaked at {after["kmh_p10_p50_p95_max"][3]:.1f} km/h '
         f'and spent {after["over_40_kmh_seconds"]:.1f} s above 40 km/h. The previous drive peaked at '
         f'{before["kmh_p10_p50_p95_max"][3]:.1f} km/h. The two recordings have different traffic and obstructions.',
         ("Matched road sections", TAG + "audit/README.md"),
         ("Stopping and higher-speed tests", TAG + "speed/README.md"))
+    if comparison:
+        extension = comparison["extension"]
+        speed = extension["posted_90"]
+        if speed and speed.get("frames"):
+            add("Return boulevard",
+                f'The extension starts beyond the earlier film at {comparison["shared_route_to_m"]:.0f} m. '
+                f'In its own 90 km/h zone, the car spent {speed["seconds"]:.1f} s, '
+                f'reached {speed["kmh_p10_p50_p95_max"][3]:.1f} km/h and drove above 40 km/h for '
+                f'{speed["over_40_kmh_seconds"]:.1f} s.',
+                ("Every posted limit and speed interval", TAG + "audit/v07.json"))
     matched = {case["name"]: case for case in read(STUDY / "pace/comparison.json")["cases"]}
     bend, boards, drums = (matched[name] for name in ("J1932 bend", "Original roadside boards", "Original roadside drums"))
     add("Original bend and roadside objects",
@@ -130,13 +145,13 @@ def create():
         ("Native higher-speed footage", "./media/city-maneuvers-tests/boulevard.mp4"),
         ("Cruise, lower limits and braking", TAG + "speed/README.md"),
         ("Full matched measurements", TAG + "speed/comparison.json"))
-    a, b = old["moving_population_exposure"]["50"], new["moving_population_exposure"]["50"]
+    a, b = (run["whole"]["moving_population_exposure"]["50"] for run in (old, shared))
     add("Moving city traffic",
         f'The simulator spawned {new["grade"]["ambient_vehicles_spawned"]} background vehicles, '
         f'compared with {old["grade"]["ambient_vehicles_spawned"]} previously. '
-        f'At least two moving vehicles and two moving pedestrians were within 50 m for '
-        f'{100*b["two_each"]/b["scored"]:.1f}% of eligible frames, up from '
-        f'{100*a["two_each"]/a["scored"]:.1f}% on the earlier drive. Counts include occluded actors.',
+        f'On the shared streets, at least two moving vehicles and two moving pedestrians were within 50 m for '
+        f'{100*b["two_of_each_frames"]/b["scored"]:.1f}% of eligible frames, compared with '
+        f'{100*a["two_of_each_frames"]/a["scored"]:.1f}% on the earlier drive. Counts include occluded actors.',
         ("Native proof and controls", TAG + "README.md"),
         ("Explore the traffic timeline", "./benchmarks.html#traffic-study"))
     screen = read(STUDY / "display.json")

@@ -131,11 +131,17 @@ def compare_by_position(drives, logs):
     for current, other in comparisons:
         if current not in logs or other not in logs:
             continue
-        if not logs[other]["route"] or logs[current]["route"] != logs[other]["route"]:
-            if current == "city-maneuvers":
-                # A bypass can change the planned centerline. Match only identical route coordinates.
+        route, prior = logs[current]["route"], logs[other]["route"]
+        shared_end = math.inf
+        if not prior or route != prior:
+            if current != "city-maneuvers":
+                raise ValueError("Before/after camera comparison needs matching planned route geometry")
+            # The observer samples every fourth waypoint and appends the endpoint.
+            # On an extended route that final unsampled endpoint can differ.
+            common = prior[:-1]
+            if len(common) < 2 or len(route) <= len(prior) or route[:len(common)] != common:
                 continue
-            raise ValueError("Before/after camera comparison needs matching planned route geometry")
+            shared_end = sum(math.dist(a[:2], b[:2]) for a, b in zip(common, common[1:]))
         frames = {}
         for station, frame, kmh in logs[other]["frames"]:
             frames.setdefault(station, (frame, round(station, 2), kmh))
@@ -146,7 +152,7 @@ def compare_by_position(drives, logs):
             index = bisect_left(stations, target)
             neighbors = stations[max(0, index - 1):index + 1]
             closest = min(neighbors, key=lambda s: (abs(s - target), frames[s][0]))
-            matches.append(frames[closest] if abs(closest - target) <= 1.2 else None)
+            matches.append(frames[closest] if max(target, closest) <= shared_end and abs(closest - target) <= 1.2 else None)
         by_id[current]["comparison"] = {"trial": other, "label": by_id[other]["label"], "frames": matches}
 
 
