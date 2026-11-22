@@ -1,0 +1,71 @@
+{
+  "checks": [
+    {
+      "test": "Barrier in the lane",
+      "result": "On the same approach, City Progress stopped behind the striped barricade. The new driver passed it in the adjacent lane, cleared it by 1.96 m and returned. The side-by-side film then compares both drivers behind a moving car.",
+      "evidence": [
+        {
+          "label": "Watch the 46-second comparison",
+          "url": "https://raw.githubusercontent.com/yafi-s/ADO/7ae49838fbfe9c725d226bc33883f15ac2376143/web/media/city-maneuvers-tests/comparison.mp4"
+        },
+        {
+          "label": "All 26 matched trials",
+          "url": "https://github.com/yafi-s/ADO/blob/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/trials/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Yield and overtake",
+      "result": "ADO yielded for 1.2 s while a real adjacent vehicle occupied the gap. It overtook a lead moving at 5.7 km/h, with 1.66 m minimum clearance alongside, then returned 34.3 m ahead.",
+      "evidence": [
+        {
+          "label": "Native forward camera",
+          "url": "https://raw.githubusercontent.com/yafi-s/ADO/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/qualification/market-loop/tail-later-gap/front.mp4"
+        },
+        {
+          "label": "Physical outcome",
+          "url": "https://github.com/yafi-s/ADO/blob/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/qualification/market-loop/tail-later-gap/grade.json"
+        }
+      ]
+    },
+    {
+      "test": "Bend and roadside objects",
+      "result": "The 40° bend median rose from 15.42 to 22.26 km/h on matched runs. The original six tight roadside drums stayed at 15.69 km/h. At two roadside boards the new driver slowed more, from 6.62 to 5.32 km/h across 25 m.",
+      "evidence": [
+        {
+          "label": "Measured pace and safety controls",
+          "url": "https://github.com/yafi-s/ADO/blob/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/pace/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Higher speeds and a stopped queue",
+      "result": "The open straight in a 90 km/h zone increased from 38.49 to 40.95 km/h median. The uncapped configuration peaked at 43.92 km/h on that run. With a queue ahead it briefly reached 50.37 km/h and stopped 4.09 m behind the lead.",
+      "evidence": [
+        {
+          "label": "Watch the measured queue approach",
+          "url": "https://raw.githubusercontent.com/yafi-s/ADO/7ae49838fbfe9c725d226bc33883f15ac2376143/web/media/city-maneuvers-tests/boulevard.mp4"
+        },
+        {
+          "label": "Speeds, braking distances and signs",
+          "url": "https://github.com/yafi-s/ADO/blob/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/speed/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Failed return on the original course",
+      "result": "In the first six-camera High run, ADO passed three in-lane drums, yielded to adjacent traffic and overtook the moving sedan. It ran out of room to return on that trajectory and stopped in the passing lane. The run timed out at 584.55 m with 0 recorded ego contacts.",
+      "evidence": [
+        {
+          "label": "Watch the gap close",
+          "url": "https://raw.githubusercontent.com/yafi-s/ADO/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/attempts/high01/incomplete-return.mp4"
+        },
+        {
+          "label": "Camera and control evidence",
+          "url": "https://github.com/yafi-s/ADO/blob/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/attempts/high01/README.md"
+        }
+      ]
+    }
+  ],
+  "scope": "These are measured CARLA development trials. Each row links its own recording or assessment. City Progress is the current featured full drive."
+}
