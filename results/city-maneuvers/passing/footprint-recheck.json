@@ -1,0 +1,51 @@
+{
+  "scope": "Offline recheck of saved native terminal poses and calibrated ego box against native road surfaces; the original development stop and result remain as recorded.",
+  "body_source": "results/perception/town03-body-offsets.json",
+  "box": {
+    "offset_xyz": [
+      -0.0062155150808393955,
+      -8.348876806367998e-15,
+      0.7632452249526978
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "dimensions_m": [
+      4.891970157623291,
+      1.5241189002990723,
+      1.8356460332870483
+    ]
+  },
+  "cases": [
+    {
+      "development_capture": "probe-v7-duo02",
+      "native_terminal_frame": 2938,
+      "stored_native_departure": true,
+      "pose": [
+        229.50311279296875,
+        140.6451873779297,
+        80.31239318847656,
+        1.1414579153060913,
+        1.217275619506836,
+        -0.3651733100414276
+      ],
+      "rechecked_with_full_planar_union": true
+    },
+    {
+      "development_capture": "probe-v7-duo03",
+      "native_terminal_frame": 3180,
+      "stored_native_departure": true,
+      "pose": [
+        124.17617797851562,
+        195.17709350585938,
+        -164.8346405029297,
+        1.8462104797363281,
+        -1.4009766578674316,
+        -0.474848210811615
+      ],
+      "rechecked_with_full_planar_union": true
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "scope": "Classifier and projected gap gate on the legacy measured stream until ego leaves the source center by 0.35 m; no v0.7 physical trajectory is implied.",
+  "model_sha256": "52e04b5ab64550e5f8116e51f8bd3e9614e9740bc8379e0b942b3f2378c6a624",
+  "holdout": {
+    "source": "synthetic independent traffic rollouts",
+    "seed": 81919,
+    "n": 16000,
+    "confusion_truth_by_prediction": [
+      [
+        2915,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        7902,
+        40,
+        27
+      ],
+      [
+        0,
+        16,
+        1800,
+        93
+      ],
+      [
+        0,
+        22,
+        43,
+        3142
+      ]
+    ],
+    "accuracy": 0.9849375
+  },
+  "cases": [
+    {
+      "source": "results/tactical-pass/v04/paired-kiu_oqoh/no-lead.jsonl.gz",
+      "source_sha256": "50e3f1641ad5d49f18d1d8244180cb6d2bd7aa234354a9b43bd42d8d0c087cd2",
+      "case": "no-lead",
+      "frames_in_source_center": 78,
+      "hold_recommendations": 0,
+      "first_hold_s": null,
+      "pass_invitations": 0,
+      "first_invitation": null
+    },
+    {
+      "source": "results/tactical-pass/v04/paired-kiu_oqoh/occupied.jsonl.gz",
+      "source_sha256": "305aa3af4e345cc3544e4d01cc9c52e11fefad024a530753fbae47a9401fcf18",
+      "case": "occupied",
+      "frames_in_source_center": 108,
+      "hold_recommendations": 57,
+      "first_hold_s": 0.3,
+      "pass_invitations": 48,
+      "first_invitation": {
+        "frame": 521,
+        "time_s": 6.0,
+        "signed_adjacent_bumper_gap_m": 15.043
+      }
+    },
+    {
+      "source": "results/tactical-pass/v04/paired-kiu_oqoh/clear.jsonl.gz",
+      "source_sha256": "9634a7a33a6a66d384a6afa5e38167ad429b4a4097200650596ab71cffc349f1",
+      "case": "clear",
+      "frames_in_source_center": 24,
+      "hold_recommendations": 0,
+      "first_hold_s": null,
+      "pass_invitations": 21,
+      "first_invitation": {
+        "frame": 385,
+        "time_s": 0.3,
+        "signed_adjacent_bumper_gap_m": null
+      }
+    },
+    {
+      "source": "results/tactical-pass/v04-road67/paired-jo9p4yw0/no-lead.jsonl.gz",
+      "source_sha256": "89c11d9d9cb6c856f2f590df09a7b7b763dd46e7e8bcd4fa2171dc7eed6f06ea",
+      "case": "no-lead",
+      "frames_in_source_center": 71,
+      "hold_recommendations": 0,
+      "first_hold_s": null,
+      "pass_invitations": 0,
+      "first_invitation": null
+    },
+    {
+      "source": "results/tactical-pass/v04-road67/paired-jo9p4yw0/occupied.jsonl.gz",
+      "source_sha256": "7012e5099bc1f86a5faa2222d82a453148beff2e09d2c8277657d2ce52ce46b9",
+      "case": "occupied",
+      "frames_in_source_center": 108,
+      "hold_recommendations": 57,
+      "first_hold_s": 0.3,
+      "pass_invitations": 46,
+      "first_invitation": {
+        "frame": 256,
+        "time_s": 6.0,
+        "signed_adjacent_bumper_gap_m": 15.629
+      }
+    },
+    {
+      "source": "results/tactical-pass/v04-road67/paired-jo9p4yw0/clear.jsonl.gz",
+      "source_sha256": "d5209728c21031bc970564910ffb182c1a35b921107946049b08b346a9422405",
+      "case": "clear",
+      "frames_in_source_center": 23,
+      "hold_recommendations": 0,
+      "first_hold_s": null,
+      "pass_invitations": 20,
+      "first_invitation": {
+        "frame": 117,
+        "time_s": 0.3,
+        "signed_adjacent_bumper_gap_m": null
+      }
+    }
+  ]
+}
