@@ -103,6 +103,9 @@ class RouteManeuvers:
         self.return_length = 20.
         self.return_ceiling = None
         self.settled_votes = 0
+        self.departure_votes = 0
+        self.departing_ahead = False
+        self.return_reason = None
         self.return_intrusion = False
         self.body_half_width = 1.0
         self.passed_observed = None
@@ -260,6 +263,9 @@ class RouteManeuvers:
                 self.start = s
                 self.holding = False
                 self.passed_observed = None
+                self.departure_votes = 0
+                self.departing_ahead = False
+                self.return_reason = None
                 self.travel_length = min(24., max(12., (gap-3.)*1.05)) if not required else 23.
                 self.lead_station = s+gap if fresh else None
                 self.lead_speed = lv if fresh else 0.
@@ -285,6 +291,18 @@ class RouteManeuvers:
                 if fresh and 3.<gap<50. and abs(s+gap-self.lead_station)<4.:
                     self.lead_station = s+gap
                     self.lead_speed = lv
+            # If the measured original lead accelerates away, there is no
+            # longer useful progress in completing the pass. Confirm the
+            # tracked *same* forward surface, an opening headway, and speed;
+            # this never substitutes for current return-lane gap evidence.
+            departing = (fresh and 12.<gap<55. and self.lead_station is not None and
+                         abs(s+gap-self.lead_station)<3. and lv>max(4.3,speed+.65))
+            if not self.departing_ahead:
+                self.departure_votes = self.departure_votes+1 if departing else 0
+                self.departing_ahead = self.departure_votes>=5
+            elif fresh and gap<35. and lv < speed-.6:
+                self.departing_ahead = False
+                self.departure_votes = 0
             self.turn_signal = "left"
             if self.return_start is None and lateral > -.5 and (not safe or
                     (fresh and not required and (kind in ("moving","departing") or
@@ -326,7 +344,7 @@ class RouteManeuvers:
                     self.phase = "wait_rejoin"
                     self.turn_signal = "off"
                 elif self.settled_votes>=3:
-                    self.phase = "rejoined"
+                    self.phase = "resumed_following" if self.return_reason=="departing_lead" else "rejoined"
                     self.return_signalling = False
                     self.turn_signal = "off"
                     self.start = self.return_start = None
@@ -354,8 +372,9 @@ class RouteManeuvers:
                             and abs((s-source_rear)-self.lead_station)<9.):
                         self.passed_observed = s-source_rear
                     passed = self.passed_observed is not None and s-self.passed_observed>9.
-                    self.return_votes = self.return_votes+1 if past and passed and rejoin_safe else 0
-                    if past:
+                    may_return = (past and passed) or self.departing_ahead
+                    self.return_votes = self.return_votes+1 if may_return and rejoin_safe else 0
+                    if past or self.departing_ahead:
                         # Maintain the physical indicator during sparse pavement
                         # scans. Fresh measured clearance still gates movement.
                         self.return_signalling |= bool(self.return_votes)
@@ -365,6 +384,7 @@ class RouteManeuvers:
                         self.turn_signal = "right" if self.return_signalling else "off"
                     if self.return_votes >= 5:
                         self.phase = "change_right"
+                        self.return_reason = "passed_surface" if past and passed else "departing_lead"
                         self.return_start = s
                         self.settled_votes = 0
                         self.return_length = float(np.clip(3.5+2.7*speed,14.,30.))
@@ -392,7 +412,8 @@ class RouteManeuvers:
                          tracked_lead_speed_mps=self.lead_speed,return_clear_scans=self.return_votes,
                          return_blend_length_m=self.return_length if self.return_start is not None else None,
                          target_lane_vacated=vacated_target, return_swept_intrusion=self.return_intrusion,
-                         source_settled_scans=self.settled_votes,
+                         source_settled_scans=self.settled_votes,return_reason=self.return_reason,
+                         departing_lead_confirmed=self.departing_ahead,
                          tactical_speed_limit_mps=self.speed_limit, source_approach_pavement=path_visible,
                          yielding_follow_ceiling_mps=round(rolling,3),
                          **{k:round(float(v),3) for k,v in zip(FEATURES,x)})

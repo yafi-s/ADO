@@ -13,4 +13,6 @@ test('only explicit maneuver telemetry supplies an activity', () => {
   assert.equal(maneuverActivity({...plan, maneuver_phase: 'passing', committed: true, lead_kind: 'static'}).label, 'Passing a stationary object');
   assert.equal(maneuverActivity({...plan, maneuver_phase: 'wait_rejoin'}).label, 'Waiting to return');
   assert.equal(maneuverActivity({...plan, maneuver_phase: 'rejoined'}).label, 'Pass complete');
+  assert.equal(maneuverActivity({...plan, maneuver_phase: 'change_right', return_reason: 'departing_lead'}).state, 'following');
+  assert.equal(maneuverActivity({...plan, maneuver_phase: 'resumed_following'}).label, 'Following the vehicle ahead');
 });

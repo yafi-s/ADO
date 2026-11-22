@@ -183,6 +183,25 @@ class RouteManeuverTests(unittest.TestCase):
         self.assertTrue(info["return_swept_intrusion"])
         self.assertEqual(self.driver.speed_limit,0.)
 
+    def test_can_return_behind_departing_lead_only_with_open_source_lane(self):
+        s = self.c.begin+74.
+        for blocked in (True,False):
+            self.driver = RouteManeuvers(self.corridors)
+            self.driver.corridor = self.c
+            self.driver.start = s-24.
+            self.driver.lead_station = s+20.
+            self.driver.lead_speed = 8.3
+            for tick in range(24):
+                ego_s = s+.4*tick
+                info,_ = self.observe(ego_s,1.,lead=s+20.+.83*tick,
+                                      source_behind=ego_s-5. if blocked else None)
+                if info["maneuver_phase"]=="change_right":
+                    break
+            self.assertTrue(info["departing_lead_confirmed"])
+            self.assertEqual(info["maneuver_phase"]=="change_right",not blocked)
+            self.assertIsNone(info["passed_surface_station_m"])
+            self.assertEqual(info["return_reason"],None if blocked else "departing_lead")
+
     def test_elevated_body_corners_use_planar_native_lane_bounds(self):
         self.driver.corridor = self.c
         self.driver.info = {"committed":True}

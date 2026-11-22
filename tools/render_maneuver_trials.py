@@ -16,8 +16,8 @@ FPS = 10
 WIDTH, HEIGHT = 640, 360
 HEADER, FOOTER = 42, 78
 TITLES = {
-    "cones": "Cone taper around the bend",
-    "board": "Board intruding into the bend",
+    "cones": "Cone group blocking the route lane",
+    "board": "Rigid board blocking the route lane",
     "slow": "Slow lead with a passing lane",
     "blocked": "Slow lead with the passing lane occupied",
     "no-lead": "Open road without a lead",
@@ -83,8 +83,8 @@ def text(image, value, at, size, color=(234, 232, 228)):
     cv2.putText(image, value, at, cv2.FONT_HERSHEY_SIMPLEX, size, color, 1, cv2.LINE_AA)
 
 
-def render_case(command, arms, case, start_frame):
-    count = max(len(arm.rows) for arm in arms)
+def render_case(command, arms, case, start_frame, trim_tail):
+    count = len(arms[1].rows) if trim_tail else max(len(arm.rows) for arm in arms)
     with ExitStack() as stack:
         for arm in arms:
             arm.open(stack)
@@ -114,7 +114,7 @@ def render_case(command, arms, case, start_frame):
                 geometry=arms[0].summary["geometry"], arms=[arm.manifest() for arm in arms])
 
 
-def render(baseline, candidate, output, cases, labels):
+def render(baseline, candidate, output, cases, labels, trim_tail=False):
     metadata = output.with_suffix(".json")
     if output.exists() or metadata.exists():
         raise FileExistsError(f"Choose a fresh movie and metadata location: {output}")
@@ -136,7 +136,7 @@ def render(baseline, candidate, output, cases, labels):
     with subprocess.Popen(command, stdin=subprocess.PIPE) as encoder:
         try:
             for case, arms in plans:
-                chapter = render_case(encoder.stdin, arms, case, total)
+                chapter = render_case(encoder.stdin, arms, case, total, trim_tail)
                 chapters.append(chapter)
                 total += chapter["frames"]
         finally:
@@ -159,6 +159,7 @@ def main():
     parser.add_argument("candidate", type=Path)
     parser.add_argument("output", type=Path)
     parser.add_argument("--cases", nargs="+", choices=TITLES, default=SELECTED)
+    parser.add_argument("--trim-tail", action="store_true", help="End each matched clip at the final candidate exposure")
     parser.add_argument("--baseline-label", default="Baseline")
     parser.add_argument("--candidate-label", default="Candidate")
     args = parser.parse_args()
@@ -166,7 +167,7 @@ def main():
         parser.error("The comparison output must use an .mp4 extension")
     if len(set(args.cases)) != len(args.cases):
         parser.error("Each requested comparison case must appear once")
-    render(args.baseline, args.candidate, args.output, args.cases, (args.baseline_label, args.candidate_label))
+    render(args.baseline, args.candidate, args.output, args.cases, (args.baseline_label, args.candidate_label), args.trim_tail)
 
 
 if __name__ == "__main__":
