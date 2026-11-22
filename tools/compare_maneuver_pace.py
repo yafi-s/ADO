@@ -187,8 +187,28 @@ def publication(root):
             pair["station_components"]=components
             pair["components_method"]="Post-hoc fixed-station decomposition of the primary 525–550m window. All native frames included in each arm; primary result includes all tactical waiting."
         result.append(pair)
+    controls=[]
+    for case,frozen in (("hidden","occluded"),("left","left"),("red","signal")):
+        before=root.parents[1]/"city-progress"/"trials"/"matched-candidate-v4"/frozen/"summary.json"
+        after=root/"native-v07-safety"/case/"summary.json"
+        if not after.is_file():
+            continue
+        old,new=(json.loads(path.read_bytes()) for path in (before,after))
+        for key in ("case","seed","start_m","end_m","target_event"):
+            if old[key]!=new[key]:
+                raise ValueError(f"Unmatched safety cohort for {case}: {key}")
+        control=dict(case=case,seed=new["seed"])
+        for arm,score,path in (("v06",old,before),("v07",new,after)):
+            event=next(e for e in score["events"] if e["kind"]==score["target_event"])
+            control[arm]=dict(passed=score["target_pass"],exposed=event["exposed"],handled=event["handled"],
+                stopped_for_event=event["stopped_for_event"],event_minimum_gap_m=event["minimum_gap_m"],
+                minimum_sampled_target_body_gap_m=score["nearest_target_footprint"]["gap_m"],
+                contacts=score["collision_events"],red_violations=score["red_light_violations"],
+                yield_violations=score["yield_violations"],checkpoint_sha256=score["model_sha256"],
+                evidence=path.as_posix())
+        controls.append(control)
     return dict(schema="ado-city-maneuvers-native-pace-comparison-v1",case_count=len(result),
-        pending_native_pairs=pending,method="Original City Life seed 212, identical geometry, actors, approach and rig within each pair. Bend uses primary driving cameras and lidar; boulevard runs use the five-camera rig. Props use the native event scorer. Pedestrian gaps use 10Hz sampled physical footprints with a level ego reconstruction. Whole-arm violations exposed per window.",cases=result)
+        pending_native_pairs=pending,negative_controls=controls,method="Original City Life seed 212, identical geometry, actors, approach and rig within each pair. Bend uses primary driving cameras and lidar; boulevard runs use the five-camera rig. Props use the native event scorer. Pedestrian gaps use 10Hz sampled physical footprints with a level ego reconstruction. Whole-arm violations exposed per window.",cases=result)
 
 
 def main():

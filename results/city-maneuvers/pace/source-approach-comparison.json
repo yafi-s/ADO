@@ -1,0 +1,179 @@
+{
+  "scope": "Original City Life Market boulevard at seed 212, 350 to 626 m. Primary board interval is 525 through 550 m, every exposure included. The pre-existing stop-for-the-lead criterion is reported separately from the physical pass. Camera and sensor realizations are distinct native runs.",
+  "decision": "reject_source_approach_candidate",
+  "candidate_sha256": "1c5ba092058b01078d9b36e39d08446f5480654d715bc10a256894eff4841fb6",
+  "arms": {
+    "native-v06-boulevard": {
+      "frames": 93,
+      "seconds": 9.3,
+      "median_speed_kmh": 6.6204,
+      "stopped_below_005_mps_seconds": 0.0,
+      "stop_station_bounds_m": null,
+      "tactical_zero_cap_seconds": 0.0,
+      "board_clearance_m": 1.046,
+      "board_displacement_m": 0.0,
+      "contacts": 0,
+      "red": 0,
+      "yield_violations": 0,
+      "whole_drive_seconds": 52.8,
+      "end": "restarted",
+      "legacy_stop_for_lead_gate": true,
+      "lead_witness": {
+        "close_reference_frames": 260,
+        "minimum_sampled_lead_body_gap_m": 3.638,
+        "adjacent_longitudinal_overlap_frames": 0,
+        "physical_rear_clear_observed": false,
+        "legal_out_and_return_observed": false,
+        "legal_lane_changes": null,
+        "all_observed_center_lane_changes": []
+      },
+      "candidate_gate_counts": {
+        "ordinary": 93
+      },
+      "front_mp4_sha256": "7350c006084ae8d046accccee6924dacdabf822f49f3aca3399b8f4be8f23df5",
+      "trace_sha256": "98e177f9a06bc1a512742eed441e1d8ec9c7966d4210ab0024c428fc348e8b03",
+      "whole_native_gate": true
+    },
+    "native-v07-boulevard": {
+      "frames": 112,
+      "seconds": 11.2,
+      "median_speed_kmh": 5.3172,
+      "stopped_below_005_mps_seconds": 4.4,
+      "stop_station_bounds_m": [
+        537.631,
+        537.635
+      ],
+      "tactical_zero_cap_seconds": 5.3,
+      "board_clearance_m": 1.046,
+      "board_displacement_m": 0.0,
+      "contacts": 0,
+      "red": 0,
+      "yield_violations": 0,
+      "whole_drive_seconds": 46.1,
+      "end": "restarted",
+      "legacy_stop_for_lead_gate": false,
+      "lead_witness": {
+        "close_reference_frames": 199,
+        "minimum_sampled_lead_body_gap_m": 1.537,
+        "adjacent_longitudinal_overlap_frames": 9,
+        "physical_rear_clear_observed": true,
+        "legal_out_and_return_observed": true,
+        "legal_lane_changes": [
+          {
+            "frame": 15449,
+            "station_m": 560.742,
+            "direction": "left",
+            "from_lane": -2,
+            "to_lane": -1,
+            "road": 67,
+            "same_direction": true,
+            "marking_allowed": true
+          },
+          {
+            "frame": 15506,
+            "station_m": 611.975,
+            "direction": "right",
+            "from_lane": -1,
+            "to_lane": -2,
+            "road": 67,
+            "same_direction": true,
+            "marking_allowed": true
+          }
+        ],
+        "all_observed_center_lane_changes": [
+          {
+            "frame": 15449,
+            "station_m": 560.742,
+            "direction": "left",
+            "from_lane": -2,
+            "to_lane": -1,
+            "road": 67,
+            "same_direction": true,
+            "marking_allowed": true
+          },
+          {
+            "frame": 15506,
+            "station_m": 611.975,
+            "direction": "right",
+            "from_lane": -1,
+            "to_lane": -2,
+            "road": 67,
+            "same_direction": true,
+            "marking_allowed": true
+          }
+        ]
+      },
+      "candidate_gate_counts": {
+        "ordinary": 112
+      },
+      "front_mp4_sha256": "52e366f8420527a914a432f38420c2fae27f8eacc73c9e9375818e478751b222",
+      "trace_sha256": "c0e418976f9610a2dbcd90919ca6e5a923ff849b0d3aa39d667b962b73dcb865",
+      "whole_native_gate": false
+    },
+    "native-source-approach": {
+      "frames": 234,
+      "seconds": 23.4,
+      "median_speed_kmh": 0.0,
+      "stopped_below_005_mps_seconds": 15.0,
+      "stop_station_bounds_m": [
+        534.972,
+        534.977
+      ],
+      "tactical_zero_cap_seconds": 15.4,
+      "board_clearance_m": 1.047,
+      "board_displacement_m": 0.0,
+      "contacts": 0,
+      "red": 0,
+      "yield_violations": 0,
+      "whole_drive_seconds": 59.3,
+      "end": "restarted",
+      "legacy_stop_for_lead_gate": false,
+      "lead_witness": {
+        "close_reference_frames": 324,
+        "minimum_sampled_lead_body_gap_m": 1.537,
+        "adjacent_longitudinal_overlap_frames": 10,
+        "physical_rear_clear_observed": true,
+        "legal_out_and_return_observed": false,
+        "legal_lane_changes": null,
+        "all_observed_center_lane_changes": [
+          {
+            "frame": 27244,
+            "station_m": 562.486,
+            "direction": "left",
+            "from_lane": -2,
+            "to_lane": -1,
+            "road": 67,
+            "same_direction": true,
+            "marking_allowed": true
+          }
+        ]
+      },
+      "candidate_gate_counts": {
+        "ordinary": 75,
+        "perception_hold": 6,
+        "source_approach": 5,
+        "unconfirmed_static_surface": 148
+      },
+      "front_mp4_sha256": "04b87d08640c760aac73acf24f5dc0800890754eee47fa12159acf14c2d680b2",
+      "trace_sha256": "9a150254e2cb3ff6c33a2d54a62ea5ca42692eebd6d5f8e7151733f72b5aa91e",
+      "stationary_body_ranges_m": {
+        "path_body_lidar": [
+          36.0,
+          36.0,
+          36.0
+        ],
+        "path_body_radar": [
+          36.0,
+          36.0,
+          36.0
+        ],
+        "long_body_gap_m": [
+          36.0,
+          36.0,
+          36.0
+        ]
+      },
+      "whole_native_gate": false
+    }
+  }
+}

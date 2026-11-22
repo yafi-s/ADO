@@ -10,6 +10,12 @@ The frozen driver used native lane +3, passed to its left in lane +2 and returne
 
 An earlier Road 65 capture stopped before the planner's final settled phase. A second investigation found that the per-ID CARLA actor-list query reported destroyed handles after each episode. The final evaluator writes native evidence first, then checks the IDs against the live vehicle fleet. The original artifacts and finite scores remain separate. The evaluation correction did not change the driving model or native scene.
 
+## Candidate selection
+
+The retained controller uses the 18c7543e planner and 12257634 pace checkpoint. It completed the full 1,416 m Market journey with the two distinct passes, the moving-gap yield and the existing bus merge. The independent uncooperative-rear challenge recorded 1.507 m minimum sampled body clearance from its moving adjacent vehicle. These are observed simulated outcomes. The longer forecast is also sensitive to how long a measured return gap takes to become available.
+
+Two optional refinements remain outside this driver. A slower curvature-aware profile could not establish room for the full pass under its rear-acceleration forecast. A separate distant-static approach allowed movement on some archived sensor frames, but then worsened the entire roadside-board interval in a fresh native drive. The original, retained and optional arms took 9.3, 11.2 and 23.4 seconds respectively across the same 25 m. Their stopped times below 0.05 m/s were 0.0, 4.4 and 15.0 seconds, and each recorded at least 1.046 m board clearance. [Comfort study](comfort/README.md) · [Matched original-board measurements](../pace/source-approach-comparison.json) · [Optional native film](../pace/native-source-approach/boulevard/front.mp4)
+
 ## Model and offline checks
 
 The opt-in driver learns four choices from independent traffic simulations: keep the route lane, follow its lead, yield to adjoining traffic, and pass. Its normal city entry point selects the new planner only when the loaded controller requests route maneuvers. The earlier city-progress controller still selects its original tactical tree.
