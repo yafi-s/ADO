@@ -229,6 +229,14 @@ class JourneyScenario(Scenario):
         if population_profile not in ("standard", "city-life", "city-maneuvers"):
             raise ValueError(f"Unknown journey population profile: {population_profile}")
         self.population_profile = population_profile
+        # The original crowded registration remains selectable for exact-geometry
+        # stress comparisons. The normal Market course retains the downstream
+        # stopped-sedan encounter at an independently fixed native site.
+        original_spacing = maneuver_case in ("original-continuous", "original-later-gap")
+        if original_spacing:
+            maneuver_case = maneuver_case.removeprefix("original-")
+        spaced_market = (population_profile == "city-maneuvers" and
+                         maneuver_case in ("continuous", "later-gap") and not original_spacing)
         self.maneuver_fixture = None
         if kind != "journey":
             raise ValueError("JourneyScenario expects kind='journey'")
@@ -270,6 +278,12 @@ class JourneyScenario(Scenario):
                 self._urban = urban_route(self._map, self.seed, destination)
                 self.destination = getattr(self._urban, "destination", None) or destination or "urban"
                 wp = self._points = self._urban.points
+                if spaced_market:
+                    from .urban_map import _station_index
+                    # Road 67 ends at its next junction at OpenDRIVE s310.4.
+                    # Keep the held Tesla about 35 m upstream of that junction
+                    # and retain its original native turn-off and release logic.
+                    self._urban.sites["lead"] = _station_index(wp, 67, -2, 275.)
             else:
                 wp = self._points = journey_points(self._map, self.seed, self.destination)
             self._set_route([w.transform.location for w in wp])
@@ -317,6 +331,10 @@ class JourneyScenario(Scenario):
                 idx = (self._urban.sites[k] if self._urban else
                        next(i for i,w in enumerate(wp) if w.road_id == street) + offset)
                 event = self._event(k, idx)
+                if k == "lead" and population_profile == "city-maneuvers":
+                    event.observed.update(native_road=wp[idx].road_id, native_lane=wp[idx].lane_id,
+                                          native_road_s=round(wp[idx].s, 3),
+                                          stopped_lead_layout="junction-approach" if spaced_market else "original")
                 if k in WALKERS:
                     self._spawn_walker(event, rng)
                 else:
@@ -775,6 +793,8 @@ class JourneyScenario(Scenario):
         if (e.kind=="lead" and e.state=="waiting" and moving < .25 and gap < 20.
             or e.kind=="braking" and e.state=="cruising" and moving >= 1.6 and gap < 22.):
             e.mark("triggered_s",self._time)
+            if e.kind == "lead" and getattr(self, "population_profile", None) == "city-maneuvers":
+                e.observed["target_speed_at_exposure_mps"] = round(moving, 3)
             e.state = "braking" if e.kind=="braking" else "stopped"
             if e.state=="stopped":
                 e.next_action = self._time+4.
