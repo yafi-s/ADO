@@ -88,8 +88,16 @@ TRIAL_PRODUCTION_PIN = "9bd6dafa0348d37e163a3acf8de553f642bebf45"
 TRIAL_EVALUATOR_PIN = "5510f55c2115f7600b4d56816ce66ffc31121775"
 TRIAL_AMENDMENT_PIN = "0e9fa722d117a1efce85bc3e2eeaeac6ffd62ccb"
 TRIAL_AMENDMENT = "isolated-fixture-amendment"
+CURB_TRIAL_CASES = ("inside-curb", "outside-curb")
+CURB_TRIAL_AMENDMENT = "curb-fixture-amendment"
+CURB_TRIAL_PIN = "ee6a6582c072a018161cec7c79cb6ad4d4d647bf"
+TRIAL_AMENDMENTS = (
+    (TRIAL_AMENDMENT, TRIAL_AMENDMENT_PIN, AMENDED_TRIAL_CASES, (67, -2, 94., 231.)),
+    (CURB_TRIAL_AMENDMENT, CURB_TRIAL_PIN, CURB_TRIAL_CASES, (67, -2, 48., 145.)),
+)
 TRIAL_RECEIPTS = ("protocol.json", "qualification.json", "capture-status.json", "checkpoint.npz", "study-source.zip",
-                  "tactical-model.json", f"{TRIAL_AMENDMENT}.json", f"{TRIAL_AMENDMENT}.zip")
+                  "tactical-model.json",
+                  *(f"{name}.{ext}" for name, *_ in TRIAL_AMENDMENTS for ext in ("json", "zip")))
 TRIAL_ARTIFACTS = ("trace.jsonl.gz", "reference.jsonl.gz", "observations.npz")
 # The published v0.6 Git tree retains the optional historical raw sweeps.
 PROGRESS_ARCHIVE_COMMIT = "51b1cbb25837eb43693b775ccb14e68bffc4084b"
@@ -776,6 +784,58 @@ def verify_trial_sources(archive, name, digest, pinned):
     return hashes
 
 
+def verify_trial_amendments(archive, folder, protocol, sources):
+    registered = {}
+    archives = {}
+    same_conditions = ("seed", "weather", "map", "step_s", "requested_quality", "policy_schema", "model_sha256",
+                       "tactical_model_sha256")
+    launch_stations = protocol["launch_route_stations_m"]
+    for name, pin, cases, window in TRIAL_AMENDMENTS:
+        amendment = read_json(archive, f"{folder}/{name}.json")
+        windows = dict.fromkeys(cases, list(window))
+        require(amendment["registration_pin"] == pin and amendment["base_evaluator_pin"] == TRIAL_EVALUATOR_PIN
+                and amendment["production_pin"] == TRIAL_PRODUCTION_PIN and amendment["cases"] == list(cases)
+                and amendment["seed"] == 212 and not (registered.keys() & set(cases))
+                and amendment["windows"] == windows == {case: protocol["windows"][case] for case in cases}
+                and amendment.get("launch_route_stations_m", {}) == {case: launch_stations[case] for case in cases
+                                                                    if case in launch_stations}
+                and all(amendment[key] == protocol[key] for key in same_conditions),
+                f"Wrong registered {name} at {folder}")
+        archives[name] = verify_trial_sources(archive, f"{folder}/{name}.zip", amendment["execution_source_sha256"],
+                                              sources[pin])
+        registered.update(dict.fromkeys(cases, amendment))
+    return registered, archives
+
+
+def verify_curb_trial_placement(summary, first_reference):
+    case, geometry = summary["case"], summary["geometry"]
+    placement = summary["curb_placement"]
+    require(placement == first_reference.get("curb_placement") and placement["verified"] is True
+            and placement["frame"] == first_reference["frame"] == summary["first_frame"]
+            and placement["blueprint"] == geometry["board_blueprint"] == "static.prop.streetbarrier"
+            and type(placement["actor_id"]) is int and placement["actor_id"] > 0,
+            f"Missing verified first-exposure curb placement for {case}")
+    footprint = placement["polygon_xy"]
+    observed = [target for target in first_reference["target_polygons"]
+                if target["role"] == case and target["actor_id"] == placement["actor_id"]]
+    require(len(footprint) >= 2 and all(len(point) == 2 and all(map(isfinite, point)) for point in footprint)
+            and len({tuple(point) for point in footprint}) >= 2 and len(observed) == 1
+            and observed[0]["polygon_xy"] == footprint,
+            f"Missing the physical curb board in the first native reference for {case}")
+
+    position = placement["actual_center_xy"]
+    error = dist(position, geometry["requested_center_xy"])
+    lo, hi = placement["physical_lateral_extent_m"]
+    planned_lo, planned_hi = geometry["board_lateral_extent_m"]
+    edge = geometry["sidewalk_edge_m"]
+    correct_side = lo > geometry["driving_edge_m"] and hi < edge - .05 if case == "inside-curb" else lo > edge + .05
+    require(geometry["board_native_s"] == 84. and isfinite(lo) and isfinite(hi) and lo <= hi
+            and error < .05 and abs(error - placement["center_error_m"]) <= .0000051
+            and max(abs(lo - planned_lo), abs(hi - planned_hi)) < .05 and correct_side,
+            f"Native curb board placement differs from the registered geometry for {case}")
+    return position, (lo, hi), sorted(map(tuple, footprint))
+
+
 def verify_maneuver_trials(archive, capture, scratch):
     fit = read_json(archive, "models/city-maneuvers/fit.json")
     baseline = read_json(archive, f"{PROGRESS_MEDIA}/manifest.json")["policy"]
@@ -783,7 +843,8 @@ def verify_maneuver_trials(archive, capture, scratch):
     arms = (("baseline", PROGRESS_SCHEMA, fit["base_sha256"], baseline["tactical_sha256"]),
             ("candidate", MANEUVERS_SCHEMA, candidate["sha256"], candidate["tactical_sha256"]))
     original_sources = pinned_trial_sources(TRIAL_EVALUATOR_PIN)
-    amended_sources = pinned_trial_sources(TRIAL_AMENDMENT_PIN)
+    amended_sources = {pin: pinned_trial_sources(pin) for _, pin, _, _ in TRIAL_AMENDMENTS}
+    common_settings = ("seed", "weather", "map", "step_s", "requested_quality")
     matched = {}
     for arm, schema, checkpoint, tactical in arms:
         folder = f"{MANEUVERS_TRIALS}/{arm}"
@@ -807,30 +868,15 @@ def verify_maneuver_trials(archive, capture, scratch):
         original = verify_trial_sources(archive, f"{folder}/study-source.zip", protocol["execution_source_sha256"],
                                         original_sources)
 
-        amendment = read_json(archive, f"{folder}/{TRIAL_AMENDMENT}.json")
-        common_settings = ("seed", "weather", "map", "step_s", "requested_quality")
-        revised_windows = {case: [67, -2, 94., 231.] for case in AMENDED_TRIAL_CASES}
-        launch_stations = protocol["launch_route_stations_m"]
-        require(amendment["registration_pin"] == TRIAL_AMENDMENT_PIN
-                and amendment["base_evaluator_pin"] == TRIAL_EVALUATOR_PIN
-                and amendment["production_pin"] == TRIAL_PRODUCTION_PIN
-                and amendment["cases"] == list(AMENDED_TRIAL_CASES)
-                and amendment["seed"] == 212
-                and amendment["windows"] == revised_windows == {case: protocol["windows"][case] for case in revised_windows}
-                and amendment.get("launch_route_stations_m", {}) == {case: launch_stations[case] for case in revised_windows
-                                                                      if case in launch_stations}
-                and all(amendment[key] == protocol[key] for key in (*common_settings, "policy_schema", "model_sha256",
-                                                                    "tactical_model_sha256")),
-                f"Wrong registered isolated-fixture amendment for {arm}")
-        revised = verify_trial_sources(archive, f"{folder}/{TRIAL_AMENDMENT}.zip", amendment["execution_source_sha256"],
-                                       amended_sources)
+        amended_protocols, revised = verify_trial_amendments(archive, folder, protocol, amended_sources)
         trial_geometries = {}
+        curb_placements = {}
         for case in protocol["cases"]:
             trial = f"{folder}/{case}"
             summary = read_json(archive, f"{trial}/summary.json")
             geometry = summary["geometry"]
             trial_geometries[case] = geometry
-            trial_protocol = amendment if case in AMENDED_TRIAL_CASES else protocol
+            trial_protocol = amended_protocols.get(case, protocol)
             require(statuses[case] is summary["capture_complete"] is True and summary["case"] == case
                     and summary["policy_schema"] == schema and summary["model_sha256"] == checkpoint
                     and summary["producer"] == CITY_PRODUCER and summary["seed"] == protocol["seed"]
@@ -842,12 +888,16 @@ def verify_maneuver_trials(archive, capture, scratch):
                 verify_digest(archive, f"{trial}/{name}", summary["artifact_sha256"][name])
                 if name.endswith(".gz"):
                     with archive.open(f"{PREFIX}{trial}/{name}") as compressed, gzip.GzipFile(fileobj=compressed) as rows:
-                        frames = [json.loads(row)["frame"] for row in rows]
+                        first = json.loads(next(rows, b"{}"))
+                        frames = [first.get("frame"), *(json.loads(row)["frame"] for row in rows)]
                     require(frames == list(range(summary["first_frame"], summary["last_frame"] + 1)),
                             f"Unsynchronized {name} exposures at {trial}")
+                    if name == "reference.jsonl.gz" and case in CURB_TRIAL_CASES:
+                        curb_placements[case] = verify_curb_trial_placement(summary, first)
             verify_digest(archive, f"{trial}/front.mp4", summary["front_sha256"])
             verify_video(archive, f"{trial}/front.mp4", summary["frames"], scratch)
-        matched[arm] = (tuple(protocol[key] for key in common_settings), launch_stations, trial_geometries, original, revised)
+        matched[arm] = (tuple(protocol[key] for key in common_settings), protocol["launch_route_stations_m"],
+                        trial_geometries, curb_placements, original, revised)
     require(matched["baseline"] == matched["candidate"],
             "City Maneuvers benchmarks used different native fixture geometry, conditions or evaluator sources")
 
