@@ -68,6 +68,7 @@ def create():
         f'It then returned to the original lane, {obstacle["rejoin_rear_clear_m"]:.1f} m clear of the obstruction.',
         ("See the obstruction", camera(obstacle, "exposed_s", "front")),
         ("Alongside", camera(obstacle, "alternate_alongside_s", "chase")),
+        ("Passenger-side camera", camera(obstacle, "alternate_alongside_s", "right")),
         ("Back in lane", camera(obstacle, "returned_to_route_s", "rear_right")))
     add("Yield and overtake",
         f'The vehicle ahead was moving at {lead["alongside_target_mps"]*3.6:.1f} km/h at first measured moving overlap. '
@@ -76,6 +77,7 @@ def create():
         f'{lead["rejoin_rear_clear_m"]:.1f} m ahead, measured between the two bodies.',
         ("Yield to adjacent traffic", exposure(sequence["first_actual_wait_frame"], "rear_left")),
         ("Pass the moving car", camera(lead, "moving_alongside_s", "chase")),
+        ("Passenger-side camera", camera(lead, "moving_alongside_s", "right")),
         ("Return", camera(lead, "returned_to_route_s", "rear_right")))
     variant = read(STUDY / "qualification/timing-variation/grade.json")
     variant_run = read(STUDY / "qualification/timing-variation/summary.json")
