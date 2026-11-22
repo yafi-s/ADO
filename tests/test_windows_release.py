@@ -457,7 +457,7 @@ class WindowsReleaseTests(unittest.TestCase):
         events = [dict(kind=kind, alongside_ego_lane=[67, -1]) for kind in sorted(release.MANEUVER_EVENTS)]
         telemetry = [dict(speed_mps=speed, speed_request_mps=speed, posted_limit_kmh=90) for speed in (10, 12, 15, 8)]
         summary = dict(frames=4, outcome="complete", progress_m=300., route_length_m=300., route_id="surveyed route",
-                       events=events, **dict.fromkeys(release.SAFETY_COUNTS, 0))
+                       destination="market", events=events, **dict.fromkeys(release.SAFETY_COUNTS, 0))
         capture = dict(summary=summary, capture_id="native-receipt", quality_requested="High", policy={"sha256": "model"},
                        sha256={"telemetry.json": "telemetry"}, population_reference_sha256="population",
                        first_frame=100, last_frame=103, frame_period_s=.1)
@@ -485,18 +485,19 @@ class WindowsReleaseTests(unittest.TestCase):
                                     seconds_at_or_above_35=.3, seconds_at_or_above_37=.2, over_40_kmh_seconds=.2,
                                     higher_thresholds={str(k): dict(actual_seconds=s, requested_seconds=s)
                                                        for k, s in ((45, .1), (50, .1), (55, 0.), (60, 0.))}))
-        with fixture_zip({release.MANEUVERS_AUDIT: json_bytes(audit), release.MANEUVERS_ROUTE: route}) as archive:
+        registered = patch.object(release, "MARKET_ROUTE_SHA256", sha256(route))
+        with registered, fixture_zip({release.MANEUVERS_AUDIT: json_bytes(audit), release.MANEUVERS_ROUTE: route}) as archive:
             release.verify_maneuver_audit(archive, capture, telemetry)
             telemetry[3]["posted_limit_kmh"] = 26
             with self.assertRaisesRegex(ValueError, "pace scores"):
                 release.verify_maneuver_audit(archive, capture, telemetry)
             telemetry[3]["posted_limit_kmh"] = 90
         moves[0]["first_native_legality_failure"] = {"frame": 100}
-        with fixture_zip({release.MANEUVERS_AUDIT: json_bytes(audit), release.MANEUVERS_ROUTE: route}) as archive:
+        with registered, fixture_zip({release.MANEUVERS_AUDIT: json_bytes(audit), release.MANEUVERS_ROUTE: route}) as archive:
             with self.assertRaisesRegex(ValueError, "legal alternate lane"):
                 release.verify_maneuver_audit(archive, capture, telemetry)
         audit["straddling_moving_separation"]["sub_1m_samples"] = 1
-        with fixture_zip({release.MANEUVERS_AUDIT: json_bytes(audit), release.MANEUVERS_ROUTE: route}) as archive:
+        with registered, fixture_zip({release.MANEUVERS_AUDIT: json_bytes(audit), release.MANEUVERS_ROUTE: route}) as archive:
             with self.assertRaisesRegex(ValueError, "measured separation"):
                 release.verify_maneuver_audit(archive, capture, telemetry)
 

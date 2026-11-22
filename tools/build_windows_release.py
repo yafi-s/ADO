@@ -874,14 +874,17 @@ def verify_maneuver_audit(archive, capture, telemetry):
             and source["telemetry_sha256"] == capture["sha256"]["telemetry.json"]
             and source["population_sha256"] == capture["population_reference_sha256"],
             "City Maneuvers audit refers to a different recording")
-    loop = summary.get("destination") == "market-loop"
+    destination = summary.get("destination")
+    require(destination in ("market", "market-loop"), "City Maneuvers needs a registered Market destination")
+    loop = destination == "market-loop"
     if loop:
         route, original = verify_market_loop_route(archive, source, summary)
         verify_market_loop_timeline(audit, telemetry, original, capture["frame_period_s"])
         witness_frames = verify_market_loop_sweep_coverage(capture, telemetry, route)
         native_rows = {row["frame"]: row for row in telemetry}
     else:
-        verify_digest(archive, MANEUVERS_ROUTE, source["route_sha256"])
+        require(source["route_sha256"] == MARKET_ROUTE_SHA256, "City Maneuvers audit uses a different registered Market route")
+        verify_digest(archive, MANEUVERS_ROUTE, MARKET_ROUTE_SHA256)
         route = read_json(archive, MANEUVERS_ROUTE)
         require(route["route_id"] == source["route_id"] and route["opendrive_sha256"] == source["map_sha256"],
                 "City Maneuvers audit uses different OpenDRIVE geometry")
