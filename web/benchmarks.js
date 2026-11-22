@@ -395,4 +395,5 @@ async function loadCityReview(id, file) {
 void loadCityReview('city-review', 'urban-review.json').catch(() => {});
 void loadCityReview('city-life-review', 'city-life-review.json').catch(() => {});
 void loadCityReview('progress-review', 'progress-review.json').catch(() => {});
+void loadCityReview('maneuvers-review', 'maneuvers-review.json').catch(() => {});
 void loadTrafficStudy().catch(() => {});
