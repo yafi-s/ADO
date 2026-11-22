@@ -51,7 +51,16 @@ def summarize(path, start=None,end=None):
                 "minimum_gap_m","minimum_cone_clearance_m","minimum_barrier_clearance_m",
                 "max_cone_displacement_m","max_barrier_displacement_m","minimum_stopline_margin_m",
                 "cones_alongside","barriers_alongside"}} for e in summary["events"] if e["exposed"]]
+    held=[r for r in selected if r.get("tactical_pass",{}).get("tactical_speed_limit_mps")==0.]
+    stopped=next((r for r in held if r["speed_mps"]<.05),None)
+    wait=None
+    if stopped:
+        t=stopped["tactical_pass"]
+        wait=dict(frame=stopped["frame"],station_m=stopped["progress_m"],phase=t.get("maneuver_phase"),
+                  source_lead_m=t.get("raw_source_gap_m"),target_rear_m=t.get("target_rear_m"),
+                  target_rear_closing_mps=t.get("target_rear_closing_mps"))
     return dict(native_pass=summary.get("passed",summary.get("target_pass")),checkpoint=summary["model_sha256"],
+        tactical_zero_cap_s=round(.1*len(held),1),standing_wait=wait,
         contacts=summary["collision_events"],red=summary["red_light_violations"],yield_violations=summary["yield_violations"],
         station_m=None if start is None else [start,end],frames=len(selected),seconds=round(.1*len(speed),1),
         movement_kmh=dict(median=round(float(np.median(speed)*3.6),2),peak=round(float(max(speed)*3.6),2)),
@@ -157,7 +166,8 @@ def publication(root):
                 physical_props_passed=event.get("barriers_alongside",event.get("cones_alongside")),
                 minimum_lead_event_gap_m=event.get("minimum_gap_m") if kind=="lead" else None,
                 stopped_for_lead=event.get("stopped_for_event") if kind=="lead" else None,
-                contacts=score["contacts"],red_violations=score["red"],yield_violations=score["yield_violations"],
+                native_segment_pass=score["native_pass"],tactical_zero_cap_s=score["tactical_zero_cap_s"],
+                standing_wait=score["standing_wait"],contacts=score["contacts"],red_violations=score["red"],yield_violations=score["yield_violations"],
                 evidence=(folder/"summary.json").as_posix(),camera=(folder/"front.mp4").as_posix(),
                 checkpoint_sha256=score["checkpoint"])
             if kind=="lead":
@@ -165,6 +175,17 @@ def publication(root):
             pair[arm]=info
         pair.update(median_delta_kmh=round(pair["v07"]["median_kmh"]-pair["v06"]["median_kmh"],2),
                     time_delta_s=round(pair["v07"]["seconds"]-pair["v06"]["seconds"],1))
+        if kind=="barrier":
+            components=[]
+            for lo,hi in ((525,530),(530,535),(535,538),(538,545),(545,550)):
+                part=dict(station_m=[lo,hi])
+                for arm in ("v06","v07"):
+                    score=summarize(root/f"native-{arm}-{case}"/case,lo,hi)
+                    part[arm]=dict(median_kmh=score["movement_kmh"]["median"],seconds=score["seconds"],
+                        requested_median_kmh=score["requested_kmh"]["median"],tactical_zero_cap_s=score["tactical_zero_cap_s"])
+                components.append(part)
+            pair["station_components"]=components
+            pair["components_method"]="Post-hoc fixed-station decomposition of the primary 525–550m window. All native frames included in each arm; primary result includes all tactical waiting."
         result.append(pair)
     return dict(schema="ado-city-maneuvers-native-pace-comparison-v1",case_count=len(result),
         pending_native_pairs=pending,method="Original City Life seed 212, identical geometry, actors, approach and rig within each pair. Bend uses primary driving cameras and lidar; boulevard runs use the five-camera rig. Props use the native event scorer. Pedestrian gaps use 10Hz sampled physical footprints with a level ego reconstruction. Whole-arm violations exposed per window.",cases=result)

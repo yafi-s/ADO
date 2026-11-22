@@ -1,0 +1,2595 @@
+{
+  "scope": "Closed native shortened populated section, comparing elapsed and half-second motion against the original sealed v0.6 route by geographic station.",
+  "sources": {
+    "candidate_trace_sha256": "7d5ac6332cc8271a31a9fa40d354f1baf416338142e4370ee2f0fa20a2645583",
+    "candidate_pose_sha256": "6864948f7905005554095830262c8feca71aeed41893967fb468b65fd21c64ff",
+    "v06_telemetry_sha256": "4ccbfa46b2c99cb60759c6d178c4756ebfdf9152cf6498d7638e3286a794a39b",
+    "route_sha256": "9e0628e15f6a27b8d8ed0d3cb06bcc144a97860556028f0f04bda8015ffb9847"
+  },
+  "comparisons": "Native 10 Hz body yaw change over 0.5 s times trapezoid mean speed. Position check compares 0.2 s world velocity estimates across the same 0.5 s interval, then resolves acceleration perpendicular to the observed chord. Both are kinematic estimates. Rehearsal positions are rounded before processing.",
+  "causal_context": {
+    "first_lateral": "The candidate is finishing its first outbound change to bypass genuine in-lane cones at this station. Original v0.6 follows the source center and sees the parallel Tesla in a different lane. The candidate steering sequence has a single steady countersteer into the physical bend and measurable lateral acceleration.",
+    "first_brake": "The first anticipated return to source makes the tactical request fall from 39.294 km/h to 11.200 km/h on frame 13966 and 10.8 km/h one frame later. Slow source traffic is over 38.6 m ahead at onset, and recorded current alternative surfaces are clear. It is a genuine braking burst before the return.",
+    "matched_clear_interpretation": "The extra cone bypass and moving traffic make the full posted 90 section a changed scene. The two peak comparisons hold geographic location but compare different maneuver and traffic history. The baseline mirrors its original six right-edge cones, then has no same-lane lead through the curve. The candidate uses the alternate lane to bypass in-lane cones, then yields and overtakes slow traffic. Use the matched clear-bend and matched roadside controls for isolated pace claims."
+  },
+  "v06": {
+    "yaw_lateral_mps2": {
+      "peak": {
+        "frame": 1129,
+        "time_s": 103.2,
+        "station_m": 450.197,
+        "speed_kmh": 38.365,
+        "target_kmh": 37.815,
+        "native_control": {
+          "steer": 0.06831298768520355,
+          "brake": 0.0,
+          "throttle": 0.1637769490480423
+        },
+        "event": null,
+        "maneuver_phase": null,
+        "lane_front_rear_gaps_m": [
+          null,
+          null
+        ],
+        "measured_source_front_m": null,
+        "tactical_speed_ceiling_mps": null,
+        "speed_binding": "unconfirmed",
+        "road_heading_deg": 138.212,
+        "yaw_based_lateral_mps2": 2.373,
+        "position_based_lateral_mps2": 2.365,
+        "half_second_yaw_change_deg": 6.376,
+        "half_second_braking_mps2": 0.0,
+        "initial_speed_half_second_kmh": 38.365
+      },
+      "native_points_near_peak": [
+        {
+          "frame": 1117,
+          "time_s": 102.0,
+          "station_m": 437.433,
+          "speed_kmh": 38.088,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06834450364112854,
+            "brake": 0.0,
+            "throttle": 0.23257263004779816
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 123.052
+        },
+        {
+          "frame": 1118,
+          "time_s": 102.1,
+          "station_m": 438.492,
+          "speed_kmh": 38.138,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06816492229700089,
+            "brake": 0.0,
+            "throttle": 0.2288084626197815
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 124.063
+        },
+        {
+          "frame": 1119,
+          "time_s": 102.2,
+          "station_m": 439.552,
+          "speed_kmh": 38.192,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.0676141008734703,
+            "brake": 0.0,
+            "throttle": 0.2255692332983017
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 125.073
+        },
+        {
+          "frame": 1120,
+          "time_s": 102.3,
+          "station_m": 440.613,
+          "speed_kmh": 38.239,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06796233355998993,
+            "brake": 0.0,
+            "throttle": 0.22228360176086426
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 126.084
+        },
+        {
+          "frame": 1121,
+          "time_s": 102.4,
+          "station_m": 441.676,
+          "speed_kmh": 38.268,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06837956607341766,
+            "brake": 0.0,
+            "throttle": 0.21939657628536224
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 128.105
+        },
+        {
+          "frame": 1122,
+          "time_s": 102.5,
+          "station_m": 442.739,
+          "speed_kmh": 38.308,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06819427758455276,
+            "brake": 0.0,
+            "throttle": 0.21748752892017365
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 129.116
+        },
+        {
+          "frame": 1123,
+          "time_s": 102.6,
+          "station_m": 443.803,
+          "speed_kmh": 38.34,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06760329008102417,
+            "brake": 0.0,
+            "throttle": 0.2150067538022995
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 130.127
+        },
+        {
+          "frame": 1124,
+          "time_s": 102.7,
+          "station_m": 444.868,
+          "speed_kmh": 38.365,
+          "target_kmh": 39.033,
+          "native_control": {
+            "steer": 0.06802214682102203,
+            "brake": 0.0,
+            "throttle": 0.21298126876354218
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 131.137
+        },
+        {
+          "frame": 1125,
+          "time_s": 102.8,
+          "station_m": 445.934,
+          "speed_kmh": 38.369,
+          "target_kmh": 39.033,
+          "native_control": {
+            "steer": 0.0683358684182167,
+            "brake": 0.0,
+            "throttle": 0.19510462880134583
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 133.159
+        },
+        {
+          "frame": 1126,
+          "time_s": 102.9,
+          "station_m": 446.999,
+          "speed_kmh": 38.365,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06805652379989624,
+            "brake": 0.0,
+            "throttle": 0.19508689641952515
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 134.169
+        },
+        {
+          "frame": 1127,
+          "time_s": 103.0,
+          "station_m": 448.065,
+          "speed_kmh": 38.39,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06745553761720657,
+            "brake": 0.0,
+            "throttle": 0.21156145632266998
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 135.18
+        },
+        {
+          "frame": 1128,
+          "time_s": 103.1,
+          "station_m": 449.131,
+          "speed_kmh": 38.412,
+          "target_kmh": 38.576,
+          "native_control": {
+            "steer": 0.0681176409125328,
+            "brake": 0.0,
+            "throttle": 0.20984560251235962
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 136.19
+        },
+        {
+          "frame": 1129,
+          "time_s": 103.2,
+          "station_m": 450.197,
+          "speed_kmh": 38.365,
+          "target_kmh": 37.815,
+          "native_control": {
+            "steer": 0.06831298768520355,
+            "brake": 0.0,
+            "throttle": 0.1637769490480423
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 138.212
+        },
+        {
+          "frame": 1130,
+          "time_s": 103.3,
+          "station_m": 451.261,
+          "speed_kmh": 38.239,
+          "target_kmh": 36.771,
+          "native_control": {
+            "steer": 0.06799306720495224,
+            "brake": 0.0,
+            "throttle": 0.05656704679131508
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "unconfirmed",
+          "road_heading_deg": 139.222
+        },
+        {
+          "frame": 1131,
+          "time_s": 103.4,
+          "station_m": 452.315,
+          "speed_kmh": 37.782,
+          "target_kmh": 37.437,
+          "native_control": {
+            "steer": 0.067592553794384,
+            "brake": 0.04065079987049103,
+            "throttle": 0.0
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 140.233
+        },
+        {
+          "frame": 1132,
+          "time_s": 103.5,
+          "station_m": 453.363,
+          "speed_kmh": 37.667,
+          "target_kmh": 38.103,
+          "native_control": {
+            "steer": 0.06821609288454056,
+            "brake": 0.0,
+            "throttle": 0.08829560875892639
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 141.244
+        },
+        {
+          "frame": 1133,
+          "time_s": 103.6,
+          "station_m": 454.409,
+          "speed_kmh": 37.649,
+          "target_kmh": 38.769,
+          "native_control": {
+            "steer": 0.06793332099914551,
+            "brake": 0.0,
+            "throttle": 0.18153828382492065
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 143.265
+        },
+        {
+          "frame": 1134,
+          "time_s": 103.7,
+          "station_m": 455.455,
+          "speed_kmh": 37.696,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06703648716211319,
+            "brake": 0.0,
+            "throttle": 0.22357314825057983
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 144.276
+        },
+        {
+          "frame": 1135,
+          "time_s": 103.8,
+          "station_m": 456.504,
+          "speed_kmh": 37.796,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06568056344985962,
+            "brake": 0.0,
+            "throttle": 0.2529139220714569
+          },
+          "event": null,
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 145.286
+        }
+      ],
+      "above_3_episodes": [],
+      "above_3_seconds": 0.0,
+      "above_4_episodes": [],
+      "above_4_seconds": 0.0
+    },
+    "longitudinal_braking_mps2": {
+      "peak": {
+        "frame": 1340,
+        "time_s": 124.3,
+        "station_m": 567.855,
+        "speed_kmh": 4.784,
+        "target_kmh": 0.07,
+        "native_control": {
+          "steer": 0.0001759013975970447,
+          "brake": 0.527167558670044,
+          "throttle": 0.0
+        },
+        "event": "lead",
+        "maneuver_phase": null,
+        "lane_front_rear_gaps_m": [
+          null,
+          null
+        ],
+        "measured_source_front_m": null,
+        "tactical_speed_ceiling_mps": null,
+        "speed_binding": "occupied_corridor",
+        "road_heading_deg": 179.857,
+        "yaw_based_lateral_mps2": 0.0,
+        "position_based_lateral_mps2": 0.0,
+        "half_second_yaw_change_deg": -0.0,
+        "half_second_braking_mps2": 4.432,
+        "initial_speed_half_second_kmh": 12.762
+      },
+      "native_points_near_peak": [
+        {
+          "frame": 1328,
+          "time_s": 123.1,
+          "station_m": 563.639,
+          "speed_kmh": 17.471,
+          "target_kmh": 13.895,
+          "native_control": {
+            "steer": 0.00012265129771549255,
+            "brake": 0.15534928441047668,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1329,
+          "time_s": 123.2,
+          "station_m": 564.117,
+          "speed_kmh": 16.996,
+          "target_kmh": 13.036,
+          "native_control": {
+            "steer": 0.00012641598004847765,
+            "brake": 0.17897699773311615,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1330,
+          "time_s": 123.3,
+          "station_m": 564.581,
+          "speed_kmh": 16.477,
+          "target_kmh": 12.218,
+          "native_control": {
+            "steer": 0.0001342130417469889,
+            "brake": 0.19912607967853546,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1331,
+          "time_s": 123.4,
+          "station_m": 565.03,
+          "speed_kmh": 15.926,
+          "target_kmh": 11.224,
+          "native_control": {
+            "steer": 0.00013792373647447675,
+            "brake": 0.2147016078233719,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1332,
+          "time_s": 123.5,
+          "station_m": 565.463,
+          "speed_kmh": 15.318,
+          "target_kmh": 10.453,
+          "native_control": {
+            "steer": 0.0001475991593906656,
+            "brake": 0.2374574989080429,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1333,
+          "time_s": 123.6,
+          "station_m": 565.878,
+          "speed_kmh": 14.62,
+          "target_kmh": 9.536,
+          "native_control": {
+            "steer": 0.00016248754400294274,
+            "brake": 0.27684733271598816,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1334,
+          "time_s": 123.7,
+          "station_m": 566.271,
+          "speed_kmh": 13.781,
+          "target_kmh": 8.429,
+          "native_control": {
+            "steer": 0.00015527848154306412,
+            "brake": 0.3347644507884979,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1335,
+          "time_s": 123.8,
+          "station_m": 566.638,
+          "speed_kmh": 12.762,
+          "target_kmh": 7.417,
+          "native_control": {
+            "steer": 0.00015121433534659445,
+            "brake": 0.41023534536361694,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1336,
+          "time_s": 123.9,
+          "station_m": 566.973,
+          "speed_kmh": 11.527,
+          "target_kmh": 6.279,
+          "native_control": {
+            "steer": 0.00015049304056447,
+            "brake": 0.5007680654525757,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1337,
+          "time_s": 124.0,
+          "station_m": 567.269,
+          "speed_kmh": 9.99,
+          "target_kmh": 4.878,
+          "native_control": {
+            "steer": 0.00015551777323707938,
+            "brake": 0.6273404955863953,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1338,
+          "time_s": 124.1,
+          "station_m": 567.514,
+          "speed_kmh": 7.913,
+          "target_kmh": 3.564,
+          "native_control": {
+            "steer": 0.00015675176109652966,
+            "brake": 0.8519921898841858,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1339,
+          "time_s": 124.2,
+          "station_m": 567.706,
+          "speed_kmh": 6.08,
+          "target_kmh": 1.531,
+          "native_control": {
+            "steer": 0.00016894341388251632,
+            "brake": 0.7508540153503418,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1340,
+          "time_s": 124.3,
+          "station_m": 567.855,
+          "speed_kmh": 4.784,
+          "target_kmh": 0.07,
+          "native_control": {
+            "steer": 0.0001759013975970447,
+            "brake": 0.527167558670044,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1341,
+          "time_s": 124.4,
+          "station_m": 567.975,
+          "speed_kmh": 3.859,
+          "target_kmh": 0.0,
+          "native_control": {
+            "steer": 0.00018444834859110415,
+            "brake": 0.3706539273262024,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1342,
+          "time_s": 124.5,
+          "station_m": 568.068,
+          "speed_kmh": 2.952,
+          "target_kmh": 0.0,
+          "native_control": {
+            "steer": 0.0002005553978960961,
+            "brake": 0.3644534945487976,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1343,
+          "time_s": 124.6,
+          "station_m": 568.133,
+          "speed_kmh": 1.789,
+          "target_kmh": 0.0,
+          "native_control": {
+            "steer": 0.00021963131439406425,
+            "brake": 0.47004812955856323,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1344,
+          "time_s": 124.7,
+          "station_m": 568.153,
+          "speed_kmh": 0.094,
+          "target_kmh": 0.0,
+          "native_control": {
+            "steer": 0.000233901446335949,
+            "brake": 0.7962816953659058,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1345,
+          "time_s": 124.8,
+          "station_m": 568.154,
+          "speed_kmh": 0.014,
+          "target_kmh": 0.0,
+          "native_control": {
+            "steer": 0.0002579138963483274,
+            "brake": 0.8247004151344299,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        },
+        {
+          "frame": 1346,
+          "time_s": 124.9,
+          "station_m": 568.155,
+          "speed_kmh": 0.011,
+          "target_kmh": 0.0,
+          "native_control": {
+            "steer": 0.0002681996556930244,
+            "brake": 0.7933222055435181,
+            "throttle": 0.0
+          },
+          "event": "lead",
+          "maneuver_phase": null,
+          "lane_front_rear_gaps_m": [
+            null,
+            null
+          ],
+          "measured_source_front_m": null,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "occupied_corridor",
+          "road_heading_deg": 179.857
+        }
+      ],
+      "above_3_episodes": [
+        {
+          "first": {
+            "frame": 1338,
+            "time_s": 124.1,
+            "station_m": 567.514,
+            "speed_kmh": 7.913,
+            "target_kmh": 3.564,
+            "native_control": {
+              "steer": 0.00015675176109652966,
+              "brake": 0.8519921898841858,
+              "throttle": 0.0
+            },
+            "event": "lead",
+            "maneuver_phase": null,
+            "lane_front_rear_gaps_m": [
+              null,
+              null
+            ],
+            "measured_source_front_m": null,
+            "tactical_speed_ceiling_mps": null,
+            "speed_binding": "occupied_corridor",
+            "road_heading_deg": 179.857
+          },
+          "last": {
+            "frame": 1344,
+            "time_s": 124.7,
+            "station_m": 568.153,
+            "speed_kmh": 0.094,
+            "target_kmh": 0.0,
+            "native_control": {
+              "steer": 0.000233901446335949,
+              "brake": 0.7962816953659058,
+              "throttle": 0.0
+            },
+            "event": "lead",
+            "maneuver_phase": null,
+            "lane_front_rear_gaps_m": [
+              null,
+              null
+            ],
+            "measured_source_front_m": null,
+            "tactical_speed_ceiling_mps": null,
+            "speed_binding": "occupied_corridor",
+            "road_heading_deg": 179.857
+          },
+          "peak": {
+            "frame": 1340,
+            "time_s": 124.3,
+            "station_m": 567.855,
+            "speed_kmh": 4.784,
+            "target_kmh": 0.07,
+            "native_control": {
+              "steer": 0.0001759013975970447,
+              "brake": 0.527167558670044,
+              "throttle": 0.0
+            },
+            "event": "lead",
+            "maneuver_phase": null,
+            "lane_front_rear_gaps_m": [
+              null,
+              null
+            ],
+            "measured_source_front_m": null,
+            "tactical_speed_ceiling_mps": null,
+            "speed_binding": "occupied_corridor",
+            "road_heading_deg": 179.857,
+            "yaw_based_lateral_mps2": 0.0,
+            "position_based_lateral_mps2": 0.0,
+            "half_second_yaw_change_deg": -0.0,
+            "half_second_braking_mps2": 4.432,
+            "initial_speed_half_second_kmh": 12.762
+          },
+          "sampled_s": 0.7
+        }
+      ],
+      "above_3_seconds": 0.7,
+      "above_4_episodes": [
+        {
+          "first": {
+            "frame": 1339,
+            "time_s": 124.2,
+            "station_m": 567.706,
+            "speed_kmh": 6.08,
+            "target_kmh": 1.531,
+            "native_control": {
+              "steer": 0.00016894341388251632,
+              "brake": 0.7508540153503418,
+              "throttle": 0.0
+            },
+            "event": "lead",
+            "maneuver_phase": null,
+            "lane_front_rear_gaps_m": [
+              null,
+              null
+            ],
+            "measured_source_front_m": null,
+            "tactical_speed_ceiling_mps": null,
+            "speed_binding": "occupied_corridor",
+            "road_heading_deg": 179.857
+          },
+          "last": {
+            "frame": 1341,
+            "time_s": 124.4,
+            "station_m": 567.975,
+            "speed_kmh": 3.859,
+            "target_kmh": 0.0,
+            "native_control": {
+              "steer": 0.00018444834859110415,
+              "brake": 0.3706539273262024,
+              "throttle": 0.0
+            },
+            "event": "lead",
+            "maneuver_phase": null,
+            "lane_front_rear_gaps_m": [
+              null,
+              null
+            ],
+            "measured_source_front_m": null,
+            "tactical_speed_ceiling_mps": null,
+            "speed_binding": "occupied_corridor",
+            "road_heading_deg": 179.857
+          },
+          "peak": {
+            "frame": 1340,
+            "time_s": 124.3,
+            "station_m": 567.855,
+            "speed_kmh": 4.784,
+            "target_kmh": 0.07,
+            "native_control": {
+              "steer": 0.0001759013975970447,
+              "brake": 0.527167558670044,
+              "throttle": 0.0
+            },
+            "event": "lead",
+            "maneuver_phase": null,
+            "lane_front_rear_gaps_m": [
+              null,
+              null
+            ],
+            "measured_source_front_m": null,
+            "tactical_speed_ceiling_mps": null,
+            "speed_binding": "occupied_corridor",
+            "road_heading_deg": 179.857,
+            "yaw_based_lateral_mps2": 0.0,
+            "position_based_lateral_mps2": 0.0,
+            "half_second_yaw_change_deg": -0.0,
+            "half_second_braking_mps2": 4.432,
+            "initial_speed_half_second_kmh": 12.762
+          },
+          "sampled_s": 0.3
+        }
+      ],
+      "above_4_seconds": 0.3
+    },
+    "matched_geometry_windows": [
+      {
+        "bounds_m": [
+          412,
+          426
+        ],
+        "native_frames": 16,
+        "median_speed_kmh": 33.341,
+        "maximum_yaw_lateral_mps2": 2.12,
+        "maximum_braking_mps2": 0.0,
+        "maximum_direct_position_lateral_mps2": 2.082
+      },
+      {
+        "bounds_m": [
+          447,
+          460
+        ],
+        "native_frames": 12,
+        "median_speed_kmh": 37.933,
+        "maximum_yaw_lateral_mps2": 2.373,
+        "maximum_braking_mps2": 0.424,
+        "maximum_direct_position_lateral_mps2": 2.369
+      },
+      {
+        "bounds_m": [
+          525,
+          547
+        ],
+        "native_frames": 89,
+        "median_speed_kmh": 6.649,
+        "maximum_yaw_lateral_mps2": 0.006,
+        "maximum_braking_mps2": 2.156,
+        "maximum_direct_position_lateral_mps2": 0.004
+      },
+      {
+        "bounds_m": [
+          565,
+          570
+        ],
+        "native_frames": 41,
+        "median_speed_kmh": 3.164,
+        "maximum_yaw_lateral_mps2": 0.0,
+        "maximum_braking_mps2": 4.432,
+        "maximum_direct_position_lateral_mps2": 0.004
+      }
+    ]
+  },
+  "integrated_section01": {
+    "yaw_lateral_mps2": {
+      "peak": {
+        "frame": 13934,
+        "time_s": 42.7,
+        "station_m": 418.698,
+        "speed_kmh": 31.068,
+        "target_kmh": 37.87,
+        "native_control": {
+          "steer": 0.1431,
+          "brake": 0.0,
+          "throttle": 0.42538
+        },
+        "event": "in-lane-obstruction",
+        "maneuver_phase": "passing",
+        "lane_front_rear_gaps_m": [
+          60.0,
+          46.914
+        ],
+        "measured_source_front_m": 0.0,
+        "tactical_speed_ceiling_mps": null,
+        "speed_binding": "sight_distance",
+        "road_heading_deg": 99.807,
+        "yaw_based_lateral_mps2": 4.269,
+        "position_based_lateral_mps2": 3.931,
+        "half_second_yaw_change_deg": 14.81,
+        "half_second_braking_mps2": -1.446,
+        "initial_speed_half_second_kmh": 28.465
+      },
+      "native_points_near_peak": [
+        {
+          "frame": 13922,
+          "time_s": 41.5,
+          "station_m": 410.07,
+          "speed_kmh": 24.88,
+          "target_kmh": 29.878,
+          "native_control": {
+            "steer": -0.0429,
+            "brake": 0.0,
+            "throttle": 0.42811
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "change_left",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            39.132
+          ],
+          "measured_source_front_m": 10.046,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 91.393
+        },
+        {
+          "frame": 13923,
+          "time_s": 41.6,
+          "station_m": 410.727,
+          "speed_kmh": 25.438,
+          "target_kmh": 30.544,
+          "native_control": {
+            "steer": 0.00332,
+            "brake": 0.0,
+            "throttle": 0.42675
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "change_left",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            39.814
+          ],
+          "measured_source_front_m": 9.383,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 91.393
+        },
+        {
+          "frame": 13924,
+          "time_s": 41.7,
+          "station_m": 411.375,
+          "speed_kmh": 25.981,
+          "target_kmh": 31.21,
+          "native_control": {
+            "steer": 0.05026,
+            "brake": 0.0,
+            "throttle": 0.42544
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "change_left",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            39.7
+          ],
+          "measured_source_front_m": 8.771,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 91.722
+        },
+        {
+          "frame": 13925,
+          "time_s": 41.8,
+          "station_m": 412.027,
+          "speed_kmh": 26.503,
+          "target_kmh": 31.876,
+          "native_control": {
+            "steer": 0.091,
+            "brake": 0.0,
+            "throttle": 0.42417
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "change_left",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            40.367
+          ],
+          "measured_source_front_m": 8.073,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 92.732
+        },
+        {
+          "frame": 13926,
+          "time_s": 41.9,
+          "station_m": 412.734,
+          "speed_kmh": 27.011,
+          "target_kmh": 32.542,
+          "native_control": {
+            "steer": 0.13454,
+            "brake": 0.0,
+            "throttle": 0.42294
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "change_left",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            41.094
+          ],
+          "measured_source_front_m": 7.372,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 92.732
+        },
+        {
+          "frame": 13927,
+          "time_s": 42.0,
+          "station_m": 413.416,
+          "speed_kmh": 27.5,
+          "target_kmh": 33.208,
+          "native_control": {
+            "steer": 0.16645,
+            "brake": 0.0,
+            "throttle": 0.42174
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "change_left",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            41.79
+          ],
+          "measured_source_front_m": 6.695,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 93.743
+        },
+        {
+          "frame": 13928,
+          "time_s": 42.1,
+          "station_m": 414.114,
+          "speed_kmh": 27.986,
+          "target_kmh": 33.874,
+          "native_control": {
+            "steer": 0.19137,
+            "brake": 0.0,
+            "throttle": 0.42056
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "passing",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            42.499
+          ],
+          "measured_source_front_m": 6.017,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 94.753
+        },
+        {
+          "frame": 13929,
+          "time_s": 42.2,
+          "station_m": 414.828,
+          "speed_kmh": 28.465,
+          "target_kmh": 34.54,
+          "native_control": {
+            "steer": 0.20927,
+            "brake": 0.0,
+            "throttle": 0.4194
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "passing",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            43.064
+          ],
+          "measured_source_front_m": 5.263,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 95.764
+        },
+        {
+          "frame": 13930,
+          "time_s": 42.3,
+          "station_m": 415.557,
+          "speed_kmh": 28.948,
+          "target_kmh": 35.206,
+          "native_control": {
+            "steer": 0.21393,
+            "brake": 0.0,
+            "throttle": 0.41902
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "passing",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            43.815
+          ],
+          "measured_source_front_m": 4.528,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 96.775
+        },
+        {
+          "frame": 13931,
+          "time_s": 42.4,
+          "station_m": 416.303,
+          "speed_kmh": 29.444,
+          "target_kmh": 35.872,
+          "native_control": {
+            "steer": 0.20349,
+            "brake": 0.0,
+            "throttle": 0.42052
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "passing",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            44.687
+          ],
+          "measured_source_front_m": 3.78,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 97.785
+        },
+        {
+          "frame": 13932,
+          "time_s": 42.5,
+          "station_m": 417.066,
+          "speed_kmh": 29.974,
+          "target_kmh": 36.538,
+          "native_control": {
+            "steer": 0.18456,
+            "brake": 0.0,
+            "throttle": 0.4221
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "passing",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            45.445
+          ],
+          "measured_source_front_m": 3.033,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 98.796
+        },
+        {
+          "frame": 13933,
+          "time_s": 42.6,
+          "station_m": 417.873,
+          "speed_kmh": 30.517,
+          "target_kmh": 37.204,
+          "native_control": {
+            "steer": 0.16593,
+            "brake": 0.0,
+            "throttle": 0.42373
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "passing",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            46.112
+          ],
+          "measured_source_front_m": 2.216,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 98.796
+        },
+        {
+          "frame": 13934,
+          "time_s": 42.7,
+          "station_m": 418.698,
+          "speed_kmh": 31.068,
+          "target_kmh": 37.87,
+          "native_control": {
+            "steer": 0.1431,
+            "brake": 0.0,
+            "throttle": 0.42538
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "passing",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            46.914
+          ],
+          "measured_source_front_m": 0.0,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 99.807
+        },
+        {
+          "frame": 13935,
+          "time_s": 42.8,
+          "station_m": 419.509,
+          "speed_kmh": 31.637,
+          "target_kmh": 38.536,
+          "native_control": {
+            "steer": 0.12104,
+            "brake": 0.0,
+            "throttle": 0.42709
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "passing",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            47.711
+          ],
+          "measured_source_front_m": 0.0,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 100.817
+        },
+        {
+          "frame": 13936,
+          "time_s": 42.9,
+          "station_m": 420.334,
+          "speed_kmh": 32.202,
+          "target_kmh": 39.202,
+          "native_control": {
+            "steer": 0.10066,
+            "brake": 0.0,
+            "throttle": 0.42877
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "passing",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            48.515
+          ],
+          "measured_source_front_m": 0.0,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 101.828
+        },
+        {
+          "frame": 13937,
+          "time_s": 43.0,
+          "station_m": 421.176,
+          "speed_kmh": 32.782,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.08645,
+            "brake": 0.0,
+            "throttle": 0.43051
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "passing",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            49.344
+          ],
+          "measured_source_front_m": 0.0,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 102.839
+        },
+        {
+          "frame": 13938,
+          "time_s": 43.1,
+          "station_m": 422.034,
+          "speed_kmh": 33.361,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.07538,
+            "brake": 0.0,
+            "throttle": 0.43225
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "passing",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            50.189
+          ],
+          "measured_source_front_m": 0.0,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 103.849
+        },
+        {
+          "frame": 13939,
+          "time_s": 43.2,
+          "station_m": 422.908,
+          "speed_kmh": 33.937,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.07031,
+            "brake": 0.0,
+            "throttle": 0.43397
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "passing",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            54.252
+          ],
+          "measured_source_front_m": 0.0,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 104.86
+        },
+        {
+          "frame": 13940,
+          "time_s": 43.3,
+          "station_m": 423.793,
+          "speed_kmh": 34.524,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06421,
+            "brake": 0.0,
+            "throttle": 0.43573
+          },
+          "event": "in-lane-obstruction",
+          "maneuver_phase": "passing",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            55.099
+          ],
+          "measured_source_front_m": 0.0,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 106.881
+        }
+      ],
+      "above_3_episodes": [
+        {
+          "first": {
+            "frame": 13931,
+            "time_s": 42.4,
+            "station_m": 416.303,
+            "speed_kmh": 29.444,
+            "target_kmh": 35.872,
+            "native_control": {
+              "steer": 0.20349,
+              "brake": 0.0,
+              "throttle": 0.42052
+            },
+            "event": "in-lane-obstruction",
+            "maneuver_phase": "passing",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              44.687
+            ],
+            "measured_source_front_m": 3.78,
+            "tactical_speed_ceiling_mps": null,
+            "speed_binding": "sight_distance",
+            "road_heading_deg": 97.785
+          },
+          "last": {
+            "frame": 13938,
+            "time_s": 43.1,
+            "station_m": 422.034,
+            "speed_kmh": 33.361,
+            "target_kmh": 39.294,
+            "native_control": {
+              "steer": 0.07538,
+              "brake": 0.0,
+              "throttle": 0.43225
+            },
+            "event": "in-lane-obstruction",
+            "maneuver_phase": "passing",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              50.189
+            ],
+            "measured_source_front_m": 0.0,
+            "tactical_speed_ceiling_mps": null,
+            "speed_binding": "sight_distance",
+            "road_heading_deg": 103.849
+          },
+          "peak": {
+            "frame": 13934,
+            "time_s": 42.7,
+            "station_m": 418.698,
+            "speed_kmh": 31.068,
+            "target_kmh": 37.87,
+            "native_control": {
+              "steer": 0.1431,
+              "brake": 0.0,
+              "throttle": 0.42538
+            },
+            "event": "in-lane-obstruction",
+            "maneuver_phase": "passing",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              46.914
+            ],
+            "measured_source_front_m": 0.0,
+            "tactical_speed_ceiling_mps": null,
+            "speed_binding": "sight_distance",
+            "road_heading_deg": 99.807,
+            "yaw_based_lateral_mps2": 4.269,
+            "position_based_lateral_mps2": 3.931,
+            "half_second_yaw_change_deg": 14.81,
+            "half_second_braking_mps2": -1.446,
+            "initial_speed_half_second_kmh": 28.465
+          },
+          "sampled_s": 0.8
+        }
+      ],
+      "above_3_seconds": 0.8,
+      "above_4_episodes": [
+        {
+          "first": {
+            "frame": 13933,
+            "time_s": 42.6,
+            "station_m": 417.873,
+            "speed_kmh": 30.517,
+            "target_kmh": 37.204,
+            "native_control": {
+              "steer": 0.16593,
+              "brake": 0.0,
+              "throttle": 0.42373
+            },
+            "event": "in-lane-obstruction",
+            "maneuver_phase": "passing",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              46.112
+            ],
+            "measured_source_front_m": 2.216,
+            "tactical_speed_ceiling_mps": null,
+            "speed_binding": "sight_distance",
+            "road_heading_deg": 98.796
+          },
+          "last": {
+            "frame": 13935,
+            "time_s": 42.8,
+            "station_m": 419.509,
+            "speed_kmh": 31.637,
+            "target_kmh": 38.536,
+            "native_control": {
+              "steer": 0.12104,
+              "brake": 0.0,
+              "throttle": 0.42709
+            },
+            "event": "in-lane-obstruction",
+            "maneuver_phase": "passing",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              47.711
+            ],
+            "measured_source_front_m": 0.0,
+            "tactical_speed_ceiling_mps": null,
+            "speed_binding": "sight_distance",
+            "road_heading_deg": 100.817
+          },
+          "peak": {
+            "frame": 13934,
+            "time_s": 42.7,
+            "station_m": 418.698,
+            "speed_kmh": 31.068,
+            "target_kmh": 37.87,
+            "native_control": {
+              "steer": 0.1431,
+              "brake": 0.0,
+              "throttle": 0.42538
+            },
+            "event": "in-lane-obstruction",
+            "maneuver_phase": "passing",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              46.914
+            ],
+            "measured_source_front_m": 0.0,
+            "tactical_speed_ceiling_mps": null,
+            "speed_binding": "sight_distance",
+            "road_heading_deg": 99.807,
+            "yaw_based_lateral_mps2": 4.269,
+            "position_based_lateral_mps2": 3.931,
+            "half_second_yaw_change_deg": 14.81,
+            "half_second_braking_mps2": -1.446,
+            "initial_speed_half_second_kmh": 28.465
+          },
+          "sampled_s": 0.3
+        }
+      ],
+      "above_4_seconds": 0.3
+    },
+    "longitudinal_braking_mps2": {
+      "peak": {
+        "frame": 13971,
+        "time_s": 46.4,
+        "station_m": 453.391,
+        "speed_kmh": 29.549,
+        "target_kmh": 10.8,
+        "native_control": {
+          "steer": 0.06097,
+          "brake": 0.60478,
+          "throttle": 0.0
+        },
+        "event": "slow-traffic",
+        "maneuver_phase": "signal_right",
+        "lane_front_rear_gaps_m": [
+          60.0,
+          60.0
+        ],
+        "measured_source_front_m": 34.417,
+        "tactical_speed_ceiling_mps": 3.0,
+        "speed_binding": "tactical",
+        "road_heading_deg": 142.254,
+        "yaw_based_lateral_mps2": 1.74,
+        "position_based_lateral_mps2": 1.666,
+        "half_second_yaw_change_deg": 5.28,
+        "half_second_braking_mps2": 4.944,
+        "initial_speed_half_second_kmh": 38.448
+      },
+      "native_points_near_peak": [
+        {
+          "frame": 13959,
+          "time_s": 45.2,
+          "station_m": 442.064,
+          "speed_kmh": 38.268,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06305,
+            "brake": 0.0,
+            "throttle": 0.21755
+          },
+          "event": null,
+          "maneuver_phase": "wait_rejoin",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 60.0,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 128.105
+        },
+        {
+          "frame": 13960,
+          "time_s": 45.3,
+          "station_m": 443.065,
+          "speed_kmh": 38.308,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06379,
+            "brake": 0.0,
+            "throttle": 0.21501
+          },
+          "event": null,
+          "maneuver_phase": "wait_rejoin",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 60.0,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 129.116
+        },
+        {
+          "frame": 13961,
+          "time_s": 45.4,
+          "station_m": 444.068,
+          "speed_kmh": 38.344,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06353,
+            "brake": 0.0,
+            "throttle": 0.21278
+          },
+          "event": null,
+          "maneuver_phase": "wait_rejoin",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 60.0,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 130.127
+        },
+        {
+          "frame": 13962,
+          "time_s": 45.5,
+          "station_m": 445.011,
+          "speed_kmh": 38.38,
+          "target_kmh": 39.033,
+          "native_control": {
+            "steer": 0.06309,
+            "brake": 0.0,
+            "throttle": 0.19437
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "wait_rejoin",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 42.996,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 132.148
+        },
+        {
+          "frame": 13963,
+          "time_s": 45.6,
+          "station_m": 446.016,
+          "speed_kmh": 38.387,
+          "target_kmh": 39.033,
+          "native_control": {
+            "steer": 0.06392,
+            "brake": 0.0,
+            "throttle": 0.19388
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "wait_rejoin",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 41.643,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 133.159
+        },
+        {
+          "frame": 13964,
+          "time_s": 45.7,
+          "station_m": 447.02,
+          "speed_kmh": 38.383,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.06307,
+            "brake": 0.0,
+            "throttle": 0.21028
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 40.658,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 134.169
+        },
+        {
+          "frame": 13965,
+          "time_s": 45.8,
+          "station_m": 448.025,
+          "speed_kmh": 38.416,
+          "target_kmh": 39.294,
+          "native_control": {
+            "steer": 0.0638,
+            "brake": 0.0,
+            "throttle": 0.20826
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 39.662,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "sight_distance",
+          "road_heading_deg": 135.18
+        },
+        {
+          "frame": 13966,
+          "time_s": 45.9,
+          "station_m": 449.031,
+          "speed_kmh": 38.448,
+          "target_kmh": 11.2,
+          "native_control": {
+            "steer": 0.06344,
+            "brake": 0.60478,
+            "throttle": 0.0
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 38.667,
+          "tactical_speed_ceiling_mps": 3.111200238534311,
+          "speed_binding": "tactical",
+          "road_heading_deg": 136.19
+        },
+        {
+          "frame": 13967,
+          "time_s": 46.0,
+          "station_m": 450.008,
+          "speed_kmh": 36.655,
+          "target_kmh": 10.8,
+          "native_control": {
+            "steer": 0.06291,
+            "brake": 0.60478,
+            "throttle": 0.0
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 37.73,
+          "tactical_speed_ceiling_mps": 3.0,
+          "speed_binding": "tactical",
+          "road_heading_deg": 138.212
+        },
+        {
+          "frame": 13968,
+          "time_s": 46.1,
+          "station_m": 450.875,
+          "speed_kmh": 34.866,
+          "target_kmh": 10.8,
+          "native_control": {
+            "steer": 0.06297,
+            "brake": 0.60478,
+            "throttle": 0.0
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 36.808,
+          "tactical_speed_ceiling_mps": 3.0,
+          "speed_binding": "tactical",
+          "road_heading_deg": 139.222
+        },
+        {
+          "frame": 13969,
+          "time_s": 46.2,
+          "station_m": 451.755,
+          "speed_kmh": 33.08,
+          "target_kmh": 10.8,
+          "native_control": {
+            "steer": 0.06486,
+            "brake": 0.60478,
+            "throttle": 0.0
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 35.84,
+          "tactical_speed_ceiling_mps": 3.0,
+          "speed_binding": "tactical",
+          "road_heading_deg": 140.233
+        },
+        {
+          "frame": 13970,
+          "time_s": 46.3,
+          "station_m": 452.585,
+          "speed_kmh": 31.309,
+          "target_kmh": 10.8,
+          "native_control": {
+            "steer": 0.0623,
+            "brake": 0.60478,
+            "throttle": 0.0
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 35.001,
+          "tactical_speed_ceiling_mps": 3.0,
+          "speed_binding": "tactical",
+          "road_heading_deg": 141.244
+        },
+        {
+          "frame": 13971,
+          "time_s": 46.4,
+          "station_m": 453.391,
+          "speed_kmh": 29.549,
+          "target_kmh": 10.8,
+          "native_control": {
+            "steer": 0.06097,
+            "brake": 0.60478,
+            "throttle": 0.0
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 34.417,
+          "tactical_speed_ceiling_mps": 3.0,
+          "speed_binding": "tactical",
+          "road_heading_deg": 142.254
+        },
+        {
+          "frame": 13972,
+          "time_s": 46.5,
+          "station_m": 454.16,
+          "speed_kmh": 27.799,
+          "target_kmh": 10.8,
+          "native_control": {
+            "steer": 0.05846,
+            "brake": 0.563,
+            "throttle": 0.0
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 33.699,
+          "tactical_speed_ceiling_mps": 3.0,
+          "speed_binding": "tactical",
+          "road_heading_deg": 142.254
+        },
+        {
+          "frame": 13973,
+          "time_s": 46.6,
+          "station_m": 454.846,
+          "speed_kmh": 26.165,
+          "target_kmh": 10.8,
+          "native_control": {
+            "steer": 0.0593,
+            "brake": 0.49453,
+            "throttle": 0.0
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 32.958,
+          "tactical_speed_ceiling_mps": 3.0,
+          "speed_binding": "tactical",
+          "road_heading_deg": 143.265
+        },
+        {
+          "frame": 13974,
+          "time_s": 46.7,
+          "station_m": 455.489,
+          "speed_kmh": 24.696,
+          "target_kmh": 11.733,
+          "native_control": {
+            "steer": 0.05686,
+            "brake": 0.39412,
+            "throttle": 0.0
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 32.33,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "recovery",
+          "road_heading_deg": 144.276
+        },
+        {
+          "frame": 13975,
+          "time_s": 46.8,
+          "station_m": 456.096,
+          "speed_kmh": 23.494,
+          "target_kmh": 12.665,
+          "native_control": {
+            "steer": 0.05301,
+            "brake": 0.30474,
+            "throttle": 0.0
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            60.0,
+            60.0
+          ],
+          "measured_source_front_m": 31.738,
+          "tactical_speed_ceiling_mps": null,
+          "speed_binding": "recovery",
+          "road_heading_deg": 145.286
+        },
+        {
+          "frame": 13976,
+          "time_s": 46.9,
+          "station_m": 456.734,
+          "speed_kmh": 22.507,
+          "target_kmh": 10.8,
+          "native_control": {
+            "steer": 0.0513,
+            "brake": 0.34143,
+            "throttle": 0.0
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            46.803,
+            60.0
+          ],
+          "measured_source_front_m": 31.582,
+          "tactical_speed_ceiling_mps": 3.0,
+          "speed_binding": "tactical",
+          "road_heading_deg": 145.286
+        },
+        {
+          "frame": 13977,
+          "time_s": 47.0,
+          "station_m": 457.281,
+          "speed_kmh": 21.445,
+          "target_kmh": 10.8,
+          "native_control": {
+            "steer": 0.04778,
+            "brake": 0.30351,
+            "throttle": 0.0
+          },
+          "event": "slow-traffic",
+          "maneuver_phase": "signal_right",
+          "lane_front_rear_gaps_m": [
+            46.264,
+            60.0
+          ],
+          "measured_source_front_m": 31.066,
+          "tactical_speed_ceiling_mps": 3.0,
+          "speed_binding": "tactical",
+          "road_heading_deg": 146.297
+        }
+      ],
+      "above_3_episodes": [
+        {
+          "first": {
+            "frame": 13970,
+            "time_s": 46.3,
+            "station_m": 452.585,
+            "speed_kmh": 31.309,
+            "target_kmh": 10.8,
+            "native_control": {
+              "steer": 0.0623,
+              "brake": 0.60478,
+              "throttle": 0.0
+            },
+            "event": "slow-traffic",
+            "maneuver_phase": "signal_right",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              60.0
+            ],
+            "measured_source_front_m": 35.001,
+            "tactical_speed_ceiling_mps": 3.0,
+            "speed_binding": "tactical",
+            "road_heading_deg": 141.244
+          },
+          "last": {
+            "frame": 13978,
+            "time_s": 47.1,
+            "station_m": 457.804,
+            "speed_kmh": 20.477,
+            "target_kmh": 10.8,
+            "native_control": {
+              "steer": 0.0443,
+              "brake": 0.3039,
+              "throttle": 0.0
+            },
+            "event": "slow-traffic",
+            "maneuver_phase": "signal_right",
+            "lane_front_rear_gaps_m": [
+              45.745,
+              60.0
+            ],
+            "measured_source_front_m": 30.646,
+            "tactical_speed_ceiling_mps": 3.0,
+            "speed_binding": "tactical",
+            "road_heading_deg": 147.308
+          },
+          "peak": {
+            "frame": 13971,
+            "time_s": 46.4,
+            "station_m": 453.391,
+            "speed_kmh": 29.549,
+            "target_kmh": 10.8,
+            "native_control": {
+              "steer": 0.06097,
+              "brake": 0.60478,
+              "throttle": 0.0
+            },
+            "event": "slow-traffic",
+            "maneuver_phase": "signal_right",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              60.0
+            ],
+            "measured_source_front_m": 34.417,
+            "tactical_speed_ceiling_mps": 3.0,
+            "speed_binding": "tactical",
+            "road_heading_deg": 142.254,
+            "yaw_based_lateral_mps2": 1.74,
+            "position_based_lateral_mps2": 1.666,
+            "half_second_yaw_change_deg": 5.28,
+            "half_second_braking_mps2": 4.944,
+            "initial_speed_half_second_kmh": 38.448
+          },
+          "sampled_s": 0.9
+        },
+        {
+          "first": {
+            "frame": 14072,
+            "time_s": 56.5,
+            "station_m": 486.503,
+            "speed_kmh": 11.93,
+            "target_kmh": 2.664,
+            "native_control": {
+              "steer": 0.03014,
+              "brake": 0.31174,
+              "throttle": 0.0
+            },
+            "event": "slow-traffic",
+            "maneuver_phase": "yield",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              10.467
+            ],
+            "measured_source_front_m": 15.607,
+            "tactical_speed_ceiling_mps": 1.5575538316737614,
+            "speed_binding": "occupied_corridor",
+            "road_heading_deg": 164.318
+          },
+          "last": {
+            "frame": 14073,
+            "time_s": 56.6,
+            "station_m": 486.821,
+            "speed_kmh": 11.074,
+            "target_kmh": 3.33,
+            "native_control": {
+              "steer": 0.03045,
+              "brake": 0.31362,
+              "throttle": 0.0
+            },
+            "event": "slow-traffic",
+            "maneuver_phase": "yield",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              9.709
+            ],
+            "measured_source_front_m": 15.479,
+            "tactical_speed_ceiling_mps": 1.5035986067390894,
+            "speed_binding": "occupied_corridor",
+            "road_heading_deg": 164.318
+          },
+          "peak": {
+            "frame": 14072,
+            "time_s": 56.5,
+            "station_m": 486.503,
+            "speed_kmh": 11.93,
+            "target_kmh": 2.664,
+            "native_control": {
+              "steer": 0.03014,
+              "brake": 0.31174,
+              "throttle": 0.0
+            },
+            "event": "slow-traffic",
+            "maneuver_phase": "yield",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              10.467
+            ],
+            "measured_source_front_m": 15.607,
+            "tactical_speed_ceiling_mps": 1.5575538316737614,
+            "speed_binding": "occupied_corridor",
+            "road_heading_deg": 164.318,
+            "yaw_based_lateral_mps2": 0.149,
+            "position_based_lateral_mps2": 0.133,
+            "half_second_yaw_change_deg": 1.05,
+            "half_second_braking_mps2": 3.426,
+            "initial_speed_half_second_kmh": 18.097
+          },
+          "sampled_s": 0.2
+        },
+        {
+          "first": {
+            "frame": 14186,
+            "time_s": 67.9,
+            "station_m": 534.714,
+            "speed_kmh": 31.817,
+            "target_kmh": 11.812,
+            "native_control": {
+              "steer": 5e-05,
+              "brake": 0.60478,
+              "throttle": 0.0
+            },
+            "event": "lead",
+            "maneuver_phase": "wait_rejoin",
+            "lane_front_rear_gaps_m": [
+              50.791,
+              60.0
+            ],
+            "measured_source_front_m": 39.686,
+            "tactical_speed_ceiling_mps": 3.281073845017815,
+            "speed_binding": "sight_distance",
+            "road_heading_deg": 179.857
+          },
+          "last": {
+            "frame": 14194,
+            "time_s": 68.7,
+            "station_m": 540.483,
+            "speed_kmh": 21.424,
+            "target_kmh": 10.8,
+            "native_control": {
+              "steer": -3e-05,
+              "brake": 0.30352,
+              "throttle": 0.0
+            },
+            "event": "lead",
+            "maneuver_phase": "wait_rejoin",
+            "lane_front_rear_gaps_m": [
+              47.829,
+              60.0
+            ],
+            "measured_source_front_m": 33.892,
+            "tactical_speed_ceiling_mps": 3.0,
+            "speed_binding": "sight_distance",
+            "road_heading_deg": 179.857
+          },
+          "peak": {
+            "frame": 14187,
+            "time_s": 68.0,
+            "station_m": 535.573,
+            "speed_kmh": 30.211,
+            "target_kmh": 11.278,
+            "native_control": {
+              "steer": 3e-05,
+              "brake": 0.60478,
+              "throttle": 0.0
+            },
+            "event": "lead",
+            "maneuver_phase": "wait_rejoin",
+            "lane_front_rear_gaps_m": [
+              50.487,
+              60.0
+            ],
+            "measured_source_front_m": 38.796,
+            "tactical_speed_ceiling_mps": 3.1327167214097122,
+            "speed_binding": "sight_distance",
+            "road_heading_deg": 179.857,
+            "yaw_based_lateral_mps2": 0.003,
+            "position_based_lateral_mps2": 0.109,
+            "half_second_yaw_change_deg": 0.01,
+            "half_second_braking_mps2": 4.498,
+            "initial_speed_half_second_kmh": 38.308
+          },
+          "sampled_s": 0.9
+        }
+      ],
+      "above_3_seconds": 2.0,
+      "above_4_episodes": [
+        {
+          "first": {
+            "frame": 13971,
+            "time_s": 46.4,
+            "station_m": 453.391,
+            "speed_kmh": 29.549,
+            "target_kmh": 10.8,
+            "native_control": {
+              "steer": 0.06097,
+              "brake": 0.60478,
+              "throttle": 0.0
+            },
+            "event": "slow-traffic",
+            "maneuver_phase": "signal_right",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              60.0
+            ],
+            "measured_source_front_m": 34.417,
+            "tactical_speed_ceiling_mps": 3.0,
+            "speed_binding": "tactical",
+            "road_heading_deg": 142.254
+          },
+          "last": {
+            "frame": 13975,
+            "time_s": 46.8,
+            "station_m": 456.096,
+            "speed_kmh": 23.494,
+            "target_kmh": 12.665,
+            "native_control": {
+              "steer": 0.05301,
+              "brake": 0.30474,
+              "throttle": 0.0
+            },
+            "event": "slow-traffic",
+            "maneuver_phase": "signal_right",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              60.0
+            ],
+            "measured_source_front_m": 31.738,
+            "tactical_speed_ceiling_mps": null,
+            "speed_binding": "recovery",
+            "road_heading_deg": 145.286
+          },
+          "peak": {
+            "frame": 13971,
+            "time_s": 46.4,
+            "station_m": 453.391,
+            "speed_kmh": 29.549,
+            "target_kmh": 10.8,
+            "native_control": {
+              "steer": 0.06097,
+              "brake": 0.60478,
+              "throttle": 0.0
+            },
+            "event": "slow-traffic",
+            "maneuver_phase": "signal_right",
+            "lane_front_rear_gaps_m": [
+              60.0,
+              60.0
+            ],
+            "measured_source_front_m": 34.417,
+            "tactical_speed_ceiling_mps": 3.0,
+            "speed_binding": "tactical",
+            "road_heading_deg": 142.254,
+            "yaw_based_lateral_mps2": 1.74,
+            "position_based_lateral_mps2": 1.666,
+            "half_second_yaw_change_deg": 5.28,
+            "half_second_braking_mps2": 4.944,
+            "initial_speed_half_second_kmh": 38.448
+          },
+          "sampled_s": 0.5
+        },
+        {
+          "first": {
+            "frame": 14187,
+            "time_s": 68.0,
+            "station_m": 535.573,
+            "speed_kmh": 30.211,
+            "target_kmh": 11.278,
+            "native_control": {
+              "steer": 3e-05,
+              "brake": 0.60478,
+              "throttle": 0.0
+            },
+            "event": "lead",
+            "maneuver_phase": "wait_rejoin",
+            "lane_front_rear_gaps_m": [
+              50.487,
+              60.0
+            ],
+            "measured_source_front_m": 38.796,
+            "tactical_speed_ceiling_mps": 3.1327167214097122,
+            "speed_binding": "sight_distance",
+            "road_heading_deg": 179.857
+          },
+          "last": {
+            "frame": 14191,
+            "time_s": 68.4,
+            "station_m": 538.583,
+            "speed_kmh": 24.422,
+            "target_kmh": 10.8,
+            "native_control": {
+              "steer": -1e-05,
+              "brake": 0.42168,
+              "throttle": 0.0
+            },
+            "event": "lead",
+            "maneuver_phase": "wait_rejoin",
+            "lane_front_rear_gaps_m": [
+              48.087,
+              60.0
+            ],
+            "measured_source_front_m": 35.87,
+            "tactical_speed_ceiling_mps": 3.0,
+            "speed_binding": "sight_distance",
+            "road_heading_deg": 179.857
+          },
+          "peak": {
+            "frame": 14187,
+            "time_s": 68.0,
+            "station_m": 535.573,
+            "speed_kmh": 30.211,
+            "target_kmh": 11.278,
+            "native_control": {
+              "steer": 3e-05,
+              "brake": 0.60478,
+              "throttle": 0.0
+            },
+            "event": "lead",
+            "maneuver_phase": "wait_rejoin",
+            "lane_front_rear_gaps_m": [
+              50.487,
+              60.0
+            ],
+            "measured_source_front_m": 38.796,
+            "tactical_speed_ceiling_mps": 3.1327167214097122,
+            "speed_binding": "sight_distance",
+            "road_heading_deg": 179.857,
+            "yaw_based_lateral_mps2": 0.003,
+            "position_based_lateral_mps2": 0.109,
+            "half_second_yaw_change_deg": 0.01,
+            "half_second_braking_mps2": 4.498,
+            "initial_speed_half_second_kmh": 38.308
+          },
+          "sampled_s": 0.5
+        }
+      ],
+      "above_4_seconds": 1.0
+    },
+    "matched_geometry_windows": [
+      {
+        "bounds_m": [
+          412,
+          426
+        ],
+        "native_frames": 18,
+        "median_speed_kmh": 30.793,
+        "maximum_yaw_lateral_mps2": 4.269,
+        "maximum_braking_mps2": 0.0,
+        "maximum_direct_position_lateral_mps2": 4.208
+      },
+      {
+        "bounds_m": [
+          447,
+          460
+        ],
+        "native_frames": 19,
+        "median_speed_kmh": 26.165,
+        "maximum_yaw_lateral_mps2": 2.219,
+        "maximum_braking_mps2": 4.944,
+        "maximum_direct_position_lateral_mps2": 2.258
+      },
+      {
+        "bounds_m": [
+          525,
+          547
+        ],
+        "native_frames": 32,
+        "median_speed_kmh": 22.81,
+        "maximum_yaw_lateral_mps2": 0.557,
+        "maximum_braking_mps2": 4.498,
+        "maximum_direct_position_lateral_mps2": 1.005
+      },
+      {
+        "bounds_m": [
+          565,
+          570
+        ],
+        "native_frames": 10,
+        "median_speed_kmh": 17.068,
+        "maximum_yaw_lateral_mps2": 0.12,
+        "maximum_braking_mps2": 0.0,
+        "maximum_direct_position_lateral_mps2": 0.103
+      }
+    ]
+  }
+}
