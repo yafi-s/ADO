@@ -24,4 +24,6 @@ The original isolated moving-lead cut failed to expose a moving leader during th
 
 A held-out signal-led variation delayed the rear launch by six native road metres and raised the slow lead's requested speed from 1.65 to 1.90 m/s. The ego returned after passing the cones, yielded, then overtook the moving car. It remained in the adjacent lane and timed out at 584.724 m. No collision, red-light violation or missed yield was recorded. [Variation grade and source](../qualification/timing-variation/grade.json) · [Full-course qualification](../qualification/full-market/readiness.json)
 
+The actual six-camera High run on the original spacing also ended without its second return, at 584.550 m. The full primary-camera rehearsal and that six-camera run have distinct native records. [High incident clip and independent gap audit](../attempts/high01/README.md)
+
 The model, tactical classifier, execution archive and per-file checksums are available for each arm. A trace outcome of `restarted` marks the planned end of a test window. Missing maneuver or threat evidence stays unconfirmed. [Baseline protocol](baseline/protocol.json) · [Candidate protocol](candidate/protocol.json)
