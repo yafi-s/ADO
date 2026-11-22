@@ -858,8 +858,11 @@ function fillRuns() {
   placeholder.hidden = true;
   const groups = new Map();
   state.catalog.forEach((entry, index) => {
-    const policy = findRun(entry)?.policy;
-    const group = typeof policy === 'string' && policy ? POLICY_LABELS[policy] ?? sentence(policy) : '';
+    const run = findRun(entry);
+    const policy = run?.policy;
+    const group = entry.cohort === 'showcase' && run?.scenario === 'journey' && run?.encounters_planned > 0
+      ? 'Full city drives'
+      : typeof policy === 'string' && policy ? POLICY_LABELS[policy] ?? sentence(policy) : '';
     if (!groups.has(group)) groups.set(group, []);
     groups.get(group).push(new Option(entry.label, String(index)));
   });

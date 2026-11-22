@@ -25,7 +25,7 @@ class CityPopulationTests(unittest.TestCase):
             bounds = carla.BoundingBox(carla.Location(.2, .1, .9), carla.Vector3D(1., .6, .9))
             actors.append(SimpleNamespace(id=i+1, type_id="walker.pedestrian.0001", is_alive=True,
                                           get_transform=lambda p=pose:p, bounding_box=bounds))
-        scene = SimpleNamespace(ego=SimpleNamespace(get_location=lambda:origin), events=[],
+        scene = SimpleNamespace(ego=SimpleNamespace(get_location=lambda:origin), events=[], maneuver_fixture=None,
                                 ambient=SimpleNamespace(_actors=actors), occluder=None, population_profile="city-life")
         for radius, ids in ((35., [1,2,3]), (50., [1,2,3,4]), (65., [1,2,3,4,5]), (100., [1,2,3,4,5,6])):
             rows = JourneyScenario.observer_positions(scene, radius)

@@ -97,8 +97,8 @@ def main():
     parser.add_argument("--port", type=int, default=2468)
     parser.add_argument("--attach", action="store_true", help="Use an idle Town03_Opt server")
     parser.add_argument("--serve", action="store_true", help="Stream the live cameras and measured controls")
-    parser.add_argument("--population-profile", choices=("standard", "city-life"),
-                        help="Street population (the live city-clearance driver defaults to City Life)")
+    parser.add_argument("--population-profile", choices=("standard", "city-life", "city-maneuvers"),
+                        help="Street population and staged encounters for this drive")
     parser.add_argument("--surround", action=argparse.BooleanOptionalAction, default=None,
                         help="Run the five-camera perception rig (on by default for the live urban cruise driver)")
     parser.add_argument("--tactical", action=argparse.BooleanOptionalAction, default=None,
@@ -120,11 +120,15 @@ def main():
                if (live_cruise if value is None else value)}
     tactical_sha = None
     if options.get("tactical"):
-        from .overtake import MODEL as tactical_checkpoint
+        if schema == "ado-city-maneuvers-v1":
+            from .maneuver_choice import MODEL as tactical_checkpoint
+        else:
+            from .overtake import MODEL as tactical_checkpoint
         tactical_sha = fingerprint(tactical_checkpoint)
     model = LoggedDriver(driver)
-    population_profile = args.population_profile or (
-        "city-life" if args.serve and schema in ("ado-city-clearance-v1", "ado-city-progress-v1", "ado-city-maneuvers-v1") else "standard")
+    live_populations = {"ado-city-clearance-v1": "city-life", "ado-city-progress-v1": "city-life",
+                        "ado-city-maneuvers-v1": "city-maneuvers"}
+    population_profile = args.population_profile or (live_populations.get(schema, "standard") if args.serve else "standard")
     scene_factory = partial(JourneyScenario, population_profile=population_profile,
                             barriers=pace_schema)
     root = args.output or PROJECT / "out/city-drives"
