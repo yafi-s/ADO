@@ -297,13 +297,15 @@ def _load_inputs(model_path):
     from .journey import JourneyScenario
 
     path = Path(model_path).resolve(strict=True)
-    saved_sha = fingerprint(path)
+    selection_sha = fingerprint(path)
     model, feature_names, schema = load_driver(path)
-    if fingerprint(path) != saved_sha:
+    if fingerprint(path) != selection_sha:
         raise ValueError("The driving checkpoint changed while it was loading")
+    pace_path = getattr(model, "pace_checkpoint", path)
+    saved_sha = getattr(model, "pace_sha256", selection_sha)
     fit_path = PROJECT / "models" / "fit.json"
     fit = read_json(fit_path)
-    policy = dict(path=path.name, sha256=saved_sha, schema=schema,
+    policy = dict(path=pace_path.name, sha256=saved_sha, schema=schema,
                   camera_profile=fit["render_profile"], camera_profile_source_sha256=fingerprint(fit_path),
                   code_sha256=_source_checksums(JourneyScenario, type(model)))
     if schema in SURROUND_SCHEMAS:
@@ -336,13 +338,31 @@ def _load_inputs(model_path):
         model = LoggedDriver(model)
     if schema == "ado-city-maneuvers-v1":
         from .maneuver_choice import MODEL as maneuver_model
-        model.capture_checkpoint = path.read_bytes()
-        model.capture_maneuver_choice = maneuver_model.read_bytes()
-        if hashlib.sha256(model.capture_checkpoint).hexdigest() != saved_sha:
-            raise RuntimeError("Maneuver checkpoint changed before it could be archived")
-        policy["maneuver_choice_sha256"] = hashlib.sha256(model.capture_maneuver_choice).hexdigest()
+        driver = model.policy
+        parts = [
+            ("capture_checkpoint", "sha256", pace_path, saved_sha),
+            ("capture_maneuver_choice", "maneuver_choice_sha256", getattr(driver, "maneuver_choice_checkpoint", maneuver_model),
+             getattr(driver, "maneuver_choice_sha256", None)),
+        ]
+        bundle_path = getattr(driver, "driver_bundle_checkpoint", None)
+        if bundle_path is not None:
+            policy["driver_bundle_path"] = bundle_path.name
+            parts.extend([
+                ("capture_driver_bundle", "driver_bundle_sha256", bundle_path, driver.driver_bundle_sha256),
+                ("capture_stationary_intent", "stationary_intent_sha256", driver.stationary_intent_checkpoint,
+                 driver.stationary_intent_sha256),
+            ])
+        for attribute, field, component, expected in parts:
+            data = component.read_bytes()
+            digest = hashlib.sha256(data).hexdigest()
+            if expected is not None and expected != digest:
+                raise RuntimeError(f"Selected checkpoint changed before capture: {component.name}")
+            setattr(model, attribute, data)
+            policy[field] = digest
         policy["tactical_sha256"] = policy["maneuver_choice_sha256"]
         policy["control_inputs"] += " Discretionary lane changes use the surveyed adjacent lane and ego-motion-compensated lidar returns."
+        if bundle_path is not None:
+            policy["control_inputs"] += " The fitted stationary-vehicle head also uses motor-vehicle boxes matched to lidar and forward radar."
     return model, JourneyScenario, model.new_observer, policy
 
 
@@ -373,6 +393,9 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
                 raise ValueError("The featured maneuver scene requires its declared driver checkpoint")
             (stage / "checkpoint.npz").write_bytes(model.capture_checkpoint)
             (stage / "tactical-model.json").write_bytes(model.capture_maneuver_choice)
+    if "stationary_intent_sha256" in policy:
+        (stage / "stationary-intent.npz").write_bytes(model.capture_stationary_intent)
+        (stage / "stationary-driver.json").write_bytes(model.capture_driver_bundle)
     if with_barriers:
         scene_factory = partial(scene_factory, barriers=True)
     settings = _observed_settings(world)
@@ -423,6 +446,9 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
                   map_asset=MAP_ASSET, required_event_kinds=list(expected_events), summary=summary,
                   **_result(summary, expected_events))
     source["perimeter_views"] = list(views)
+    for field in ("driver_bundle_sha256", "stationary_intent_sha256"):
+        if summary.get(field) != policy.get(field):
+            raise ValueError(f"The vehicle and the recorded setup differ on {field}")
     if population_profile == "city-maneuvers":
         from .maneuver_scene import score_sequence
         source["traffic_schedule"] = traffic_schedule

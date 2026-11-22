@@ -452,6 +452,103 @@ class WindowsReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "native frame sequence"):
             release.verify_maneuver_events(capture)
 
+    def test_selected_stationary_intent_binds_the_recorded_and_packaged_models_to_the_fit(self):
+        field = release.STATIONARY_INTENT_FIELD
+        weights = b"native stationary vehicle intent weights"
+        digest = sha256(weights)
+        capture = {"policy": {field: digest}, "summary": {field: digest}}
+        fit = dict(schema=release.STATIONARY_INTENT_SCHEMA, checkpoint_sha256=digest)
+        members = {release.STATIONARY_INTENT_MODEL: weights, release.STATIONARY_INTENT_CAPTURE: weights,
+                   release.STATIONARY_INTENT_FIT: json_bytes(fit)}
+        with fixture_zip(members) as archive:
+            release.verify_stationary_intent(archive, capture)
+            with self.assertRaisesRegex(ValueError, "different stationary vehicle intent checkpoint"):
+                release.verify_stationary_intent(archive, dict(capture, summary={field: "0" * 64}))
+            with self.assertRaisesRegex(ValueError, "different stationary vehicle intent checkpoint"):
+                release.verify_stationary_intent(archive, dict(capture, policy={}))
+            with self.assertRaisesRegex(ValueError, "Invalid declared"):
+                release.verify_stationary_intent(archive, {"policy": {field: None}, "summary": {field: None}})
+        for path in (release.STATIONARY_INTENT_MODEL, release.STATIONARY_INTENT_CAPTURE):
+            with self.subTest(path=path), fixture_zip({**members, path: b"different weights"}) as archive:
+                with self.assertRaisesRegex(ValueError, "Wrong SHA-256"):
+                    release.verify_stationary_intent(archive, capture)
+        fit["checkpoint_sha256"] = "0" * 64
+        with fixture_zip({**members, release.STATIONARY_INTENT_FIT: json_bytes(fit)}) as archive:
+            with self.assertRaisesRegex(ValueError, "fit describes a different checkpoint"):
+                release.verify_stationary_intent(archive, capture)
+
+    def test_city_maneuvers_catalog_requires_intent_checkpoint_only_if_selected(self):
+        digest = "d" * 64
+        key = release.STATIONARY_INTENT_CATALOG_KEY
+        build = {"checkpoints": {"city-maneuvers": {"sha256": "base checkpoint"}}}
+        legacy = {"policy": {"sha256": "base checkpoint"}, "summary": {}}
+        with fixture_zip({}) as archive:
+            release.verify_stationary_intent(archive, legacy)
+            release.verify_driver_bundle(archive, legacy)
+        release.verify_maneuver_catalog_checkpoints(build, legacy)
+
+        selected = {"policy": {**legacy["policy"], release.STATIONARY_INTENT_FIELD: digest}}
+        with self.assertRaisesRegex(ValueError, "identify the selected stationary vehicle intent checkpoint"):
+            release.verify_maneuver_catalog_checkpoints(build, selected)
+        build["checkpoints"][key] = {"sha256": "0" * 64}
+        with self.assertRaisesRegex(ValueError, "identify the selected stationary vehicle intent checkpoint"):
+            release.verify_maneuver_catalog_checkpoints(build, selected)
+        build["checkpoints"][key]["sha256"] = digest
+        release.verify_maneuver_catalog_checkpoints(build, selected)
+        bundle_digest = "b" * 64
+        selected["policy"][release.DRIVER_BUNDLE_FIELD] = bundle_digest
+        with self.assertRaisesRegex(ValueError, "identify the selected City Maneuvers driver bundle"):
+            release.verify_maneuver_catalog_checkpoints(build, selected)
+        build["checkpoints"][release.DRIVER_BUNDLE_CATALOG_KEY] = {"sha256": bundle_digest}
+        release.verify_maneuver_catalog_checkpoints(build, selected)
+
+    def test_selected_driver_bundle_binds_both_copies_and_its_exact_component_roles(self):
+        bundle_field = release.DRIVER_BUNDLE_FIELD
+        intent_field = release.STATIONARY_INTENT_FIELD
+        pace, tactical, intent = b"original pace weights", b"active lane choice", b"stationary intent weights"
+        policy = dict(schema=release.MANEUVERS_SCHEMA, path="candidate.npz", sha256=sha256(pace),
+                      tactical_sha256=sha256(tactical), maneuver_choice_sha256=sha256(tactical),
+                      driver_bundle_path=release.DRIVER_BUNDLE_NAME, **{intent_field: sha256(intent)})
+        manifest = dict(format=release.DRIVER_BUNDLE_FORMAT, schema=release.MANEUVERS_SCHEMA,
+                        pace=dict(path="candidate.npz", sha256=sha256(pace)),
+                        maneuver_choice=dict(path="../route-maneuvers/choice.json", sha256=sha256(tactical)),
+                        stationary_intent=dict(path="stationary-intent.npz", sha256=sha256(intent)))
+        components = {"models/city-maneuvers/candidate.npz": pace, release.MANEUVERS_CHOICE: tactical,
+                      release.STATIONARY_INTENT_MODEL: intent, release.STATIONARY_INTENT_CAPTURE: intent,
+                      release.STATIONARY_INTENT_FIT: json_bytes(dict(schema=release.STATIONARY_INTENT_SCHEMA,
+                                                                   checkpoint_sha256=sha256(intent)))}
+
+        def seal(bundle):
+            payload = json_bytes(bundle)
+            digest = sha256(payload)
+            return ({**components, release.DRIVER_BUNDLE_MODEL: payload, release.DRIVER_BUNDLE_CAPTURE: payload},
+                    {"policy": {**policy, bundle_field: digest}, "summary": {bundle_field: digest, intent_field: sha256(intent)}})
+
+        members, capture = seal(manifest)
+        with fixture_zip(members) as archive:
+            release.verify_stationary_intent(archive, capture)
+            release.verify_driver_bundle(archive, capture)
+            with self.assertRaisesRegex(ValueError, "different driver bundle"):
+                release.verify_driver_bundle(archive, dict(capture, summary={bundle_field: "0" * 64}))
+            with self.assertRaisesRegex(ValueError, "missing its checksum"):
+                release.verify_driver_bundle(archive, dict(capture, policy=policy, summary={}))
+            changed = dict(capture["policy"], driver_bundle_path="another-driver.json")
+            with self.assertRaisesRegex(ValueError, "path or SHA-256"):
+                release.verify_driver_bundle(archive, dict(capture, policy=changed))
+
+        for path in (release.DRIVER_BUNDLE_MODEL, release.DRIVER_BUNDLE_CAPTURE, release.MANEUVERS_CHOICE,
+                     "models/city-maneuvers/candidate.npz"):
+            with self.subTest(path=path), fixture_zip({**members, path: b"changed file"}) as archive:
+                with self.assertRaisesRegex(ValueError, "Wrong SHA-256"):
+                    release.verify_driver_bundle(archive, capture)
+        for field, changes in (("pace", {"sha256": "0" * 64}), ("maneuver_choice", {"path": "../other/choice.json"}),
+                               ("stationary_intent", {"sha256": "0" * 64})):
+            changed = {**manifest, field: dict(manifest[field], **changes)}
+            altered_members, altered_capture = seal(changed)
+            with self.subTest(component=field), fixture_zip(altered_members) as archive:
+                with self.assertRaisesRegex(ValueError, "components differ from the native capture"):
+                    release.verify_driver_bundle(archive, altered_capture)
+
     def test_maneuver_audit_verifies_measured_pace_above_forty_and_legal_lane_witnesses(self):
         route = json_bytes(dict(route_id="surveyed route", opendrive_sha256="native geometry"))
         events = [dict(kind=kind, alongside_ego_lane=[67, -1]) for kind in sorted(release.MANEUVER_EVENTS)]

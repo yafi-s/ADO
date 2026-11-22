@@ -118,8 +118,12 @@ def main():
         parser.error("Choose a positive step limit and a seed in [0, 2147483647]")
     if not np.isfinite(args.crossing_delay) or args.crossing_delay < 0.:
         parser.error("Crossing delay must be finite and nonnegative")
-    model_sha = fingerprint(args.model)
+    selection_sha = fingerprint(args.model)
     driver, names, schema = load_driver(args.model)
+    model_sha = getattr(driver, "pace_sha256", selection_sha)
+    bundle_sha = getattr(driver, "driver_bundle_sha256", None)
+    if bundle_sha is not None and bundle_sha != selection_sha:
+        raise ValueError("Driver bundle changed while loading")
     if args.urban_cap and hasattr(driver, "allow_high_speed"):
         driver.allow_high_speed = False
     pace_schema = schema in ("ado-city-pace-v1", "ado-city-clearance-v1", "ado-city-progress-v1", "ado-city-maneuvers-v1")
@@ -131,6 +135,7 @@ def main():
     if options.get("tactical"):
         if schema == "ado-city-maneuvers-v1":
             from .maneuver_choice import MODEL as tactical_checkpoint
+            tactical_checkpoint = getattr(driver, "maneuver_choice_checkpoint", tactical_checkpoint)
         else:
             from .overtake import MODEL as tactical_checkpoint
         tactical_sha = fingerprint(tactical_checkpoint)
@@ -172,6 +177,11 @@ def main():
     if schema == "ado-city-maneuvers-v1":
         summary["open_road_cruise_enabled"] = bool(driver.allow_high_speed)
         summary["traffic_schedule"] = args.traffic_schedule
+        if bundle_sha is not None:
+            summary["selected_driver_bundle_sha256"] = bundle_sha
+            if options.get("tactical") and (summary.get("driver_bundle_sha256") != bundle_sha or
+                    summary.get("stationary_intent_sha256") != driver.stationary_intent_sha256):
+                raise ValueError("The live planner used different weights from the selected driver bundle")
     write_json(folder / "summary.json", summary)
     passed = sum(event["handled"] for event in summary["events"])
     print(f'{summary["outcome"]}: {summary["progress_m"]:.1f}/{summary["route_length_m"]:.1f} m, '

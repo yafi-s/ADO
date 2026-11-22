@@ -88,6 +88,18 @@ MARKET_LOOP_SAMPLES = 1737
 MARKET_LOOP_LANES = {"in-lane-obstruction": ([67, -2], [67, -1]), "slow-traffic": ([67, 3], [67, 2])}
 MANEUVERS_CHOICE = "models/route-maneuvers/choice.json"
 MANEUVERS_STOPPING = f"{MANEUVERS_RESULTS}/speed/stopping-envelope.json"
+STATIONARY_INTENT_MODEL = "models/city-maneuvers/stationary-intent.npz"
+STATIONARY_INTENT_CAPTURE = f"{MANEUVERS_CAPTURE}/stationary-intent.npz"
+STATIONARY_INTENT_FIT = "models/city-maneuvers/stationary-intent-fit.json"
+STATIONARY_INTENT_SCHEMA = "ado-stationary-vehicle-intent-v1"
+STATIONARY_INTENT_FIELD = "stationary_intent_sha256"
+STATIONARY_INTENT_CATALOG_KEY = "stationary-vehicle-intent"
+DRIVER_BUNDLE_NAME = "stationary-driver.json"
+DRIVER_BUNDLE_MODEL = f"models/city-maneuvers/{DRIVER_BUNDLE_NAME}"
+DRIVER_BUNDLE_CAPTURE = f"{MANEUVERS_CAPTURE}/{DRIVER_BUNDLE_NAME}"
+DRIVER_BUNDLE_FORMAT = "ado-city-driver-bundle-v1"
+DRIVER_BUNDLE_FIELD = "driver_bundle_sha256"
+DRIVER_BUNDLE_CATALOG_KEY = "city-driver-bundle"
 MANEUVERS_TRIALS = f"{MANEUVERS_RESULTS}/trials"
 MANEUVERS_TRIAL_CASES = {"cones", "board", "slow", "blocked", "no-lead", "departing", "clear-bend", "inside-curb",
                          "outside-curb", "person", "reopened", "closing-rejoin", "uncooperative-rear"}
@@ -675,6 +687,48 @@ def verify_maneuver_sequence(capture, telemetry):
             "The frame-aligned City Maneuvers controls do not show a wait in the occupied passing gap")
 
 
+def verify_stationary_intent(archive, capture):
+    policy = capture["policy"]
+    digest = policy.get(STATIONARY_INTENT_FIELD)
+    require(capture["summary"].get(STATIONARY_INTENT_FIELD) == digest,
+            "City Maneuvers used a different stationary vehicle intent checkpoint from the declared capture policy")
+    if STATIONARY_INTENT_FIELD not in policy:
+        return
+    require(isinstance(digest, str) and re.fullmatch(r"[0-9a-f]{64}", digest),
+            "Invalid declared stationary vehicle intent checkpoint SHA-256")
+    verify_digest(archive, STATIONARY_INTENT_MODEL, digest)
+    verify_digest(archive, STATIONARY_INTENT_CAPTURE, digest)
+    fit = read_json(archive, STATIONARY_INTENT_FIT)
+    require(fit["schema"] == STATIONARY_INTENT_SCHEMA and fit["checkpoint_sha256"] == digest,
+            "Stationary vehicle intent fit describes a different checkpoint")
+
+
+def verify_driver_bundle(archive, capture):
+    policy = capture["policy"]
+    digest = policy.get(DRIVER_BUNDLE_FIELD)
+    require(capture["summary"].get(DRIVER_BUNDLE_FIELD) == digest,
+            "City Maneuvers used a different driver bundle from the declared capture policy")
+    if DRIVER_BUNDLE_FIELD not in policy:
+        require("driver_bundle_path" not in policy, "City Maneuvers driver bundle path is missing its checksum")
+        return
+    require(isinstance(digest, str) and re.fullmatch(r"[0-9a-f]{64}", digest)
+            and policy.get("driver_bundle_path") == DRIVER_BUNDLE_NAME,
+            "Invalid declared City Maneuvers driver bundle path or SHA-256")
+    require(policy["schema"] == MANEUVERS_SCHEMA and policy["path"] == "candidate.npz"
+            and policy.get(STATIONARY_INTENT_FIELD) and policy["tactical_sha256"] == policy["maneuver_choice_sha256"],
+            "City Maneuvers driver bundle must identify the original pace, active lane choice, and stationary intent")
+    verify_digest(archive, DRIVER_BUNDLE_MODEL, digest)
+    verify_digest(archive, DRIVER_BUNDLE_CAPTURE, digest)
+    bundle = read_json(archive, DRIVER_BUNDLE_MODEL)
+    require(bundle == dict(format=DRIVER_BUNDLE_FORMAT, schema=MANEUVERS_SCHEMA,
+                           pace=dict(path="candidate.npz", sha256=policy["sha256"]),
+                           maneuver_choice=dict(path="../route-maneuvers/choice.json", sha256=policy["tactical_sha256"]),
+                           stationary_intent=dict(path="stationary-intent.npz", sha256=policy[STATIONARY_INTENT_FIELD])),
+            "City Maneuvers driver bundle components differ from the native capture")
+    verify_digest(archive, "models/city-maneuvers/candidate.npz", bundle["pace"]["sha256"])
+    verify_digest(archive, MANEUVERS_CHOICE, bundle["maneuver_choice"]["sha256"])
+
+
 def verify_maneuver_capture(archive, capture):
     source = read_json(archive, f"{MANEUVERS_CAPTURE}/capture.json")
     fields = (
@@ -692,6 +746,8 @@ def verify_maneuver_capture(archive, capture):
     require(capture["policy"]["maneuver_choice_sha256"] == capture["policy"]["tactical_sha256"],
             "City Maneuvers must identify the active lane-choice checkpoint")
     verify_digest(archive, f"{MANEUVERS_CAPTURE}/tactical-model.json", capture["policy"]["tactical_sha256"])
+    verify_stationary_intent(archive, capture)
+    verify_driver_bundle(archive, capture)
     verify_digest(archive, f"{MANEUVERS_CAPTURE}/policy-observations.npz", capture["policy_observations_sha256"])
     sweeps = capture["maneuver_sweeps"]
     require(sweeps, "City Maneuvers is missing native passing sensor observations")
@@ -1131,6 +1187,8 @@ def verify_population_sources(archive, capture, results, policy_source, progress
             "maneuver_scene.py", "route_maneuvers.py", "city_population.py", "population_score.py"))
         if capture.get("summary", {}).get("destination") == "market-loop":
             fitted_sources.update(("crosswalk/urban_map.py", "crosswalk/market_loop_traffic.py"))
+        if STATIONARY_INTENT_FIELD in capture["policy"]:
+            fitted_sources.add("crosswalk/stationary_intent.py")
     required_sources = fitted_sources | {f"crosswalk/{policy_source}", "crosswalk/city_clearance.py",
                                          "crosswalk/city_population.py", "crosswalk/journey_capture.py",
                                          "crosswalk/population_score.py"}
@@ -1380,6 +1438,21 @@ def verify_populated_catalog(capture, showcase, entry, media):
             f"{directory} catalog differs from the measured capture")
 
 
+def verify_maneuver_catalog_checkpoints(build, capture):
+    checkpoints = build["checkpoints"]
+    policy = capture["policy"]
+    require(checkpoints["city-maneuvers"]["sha256"] == policy["sha256"],
+            "Builds & logs links a different City Maneuvers checkpoint")
+    if STATIONARY_INTENT_FIELD in policy:
+        entry = checkpoints.get(STATIONARY_INTENT_CATALOG_KEY, {})
+        require("sha256" in entry and entry["sha256"] == policy[STATIONARY_INTENT_FIELD],
+                "Builds & logs must identify the selected stationary vehicle intent checkpoint")
+    if DRIVER_BUNDLE_FIELD in policy:
+        entry = checkpoints.get(DRIVER_BUNDLE_CATALOG_KEY, {})
+        require("sha256" in entry and entry["sha256"] == policy[DRIVER_BUNDLE_FIELD],
+                "Builds & logs must identify the selected City Maneuvers driver bundle")
+
+
 def verify_surround_release(archive, build, viewer_records, tag):
     media, asset, schema = featured_recording(tag)
     capture, showcase, entry = catalog_film(archive, build, viewer_records, media, schema)
@@ -1401,8 +1474,7 @@ def verify_surround_release(archive, build, viewer_records, tag):
                                                                           PROGRESS_MEDIA, PROGRESS_SCHEMA)
                 verify_populated_catalog(progress, progress_showcase, progress_entry, PROGRESS_MEDIA)
                 verify_master_metadata(progress)
-                require(build["checkpoints"]["city-maneuvers"]["sha256"] == capture["policy"]["sha256"],
-                        "Builds & logs links a different City Maneuvers checkpoint")
+                verify_maneuver_catalog_checkpoints(build, capture)
         else:
             urban, urban_showcase, urban_entry = capture, showcase, entry
         report = read_json(archive, BARRIER_VALIDATION)
