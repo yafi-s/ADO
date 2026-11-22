@@ -82,13 +82,15 @@ def create():
         ("Paired tests and explanations", TAG + "pace/README.md"),
         ("Native speed and clearance", TAG + "pace/comparison.json"))
     speed_study = read(STUDY / "speed/comparison.json")["town03"]
-    capped, higher = speed_study["capped"], speed_study["higher"]
+    capped, higher, occupied = (speed_study[name] for name in ("capped", "higher", "occupied"))
     add("Higher-speed control",
         f'On a separate open boulevard, the matched straight-section median changed from '
         f'{capped["actual_section_median_kmh"]:.1f} to {higher["actual_section_median_kmh"]:.1f} km/h. '
         f'The faster configuration peaked at {higher["actual_peak_kmh"]:.1f} km/h and held above 40 for '
         f'{higher["longest_above_40_in_90_s"]:.1f} consecutive seconds in the 90 zone. '
-        f'In the occupied trial it stopped {speed_study["occupied"]["stationary_queue"]["final_gap_m"]:.2f} m behind the queue.',
+        f'With a queue ahead it peaked at {occupied["actual_peak_kmh"]:.1f} km/h, spent '
+        f'{occupied["seconds_above_50_in_90"]:.1f} s above 50 and stopped '
+        f'{occupied["stationary_queue"]["final_gap_m"]:.2f} m behind the queue.',
         ("Native higher-speed footage", "./media/city-maneuvers-tests/boulevard.mp4"),
         ("Cruise, lower limits and braking", TAG + "speed/README.md"),
         ("Full matched measurements", TAG + "speed/comparison.json"))
@@ -96,9 +98,9 @@ def create():
     add("Moving city traffic",
         f'The simulator spawned {new["grade"]["ambient_vehicles_spawned"]} background vehicles, '
         f'compared with {old["grade"]["ambient_vehicles_spawned"]} previously. '
-        f'At least one moving vehicle and one moving pedestrian were within 50 m for '
-        f'{100*b["both"]/b["scored"]:.1f}% of eligible frames, compared with '
-        f'{100*a["both"]/a["scored"]:.1f}% on the earlier drive. These measurements include occluded actors.',
+        f'At least two moving vehicles and two moving pedestrians were within 50 m for '
+        f'{100*b["two_each"]/b["scored"]:.1f}% of eligible frames, up from '
+        f'{100*a["two_each"]/a["scored"]:.1f}% on the earlier drive. Counts include occluded actors.',
         ("Native proof and controls", TAG + "README.md"),
         ("Explore the traffic timeline", "./benchmarks.html#traffic-study"))
     return {"checks": checks, "scope": "The native cameras and vehicle bodies establish the order and clearance of each tested pass. "
