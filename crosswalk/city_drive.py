@@ -89,6 +89,8 @@ class LoggedDriver:
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", type=Path, default=PROJECT / "models/city-maneuvers/candidate.npz")
+    parser.add_argument("--destination", choices=("market", "market-loop"), default="market",
+                        help="Choose the original Market route or continue through the return boulevard")
     parser.add_argument("--seed", type=int, default=211)
     parser.add_argument("--crossing-delay", type=float, default=0., help="Additional pedestrian departure delay in simulated seconds")
     parser.add_argument("--max-steps", type=int, default=9000)
@@ -150,7 +152,7 @@ def main():
                 if args.open_browser:
                     webbrowser.open(url)
             summary, trace, _, _ = episode(world, "journey", args.seed, schema, model,
-                live=live, realtime=bool(live), max_steps=args.max_steps, destination="market", run_id=folder.name,
+                live=live, realtime=bool(live), max_steps=args.max_steps, destination=args.destination, run_id=folder.name,
                 scene_factory=scene_factory, crossing_delay=args.crossing_delay, **options)
     write_trace(folder / "trace.jsonl.gz", trace)
     if len(model.observations) != len(trace):

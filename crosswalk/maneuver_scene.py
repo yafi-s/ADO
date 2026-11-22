@@ -64,6 +64,10 @@ class MovingVehicle:
 
     def drive(self, scene, progress, leaders=(), late_clearance=False):
         pose = self.actor.get_location()
+        if self.last is None and pose.distance(self.path[0]) > 2.:
+            # Late, distant population arrivals need their first published snapshot.
+            self.actor.apply_control(carla.VehicleControl(brake=1.))
+            return
         if self.last is not None:
             step = math.hypot(pose.x-self.last.x, pose.y-self.last.y)
             self.maximum_step = max(self.maximum_step, step)
@@ -276,7 +280,7 @@ class ManeuverFixture:
                     ego_speed_mps=round(scene.ego.get_velocity().length(), 3))
             lane = scene._map.get_waypoint(actor.get_location(), project_to_road=True,
                                            lane_type=carla.LaneType.Driving) if actor.type_id.startswith("vehicle.") else None
-            if lane and (lane.road_id, lane.lane_id) == (67, -1):
+            if lane and [lane.road_id, lane.lane_id] == event.observed["passing_lane"]:
                 key = "minimum_moving_passing_lane_car_gap_m"
                 observed[key] = round(min(observed.get(key, 60.), gap), 4)
                 if gap < 1.0:
@@ -290,7 +294,9 @@ class ManeuverFixture:
         wp = scene._map.get_waypoint(ego.get_location(), project_to_road=False, lane_type=carla.LaneType.Driving)
         if wp is None or wp.road_id != 67:
             return 60.
-        original = scene._map.get_waypoint_xodr(67,-2,wp.s)
+        source_lane = o["source_lane"][1]
+        passing_lane = o["passing_lane"][1]
+        original = scene._map.get_waypoint_xodr(67, source_lane, wp.s)
         transform = original.transform
         origin, forward = transform.location, transform.get_forward_vector()
         ego_poly = _polygon(ego)
@@ -298,7 +304,7 @@ class ManeuverFixture:
         lateral = (ego.get_location()-origin).dot(right)
         ego_s = (ego_poly - [origin.x, origin.y]) @ [forward.x, forward.y]
         footprint_lateral = (ego_poly - [origin.x, origin.y]) @ [right.x, right.y]
-        centered_in_source = (wp.lane_id == -2 and abs(lateral) < .60 and
+        centered_in_source = (wp.lane_id == source_lane and abs(lateral) < .60 and
                               max(abs(footprint_lateral)) < original.lane_width/2)
         moving = event.kind == "slow-traffic"
         targets = [event.actor] if moving else [a for a, _ in self.obstacles]
@@ -342,7 +348,10 @@ class ManeuverFixture:
             # The driver can begin following early. The immediate beside/behind
             # envelope of the passing lane determines occupancy; record the measured
             # forward headway independently, within the 60 m control lidar range.
-            if 0 < headway <= 35. and speed > .65 and centered_in_source and -18 <= deltas[1] <= 10 and speeds[1] > 1. and speeds[0] > 1.:
+            native_gap_lanes = [scene._map.get_waypoint(car.actor.get_location(), project_to_road=True,
+                                lane_type=carla.LaneType.Driving) for car in others]
+            same_gap_lane = all(wp is not None and wp.road_id==67 and wp.lane_id==passing_lane for wp in native_gap_lanes)
+            if 0 < headway <= 35. and speed > .65 and centered_in_source and same_gap_lane and -18 <= deltas[1] <= 10 and speeds[1] > 1. and speeds[0] > 1.:
                 event.state = "beside moving adjacent traffic"
                 event.mark("occupied_gap_wait_s",scene._time)
                 o["occupied_gap_frames"] = o.get("occupied_gap_frames",0)+1
@@ -353,6 +362,7 @@ class ManeuverFixture:
                 o.setdefault("adjacent_gap_witness", dict(rear_relative_m=round(deltas[1],2),
                              front_relative_m=round(deltas[0],2), rear_mps=round(speeds[1],2),
                              front_mps=round(speeds[0],2), source_bumper_gap_m=round(headway,2),
+                             native_adjacent_lanes=[[w.road_id,w.lane_id] for w in native_gap_lanes],
                              moving_lead_mps=round(speed,2), ego_mps=round(ego.get_velocity().length(),2)))
             if "occupied_gap_wait_s" in o and deltas[1] > 9.:
                 event.mark("adjacent_traffic_cleared_s",scene._time)
@@ -360,7 +370,7 @@ class ManeuverFixture:
             drift = max(math.hypot(a.get_location().x - loc.x, a.get_location().y - loc.y) for a,loc in self.obstacles)
             o["maximum_target_displacement_m"] = round(max(o.get("maximum_target_displacement_m",0.),drift),4)
             event.violation |= drift > .12
-        if min(ego_s) <= front and max(ego_s) >= rear and wp.lane_id == -1:
+        if min(ego_s) <= front and max(ego_s) >= rear and wp.lane_id == passing_lane:
             event.state = "alongside in the passing lane"
             event.mark("alternate_alongside_s",scene._time)
             o["alongside_ego_lane"] = [wp.road_id,wp.lane_id]

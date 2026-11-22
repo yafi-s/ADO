@@ -235,7 +235,7 @@ class JourneyScenario(Scenario):
         original_spacing = maneuver_case in ("original-continuous", "original-later-gap")
         if original_spacing:
             maneuver_case = maneuver_case.removeprefix("original-")
-        spaced_market = (population_profile == "city-maneuvers" and
+        spaced_market = (population_profile == "city-maneuvers" and destination != "market-loop" and
                          maneuver_case in ("continuous", "later-gap") and not original_spacing)
         self.maneuver_fixture = None
         if kind != "journey":
@@ -372,14 +372,22 @@ class JourneyScenario(Scenario):
                     spawn_barriers(self)
             if population_profile == "city-maneuvers":
                 from .maneuver_scene import ManeuverFixture
-                self.maneuver_fixture = ManeuverFixture(self, maneuver_case)
+                if self.destination == "market-loop":
+                    from .market_loop_traffic import LoopFixture
+                    self.maneuver_fixture = LoopFixture(self, maneuver_case)
+                else:
+                    self.maneuver_fixture = ManeuverFixture(self, maneuver_case)
                 required = (*required, *self.maneuver_fixture.event_names)
             self.events.sort(key=lambda e:e.s)
             if sorted(e.kind for e in self.events) != sorted(required):
                 raise RuntimeError("Journey setup does not match the course encounter contract")
             if population_profile == "city-maneuvers":
                 from .maneuver_scene import ManeuverPopulation
-                self.ambient = ManeuverPopulation(self)
+                if self.destination == "market-loop":
+                    from .market_loop_traffic import LoopPopulation
+                    self.ambient = LoopPopulation(self)
+                else:
+                    self.ambient = ManeuverPopulation(self)
             elif population_profile == "city-life":
                 from .city_population import CityPopulation
                 self.ambient = CityPopulation(self)

@@ -14,11 +14,12 @@ class CityManeuverLauncherTests(unittest.TestCase):
 
         model = Path(__file__).resolve().parents[1] / "models/city-maneuvers/candidate.npz"
         cases = [
-            ([], "city-maneuvers", True),
-            (["--urban-cap", "--no-tactical", "--no-surround", "--population-profile", "standard"], "standard", False),
+            ([], "city-maneuvers", True, "market"),
+            (["--destination", "market-loop"], "city-maneuvers", True, "market-loop"),
+            (["--urban-cap", "--no-tactical", "--no-surround", "--population-profile", "standard"], "standard", False, "market"),
         ]
         with TemporaryDirectory() as output:
-            for flags, profile, enabled in cases:
+            for flags, profile, enabled, destination in cases:
                 argv = ["city-drive", "--model", str(model), "--output", output, *flags]
                 with (
                     self.subTest(flags=flags),
@@ -35,3 +36,4 @@ class CityManeuverLauncherTests(unittest.TestCase):
                     self.assertEqual(bool(kwargs.get("surround")), enabled)
                     self.assertEqual(bool(kwargs.get("tactical")), enabled)
                     self.assertEqual(kwargs["scene_factory"].keywords["population_profile"], profile)
+                    self.assertEqual(kwargs["destination"], destination)

@@ -87,13 +87,23 @@ class PerimeterCapture(PerceptionCapture):
         self.streams = streams
         self.witness = witness
         self.witness_samples = {}
+        self.witness_windows = ((399., 548.),)
         if witness:
             witness.mkdir()
+
+    def include_reverse_boulevard(self, scene):
+        stations = [station for station, wp in zip(scene._station, scene._points, strict=True)
+                    if (wp.road_id, wp.lane_id) == (67, 3)]
+        if not stations or stations[-1] != scene._station[-1]:
+            raise ValueError("Market Loop sweep capture requires the reverse road 67 runout")
+        # Telemetry carries route progress to millimetres. Include the final sample.
+        self.witness_windows += ((round(stations[0], 3), round(stations[-1], 3) + .001),)
 
     def append(self, telemetry, observations):
         super().append(telemetry, observations)
         phase = telemetry.get("tactical_pass", {}).get("maneuver_phase")
-        if self.witness is not None and 399. <= telemetry["progress_m"] < 548.:
+        if self.witness is not None and any(
+                start <= telemetry["progress_m"] < end for start, end in self.witness_windows):
             key = (int(telemetry["progress_m"] // 5), phase)
             if key not in self.witness_samples:
                 # One complete control lidar/radar exposure per maneuver phase and five-metre bin.
@@ -151,11 +161,16 @@ def _snapshot(stage, policy):
                note="Archive hashes identify the exact execution sources, including working tree edits."))
 
 
-def _new_scene(scene_factory, observed_world, *args, **kwargs):
+def _new_scene(scene_factory, observed_world, *args, route_witness=None, **kwargs):
     scene = scene_factory(observed_world, *args, **kwargs)
-    if observed_world.ego is None or scene.ego.id != observed_world.ego.id:
+    try:
+        if observed_world.ego is None or scene.ego.id != observed_world.ego.id:
+            raise ValueError("The journey scene must own the captured hero")
+        if route_witness is not None:
+            route_witness.include_reverse_boulevard(scene)
+    except BaseException:
         scene.close()
-        raise ValueError("The journey scene must own the captured hero")
+        raise
     return scene
 
 
@@ -376,12 +391,14 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
         witness = stage / "maneuver-sweeps" if population_profile == "city-maneuvers" else None
         perception = PerimeterCapture(camera, front, rows, streams, witness) if surround else PerceptionCapture(camera, front, rows)
         episode_options = dict(surround=True, tactical=True, evidence_dir=stage / "surround-evidence") if surround else {}
+        route_witness = perception if destination == "market-loop" and surround and witness is not None else None
         observed = JourneyWorld(world, camera)
         try:
             summary, trace, *_ = episode(
                 observed, KIND, seed, policy.get("schema", "ado-behavior-v2"), model, weather="ClearNoon", district="townwide",
                 recording=perception, run_id=trial_id, max_steps=max_steps, destination=destination, crossing_delay=crossing_delay,
-                scene_factory=partial(_new_scene, scene_factory), observation_factory=observer_factory, **episode_options,
+                scene_factory=partial(_new_scene, scene_factory, route_witness=route_witness),
+                observation_factory=observer_factory, **episode_options,
             )
         finally:
             camera.close()
@@ -412,6 +429,8 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
             source["failure_reasons"].append("separate_physical_maneuvers_unconfirmed")
         source["maneuver_sweeps"] = {name: fingerprint(stage / "maneuver-sweeps" / name)
                                      for name in perception.witness_samples.values()}
+        if route_witness is not None:
+            source["maneuver_sweep_windows_m"] = perception.witness_windows
     if policy.get("schema") in ("ado-city-progress-v1", "ado-city-maneuvers-v1"):
         names = policy["control_feature_names"]
         if len(model.observations) != len(trace) or any(len(row) != len(names) for row in model.observations):
@@ -600,7 +619,7 @@ def main():
     parser.add_argument("--crossing-delay", type=float, default=0., help="Additional pedestrian entry delay in simulated seconds")
     parser.add_argument("--max-steps", type=int, default=DEFAULT_MAX_STEPS)
     parser.add_argument("--map", dest="map_name", choices=CAPTURE_MAPS, default=URBAN_MAP)
-    parser.add_argument("--destination", choices=("east", "south", "market"))
+    parser.add_argument("--destination", choices=("east", "south", "market", "market-loop"))
     parser.add_argument("--port", type=int, default=2668)
     parser.add_argument("--attach", action="store_true", help="Record using an already commissioned idle High-quality Town03 server")
     parser.add_argument("--quality", choices=(QUALITY,), default=QUALITY)
@@ -620,7 +639,7 @@ def main():
             parser.error(f"A recording already exists at {args.output}")
         output, inputs = _prepare(args.output, args.model, args.seed, args.max_steps, args.quality,
                                   args.resolution, args.dlss_percentage)
-        options = {URBAN_MAP: (None, "east", "market"), MAP_NAME: (None, "east", "south")}
+        options = {URBAN_MAP: (None, "east", "market", "market-loop"), MAP_NAME: (None, "east", "south")}
         if args.destination not in options[args.map_name]:
             parser.error(f"Destination {args.destination!r} is unavailable on {args.map_name}")
         with simulator(args.port, attach=args.attach, quality=args.quality, map_name=args.map_name) as world:
