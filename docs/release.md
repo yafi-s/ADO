@@ -7,6 +7,8 @@ Get-FileHash .\ADO-v0.7.0-Windows.zip -Algorithm SHA256
 Get-FileHash .\ADO-City-Maneuvers-1080p.mp4 -Algorithm SHA256
 ```
 
+When the release includes `ADO-v0.7.0-Maneuver-Evidence.zip`, compare its SHA-256 with the same `SHA256SUMS.txt`. Extract both ZIPs into the same parent folder so their `ADO` directories merge. The companion adds the individual native trial videos and research clips listed in `ADO/results/city-maneuvers/COMPANION-EVIDENCE.json`. The index gives each path relative to `ADO`, its size, and its SHA-256. The main ZIP contains the normal drive playback, side-by-side comparison, and trial logs.
+
 Extract the entire ZIP to a writable folder and double-click `ADO\Start-ADO.cmd`. The first launch installs the official CARLA 1.0 Windows server, Town01_Opt and Town03_Opt map content, the matching Python client, and the project's Python dependencies. The two simulator downloads total about 20.8 GB. Allow around 50 GB of free space on the extraction drive for the downloads and unpacked simulator. If a download is interrupted, run `Start-ADO.cmd` again to resume. After setup, use `Start-ADO.cmd` or `Watch-Live.cmd` to open the original Town01 live driving console. Press Ctrl+C in the launcher window to stop it. To open the Town03 console, follow the [city driving instructions](city-driving.md#run-it-locally).
 
 Use 64-bit Windows, 64-bit Python 3.12, and a GPU with Direct3D 12 support and current drivers. The project tested its five-camera profile on an RTX 3070 with 8 GB of VRAM. A compatible NVIDIA card can use DLSS on auxiliary camera views. An internet connection is required for first-time setup. If you already have the official CARLA 1.0 Windows distribution, set `CARLA_ROOT` to its extracted folder before launching from the same terminal. Setup can add Town01_Opt to that installation.
@@ -54,6 +56,8 @@ Build v0.7 from a full Git checkout so the verifier can compare the trial source
 If optional City Progress raw sensor sweeps would put the v0.6 Windows ZIP over GitHub’s limit, the build adds `ADO/results/city-progress/EXTERNAL-SWEEPS.md`. That index lists the affected raw sweep archives with their download URLs pinned to the release commit, byte lengths, and SHA-256 hashes. The Windows ZIP includes the films, controller logs, and synchronized replay needed to review the drives locally.
 
 The v0.7 Windows ZIP keeps the historical showcase films, controller logs, and synchronized replays. If the measured ZIP would exceed 2 GiB, the build moves optional v0.6 raw sensor sweeps and then exploratory trial clips into the external research index at `ADO/results/city-progress/EXTERNAL-RESEARCH.md`. Each record gives a download URL pinned to the published v0.6 commit, the byte length, and a SHA-256 hash. Building the v0.7 ZIP requires that published commit in the local Git history. [Archived City Progress trials](https://github.com/yafi-s/ADO/tree/51b1cbb25837eb43693b775ccb14e68bffc4084b/results/city-progress)
+
+If the main ZIP still exceeds the limit, the build creates `ADO-v0.7.0-Maneuver-Evidence.zip` and verifies the two archives together. Upload every asset listed in `SHA256SUMS.txt` to the matching release. `release-metadata.json` gives the companion's download URL, checksum, and file inventory when the build creates one.
 
 ## Reproduce the City Life range study
 

@@ -2,6 +2,7 @@
 
 import argparse
 from collections import Counter, deque
+from contextlib import ExitStack, contextmanager
 import gzip
 import hashlib
 from io import BytesIO
@@ -109,6 +110,8 @@ POPULATION_RADII = ("35", "50", "65", "100")
 MAX_UPLOAD_BYTES = 2 * 1024**3
 EXTERNAL_SWEEPS_INDEX = f"{PROGRESS_RESULTS}/EXTERNAL-SWEEPS.md"
 EXTERNAL_RESEARCH_INDEX = f"{PROGRESS_RESULTS}/EXTERNAL-RESEARCH.md"
+COMPANION_EVIDENCE_INDEX = f"{MANEUVERS_RESULTS}/COMPANION-EVIDENCE.json"
+COMPANION_EVIDENCE_SCHEMA = "ado-companion-evidence-v1"
 SWEEP_INDEX_RESERVE = 1024**2
 BARRIER_MODEL = "models/barrier-appearance.json"
 BARRIER_DATA = "data/barrier-recognition/town03-native.zip"
@@ -1199,16 +1202,78 @@ def stage_release_master(source, archive, target, media=SURROUND_MEDIA):
     return digest
 
 
-def validate_zip(path, files, commit, tag, scratch, external_sweeps=()):
-    require(path.stat().st_size < MAX_UPLOAD_BYTES, f"{path.name} exceeds the release asset size limit")
-    with ZipFile(path) as archive:
-        entries = [member for member in archive.infolist() if not member.is_dir()]
-        names = {entry.filename for entry in entries}
-        require(archive.comment == commit.encode("ascii"), "ZIP does not identify the expected Git commit")
-        require(len(entries) == len(names) and names == {PREFIX + name for name in files},
-                "ZIP file inventory differs from the selected commit")
-        damaged = archive.testzip()
-        require(damaged is None, f"Damaged ZIP file: {damaged}")
+class ReleaseArchivePair:
+    """Read disjoint release ZIPs through the same paths as an unsplit package."""
+
+    def __init__(self, core, evidence, evidence_names):
+        self.core = core
+        self.evidence = evidence
+        self.evidence_names = evidence_names
+
+    def source(self, name):
+        return self.evidence if name in self.evidence_names else self.core
+
+    def open(self, name):
+        return self.source(name).open(name)
+
+    def read(self, name):
+        return self.source(name).read(name)
+
+    def getinfo(self, name):
+        return self.source(name).getinfo(name)
+
+    def infolist(self):
+        return [*self.core.infolist(), *self.evidence.infolist()]
+
+
+@contextmanager
+def verified_release_archives(path, files, commit, companion=None, companion_evidence=None):
+    require((companion is None) == (companion_evidence is None), "Companion ZIP and its release index must be supplied together")
+
+    def checked_asset(stack, asset):
+        require(asset.stat().st_size < MAX_UPLOAD_BYTES, f"{asset.name} exceeds the release asset size limit")
+        package = stack.enter_context(ZipFile(asset))
+        require(package.comment == commit.encode("ascii"), "ZIP does not identify the expected Git commit")
+        names = [member.filename for member in package.infolist() if not member.is_dir()]
+        require(len(names) == len(set(names)), f"Duplicate file in {asset.name}")
+        return package, set(names)
+
+    with ExitStack() as stack:
+        core, core_names = checked_asset(stack, path)
+        archive = core
+        names = core_names
+        packages = [core]
+        if companion is not None:
+            evidence, evidence_names = checked_asset(stack, companion)
+            expected = {PREFIX + record["path"] for record in companion_evidence["files"]}
+            require(expected and len(expected) == len(companion_evidence["files"])
+                    and core_names.isdisjoint(evidence_names) and evidence_names == expected,
+                    "Companion ZIP file inventory differs from its index or overlaps the Windows ZIP")
+            require(read_json(core, COMPANION_EVIDENCE_INDEX) == companion_evidence
+                    and companion_evidence["schema"] == COMPANION_EVIDENCE_SCHEMA
+                    and companion_evidence["commit"] == commit and companion_evidence["archive"] == companion.name
+                    and companion_evidence["bytes"] == companion.stat().st_size,
+                    "Companion evidence index does not match the release asset")
+            with companion.open("rb") as blob:
+                require(hashlib.file_digest(blob, "sha256").hexdigest() == companion_evidence["sha256"],
+                        "Wrong companion ZIP SHA-256")
+            for record in companion_evidence["files"]:
+                relative = record["path"]
+                require(evidence.getinfo(PREFIX + relative).file_size == record["bytes"],
+                        f"Wrong companion evidence size for {relative}")
+                verify_digest(evidence, relative, record["sha256"])
+            archive = ReleaseArchivePair(core, evidence, evidence_names)
+            packages.append(evidence)
+            names |= evidence_names
+        require(names == {PREFIX + name for name in files}, "ZIP file inventory differs from the selected commit")
+        for package in packages:
+            damaged = package.testzip()
+            require(damaged is None, f"Damaged ZIP file: {damaged}")
+        yield archive
+
+
+def validate_zip(path, files, commit, tag, scratch, external_sweeps=(), companion=None, companion_evidence=None):
+    with verified_release_archives(path, files, commit, companion, companion_evidence) as archive:
 
         def read(path):
             return archive.read(PREFIX + path)
@@ -1340,38 +1405,67 @@ def archive_release(path, commit, tag, external_sweeps=()):
 
 
 def external_sweep_inventory(path, commit, *, historical=False):
+    external, _ = release_evidence_inventory(path, commit, historical=historical)
+    return external
+
+
+def companion_movie_group(relative):
+    parts = PurePosixPath(relative).parts
+    if len(parts) < 4 or parts[:2] != ("results", "city-maneuvers") or not parts[-1].endswith(".mp4"):
+        return None
+    if parts[2] in ("attempts", "pace", "passing", "qualification", "speed"):
+        return "supplemental"
+    if (len(parts) == 6 and parts[2] == "trials" and parts[3] in ("baseline", "candidate")
+            and parts[4] in MANEUVERS_TRIAL_CASES and parts[5] == "front.mp4"):
+        return "trials"
+    return None
+
+
+def release_evidence_inventory(path, commit, *, historical=False, allow_companion=False):
     size = path.stat().st_size
     if size < MAX_UPLOAD_BYTES:
-        return []
+        return [], []
     revision = PROGRESS_ARCHIVE_COMMIT if historical else commit
     pinned = historical_research_paths(commit) if historical else None
     required_savings = size - MAX_UPLOAD_BYTES + SWEEP_INDEX_RESERVE
+    external, companion = [], []
     with ZipFile(path) as archive:
         build = read_json(archive, "web/media/build.json")
         linked = {item["url"][3:] for item in build["evidence"] if item["url"].startswith("../results/")}
-        candidates = (member for member in archive.infolist()
-                      if not member.is_dir() and member.filename.startswith(f"{PREFIX}{PROGRESS_RESULTS}/")
-                      and member.filename.removeprefix(PREFIX) not in linked
-                      and (member.filename.removeprefix(PREFIX) in pinned if historical
-                           else PurePosixPath(member.filename).name == "sensor-sweeps.zip"))
-        sweeps, clips = [], []
-        for member in sorted(candidates, key=lambda item: (item.compress_size, item.filename)):
-            group = clips if member.filename.endswith(".mp4") else sweeps
-            group.append(member)
-        external = []
-        while required_savings > 0:
-            candidates = sweeps or clips
-            require(candidates, "Windows ZIP exceeds 2 GiB after allowing for archival City Progress evidence")
-            index = next((i for i, member in enumerate(candidates) if member.compress_size >= required_savings),
-                         len(candidates) - 1)
-            member = candidates.pop(index)
+        groups = {group: [] for group in ("sweeps", "clips", "supplemental", "trials")}
+        for member in archive.infolist():
             relative = member.filename.removeprefix(PREFIX)
-            with archive.open(member) as stream:
-                digest = hashlib.file_digest(stream, "sha256").hexdigest()
-            url = f"https://raw.githubusercontent.com/yafi-s/ADO/{revision}/{quote(relative, safe='/')}"
-            external.append(dict(path=relative, url=url, bytes=member.file_size, sha256=digest))
-            required_savings -= member.compress_size
-    return sorted(external, key=lambda item: item["path"])
+            if member.is_dir() or relative in linked:
+                continue
+            old = relative in pinned if historical else (
+                relative.startswith(f"{PROGRESS_RESULTS}/") and PurePosixPath(relative).name == "sensor-sweeps.zip")
+            if old:
+                group = "clips" if relative.endswith(".mp4") else "sweeps"
+                groups[group].append(member)
+            elif allow_companion:
+                group = companion_movie_group(relative)
+                if group is not None:
+                    groups[group].append(member)
+
+        for group, candidates in groups.items():
+            candidates.sort(key=lambda item: (item.compress_size, item.filename))
+            while required_savings > 0 and candidates:
+                index = next((i for i, member in enumerate(candidates) if member.compress_size >= required_savings),
+                             len(candidates) - 1)
+                member = candidates.pop(index)
+                relative = member.filename.removeprefix(PREFIX)
+                with archive.open(member) as stream:
+                    digest = hashlib.file_digest(stream, "sha256").hexdigest()
+                record = dict(path=relative, bytes=member.file_size, sha256=digest)
+                if group in ("sweeps", "clips"):
+                    record["url"] = f"https://raw.githubusercontent.com/yafi-s/ADO/{revision}/{quote(relative, safe='/')}"
+                    external.append(record)
+                else:
+                    companion.append(record)
+                required_savings -= member.compress_size
+        require(required_savings <= 0,
+                "Windows ZIP exceeds 2 GiB after allowing for eligible historical and companion evidence")
+    return (sorted(external, key=lambda item: item["path"]), sorted(companion, key=lambda item: item["path"]))
 
 
 def historical_research_paths(commit):
@@ -1404,14 +1498,28 @@ def sweep_index(commit, external_sweeps, *, historical=False):
     return ("\n".join(lines) + "\n").encode("utf8")
 
 
-def add_sweep_index(path, commit, external_sweeps, *, historical=False):
+def add_release_index(path, relative, contents):
     with ZipFile(path, "a") as package:
         timestamp = package.getinfo(PREFIX + "docs/release.md").date_time
-        index_path = EXTERNAL_RESEARCH_INDEX if historical else EXTERNAL_SWEEPS_INDEX
-        index = ZipInfo(PREFIX + index_path, date_time=timestamp)
+        index = ZipInfo(PREFIX + relative, date_time=timestamp)
         index.external_attr = 0o100644 << 16
-        package.writestr(index, sweep_index(commit, external_sweeps, historical=historical),
-                         compress_type=ZIP_DEFLATED, compresslevel=1)
+        package.writestr(index, contents, compress_type=ZIP_DEFLATED, compresslevel=1)
+
+
+def add_sweep_index(path, commit, external_sweeps, *, historical=False):
+    relative = EXTERNAL_RESEARCH_INDEX if historical else EXTERNAL_SWEEPS_INDEX
+    add_release_index(path, relative, sweep_index(commit, external_sweeps, historical=historical))
+
+
+def stage_companion_evidence(path, commit, tag, files):
+    included = [f":(top,literal){record['path']}" for record in files]
+    git("archive", "--format=zip", f"--prefix={PREFIX}", "-1", f"--output={path}", commit, "--", *included)
+    size = path.stat().st_size
+    require(size < MAX_UPLOAD_BYTES, f"{path.name} exceeds the release asset size limit")
+    with path.open("rb") as stream:
+        digest = hashlib.file_digest(stream, "sha256").hexdigest()
+    return dict(schema=COMPANION_EVIDENCE_SCHEMA, commit=commit, archive=path.name,
+                url=f"{PUBLIC_REPO}/releases/download/{tag}/{path.name}", bytes=size, sha256=digest, files=files)
 
 
 def build_release(ref, tag, output, film_master=None):
@@ -1427,15 +1535,28 @@ def build_release(ref, tag, output, film_master=None):
         archive = scratch / f"ADO-{tag}-Windows.zip"
         historical = maneuvers_release(tag)
         archive_release(archive, commit, tag)
-        external = external_sweep_inventory(archive, commit, historical=historical) if progress_release(tag) else []
+        external, companion_files = [], []
+        if historical:
+            require(COMPANION_EVIDENCE_INDEX not in files, f"Conflicting generated path {COMPANION_EVIDENCE_INDEX}")
+            external, companion_files = release_evidence_inventory(archive, commit, historical=True, allow_companion=True)
+        elif progress_release(tag):
+            external = external_sweep_inventory(archive, commit)
+        if external or companion_files:
+            archive_release(archive, commit, tag, (*external, *companion_files))
         if external:
             index = EXTERNAL_RESEARCH_INDEX if historical else EXTERNAL_SWEEPS_INDEX
             require(index not in files, f"Conflicting generated path {index}")
-            archive_release(archive, commit, tag, external)
             add_sweep_index(archive, commit, external, historical=historical)
             files.difference_update(item["path"] for item in external)
             files.add(index)
-        validate_zip(archive, files, commit, tag, scratch, external)
+        companion = companion_evidence = None
+        if companion_files:
+            companion = scratch / f"ADO-{tag}-Maneuver-Evidence.zip"
+            companion_evidence = stage_companion_evidence(companion, commit, tag, companion_files)
+            contents = (json.dumps(companion_evidence, indent=2) + "\n").encode("utf8")
+            add_release_index(archive, COMPANION_EVIDENCE_INDEX, contents)
+            files.add(COMPANION_EVIDENCE_INDEX)
+        validate_zip(archive, files, commit, tag, scratch, external, companion, companion_evidence)
         with archive.open("rb") as stream:
             sha256 = hashlib.file_digest(stream, "sha256").hexdigest()
         checksums = f"{sha256}  {archive.name}\n"
@@ -1444,6 +1565,10 @@ def build_release(ref, tag, output, film_master=None):
         if external:
             field = "external_research" if historical else "external_sweeps"
             metadata[field] = dict(index=index, archives=external)
+        if companion is not None:
+            checksums += f"{companion_evidence['sha256']}  {companion.name}\n"
+            artifacts.append(companion)
+            metadata["companion_evidence"] = dict(index=COMPANION_EVIDENCE_INDEX, **companion_evidence)
         if film_master is not None:
             media, asset, _ = featured_recording(tag)
             film = scratch / asset

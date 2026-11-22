@@ -37,6 +37,13 @@ def fixture_trial_sources(sources, second):
     return stream.getvalue()
 
 
+def write_fixture_zip(path, members, commit):
+    with fixture_zip(members) as archive:
+        path.write_bytes(archive.fp.getvalue())
+    with ZipFile(path, "a") as archive:
+        archive.comment = commit.encode("ascii")
+
+
 def city_film(complete, surround=False, pace=False):
     media = release.PACE_MEDIA if pace else release.SURROUND_MEDIA if surround else "web/media/long-city-drive"
     model = b"test checkpoint"
@@ -299,6 +306,132 @@ class WindowsReleaseTests(unittest.TestCase):
                     path = member["path"]
                     self.assertIn(f"/{release.PROGRESS_ARCHIVE_COMMIT}/{path}", member["url"])
                     self.assertEqual(member["sha256"], sha256(contents[path]))
+
+    def test_companion_only_moves_eligible_movies_when_old_archives_are_insufficient(self):
+        sweep = f"{release.PROGRESS_RESULTS}/trials/candidate/sensor-sweeps.zip"
+        older = f"{release.PROGRESS_RESULTS}/trials/candidate/front.mp4"
+        optional = f"{release.MANEUVERS_RESULTS}/pace/reference/front.mp4"
+        native = f"{release.MANEUVERS_TRIALS}/candidate/slow/front.mp4"
+        linked = f"{release.MANEUVERS_RESULTS}/pace/required/front.mp4"
+        hero = f"{release.MANEUVERS_MEDIA}/front.mp4"
+        compare = "web/media/city-maneuvers-tests/comparison.mp4"
+        traces = f"{release.MANEUVERS_TRIALS}/candidate/slow/trace.jsonl.gz"
+        members = {sweep: b"s" * 200, older: b"o" * 300, optional: b"p" * 300, native: b"n" * 600,
+                   linked: b"l" * 900, hero: b"h" * 800, compare: b"c" * 800, traces: b"t" * 800,
+                   "web/media/build.json": json_bytes({"evidence": [{"url": f"../{linked}"}]})}
+        commit = "a" * 40
+        with TemporaryDirectory() as folder:
+            path = Path(folder) / "ADO-v0.7.0-Windows.zip"
+            write_fixture_zip(path, members, commit)
+            size = path.stat().st_size
+            with patch.object(release, "historical_research_paths", return_value={sweep, older}), \
+                    patch.object(release, "SWEEP_INDEX_RESERVE", 0):
+                for needed, external_paths, companion_paths in (
+                    (-1, set(), set()), (150, {sweep}, set()), (750, {sweep, older}, {optional}),
+                    (1000, {sweep, older}, {optional, native}),
+                ):
+                    with self.subTest(needed=needed), patch.object(release, "MAX_UPLOAD_BYTES", size - needed):
+                        external, companion = release.release_evidence_inventory(path, commit, historical=True,
+                                                                                 allow_companion=True)
+                        self.assertEqual({record["path"] for record in external}, external_paths)
+                        self.assertEqual({record["path"] for record in companion}, companion_paths)
+                        for record in companion:
+                            data = members[record["path"]]
+                            self.assertEqual(record, dict(path=record["path"], bytes=len(data), sha256=sha256(data)))
+                with patch.object(release, "MAX_UPLOAD_BYTES", size - 1800):
+                    with self.assertRaisesRegex(ValueError, "exceeds 2 GiB"):
+                        release.release_evidence_inventory(path, commit, historical=True, allow_companion=True)
+
+    def test_companion_archives_share_one_verified_inventory_and_validate_each_payload(self):
+        commit = "a" * 40
+        movie = f"{release.MANEUVERS_TRIALS}/candidate/slow/front.mp4"
+        docs = "docs/release.md"
+        index = release.COMPANION_EVIDENCE_INDEX
+        camera = b"native camera frames"
+        core_members = {docs: b"extract the companion beside the core ZIP"}
+        with TemporaryDirectory() as folder:
+            main = Path(folder) / "ADO-v0.7.0-Windows.zip"
+            companion = main.with_name("ADO-v0.7.0-Maneuver-Evidence.zip")
+            write_fixture_zip(companion, {movie: camera}, commit)
+            evidence = dict(schema=release.COMPANION_EVIDENCE_SCHEMA, commit=commit, archive=companion.name,
+                            bytes=companion.stat().st_size, sha256=sha256(companion.read_bytes()),
+                            files=[dict(path=movie, bytes=len(camera), sha256=sha256(camera))])
+            write_fixture_zip(main, core_members, commit)
+            release.add_release_index(main, index, json_bytes(evidence))
+            files = {docs, movie, index}
+            with release.verified_release_archives(main, files, commit, companion, evidence) as archive:
+                self.assertEqual(archive.read(release.PREFIX + docs), core_members[docs])
+                self.assertEqual(archive.getinfo(release.PREFIX + movie).file_size, len(camera))
+                release.verify_digest(archive, movie, sha256(camera))
+            with self.assertRaisesRegex(ValueError, "inventory differs"), \
+                    release.verified_release_archives(main, files, commit):
+                self.fail("A core missing its companion passed verification")
+            write_fixture_zip(main, {**core_members, movie: camera}, commit)
+            release.add_release_index(main, index, json_bytes(evidence))
+            with self.assertRaisesRegex(ValueError, "overlaps"), \
+                    release.verified_release_archives(main, files, commit, companion, evidence):
+                self.fail("Archives with duplicate files passed verification")
+
+            write_fixture_zip(companion, {movie: bytes(reversed(camera))}, commit)
+            changed = dict(evidence, bytes=companion.stat().st_size, sha256=sha256(companion.read_bytes()))
+            write_fixture_zip(main, core_members, commit)
+            release.add_release_index(main, index, json_bytes(changed))
+            with self.assertRaisesRegex(ValueError, "Wrong SHA-256"), \
+                    release.verified_release_archives(main, files, commit, companion, changed):
+                self.fail("A companion whose individual camera checksum changed passed verification")
+
+    def test_companion_build_publishes_both_zip_checksums_with_the_master(self):
+        commit = "b" * 40
+        tag = "v0.7.0"
+        sweep = f"{release.PROGRESS_RESULTS}/trials/candidate/sensor-sweeps.zip"
+        movie = f"{release.MANEUVERS_TRIALS}/candidate/slow/front.mp4"
+        comparison = "web/media/city-maneuvers-tests/comparison.mp4"
+        members = {"docs/release.md": b"Setup and playback", "web/media/build.json": b'{"evidence": []}',
+                   sweep: b"s" * 400, movie: b"m" * 1600, comparison: b"c" * 2000}
+
+        def archive_release(path, revision, version, excluded=()):
+            removed = {entry["path"] for entry in excluded}
+            write_fixture_zip(path, {name: data for name, data in members.items() if name not in removed}, revision)
+
+        def git_archive(*args):
+            path = next(arg.removeprefix("--output=") for arg in args if arg.startswith("--output="))
+            selected = {arg.removeprefix(":(top,literal)") for arg in args if arg.startswith(":(top,literal)")}
+            self.assertEqual(selected, {movie})
+            self.assertIn(commit, args)
+            write_fixture_zip(Path(path), {name: members[name] for name in selected}, commit)
+
+        def verify_packages(path, files, revision, version, scratch, external, companion, evidence):
+            with release.verified_release_archives(path, files, revision, companion, evidence) as archive:
+                release.verify_digest(archive, movie, sha256(members[movie]))
+                release.verify_digest(archive, comparison, sha256(members[comparison]))
+
+        def stage_master(source, package, target, media):
+            target.write_bytes(b"native 1080p")
+            return sha256(target.read_bytes())
+
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            preflight = root / "preflight.zip"
+            write_fixture_zip(preflight, members, commit)
+            with patch.multiple(release, MAX_UPLOAD_BYTES=preflight.stat().st_size - 500, SWEEP_INDEX_RESERVE=0,
+                                archive_release=archive_release, git=git_archive, validate_zip=verify_packages,
+                                stage_release_master=stage_master), \
+                    patch.object(release, "historical_research_paths", return_value={sweep}), \
+                    patch.object(release, "resolve_commit", return_value=commit), \
+                    patch.object(release, "package_inventory", return_value=set(members)):
+                final, _, _ = release.build_release(commit, tag, root / "published", Path("supplied.mp4"))
+            output = final.parent
+            evidence = json.loads((output / "release-metadata.json").read_bytes())["companion_evidence"]
+            companion = output / evidence["archive"]
+            self.assertEqual(companion.name, "ADO-v0.7.0-Maneuver-Evidence.zip")
+            self.assertEqual(evidence["files"], [dict(path=movie, bytes=len(members[movie]), sha256=sha256(members[movie]))])
+            with ZipFile(final) as archive:
+                self.assertNotIn(release.PREFIX + movie, archive.namelist())
+                index = release.read_json(archive, evidence.pop("index"))
+                self.assertEqual(index, evidence)
+            checksum_lines = (output / "SHA256SUMS.txt").read_text().splitlines()
+            assets = (final, companion, output / release.MANEUVERS_MASTER)
+            self.assertEqual(checksum_lines, [f"{sha256(item.read_bytes())}  {item.name}" for item in assets])
 
     def test_maneuver_witness_requires_actual_return_and_waiting_for_slow_traffic(self):
         witness = dict(before_target_s=1., alternate_alongside_s=5., rear_cleared_target_s=6., returned_to_route_s=8.,

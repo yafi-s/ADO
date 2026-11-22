@@ -211,6 +211,43 @@ class PagesFilmTests(unittest.TestCase):
             self.assertEqual((folder / "chase.mp4").read_bytes(), self.master)
             self.assertTrue((folder / "replay-pack.json.gz").is_file())
 
+    def test_city_maneuvers_preserves_comparison_and_native_dimensions_under_budget_pressure(self):
+        records = []
+        for tag in ("v0.4.0", "v0.5.0", "v0.6.0", "v0.7.0"):
+            self.fixture(tag)
+            pack = self.folder / "replay-pack.json.gz"
+            pack.write_bytes(b"lossless capture")
+            records.append(dict(path=self.folder.name, cameras=["chase"],
+                                replay_pack_url=f"./media/{self.folder.name}/{pack.name}",
+                                replay_pack_sha256=pages.sha256(pack)))
+        pages.write_json(self.web / "media/viewer-catalog.json", records)
+        side_by_side = self.web / "media/city-maneuvers-tests/comparison.mp4"
+        side_by_side.parent.mkdir()
+        comparison = b"matching baseline and candidate exposures" * 480
+        side_by_side.write_bytes(comparison)
+        revision = "e" * 40
+        deficit = 600
+        capacity = pages.site_size(self.web) + pages.SITE_RESERVE + 4 * (len(self.master) - len(self.compact)) - deficit
+        budgets = dict.fromkeys(("URBAN_CHASE_BUDGET", "ARCHIVED_CITY_LIFE_CHASE_BUDGET",
+                                 "CITY_PROGRESS_CHASE_BUDGET", "CITY_MANEUVERS_CHASE_BUDGET"), len(self.master))
+
+        def encode(source, target, master, budget):
+            self.assertEqual(source.read_bytes(), self.master)
+            self.assertEqual(budget, len(self.master) - deficit)
+            target.write_bytes(b"lower bitrate 1080p")
+            return self.master_info
+
+        with patch.multiple(pages, SITE_LIMIT=capacity, **budgets), \
+                patch.object(pages, "encode_for_site", side_effect=encode) as encoder, \
+                patch.object(pages, "urlopen", side_effect=lambda *_args, **_kwargs: BytesIO(self.master)):
+            self.assertTrue(pages.prepare(self.web, archive_revision=revision))
+        encoder.assert_called_once()
+        self.assertEqual(side_by_side.read_bytes(), comparison)
+        self.assertEqual(self.chase.read_bytes(), self.master)
+        for record in records:
+            manifest = json.loads((self.web / "media" / record["path"] / "manifest.json").read_bytes())
+            self.assertEqual(manifest["video"], self.master_info)
+
     def test_cached_release_encode_is_verified_and_recovers_from_damage(self):
         self.fixture("v0.6.0")
         cache = self.web.parent / "playback-cache"
