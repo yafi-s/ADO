@@ -16,6 +16,8 @@ The 40° bend on the original Market route is another distinct case. With the sa
 
 ## What counts as a pass
 
+The in-lane cones use CARLA's `static.prop.trafficcone01` asset. In these recordings it looks like an orange-and-white traffic drum. The independent rigid-board test uses a striped construction barricade. The comparison film shows both vehicle versions on the same physical barricade. [Watch the matched barricade and moving-car trials](https://yafi-s.github.io/ADO/media/city-maneuvers-tests/comparison.mp4)
+
 The controller gets navigation geometry, onboard sensors, ego motion and actuator feedback. A slow vehicle, a stationary lane obstruction and moving traffic in the adjacent lane are independent simulator participants. The tests require physical evidence of leaving the original lane, drawing alongside the target in the permitted lane, clearing it and returning to the route. For the moving-vehicle case, the grade also checks that the lead really moved while alongside and that ADO yielded to the passing-lane traffic. Turning on a signal, asking for a pass, or driving merely around the bus on its preplanned route cannot by itself earn either new encounter.
 
 The fitted tactical model proposes keeping the current lane, following, yielding or passing. It was trained on 56,000 simulated traffic counterfactuals. Its 98.49% agreement on a separate synthetic sample measures agreement with that teacher. The native trials check the physical outcome, including cases where the proposed pass offers no usable space ahead. Separate evidence checks apply to the front, rear and swept body throughout the maneuver. [Decision model and controls](passing/README.md)

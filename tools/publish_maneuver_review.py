@@ -115,6 +115,13 @@ def create():
         ("Stopping and higher-speed tests", TAG + "speed/README.md"))
     if comparison:
         extension = comparison["extension"]
+        add("Why the passes are on separate blocks",
+            f'The first High drive on the shorter layout timed out at {early["grade"]["progress_m"]:.1f} m '
+            f'after overtaking the slow sedan. The featured route retains the original streets and continues '
+            f'{summary["route_length_m"]-comparison["shared_route_to_m"]:.0f} m farther. The moving lead and its '
+            f'adjacent traffic are on the return carriageway. The in-lane drums remain on the outbound road.',
+            ("Watch the failed return", TAG.replace("/blob/", "/raw/") + "attempts/high01/incomplete-return.mp4"),
+            ("Original and extended geometry", TAG + "audit/market-loop-survey.json"))
         speed = extension["posted_90"]
         if speed and speed.get("frames"):
             add("Return boulevard",
