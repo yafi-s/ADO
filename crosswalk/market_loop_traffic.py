@@ -1,5 +1,6 @@
 """Commission independent traffic on the return carriageway of Town03 Market Loop."""
 import math
+from types import SimpleNamespace
 
 import carla
 
@@ -27,6 +28,24 @@ def boulevard_run(road, start_road, lane, initial_s, final_s):
     raise ValueError("Return traffic runout exceeds its surveyed approach")
 
 
+def parallel_side_exit(road):
+    """Leave the active boulevard legally and stop before a separate red side-street light."""
+    chain=((67,-1),(89,-1),(33,4),(32,4),(1030,4),(31,4))
+    wp=road.get_waypoint_xodr(67,-1,77.)
+    points=[wp]
+    segment=0
+    for _ in range(380):
+        options=[v for v in wp.next(1.) if (v.road_id,v.lane_id) in chain[segment:segment+2]]
+        if len(options)!=1:raise ValueError("Missing or ambiguous native parallel-traffic exit")
+        wp=options[0]
+        if (wp.road_id,wp.lane_id)!=chain[segment]:segment+=1
+        if wp.lane_type!=carla.LaneType.Driving:raise ValueError("Parallel car left native driving pavement")
+        points.append(wp)
+        if segment==len(chain)-1 and wp.s<=5.5:
+            return points
+    raise ValueError("Parallel car did not reach the side approach")
+
+
 class LoopPopulation(ManeuverPopulation):
     # Retain the original Market parallel sedan. The extra outer-lane convoy
     # vehicle travels another 12 m to provide a safe downstream convoy berth.
@@ -45,8 +64,52 @@ class LoopPopulation(ManeuverPopulation):
                 if points[0].transform.location.distance(car.path[0]) > .05:
                     raise ValueError("Extended background traffic differs from original launch")
                 car.path = [w.transform.location for w in points]
+        self.parallel = next(v for v in self._cars if v.movement=="parallel" and (v.road,v.lane)==(67,-1))
+        points = parallel_side_exit(scene._map)
+        if points[0].transform.location.distance(self.parallel.path[0]) > .05:
+            raise ValueError("Parallel car starting pose differs from historical Market")
+        self.parallel.path = [w.transform.location for w in points]
+        self.parallel.activation = None
+        self.parallel.exit_follower = SimpleNamespace(kind="lead",actor=self.parallel.actor,exit_path=self.parallel.path)
+        scene._prepare_exit(self.parallel.exit_follower)
+        self.parallel_signal = next(e for e in scene.events if e.kind=="signal")
+        self.parallel_release = None
+        self.parking_light = None
+        self.parking_stop = None
+        for lamp,_ in scene._signal_states:
+            for w in lamp.get_stop_waypoints():
+                if w and (w.road_id,w.lane_id)==(183,4) and w.transform.location.distance(self.parallel.path[-1])<11.:
+                    self.parking_light,self.parking_stop=lamp,w
+        if self.parking_light is None or self.parking_light.get_state()!=carla.TrafficLightState.Red:
+            raise RuntimeError("Independent side approach must have its native red signal and stop waypoint")
         if len([v for v in self._cars if v.road==69 and v.lane in (2,3)]) != 2:
             raise ValueError("Both original opposing cars must continue physically ahead of the return trip")
+
+    def _move_cars(self):
+        # This genuine red-to-green cycle releases the parallel flow whether
+        # or not the ego gets past the Market stop line or attempts a merge.
+        if not self.parallel.active and self.parallel_signal.state=="green" and self._scene.signal.get_state()==carla.TrafficLightState.Green:
+            self.parallel.active=True
+            self.parallel_release=dict(frame=self._scene.world.get_snapshot().frame,time_s=round(self._scene._time,3),
+                                       green_signal_id=self._scene.signal.id)
+        super()._move_cars()
+
+    @property
+    def traffic_activity(self):
+        report=super().traffic_activity
+        car=self.parallel
+        stop=self.parking_stop.transform
+        axis=stop.get_forward_vector()
+        corners=car.actor.bounding_box.get_world_vertices(car.actor.get_transform())
+        front_margin=min((stop.location-v).dot(axis) for v in corners)
+        report["original_parallel_car"]=dict(actor_id=car.actor.id,
+            spawn_native=[67,-1,77.],release=self.parallel_release,target_speed_mps=car.speed,
+            traversed_m=round(car.traveled,3),maximum_speed_mps=round(car.peak_speed,3),left_corridor=car.departed_lane,
+            exit_connectors=[[89,-1],[33,4],[32,4],[1030,4],[31,4]],terminal_stop_native=[183,4,round(self.parking_stop.s,3)],
+            terminal_light_id=self.parking_light.id,terminal_light_state=str(self.parking_light.get_state()),
+            terminal_arrival=car.actor.get_location().distance(car.path[-1])<3.,
+            terminal_front_to_stop_line_m=round(front_margin,3),actual_speed_mps=round(car.actor.get_velocity().length(),3))
+        return report
 
     def monitor_arrival(self, actor):
         sensor = self._scene.world.spawn_actor(self._scene._catalog.find("sensor.other.collision"),

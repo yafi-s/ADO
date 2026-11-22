@@ -13,7 +13,7 @@ from .world import _raised
 class _Traffic:
     actor: object
     path: list
-    activation: float
+    activation: float | None
     speed: float
     movement: str
     road: int
@@ -24,6 +24,7 @@ class _Traffic:
     peak_speed: float = 0.
     previous: object = None
     departed_lane: bool = False
+    exit_follower: object = None
 
 
 class JourneyAmbient(Ambient):
@@ -114,7 +115,7 @@ class JourneyAmbient(Ambient):
 
     def _move_cars(self):
         for car in self._cars:
-            if not car.active and self._scene._last_progress >= car.activation:
+            if not car.active and car.activation is not None and self._scene._last_progress >= car.activation:
                 car.active = True
             if not car.active:
                 continue
@@ -140,7 +141,10 @@ class JourneyAmbient(Ambient):
                 car.departed_lane = True
             remaining = pos.distance(car.path[-1])
             requested = 0. if car.departed_lane or remaining < 2. else min(car.speed,math.sqrt(3.*remaining))
-            self._scene._drive_to(car.actor,car.path[min(nearest+5,len(car.path)-1)],requested)
+            if car.exit_follower is None:
+                self._scene._drive_to(car.actor,car.path[min(nearest+5,len(car.path)-1)],requested)
+            else:
+                self._scene._follow_exit(car.exit_follower, requested)
 
     @property
     def traffic_activity(self):
