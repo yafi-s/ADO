@@ -243,8 +243,9 @@ class ManeuverFixture:
                        e.actor.type_id.startswith(("walker.", "vehicle."))]
             self._participants = {a.id: (a, role) for a, role in reversed(people)}.values()
         position = scene.ego.get_location()
+        event.observed["moving_neighbor_search_radius_m"] = 65.
         for actor, role in self._participants:
-            if not actor.is_alive or actor.get_location().distance(position) >= 12.:
+            if not actor.is_alive or actor.get_location().distance(position) > 65.:
                 continue
             speed = actor.get_velocity().length()
             if speed <= .5:

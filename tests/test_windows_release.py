@@ -313,7 +313,7 @@ class WindowsReleaseTests(unittest.TestCase):
     def test_maneuver_audit_verifies_measured_pace_above_forty_and_legal_lane_witnesses(self):
         route = json_bytes(dict(route_id="surveyed route", opendrive_sha256="native geometry"))
         events = [dict(kind=kind, alongside_ego_lane=[67, -1]) for kind in sorted(release.MANEUVER_EVENTS)]
-        telemetry = [dict(speed_mps=speed, posted_limit_kmh=90) for speed in (10, 12, 15, 8)]
+        telemetry = [dict(speed_mps=speed, speed_request_mps=speed, posted_limit_kmh=90) for speed in (10, 12, 15, 8)]
         summary = dict(frames=4, outcome="complete", progress_m=300., route_length_m=300., route_id="surveyed route",
                        events=events, **dict.fromkeys(release.SAFETY_COUNTS, 0))
         capture = dict(summary=summary, capture_id="native-receipt", quality_requested="High", policy={"sha256": "model"},
@@ -324,19 +324,25 @@ class WindowsReleaseTests(unittest.TestCase):
             moves.append(dict(road=67, alternate_lane=-1, whole_body_in_alternate={"frame": frame},
                               restored_source={"frame": frame + 1}, shoulder_or_departure_samples=0,
                               first_native_legality_failure=None,
+                              moving_vehicle_clearance={"scored_frames_with_moving_counterpart": 2},
                               alongside={"14": dict(first={"frame": frame, "role": event["kind"]},
                                                     nearest={"body_clearance_m": .8})},
                               ahead_with_sampled_clearance={"14": {"frame": frame + 1}}))
         audit = dict(schema="ado-city-maneuver-audit-v1",
                      source=dict(seal_verified=True, quality="High", producer=release.CITY_PRODUCER,
                                  capture_id=capture["capture_id"], route_id=summary["route_id"], policy_sha256="model",
-                                 map_sha256="native geometry",
+                                 map_sha256="native geometry", first_frame=100, last_frame=103,
                                  route_sha256=sha256(route), telemetry_sha256="telemetry", population_sha256="population"),
                      whole=dict(entry={"frame": 100}, exit={"frame": 103}, frames=4),
                      grade=dict(summary, participant_contacts=[]),
                      independent_clearance={"cars": {"overlap_samples": 0}}, actual_lateral_departures=moves,
+                     straddling_moving_separation=dict(minimum_required_straddle_separation_m=1.,
+                                                      scored_frames_with_moving_counterpart=2, sampled_pass=True,
+                                                      sub_1m_samples=0, overlap_samples=0),
                      posted_90=dict(frames=4, seconds=.4, kmh_p10_p50_p95_max=[0, 0, 0, 54.],
-                                    seconds_at_or_above_35=.3, seconds_at_or_above_37=.2, over_40_kmh_seconds=.2))
+                                    seconds_at_or_above_35=.3, seconds_at_or_above_37=.2, over_40_kmh_seconds=.2,
+                                    higher_thresholds={str(k): dict(actual_seconds=s, requested_seconds=s)
+                                                       for k, s in ((45, .1), (50, .1), (55, 0.), (60, 0.))}))
         with fixture_zip({release.MANEUVERS_AUDIT: json_bytes(audit), release.MANEUVERS_ROUTE: route}) as archive:
             release.verify_maneuver_audit(archive, capture, telemetry)
             telemetry[3]["posted_limit_kmh"] = 26
@@ -346,6 +352,10 @@ class WindowsReleaseTests(unittest.TestCase):
         moves[0]["first_native_legality_failure"] = {"frame": 100}
         with fixture_zip({release.MANEUVERS_AUDIT: json_bytes(audit), release.MANEUVERS_ROUTE: route}) as archive:
             with self.assertRaisesRegex(ValueError, "legal alternate lane"):
+                release.verify_maneuver_audit(archive, capture, telemetry)
+        audit["straddling_moving_separation"]["sub_1m_samples"] = 1
+        with fixture_zip({release.MANEUVERS_AUDIT: json_bytes(audit), release.MANEUVERS_ROUTE: route}) as archive:
+            with self.assertRaisesRegex(ValueError, "measured separation"):
                 release.verify_maneuver_audit(archive, capture, telemetry)
 
     def test_maneuver_sequence_matches_the_witnessed_wait_to_actual_controls(self):
@@ -385,7 +395,9 @@ class WindowsReleaseTests(unittest.TestCase):
         artifacts = {"trace.jsonl.gz": gzip.compress(b'{"frame": 21}\n'),
                      "reference.jsonl.gz": gzip.compress(b'{"frame": 21}\n'),
                      "observations.npz": b"inference features"}
-        members = {"models/city-maneuvers/fit.json": json_bytes({"base_sha256": sha256(base_model)})}
+        tactical = sha256(b"tactics")
+        members = {"models/city-maneuvers/fit.json": json_bytes({"base_sha256": sha256(base_model)}),
+                   f"{release.PROGRESS_MEDIA}/manifest.json": json_bytes({"policy": {"tactical_sha256": tactical}})}
         for arm, schema, model in (("baseline", release.PROGRESS_SCHEMA, base_model),
                                    ("candidate", release.MANEUVERS_SCHEMA, candidate_model)):
             folder = f"{release.MANEUVERS_TRIALS}/{arm}"
@@ -394,7 +406,7 @@ class WindowsReleaseTests(unittest.TestCase):
                           execution_source_sha256=sha256(b"source snapshot"))
             protocol = dict(common, cases=["slow"], windows={"slow": [67, -2, 94., 215.]}, step_s=.1,
                             requested_quality="High", map="Town03_Opt", weather="ClearNoon",
-                            tactical_model_sha256=sha256(b"tactics"))
+                            tactical_model_sha256=tactical)
             summary = dict(common, first_frame=21, last_frame=21, frames=1, case="slow", capture_complete=True,
                            outcome="max_steps" if arm == "baseline" else "complete", producer=release.CITY_PRODUCER,
                            geometry=dict(road_id=67, lane_id=-2, start_s=94., end_s=215.), front_sha256=sha256(b"camera"),
@@ -404,7 +416,8 @@ class WindowsReleaseTests(unittest.TestCase):
                             f"{folder}/capture-status.json": json_bytes({"slow": True}), f"{trial}/front.mp4": b"camera",
                             f"{trial}/summary.json": json_bytes(summary)})
             members.update({f"{trial}/{name}": data for name, data in artifacts.items()})
-        capture = dict(policy={"sha256": sha256(candidate_model)}, quality_requested="High", frame_period_s=.1)
+        capture = dict(policy={"sha256": sha256(candidate_model), "tactical_sha256": tactical},
+                       quality_requested="High", frame_period_s=.1)
         with fixture_zip(members) as archive:
             release.verify_maneuver_trials(archive, capture, Path("unused"))
         self.assertEqual(verify_video.call_count, 2)

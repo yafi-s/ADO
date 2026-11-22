@@ -24,15 +24,18 @@ def create():
     summary = manifest["summary"]
     events = {e["kind"]: e for e in summary["events"]}
     obstacle, lead = events["in-lane-obstruction"], events["slow-traffic"]
-    if not (obstacle["handled"] and lead["handled"] and
+    sequence = manifest["maneuver_sequence"]
+    if not (sequence["passed"] and sequence["actual_wait_policy_frames"] > 0 and obstacle["handled"] and lead["handled"] and
             obstacle["returned_to_route_s"] < lead["occupied_gap_wait_s"] < lead["moving_alongside_s"] < lead["returned_to_route_s"]):
         raise ValueError("The recording lacks the two distinct completed maneuvers")
 
-    def camera(stamp, view):
-        frame = manifest["first_frame"] + round(stamp / manifest["frame_period_s"])
+    def exposure(frame, view):
         if not manifest["first_frame"] <= frame <= manifest["last_frame"]:
             raise ValueError("Event outside the camera recording")
         return f"./?run=city-maneuvers&frame={frame}&camera={view}"
+
+    def camera(stamp, view):
+        return exposure(manifest["first_frame"] + round(stamp / manifest["frame_period_s"]), view)
 
     checks = []
 
@@ -56,9 +59,10 @@ def create():
         ("Back in lane", camera(obstacle["returned_to_route_s"], "rear_right")))
     add("Yield and overtake",
         f'The vehicle ahead was moving at {lead["alongside_target_mps"]*3.6:.1f} km/h at first measured moving overlap. '
-        f'ADO stayed in its lane while adjacent traffic occupied the gap, passed the lead, and returned '
+        f'For {sequence["actual_wait_policy_frames"] * manifest["frame_period_s"]:.1f} s of native exposures '
+        f'ADO selected yield while adjacent traffic occupied the gap. It then passed the lead and returned '
         f'{lead["rejoin_rear_clear_m"]:.1f} m ahead, measured between the two bodies.',
-        ("Occupied passing lane", camera(lead["occupied_gap_wait_s"], "rear_left")),
+        ("Yield to adjacent traffic", exposure(sequence["first_actual_wait_frame"], "rear_left")),
         ("Pass the moving car", camera(lead["moving_alongside_s"], "chase")),
         ("Return", camera(lead["returned_to_route_s"], "rear_right")))
     before, after = old["posted_90"], new["posted_90"]

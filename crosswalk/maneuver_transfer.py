@@ -31,6 +31,7 @@ class TransferRoad(ClearBoulevard):
         self.stack = ExitStack()
         self.world, self._map, self.case = world, world.get_map(), case
         self.rows, self.tick = [], 0
+        self.owned_actor_ids = []
         self.was_alongside = False
         try:
             existing = world.get_actors()
@@ -56,6 +57,7 @@ class TransferRoad(ClearBoulevard):
         bp.set_attribute("role_name",name)
         actor = self.world.spawn_actor(bp,_raised(point.transform,.35))
         self.stack.callback(actor.destroy)
+        self.owned_actor_ids.append(actor.id)
         actor.apply_control(carla.VehicleControl(brake=1.))
         return actor
 
@@ -191,6 +193,14 @@ def run(world, args, case):
         summary,rows,_,_ = episode(world,"boulevard",7401,schema,LoggedDriver(driver),max_steps=480,
                                    scene_factory=create,tactical=True,weather="ClearNoon",recording=FrontVideo(stream,folder/"sensor-evidence",scenes),
                                    change_request=lambda:scenes[0].finished())
+    # CARLA's actor cache advances with a snapshot. Check just the IDs this
+    # test spawned, leaving all other actors untouched.
+    for _ in range(3):
+        world.tick()
+        if not list(world.get_actors(scenes[0].owned_actor_ids)):
+            break
+    else:
+        raise RuntimeError("The transfer's vehicle destruction was not acknowledged")
     assert len(rows)==len(scenes[0].rows) and all(r["frame"]==truth["frame"] for r,truth in zip(rows,scenes[0].rows))
     for r,truth in zip(rows,scenes[0].rows):
         r.update(truth)

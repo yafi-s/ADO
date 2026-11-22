@@ -77,6 +77,7 @@ MANEUVERS_CAPTURE = f"{MANEUVERS_RESULTS}/capture"
 MANEUVERS_AUDIT = f"{MANEUVERS_RESULTS}/audit/v07.json"
 MANEUVERS_ROUTE = f"{MANEUVERS_RESULTS}/audit/route-212.json"
 MANEUVERS_CHOICE = "models/route-maneuvers/choice.json"
+MANEUVERS_STOPPING = f"{MANEUVERS_RESULTS}/speed/stopping-envelope.json"
 MANEUVERS_TRIALS = f"{MANEUVERS_RESULTS}/trials"
 MANEUVERS_TRIAL_CASES = {"cones", "board", "slow", "blocked", "no-lead", "departing", "clear-bend", "inside-curb",
                          "outside-curb", "person", "reopened"}
@@ -152,13 +153,13 @@ PROGRESS_REQUIRED = (
     *(f"{PROGRESS_RESULTS}/{name}" for name in POPULATION_EVIDENCE),
 )
 MANEUVERS_REQUIRED = (
-    "crosswalk/city_maneuvers.py", "crosswalk/city_maneuvers_fit.py",
+    "crosswalk/city_maneuvers.py", "crosswalk/city_maneuvers_fit.py", "crosswalk/city_open_road.py",
     "models/city-maneuvers/candidate.npz", "models/city-maneuvers/fit.json",
-    MANEUVERS_CHOICE, MANEUVERS_AUDIT, MANEUVERS_ROUTE,
+    MANEUVERS_CHOICE, MANEUVERS_AUDIT, MANEUVERS_ROUTE, MANEUVERS_STOPPING,
     "web/media/city-maneuvers-tests/comparison.mp4",
     f"{MANEUVERS_MEDIA}/manifest.json", f"{MANEUVERS_MEDIA}/replay-pack.json.gz",
     *(f"{MANEUVERS_CAPTURE}/{name}" for name in (*POPULATION_EVIDENCE, "capture.json", "source-checkout.json",
-                                                "policy-observations.npz")),
+                                                "policy-observations.npz", "tactical-model.json")),
     *(f"{MANEUVERS_TRIALS}/{arm}/{name}" for arm in ("baseline", "candidate") for name in TRIAL_RECEIPTS),
     *(f"{MANEUVERS_TRIALS}/{arm}/{case}/{name}" for arm in ("baseline", "candidate")
       for case in sorted(MANEUVERS_TRIAL_CASES) for name in ("summary.json", "front.mp4", *TRIAL_ARTIFACTS)),
@@ -447,6 +448,19 @@ def maneuver_fit_sources(archive, fit, policy):
             sources.add(path.name)
         else:
             verify_digest(archive, name, digest)
+    if MANEUVERS_STOPPING in inputs:
+        calibration = read_json(archive, MANEUVERS_STOPPING)
+        stopping_fields = ("delay_s", "quadratic_s2_per_m", "guard_m", "max_fit_speed_mps")
+        require(calibration["producer"] == CITY_PRODUCER
+                and fit["high_speed_stopping"] == [calibration[field] for field in stopping_fields]
+                and {"fit", "held_out", "grip_stress"} <= {trial["split"] for trial in calibration["trials"]},
+                "City Maneuvers stopping calibration differs from the recorded fit")
+        for trial in calibration["trials"]:
+            name = trial["trace"]
+            margin = trial.get("guarded_margin_m")
+            require(re.fullmatch(r"[a-z0-9-]+\.jsonl\.gz", name) and (margin is None or margin >= 0),
+                    f"Invalid native City Maneuvers stopping trial: {name}")
+            verify_digest(archive, f"{MANEUVERS_RESULTS}/speed/{name}", trial["trace_sha256"])
     return sources
 
 
@@ -478,8 +492,10 @@ def verify_city_film(archive, media, capture, scratch, tactical_case=None, *, po
         require(tuple(capture.get("perimeter_views", ())) == PERIMETER_VIEWS
                 and capture["camera_videos"].keys() == set(SURROUND_CAMERAS),
                 f"Wrong surround cameras at {media}")
-        verify_digest(archive, TACTICAL_MODEL, policy["tactical_sha256"])
-        require(read_json(archive, TACTICAL_MODEL)["format"] == "ado-tactical-pass-v1",
+        tactical_model, tactical_format = (MANEUVERS_CHOICE, "ado-route-maneuvers-1") if policy["schema"] == MANEUVERS_SCHEMA else (
+            TACTICAL_MODEL, "ado-tactical-pass-v1")
+        verify_digest(archive, tactical_model, policy["tactical_sha256"])
+        require(read_json(archive, tactical_model)["format"] == tactical_format,
                 f"Invalid tactical model at {media}")
         fit = read_json(archive, f"models/{folder}/fit.json")
         checkpoint_key = "checkpoint_sha256" if populated else "model_sha256"
@@ -645,9 +661,9 @@ def verify_maneuver_capture(archive, capture):
     checkout = read_json(archive, f"{MANEUVERS_CAPTURE}/source-checkout.json")
     require(checkout == capture["capture_checkout"] and checkout["source_sha256"] == capture["capture_source_sha256"],
             "City Maneuvers checksum for the execution sources differs from the capture checkout")
-    verify_digest(archive, MANEUVERS_CHOICE, capture["policy"]["maneuver_choice_sha256"])
-    require(read_json(archive, MANEUVERS_CHOICE)["format"] == "ado-route-maneuvers-1",
-            "Invalid City Maneuvers lane-choice checkpoint")
+    require(capture["policy"]["maneuver_choice_sha256"] == capture["policy"]["tactical_sha256"],
+            "City Maneuvers must identify the active lane-choice checkpoint")
+    verify_digest(archive, f"{MANEUVERS_CAPTURE}/tactical-model.json", capture["policy"]["tactical_sha256"])
     verify_digest(archive, f"{MANEUVERS_CAPTURE}/policy-observations.npz", capture["policy_observations_sha256"])
     sweeps = capture["maneuver_sweeps"]
     require(sweeps, "City Maneuvers is missing native passing sensor observations")
@@ -678,14 +694,21 @@ def verify_maneuver_audit(archive, capture, telemetry):
     require(route["route_id"] == source["route_id"] and route["opendrive_sha256"] == source["map_sha256"],
             "City Maneuvers audit uses different OpenDRIVE geometry")
     require(whole["entry"]["frame"] == capture["first_frame"] and whole["exit"]["frame"] == capture["last_frame"]
+            and source["first_frame"] == capture["first_frame"] and source["last_frame"] == capture["last_frame"]
             and whole["frames"] == len(telemetry) and grade["participant_contacts"] == []
             and all(grade[key] == summary[key] for key in ("frames", "outcome", "progress_m", "route_length_m", "events",
                                                            *SAFETY_COUNTS))
             and all(counter["overlap_samples"] == 0 for counter in audit["independent_clearance"].values()),
             "The independent City Maneuvers safety audit differs from the synchronized native evidence")
+    separation = audit["straddling_moving_separation"]
+    require(separation["minimum_required_straddle_separation_m"] == 1.
+            and separation["scored_frames_with_moving_counterpart"] > 0 and separation["sampled_pass"] is True
+            and separation["sub_1m_samples"] == separation["overlap_samples"] == 0,
+            "City Maneuvers has insufficient measured separation from moving traffic during a lane change")
 
     period = capture["frame_period_s"]
-    fast_zone = [row["speed_mps"] * 3.6 for row in telemetry if row["posted_limit_kmh"] == 90]
+    fast_rows = [row for row in telemetry if row["posted_limit_kmh"] == 90]
+    fast_zone = [row["speed_mps"] * 3.6 for row in fast_rows]
     posted = audit["posted_90"]
     require(fast_zone and posted["frames"] == len(fast_zone) and posted["seconds"] == round(period * len(fast_zone), 3)
             and posted["kmh_p10_p50_p95_max"][-1] == round(max(fast_zone), 3)
@@ -694,6 +717,12 @@ def verify_maneuver_audit(archive, capture, telemetry):
             and posted["over_40_kmh_seconds"] == round(period * sum(speed > 40 for speed in fast_zone), 3)
             and not any(row["speed_mps"] * 3.6 > row["posted_limit_kmh"] + 1 for row in telemetry),
             "City Maneuvers pace scores differ from the native speed or posted-limit measurements")
+    for level in (45, 50, 55, 60):
+        measure = posted["higher_thresholds"][str(level)]
+        require(measure["actual_seconds"] == round(period * sum(speed >= level for speed in fast_zone), 3)
+                and measure["requested_seconds"] == round(period * sum(row["speed_request_mps"] * 3.6 >= level
+                                                                     for row in fast_rows), 3),
+                f"City Maneuvers timing above {level} km/h differs from the native track")
 
     witnessed = set()
     for move in audit["actual_lateral_departures"]:
@@ -705,6 +734,8 @@ def verify_maneuver_audit(archive, capture, telemetry):
         for actor, groups in move["alongside"].items():
             first = groups["first"]
             ahead = move["ahead_with_sampled_clearance"].get(actor)
+            if first["role"] == "slow-traffic" and move["moving_vehicle_clearance"]["scored_frames_with_moving_counterpart"] <= 0:
+                continue
             if (ahead and groups["nearest"]["body_clearance_m"] > 0
                     and capture["first_frame"] <= first["frame"] < ahead["frame"] <= restored["frame"]
                     <= capture["last_frame"]):
@@ -716,15 +747,18 @@ def verify_maneuver_audit(archive, capture, telemetry):
 
 def verify_maneuver_trials(archive, capture, scratch):
     fit = read_json(archive, "models/city-maneuvers/fit.json")
-    arms = (("baseline", PROGRESS_SCHEMA, fit["base_sha256"]),
-            ("candidate", MANEUVERS_SCHEMA, capture["policy"]["sha256"]))
+    baseline = read_json(archive, f"{PROGRESS_MEDIA}/manifest.json")["policy"]
+    candidate = capture["policy"]
+    arms = (("baseline", PROGRESS_SCHEMA, fit["base_sha256"], baseline["tactical_sha256"]),
+            ("candidate", MANEUVERS_SCHEMA, candidate["sha256"], candidate["tactical_sha256"]))
     protocols = {}
-    for arm, schema, checkpoint in arms:
+    for arm, schema, checkpoint, tactical in arms:
         folder = f"{MANEUVERS_TRIALS}/{arm}"
         protocol = read_json(archive, f"{folder}/protocol.json")
         statuses = read_json(archive, f"{folder}/capture-status.json")
         protocols[arm] = protocol
         require(protocol["policy_schema"] == schema and protocol["model_sha256"] == checkpoint
+                and protocol["tactical_model_sha256"] == tactical
                 and len(protocol["cases"]) == len(MANEUVERS_TRIAL_CASES)
                 and set(protocol["cases"]) == protocol["windows"].keys() == statuses.keys() == MANEUVERS_TRIAL_CASES
                 and protocol["step_s"] == capture["frame_period_s"] and protocol["map"] == CITY_PRODUCER["map"]
