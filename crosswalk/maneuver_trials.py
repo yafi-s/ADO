@@ -69,7 +69,9 @@ def add_curb_board(scene, case):
     if curb is None or curb.lane_type != carla.LaneType.Sidewalk:
         raise ValueError("Road 67 fixture requires a sidewalk beside the native shoulder")
     pose = _raised(source.transform, .045)
-    origin, right = pose.location, pose.get_right_vector()
+    # Retain independent coordinates before relocating the prospective spawn pose.
+    origin = carla.Location(x=pose.location.x, y=pose.location.y, z=pose.location.z)
+    right = source.transform.get_right_vector()
     curb_pose = curb.transform
     curb_edge = curb_pose.location - curb_pose.get_right_vector() * (curb.lane_width / 2)
     edge = lateral(origin, curb_edge, right)
@@ -79,13 +81,52 @@ def add_curb_board(scene, case):
     pose.rotation = carla.Rotation(yaw=pose.rotation.yaw + 90.)
     board = scene._required(scene._catalog.find("static.prop.streetbarrier"), pose)
     board.set_simulate_physics(False)
-    borders = (_polygon(board) - [origin.x, origin.y]) @ [right.x, right.y]
-    offset = edge - max(borders) - .15 if case == "inside-curb" else edge - min(borders) + .15
-    pose.location = pose.location + right * offset
+    # The spawned prop's transform cache can be empty until the first world tick.
+    # Use its native box at a zero translation to get only world-oriented offsets,
+    # then position those offsets at the surveyed curb. Never infer this starting
+    # offset from the unsynchronized actor location.
+    relative = board.bounding_box.get_world_vertices(carla.Transform())
+    borders = [point.x * right.x + point.y * right.y for point in relative]
+    center = edge - max(borders) - .15 if case == "inside-curb" else edge - min(borders) + .15
+    pose.location = origin + right * center
     board.set_transform(pose)
     return board, dict(board_native_s=84., driving_edge_m=source.lane_width / 2,
-                       sidewalk_edge_m=edge, board_lateral_extent_m=[float(min(borders) + offset),
-                                                                   float(max(borders) + offset)])
+                       sidewalk_edge_m=edge, board_lateral_extent_m=[min(borders) + center, max(borders) + center],
+                       requested_center_xy=[pose.location.x, pose.location.y], board_blueprint=board.type_id)
+
+
+def target_body_gap(ego, target):
+    if len(target) >= 3:
+        return body_gap(ego, target)
+    # Some thin native prop hulls reduce to a line in XY. Test the convex
+    # separating axes before measuring vertex-to-segment distances.
+    edges = np.vstack((np.roll(ego, -1, axis=0) - ego, target[1] - target[0]))
+    axes = np.column_stack((-edges[:, 1], edges[:, 0]))
+    a, b = ego @ axes.T, target @ axes.T
+    if not np.any((a.max(axis=0) < b.min(axis=0)) | (b.max(axis=0) < a.min(axis=0))):
+        return 0.
+    return min(abs(cv2.pointPolygonTest(contour, tuple(map(float, point)), True))
+               for contour, points in ((ego, target), (target, ego)) for point in points)
+
+
+def first_curb_placement(road, actor, case, geometry, frame):
+    """Attest the real settled prop at the first scored camera exposure."""
+    source = road.get_waypoint_xodr(67, -2, geometry["board_native_s"])
+    pose = source.transform
+    right = pose.get_right_vector()
+    polygon = _polygon(actor)
+    measured = (polygon - [pose.location.x, pose.location.y]) @ [right.x, right.y]
+    lo, hi = float(min(measured)), float(max(measured))
+    position = actor.get_location()
+    error = float(np.linalg.norm(np.asarray([position.x, position.y]) - geometry["requested_center_xy"]))
+    expected = geometry["board_lateral_extent_m"]
+    edge = geometry["sidewalk_edge_m"]
+    bracket = (lo > geometry["driving_edge_m"] and hi < edge - .05) if case == "inside-curb" else lo > edge + .05
+    return dict(frame=int(frame), actor_id=int(actor.id), blueprint=actor.type_id,
+                actual_center_xy=[position.x, position.y], center_error_m=round(error, 5),
+                physical_lateral_extent_m=[lo, hi], polygon_xy=polygon.round(4).tolist(),
+                verified=bool(actor.is_alive and actor.type_id == geometry["board_blueprint"] and
+                              error < .05 and max(abs(lo - expected[0]), abs(hi - expected[1])) < .05 and bracket))
 
 
 def native_lane(road, position):
@@ -146,6 +187,7 @@ class Witness:
         self.station_map = None
         self.extra_actor = None
         self.geometry = {}
+        self.curb_placement = None
         self.reference = []
         self.partial_trace = []
 
@@ -165,6 +207,11 @@ class Witness:
                          others=row["observer_map"]["others"], ego_polygon_xy=ego_poly.round(4).tolist(),
                          ego_lateral_extents_m=[round(min(sides), 3), round(max(sides), 3)],
                          left_driving_edge_m=-source.lane_width / 2, right_driving_edge_m=source.lane_width / 2)
+        if self.case in CURB_CASES and self.curb_placement is None:
+            self.curb_placement = first_curb_placement(self.road, self.extra_actor, self.case, self.geometry, frame)
+            reference["curb_placement"] = self.curb_placement
+            if not self.curb_placement["verified"]:
+                raise RuntimeError(f"Native curb placement differs from the registered fixture: {self.curb_placement}")
         evaluate = evaluation_active(self.geometry, dict(row, native_s=reference["native_s"]))
         if self.case == "uncooperative-rear":
             reference.update(route_progress_m=row["progress_m"], corridor_evaluation_active=evaluate,
@@ -187,11 +234,11 @@ class Witness:
         for role, actor in targets:
             if actor.is_alive and ego.get_location().distance(actor.get_location()) <= 100.:
                 polygon = _polygon(actor)
-                if len(polygon) >= 3:
+                if len(polygon) >= 3 or role in CURB_CASES and len(polygon) == 2:
                     target_polygons.append(dict(actor_id=actor.id, role=role, speed_mps=round(actor.get_velocity().length(), 3),
                                                 native_lane=native_lane(self.road, actor.get_location()),
                                                 polygon_xy=polygon.round(4).tolist(),
-                                                body_gap_m=round(body_gap(ego_poly, polygon), 3)))
+                                                body_gap_m=round(target_body_gap(ego_poly, polygon), 3)))
         reference["target_polygons"] = target_polygons
         trace = dict(row)
         trace.pop("observer_map")
@@ -298,6 +345,8 @@ def record_case(world, checkpoint, folder, case, protocol):
                    native_station_m=frames[-1]["native_s"] if frames else None, capture_complete=failure is None,
                    stop_seconds=round(.1 * sum(r["speed_mps"] <= .3 for r in frames), 1),
                    peak_kmh=round(3.6 * max((r["speed_mps"] for r in frames), default=0.), 2))
+    if witness.curb_placement is not None:
+        summary["curb_placement"] = witness.curb_placement
     if case == "reopened" and frames:
         summary.update(longest_blocked_stop_s=longest_stop(frames),
                        board_contact=any(r["footprint_intersection"] for r in frames))
