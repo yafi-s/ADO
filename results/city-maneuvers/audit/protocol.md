@@ -71,6 +71,13 @@ that traffic timed by route progress occupies the same place in both.
   route. Use both native control/pose and scenario state. Check genuine
   occupied lane and unsafe rear/front gaps for waiting and later release.
   Record failures even if the overall route reaches its destination.
+- During both outbound and return transitions, grade every sampled moving
+  vehicle in either participating lane against a 1 m minimum body gap
+  while the ego footprint straddles the divider. Report any overlaps,
+  signed longitudinal headways, and time headway and closing TTC with
+  frame references. Convert per-actor native 0.5 s world displacement
+  to speed along the current road. Keep stationary work-zone prop
+  clearances separate from this moving-vehicle gate.
 - Report natural traffic exposure counts at 35, 50 and 65 m along with
   encounter/contact summaries. Preserve High capture and checkpoint
   evidence. These truth references are used only by the offline evaluator.

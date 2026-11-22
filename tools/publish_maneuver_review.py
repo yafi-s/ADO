@@ -68,6 +68,16 @@ def create():
         f'{before["kmh_p10_p50_p95_max"][3]:.1f} km/h. The two recordings have different traffic and obstructions.',
         ("Matched road sections", TAG + "audit/README.md"),
         ("Stopping and higher-speed tests", TAG + "speed/README.md"))
+    speed_study = read(STUDY / "speed/comparison.json")["town03"]
+    capped, higher = speed_study["capped"], speed_study["higher"]
+    add("Higher-speed control",
+        f'On a separate open boulevard, the matched straight-section median changed from '
+        f'{capped["actual_section_median_kmh"]:.1f} to {higher["actual_section_median_kmh"]:.1f} km/h. '
+        f'The faster configuration peaked at {higher["actual_peak_kmh"]:.1f} km/h and held above 40 for '
+        f'{higher["longest_above_40_in_90_s"]:.1f} consecutive seconds in the 90 zone. '
+        f'In the occupied trial it stopped {speed_study["occupied"]["stationary_queue"]["final_gap_m"]:.2f} m behind the queue.',
+        ("Cruise, lower limits and braking", TAG + "speed/README.md"),
+        ("Full matched measurements", TAG + "speed/comparison.json"))
     a, b = old["moving_population_exposure"]["50"], new["moving_population_exposure"]["50"]
     add("Moving city traffic",
         f'The simulator spawned {new["grade"]["ambient_vehicles_spawned"]} background vehicles, '

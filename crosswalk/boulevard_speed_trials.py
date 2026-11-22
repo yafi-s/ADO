@@ -97,12 +97,12 @@ class TestBoulevard(ClearBoulevard):
         return state
 
 
-def rate(rows, summary, queue, extended=False):
+def rate(rows, summary, queue, extended=False, window=None):
     speed = np.array([r["speed_mps"] for r in rows])*3.6
     station = np.array([r["progress_m"] for r in rows])
     posted = np.array([r["posted_limit_kmh"] for r in rows])
     # Compare a fixed geographic window entirely inside the native higher zone.
-    low, high = (148., 268.) if extended else (45., 165.)
+    low, high = window or ((148., 268.) if extended else (45., 165.))
     fixed = (station >= low) & (station < high) & (posted == 90.)
     events = []
     for index in np.flatnonzero(posted[1:] < posted[:-1]) + 1:
@@ -174,7 +174,8 @@ def rate(rows, summary, queue, extended=False):
     return result
 
 
-def run(world, model_path, output, case, extended=False, sweeps=None):
+def run(world, model_path, output, case, extended=False, sweeps=None,
+        fixture_class=TestBoulevard, window=None):
     output.mkdir(exist_ok=False, parents=True)
     digest = fingerprint(model_path)
     driver, names, schema = load_driver(model_path)
@@ -191,7 +192,7 @@ def run(world, model_path, output, case, extended=False, sweeps=None):
     queue = case == "stationary-queue"
     scenes = []
     def fixture(*args, **kwargs):
-        scene = TestBoulevard(*args, queue=queue, extended=extended, **kwargs)
+        scene = fixture_class(*args, queue=queue, extended=extended, **kwargs)
         scenes.append(scene)
         return scene
     logged = LoggedDriver(driver)
@@ -231,7 +232,7 @@ def run(world, model_path, output, case, extended=False, sweeps=None):
     save_arrays(output/"observations.npz", features=logged.observations, feature_names=names,
                 frame=[r["frame"] for r in rows], speed_request_mps=logged.requested_speed,
                 posted_limit_kmh=logged.posted_limits)
-    grade = rate(rows, summary, queue, extended)
+    grade = rate(rows, summary, queue, extended, window)
     write_json(output/"summary.json", dict(**summary, case=case, model_sha256=digest, implementation=sources,
                 maneuver_choice_sha256=choice_sha,
                 source_sha256=fingerprint(Path(__file__)), longer_corridor=extended, grade=grade, producer=producer_info(world)))

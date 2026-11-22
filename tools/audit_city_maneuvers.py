@@ -41,7 +41,7 @@ def spans(mask):
     return np.flatnonzero(np.diff(np.r_[False, mask, False])).reshape(-1, 2)
 
 
-def load_capture(folder, reference):
+def load_capture(folder, reference, position_journal, focused=False):
     if (folder / "manifest.json").is_file():
         manifest = read(folder / "manifest.json")
         telemetry = folder / "telemetry.json"
@@ -51,9 +51,18 @@ def load_capture(folder, reference):
         telemetry = folder / "raw/telemetry.json"
         expected = manifest["raw_sha256"]["telemetry.json"]
     else:
-        manifest = {"summary": read(folder / "summary.json")}
+        summary = read(folder / "summary.json")
+        manifest = {"summary": summary, "producer": summary.get("producer")}
         telemetry = folder / "trace.jsonl.gz"
         expected = None
+        checkpoint = folder / "checkpoint.npz"
+        if checkpoint.is_file():
+            manifest["policy"] = {"sha256": sha256(checkpoint)}
+        elif focused and (folder.parent / "checkpoint.npz").is_file():
+            digest = sha256(folder.parent / "checkpoint.npz")
+            if digest != summary.get("model_sha256"):
+                raise ValueError("Focused trial checkpoint differs from the retained digest")
+            manifest["policy"] = {"sha256": digest}
     digest = sha256(telemetry)
     if expected is not None and digest != expected:
         raise ValueError("Source telemetry digest differs from the sealed capture")
@@ -66,9 +75,37 @@ def load_capture(folder, reference):
             rows = [json.loads(line) for line in stream]
     else:
         rows = read(telemetry)
-    return manifest, rows, {"telemetry_sha256": digest, "population_sha256": ref_hash,
-                            "capture_id": manifest.get("capture_id", folder.name),
-                            "seal_verified": expected is not None and expected_reference is not None}
+    source = {"telemetry_sha256": digest, "population_sha256": ref_hash,
+              "capture_id": manifest.get("capture_id", folder.name),
+              "seal_verified": expected is not None and expected_reference is not None}
+    if focused:
+        hashes = manifest["summary"].get("artifact_sha256", {})
+        if (hashes.get(telemetry.name) != digest or hashes.get(reference.name) != ref_hash):
+            raise ValueError("Focused trial trace or footprint journal differs from the retained digest")
+        with gzip.open(reference, "rt", encoding="utf-8") as stream:
+            for row, sample in zip(rows, (json.loads(line) for line in stream), strict=True):
+                if any(row[key] != sample[key] for key in ("frame", "sim_time", "native_s")):
+                    raise ValueError("Focused trial pose journal does not match its retained trace")
+                x, y, yaw = sample["ego"]
+                row["ego_pose"] = dict(x=x, y=y, z=sample["ego_z"], yaw=yaw, pitch=0., roll=0.)
+                row["native_ego_polygon_xy"] = [tuple(p) for p in sample["ego_polygon_xy"]]
+        source.update(
+            verified_focused_trace_and_footprint=True,
+            ego_pose_resolution="Native ego polygon in XY. Rounded pose and level pitch/roll for height support.",
+        )
+    if position_journal is not None:
+        if any("ego_pose" in row for row in rows):
+            raise ValueError("The primary tape already has full native ego pose")
+        with position_journal.open(encoding="utf-8") as stream:
+            for row, item in zip(rows, (json.loads(line) for line in stream), strict=True):
+                if any(row[key] != item[key] for key in ("frame", "sim_time", "progress_m")):
+                    raise ValueError("Rehearsal pose journal does not match the primary tape")
+                observed = item["observer_map"]
+                x, y, yaw = observed["ego"]
+                row["ego_pose"] = dict(x=x, y=y, z=observed["ego_z"], yaw=yaw, pitch=0., roll=0.)
+        source.update(position_journal_sha256=sha256(position_journal),
+                      ego_pose_resolution="Rounded native position and yaw, with flat pitch and roll for bodies")
+    return manifest, rows, source
 
 
 def stamp(row):
@@ -166,13 +203,18 @@ def project(points, corridor):
             remain[j, i, 1] * forward[i, 0] - remain[j, i, 0] * forward[i, 1])
 
 
+def planar_clearance(ego, body):
+    gap = ego.outline.distance(body.outline)
+    if gap == 0. and len(body.polygon) >= 3:
+        gap = signed_gap(ego.polygon, body.polygon)
+    return gap
+
+
 def clearance(actor, body, ego, row, motion, method, records):
     if (min(body.top, ego.top) < max(body.bottom, ego.bottom)
             or math.dist(ego.center[:2], body.center[:2]) - ego.radius - body.radius > 4.):
         return
-    gap = ego.outline.distance(body.outline)
-    if gap == 0. and len(body.polygon) >= 3:
-        gap = signed_gap(ego.polygon, body.polygon)
+    gap = planar_clearance(ego, body)
     if gap > 4.:
         return
     key = f'{actor["type"]}/{actor["role"]}'
@@ -300,6 +342,50 @@ def actual_maneuver(geometry, idx, corridor, ego):
     )
 
 
+def transition_pair(row, geometry, idx, maneuver, actor, body, ego, motion, history, stations, lateral):
+    """Measure vehicles in both native lanes while the ego body crosses their divider."""
+    if (maneuver is None or maneuver["body_in_source"] or maneuver["body_in_alternate"]
+            or motion is None or actor["type"] not in VEHICLES
+            or min(body.top, ego.top) < max(body.bottom, ego.bottom)):
+        return None
+    side = 1. if maneuver["side"] == "right" else -1.
+    point = geometry.sample[idx]
+    edge = point["width_m"] / 2.
+    extent = edge + point[maneuver["side"]]["width_m"]
+    side_center = side * float(np.mean(lateral))
+    if not -edge <= side_center <= extent:
+        return None
+    yaw = geometry.yaw[idx]
+    forward = np.array([math.cos(yaw), math.sin(yaw)])
+    travel = np.array([actor["x"], actor["y"]]) - history[0][1:]
+    elapsed = row["sim_time"] - history[0][0]
+    moving = motion >= .5
+    actor_speed = float(travel @ forward / elapsed) if moving and elapsed > 0. else 0.
+    ego_speed = row["speed_mps"] * math.cos(math.radians(row["ego_pose"]["yaw"]) - yaw)
+    if moving and actor_speed <= 0.:
+        return None
+    ego_front, ego_rear = maneuver["ego_front_m"], maneuver["ego_rear_m"]
+    actor_rear, actor_front = float(np.min(stations)), float(np.max(stations))
+    ahead = (actor_front + actor_rear) >= (ego_front + ego_rear)
+    headway = actor_rear - ego_front if ahead else ego_rear - actor_front
+    trailing_speed = ego_speed if ahead else actor_speed
+    closing = ego_speed - actor_speed if ahead else actor_speed - ego_speed
+    gap = planar_clearance(ego, body)
+    proximity = abs((actor_front + actor_rear - ego_front - ego_rear) / 2.)
+    if proximity > 60.:
+        return None
+    return dict(
+        actor_id=actor["actor_id"], role=actor["role"], kind=actor["type"],
+        actor_lane="alternate" if side_center > edge else "source",
+        physical_gap_m=rnd(gap), estimated_actor_along_speed_mps=rnd(actor_speed),
+        estimated_ego_along_speed_mps=rnd(ego_speed),
+        actor_is_ahead=bool(ahead), signed_longitudinal_headway_m=rnd(headway),
+        closing_mps=rnd(closing), headway_s=rnd(max(0., headway) / trailing_speed) if trailing_speed > .5 else None,
+        closing_ttc_s=rnd(max(0., headway) / closing) if closing > .2 else None,
+        moving=moving, below_required_separation=moving and gap < 1., physically_touching=gap <= 0.,
+    )
+
+
 def measure_actors(rows, stream, geometry, ego_blueprint):
     shapes, parked = read(OFFSETS), read(PARKED)["actors"]
     ego_shape = shapes[ego_blueprint]
@@ -311,7 +397,7 @@ def measure_actors(rows, stream, geometry, ego_blueprint):
         pose = row["ego_pose"]
         x, y, z = (pose[k] for k in ("x", "y", "z"))
         if (row["frame"] != reference["frame"] or abs(row["sim_time"] - reference["sim_time"]) > .0001
-                or abs(row["progress_m"] - reference["progress_m"]) > .01
+                or abs(row["progress_m"] - reference.get("progress_m", row["progress_m"])) > .01
                 or math.dist((x, y), reference["ego"][:2]) > .02):
             raise ValueError(f"Reference mismatch at {row['frame']}")
         time, station, speed = row["sim_time"], row["progress_m"], row["speed_mps"]
@@ -319,9 +405,11 @@ def measure_actors(rows, stream, geometry, ego_blueprint):
         corridor = geometry.corridor(idx)
         ego = Body((x, y, z), rotation(pose["pitch"], pose["yaw"], pose["roll"]),
                    ego_shape["dimensions_m"], ego_shape["offset_xyz"], ego_shape["rotation"])
+        if "native_ego_polygon_xy" in row:
+            ego.polygon = row["native_ego_polygon_xy"]
         ego.outline = Polygon(ego.polygon)
         maneuver = actual_maneuver(geometry, idx, corridor, ego)
-        nearby, sides = [], {side: [] for side in corridor["alternatives"]}
+        nearby, crossing_pairs, sides = [], [], {side: [] for side in corridor["alternatives"]}
         density_frame = {radius: Counter() for radius in density}
         classifications = defaultdict(list)
         for actor in (*reference["others"], *parked):
@@ -374,6 +462,9 @@ def measure_actors(rows, stream, geometry, ego_blueprint):
             path_z = np.interp(float(np.mean(stations)), geometry.station, geometry.xyz[:, 2])
             if min(body.top, path_z+1.75) < max(body.bottom, path_z-.15):
                 continue
+            pair = transition_pair(row, geometry, idx, maneuver, actor, body, ego, motion, points, stations, lateral)
+            if pair is not None:
+                crossing_pairs.append(pair)
             ahead = np.max(stations) >= station+2.5
             relation = path.distance(body.outline)
             observation = dict(
@@ -415,7 +506,8 @@ def measure_actors(rows, stream, geometry, ego_blueprint):
             for a, side, result, details in opportunities(geometry, idx, station, speed, nearby, sides, vru)
         ]
         frames.append(dict(classifications=classifications, opportunities=wants_pass,
-                           actual_maneuver=maneuver, lead_bodies=nearby, density=density_frame if i >= 5 else {}))
+                           actual_maneuver=maneuver, lead_bodies=nearby, crossing_pairs=crossing_pairs,
+                           density=density_frame if i >= 5 else {}))
     return frames, records, dict(unknown), density
 
 
@@ -464,8 +556,48 @@ def departures(rows, physical):
             last_alternate_sample=stamp(rows[hi-1]), restored_source=stamp(rows[hi]) if rejoin else None,
             shoulder_or_departure_samples=len(illegal), first_outside_legal_union=next(iter(illegal), None),
             first_native_legality_failure=first_unknown, alongside=alongside, ahead_with_sampled_clearance=ahead,
+            moving_vehicle_clearance=moving_separation(rows, physical, lo, hi),
         ))
     return moves
+
+
+def moving_separation(rows, physical, begin=0, end=None):
+    participants, closest_stopped, nearest_by_phase, near, frame_set = {}, {}, {}, [], set()
+    for i in range(begin, len(rows) if end is None else end):
+        for pair in physical[i]["crossing_pairs"]:
+            detail = {**stamp(rows[i]), **pair, "reported_maneuver_phase": rows[i].get("tactical_pass", {}).get("maneuver_phase")}
+            key = str(pair["actor_id"])
+            if not detail["moving"]:
+                prior = closest_stopped.get(key)
+                if prior is None or detail["physical_gap_m"] < prior["physical_gap_m"]:
+                    closest_stopped[key] = detail
+                continue
+            frame_set.add(i)
+            phase = detail["reported_maneuver_phase"] or "phase_unavailable"
+            phase_min = nearest_by_phase.get(phase)
+            if phase_min is None or detail["physical_gap_m"] < phase_min["physical_gap_m"]:
+                nearest_by_phase[phase] = detail
+            data = participants.setdefault(key, dict(samples=0, minimum_gap=detail, shortest_headway=None,
+                                                    shortest_closing_ttc=None, lowest_longitudinal_gap=detail))
+            data["samples"] += 1
+            if detail["physical_gap_m"] < data["minimum_gap"]["physical_gap_m"]:
+                data["minimum_gap"] = detail
+            for name, field in (("shortest_headway", "headway_s"), ("shortest_closing_ttc", "closing_ttc_s")):
+                prior = data[name]
+                if detail[field] is not None and (prior is None or detail[field] < prior[field]):
+                    data[name] = detail
+            if detail["signed_longitudinal_headway_m"] < data["lowest_longitudinal_gap"]["signed_longitudinal_headway_m"]:
+                data["lowest_longitudinal_gap"] = detail
+            if detail["below_required_separation"]:
+                near.append(detail)
+    return dict(
+        minimum_required_straddle_separation_m=1.,
+        scored_frames_with_moving_counterpart=len(frame_set),
+        moving_participants=participants, closest_stopped_vehicles=closest_stopped,
+        minimum_moving_gap_by_phase=nearest_by_phase,
+        sub_1m_samples=len(near), overlap_samples=sum(detail["physically_touching"] for detail in near),
+        below_1m=near, sampled_pass=not near if frame_set else None,
+    )
 
 
 def tactical_phases(rows):
@@ -539,8 +671,9 @@ def inspect_range(rows, geometry, ranges, inventory, wanted):
     return samples
 
 
-def audit(folder, reference, route_path, ranges=None, inventory=None, range_frames=()):
-    manifest, rows, source = load_capture(folder, reference)
+def audit(folder, reference, route_path, ranges=None, inventory=None, range_frames=(), position_journal=None,
+          focused=False):
+    manifest, rows, source = load_capture(folder, reference, position_journal, focused)
     summary = manifest["summary"]
     route = read(route_path)
     if route["route_id"] != summary["route_id"] or abs(route["route_length_m"] - summary["route_length_m"]) > .03:
@@ -702,6 +835,7 @@ def audit(folder, reference, route_path, ranges=None, inventory=None, range_fram
         by_posted_kmh={str(int(value)): stats(posted == value) for value in np.unique(posted)},
         sections=sections, independent_clearance=clearance_records, unresolved_close_actor_samples=unresolved,
         moving_population_exposure=density, passing_screen=checks, actual_lateral_departures=departures(rows, physical),
+        straddling_moving_separation=moving_separation(rows, physical),
     )
     phases = tactical_phases(rows)
     if phases["frame_counts"]:
@@ -720,10 +854,13 @@ if __name__ == "__main__":
     cli.add_argument("--ranges", type=Path)
     cli.add_argument("--range-inventory", type=Path)
     cli.add_argument("--range-frames", type=int, nargs="+", default=[])
+    cli.add_argument("--position-journal", type=Path, help="Aligned rounded native poses for a rehearsal trace")
+    cli.add_argument("--focused", action="store_true", help="Use the exact ego polygon recorded by a focused trial")
     args = cli.parse_args()
     if (args.ranges is None) != (args.range_inventory is None) or (args.ranges is None and args.range_frames):
         cli.error("Supply the range directory and sealed inventory together")
-    result = audit(args.drive, args.reference, args.route, args.ranges, args.range_inventory, args.range_frames)
+    result = audit(args.drive, args.reference, args.route, args.ranges, args.range_inventory,
+                   args.range_frames, args.position_journal, args.focused)
     with args.output.open("x", encoding="utf-8", newline="\n") as stream:
         json.dump(result, stream, indent=2, allow_nan=False)
         stream.write("\n")

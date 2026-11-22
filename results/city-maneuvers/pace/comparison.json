@@ -1,0 +1,66 @@
+{
+  "schema": "ado-city-maneuvers-native-pace-comparison-v1",
+  "case_count": 1,
+  "pending_native_pairs": [
+    "Original roadside drums",
+    "Original roadside boards",
+    "Open boulevard",
+    "Stopped lead approach"
+  ],
+  "method": "Original City Life seed 212, identical geometry, actors, approach and rig within each pair. Bend uses primary driving cameras and lidar; boulevard runs use the five-camera rig. Props use the native event scorer. Pedestrian gaps use 10Hz sampled physical footprints with a level ego reconstruction. Whole-arm violations exposed per window.",
+  "cases": [
+    {
+      "name": "J1932 bend",
+      "station_m": [
+        704.7,
+        735.4
+      ],
+      "v06": {
+        "median_kmh": 15.42,
+        "peak_kmh": 23.04,
+        "median_request_kmh": 14.61,
+        "seconds": 6.8,
+        "seconds_below_15": 2.7,
+        "seconds_below_10": 0.0,
+        "target_drops_over_5_kmh": 2,
+        "worst_half_second_decel_mps2": 2.46,
+        "minimum_sampled_pedestrian_gap_m": 20.411,
+        "sampled_nearby_pedestrians": 1,
+        "minimum_prop_clearance_m": null,
+        "physical_props_passed": null,
+        "minimum_lead_event_gap_m": null,
+        "stopped_for_lead": null,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "evidence": "results/city-maneuvers/pace/native-v06-bend/bend/summary.json",
+        "camera": "results/city-maneuvers/pace/native-v06-bend/bend/front.mp4",
+        "checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0"
+      },
+      "v07": {
+        "median_kmh": 22.26,
+        "peak_kmh": 24.85,
+        "median_request_kmh": 19.02,
+        "seconds": 5.8,
+        "seconds_below_15": 2.0,
+        "seconds_below_10": 0.0,
+        "target_drops_over_5_kmh": 2,
+        "worst_half_second_decel_mps2": 2.42,
+        "minimum_sampled_pedestrian_gap_m": 20.763,
+        "sampled_nearby_pedestrians": 1,
+        "minimum_prop_clearance_m": null,
+        "physical_props_passed": null,
+        "minimum_lead_event_gap_m": null,
+        "stopped_for_lead": null,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "evidence": "results/city-maneuvers/pace/native-v07-bend/bend/summary.json",
+        "camera": "results/city-maneuvers/pace/native-v07-bend/bend/front.mp4",
+        "checkpoint_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071"
+      },
+      "median_delta_kmh": 6.84,
+      "time_delta_s": -1.0
+    }
+  ]
+}

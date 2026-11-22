@@ -1,0 +1,67 @@
+{
+  "scope": "Per-frame projection at the historical measured ranges and ego speeds. Rear speed from recorded closing velocity; at initial entry the observed rear was stationary. Active final exposure uses 3 m remaining for a deliberately short exit estimate. This fixed-input comparison does not establish counterfactual physical clearance.",
+  "trace_sha256": "46066f3ed5f402ee7a3409f105628d2624b6b99f6ba46d1044aed10d7e3aa150",
+  "forecast_code_sha256": "1a38db858c7ea6fd79fd450e07dd0484ab314acc23912af89a8ba7dc67e8630f",
+  "examples": [
+    {
+      "frame": 9550,
+      "old_phase": "change_left",
+      "ego_mps": 4.643,
+      "target_rear_surface_m": 21.029,
+      "historical_sensor_closing_mps": 0.0,
+      "time_to_vacate_s": 9.25,
+      "projected_rear_bumper_gap_m": -14.442047500000143,
+      "rear_margin_m": -23.688791500000143,
+      "target_front_margin_m": null,
+      "allowed": false
+    },
+    {
+      "frame": 9643,
+      "old_phase": "change_right",
+      "ego_mps": 3.143,
+      "target_rear_surface_m": 57.982,
+      "historical_sensor_closing_mps": 11.857,
+      "time_to_vacate_s": 4.625,
+      "projected_rear_bumper_gap_m": -1.2318125000000038,
+      "rear_margin_m": -15.706812500000005,
+      "target_front_margin_m": null,
+      "allowed": false
+    },
+    {
+      "frame": 9680,
+      "old_phase": "change_right",
+      "ego_mps": 2.722,
+      "target_rear_surface_m": 28.948,
+      "historical_sensor_closing_mps": 7.8,
+      "time_to_vacate_s": 4.625,
+      "projected_rear_bumper_gap_m": -20.200125,
+      "rear_margin_m": -32.475125,
+      "target_front_margin_m": null,
+      "allowed": false
+    },
+    {
+      "frame": 9709,
+      "old_phase": "change_right",
+      "ego_mps": 2.77,
+      "target_rear_surface_m": 10.296,
+      "historical_sensor_closing_mps": 1.257,
+      "time_to_vacate_s": 4.625,
+      "projected_rear_bumper_gap_m": -28.524812500000003,
+      "rear_margin_m": -40.7998125,
+      "target_front_margin_m": null,
+      "allowed": false
+    },
+    {
+      "frame": 9755,
+      "old_phase": "change_right",
+      "ego_mps": 2.232,
+      "target_rear_surface_m": 2.13,
+      "historical_sensor_closing_mps": 5.602,
+      "time_to_vacate_s": 1.25,
+      "projected_rear_bumper_gap_m": -9.731874999999999,
+      "rear_margin_m": -21.274274999999996,
+      "target_front_margin_m": null,
+      "allowed": false
+    }
+  ]
+}
