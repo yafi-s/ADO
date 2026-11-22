@@ -7,6 +7,15 @@ from .maneuver_map import discover
 from .route_maneuvers import LOOK, RouteManeuvers, compare_progress
 from .source_vehicle import source_surface_vehicle
 
+# A fixed rule on top of the fitted head, not part of the fit. The head's
+# source-motion features read the last 0-9 and 10-19 lidar frames, so one
+# step in the measured bumper range can sway its output for up to 20 frames.
+# A deferral therefore reaches the lane-change planner only after the head has
+# recommended it on 30 consecutive frames, and losing the track of a stationary
+# car the planner was following keeps that following decision for 30 frames.
+DEFER_CONFIRM_FRAMES = 30
+FOLLOW_HOLD_FRAMES = 30
+
 
 class MotorQueue:
     """Track one measured source-lane bumper in native road coordinates."""
@@ -113,6 +122,47 @@ class MotorQueue:
         return fitted
 
 
+class FollowHold:
+    """Confirm the head's deferral and briefly keep a following decision after a lost track."""
+
+    def __init__(self, confirm_frames=DEFER_CONFIRM_FRAMES, hold_frames=FOLLOW_HOLD_FRAMES):
+        if int(confirm_frames) != confirm_frames or confirm_frames < 1:
+            raise ValueError("The deferral confirmation must be at least one frame")
+        if int(hold_frames) != hold_frames or hold_frames < 0:
+            raise ValueError("The follow hold cannot be negative")
+        # (1, 0) reproduces the natively qualified research harness exactly.
+        self.confirm_frames = int(confirm_frames)
+        self.hold_frames = int(hold_frames)
+        self.reset()
+
+    @property
+    def enabled(self):
+        return self.confirm_frames > 1 or self.hold_frames > 0
+
+    def reset(self):
+        self.deferrals = 0
+        self.until = None
+        self.last = None
+
+    def step(self, frame, associated, preference, changing_lanes):
+        """Return whether the planner must keep following the source-lane vehicle on this frame."""
+        if self.last is None or frame - self.last > 1:
+            self.deferrals = 0
+        self.last = frame
+        if associated and preference is not None:
+            self.deferrals = 0 if preference == "follow" else self.deferrals + 1
+            follow = preference == "follow" or self.deferrals < self.confirm_frames
+            self.until = frame + self.hold_frames if follow and self.hold_frames else None
+            return follow
+        # A lost track keeps a following decision briefly. It never cancels
+        # a lane change that is already under way.
+        self.deferrals = 0
+        follow = not changing_lanes and self.until is not None and frame <= self.until
+        if not follow:
+            self.until = None
+        return follow
+
+
 class _VehicleChoice:
     """Preserve the original fitted action and probabilities in planner telemetry."""
 
@@ -124,7 +174,7 @@ class _VehicleChoice:
     def predict(self, values):
         self.fitted, probabilities = self.original.predict(values)
         planner = self.planner
-        action = planner.queue.choose(self.fitted) if planner.evaluating_source else self.fitted
+        action = "follow" if planner.evaluating_source and planner.defer_source else self.fitted
         if planner.defer_source and action == "follow":
             planner.holding = False
             planner.pass_votes = 0
@@ -134,9 +184,11 @@ class _VehicleChoice:
 class VehicleQueuePlanner(RouteManeuvers):
     """Apply the selected stationary-intent head before a discretionary lane change."""
 
-    def __init__(self, corridors, *, intent, choice):
+    def __init__(self, corridors, *, intent, choice, defer_confirm_frames=DEFER_CONFIRM_FRAMES,
+                 follow_hold_frames=FOLLOW_HOLD_FRAMES):
         if intent is None or choice is None:
             raise ValueError("The queue planner requires a loaded intent head and route-choice model")
+        self.hold = FollowHold(defer_confirm_frames, follow_hold_frames)
         self.intent = intent
         self.stationary_intent_checkpoint = intent.checkpoint_path
         self.stationary_intent_sha256 = intent.sha256
@@ -145,14 +197,15 @@ class VehicleQueuePlanner(RouteManeuvers):
         self._bound_camera = None
 
     @classmethod
-    def from_route(cls, road_map, route, *, intent, choice):
-        return cls(discover(road_map, route), intent=intent, choice=choice)
+    def from_route(cls, road_map, route, *, intent, choice, **hold):
+        return cls(discover(road_map, route), intent=intent, choice=choice, **hold)
 
     def _reset(self):
         super()._reset()
         self.queue = MotorQueue()
         self.evaluating_source = False
         self.defer_source = False
+        self.hold.reset()
 
     def _measure(self, pose, scan, station, speed, lateral=0.):
         result = super()._measure(pose, scan, station, speed, lateral)
@@ -178,8 +231,10 @@ class VehicleQueuePlanner(RouteManeuvers):
         front_speed = self.surfaces[2].speed or 0.
         _, gain, _ = compare_progress("pass", gap, source_speed, front, rear, front_speed, result[3][2])
         features = self.queue.preference_features(data["frame"], gap, speed, source.speed, gain)
-        self.queue.learned_preference(self.intent, features)
-        self.defer_source = self.queue.anchor is not None and self.queue.preference == "follow"
+        queue = self.queue
+        queue.learned_preference(self.intent, features)
+        self.defer_source = self.hold.step(data["frame"], queue.anchor is not None, queue.preference,
+                                           self.start is not None)
         if self.defer_source and self.start is not None:
             # An early signal can be cancelled while the body is still in
             # the source lane. The lateral guard above protects an active crossing.
@@ -208,4 +263,8 @@ class VehicleQueuePlanner(RouteManeuvers):
                 probability_follow=queue.probability_follow, learned_pass_gain_m=queue.intent_gain_m,
                 leaf_index=queue.intent_leaf, preference_inputs=queue.preference_inputs,
             )
+            if self.hold.enabled:
+                self.info["source_motor_vehicle"].update(
+                    consecutive_head_deferrals=self.hold.deferrals, follow_hold_until_frame=self.hold.until,
+                    pass_votes=self.pass_votes)
         return points

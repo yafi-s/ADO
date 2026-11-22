@@ -92,7 +92,8 @@ class LoggedDriver:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", type=Path, default=PROJECT / "models/city-maneuvers/candidate.npz")
+    parser.add_argument("--model", type=Path, default=PROJECT / "models/city-maneuvers/stationary-driver.json",
+                        help="Driver bundle or checkpoint (default: the City Maneuvers stationary-vehicle driver bundle)")
     parser.add_argument("--destination", choices=("market", "market-loop"),
                         help="Choose the original Market route or continue through the return boulevard")
     parser.add_argument("--traffic-schedule", choices=TRAFFIC_SCHEDULES, default="continuous",

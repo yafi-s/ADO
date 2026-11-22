@@ -15,7 +15,7 @@ import numpy as np
 from crosswalk import drive
 from crosswalk.city_drive import load_driver
 from crosswalk.maneuver_choice import ManeuverChoice
-from crosswalk.motor_queue import MotorQueue, VehicleQueuePlanner
+from crosswalk.motor_queue import FollowHold, MotorQueue, VehicleQueuePlanner
 from crosswalk.stationary_intent import StationaryIntent
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -129,7 +129,8 @@ class CanonicalQueueTests(unittest.TestCase):
         sweep = np.vstack((data["lidar"], ground))
         for boxes, expected in ((data["detections"], "follow"), ([], "pass")):
             for bound in (False, True):
-                canonical = VehicleQueuePlanner.from_route(road, route, intent=head, choice=ManeuverChoice())
+                canonical = VehicleQueuePlanner.from_route(road, route, intent=head, choice=ManeuverChoice(),
+                                                           defer_confirm_frames=1, follow_hold_frames=0)
                 research = research_type.from_route(road, route)
                 for i in range(22):
                     camera = dict(frame=121 + i, boxes=boxes, box_frame=121 + i - i % 2, box_pose=pose, radar=data["radar"])
@@ -148,6 +149,120 @@ class CanonicalQueueTests(unittest.TestCase):
                     # A bound exposure is consumed by exactly one preview.
                     canonical.preview(ego, sweep, np.zeros(14), 2.)
                     self.assertIsNone(canonical.camera_inputs)
+
+
+class _AlwaysDefer:
+    """The fitted head's identity with every decision forced to a deferral."""
+
+    def __init__(self, head):
+        self.checkpoint_path, self.sha256 = head.checkpoint_path, head.sha256
+
+    def details(self, features):
+        return "defer_to_existing_choice", .1, 5., 0
+
+
+def _replay(hold, runs):
+    """Step a hold through run-length (associated, preference, frames) decisions."""
+    frame, kept = 1000, []
+    for associated, preference, count in runs:
+        for _ in range(count):
+            kept.append(hold.step(frame, associated, preference, False))
+            frame += 1
+    return kept
+
+
+FOLLOW, DEFER = "follow", "defer_to_existing_choice"
+
+
+class FollowHoldTests(unittest.TestCase):
+    def test_disabled_hold_is_the_research_rule(self):
+        rng = random.Random(3)
+        hold = FollowHold(1, 0)
+        self.assertFalse(hold.enabled)
+        for frame in range(2000):
+            associated = rng.random() > .3
+            preference = rng.choice((FOLLOW, DEFER, None))
+            self.assertEqual(hold.step(frame, associated, preference, rng.random() > .8),
+                             associated and preference == FOLLOW)
+
+    def test_recorded_flips_never_reach_the_planner(self):
+        # Head decisions on the evaluated frames of the three native runs that
+        # met the held sedan, from their live.jsonl telemetry.
+        recorded = {
+            "queue-intent-native02": [(True, FOLLOW, 29), (True, DEFER, 4), (True, FOLLOW, 160)],
+            "queue-intent-native03": [(True, FOLLOW, 20), (True, DEFER, 8), (True, FOLLOW, 5),
+                                      (True, DEFER, 5), (True, FOLLOW, 125)],
+            "integrated-loop-01": [(True, FOLLOW, 18), (False, None, 6), (True, FOLLOW, 5), (True, DEFER, 2),
+                                   (True, FOLLOW, 8), (True, DEFER, 2), (True, FOLLOW, 6), (True, DEFER, 1),
+                                   (True, FOLLOW, 170)],
+        }
+        for name, runs in recorded.items():
+            self.assertTrue(all(_replay(FollowHold(), runs)), name)
+            self.assertFalse(all(_replay(FollowHold(1, 0), runs)), name)
+
+    def test_sustained_deferral_is_confirmed(self):
+        kept = _replay(FollowHold(), [(True, FOLLOW, 10), (True, DEFER, 40)])
+        self.assertTrue(all(kept[:39]))
+        self.assertFalse(any(kept[39:]))
+
+    def test_lost_track_hold_expires(self):
+        kept = _replay(FollowHold(), [(True, FOLLOW, 5), (False, None, 40)])
+        self.assertTrue(all(kept[:35]))
+        self.assertFalse(any(kept[35:]))
+        # A confirmed deferral is not turned back into following when the track drops.
+        kept = _replay(FollowHold(), [(True, DEFER, 35), (False, None, 5)])
+        self.assertFalse(any(kept[30:]))
+
+    def test_hold_never_cancels_a_lane_change_under_way(self):
+        hold = FollowHold()
+        self.assertTrue(hold.step(10, True, FOLLOW, False))
+        self.assertFalse(hold.step(11, False, None, True))
+        self.assertFalse(hold.step(12, False, None, False))
+
+    def test_a_skipped_frame_restarts_the_confirmation(self):
+        hold = FollowHold(3, 0)
+        self.assertTrue(hold.step(1, True, DEFER, False))
+        self.assertTrue(hold.step(2, True, DEFER, False))
+        self.assertTrue(hold.step(5, True, DEFER, False))
+        self.assertTrue(hold.step(6, True, DEFER, False))
+        self.assertFalse(hold.step(7, True, DEFER, False))
+        with self.assertRaises(ValueError):
+            FollowHold(0, 0)
+        with self.assertRaises(ValueError):
+            FollowHold(1, -1)
+
+    def test_planner_keeps_following_through_an_unconfirmed_deferral(self):
+        from tests.test_maneuver_source_vehicle import surface
+        from tests.test_urban_map import MAP
+        if not MAP.is_file():
+            self.skipTest("Native map unavailable")
+        road = carla.Map("Town03_Opt", MAP.read_text())
+        route = [road.get_waypoint_xodr(67, -2, k).transform.location for k in range(173, 286)]
+        pose = road.get_waypoint_xodr(67, -2, 205.).transform
+        ego = Mock()
+        ego.get_transform.return_value = pose
+        ego.bounding_box = carla.BoundingBox(carla.Location(z=.76), carla.Vector3D(2.45, .92, .76))
+        head = _AlwaysDefer(StationaryIntent())
+        data = surface()
+        ground = np.asarray([(v, -3.5, -2.30, .5) for v in np.arange(-37., 40., .30)])
+        sweep = np.vstack((data["lidar"], ground))
+        choices = {}
+        for hold in ((1, 0), (30, 30)):
+            planner = VehicleQueuePlanner.from_route(road, route, intent=head, choice=ManeuverChoice(),
+                                                     defer_confirm_frames=hold[0], follow_hold_frames=hold[1])
+            rows = []
+            for i in range(22):
+                planner.bind_camera(dict(frame=121 + i, boxes=data["detections"], box_frame=121 + i - i % 2,
+                                         box_pose=pose, radar=data["radar"]))
+                planner.preview(ego, sweep, np.zeros(14), 2.)
+                rows.append((planner.queue.anchor is not None, planner.info["choice"], planner.pass_votes))
+            choices[hold] = rows
+        associated = [i for i, row in enumerate(choices[30, 30]) if row[0]]
+        self.assertTrue(associated)
+        self.assertEqual(choices[1, 0][-1][1], "pass")
+        for i in associated:
+            self.assertEqual(choices[30, 30][i][1:], ("follow", 0))
+        self.assertEqual(planner.info["source_motor_vehicle"]["consecutive_head_deferrals"], len(associated))
 
 
 class EpisodeBindingTests(unittest.TestCase):

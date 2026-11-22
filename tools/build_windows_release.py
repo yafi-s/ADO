@@ -1189,6 +1189,8 @@ def verify_population_sources(archive, capture, results, policy_source, progress
             fitted_sources.update(("crosswalk/urban_map.py", "crosswalk/market_loop_traffic.py"))
         if STATIONARY_INTENT_FIELD in capture["policy"]:
             fitted_sources.add("crosswalk/stationary_intent.py")
+        if DRIVER_BUNDLE_FIELD in capture["policy"]:
+            fitted_sources.update(("crosswalk/driver_bundle.py", "crosswalk/motor_queue.py", "crosswalk/source_vehicle.py"))
     required_sources = fitted_sources | {f"crosswalk/{policy_source}", "crosswalk/city_clearance.py",
                                          "crosswalk/city_population.py", "crosswalk/journey_capture.py",
                                          "crosswalk/population_score.py"}
