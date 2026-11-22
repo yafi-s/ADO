@@ -1,5 +1,6 @@
 {
   "scope": "Classifier and projected gap gate on the legacy measured stream until ego leaves the source center by 0.35 m; no v0.7 physical trajectory is implied.",
+  "runtime_sha256": "1af7f65015a386e77a6afc378f85c8d3c7ad6c7d0a41538535f22eb440c59586",
   "model_sha256": "52e04b5ab64550e5f8116e51f8bd3e9614e9740bc8379e0b942b3f2378c6a624",
   "holdout": {
     "source": "synthetic independent traffic rollouts",
@@ -38,6 +39,7 @@
       "source": "results/tactical-pass/v04/paired-kiu_oqoh/no-lead.jsonl.gz",
       "source_sha256": "50e3f1641ad5d49f18d1d8244180cb6d2bd7aa234354a9b43bd42d8d0c087cd2",
       "case": "no-lead",
+      "historical_phase_changes": [],
       "frames_in_source_center": 78,
       "hold_recommendations": 0,
       "first_hold_s": null,
@@ -48,6 +50,7 @@
       "source": "results/tactical-pass/v04/paired-kiu_oqoh/occupied.jsonl.gz",
       "source_sha256": "305aa3af4e345cc3544e4d01cc9c52e11fefad024a530753fbae47a9401fcf18",
       "case": "occupied",
+      "historical_phase_changes": [],
       "frames_in_source_center": 108,
       "hold_recommendations": 57,
       "first_hold_s": 0.3,
@@ -62,6 +65,7 @@
       "source": "results/tactical-pass/v04/paired-kiu_oqoh/clear.jsonl.gz",
       "source_sha256": "9634a7a33a6a66d384a6afa5e38167ad429b4a4097200650596ab71cffc349f1",
       "case": "clear",
+      "historical_phase_changes": [],
       "frames_in_source_center": 24,
       "hold_recommendations": 0,
       "first_hold_s": null,
@@ -76,6 +80,7 @@
       "source": "results/tactical-pass/v04-road67/paired-jo9p4yw0/no-lead.jsonl.gz",
       "source_sha256": "89c11d9d9cb6c856f2f590df09a7b7b763dd46e7e8bcd4fa2171dc7eed6f06ea",
       "case": "no-lead",
+      "historical_phase_changes": [],
       "frames_in_source_center": 71,
       "hold_recommendations": 0,
       "first_hold_s": null,
@@ -86,8 +91,9 @@
       "source": "results/tactical-pass/v04-road67/paired-jo9p4yw0/occupied.jsonl.gz",
       "source_sha256": "7012e5099bc1f86a5faa2222d82a453148beff2e09d2c8277657d2ce52ce46b9",
       "case": "occupied",
+      "historical_phase_changes": [],
       "frames_in_source_center": 108,
-      "hold_recommendations": 57,
+      "hold_recommendations": 56,
       "first_hold_s": 0.3,
       "pass_invitations": 46,
       "first_invitation": {
@@ -100,6 +106,7 @@
       "source": "results/tactical-pass/v04-road67/paired-jo9p4yw0/clear.jsonl.gz",
       "source_sha256": "d5209728c21031bc970564910ffb182c1a35b921107946049b08b346a9422405",
       "case": "clear",
+      "historical_phase_changes": [],
       "frames_in_source_center": 23,
       "hold_recommendations": 0,
       "first_hold_s": null,
@@ -109,6 +116,48 @@
         "time_s": 0.3,
         "signed_adjacent_bumper_gap_m": null
       }
+    },
+    {
+      "source": "results/city-maneuvers/speed/stationary-queue/trace.jsonl.gz",
+      "source_sha256": "f5fffa8530ee371154446db8f2671f1028e19b8c300c567a8890750100946f09",
+      "case": "two-stationary-queues",
+      "historical_phase_changes": [
+        {
+          "frame": 5344,
+          "prior_phase": "yield",
+          "fitted_choice": "pass",
+          "effective_choice": "follow",
+          "source_gap_m": 40.089,
+          "target_front_m": 40.062,
+          "projected_progress_gain_m": -0.027,
+          "reachable_target_surface_m": 40.062
+        },
+        {
+          "frame": 5351,
+          "prior_phase": "signal_left",
+          "fitted_choice": "pass",
+          "effective_choice": "follow",
+          "source_gap_m": 34.754,
+          "target_front_m": 34.896,
+          "projected_progress_gain_m": 0.142,
+          "reachable_target_surface_m": 34.896
+        },
+        {
+          "frame": 5356,
+          "prior_phase": "change_left",
+          "fitted_choice": "pass",
+          "effective_choice": "follow",
+          "source_gap_m": 32.464,
+          "target_front_m": 32.507,
+          "projected_progress_gain_m": 0.28,
+          "reachable_target_surface_m": 32.932
+        }
+      ],
+      "frames_in_source_center": 175,
+      "hold_recommendations": 0,
+      "first_hold_s": null,
+      "pass_invitations": 0,
+      "first_invitation": null
     }
   ]
 }

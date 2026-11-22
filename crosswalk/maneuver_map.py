@@ -35,6 +35,7 @@ class NativeCorridor:
         self.direction = np.vstack((delta/lengths[:,None], delta[-1]/lengths[-1]))
         self.begin, self.end = self.arc[begin], self.arc[end]
         self.merge_at = self.arc[merge_at] if merge_at is not None else None
+        self.source_width = np.asarray([wp.lane_width for wp in source])
         self.width = np.linalg.norm(self.target[:,:2]-self.source[:,:2], axis=1)
 
     def interpolate(self, stations, values):
