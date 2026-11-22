@@ -1,0 +1,730 @@
+{
+  "status": "completed",
+  "claim": "First full continuous Market Loop drive (0 to 1719.89 m, all 13 registered events) with the stationary-vehicle intent head running inside the normal driver: stock crosswalk.drive.episode, the bundle loaded through journey_capture._load_inputs, no exec-patched episode. Non-cinematic control rig identical to the registered market_loop_qualify.py harness (five-camera body and rig, 60 m control lidar crop, five radars, High optical front downsample); rider-only viewer inference and chase/perimeter movies omitted.",
+  "native_directory": "C:\\Users\\Yafi\\AppData\\Local\\ADO\\city-maneuvers\\integrated-loop-01",
+  "protocol": {
+    "base_git": "16a503931dd00fff1c8be9e29012e3d6f5c2de6b",
+    "working_tree_diff_sha256": "e9011eaf351054c1ac0ec9c4038c21b67320ec9e0c62ced2c60421ed30813fc3",
+    "untracked": [
+      "crosswalk/driver_bundle.py",
+      "crosswalk/motor_queue.py",
+      "crosswalk/source_vehicle.py",
+      "models/city-maneuvers/stationary-driver.json",
+      "tests/test_driver_bundle.py"
+    ],
+    "case": "continuous",
+    "seed": 212,
+    "crossing_delay_s": 0.5,
+    "start_m": 0.0,
+    "end_m": 1719.89,
+    "map": "Town03_Opt",
+    "weather": "ClearNoon",
+    "step_s": 0.1,
+    "source_sha256": "3636d021cb08fcc11c9f072f2d2ed74f73fd4cb332b380b2cfc28639941fb663",
+    "bundle_sha256": "ced80586af17c1e1b40a38d6ba8f8b67634c8016de493b24a7bc1fcc44aba630",
+    "pace_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+    "maneuver_choice_sha256": "52e04b5ab64550e5f8116e51f8bd3e9614e9740bc8379e0b942b3f2378c6a624",
+    "stationary_intent_sha256": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+    "drive_py_sha256": "b1bf5710f442d23db8a26b8d8cfa0803e2da1a7ae2f4d6382b608b0906728b1c",
+    "route_maneuvers_sha256": "18c7543ed01beb2fce9b94abd9aac0db426df72dbf3877702e106741da059ada",
+    "sensor_configuration": "Stock five-camera surround body and rig, 1280x720 native front optical image, exact control crop of native 100 m lidar and all five native radar sensors; normal episode policy.",
+    "omitted": "Chase movie and the rider-only YOLOX/SurroundPerception pass. RGB NanoDet, map/route, lamp, LiDAR and radar control paths are unmodified."
+  },
+  "provenance_note": "Run from an uncommitted working tree on top of base_git; source.zip and working-tree.diff hold the exact code. Not a release capture: no clean pinned checkout.",
+  "grade": {
+    "passed": true,
+    "capture_result": {
+      "passed": true,
+      "failure_reasons": [],
+      "events": [
+        {
+          "kind": "pedestrian",
+          "station_m": 29.0,
+          "phase": "across street",
+          "triggered": true,
+          "cleared": true,
+          "exposed": true,
+          "passed": true,
+          "handled": true,
+          "violation": false,
+          "stopped_for_event": false,
+          "minimum_gap_m": 5.21,
+          "curb_origin_lateral_m": 6.635,
+          "approach_s": 0.0,
+          "triggered_s": 0.5,
+          "exposed_s": 4.6,
+          "cleared_s": 9.8,
+          "passed_s": 13.4
+        },
+        {
+          "kind": "occluded",
+          "station_m": 146.99,
+          "phase": "across street",
+          "triggered": true,
+          "cleared": true,
+          "exposed": true,
+          "passed": true,
+          "handled": true,
+          "violation": false,
+          "stopped_for_event": true,
+          "minimum_gap_m": 3.86,
+          "curb_origin_lateral_m": 6.135,
+          "approach_s": 28.9,
+          "triggered_s": 29.4,
+          "blocked_view_s": 29.5,
+          "emerged_s": 32.2,
+          "exposed_s": 33.1,
+          "cleared_s": 38.2,
+          "passed_s": 42.6
+        },
+        {
+          "kind": "signal",
+          "station_m": 323.08,
+          "phase": "green",
+          "triggered": true,
+          "cleared": true,
+          "exposed": true,
+          "passed": true,
+          "handled": true,
+          "violation": false,
+          "stopped_for_event": true,
+          "minimum_gap_m": 3.73,
+          "queue_exposed_s": 62.4,
+          "triggered_s": 64.0,
+          "exposed_s": 64.0,
+          "cleared_s": 71.1,
+          "queue_departed_green_s": 72.6,
+          "crossed_green_s": 76.7,
+          "passed_s": 79.0
+        },
+        {
+          "kind": "roadworks",
+          "station_m": 375.16,
+          "phase": "cone taper cleared",
+          "triggered": true,
+          "cleared": true,
+          "exposed": true,
+          "passed": true,
+          "handled": true,
+          "violation": false,
+          "stopped_for_event": false,
+          "minimum_gap_m": 60.0,
+          "cone_count": 6,
+          "blueprint": "static.prop.trafficcone01",
+          "triggered_s": 82.8,
+          "max_cone_displacement_m": 0.0,
+          "exposed_s": 83.8,
+          "cones_alongside": 6,
+          "minimum_cone_clearance_m": 0.269,
+          "all_cones_passed_s": 96.7,
+          "cleared_s": 96.7,
+          "passed_s": 96.7
+        },
+        {
+          "kind": "in-lane-obstruction",
+          "station_m": 420.41,
+          "phase": "back in route lane",
+          "triggered": true,
+          "cleared": true,
+          "exposed": true,
+          "passed": true,
+          "handled": true,
+          "violation": false,
+          "stopped_for_event": false,
+          "minimum_gap_m": 15.38,
+          "blueprint": "static.prop.trafficcone01",
+          "target_count": 3,
+          "source_lane": [
+            67,
+            -2
+          ],
+          "passing_lane": [
+            67,
+            -1
+          ],
+          "triggered_s": 88.2,
+          "before_target_s": 88.2,
+          "moving_neighbor_search_radius_m": 65.0,
+          "minimum_moving_participant_gap_m": 8.168,
+          "nearest_moving_participant": {
+            "frame": 7605,
+            "actor_id": 880,
+            "role": "background",
+            "blueprint": "vehicle.tesla.model3",
+            "speed_mps": 5.795,
+            "ego_speed_mps": 5.893
+          },
+          "minimum_body_clearance_m": 1.69,
+          "maximum_target_displacement_m": 0.0,
+          "exposed_s": 93.8,
+          "alternate_alongside_s": 99.0,
+          "alongside_ego_lane": [
+            67,
+            -1
+          ],
+          "alongside_minimum_body_gap_m": 1.69,
+          "rear_cleared_target_s": 100.1,
+          "returned_to_route_s": 104.0,
+          "cleared_s": 104.0,
+          "rejoin_station_m": 463.623,
+          "rejoin_rear_clear_m": 33.72,
+          "passed_s": 104.0
+        },
+        {
+          "kind": "barrier",
+          "station_m": 536.65,
+          "phase": "striped barricades cleared",
+          "triggered": true,
+          "cleared": true,
+          "exposed": true,
+          "passed": true,
+          "handled": true,
+          "violation": false,
+          "stopped_for_event": false,
+          "minimum_gap_m": 60.0,
+          "barrier_count": 2,
+          "blueprint": "static.prop.streetbarrier",
+          "triggered_s": 108.3,
+          "max_barrier_displacement_m": 0.0,
+          "barriers_alongside": 2,
+          "exposed_s": 108.8,
+          "minimum_barrier_clearance_m": 1.046,
+          "all_barriers_passed_s": 117.3,
+          "cleared_s": 117.3,
+          "passed_s": 117.3
+        },
+        {
+          "kind": "lead",
+          "station_m": 576.65,
+          "phase": "departing",
+          "triggered": true,
+          "cleared": true,
+          "exposed": true,
+          "passed": true,
+          "handled": true,
+          "violation": false,
+          "stopped_for_event": true,
+          "minimum_gap_m": 3.69,
+          "native_road": 67,
+          "native_lane": -2,
+          "native_road_s": 237.58,
+          "stopped_lead_layout": "original",
+          "triggered_s": 117.9,
+          "target_speed_at_exposure_mps": 0.0,
+          "exposed_s": 117.9,
+          "release_command_s": 122.0,
+          "restarted_s": 123.5,
+          "clearance_at_exit_m": 9.956,
+          "left_route_s": 138.3,
+          "cleared_s": 138.3,
+          "passed_s": 147.5
+        },
+        {
+          "kind": "bus",
+          "station_m": 811.91,
+          "phase": "bus cleared",
+          "triggered": true,
+          "cleared": true,
+          "exposed": true,
+          "passed": true,
+          "handled": true,
+          "violation": false,
+          "stopped_for_event": false,
+          "minimum_gap_m": 60.0,
+          "blueprint": "vehicle.fuso.mitsubishi",
+          "source_lane": [
+            4,
+            3
+          ],
+          "target_lane": [
+            4,
+            2
+          ],
+          "source_lane_seen_s": 168.6,
+          "triggered_s": 172.2,
+          "exposed_s": 172.2,
+          "measured_lane_change_s": 178.5,
+          "measured_lane_change_m": 2.118,
+          "minimum_bus_clearance_m": 0.926,
+          "bus_alongside_s": 183.5,
+          "cleared_s": 190.3,
+          "passed_s": 190.6
+        },
+        {
+          "kind": "braking",
+          "station_m": 977.17,
+          "phase": "departing",
+          "triggered": true,
+          "cleared": true,
+          "exposed": true,
+          "passed": true,
+          "handled": true,
+          "violation": false,
+          "stopped_for_event": false,
+          "minimum_gap_m": 4.39,
+          "triggered_s": 202.0,
+          "brake_entry_speed_mps": 2.407,
+          "exposed_s": 202.0,
+          "lead_stopped_s": 202.3,
+          "release_command_s": 205.4,
+          "restarted_s": 206.9,
+          "clearance_at_exit_m": 11.781,
+          "left_route_s": 217.8,
+          "cleared_s": 217.8,
+          "passed_s": 232.0,
+          "peak_lead_deceleration_mps2": 10.0
+        },
+        {
+          "kind": "left",
+          "station_m": 1044.17,
+          "phase": "oncoming cleared",
+          "triggered": true,
+          "cleared": true,
+          "exposed": true,
+          "passed": true,
+          "handled": true,
+          "violation": false,
+          "stopped_for_event": true,
+          "minimum_gap_m": 0.68,
+          "triggered_s": 216.9,
+          "exposed_s": 217.2,
+          "cleared_s": 223.6,
+          "passed_s": 228.7
+        },
+        {
+          "kind": "cyclist",
+          "station_m": 1200.65,
+          "phase": "cyclist departed",
+          "triggered": true,
+          "cleared": true,
+          "exposed": true,
+          "passed": true,
+          "handled": true,
+          "violation": false,
+          "stopped_for_event": false,
+          "minimum_gap_m": 5.84,
+          "blueprint": "vehicle.bh.crossbike",
+          "triggered_s": 244.9,
+          "peak_bicycle_speed_mps": 3.007,
+          "moving_ahead_s": 245.3,
+          "exposed_s": 245.3,
+          "left_route_s": 263.3,
+          "cleared_s": 263.3,
+          "passed_s": 266.2
+        },
+        {
+          "kind": "pedestrian-delayed",
+          "station_m": 1276.65,
+          "phase": "leaving",
+          "triggered": true,
+          "cleared": true,
+          "exposed": true,
+          "passed": true,
+          "handled": true,
+          "violation": false,
+          "stopped_for_event": true,
+          "minimum_gap_m": 4.59,
+          "curb_origin_lateral_m": 6.635,
+          "approach_s": 260.5,
+          "triggered_s": 262.6,
+          "exposed_s": 266.7,
+          "cleared_s": 271.8,
+          "passed_s": 276.0
+        },
+        {
+          "kind": "slow-traffic",
+          "station_m": 1602.89,
+          "phase": "back in route lane",
+          "triggered": true,
+          "cleared": true,
+          "exposed": true,
+          "passed": true,
+          "handled": true,
+          "violation": false,
+          "stopped_for_event": false,
+          "minimum_gap_m": 14.5,
+          "blueprint": "vehicle.lincoln.mkz",
+          "source_lane": [
+            67,
+            3
+          ],
+          "passing_lane": [
+            67,
+            2
+          ],
+          "adjacent_rear_feeder": [
+            69,
+            2,
+            48
+          ],
+          "arrival_world_frame": 8960,
+          "arrival_ego_station_m": 1080.981,
+          "building_occluded_rays": {
+            "slow-traffic": 30,
+            "adjacent-front": 30,
+            "adjacent-rear": 30
+          },
+          "actual_convoy_before_arrival": [
+            {
+              "road": 67,
+              "lane": 2,
+              "native_s": 140.37
+            },
+            {
+              "road": 67,
+              "lane": 3,
+              "native_s": 156.22
+            }
+          ],
+          "arrival_distances_to_ego_m": {
+            "slow-traffic": 374.975,
+            "adjacent-front": 373.245,
+            "adjacent-rear": 289.959
+          },
+          "corridor_clock_station_m": 1534.89,
+          "first_native_arrival_check": {
+            "slow-traffic": 0.0002,
+            "adjacent-front": 0.0,
+            "adjacent-rear": 0.0
+          },
+          "minimum_arrival_body_gap_m": 1.534,
+          "corridor_clock_started_s": 319.9,
+          "triggered_s": 329.5,
+          "before_target_s": 329.5,
+          "exposed_s": 329.5,
+          "moving_neighbor_search_radius_m": 65.0,
+          "minimum_moving_participant_gap_m": 1.5367,
+          "nearest_moving_participant": {
+            "frame": 10042,
+            "actor_id": 1016,
+            "role": "adjacent-rear",
+            "blueprint": "vehicle.tesla.model3",
+            "speed_mps": 11.123,
+            "ego_speed_mps": 1.201
+          },
+          "minimum_moving_passing_lane_car_gap_m": 1.5367,
+          "minimum_body_clearance_m": 1.659,
+          "moving_target_s": 329.5,
+          "target_traveled_m": 48.683,
+          "target_maximum_step_m": 0.139,
+          "adjacent_front_minimum_gap_m": 41.672,
+          "adjacent_rear_minimum_gap_m": 1.537,
+          "occupied_gap_wait_s": 338.4,
+          "occupied_gap_frames": 26,
+          "minimum_ego_while_occupied_mps": 1.108,
+          "stopped_while_occupied_s": 0.0,
+          "adjacent_gap_witness": {
+            "rear_relative_m": -15.26,
+            "front_relative_m": 77.69,
+            "rear_mps": 11.15,
+            "front_mps": 5.31,
+            "source_bumper_gap_m": 21.66,
+            "native_adjacent_lanes": [
+              [
+                67,
+                2
+              ],
+              [
+                67,
+                2
+              ]
+            ],
+            "moving_lead_mps": 1.35,
+            "ego_mps": 1.13
+          },
+          "adjacent_traffic_cleared_s": 340.9,
+          "alternate_alongside_s": 351.2,
+          "alongside_ego_lane": [
+            67,
+            2
+          ],
+          "alongside_minimum_body_gap_m": 1.659,
+          "moving_alongside_s": 351.2,
+          "alongside_target_mps": 1.346,
+          "rear_cleared_target_s": 352.4,
+          "returned_to_route_s": 356.6,
+          "cleared_s": 356.6,
+          "rejoin_station_m": 1691.816,
+          "rejoin_rear_clear_m": 35.149,
+          "passed_s": 356.6
+        }
+      ]
+    },
+    "sequence": {
+      "passed": true,
+      "obstruction_rejoin_precedes_occupied_wait": true,
+      "actual_wait_policy_frames": 26,
+      "first_actual_wait_frame": 10026,
+      "last_actual_wait_frame": 10051
+    },
+    "safety": true,
+    "executed_weights_match": true,
+    "events": {
+      "pedestrian": {
+        "handled": true,
+        "violation": false
+      },
+      "occluded": {
+        "handled": true,
+        "violation": false
+      },
+      "signal": {
+        "handled": true,
+        "violation": false
+      },
+      "roadworks": {
+        "handled": true,
+        "violation": false
+      },
+      "in-lane-obstruction": {
+        "handled": true,
+        "violation": false
+      },
+      "barrier": {
+        "handled": true,
+        "violation": false
+      },
+      "lead": {
+        "handled": true,
+        "violation": false
+      },
+      "bus": {
+        "handled": true,
+        "violation": false
+      },
+      "braking": {
+        "handled": true,
+        "violation": false
+      },
+      "left": {
+        "handled": true,
+        "violation": false
+      },
+      "cyclist": {
+        "handled": true,
+        "violation": false
+      },
+      "pedestrian-delayed": {
+        "handled": true,
+        "violation": false
+      },
+      "slow-traffic": {
+        "handled": true,
+        "violation": false
+      }
+    },
+    "minimum_moving_passing_lane_gaps_m": [
+      null,
+      1.5367
+    ],
+    "original_stationary_frames": 41,
+    "ego_minimum_while_original_stopped_mps": 0.003,
+    "closest_original_gap_m": 3.579983301778018,
+    "outcome": "complete",
+    "reached_end_m": 1719.778,
+    "frames": 3605
+  },
+  "outcome": {
+    "outcome": "complete",
+    "progress_m": 1719.778,
+    "frames": 3605,
+    "duration_s": 360.5,
+    "wall_seconds": 2563.502,
+    "collisions": 0,
+    "participant_contacts": [],
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "executed_driver_bundle_sha256": "ced80586af17c1e1b40a38d6ba8f8b67634c8016de493b24a7bc1fcc44aba630",
+    "executed_stationary_intent_sha256": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3"
+  },
+  "events": {
+    "pedestrian": {
+      "handled": true,
+      "violation": false,
+      "minimum_gap_m": 5.21,
+      "triggered_s": 0.5,
+      "passed_s": 13.4
+    },
+    "occluded": {
+      "handled": true,
+      "violation": false,
+      "minimum_gap_m": 3.86,
+      "triggered_s": 29.4,
+      "passed_s": 42.6
+    },
+    "signal": {
+      "handled": true,
+      "violation": false,
+      "minimum_gap_m": 3.73,
+      "triggered_s": 64.0,
+      "passed_s": 79.0
+    },
+    "roadworks": {
+      "handled": true,
+      "violation": false,
+      "minimum_gap_m": 60.0,
+      "triggered_s": 82.8,
+      "passed_s": 96.7,
+      "minimum_cone_clearance_m": 0.269
+    },
+    "in-lane-obstruction": {
+      "handled": true,
+      "violation": false,
+      "minimum_gap_m": 15.38,
+      "minimum_body_clearance_m": 1.69,
+      "returned_to_route_s": 104.0,
+      "rejoin_station_m": 463.623,
+      "rejoin_rear_clear_m": 33.72,
+      "triggered_s": 88.2,
+      "passed_s": 104.0
+    },
+    "barrier": {
+      "handled": true,
+      "violation": false,
+      "minimum_gap_m": 60.0,
+      "triggered_s": 108.3,
+      "passed_s": 117.3,
+      "minimum_barrier_clearance_m": 1.046
+    },
+    "lead": {
+      "handled": true,
+      "violation": false,
+      "minimum_gap_m": 3.69,
+      "triggered_s": 117.9,
+      "restarted_s": 123.5,
+      "left_route_s": 138.3,
+      "passed_s": 147.5,
+      "clearance_at_exit_m": 9.956
+    },
+    "bus": {
+      "handled": true,
+      "violation": false,
+      "minimum_gap_m": 60.0,
+      "triggered_s": 172.2,
+      "passed_s": 190.6
+    },
+    "braking": {
+      "handled": true,
+      "violation": false,
+      "minimum_gap_m": 4.39,
+      "triggered_s": 202.0,
+      "restarted_s": 206.9,
+      "left_route_s": 217.8,
+      "passed_s": 232.0,
+      "clearance_at_exit_m": 11.781,
+      "peak_lead_deceleration_mps2": 10.0
+    },
+    "left": {
+      "handled": true,
+      "violation": false,
+      "minimum_gap_m": 0.68,
+      "triggered_s": 216.9,
+      "passed_s": 228.7
+    },
+    "cyclist": {
+      "handled": true,
+      "violation": false,
+      "minimum_gap_m": 5.84,
+      "triggered_s": 244.9,
+      "left_route_s": 263.3,
+      "passed_s": 266.2
+    },
+    "pedestrian-delayed": {
+      "handled": true,
+      "violation": false,
+      "minimum_gap_m": 4.59,
+      "triggered_s": 262.6,
+      "passed_s": 276.0
+    },
+    "slow-traffic": {
+      "handled": true,
+      "violation": false,
+      "minimum_gap_m": 14.5,
+      "minimum_body_clearance_m": 1.659,
+      "minimum_moving_passing_lane_car_gap_m": 1.5367,
+      "returned_to_route_s": 356.6,
+      "rejoin_station_m": 1691.816,
+      "rejoin_rear_clear_m": 35.149,
+      "occupied_gap_frames": 26,
+      "stopped_while_occupied_s": 0.0,
+      "triggered_s": 329.5,
+      "passed_s": 356.6
+    }
+  },
+  "head": {
+    "evaluated_frames": 925,
+    "associated_frames": 234,
+    "follow_frames": 229,
+    "defer_frames": 5,
+    "defer_frames_list": [
+      7788,
+      7789,
+      7798,
+      7799,
+      7806
+    ],
+    "note": "31-38 m behind the stationary sedan the head deferred on 5 frames in 1-2 frame bursts (same noisy previous-source-speed input as the research replicates), and one 5-frame left signal (113.4-113.8 s) occurred while the sedan track was briefly unassociated; the planner's own pass votes cancelled it. None reached the six-vote commit. The head was not evaluated during the bus navigation merge (corridor merge) and associated the return-boulevard lead only after rejoin.",
+    "margin": {
+      "rule": "route_maneuvers.py lines 329-343: a discretionary pass commits when pass_votes reaches 6 and the source return is fresh (age 0); votes 1-5 show as signal_left; a source return older than 2 scans resets the count. After commit, a returned follow preference aborts while lateral > -0.35 m (motor queue early_outbound guard).",
+      "native02": "4 consecutive votes (frames 1292-1295); ended when the head returned to follow.",
+      "native03": "Reached 6 votes (frames 6266-6271). Commit was blocked only because the source return was 2 scans old on the 6th vote; the next frame was 3 scans old and reset the count. The head stayed on defer until frame 6274. Near miss: a fresh return at 6271 would have started a lane change.",
+      "integrated_loop_01": "5 votes (frames 7777-7781) while the sedan track was unassociated (head inactive); ended by the frozen planner's compare_progress downgrade of pass to follow. One vote short.",
+      "ground_truth": "Lead speed was 0.0 m/s on every deferral frame in native02 and native03 (reference-native.jsonl).",
+      "assessment": "The head did not by itself reliably hold the car behind the stationary sedan in the 31-38 m window; outcomes there partly depended on scan timing and the base planner. Treat as an open defect before a featured capture."
+    }
+  },
+  "assets": {
+    "front.mjpeg": {
+      "bytes": 170710875,
+      "sha256": "8e294750832890314f24e7f32d542d50b1094db70593db6c3b927cc4602625cf"
+    },
+    "front.mp4": {
+      "bytes": 65695701,
+      "sha256": "1f1d60dc0ae3039676d9cc49eb09f3346b8523d2e766bb0643af8bf759ef8a4e"
+    },
+    "grade.json": {
+      "bytes": 13649,
+      "sha256": "ff7b5597b8bb835e37bab89b7cd0436d02618a0dd7ecbc96e6a6967c0f68c884"
+    },
+    "live.jsonl": {
+      "bytes": 24722033,
+      "sha256": "f8a1022b03d6bf6ffe451577b26b4edc69654037ce6df47d0ec964e4ebf07646"
+    },
+    "observations.npz": {
+      "bytes": 257271,
+      "sha256": "151930822d8d991f4b9bbace9aad8cddc1b06726f503e32eaaa5f2c1d2e0352d"
+    },
+    "protocol.json": {
+      "bytes": 1564,
+      "sha256": "da2784698426f6547d36ca9ca67b8bab364f9a517e8e5e0ee2e45279c43adb83"
+    },
+    "reference-native.jsonl": {
+      "bytes": 19357883,
+      "sha256": "4aeb8a7fdf95b65ab9e9e44b3d5b545931d7c0429fa71c496fc5afa75955ef3e"
+    },
+    "reference.jsonl.gz": {
+      "bytes": 1072681,
+      "sha256": "2e18851b938a462673ac18b1a2c5655a36bd37821be33975a74e127a5ada11aa"
+    },
+    "source.zip": {
+      "bytes": 607426,
+      "sha256": "3636d021cb08fcc11c9f072f2d2ed74f73fd4cb332b380b2cfc28639941fb663"
+    },
+    "summary.json": {
+      "bytes": 38174,
+      "sha256": "f2fc9deb0558967f67c6d5892224d10a7100e6c92175f5f606461c42a4c9a33f"
+    },
+    "trace.jsonl.gz": {
+      "bytes": 667315,
+      "sha256": "256ab1a33d2fd2eaa6d63d6c8851e3e3371ff3ecbd100afc6a35f762d45e26f0"
+    },
+    "working-tree.diff": {
+      "bytes": 5936,
+      "sha256": "e9011eaf351054c1ac0ec9c4038c21b67320ec9e0c62ced2c60421ed30813fc3"
+    }
+  },
+  "limits": "One realization of one schedule (continuous). Later-gap full loop, a clean pinned rerun and the six-camera 1080p capture remain. Same host session as the research replicates.",
+  "passed": true,
+  "qualified": false,
+  "qualification_note": "Passed on an uncommitted working tree, one realization of the continuous schedule. Not a qualification until rerun from a clean pinned checkout; see head.margin for the open near-miss."
+}

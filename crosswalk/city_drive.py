@@ -18,6 +18,10 @@ from .viewio import Live
 
 
 def load_driver(path):
+    if Path(path).suffix.lower() == ".json":
+        # A hash-pinned set of pace, maneuver choice and stationary-intent weights.
+        from .driver_bundle import load_bundle
+        return load_bundle(path)
     with np.load(path, allow_pickle=False) as data:
         version = str(data["version"].item())
         revision = int(data["revision"].item()) if "revision" in data else None

@@ -1,0 +1,162 @@
+{
+  "status": "completed",
+  "qualified": true,
+  "claim": "Second fresh realization of the registered 9145 prefix with the intent head (research harness), same host session after the two tails.",
+  "native_directory": "C:\\Users\\Yafi\\AppData\\Local\\ADO\\city-maneuvers\\queue-intent-native03\\market-loop-flow-9145\\prefix-continuous",
+  "run_source": {
+    "base_git": "914560faaa57f6592ffdd3e881715b06104344cf",
+    "phase": "prefix",
+    "pace_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+    "route_choice_sha256": "52e04b5ab64550e5f8116e51f8bd3e9614e9740bc8379e0b942b3f2378c6a624",
+    "stationary_intent_sha256": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+    "stationary_intent_inference_sha256": "96f0a316b43d358b6807f84e5b2a85dc14db0042c03b6896ad07fae1cef41e39",
+    "source_vehicle_association_sha256": "2f0001ecd8958ce7b2991c2cdde70e407977050d7fa7d38865530d13639d10f7",
+    "case": "continuous",
+    "files": {
+      "maneuver_motor_queue_candidate.py": "cb155dbcee52aa77915f5f526897d22487ad2d1623b8883e8b4001cee83f1f7b",
+      "maneuver_source_vehicle.py": "2f0001ecd8958ce7b2991c2cdde70e407977050d7fa7d38865530d13639d10f7",
+      "stationary_intent.py": "96f0a316b43d358b6807f84e5b2a85dc14db0042c03b6896ad07fae1cef41e39",
+      "stationary-intent.npz": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+      "market_loop_qualify.py": "855c00279e4020b4887bfc8a4c0aff3642ef2b1bee194078c41a8e38495bd7b4"
+    },
+    "policy_inputs": "Same control NanoDet boxes evaluated once on the original 5 Hz exposure cadence before tactical preview, synchronized lidar/radar and ego transform. Original pace controls, actors and route unchanged."
+  },
+  "grade": {
+    "passed": true,
+    "phase": "prefix",
+    "case": "continuous",
+    "scored_target_status": {
+      "pedestrian": true,
+      "occluded": true,
+      "signal": true,
+      "roadworks": true,
+      "in-lane-obstruction": true,
+      "barrier": true,
+      "lead": true
+    },
+    "minimum_moving_passing_lane_gap_m": null,
+    "safety": true,
+    "true_wait_frames": 0,
+    "original_stationary_frames": 41,
+    "ego_minimum_while_original_stopped_mps": 0.0,
+    "closest_original_gap_m": 3.5848279522628363,
+    "first_frame": 5128,
+    "last_frame": 6629,
+    "reached_end_m": 715.461
+  },
+  "outcome": {
+    "progress_m": 715.461,
+    "collisions": 0,
+    "participant_contacts": [],
+    "red_light_violations": 0,
+    "yield_violations": 0
+  },
+  "stationary_sedan": {
+    "triggered_s": 117.3,
+    "restarted_s": 122.9,
+    "left_route_s": 137.7,
+    "passed_s": 146.7,
+    "minimum_gap_m": 3.7,
+    "clearance_at_exit_m": 9.956
+  },
+  "cone_bypass": {
+    "minimum_body_clearance_m": 1.689,
+    "returned_to_route_s": 104.3,
+    "rejoin_rear_clear_m": 34.319
+  },
+  "head": {
+    "evaluated_frames": 480,
+    "follow_frames": 150,
+    "defer_frames": 13,
+    "defer_frames_list": [
+      6266,
+      6267,
+      6268,
+      6269,
+      6270,
+      6271,
+      6272,
+      6273,
+      6279,
+      6280,
+      6281,
+      6282,
+      6283
+    ],
+    "lateral_phases_during_encounter": [
+      "follow",
+      "keep",
+      "signal_left"
+    ],
+    "margin": {
+      "rule": "route_maneuvers.py lines 329-343: a discretionary pass commits when pass_votes reaches 6 and the source return is fresh (age 0); votes 1-5 show as signal_left; a source return older than 2 scans resets the count. After commit, a returned follow preference aborts while lateral > -0.35 m (motor queue early_outbound guard).",
+      "native02": "4 consecutive votes (frames 1292-1295); ended when the head returned to follow.",
+      "native03": "Reached 6 votes (frames 6266-6271). Commit was blocked only because the source return was 2 scans old on the 6th vote; the next frame was 3 scans old and reset the count. The head stayed on defer until frame 6274. Near miss: a fresh return at 6271 would have started a lane change.",
+      "integrated_loop_01": "5 votes (frames 7777-7781) while the sedan track was unassociated (head inactive); ended by the frozen planner's compare_progress downgrade of pass to follow. One vote short.",
+      "ground_truth": "Lead speed was 0.0 m/s on every deferral frame in native02 and native03 (reference-native.jsonl).",
+      "assessment": "The head did not by itself reliably hold the car behind the stationary sedan in the 31-38 m window; outcomes there partly depended on scan timing and the base planner. Treat as an open defect before a featured capture."
+    }
+  },
+  "assets": {
+    "checkpoint.npz": {
+      "bytes": 130939,
+      "sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071"
+    },
+    "control-input-contract.json": {
+      "bytes": 864,
+      "sha256": "6d25f55a6d378093b94ffa97098c3342fcc1a941f262f3e59c8d05e129282dec"
+    },
+    "front.mjpeg": {
+      "bytes": 71823105,
+      "sha256": "7a47a4d4a1c93dab62b98eacd36dae09f412a96e20763c093ed9a53062ab0c67"
+    },
+    "front.mp4": {
+      "bytes": 28652269,
+      "sha256": "d66abbd4c400268ebb338a2cdbcee0fd5cd124bdca224e91c61abb02f083c82c"
+    },
+    "grade.json": {
+      "bytes": 576,
+      "sha256": "5fc84bde1cb64ae8520880ca03ed918954ade26f6b22ef3a3ca6eaa86e634fb4"
+    },
+    "live.jsonl": {
+      "bytes": 8712867,
+      "sha256": "57ceef5674ed863751abb1043631571ca169c82ad274a44c5f8317bc08729e91"
+    },
+    "observations.npz": {
+      "bytes": 112663,
+      "sha256": "d5a692a11d9324599cb4a476a6cbb6254b425f07ca526f6376b78f9b40ec1d08"
+    },
+    "parallel-flow.json": {
+      "bytes": 759,
+      "sha256": "2666368a7dac814938a5fb271b9fd266d2aedea31f269a6ecfb1b4546a78b6c8"
+    },
+    "posted-speeds.json": {
+      "bytes": 515,
+      "sha256": "ef3e66998c66ff7cde7e9a2263bd3b4a67c3fba26fbb64ad4a7ac19032134f80"
+    },
+    "protocol.json": {
+      "bytes": 766,
+      "sha256": "327260b7bf468ea889e124bc6565f60d0f15ddb634508b2a47cfdb03985e876e"
+    },
+    "reference-native.jsonl": {
+      "bytes": 9728427,
+      "sha256": "3cfaeee0269d4e8e1ac2e399aab6f0266274f659ff4dcfd35043254fca4a1eea"
+    },
+    "reference.jsonl.gz": {
+      "bytes": 493966,
+      "sha256": "ae8e7c75060fa9fbaa88026eb5b1fd36ccec1b5e10f9ad92dcf96845b0998d9b"
+    },
+    "source.zip": {
+      "bytes": 459536,
+      "sha256": "6877213bcf83769aeb2e161308be7144ffb72a3cf952de592094d9aac626144d"
+    },
+    "summary.json": {
+      "bytes": 33209,
+      "sha256": "1b260e4bb7d6385d65d4aea774e1b2bf6944f3081b7c0094dd39c954045ea474"
+    },
+    "trace.jsonl.gz": {
+      "bytes": 270888,
+      "sha256": "72541af7cf172896bd0f01a956dc140fed61d20425e7176b1bb2da5a30c8af8e"
+    }
+  }
+}

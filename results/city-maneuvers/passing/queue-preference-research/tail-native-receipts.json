@@ -1,0 +1,287 @@
+{
+  "status": "completed",
+  "claim": "Both registered Market Loop return-boulevard tails rerun with the fitted stationary-vehicle intent head active through the research harness, on the same High Town03_Opt host after the passed prefix (prefix-native02-receipt.json). Checks that the head does not convert the moving-lead overtake into an indefinite follow.",
+  "runs": {
+    "continuous": {
+      "native_directory": "C:\\Users\\Yafi\\AppData\\Local\\ADO\\city-maneuvers\\queue-intent-tail-continuous-01\\market-loop-flow-9145\\tail-continuous",
+      "run_source": {
+        "base_git": "914560faaa57f6592ffdd3e881715b06104344cf",
+        "phase": "tail",
+        "pace_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+        "route_choice_sha256": "52e04b5ab64550e5f8116e51f8bd3e9614e9740bc8379e0b942b3f2378c6a624",
+        "stationary_intent_sha256": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+        "stationary_intent_inference_sha256": "96f0a316b43d358b6807f84e5b2a85dc14db0042c03b6896ad07fae1cef41e39",
+        "source_vehicle_association_sha256": "2f0001ecd8958ce7b2991c2cdde70e407977050d7fa7d38865530d13639d10f7",
+        "case": "continuous",
+        "files": {
+          "maneuver_motor_queue_candidate.py": "cb155dbcee52aa77915f5f526897d22487ad2d1623b8883e8b4001cee83f1f7b",
+          "maneuver_source_vehicle.py": "2f0001ecd8958ce7b2991c2cdde70e407977050d7fa7d38865530d13639d10f7",
+          "stationary_intent.py": "96f0a316b43d358b6807f84e5b2a85dc14db0042c03b6896ad07fae1cef41e39",
+          "stationary-intent.npz": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+          "market_loop_qualify.py": "855c00279e4020b4887bfc8a4c0aff3642ef2b1bee194078c41a8e38495bd7b4"
+        },
+        "policy_inputs": "Same control NanoDet boxes evaluated once on the original 5 Hz exposure cadence before tactical preview, synchronized lidar/radar and ego transform. Original pace controls, actors and route unchanged."
+      },
+      "grade": {
+        "passed": true,
+        "phase": "tail",
+        "case": "continuous",
+        "scored_target_status": {
+          "slow-traffic": true
+        },
+        "minimum_moving_passing_lane_gap_m": 1.538,
+        "safety": true,
+        "true_wait_frames": 15,
+        "original_stationary_frames": 0,
+        "ego_minimum_while_original_stopped_mps": null,
+        "closest_original_gap_m": 8.537536368846755,
+        "first_frame": 2265,
+        "last_frame": 3396,
+        "reached_end_m": 1719.788
+      },
+      "baseline_without_head": {
+        "passed": true,
+        "phase": "tail",
+        "case": "continuous",
+        "scored_target_status": {
+          "slow-traffic": true
+        },
+        "minimum_moving_passing_lane_gap_m": 1.5372,
+        "safety": true,
+        "true_wait_frames": 25,
+        "original_stationary_frames": 0,
+        "ego_minimum_while_original_stopped_mps": null,
+        "closest_original_gap_m": 8.537922256768047,
+        "first_frame": 13550,
+        "last_frame": 14664,
+        "reached_end_m": 1719.652
+      },
+      "slow_traffic": {
+        "minimum_body_clearance_m": 1.662,
+        "minimum_moving_passing_lane_car_gap_m": 1.538,
+        "occupied_gap_frames": 15,
+        "stopped_while_occupied_s": 1.5,
+        "alongside_target_mps": 1.346,
+        "returned_to_route_s": 169.2,
+        "rejoin_station_m": 1706.729,
+        "rejoin_rear_clear_m": 40.231
+      },
+      "safety": {
+        "collisions": 0,
+        "participant_contacts": [],
+        "red_light_violations": 0,
+        "yield_violations": 0
+      },
+      "head": {
+        "evaluated_frames": 367,
+        "associated_frames": 14,
+        "follow_frames": 14,
+        "first_association_progress_m": 1712.882,
+        "note": "The moving lead never met the stationary radar/camera association gate, so the overtake used the unchanged base choice; association occurred only after rejoin."
+      },
+      "assets": {
+        "checkpoint.npz": {
+          "bytes": 130939,
+          "sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071"
+        },
+        "commission.json": {
+          "bytes": 1619,
+          "sha256": "30ef66e9ca05de00543b3919540998bad46d27a55cdad9f41236db59e8218a01"
+        },
+        "control-input-contract.json": {
+          "bytes": 864,
+          "sha256": "c1be19ecca0a2011ad9318d94d3e976dbb36234b5224ccf357b78690a5cc28b0"
+        },
+        "front.mjpeg": {
+          "bytes": 53945562,
+          "sha256": "5cd39df747eb61f3cc668f5355c40c0e3a2e31e2958b62b627ec84976670c038"
+        },
+        "front.mp4": {
+          "bytes": 20064207,
+          "sha256": "aa9b410454e49872ca96404d0fce039e6029de09cb96bcc0fce0663e686ac656"
+        },
+        "grade.json": {
+          "bytes": 435,
+          "sha256": "deebde0f32377df35119ce0ba7332c0d2f28969f41f1c5d373e3469c66340f5d"
+        },
+        "live.jsonl": {
+          "bytes": 7027937,
+          "sha256": "8a21004e2aba9c529433a666dd7ebf7763ce45baaaa027fb551749d21911c552"
+        },
+        "observations.npz": {
+          "bytes": 72734,
+          "sha256": "d0dd6c141dc239f4c2b8a7f1345d2936731145d30ca8c2e5f85076da1f02a496"
+        },
+        "posted-speeds.json": {
+          "bytes": 341,
+          "sha256": "76118e5ffa46055ce94c506f927a982fa8fe75b1f1883cf03ebd30d64519f432"
+        },
+        "protocol.json": {
+          "bytes": 769,
+          "sha256": "f7bd3478745c187bdd3e99a1f113ab401d178ea833bd460b8a9fda001d07e312"
+        },
+        "reference-native.jsonl": {
+          "bytes": 5654698,
+          "sha256": "4ac5edfbc6ecfd3823c9a62655dbba1d828240de5297b19918f2eaf6501924cf"
+        },
+        "reference.jsonl.gz": {
+          "bytes": 392847,
+          "sha256": "7864c4be1d18bc9dfee3aab346107fe50f1081fedfc1f23bff860e11d9a9a760"
+        },
+        "source.zip": {
+          "bytes": 459536,
+          "sha256": "1fd1ce267d8eb76aea0bc48924609dd29d2519fbac53069b0200f080a8854b36"
+        },
+        "summary.json": {
+          "bytes": 34641,
+          "sha256": "cd1592c236cf1e4db3eb583c7d97eab74d3005cdc80f2f4fe95de8bd278d62a7"
+        },
+        "trace.jsonl.gz": {
+          "bytes": 211912,
+          "sha256": "c1ebc16c6f447fd1fcc299d6f3e2d37a29aedcc2ac8a038e31f0489c8e945eab"
+        }
+      }
+    },
+    "later-gap": {
+      "native_directory": "C:\\Users\\Yafi\\AppData\\Local\\ADO\\city-maneuvers\\queue-intent-tail-later-gap-01\\market-loop-flow-9145\\tail-later-gap",
+      "run_source": {
+        "base_git": "914560faaa57f6592ffdd3e881715b06104344cf",
+        "phase": "tail",
+        "pace_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+        "route_choice_sha256": "52e04b5ab64550e5f8116e51f8bd3e9614e9740bc8379e0b942b3f2378c6a624",
+        "stationary_intent_sha256": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+        "stationary_intent_inference_sha256": "96f0a316b43d358b6807f84e5b2a85dc14db0042c03b6896ad07fae1cef41e39",
+        "source_vehicle_association_sha256": "2f0001ecd8958ce7b2991c2cdde70e407977050d7fa7d38865530d13639d10f7",
+        "case": "later-gap",
+        "files": {
+          "maneuver_motor_queue_candidate.py": "cb155dbcee52aa77915f5f526897d22487ad2d1623b8883e8b4001cee83f1f7b",
+          "maneuver_source_vehicle.py": "2f0001ecd8958ce7b2991c2cdde70e407977050d7fa7d38865530d13639d10f7",
+          "stationary_intent.py": "96f0a316b43d358b6807f84e5b2a85dc14db0042c03b6896ad07fae1cef41e39",
+          "stationary-intent.npz": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+          "market_loop_qualify.py": "855c00279e4020b4887bfc8a4c0aff3642ef2b1bee194078c41a8e38495bd7b4"
+        },
+        "policy_inputs": "Same control NanoDet boxes evaluated once on the original 5 Hz exposure cadence before tactical preview, synchronized lidar/radar and ego transform. Original pace controls, actors and route unchanged."
+      },
+      "grade": {
+        "passed": true,
+        "phase": "tail",
+        "case": "later-gap",
+        "scored_target_status": {
+          "slow-traffic": true
+        },
+        "minimum_moving_passing_lane_gap_m": 1.537,
+        "safety": true,
+        "true_wait_frames": 26,
+        "original_stationary_frames": 0,
+        "ego_minimum_while_original_stopped_mps": null,
+        "closest_original_gap_m": 8.537896049252112,
+        "first_frame": 4000,
+        "last_frame": 5114,
+        "reached_end_m": 1719.366
+      },
+      "baseline_without_head": {
+        "passed": true,
+        "phase": "tail",
+        "case": "later-gap",
+        "scored_target_status": {
+          "slow-traffic": true
+        },
+        "minimum_moving_passing_lane_gap_m": 1.5378,
+        "safety": true,
+        "true_wait_frames": 23,
+        "original_stationary_frames": 0,
+        "ego_minimum_while_original_stopped_mps": null,
+        "closest_original_gap_m": 8.537866117962547,
+        "first_frame": 15268,
+        "last_frame": 16385,
+        "reached_end_m": 1719.533
+      },
+      "slow_traffic": {
+        "minimum_body_clearance_m": 1.661,
+        "minimum_moving_passing_lane_car_gap_m": 1.537,
+        "occupied_gap_frames": 26,
+        "stopped_while_occupied_s": 2.0,
+        "alongside_target_mps": 1.572,
+        "returned_to_route_s": 167.6,
+        "rejoin_station_m": 1707.271,
+        "rejoin_rear_clear_m": 33.032
+      },
+      "safety": {
+        "collisions": 0,
+        "participant_contacts": [],
+        "red_light_violations": 0,
+        "yield_violations": 0
+      },
+      "head": {
+        "evaluated_frames": 356,
+        "associated_frames": 15,
+        "follow_frames": 15,
+        "first_association_progress_m": 1711.911,
+        "note": "The moving lead never met the stationary radar/camera association gate, so the overtake used the unchanged base choice; association occurred only after rejoin."
+      },
+      "assets": {
+        "checkpoint.npz": {
+          "bytes": 130939,
+          "sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071"
+        },
+        "commission.json": {
+          "bytes": 1620,
+          "sha256": "fc91e7d20e54569a4d65240a88a32173b7877e95fd613cb0a0e202c17e133d00"
+        },
+        "control-input-contract.json": {
+          "bytes": 864,
+          "sha256": "a98d3bbd06246f66ed6a14672da046055d22fa72e8e1a73eeed6a8a34d189667"
+        },
+        "front.mjpeg": {
+          "bytes": 53055141,
+          "sha256": "95ee988163aa65c75274fc309f989c33c3d5a220248cb29917b6089528986d93"
+        },
+        "front.mp4": {
+          "bytes": 19891979,
+          "sha256": "dd6a32e9aa0a0b03232165dbf1edde8ebc0752d739ad364c8e816340d683f47c"
+        },
+        "grade.json": {
+          "bytes": 434,
+          "sha256": "6231625020b7cc46eda28d56311fd5b04565cbd16eff3bf29a0d439cb4db3e51"
+        },
+        "live.jsonl": {
+          "bytes": 6970811,
+          "sha256": "a76affc304ac66275cb7ddd589a54fc03334e03bd0837223169c8e417f89ea1a"
+        },
+        "observations.npz": {
+          "bytes": 74111,
+          "sha256": "37e9cf86478ba3382ba6749928ee8467cc0fdc07ee652b7e6488da6643db52b6"
+        },
+        "posted-speeds.json": {
+          "bytes": 353,
+          "sha256": "911641d5f31004ecd5660848698ecef3c7ec2ac71e766329c7e11139a38331e7"
+        },
+        "protocol.json": {
+          "bytes": 768,
+          "sha256": "0678fd6857b1c5de6bc1002afe03d5906c92cc9261ce949b1d6e9cacf31622fc"
+        },
+        "reference-native.jsonl": {
+          "bytes": 5579939,
+          "sha256": "1027e16360ab7ad24113af237367d7247ffca291950c0fd0519c4137d1552840"
+        },
+        "reference.jsonl.gz": {
+          "bytes": 400576,
+          "sha256": "4e02cb59f117768b16486882af039c9fa5e260dcbd899a86c32abd302097f0db"
+        },
+        "source.zip": {
+          "bytes": 459536,
+          "sha256": "830c0f058d44d4aa0a9d352e93f70177aaf63b9dcbf4714daaae164e06567616"
+        },
+        "summary.json": {
+          "bytes": 34517,
+          "sha256": "e74cc15cb6aef4b66bdb376e6e4006ccb4f07bf73121994c658edd47b3ff5990"
+        },
+        "trace.jsonl.gz": {
+          "bytes": 233129,
+          "sha256": "aabb5046627359434a8017d2991b37fd08a7e39f748b9808157bab90839ea4c5"
+        }
+      }
+    }
+  },
+  "limits": "Same single host session, one realization per schedule. Research harness only; the normal driver and capture path do not yet run the head."
+}

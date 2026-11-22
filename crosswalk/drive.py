@@ -92,6 +92,19 @@ def update_instructor(scene, teacher):
     return speed_limit
 
 
+class _ExposureDetector:
+    """Evaluate the control detector once per camera exposure for two consumers."""
+
+    def __init__(self, detector):
+        self.detector = detector
+        self.image = self.result = None
+
+    def detect(self, image):
+        if image is not self.image:
+            self.image, self.result = image, self.detector.detect(image)
+        return self.result
+
+
 def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             recording=None, realtime=False, max_steps=None, district=None, crossing_delay=0.,
             destination=None, run_id=None, change_request=None, weather="seeded", grip=1.0,
@@ -145,9 +158,20 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             from .tracking import Tracker
             spatial_tracker = Tracker()
         pace = getattr(model, "policy", model)
+        vehicle_queue = False
         if tactical:
             from .overtake import TacticalPass
-            if getattr(pace, "uses_route_maneuvers", False):
+            intent = getattr(pace, "stationary_intent_model", None)
+            if getattr(pace, "uses_route_maneuvers", False) and intent is not None:
+                # A selected driver bundle adds the fitted stationary-vehicle head
+                # on top of the unchanged route planner and choice tree.
+                from .motor_queue import VehicleQueuePlanner
+                tactical_pass = VehicleQueuePlanner.from_route(world.get_map(), scene.route, intent=intent,
+                                                               choice=pace.maneuver_choice_model)
+                vehicle_queue = not range_only
+                if getattr(scene, "_urban", None) is not None:
+                    scene.tactical_lane_scoring = True
+            elif getattr(pace, "uses_route_maneuvers", False):
                 from .route_maneuvers import RouteManeuvers
                 tactical_pass = RouteManeuvers.from_route(world.get_map(), scene.route)
                 if getattr(scene, "_urban", None) is not None:
@@ -182,7 +206,7 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             measured = [w.friction_force_multiplier for w in scene.ego.get_physics_control().wheels]
             if not np.allclose(requested, measured):
                 raise RuntimeError("CARLA did not apply the requested wheel grip.")
-        detector = None if range_only else Detector()
+        detector = None if range_only else _ExposureDetector(Detector()) if vehicle_queue else Detector()
         navigation = Navigation(scene.route)
         signed_limits = None
         if getattr(pace, "uses_signed_speed_preview", False):
@@ -232,12 +256,20 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                                      front_size_wh=[optical.shape[1],optical.shape[0]])
                     np.savez(range_tape / f"{frame}.npz", lidar=scan, ego_xy_yaw=ego_xy_yaw,
                              **{name: surround_obs[name] for name in RADARS}, **image)
+            if vehicle_queue and step % 2 == 0:
+                # The stationary-vehicle head reads the control boxes before the
+                # pass decision; the cached result also serves the pace observer.
+                detections = detector.detect(obs["front"])
+                control_box_frame, control_box_pose = frame, scene.ego.get_transform()
             speed = vehicle_speed(scene.ego)
             if observer is None:
                 local_route = navigation.read(scene.ego)
             else:
                 points = navigation.read(scene.ego, (3., 7., 13., 18., 25., 32., 40.))
                 if tactical_pass is not None:
+                    if vehicle_queue:
+                        tactical_pass.bind_camera(dict(frame=frame, boxes=detections, box_frame=control_box_frame,
+                                                       box_pose=control_box_pose, radar=obs["radar"]))
                     points = tactical_pass.preview(scene.ego, obs["lidar"], points, speed)
                     if getattr(tactical_pass, "measured_hold", False):
                         pace.tactical_speed_limit = tactical_pass.speed_limit
@@ -465,6 +497,10 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                                               and r["progress_m"] > 2. for r in trace),
                        closest_in_path_speed_mps=min(trace, key=lambda r:r["reference_gap_m"])["speed_mps"],
                        wall_seconds=round(perf_counter()-start, 3))
+        if getattr(tactical_pass, "stationary_intent_sha256", None) is not None:
+            # Record the weights the live planner actually executed.
+            summary.update(driver_bundle_sha256=getattr(pace, "driver_bundle_sha256", None),
+                           stationary_intent_sha256=tactical_pass.stationary_intent_sha256)
         if teacher is not None:
             summary["route_xy"] = [[p.x, p.y] for p in scene.route]
         if "events" in state:
