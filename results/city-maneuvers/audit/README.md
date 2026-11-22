@@ -147,6 +147,11 @@ maintained 1.046 m of native clearance to the boards. The deliberate
 in-lane cones used to test the bypass appear at the curve entrance.
 [Matched native controls](../pace/comparison.json)
 
+The separate curb placement controls measured 2.87 m and 4.07 m of
+body clearance, depending on the physical board placement. Both
+drivers had the same 28.62 km/h local median in those controls.
+[Native board footprints](curb-footprints.json)
+
 The full qualification reached a 4.40 m/s² half-second kinematic
 lateral estimate as the ego settled into the passing lane at the
 first bend. The displacement-based check is 4.06 m/s² at the same

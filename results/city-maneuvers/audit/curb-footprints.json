@@ -1,0 +1,118 @@
+{
+  "scoped_to": "Native focused curb case",
+  "method": "Euclidean separation between the saved oriented ego footprint and the physical board segment. Both actors are on the same native road surface. Speeds summarize the matched 75\u201392 m OpenDRIVE interval around board station 84.",
+  "cases": {
+    "inside-curb": {
+      "baseline": {
+        "native_frames": 129,
+        "plan_end_reached": true,
+        "scope_board_station_s": 84.0,
+        "board_lateral_extents_m": [
+          3.8276355823434454,
+          4.735007040283653
+        ],
+        "curb_lateral_boundary_m": 4.885007040283654,
+        "modeled_driving_line_edge_m": 1.75,
+        "native_body_samples": 129,
+        "native_board_vertices": 4,
+        "overlap_samples": 0,
+        "measured_median_local_speed_kmh": 28.616,
+        "min_gap_m": 2.8672,
+        "min_gap_frame": 33769,
+        "min_gap_time_s": 6.1,
+        "speed_at_min_gap_kmh": 28.656,
+        "native_collision_events": 0,
+        "source": {
+          "pin": "9bd6dafa0348d37e163a3acf8de553f642bebf45",
+          "evaluator_pin": "ee6a6582c072a018161cec7c79cb6ad4d4d647bf",
+          "model_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+          "trace_sha256": "87e2f70cd01ae8ed7519f605caf148c5cf948c11f1d5cffb9f8cd4b94755ceb6",
+          "reference_sha256": "f21c2a451c980495580adfb94510085305694694b81cfd5340145816a1a96e81"
+        }
+      },
+      "candidate": {
+        "native_frames": 129,
+        "plan_end_reached": true,
+        "scope_board_station_s": 84.0,
+        "board_lateral_extents_m": [
+          3.8276355823434454,
+          4.735007040283653
+        ],
+        "curb_lateral_boundary_m": 4.885007040283654,
+        "modeled_driving_line_edge_m": 1.75,
+        "native_body_samples": 129,
+        "native_board_vertices": 4,
+        "overlap_samples": 0,
+        "measured_median_local_speed_kmh": 28.616,
+        "min_gap_m": 2.8672,
+        "min_gap_frame": 33488,
+        "min_gap_time_s": 6.1,
+        "speed_at_min_gap_kmh": 28.656,
+        "native_collision_events": 0,
+        "source": {
+          "pin": "9bd6dafa0348d37e163a3acf8de553f642bebf45",
+          "evaluator_pin": "ee6a6582c072a018161cec7c79cb6ad4d4d647bf",
+          "model_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+          "trace_sha256": "f01e6571f59d2b4d04c38f1bb07e1cbd1c5c3003507c5a45277806488f6fc2b8",
+          "reference_sha256": "9a5f64246e35dfa181e329fb7e85f19cbd3755c64d653acf316cc37ef84edbe4"
+        }
+      }
+    },
+    "outside-curb": {
+      "baseline": {
+        "native_frames": 129,
+        "plan_end_reached": true,
+        "scope_board_station_s": 84.0,
+        "board_lateral_extents_m": [
+          5.035007040283654,
+          5.942378498223862
+        ],
+        "curb_lateral_boundary_m": 4.885007040283654,
+        "modeled_driving_line_edge_m": 1.75,
+        "native_body_samples": 129,
+        "native_board_vertices": 4,
+        "overlap_samples": 0,
+        "measured_median_local_speed_kmh": 28.616,
+        "min_gap_m": 4.0744,
+        "min_gap_frame": 33908,
+        "min_gap_time_s": 6.1,
+        "speed_at_min_gap_kmh": 28.656,
+        "native_collision_events": 0,
+        "source": {
+          "pin": "9bd6dafa0348d37e163a3acf8de553f642bebf45",
+          "evaluator_pin": "ee6a6582c072a018161cec7c79cb6ad4d4d647bf",
+          "model_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+          "trace_sha256": "860cad57063e5691c4acd5e2f953d6c41b553fb690f199fe4fec0790bc2241f8",
+          "reference_sha256": "6e4eea4d7c36242b87d4eb903663b0f60f8554c1d895562e9af7aedef895230c"
+        }
+      },
+      "candidate": {
+        "native_frames": 129,
+        "plan_end_reached": true,
+        "scope_board_station_s": 84.0,
+        "board_lateral_extents_m": [
+          5.035007040283654,
+          5.942378498223862
+        ],
+        "curb_lateral_boundary_m": 4.885007040283654,
+        "modeled_driving_line_edge_m": 1.75,
+        "native_body_samples": 129,
+        "native_board_vertices": 4,
+        "overlap_samples": 0,
+        "measured_median_local_speed_kmh": 28.616,
+        "min_gap_m": 4.0744,
+        "min_gap_frame": 33627,
+        "min_gap_time_s": 6.1,
+        "speed_at_min_gap_kmh": 28.656,
+        "native_collision_events": 0,
+        "source": {
+          "pin": "9bd6dafa0348d37e163a3acf8de553f642bebf45",
+          "evaluator_pin": "ee6a6582c072a018161cec7c79cb6ad4d4d647bf",
+          "model_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+          "trace_sha256": "58cbd8a9e848e76743a694e68404c20ab7595baa8e0cfa6681ba20060b1406e0",
+          "reference_sha256": "ffd3c250133cb4ca4d9bd47c0a0ef42e2c366767df1d7e2ef3a4c3521cbe1859"
+        }
+      }
+    }
+  }
+}
