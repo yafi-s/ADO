@@ -51,6 +51,13 @@ def build(root):
                 stopping_calibration=calibration,limited_visibility_replay=shorter,
                 town03=dict(capped=metrics(root,"final-long-matched-40"),higher=metrics(root,"final-long-clear"),
                             occupied=metrics(root,"final-long-queue"),primary_queue=metrics(root,"final-primary-queue")))
+    # Release qualification re-runs both queue geometries on the pinned tactical planner.
+    for key,name in (("occupied","pinned-long-queue"),("primary_queue","pinned-primary-queue")):
+        if (root/name/"summary.json").is_file():
+            result["town03"][key]=metrics(root,name)
+    verification=root/"qualification-source.json"
+    if verification.is_file():
+        result["queue_qualification"]=json.loads(verification.read_bytes())
     for folder in sorted(root.glob("motorway-transfer*"),reverse=True):
         required=[folder/c/"summary.json" for c in ("matched-40","higher-speed","stationary-queue")]
         if (folder/"host-restored.json").is_file() and all(p.is_file() for p in required):

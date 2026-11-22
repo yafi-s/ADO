@@ -175,7 +175,7 @@ def rate(rows, summary, queue, extended=False, window=None):
 
 
 def run(world, model_path, output, case, extended=False, sweeps=None,
-        fixture_class=TestBoulevard, window=None):
+        fixture_class=TestBoulevard, window=None, keep_front=False):
     output.mkdir(exist_ok=False, parents=True)
     digest = fingerprint(model_path)
     driver, names, schema = load_driver(model_path)
@@ -198,6 +198,8 @@ def run(world, model_path, output, case, extended=False, sweeps=None,
     logged = LoggedDriver(driver)
     if sweeps is not None:
         sweeps.mkdir(parents=True, exist_ok=False)
+        if keep_front:
+            (sweeps/"front").mkdir()
         with ZipFile(sweeps/"controller.zip","w",compression=ZIP_DEFLATED) as bundle:
             for source in source_dir.glob("*.py"):
                 bundle.write(source,arcname="crosswalk/"+source.name)
@@ -210,6 +212,9 @@ def run(world, model_path, output, case, extended=False, sweeps=None,
             original_observe = observer.observe
             def observe(obs, detections, route, speed, **kwargs):
                 frame = obs["progress_frame"]
+                if keep_front and not cv2.imwrite(str(sweeps/"front"/f"{frame}.png"),obs["front"][:,:,::-1],
+                                                  [cv2.IMWRITE_PNG_COMPRESSION,1]):
+                    raise RuntimeError("Could not retain synchronized front exposure")
                 if frame % 10 == 0:
                     if not cv2.imwrite(str(sweeps/f"{frame}.jpg"),obs["front"][:,:,::-1]):
                         raise RuntimeError("Could not retain sampled front image")
@@ -248,10 +253,13 @@ def main():
     p.add_argument("--sampled-sweeps", type=Path, help="Optional one-Hz raw diagnostic tape")
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--case", choices=("matched-40","published-40","higher-speed","stationary-queue"), required=True)
+    p.add_argument("--keep-front", action="store_true", help="Keep every native front exposure in scratch")
     args = p.parse_args()
+    if args.keep_front and args.sampled_sweeps is None:
+        p.error("--keep-front requires --sampled-sweeps")
     with simulator(args.port, args.attach, "High", map_name="Town03_Opt") as world:
         world.tick()
-        run(world, args.model, args.output, args.case, args.longer_corridor, args.sampled_sweeps)
+        run(world, args.model, args.output, args.case, args.longer_corridor, args.sampled_sweeps,keep_front=args.keep_front)
 
 
 if __name__ == "__main__":

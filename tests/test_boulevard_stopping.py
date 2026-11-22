@@ -14,6 +14,29 @@ ROOT = Path(__file__).resolve().parents[1] / "results/city-maneuvers/speed"
 
 
 class StoppingEnvelopeTests(unittest.TestCase):
+    def test_motorway_sign_and_geometry(self):
+        import carla
+        from crosswalk.boulevard_motorway_transfer import motorway_points
+        from crosswalk.control import Navigation
+        from crosswalk.speed_signs import SignedRouteLimits
+        from tests.test_urban_map import MAP
+        source=MAP.with_name("Town04_Opt.xodr")
+        if not source.exists():
+            self.skipTest("Town04 native OpenDRIVE unavailable")
+        native=carla.Map("Town04_Opt",source.read_text())
+        points=motorway_points(native)
+        positions=[p.transform.location for p in points]
+        nav=Navigation(positions)
+        self.assertAlmostEqual(nav.arc[-1],625.69,places=1)
+        self.assertEqual({p.road_id for p in points},{6,45})
+        signs=SignedRouteLimits.from_map(native,positions,nav.arc,2.25).zones
+        self.assertEqual(len(signs),1)
+        self.assertAlmostEqual(signs[0][0],10.17,places=1)
+        self.assertEqual(signs[0][1],90.)
+        yaw=np.unwrap(np.radians([p.transform.rotation.yaw for p in points]))
+        fixed=(nav.arc[:-1]>=350.)&(nav.arc[1:]<=455.)
+        self.assertLess(np.max(abs(np.diff(yaw)[fixed]/np.diff(nav.arc)[fixed])),.0005)
+
     def test_measured_closed_loop_frames_and_speed_durations(self):
         for folder in sorted(ROOT.iterdir()):
             summary_path = folder/"summary.json"

@@ -114,7 +114,7 @@ def main():
             for case in ("matched-40","higher-speed","stationary-queue"):
                 world.tick()
                 run(world,args.model,args.output/case,case,sweeps=args.scratch/case,
-                    fixture_class=Motorway,window=(350.,455.))
+                    fixture_class=Motorway,window=(350.,455.),keep_front=case!="matched-40")
                 # Do not score a nominal high-posted route lacking the native signs.
                 with np.load(args.output/case/"observations.npz",allow_pickle=False) as tape:
                     if np.count_nonzero(tape["posted_limit_kmh"]==90.)<60:
