@@ -700,10 +700,10 @@ async function loadCatalog(signal) {
   try {
     const view = await readJson('./media/viewer-catalog.json', signal, 4000);
     const extra = Array.isArray(view) ? view : view?.records ?? [];
-    const supplement = new Map(extra.map(item => [item.path, item]));
-    const basePaths = new Set(entries.map(item => item.path));
-    entries = entries.map(item => ({...item, ...supplement.get(item.path)}))
-      .concat(extra.filter(item => !basePaths.has(item.path)));
+    const baseByPath = new Map(entries.map(item => [item.path, item]));
+    const viewerPaths = new Set(extra.map(item => item.path));
+    entries = extra.map(item => ({...baseByPath.get(item.path), ...item}))
+      .concat(entries.filter(item => !viewerPaths.has(item.path)));
   } catch {
     if (signal.aborted) return [];
   }
@@ -728,7 +728,7 @@ async function openReplay(signal, trialId) {
   showMessage('Loading recorded drive…');
   const [entries, build] = await Promise.all([loadCatalog(signal), loadBuild()]);
   if (signal.aborted) return;
-  const selectedPath = ui.encounter.value;
+  const selectedPath = ui.encounter.selectedIndex >= 0 ? ui.encounter.value : null;
   const requested = trialId && Array.isArray(build?.runs) && build.runs.find(run => run?.trial_id === trialId);
   const entry = trialId
     ? entries.find(item => item.trial_id === trialId || (!item.trial_id && item.path === requested?.recording_path))

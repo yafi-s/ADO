@@ -543,7 +543,8 @@ async function startRecording() {
         typeof entry.path === 'string' && (entry.path === '' || /^[\w-]+(?:\/[\w-]+)*$/.test(entry.path)));
       if (!catalog.length) throw new Error('Empty catalog');
       el('case').replaceChildren(...catalog.map(entry => new Option(entry.label, entry.path)));
-      if (catalog.some(e => e.path === requestedCase)) el('case').value = requestedCase;
+      const initial = [requestedCase, viewerEntries[0]?.path].find(path => catalog.some(e => e.path === path));
+      if (initial !== undefined) el('case').value = initial;
       el('case-label').hidden = false;
     }
     const selected = catalog.find(entry => entry.path === el('case').value);
