@@ -160,3 +160,21 @@ sedan's bumper 26.33 m ahead. Its 18 moving divider comparisons
 all exceeded 1 m. Native contacts and signal and yield
 violations were all zero.
 [Later-gap six-axis sector score](spaced-later-gap-failed.json)
+
+## The first proposed Loop prefix stopped behind the cones
+
+The proposed Loop uses the entire original 1.42 km route before
+extending it. In its first prefix test, the restored ambient Tesla
+started physically moving in the alternate lane after the ego
+approached 399 m. The planner rejected entering that lane while
+the forecast showed insufficient room around the Tesla. The ego
+stopped at 413.808 m with 3.516 m of bumper room to the first cone.
+
+The adjacent lane then opened. In the final 46.9 s of confirmed
+available target scans, the ego crept only 0.395 m and remained
+wholly in its source lane. Its last command asked for left steering
+at −0.1255, zero throttle and 0.7879 brake. The first cone was still
+3.043 m ahead at the timeout. There were no contacts or traffic
+violations. This is a failed blocked-then-open control on the
+shared prefix. [Exact native prefix](market-loop-prefix-failed.json) ·
+[Blocked and open frame evidence](market-loop-prefix-blocked-open.json)
