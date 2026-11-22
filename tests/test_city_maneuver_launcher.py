@@ -14,8 +14,8 @@ class CityManeuverLauncherTests(unittest.TestCase):
 
         model = Path(__file__).resolve().parents[1] / "models/city-maneuvers/candidate.npz"
         cases = [
-            ([], "city-maneuvers", True, "market"),
-            (["--destination", "market-loop"], "city-maneuvers", True, "market-loop"),
+            ([], "city-maneuvers", True, "market-loop"),
+            (["--destination", "market"], "city-maneuvers", True, "market"),
             (["--urban-cap", "--no-tactical", "--no-surround", "--population-profile", "standard"], "standard", False, "market"),
         ]
         with TemporaryDirectory() as output:

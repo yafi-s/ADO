@@ -89,7 +89,7 @@ class LoggedDriver:
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", type=Path, default=PROJECT / "models/city-maneuvers/candidate.npz")
-    parser.add_argument("--destination", choices=("market", "market-loop"), default="market",
+    parser.add_argument("--destination", choices=("market", "market-loop"),
                         help="Choose the original Market route or continue through the return boulevard")
     parser.add_argument("--seed", type=int, default=211)
     parser.add_argument("--crossing-delay", type=float, default=0., help="Additional pedestrian departure delay in simulated seconds")
@@ -137,6 +137,8 @@ def main():
                         "ado-city-maneuvers-v1": "city-maneuvers"}
     population_profile = args.population_profile or (
         live_populations.get(schema, "standard") if args.serve or maneuver_driver else "standard")
+    destination = args.destination or ("market-loop" if maneuver_driver and population_profile == "city-maneuvers"
+                                       else "market")
     scene_factory = partial(JourneyScenario, population_profile=population_profile,
                             barriers=pace_schema)
     root = args.output or PROJECT / "out/city-drives"
@@ -152,7 +154,7 @@ def main():
                 if args.open_browser:
                     webbrowser.open(url)
             summary, trace, _, _ = episode(world, "journey", args.seed, schema, model,
-                live=live, realtime=bool(live), max_steps=args.max_steps, destination=args.destination, run_id=folder.name,
+                live=live, realtime=bool(live), max_steps=args.max_steps, destination=destination, run_id=folder.name,
                 scene_factory=scene_factory, crossing_delay=args.crossing_delay, **options)
     write_trace(folder / "trace.jsonl.gz", trace)
     if len(model.observations) != len(trace):
