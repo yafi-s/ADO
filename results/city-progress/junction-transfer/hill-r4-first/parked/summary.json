@@ -1,0 +1,274 @@
+{
+  "scenario": "journey",
+  "seed": 881,
+  "policy": "ado-city-progress-v1",
+  "weather": "ClearNoon",
+  "road_id": 6,
+  "lane_id": -2,
+  "start_xy": [
+    190.32,
+    -5.64
+  ],
+  "outcome": "restarted",
+  "frames": 198,
+  "duration_s": 19.8,
+  "progress_m": 61.542,
+  "route_length_m": 111.242,
+  "contacts": [],
+  "collision_events": 0,
+  "max_lateral_error_m": 0.261,
+  "spawn_lateral_m": 0.0,
+  "spawn_yaw_deg": 0.0,
+  "min_hazard_gap_m": 3.431,
+  "moving_within_1m_frames": 0,
+  "turn_direction": null,
+  "district": null,
+  "destination": "straight",
+  "crossing_delay_s": 0.0,
+  "camera_rendering": {
+    "requested": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "cameras": {
+      "front": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "false",
+          "dlss_screen_percentage": "100.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "false",
+          "dlss_screen_percentage": "100.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "left": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "right": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      }
+    }
+  },
+  "ego_blueprint": "vehicle.lincoln.mkz",
+  "background_actors": {
+    "walkers": 0,
+    "vehicles": 0
+  },
+  "sensor_configuration": "three-camera-lidar-radar",
+  "route_id": "independent-climb",
+  "road_ids": [
+    6,
+    1181,
+    75,
+    1468,
+    74
+  ],
+  "junction_ids": [
+    1168,
+    1441
+  ],
+  "event_triggered": true,
+  "event_cleared": false,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "stopped_for_hazard": true,
+  "closest_in_path_speed_mps": 0.043,
+  "wall_seconds": 17.242,
+  "stations": {
+    "-20.0": {
+      "ego_station_m": -20.04559943606138,
+      "frame": 413,
+      "sim_time": 6.4,
+      "speed_mps": 3.792,
+      "speed_request_mps": 3.62485
+    },
+    "-12.0": {
+      "ego_station_m": -12.152771340770713,
+      "frame": 434,
+      "sim_time": 8.5,
+      "speed_mps": 3.685,
+      "speed_request_mps": 3.62424
+    },
+    "-8.0": {
+      "ego_station_m": -8.071226432591601,
+      "frame": 445,
+      "sim_time": 9.6,
+      "speed_mps": 3.604,
+      "speed_request_mps": 3.61446
+    },
+    "-4.0": {
+      "ego_station_m": -4.0443867059813385,
+      "frame": 456,
+      "sim_time": 10.7,
+      "speed_mps": 3.472,
+      "speed_request_mps": 3.61315
+    },
+    "0.0": {
+      "ego_station_m": -0.0011767267130480263,
+      "frame": 468,
+      "sim_time": 11.9,
+      "speed_mps": 3.229,
+      "speed_request_mps": 3.61315
+    },
+    "4.0": {
+      "ego_station_m": 3.8659745903167604,
+      "frame": 479,
+      "sim_time": 13.0,
+      "speed_mps": 4.123,
+      "speed_request_mps": 5.1149
+    },
+    "10.0": {
+      "ego_station_m": 9.917589820620748,
+      "frame": 493,
+      "sim_time": 14.4,
+      "speed_mps": 4.343,
+      "speed_request_mps": 4.85995
+    }
+  },
+  "exact_station_speeds": {
+    "-20.0": {
+      "first_frame": 413,
+      "second_frame": 414,
+      "time_s": 6.412,
+      "actual_kmh": 13.649,
+      "applied_target_kmh": 13.049,
+      "next_target_kmh": 13.034
+    },
+    "-12.0": {
+      "first_frame": 434,
+      "second_frame": 435,
+      "time_s": 8.5415,
+      "actual_kmh": 13.26,
+      "applied_target_kmh": 13.047,
+      "next_target_kmh": 13.044
+    },
+    "-8.0": {
+      "first_frame": 445,
+      "second_frame": 446,
+      "time_s": 9.6198,
+      "actual_kmh": 12.969,
+      "applied_target_kmh": 13.012,
+      "next_target_kmh": 13.012
+    },
+    "-4.0": {
+      "first_frame": 456,
+      "second_frame": 457,
+      "time_s": 10.7128,
+      "actual_kmh": 12.492,
+      "applied_target_kmh": 13.007,
+      "next_target_kmh": 13.007
+    },
+    "0.0": {
+      "first_frame": 468,
+      "second_frame": 469,
+      "time_s": 11.9004,
+      "actual_kmh": 11.624,
+      "applied_target_kmh": 13.007,
+      "next_target_kmh": 13.673
+    },
+    "4.0": {
+      "first_frame": 479,
+      "second_frame": 480,
+      "time_s": 13.0325,
+      "actual_kmh": 14.925,
+      "applied_target_kmh": 18.414,
+      "next_target_kmh": 18.414
+    },
+    "10.0": {
+      "first_frame": 493,
+      "second_frame": 494,
+      "time_s": 14.4191,
+      "actual_kmh": 15.609,
+      "applied_target_kmh": 17.496,
+      "next_target_kmh": 16.983
+    }
+  },
+  "model_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town03_Opt"
+  },
+  "center_xy": [
+    151.96987915039062,
+    -16.750934600830078
+  ],
+  "axes": [
+    [
+      0.017390816931589486,
+      -0.9998487683077135
+    ],
+    [
+      0.9998487683077135,
+      0.017390816931589486
+    ]
+  ],
+  "green_heads": [],
+  "market_junctions": [
+    82,
+    103,
+    238,
+    730,
+    861,
+    1038,
+    1352,
+    1669,
+    1820,
+    1901,
+    1932
+  ],
+  "departure_step": 0,
+  "cross_speed_requested_mps": 0.0
+}

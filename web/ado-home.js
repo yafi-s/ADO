@@ -18,7 +18,7 @@ const CAMERA_ORDER = Object.keys(CAMERA_LABELS);
 const LOCAL_CONSOLE = ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname);
 const POLICY_LABELS = {
   fusion: 'Learned multisensor', camera: 'Learned vision',
-  'ado-city-clearance-v1': 'ADO city clearance', 'ado-city-pace-v1': 'ADO urban pace',
+  'ado-city-progress-v1': 'ADO city progress', 'ado-city-clearance-v1': 'ADO city clearance', 'ado-city-pace-v1': 'ADO urban pace',
   'ado-city-cruise-v1': 'ADO urban cruise', 'ado-city-policy-v1': 'ADO city driver', 'ado-behavior-v2': 'ADO behavior v2',
   demonstrator: 'Training instructor', teacher: 'Training instructor'
 };
@@ -697,6 +697,22 @@ function renderFrameFacts(frame) {
   fact('simulator', version || mapName ? `CARLA${version}${mapName ? ' · ' + mapName : ''}` : null);
 
   const lateral = frame?.lat_error_m ?? frame?.lateral_error_m;
+  const progress = frame?.progress_evidence;
+  const hasProgress = finite(progress?.base_request_mps) && finite(frame?.speed_request_mps);
+  const baseReasons = {
+    unconfirmed: 'Observations unconfirmed', signal_approach: 'Signal approach',
+    opposing_traffic: 'Opposing traffic detected', vulnerable_road_user: 'Pedestrian or rider detected',
+    occupied_corridor: 'Object within the forward corridor'
+  };
+  let speedSelection = null;
+  if (hasProgress) {
+    const delta = frame.speed_request_mps - progress.base_request_mps;
+    if (Math.abs(delta) > .001) {
+      speedSelection = `${delta > 0 ? 'Raised' : 'Reduced'} from ${tenth.format(progress.base_request_mps * 3.6)} km/h`;
+    } else {
+      speedSelection = baseReasons[progress.binding] ?? 'Base request retained';
+    }
+  }
   const destination = state.options?.destinations?.find?.(item => item?.id === frame?.destination)?.label;
   const extras = {
     lateral: finite(lateral) ? `${hundredth.format(lateral)} m` : null,
@@ -704,6 +720,9 @@ function renderFrameFacts(frame) {
     redlight: finite(frame?.red_light_violations) ? whole.format(frame.red_light_violations) : null,
     yield: finite(frame?.yield_violations) ? whole.format(frame.yield_violations) : null,
     request: finite(frame?.speed_request_mps) ? `${tenth.format(frame.speed_request_mps*3.6)} km/h` : null,
+    progress: speedSelection,
+    sight: progress?.supported_scans >= 3 && finite(progress.sight_m) && progress.sight_m > 0
+      ? `${tenth.format(progress.sight_m)} m` : null,
     limit: finite(frame?.posted_limit_kmh) && frame.posted_limit_kmh>0 ? `${whole.format(frame.posted_limit_kmh)} km/h` : null,
     grip: finite(frame?.grip) ? percent.format(frame.grip) : null,
     delay: finite(frame?.crossing_delay) && frame.crossing_delay !== 0 ? `${frame.crossing_delay} s` : null,

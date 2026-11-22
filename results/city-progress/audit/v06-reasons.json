@@ -1,0 +1,4418 @@
+{
+  "source": "long-city-drive-9fs22_82",
+  "feature_sha256": "bb78a969cd4be91f3edbc17fecda1c37457930e876fcd75a2ecbf9aec88d2b99",
+  "grade_adjustment": {
+    "frames": 2987,
+    "detected_extent_frames": 0,
+    "confirmed_extent_frames": 0,
+    "confirmed_with_raw_obstacle_below_24m": 0,
+    "directly_raised_request_frames": 0,
+    "max_direct_added_kmh": 0,
+    "raised_sample_median_kmh": null,
+    "episodes": []
+  },
+  "note": "Binding labels describe the candidate extension's evaluation. When its proposal is below the inherited target it returns the inherited target. Governing gap <59 m is the driver stopline feature, distinct from similarly oriented green lamps in the visual display.",
+  "whole": {
+    "frames": 2987,
+    "seconds": 298.7,
+    "median": {
+      "ego_kmh": 16.78,
+      "request_kmh": 17.375,
+      "inherited_kmh": 13.043,
+      "sight_m": 4.692,
+      "corridor_m": 20.0,
+      "cross_sight_m": 5.35,
+      "blind_end_m": 0.0
+    },
+    "binding_counts": {
+      "unconfirmed": 807,
+      "opposing_traffic": 154,
+      "sight_distance": 930,
+      "recovery": 359,
+      "occupied_corridor": 230,
+      "signal_approach": 189,
+      "crossing_yield": 141,
+      "turn": 155,
+      "vulnerable_road_user": 22
+    },
+    "inherited_target_frames": 2282,
+    "modeled_governing_lamp_frames": 310,
+    "sensor_red_range": [
+      0.0,
+      0.991
+    ],
+    "first": 97,
+    "last": 3083
+  },
+  "junctions": [
+    {
+      "from_m": 40.0,
+      "to_m": 80.99,
+      "id": 103,
+      "all": {
+        "frames": 85,
+        "seconds": 8.5,
+        "median": {
+          "ego_kmh": 14.692,
+          "request_kmh": 13.816,
+          "inherited_kmh": 13.007,
+          "sight_m": 11.064,
+          "corridor_m": 20.0,
+          "cross_sight_m": 11.064,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 2,
+          "unconfirmed": 16,
+          "recovery": 18,
+          "sight_distance": 49
+        },
+        "inherited_target_frames": 40,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 245,
+        "last": 329
+      },
+      "slow": {
+        "frames": 44,
+        "seconds": 4.4,
+        "median": {
+          "ego_kmh": 13.556,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 1.433,
+          "corridor_m": 20.0,
+          "cross_sight_m": 1.433,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 2,
+          "unconfirmed": 16,
+          "recovery": 9,
+          "sight_distance": 17
+        },
+        "inherited_target_frames": 35,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 245,
+        "last": 329
+      }
+    },
+    {
+      "from_m": 266.71,
+      "to_m": 293.96,
+      "id": 1038,
+      "all": {
+        "frames": 67,
+        "seconds": 6.7,
+        "median": {
+          "ego_kmh": 13.943,
+          "request_kmh": 13.035,
+          "inherited_kmh": 13.014,
+          "sight_m": 11.14,
+          "corridor_m": 20.0,
+          "cross_sight_m": 11.14,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "vulnerable_road_user": 3,
+          "turn": 17,
+          "unconfirmed": 26,
+          "recovery": 12,
+          "sight_distance": 7,
+          "occupied_corridor": 2
+        },
+        "inherited_target_frames": 37,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 692,
+        "last": 758
+      },
+      "slow": {
+        "frames": 49,
+        "seconds": 4.9,
+        "median": {
+          "ego_kmh": 13.77,
+          "request_kmh": 13.037,
+          "inherited_kmh": 13.024,
+          "sight_m": 11.14,
+          "corridor_m": 20.0,
+          "cross_sight_m": 11.14,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "vulnerable_road_user": 3,
+          "turn": 17,
+          "unconfirmed": 23,
+          "recovery": 6
+        },
+        "inherited_target_frames": 26,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 692,
+        "last": 758
+      }
+    },
+    {
+      "from_m": 318.96,
+      "to_m": 353.16,
+      "id": 1352,
+      "all": {
+        "frames": 86,
+        "seconds": 8.6,
+        "median": {
+          "ego_kmh": 13.349,
+          "request_kmh": 13.335,
+          "inherited_kmh": 13.009,
+          "sight_m": 13.931,
+          "corridor_m": 24.0,
+          "cross_sight_m": 13.931,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 15,
+          "recovery": 4,
+          "turn": 26,
+          "sight_distance": 27,
+          "unconfirmed": 14
+        },
+        "inherited_target_frames": 45,
+        "modeled_governing_lamp_frames": 7,
+        "sensor_red_range": [
+          0.017,
+          0.302
+        ],
+        "first": 878,
+        "last": 963
+      },
+      "slow": {
+        "frames": 70,
+        "seconds": 7.0,
+        "median": {
+          "ego_kmh": 13.316,
+          "request_kmh": 13.102,
+          "inherited_kmh": 13.018,
+          "sight_m": 17.489,
+          "corridor_m": 24.0,
+          "cross_sight_m": 17.489,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 15,
+          "recovery": 2,
+          "turn": 26,
+          "sight_distance": 13,
+          "unconfirmed": 14
+        },
+        "inherited_target_frames": 42,
+        "modeled_governing_lamp_frames": 7,
+        "sensor_red_range": [
+          0.017,
+          0.302
+        ],
+        "first": 878,
+        "last": 963
+      }
+    },
+    {
+      "from_m": 649.65,
+      "to_m": 687.65,
+      "id": 82,
+      "all": {
+        "frames": 73,
+        "seconds": 7.3,
+        "median": {
+          "ego_kmh": 18.709,
+          "request_kmh": 18.603,
+          "inherited_kmh": 13.007,
+          "sight_m": 15.627,
+          "corridor_m": 20.0,
+          "cross_sight_m": 15.627,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 53,
+          "recovery": 16,
+          "turn": 3,
+          "unconfirmed": 1
+        },
+        "inherited_target_frames": 26,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1519,
+        "last": 1591
+      },
+      "slow": {
+        "frames": 25,
+        "seconds": 2.5,
+        "median": {
+          "ego_kmh": 13.619,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 3.502,
+          "corridor_m": 20.0,
+          "cross_sight_m": 3.502,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 19,
+          "recovery": 6
+        },
+        "inherited_target_frames": 19,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1539,
+        "last": 1563
+      }
+    },
+    {
+      "from_m": 700.65,
+      "to_m": 731.16,
+      "id": 1932,
+      "all": {
+        "frames": 84,
+        "seconds": 8.4,
+        "median": {
+          "ego_kmh": 13.592,
+          "request_kmh": 12.977,
+          "inherited_kmh": 12.977,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "recovery": 13,
+          "unconfirmed": 71
+        },
+        "inherited_target_frames": 71,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1614,
+        "last": 1697
+      },
+      "slow": {
+        "frames": 76,
+        "seconds": 7.6,
+        "median": {
+          "ego_kmh": 13.559,
+          "request_kmh": 12.977,
+          "inherited_kmh": 12.977,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 66,
+          "recovery": 10
+        },
+        "inherited_target_frames": 66,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1622,
+        "last": 1697
+      }
+    },
+    {
+      "from_m": 773.91,
+      "to_m": 799.91,
+      "id": 238,
+      "all": {
+        "frames": 56,
+        "seconds": 5.6,
+        "median": {
+          "ego_kmh": 15.421,
+          "request_kmh": 14.826,
+          "inherited_kmh": 13.003,
+          "sight_m": 10.678,
+          "corridor_m": 24.0,
+          "cross_sight_m": 10.678,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "recovery": 15,
+          "sight_distance": 41
+        },
+        "inherited_target_frames": 25,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1775,
+        "last": 1830
+      },
+      "slow": {
+        "frames": 26,
+        "seconds": 2.6,
+        "median": {
+          "ego_kmh": 13.597,
+          "request_kmh": 13.001,
+          "inherited_kmh": 13.001,
+          "sight_m": 4.039,
+          "corridor_m": 24.0,
+          "cross_sight_m": 4.039,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "recovery": 7,
+          "sight_distance": 19
+        },
+        "inherited_target_frames": 19,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1775,
+        "last": 1830
+      }
+    },
+    {
+      "from_m": 892.17,
+      "to_m": 931.17,
+      "id": 861,
+      "all": {
+        "frames": 72,
+        "seconds": 7.2,
+        "median": {
+          "ego_kmh": 19.019,
+          "request_kmh": 18.597,
+          "inherited_kmh": 13.007,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "recovery": 37,
+          "unconfirmed": 20,
+          "sight_distance": 15
+        },
+        "inherited_target_frames": 20,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2029,
+        "last": 2100
+      },
+      "slow": {
+        "frames": 7,
+        "seconds": 0.7,
+        "median": {
+          "ego_kmh": 14.551,
+          "request_kmh": 14.872,
+          "inherited_kmh": 13.007,
+          "sight_m": 16.0,
+          "corridor_m": 16.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 2,
+          "recovery": 5
+        },
+        "inherited_target_frames": 2,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2055,
+        "last": 2061
+      }
+    },
+    {
+      "from_m": 1046.17,
+      "to_m": 1076.87,
+      "id": 730,
+      "all": {
+        "frames": 69,
+        "seconds": 6.9,
+        "median": {
+          "ego_kmh": 12.118,
+          "request_kmh": 14.86,
+          "inherited_kmh": 12.988,
+          "sight_m": 24.0,
+          "corridor_m": 24.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "crossing_yield": 19,
+          "recovery": 25,
+          "occupied_corridor": 4,
+          "turn": 6,
+          "sight_distance": 15
+        },
+        "inherited_target_frames": 23,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2375,
+        "last": 2443
+      },
+      "slow": {
+        "frames": 40,
+        "seconds": 4.0,
+        "median": {
+          "ego_kmh": 10.503,
+          "request_kmh": 11.482,
+          "inherited_kmh": 12.148,
+          "sight_m": 23.658,
+          "corridor_m": 24.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "crossing_yield": 19,
+          "recovery": 17,
+          "occupied_corridor": 4
+        },
+        "inherited_target_frames": 23,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2375,
+        "last": 2414
+      }
+    },
+    {
+      "from_m": 1235.65,
+      "to_m": 1253.65,
+      "id": 1820,
+      "all": {
+        "frames": 51,
+        "seconds": 5.1,
+        "median": {
+          "ego_kmh": 12.78,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 31,
+          "sight_distance": 4,
+          "vulnerable_road_user": 10,
+          "recovery": 6
+        },
+        "inherited_target_frames": 45,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2731,
+        "last": 2781
+      },
+      "slow": {
+        "frames": 51,
+        "seconds": 5.1,
+        "median": {
+          "ego_kmh": 12.78,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 31,
+          "sight_distance": 4,
+          "vulnerable_road_user": 10,
+          "recovery": 6
+        },
+        "inherited_target_frames": 45,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2731,
+        "last": 2781
+      }
+    },
+    {
+      "from_m": 1284.65,
+      "to_m": 1324.65,
+      "id": 1901,
+      "all": {
+        "frames": 58,
+        "seconds": 5.8,
+        "median": {
+          "ego_kmh": 26.258,
+          "request_kmh": 27.841,
+          "inherited_kmh": 13.007,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 39,
+          "unconfirmed": 4,
+          "recovery": 15
+        },
+        "inherited_target_frames": 4,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2893,
+        "last": 2950
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 1338.65,
+      "to_m": 1360.04,
+      "id": 1669,
+      "all": {
+        "frames": 32,
+        "seconds": 3.2,
+        "median": {
+          "ego_kmh": 24.109,
+          "request_kmh": 23.512,
+          "inherited_kmh": 12.984,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "turn": 32
+        },
+        "inherited_target_frames": 0,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2970,
+        "last": 3001
+      },
+      "slow": {
+        "frames": 0
+      }
+    }
+  ],
+  "sections": [
+    {
+      "from_m": 420.16,
+      "to_m": 501.65,
+      "all": {
+        "frames": 80,
+        "seconds": 8.0,
+        "median": {
+          "ego_kmh": 37.613,
+          "request_kmh": 39.294,
+          "inherited_kmh": 39.294,
+          "sight_m": 5.62,
+          "corridor_m": 20.0,
+          "cross_sight_m": 5.62,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 58,
+          "unconfirmed": 22
+        },
+        "inherited_target_frames": 80,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1101,
+        "last": 1180
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 734,
+      "to_m": 770,
+      "all": {
+        "frames": 59,
+        "seconds": 5.9,
+        "median": {
+          "ego_kmh": 22.37,
+          "request_kmh": 23.091,
+          "inherited_kmh": 23.091,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 50,
+          "signal_approach": 9
+        },
+        "inherited_target_frames": 59,
+        "modeled_governing_lamp_frames": 31,
+        "sensor_red_range": [
+          0.036,
+          0.89
+        ],
+        "first": 1707,
+        "last": 1765
+      },
+      "slow": {
+        "frames": 5,
+        "seconds": 0.5,
+        "median": {
+          "ego_kmh": 14.022,
+          "request_kmh": 17.097,
+          "inherited_kmh": 17.097,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 4,
+          "signal_approach": 1
+        },
+        "inherited_target_frames": 5,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1707,
+        "last": 1765
+      }
+    },
+    {
+      "from_m": 770,
+      "to_m": 800,
+      "all": {
+        "frames": 65,
+        "seconds": 6.5,
+        "median": {
+          "ego_kmh": 14.627,
+          "request_kmh": 14.786,
+          "inherited_kmh": 13.002,
+          "sight_m": 12.723,
+          "corridor_m": 24.0,
+          "cross_sight_m": 12.723,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 4,
+          "recovery": 20,
+          "sight_distance": 41
+        },
+        "inherited_target_frames": 29,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1766,
+        "last": 1830
+      },
+      "slow": {
+        "frames": 35,
+        "seconds": 3.5,
+        "median": {
+          "ego_kmh": 13.738,
+          "request_kmh": 13.001,
+          "inherited_kmh": 13.0,
+          "sight_m": 5.013,
+          "corridor_m": 24.0,
+          "cross_sight_m": 5.013,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 4,
+          "recovery": 12,
+          "sight_distance": 19
+        },
+        "inherited_target_frames": 23,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1766,
+        "last": 1830
+      }
+    },
+    {
+      "from_m": 800,
+      "to_m": 825,
+      "all": {
+        "frames": 37,
+        "seconds": 3.7,
+        "median": {
+          "ego_kmh": 26.377,
+          "request_kmh": 29.173,
+          "inherited_kmh": 29.173,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "recovery": 10,
+          "sight_distance": 16,
+          "unconfirmed": 8,
+          "turn": 3
+        },
+        "inherited_target_frames": 26,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1831,
+        "last": 1867
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 825,
+      "to_m": 855,
+      "all": {
+        "frames": 52,
+        "seconds": 5.2,
+        "median": {
+          "ego_kmh": 18.673,
+          "request_kmh": 18.414,
+          "inherited_kmh": 18.414,
+          "sight_m": 15.698,
+          "corridor_m": 20.0,
+          "cross_sight_m": 16.021,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 24,
+          "opposing_traffic": 28
+        },
+        "inherited_target_frames": 52,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1868,
+        "last": 1919
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 855,
+      "to_m": 890,
+      "all": {
+        "frames": 106,
+        "seconds": 10.6,
+        "median": {
+          "ego_kmh": 9.103,
+          "request_kmh": 8.949,
+          "inherited_kmh": 5.408,
+          "sight_m": 6.526,
+          "corridor_m": 24.0,
+          "cross_sight_m": 1.953,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 68,
+          "recovery": 34,
+          "unconfirmed": 4
+        },
+        "inherited_target_frames": 51,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1920,
+        "last": 2025
+      },
+      "slow": {
+        "frames": 80,
+        "seconds": 8.0,
+        "median": {
+          "ego_kmh": 7.672,
+          "request_kmh": 5.641,
+          "inherited_kmh": 5.408,
+          "sight_m": 5.147,
+          "corridor_m": 24.0,
+          "cross_sight_m": 0.001,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 56,
+          "recovery": 24
+        },
+        "inherited_target_frames": 45,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1922,
+        "last": 2001
+      }
+    },
+    {
+      "from_m": 150,
+      "to_m": 250,
+      "all": {
+        "frames": 124,
+        "seconds": 12.4,
+        "median": {
+          "ego_kmh": 29.741,
+          "request_kmh": 30.0,
+          "inherited_kmh": 30.0,
+          "sight_m": 1.548,
+          "corridor_m": 20.0,
+          "cross_sight_m": 1.548,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 111,
+          "unconfirmed": 12,
+          "turn": 1
+        },
+        "inherited_target_frames": 124,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 537,
+        "last": 660
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 420,
+      "to_m": 500,
+      "all": {
+        "frames": 79,
+        "seconds": 7.9,
+        "median": {
+          "ego_kmh": 37.649,
+          "request_kmh": 39.294,
+          "inherited_kmh": 39.294,
+          "sight_m": 5.108,
+          "corridor_m": 20.0,
+          "cross_sight_m": 5.108,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 57,
+          "unconfirmed": 22
+        },
+        "inherited_target_frames": 79,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1100,
+        "last": 1178
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 600,
+      "to_m": 645,
+      "all": {
+        "frames": 83,
+        "seconds": 8.3,
+        "median": {
+          "ego_kmh": 18.817,
+          "request_kmh": 18.414,
+          "inherited_kmh": 18.414,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 7,
+          "unconfirmed": 66,
+          "vulnerable_road_user": 2,
+          "occupied_corridor": 2,
+          "recovery": 6
+        },
+        "inherited_target_frames": 76,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1428,
+        "last": 1510
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 1080,
+      "to_m": 1180,
+      "all": {
+        "frames": 146,
+        "seconds": 14.6,
+        "median": {
+          "ego_kmh": 27.389,
+          "request_kmh": 29.919,
+          "inherited_kmh": 29.919,
+          "sight_m": 9.935,
+          "corridor_m": 20.0,
+          "cross_sight_m": 9.935,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 80,
+          "unconfirmed": 38,
+          "turn": 6,
+          "recovery": 12,
+          "occupied_corridor": 10
+        },
+        "inherited_target_frames": 130,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2449,
+        "last": 2594
+      },
+      "slow": {
+        "frames": 13,
+        "seconds": 1.3,
+        "median": {
+          "ego_kmh": 13.046,
+          "request_kmh": 13.4,
+          "inherited_kmh": 13.134,
+          "sight_m": 12.313,
+          "corridor_m": 20.0,
+          "cross_sight_m": 12.313,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 5,
+          "recovery": 8
+        },
+        "inherited_target_frames": 5,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2516,
+        "last": 2528
+      }
+    },
+    {
+      "from_m": 1365,
+      "to_m": 1415,
+      "all": {
+        "frames": 72,
+        "seconds": 7.2,
+        "median": {
+          "ego_kmh": 25.929,
+          "request_kmh": 30.0,
+          "inherited_kmh": 30.0,
+          "sight_m": 13.804,
+          "corridor_m": 20.0,
+          "cross_sight_m": 13.804,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "turn": 9,
+          "sight_distance": 33,
+          "unconfirmed": 24,
+          "recovery": 6
+        },
+        "inherited_target_frames": 66,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 3010,
+        "last": 3081
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 858,
+      "to_m": 872,
+      "all": {
+        "frames": 67,
+        "seconds": 6.7,
+        "median": {
+          "ego_kmh": 7.193,
+          "request_kmh": 5.408,
+          "inherited_kmh": 5.408,
+          "sight_m": 4.366,
+          "corridor_m": 24.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 2.872
+        },
+        "binding_counts": {
+          "sight_distance": 51,
+          "recovery": 16
+        },
+        "inherited_target_frames": 40,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1927,
+        "last": 1993
+      },
+      "slow": {
+        "frames": 67,
+        "seconds": 6.7,
+        "median": {
+          "ego_kmh": 7.193,
+          "request_kmh": 5.408,
+          "inherited_kmh": 5.408,
+          "sight_m": 4.366,
+          "corridor_m": 24.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 2.872
+        },
+        "binding_counts": {
+          "sight_distance": 51,
+          "recovery": 16
+        },
+        "inherited_target_frames": 40,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1927,
+        "last": 1993
+      }
+    },
+    {
+      "from_m": 872,
+      "to_m": 882,
+      "all": {
+        "frames": 21,
+        "seconds": 2.1,
+        "median": {
+          "ego_kmh": 17.658,
+          "request_kmh": 23.127,
+          "inherited_kmh": 18.561,
+          "sight_m": 24.0,
+          "corridor_m": 24.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "recovery": 17,
+          "sight_distance": 4
+        },
+        "inherited_target_frames": 0,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1994,
+        "last": 2014
+      },
+      "slow": {
+        "frames": 8,
+        "seconds": 0.8,
+        "median": {
+          "ego_kmh": 11.983,
+          "request_kmh": 17.065,
+          "inherited_kmh": 16.798,
+          "sight_m": 24.0,
+          "corridor_m": 24.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "recovery": 8
+        },
+        "inherited_target_frames": 0,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1994,
+        "last": 2001
+      }
+    },
+    {
+      "from_m": 882,
+      "to_m": 892,
+      "all": {
+        "frames": 14,
+        "seconds": 1.4,
+        "median": {
+          "ego_kmh": 25.866,
+          "request_kmh": 16.259,
+          "inherited_kmh": 13.005,
+          "sight_m": 20.0,
+          "corridor_m": 24.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 6,
+          "unconfirmed": 4,
+          "recovery": 4
+        },
+        "inherited_target_frames": 4,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2015,
+        "last": 2028
+      },
+      "slow": {
+        "frames": 0
+      }
+    }
+  ],
+  "station_bins": [
+    {
+      "from_m": 0,
+      "to_m": 25,
+      "all": {
+        "frames": 112,
+        "seconds": 11.2,
+        "median": {
+          "ego_kmh": 7.807,
+          "request_kmh": 10.27,
+          "inherited_kmh": 10.136,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 68,
+          "opposing_traffic": 16,
+          "sight_distance": 5,
+          "recovery": 13,
+          "occupied_corridor": 3,
+          "signal_approach": 7
+        },
+        "inherited_target_frames": 99,
+        "modeled_governing_lamp_frames": 61,
+        "sensor_red_range": [
+          0.264,
+          0.981
+        ],
+        "first": 97,
+        "last": 208
+      },
+      "slow": {
+        "frames": 96,
+        "seconds": 9.6,
+        "median": {
+          "ego_kmh": 6.79,
+          "request_kmh": 8.338,
+          "inherited_kmh": 8.205,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 55,
+          "opposing_traffic": 16,
+          "sight_distance": 5,
+          "recovery": 13,
+          "occupied_corridor": 3,
+          "signal_approach": 4
+        },
+        "inherited_target_frames": 83,
+        "modeled_governing_lamp_frames": 45,
+        "sensor_red_range": [
+          0.287,
+          0.981
+        ],
+        "first": 97,
+        "last": 208
+      }
+    },
+    {
+      "from_m": 25,
+      "to_m": 50,
+      "all": {
+        "frames": 63,
+        "seconds": 6.3,
+        "median": {
+          "ego_kmh": 13.752,
+          "request_kmh": 13.43,
+          "inherited_kmh": 13.007,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 34,
+          "unconfirmed": 20,
+          "recovery": 9
+        },
+        "inherited_target_frames": 54,
+        "modeled_governing_lamp_frames": 29,
+        "sensor_red_range": [
+          0.18,
+          0.901
+        ],
+        "first": 209,
+        "last": 271
+      },
+      "slow": {
+        "frames": 43,
+        "seconds": 4.3,
+        "median": {
+          "ego_kmh": 13.529,
+          "request_kmh": 13.005,
+          "inherited_kmh": 13.005,
+          "sight_m": 0.988,
+          "corridor_m": 20.0,
+          "cross_sight_m": 0.988,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 21,
+          "unconfirmed": 16,
+          "recovery": 6
+        },
+        "inherited_target_frames": 37,
+        "modeled_governing_lamp_frames": 12,
+        "sensor_red_range": [
+          0.18,
+          0.901
+        ],
+        "first": 209,
+        "last": 268
+      }
+    },
+    {
+      "from_m": 50,
+      "to_m": 75,
+      "all": {
+        "frames": 42,
+        "seconds": 4.2,
+        "median": {
+          "ego_kmh": 21.913,
+          "request_kmh": 22.235,
+          "inherited_kmh": 13.007,
+          "sight_m": 15.371,
+          "corridor_m": 20.0,
+          "cross_sight_m": 15.371,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "recovery": 6,
+          "sight_distance": 36
+        },
+        "inherited_target_frames": 9,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 272,
+        "last": 313
+      },
+      "slow": {
+        "frames": 4,
+        "seconds": 0.4,
+        "median": {
+          "ego_kmh": 14.468,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 4.927,
+          "corridor_m": 24.0,
+          "cross_sight_m": 4.927,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 4
+        },
+        "inherited_target_frames": 4,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 310,
+        "last": 313
+      }
+    },
+    {
+      "from_m": 75,
+      "to_m": 100,
+      "all": {
+        "frames": 47,
+        "seconds": 4.7,
+        "median": {
+          "ego_kmh": 17.809,
+          "request_kmh": 20.601,
+          "inherited_kmh": 20.601,
+          "sight_m": 0.462,
+          "corridor_m": 20.0,
+          "cross_sight_m": 0.462,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 13,
+          "recovery": 6,
+          "unconfirmed": 16,
+          "opposing_traffic": 12
+        },
+        "inherited_target_frames": 41,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 314,
+        "last": 360
+      },
+      "slow": {
+        "frames": 19,
+        "seconds": 1.9,
+        "median": {
+          "ego_kmh": 13.644,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 2.732,
+          "corridor_m": 20.0,
+          "cross_sight_m": 2.732,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 13,
+          "recovery": 6
+        },
+        "inherited_target_frames": 13,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 314,
+        "last": 332
+      }
+    },
+    {
+      "from_m": 100,
+      "to_m": 125,
+      "all": {
+        "frames": 55,
+        "seconds": 5.5,
+        "median": {
+          "ego_kmh": 16.484,
+          "request_kmh": 15.398,
+          "inherited_kmh": 15.398,
+          "sight_m": 2.419,
+          "corridor_m": 20.0,
+          "cross_sight_m": 2.419,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "opposing_traffic": 30,
+          "sight_distance": 25
+        },
+        "inherited_target_frames": 55,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 361,
+        "last": 415
+      },
+      "slow": {
+        "frames": 24,
+        "seconds": 2.4,
+        "median": {
+          "ego_kmh": 10.834,
+          "request_kmh": 11.069,
+          "inherited_kmh": 11.069,
+          "sight_m": 0.003,
+          "corridor_m": 20.0,
+          "cross_sight_m": 0.003,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "opposing_traffic": 20,
+          "sight_distance": 4
+        },
+        "inherited_target_frames": 24,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 371,
+        "last": 394
+      }
+    },
+    {
+      "from_m": 125,
+      "to_m": 150,
+      "all": {
+        "frames": 121,
+        "seconds": 12.1,
+        "median": {
+          "ego_kmh": 4.352,
+          "request_kmh": 5.408,
+          "inherited_kmh": 5.408,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 41,
+          "unconfirmed": 31,
+          "crossing_yield": 49
+        },
+        "inherited_target_frames": 121,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 416,
+        "last": 536
+      },
+      "slow": {
+        "frames": 92,
+        "seconds": 9.2,
+        "median": {
+          "ego_kmh": 1.562,
+          "request_kmh": 2.098,
+          "inherited_kmh": 2.764,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "crossing_yield": 48,
+          "unconfirmed": 24,
+          "sight_distance": 20
+        },
+        "inherited_target_frames": 92,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 437,
+        "last": 528
+      }
+    },
+    {
+      "from_m": 150,
+      "to_m": 175,
+      "all": {
+        "frames": 34,
+        "seconds": 3.4,
+        "median": {
+          "ego_kmh": 27.925,
+          "request_kmh": 30.0,
+          "inherited_kmh": 30.0,
+          "sight_m": 0.493,
+          "corridor_m": 20.0,
+          "cross_sight_m": 0.493,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 26,
+          "unconfirmed": 8
+        },
+        "inherited_target_frames": 34,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 537,
+        "last": 570
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 175,
+      "to_m": 200,
+      "all": {
+        "frames": 30,
+        "seconds": 3.0,
+        "median": {
+          "ego_kmh": 29.66,
+          "request_kmh": 30.0,
+          "inherited_kmh": 30.0,
+          "sight_m": 1.478,
+          "corridor_m": 20.0,
+          "cross_sight_m": 1.478,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 30
+        },
+        "inherited_target_frames": 30,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 571,
+        "last": 600
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 200,
+      "to_m": 225,
+      "all": {
+        "frames": 30,
+        "seconds": 3.0,
+        "median": {
+          "ego_kmh": 30.017,
+          "request_kmh": 30.0,
+          "inherited_kmh": 30.0,
+          "sight_m": 0.387,
+          "corridor_m": 24.0,
+          "cross_sight_m": 0.387,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 30
+        },
+        "inherited_target_frames": 30,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 601,
+        "last": 630
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 225,
+      "to_m": 250,
+      "all": {
+        "frames": 30,
+        "seconds": 3.0,
+        "median": {
+          "ego_kmh": 30.251,
+          "request_kmh": 30.0,
+          "inherited_kmh": 30.0,
+          "sight_m": 6.866,
+          "corridor_m": 20.0,
+          "cross_sight_m": 6.866,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 4,
+          "sight_distance": 25,
+          "turn": 1
+        },
+        "inherited_target_frames": 30,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 631,
+        "last": 660
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 250,
+      "to_m": 275,
+      "all": {
+        "frames": 53,
+        "seconds": 5.3,
+        "median": {
+          "ego_kmh": 14.069,
+          "request_kmh": 13.037,
+          "inherited_kmh": 13.027,
+          "sight_m": 0.023,
+          "corridor_m": 20.0,
+          "cross_sight_m": 0.023,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 18,
+          "unconfirmed": 24,
+          "vulnerable_road_user": 4,
+          "turn": 7
+        },
+        "inherited_target_frames": 46,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 661,
+        "last": 713
+      },
+      "slow": {
+        "frames": 31,
+        "seconds": 3.1,
+        "median": {
+          "ego_kmh": 13.745,
+          "request_kmh": 13.027,
+          "inherited_kmh": 13.024,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 20,
+          "vulnerable_road_user": 4,
+          "turn": 7
+        },
+        "inherited_target_frames": 24,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 683,
+        "last": 713
+      }
+    },
+    {
+      "from_m": 275,
+      "to_m": 300,
+      "all": {
+        "frames": 59,
+        "seconds": 5.9,
+        "median": {
+          "ego_kmh": 14.699,
+          "request_kmh": 14.328,
+          "inherited_kmh": 13.011,
+          "sight_m": 12.712,
+          "corridor_m": 20.0,
+          "cross_sight_m": 13.846,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "turn": 10,
+          "recovery": 12,
+          "sight_distance": 7,
+          "occupied_corridor": 5,
+          "unconfirmed": 18,
+          "signal_approach": 7
+        },
+        "inherited_target_frames": 36,
+        "modeled_governing_lamp_frames": 7,
+        "sensor_red_range": [
+          0.425,
+          0.919
+        ],
+        "first": 714,
+        "last": 772
+      },
+      "slow": {
+        "frames": 35,
+        "seconds": 3.5,
+        "median": {
+          "ego_kmh": 13.892,
+          "request_kmh": 14.281,
+          "inherited_kmh": 13.022,
+          "sight_m": 11.14,
+          "corridor_m": 15.282,
+          "cross_sight_m": 11.14,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "turn": 10,
+          "recovery": 6,
+          "unconfirmed": 15,
+          "occupied_corridor": 3,
+          "signal_approach": 1
+        },
+        "inherited_target_frames": 19,
+        "modeled_governing_lamp_frames": 1,
+        "sensor_red_range": [
+          0.919,
+          0.919
+        ],
+        "first": 714,
+        "last": 766
+      }
+    },
+    {
+      "from_m": 300,
+      "to_m": 325,
+      "all": {
+        "frames": 121,
+        "seconds": 12.1,
+        "median": {
+          "ego_kmh": 8.968,
+          "request_kmh": 10.287,
+          "inherited_kmh": 10.287,
+          "sight_m": 6.575,
+          "corridor_m": 6.575,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 112,
+          "unconfirmed": 8,
+          "recovery": 1
+        },
+        "inherited_target_frames": 120,
+        "modeled_governing_lamp_frames": 112,
+        "sensor_red_range": [
+          0.017,
+          0.991
+        ],
+        "first": 773,
+        "last": 893
+      },
+      "slow": {
+        "frames": 111,
+        "seconds": 11.1,
+        "median": {
+          "ego_kmh": 6.88,
+          "request_kmh": 7.949,
+          "inherited_kmh": 7.949,
+          "sight_m": 5.661,
+          "corridor_m": 5.661,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 102,
+          "unconfirmed": 8,
+          "recovery": 1
+        },
+        "inherited_target_frames": 110,
+        "modeled_governing_lamp_frames": 102,
+        "sensor_red_range": [
+          0.017,
+          0.991
+        ],
+        "first": 783,
+        "last": 893
+      }
+    },
+    {
+      "from_m": 325,
+      "to_m": 350,
+      "all": {
+        "frames": 62,
+        "seconds": 6.2,
+        "median": {
+          "ego_kmh": 13.583,
+          "request_kmh": 13.453,
+          "inherited_kmh": 13.01,
+          "sight_m": 13.46,
+          "corridor_m": 24.0,
+          "cross_sight_m": 13.46,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "turn": 26,
+          "recovery": 3,
+          "sight_distance": 20,
+          "unconfirmed": 13
+        },
+        "inherited_target_frames": 22,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 894,
+        "last": 955
+      },
+      "slow": {
+        "frames": 46,
+        "seconds": 4.6,
+        "median": {
+          "ego_kmh": 13.408,
+          "request_kmh": 13.348,
+          "inherited_kmh": 13.029,
+          "sight_m": 16.908,
+          "corridor_m": 24.0,
+          "cross_sight_m": 16.908,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "turn": 26,
+          "recovery": 1,
+          "sight_distance": 6,
+          "unconfirmed": 13
+        },
+        "inherited_target_frames": 19,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 894,
+        "last": 955
+      }
+    },
+    {
+      "from_m": 350,
+      "to_m": 375,
+      "all": {
+        "frames": 58,
+        "seconds": 5.8,
+        "median": {
+          "ego_kmh": 15.759,
+          "request_kmh": 16.906,
+          "inherited_kmh": 16.906,
+          "sight_m": 0.225,
+          "corridor_m": 24.0,
+          "cross_sight_m": 0.225,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 13,
+          "sight_distance": 31,
+          "vulnerable_road_user": 2,
+          "opposing_traffic": 12
+        },
+        "inherited_target_frames": 58,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 956,
+        "last": 1013
+      },
+      "slow": {
+        "frames": 22,
+        "seconds": 2.2,
+        "median": {
+          "ego_kmh": 13.327,
+          "request_kmh": 14.575,
+          "inherited_kmh": 14.575,
+          "sight_m": 4.38,
+          "corridor_m": 24.0,
+          "cross_sight_m": 4.38,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 1,
+          "sight_distance": 21
+        },
+        "inherited_target_frames": 22,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 956,
+        "last": 999
+      }
+    },
+    {
+      "from_m": 375,
+      "to_m": 400,
+      "all": {
+        "frames": 60,
+        "seconds": 6.0,
+        "median": {
+          "ego_kmh": 15.872,
+          "request_kmh": 16.563,
+          "inherited_kmh": 16.563,
+          "sight_m": 0.92,
+          "corridor_m": 20.0,
+          "cross_sight_m": 0.92,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "opposing_traffic": 2,
+          "sight_distance": 43,
+          "recovery": 11,
+          "unconfirmed": 4
+        },
+        "inherited_target_frames": 49,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1014,
+        "last": 1073
+      },
+      "slow": {
+        "frames": 16,
+        "seconds": 1.6,
+        "median": {
+          "ego_kmh": 12.004,
+          "request_kmh": 13.067,
+          "inherited_kmh": 12.8,
+          "sight_m": 20.0,
+          "corridor_m": 24.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 6,
+          "recovery": 10
+        },
+        "inherited_target_frames": 6,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1052,
+        "last": 1067
+      }
+    },
+    {
+      "from_m": 400,
+      "to_m": 425,
+      "all": {
+        "frames": 32,
+        "seconds": 3.2,
+        "median": {
+          "ego_kmh": 28.451,
+          "request_kmh": 35.313,
+          "inherited_kmh": 35.313,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 12,
+          "unconfirmed": 18,
+          "vulnerable_road_user": 2
+        },
+        "inherited_target_frames": 32,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1074,
+        "last": 1105
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 425,
+      "to_m": 450,
+      "all": {
+        "frames": 23,
+        "seconds": 2.3,
+        "median": {
+          "ego_kmh": 38.088,
+          "request_kmh": 39.294,
+          "inherited_kmh": 39.294,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 11,
+          "unconfirmed": 12
+        },
+        "inherited_target_frames": 23,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1106,
+        "last": 1128
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 450,
+      "to_m": 475,
+      "all": {
+        "frames": 25,
+        "seconds": 2.5,
+        "median": {
+          "ego_kmh": 37.796,
+          "request_kmh": 38.103,
+          "inherited_kmh": 38.103,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 6,
+          "sight_distance": 19
+        },
+        "inherited_target_frames": 25,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1129,
+        "last": 1153
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 475,
+      "to_m": 500,
+      "all": {
+        "frames": 25,
+        "seconds": 2.5,
+        "median": {
+          "ego_kmh": 35.788,
+          "request_kmh": 37.517,
+          "inherited_kmh": 37.517,
+          "sight_m": 6.454,
+          "corridor_m": 20.0,
+          "cross_sight_m": 6.454,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 21,
+          "unconfirmed": 4
+        },
+        "inherited_target_frames": 25,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1154,
+        "last": 1178
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 500,
+      "to_m": 525,
+      "all": {
+        "frames": 29,
+        "seconds": 2.9,
+        "median": {
+          "ego_kmh": 32.713,
+          "request_kmh": 25.831,
+          "inherited_kmh": 25.831,
+          "sight_m": 0.491,
+          "corridor_m": 24.0,
+          "cross_sight_m": 0.491,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 16,
+          "unconfirmed": 12,
+          "recovery": 1
+        },
+        "inherited_target_frames": 26,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1179,
+        "last": 1207
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 525,
+      "to_m": 550,
+      "all": {
+        "frames": 95,
+        "seconds": 9.5,
+        "median": {
+          "ego_kmh": 6.808,
+          "request_kmh": 5.408,
+          "inherited_kmh": 5.408,
+          "sight_m": 2.561,
+          "corridor_m": 20.0,
+          "cross_sight_m": 2.561,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 46,
+          "unconfirmed": 12,
+          "recovery": 16,
+          "opposing_traffic": 17,
+          "occupied_corridor": 4
+        },
+        "inherited_target_frames": 76,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1208,
+        "last": 1302
+      },
+      "slow": {
+        "frames": 78,
+        "seconds": 7.8,
+        "median": {
+          "ego_kmh": 6.439,
+          "request_kmh": 5.408,
+          "inherited_kmh": 5.408,
+          "sight_m": 1.723,
+          "corridor_m": 20.0,
+          "cross_sight_m": 1.723,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 38,
+          "unconfirmed": 12,
+          "recovery": 11,
+          "opposing_traffic": 17
+        },
+        "inherited_target_frames": 64,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1216,
+        "last": 1293
+      }
+    },
+    {
+      "from_m": 550,
+      "to_m": 575,
+      "all": {
+        "frames": 82,
+        "seconds": 8.2,
+        "median": {
+          "ego_kmh": 12.573,
+          "request_kmh": 12.845,
+          "inherited_kmh": 12.845,
+          "sight_m": 4.938,
+          "corridor_m": 7.462,
+          "cross_sight_m": 5.377,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "occupied_corridor": 74,
+          "unconfirmed": 8
+        },
+        "inherited_target_frames": 82,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1303,
+        "last": 1384
+      },
+      "slow": {
+        "frames": 47,
+        "seconds": 4.7,
+        "median": {
+          "ego_kmh": 4.482,
+          "request_kmh": 5.994,
+          "inherited_kmh": 5.994,
+          "sight_m": 3.983,
+          "corridor_m": 4.288,
+          "cross_sight_m": 5.305,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "occupied_corridor": 39,
+          "unconfirmed": 8
+        },
+        "inherited_target_frames": 47,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1333,
+        "last": 1379
+      }
+    },
+    {
+      "from_m": 575,
+      "to_m": 600,
+      "all": {
+        "frames": 43,
+        "seconds": 4.3,
+        "median": {
+          "ego_kmh": 19.192,
+          "request_kmh": 21.192,
+          "inherited_kmh": 18.394,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "occupied_corridor": 11,
+          "unconfirmed": 8,
+          "recovery": 11,
+          "sight_distance": 13
+        },
+        "inherited_target_frames": 19,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1385,
+        "last": 1427
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 600,
+      "to_m": 625,
+      "all": {
+        "frames": 43,
+        "seconds": 4.3,
+        "median": {
+          "ego_kmh": 19.188,
+          "request_kmh": 18.414,
+          "inherited_kmh": 18.414,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 3,
+          "unconfirmed": 38,
+          "vulnerable_road_user": 2
+        },
+        "inherited_target_frames": 42,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1428,
+        "last": 1470
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 625,
+      "to_m": 650,
+      "all": {
+        "frames": 49,
+        "seconds": 4.9,
+        "median": {
+          "ego_kmh": 18.752,
+          "request_kmh": 18.502,
+          "inherited_kmh": 17.701,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 6,
+          "unconfirmed": 28,
+          "occupied_corridor": 2,
+          "recovery": 13
+        },
+        "inherited_target_frames": 34,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1471,
+        "last": 1519
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 650,
+      "to_m": 675,
+      "all": {
+        "frames": 53,
+        "seconds": 5.3,
+        "median": {
+          "ego_kmh": 15.35,
+          "request_kmh": 13.94,
+          "inherited_kmh": 13.007,
+          "sight_m": 9.586,
+          "corridor_m": 20.0,
+          "cross_sight_m": 9.586,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 37,
+          "recovery": 16
+        },
+        "inherited_target_frames": 25,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1520,
+        "last": 1572
+      },
+      "slow": {
+        "frames": 25,
+        "seconds": 2.5,
+        "median": {
+          "ego_kmh": 13.619,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 3.502,
+          "corridor_m": 20.0,
+          "cross_sight_m": 3.502,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 19,
+          "recovery": 6
+        },
+        "inherited_target_frames": 19,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1539,
+        "last": 1563
+      }
+    },
+    {
+      "from_m": 675,
+      "to_m": 700,
+      "all": {
+        "frames": 39,
+        "seconds": 3.9,
+        "median": {
+          "ego_kmh": 23.008,
+          "request_kmh": 25.235,
+          "inherited_kmh": 12.989,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 15,
+          "turn": 4,
+          "unconfirmed": 8,
+          "recovery": 12
+        },
+        "inherited_target_frames": 8,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1573,
+        "last": 1611
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 700,
+      "to_m": 725,
+      "all": {
+        "frames": 65,
+        "seconds": 6.5,
+        "median": {
+          "ego_kmh": 13.637,
+          "request_kmh": 12.98,
+          "inherited_kmh": 12.978,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "recovery": 15,
+          "unconfirmed": 50
+        },
+        "inherited_target_frames": 50,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1612,
+        "last": 1676
+      },
+      "slow": {
+        "frames": 55,
+        "seconds": 5.5,
+        "median": {
+          "ego_kmh": 13.619,
+          "request_kmh": 12.98,
+          "inherited_kmh": 12.979,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 45,
+          "recovery": 10
+        },
+        "inherited_target_frames": 45,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1622,
+        "last": 1676
+      }
+    },
+    {
+      "from_m": 725,
+      "to_m": 750,
+      "all": {
+        "frames": 58,
+        "seconds": 5.8,
+        "median": {
+          "ego_kmh": 12.532,
+          "request_kmh": 15.471,
+          "inherited_kmh": 15.471,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 56,
+          "signal_approach": 2
+        },
+        "inherited_target_frames": 58,
+        "modeled_governing_lamp_frames": 5,
+        "sensor_red_range": [
+          0.456,
+          0.717
+        ],
+        "first": 1677,
+        "last": 1734
+      },
+      "slow": {
+        "frames": 34,
+        "seconds": 3.4,
+        "median": {
+          "ego_kmh": 10.411,
+          "request_kmh": 10.173,
+          "inherited_kmh": 10.173,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 34
+        },
+        "inherited_target_frames": 34,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1677,
+        "last": 1710
+      }
+    },
+    {
+      "from_m": 750,
+      "to_m": 775,
+      "all": {
+        "frames": 43,
+        "seconds": 4.3,
+        "median": {
+          "ego_kmh": 20.041,
+          "request_kmh": 17.659,
+          "inherited_kmh": 16.278,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 24,
+          "signal_approach": 11,
+          "recovery": 8
+        },
+        "inherited_target_frames": 35,
+        "modeled_governing_lamp_frames": 26,
+        "sensor_red_range": [
+          0.036,
+          0.89
+        ],
+        "first": 1735,
+        "last": 1777
+      },
+      "slow": {
+        "frames": 11,
+        "seconds": 1.1,
+        "median": {
+          "ego_kmh": 14.098,
+          "request_kmh": 13.928,
+          "inherited_kmh": 12.996,
+          "sight_m": 24.0,
+          "corridor_m": 24.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 5,
+          "recovery": 6
+        },
+        "inherited_target_frames": 5,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1765,
+        "last": 1775
+      }
+    },
+    {
+      "from_m": 775,
+      "to_m": 800,
+      "all": {
+        "frames": 53,
+        "seconds": 5.3,
+        "median": {
+          "ego_kmh": 15.397,
+          "request_kmh": 13.932,
+          "inherited_kmh": 13.002,
+          "sight_m": 9.865,
+          "corridor_m": 24.0,
+          "cross_sight_m": 9.865,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "recovery": 12,
+          "sight_distance": 41
+        },
+        "inherited_target_frames": 25,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1778,
+        "last": 1830
+      },
+      "slow": {
+        "frames": 25,
+        "seconds": 2.5,
+        "median": {
+          "ego_kmh": 13.586,
+          "request_kmh": 13.001,
+          "inherited_kmh": 13.001,
+          "sight_m": 3.837,
+          "corridor_m": 24.0,
+          "cross_sight_m": 3.837,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 19,
+          "recovery": 6
+        },
+        "inherited_target_frames": 19,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1806,
+        "last": 1830
+      }
+    },
+    {
+      "from_m": 800,
+      "to_m": 825,
+      "all": {
+        "frames": 37,
+        "seconds": 3.7,
+        "median": {
+          "ego_kmh": 26.377,
+          "request_kmh": 29.173,
+          "inherited_kmh": 29.173,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "recovery": 10,
+          "sight_distance": 16,
+          "unconfirmed": 8,
+          "turn": 3
+        },
+        "inherited_target_frames": 26,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1831,
+        "last": 1867
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 825,
+      "to_m": 850,
+      "all": {
+        "frames": 41,
+        "seconds": 4.1,
+        "median": {
+          "ego_kmh": 20.891,
+          "request_kmh": 18.446,
+          "inherited_kmh": 18.446,
+          "sight_m": 16.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 13,
+          "opposing_traffic": 28
+        },
+        "inherited_target_frames": 41,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1868,
+        "last": 1908
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 850,
+      "to_m": 875,
+      "all": {
+        "frames": 94,
+        "seconds": 9.4,
+        "median": {
+          "ego_kmh": 8.379,
+          "request_kmh": 7.273,
+          "inherited_kmh": 5.408,
+          "sight_m": 5.147,
+          "corridor_m": 24.0,
+          "cross_sight_m": 0.032,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 69,
+          "recovery": 25
+        },
+        "inherited_target_frames": 58,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1909,
+        "last": 2002
+      },
+      "slow": {
+        "frames": 80,
+        "seconds": 8.0,
+        "median": {
+          "ego_kmh": 7.672,
+          "request_kmh": 5.641,
+          "inherited_kmh": 5.408,
+          "sight_m": 5.147,
+          "corridor_m": 24.0,
+          "cross_sight_m": 0.001,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 56,
+          "recovery": 24
+        },
+        "inherited_target_frames": 45,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1922,
+        "last": 2001
+      }
+    },
+    {
+      "from_m": 875,
+      "to_m": 900,
+      "all": {
+        "frames": 42,
+        "seconds": 4.2,
+        "median": {
+          "ego_kmh": 20.475,
+          "request_kmh": 19.529,
+          "inherited_kmh": 13.007,
+          "sight_m": 24.0,
+          "corridor_m": 24.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "recovery": 24,
+          "sight_distance": 10,
+          "unconfirmed": 8
+        },
+        "inherited_target_frames": 8,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2003,
+        "last": 2044
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 900,
+      "to_m": 925,
+      "all": {
+        "frames": 45,
+        "seconds": 4.5,
+        "median": {
+          "ego_kmh": 18.756,
+          "request_kmh": 23.266,
+          "inherited_kmh": 13.007,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "recovery": 23,
+          "unconfirmed": 8,
+          "sight_distance": 14
+        },
+        "inherited_target_frames": 8,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2045,
+        "last": 2089
+      },
+      "slow": {
+        "frames": 7,
+        "seconds": 0.7,
+        "median": {
+          "ego_kmh": 14.551,
+          "request_kmh": 14.872,
+          "inherited_kmh": 13.007,
+          "sight_m": 16.0,
+          "corridor_m": 16.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 2,
+          "recovery": 5
+        },
+        "inherited_target_frames": 2,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2055,
+        "last": 2061
+      }
+    },
+    {
+      "from_m": 925,
+      "to_m": 950,
+      "all": {
+        "frames": 43,
+        "seconds": 4.3,
+        "median": {
+          "ego_kmh": 21.1,
+          "request_kmh": 20.6,
+          "inherited_kmh": 18.394,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 15,
+          "unconfirmed": 18,
+          "recovery": 9,
+          "occupied_corridor": 1
+        },
+        "inherited_target_frames": 19,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2090,
+        "last": 2132
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 950,
+      "to_m": 975,
+      "all": {
+        "frames": 64,
+        "seconds": 6.4,
+        "median": {
+          "ego_kmh": 15.813,
+          "request_kmh": 14.895,
+          "inherited_kmh": 14.895,
+          "sight_m": 9.289,
+          "corridor_m": 9.289,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "occupied_corridor": 46,
+          "opposing_traffic": 14,
+          "unconfirmed": 4
+        },
+        "inherited_target_frames": 64,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2133,
+        "last": 2196
+      },
+      "slow": {
+        "frames": 31,
+        "seconds": 3.1,
+        "median": {
+          "ego_kmh": 7.333,
+          "request_kmh": 8.619,
+          "inherited_kmh": 8.619,
+          "sight_m": 5.645,
+          "corridor_m": 5.645,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "occupied_corridor": 27,
+          "unconfirmed": 4
+        },
+        "inherited_target_frames": 31,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2166,
+        "last": 2196
+      }
+    },
+    {
+      "from_m": 975,
+      "to_m": 1000,
+      "all": {
+        "frames": 50,
+        "seconds": 5.0,
+        "median": {
+          "ego_kmh": 18.454,
+          "request_kmh": 18.414,
+          "inherited_kmh": 18.414,
+          "sight_m": 19.612,
+          "corridor_m": 19.612,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "occupied_corridor": 36,
+          "unconfirmed": 6,
+          "recovery": 8
+        },
+        "inherited_target_frames": 42,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2197,
+        "last": 2246
+      },
+      "slow": {
+        "frames": 2,
+        "seconds": 0.2,
+        "median": {
+          "ego_kmh": 14.033,
+          "request_kmh": 18.124,
+          "inherited_kmh": 18.124,
+          "sight_m": 12.106,
+          "corridor_m": 12.106,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "occupied_corridor": 2
+        },
+        "inherited_target_frames": 2,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2197,
+        "last": 2198
+      }
+    },
+    {
+      "from_m": 1000,
+      "to_m": 1025,
+      "all": {
+        "frames": 45,
+        "seconds": 4.5,
+        "median": {
+          "ego_kmh": 19.332,
+          "request_kmh": 18.717,
+          "inherited_kmh": 18.414,
+          "sight_m": 16.0,
+          "corridor_m": 16.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 22,
+          "recovery": 13,
+          "sight_distance": 1,
+          "turn": 9
+        },
+        "inherited_target_frames": 27,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2247,
+        "last": 2291
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 1025,
+      "to_m": 1050,
+      "all": {
+        "frames": 94,
+        "seconds": 9.4,
+        "median": {
+          "ego_kmh": 10.874,
+          "request_kmh": 10.939,
+          "inherited_kmh": 10.92,
+          "sight_m": 20.0,
+          "corridor_m": 24.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "turn": 23,
+          "opposing_traffic": 23,
+          "crossing_yield": 48
+        },
+        "inherited_target_frames": 84,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2292,
+        "last": 2385
+      },
+      "slow": {
+        "frames": 69,
+        "seconds": 6.9,
+        "median": {
+          "ego_kmh": 7.268,
+          "request_kmh": 5.607,
+          "inherited_kmh": 5.607,
+          "sight_m": 17.532,
+          "corridor_m": 20.0,
+          "cross_sight_m": 17.532,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "opposing_traffic": 21,
+          "crossing_yield": 48
+        },
+        "inherited_target_frames": 69,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2317,
+        "last": 2385
+      }
+    },
+    {
+      "from_m": 1050,
+      "to_m": 1075,
+      "all": {
+        "frames": 56,
+        "seconds": 5.6,
+        "median": {
+          "ego_kmh": 14.202,
+          "request_kmh": 19.057,
+          "inherited_kmh": 12.987,
+          "sight_m": 23.6,
+          "corridor_m": 24.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "crossing_yield": 8,
+          "recovery": 25,
+          "occupied_corridor": 4,
+          "turn": 6,
+          "sight_distance": 13
+        },
+        "inherited_target_frames": 12,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2386,
+        "last": 2441
+      },
+      "slow": {
+        "frames": 29,
+        "seconds": 2.9,
+        "median": {
+          "ego_kmh": 9.184,
+          "request_kmh": 9.458,
+          "inherited_kmh": 10.124,
+          "sight_m": 20.0,
+          "corridor_m": 23.6,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "crossing_yield": 8,
+          "recovery": 17,
+          "occupied_corridor": 4
+        },
+        "inherited_target_frames": 12,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2386,
+        "last": 2414
+      }
+    },
+    {
+      "from_m": 1075,
+      "to_m": 1100,
+      "all": {
+        "frames": 32,
+        "seconds": 3.2,
+        "median": {
+          "ego_kmh": 28.048,
+          "request_kmh": 30.0,
+          "inherited_kmh": 30.0,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 14,
+          "unconfirmed": 12,
+          "turn": 6
+        },
+        "inherited_target_frames": 25,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2442,
+        "last": 2473
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 1100,
+      "to_m": 1125,
+      "all": {
+        "frames": 31,
+        "seconds": 3.1,
+        "median": {
+          "ego_kmh": 29.3,
+          "request_kmh": 30.0,
+          "inherited_kmh": 30.0,
+          "sight_m": 20.0,
+          "corridor_m": 24.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 31
+        },
+        "inherited_target_frames": 31,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2474,
+        "last": 2504
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 1125,
+      "to_m": 1150,
+      "all": {
+        "frames": 47,
+        "seconds": 4.7,
+        "median": {
+          "ego_kmh": 18.821,
+          "request_kmh": 18.196,
+          "inherited_kmh": 18.196,
+          "sight_m": 4.027,
+          "corridor_m": 20.0,
+          "cross_sight_m": 4.027,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 8,
+          "sight_distance": 31,
+          "recovery": 8
+        },
+        "inherited_target_frames": 39,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2505,
+        "last": 2551
+      },
+      "slow": {
+        "frames": 13,
+        "seconds": 1.3,
+        "median": {
+          "ego_kmh": 13.046,
+          "request_kmh": 13.4,
+          "inherited_kmh": 13.134,
+          "sight_m": 12.313,
+          "corridor_m": 20.0,
+          "cross_sight_m": 12.313,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 5,
+          "recovery": 8
+        },
+        "inherited_target_frames": 5,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2516,
+        "last": 2528
+      }
+    },
+    {
+      "from_m": 1150,
+      "to_m": 1175,
+      "all": {
+        "frames": 33,
+        "seconds": 3.3,
+        "median": {
+          "ego_kmh": 28.12,
+          "request_kmh": 25.292,
+          "inherited_kmh": 25.292,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 11,
+          "unconfirmed": 18,
+          "recovery": 4
+        },
+        "inherited_target_frames": 25,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2552,
+        "last": 2584
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 1175,
+      "to_m": 1200,
+      "all": {
+        "frames": 47,
+        "seconds": 4.7,
+        "median": {
+          "ego_kmh": 19.123,
+          "request_kmh": 18.414,
+          "inherited_kmh": 18.414,
+          "sight_m": 5.549,
+          "corridor_m": 18.265,
+          "cross_sight_m": 5.549,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "occupied_corridor": 39,
+          "unconfirmed": 8
+        },
+        "inherited_target_frames": 47,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2585,
+        "last": 2631
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 1200,
+      "to_m": 1225,
+      "all": {
+        "frames": 64,
+        "seconds": 6.4,
+        "median": {
+          "ego_kmh": 13.264,
+          "request_kmh": 12.235,
+          "inherited_kmh": 12.235,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "occupied_corridor": 1,
+          "unconfirmed": 47,
+          "signal_approach": 16
+        },
+        "inherited_target_frames": 64,
+        "modeled_governing_lamp_frames": 55,
+        "sensor_red_range": [
+          0.0,
+          0.921
+        ],
+        "first": 2632,
+        "last": 2695
+      },
+      "slow": {
+        "frames": 40,
+        "seconds": 4.0,
+        "median": {
+          "ego_kmh": 11.844,
+          "request_kmh": 11.115,
+          "inherited_kmh": 11.115,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 24,
+          "signal_approach": 16
+        },
+        "inherited_target_frames": 40,
+        "modeled_governing_lamp_frames": 40,
+        "sensor_red_range": [
+          0.0,
+          0.681
+        ],
+        "first": 2656,
+        "last": 2695
+      }
+    },
+    {
+      "from_m": 1225,
+      "to_m": 1250,
+      "all": {
+        "frames": 76,
+        "seconds": 7.6,
+        "median": {
+          "ego_kmh": 12.024,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 60,
+          "vulnerable_road_user": 10,
+          "sight_distance": 4,
+          "recovery": 2
+        },
+        "inherited_target_frames": 74,
+        "modeled_governing_lamp_frames": 15,
+        "sensor_red_range": [
+          0.0,
+          0.039
+        ],
+        "first": 2696,
+        "last": 2771
+      },
+      "slow": {
+        "frames": 76,
+        "seconds": 7.6,
+        "median": {
+          "ego_kmh": 12.024,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 60,
+          "vulnerable_road_user": 10,
+          "sight_distance": 4,
+          "recovery": 2
+        },
+        "inherited_target_frames": 74,
+        "modeled_governing_lamp_frames": 15,
+        "sensor_red_range": [
+          0.0,
+          0.039
+        ],
+        "first": 2696,
+        "last": 2771
+      }
+    },
+    {
+      "from_m": 1250,
+      "to_m": 1275,
+      "all": {
+        "frames": 104,
+        "seconds": 10.4,
+        "median": {
+          "ego_kmh": 9.963,
+          "request_kmh": 10.989,
+          "inherited_kmh": 11.582,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 41,
+          "vulnerable_road_user": 2,
+          "recovery": 11,
+          "sight_distance": 10,
+          "occupied_corridor": 4,
+          "crossing_yield": 36
+        },
+        "inherited_target_frames": 92,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2772,
+        "last": 2875
+      },
+      "slow": {
+        "frames": 82,
+        "seconds": 8.2,
+        "median": {
+          "ego_kmh": 4.761,
+          "request_kmh": 5.51,
+          "inherited_kmh": 6.176,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 31,
+          "vulnerable_road_user": 2,
+          "recovery": 6,
+          "crossing_yield": 35,
+          "sight_distance": 8
+        },
+        "inherited_target_frames": 76,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2772,
+        "last": 2874
+      }
+    },
+    {
+      "from_m": 1275,
+      "to_m": 1300,
+      "all": {
+        "frames": 38,
+        "seconds": 3.8,
+        "median": {
+          "ego_kmh": 25.335,
+          "request_kmh": 27.841,
+          "inherited_kmh": 13.007,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 27,
+          "recovery": 11
+        },
+        "inherited_target_frames": 1,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2876,
+        "last": 2913
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 1300,
+      "to_m": 1325,
+      "all": {
+        "frames": 38,
+        "seconds": 3.8,
+        "median": {
+          "ego_kmh": 24.228,
+          "request_kmh": 27.418,
+          "inherited_kmh": 13.007,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 19,
+          "unconfirmed": 4,
+          "recovery": 15
+        },
+        "inherited_target_frames": 4,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2914,
+        "last": 2951
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 1325,
+      "to_m": 1350,
+      "all": {
+        "frames": 35,
+        "seconds": 3.5,
+        "median": {
+          "ego_kmh": 26.226,
+          "request_kmh": 26.041,
+          "inherited_kmh": 12.986,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 7,
+          "turn": 28
+        },
+        "inherited_target_frames": 0,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2952,
+        "last": 2986
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 1350,
+      "to_m": 1375,
+      "all": {
+        "frames": 37,
+        "seconds": 3.7,
+        "median": {
+          "ego_kmh": 23.663,
+          "request_kmh": 23.481,
+          "inherited_kmh": 19.242,
+          "sight_m": 20.0,
+          "corridor_m": 24.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "turn": 32,
+          "sight_distance": 5
+        },
+        "inherited_target_frames": 18,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2987,
+        "last": 3023
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 1375,
+      "to_m": 1400,
+      "all": {
+        "frames": 39,
+        "seconds": 3.9,
+        "median": {
+          "ego_kmh": 23.026,
+          "request_kmh": 23.987,
+          "inherited_kmh": 23.72,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 13,
+          "unconfirmed": 20,
+          "recovery": 6
+        },
+        "inherited_target_frames": 33,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 3024,
+        "last": 3062
+      },
+      "slow": {
+        "frames": 0
+      }
+    },
+    {
+      "from_m": 1400,
+      "to_m": 1425,
+      "all": {
+        "frames": 21,
+        "seconds": 2.1,
+        "median": {
+          "ego_kmh": 29.084,
+          "request_kmh": 30.0,
+          "inherited_kmh": 30.0,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 17,
+          "unconfirmed": 4
+        },
+        "inherited_target_frames": 21,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 3063,
+        "last": 3083
+      },
+      "slow": {
+        "frames": 0
+      }
+    }
+  ],
+  "under_15_spells": [
+    {
+      "from_m": 0.0,
+      "to_m": 11.754,
+      "all": {
+        "frames": 51,
+        "seconds": 5.1,
+        "median": {
+          "ego_kmh": 8.15,
+          "request_kmh": 14.2,
+          "inherited_kmh": 13.934,
+          "sight_m": 0.095,
+          "corridor_m": 20.0,
+          "cross_sight_m": 0.095,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 14,
+          "opposing_traffic": 16,
+          "sight_distance": 5,
+          "recovery": 13,
+          "occupied_corridor": 3
+        },
+        "inherited_target_frames": 38,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 97,
+        "last": 147
+      },
+      "slow": {
+        "frames": 51,
+        "seconds": 5.1,
+        "median": {
+          "ego_kmh": 8.15,
+          "request_kmh": 14.2,
+          "inherited_kmh": 13.934,
+          "sight_m": 0.095,
+          "corridor_m": 20.0,
+          "cross_sight_m": 0.095,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 14,
+          "opposing_traffic": 16,
+          "sight_distance": 5,
+          "recovery": 13,
+          "occupied_corridor": 3
+        },
+        "inherited_target_frames": 38,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 97,
+        "last": 147
+      }
+    },
+    {
+      "from_m": 19.431,
+      "to_m": 27.302,
+      "all": {
+        "frames": 52,
+        "seconds": 5.2,
+        "median": {
+          "ego_kmh": 4.608,
+          "request_kmh": 5.883,
+          "inherited_kmh": 5.883,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 41,
+          "signal_approach": 11
+        },
+        "inherited_target_frames": 52,
+        "modeled_governing_lamp_frames": 52,
+        "sensor_red_range": [
+          0.287,
+          0.981
+        ],
+        "first": 164,
+        "last": 215
+      },
+      "slow": {
+        "frames": 52,
+        "seconds": 5.2,
+        "median": {
+          "ego_kmh": 4.608,
+          "request_kmh": 5.883,
+          "inherited_kmh": 5.883,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 41,
+          "signal_approach": 11
+        },
+        "inherited_target_frames": 52,
+        "modeled_governing_lamp_frames": 52,
+        "sensor_red_range": [
+          0.287,
+          0.981
+        ],
+        "first": 164,
+        "last": 215
+      }
+    },
+    {
+      "from_m": 35.373,
+      "to_m": 48.676,
+      "all": {
+        "frames": 36,
+        "seconds": 3.6,
+        "median": {
+          "ego_kmh": 13.55,
+          "request_kmh": 13.005,
+          "inherited_kmh": 13.005,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 14,
+          "unconfirmed": 16,
+          "recovery": 6
+        },
+        "inherited_target_frames": 30,
+        "modeled_governing_lamp_frames": 5,
+        "sensor_red_range": [
+          0.18,
+          0.568
+        ],
+        "first": 233,
+        "last": 268
+      },
+      "slow": {
+        "frames": 36,
+        "seconds": 3.6,
+        "median": {
+          "ego_kmh": 13.55,
+          "request_kmh": 13.005,
+          "inherited_kmh": 13.005,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 14,
+          "unconfirmed": 16,
+          "recovery": 6
+        },
+        "inherited_target_frames": 30,
+        "modeled_governing_lamp_frames": 5,
+        "sensor_red_range": [
+          0.18,
+          0.568
+        ],
+        "first": 233,
+        "last": 268
+      }
+    },
+    {
+      "from_m": 73.586,
+      "to_m": 82.04,
+      "all": {
+        "frames": 23,
+        "seconds": 2.3,
+        "median": {
+          "ego_kmh": 13.666,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 3.876,
+          "corridor_m": 20.0,
+          "cross_sight_m": 3.876,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 17,
+          "recovery": 6
+        },
+        "inherited_target_frames": 17,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 310,
+        "last": 332
+      },
+      "slow": {
+        "frames": 23,
+        "seconds": 2.3,
+        "median": {
+          "ego_kmh": 13.666,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 3.876,
+          "corridor_m": 20.0,
+          "cross_sight_m": 3.876,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 17,
+          "recovery": 6
+        },
+        "inherited_target_frames": 17,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 310,
+        "last": 332
+      }
+    },
+    {
+      "from_m": 105.78,
+      "to_m": 112.94,
+      "all": {
+        "frames": 24,
+        "seconds": 2.4,
+        "median": {
+          "ego_kmh": 10.834,
+          "request_kmh": 11.069,
+          "inherited_kmh": 11.069,
+          "sight_m": 0.003,
+          "corridor_m": 20.0,
+          "cross_sight_m": 0.003,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "opposing_traffic": 20,
+          "sight_distance": 4
+        },
+        "inherited_target_frames": 24,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 371,
+        "last": 394
+      },
+      "slow": {
+        "frames": 24,
+        "seconds": 2.4,
+        "median": {
+          "ego_kmh": 10.834,
+          "request_kmh": 11.069,
+          "inherited_kmh": 11.069,
+          "sight_m": 0.003,
+          "corridor_m": 20.0,
+          "cross_sight_m": 0.003,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "opposing_traffic": 20,
+          "sight_distance": 4
+        },
+        "inherited_target_frames": 24,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 371,
+        "last": 394
+      }
+    },
+    {
+      "from_m": 137.617,
+      "to_m": 145.953,
+      "all": {
+        "frames": 92,
+        "seconds": 9.2,
+        "median": {
+          "ego_kmh": 1.562,
+          "request_kmh": 2.098,
+          "inherited_kmh": 2.764,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "crossing_yield": 48,
+          "unconfirmed": 24,
+          "sight_distance": 20
+        },
+        "inherited_target_frames": 92,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 437,
+        "last": 528
+      },
+      "slow": {
+        "frames": 92,
+        "seconds": 9.2,
+        "median": {
+          "ego_kmh": 1.562,
+          "request_kmh": 2.098,
+          "inherited_kmh": 2.764,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "crossing_yield": 48,
+          "unconfirmed": 24,
+          "sight_distance": 20
+        },
+        "inherited_target_frames": 92,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 437,
+        "last": 528
+      }
+    },
+    {
+      "from_m": 263.407,
+      "to_m": 279.294,
+      "all": {
+        "frames": 42,
+        "seconds": 4.2,
+        "median": {
+          "ego_kmh": 13.757,
+          "request_kmh": 13.035,
+          "inherited_kmh": 13.024,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 20,
+          "vulnerable_road_user": 4,
+          "turn": 17,
+          "recovery": 1
+        },
+        "inherited_target_frames": 24,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 683,
+        "last": 724
+      },
+      "slow": {
+        "frames": 42,
+        "seconds": 4.2,
+        "median": {
+          "ego_kmh": 13.757,
+          "request_kmh": 13.035,
+          "inherited_kmh": 13.024,
+          "sight_m": 20.0,
+          "corridor_m": 20.0,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 20,
+          "vulnerable_road_user": 4,
+          "turn": 17,
+          "recovery": 1
+        },
+        "inherited_target_frames": 24,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 683,
+        "last": 724
+      }
+    },
+    {
+      "from_m": 304.501,
+      "to_m": 334.983,
+      "all": {
+        "frames": 138,
+        "seconds": 13.8,
+        "median": {
+          "ego_kmh": 12.676,
+          "request_kmh": 12.968,
+          "inherited_kmh": 12.968,
+          "sight_m": 8.671,
+          "corridor_m": 10.156,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 102,
+          "unconfirmed": 8,
+          "recovery": 2,
+          "turn": 26
+        },
+        "inherited_target_frames": 110,
+        "modeled_governing_lamp_frames": 102,
+        "sensor_red_range": [
+          0.017,
+          0.991
+        ],
+        "first": 783,
+        "last": 920
+      },
+      "slow": {
+        "frames": 138,
+        "seconds": 13.8,
+        "median": {
+          "ego_kmh": 12.676,
+          "request_kmh": 12.968,
+          "inherited_kmh": 12.968,
+          "sight_m": 8.671,
+          "corridor_m": 10.156,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "signal_approach": 102,
+          "unconfirmed": 8,
+          "recovery": 2,
+          "turn": 26
+        },
+        "inherited_target_frames": 110,
+        "modeled_governing_lamp_frames": 102,
+        "sensor_red_range": [
+          0.017,
+          0.991
+        ],
+        "first": 783,
+        "last": 920
+      }
+    },
+    {
+      "from_m": 342.991,
+      "to_m": 355.822,
+      "all": {
+        "frames": 35,
+        "seconds": 3.5,
+        "median": {
+          "ego_kmh": 13.514,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 4.086,
+          "corridor_m": 24.0,
+          "cross_sight_m": 4.086,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 21,
+          "unconfirmed": 14
+        },
+        "inherited_target_frames": 35,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 937,
+        "last": 971
+      },
+      "slow": {
+        "frames": 35,
+        "seconds": 3.5,
+        "median": {
+          "ego_kmh": 13.514,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 4.086,
+          "corridor_m": 24.0,
+          "cross_sight_m": 4.086,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 21,
+          "unconfirmed": 14
+        },
+        "inherited_target_frames": 35,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 937,
+        "last": 971
+      }
+    },
+    {
+      "from_m": 529.303,
+      "to_m": 545.503,
+      "all": {
+        "frames": 78,
+        "seconds": 7.8,
+        "median": {
+          "ego_kmh": 6.439,
+          "request_kmh": 5.408,
+          "inherited_kmh": 5.408,
+          "sight_m": 1.723,
+          "corridor_m": 20.0,
+          "cross_sight_m": 1.723,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 38,
+          "unconfirmed": 12,
+          "recovery": 11,
+          "opposing_traffic": 17
+        },
+        "inherited_target_frames": 64,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1216,
+        "last": 1293
+      },
+      "slow": {
+        "frames": 78,
+        "seconds": 7.8,
+        "median": {
+          "ego_kmh": 6.439,
+          "request_kmh": 5.408,
+          "inherited_kmh": 5.408,
+          "sight_m": 1.723,
+          "corridor_m": 20.0,
+          "cross_sight_m": 1.723,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 38,
+          "unconfirmed": 12,
+          "recovery": 11,
+          "opposing_traffic": 17
+        },
+        "inherited_target_frames": 64,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1216,
+        "last": 1293
+      }
+    },
+    {
+      "from_m": 565.878,
+      "to_m": 572.558,
+      "all": {
+        "frames": 47,
+        "seconds": 4.7,
+        "median": {
+          "ego_kmh": 4.482,
+          "request_kmh": 5.994,
+          "inherited_kmh": 5.994,
+          "sight_m": 3.983,
+          "corridor_m": 4.288,
+          "cross_sight_m": 5.305,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "occupied_corridor": 39,
+          "unconfirmed": 8
+        },
+        "inherited_target_frames": 47,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1333,
+        "last": 1379
+      },
+      "slow": {
+        "frames": 47,
+        "seconds": 4.7,
+        "median": {
+          "ego_kmh": 4.482,
+          "request_kmh": 5.994,
+          "inherited_kmh": 5.994,
+          "sight_m": 3.983,
+          "corridor_m": 4.288,
+          "cross_sight_m": 5.305,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "occupied_corridor": 39,
+          "unconfirmed": 8
+        },
+        "inherited_target_frames": 47,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1333,
+        "last": 1379
+      }
+    },
+    {
+      "from_m": 660.752,
+      "to_m": 669.925,
+      "all": {
+        "frames": 25,
+        "seconds": 2.5,
+        "median": {
+          "ego_kmh": 13.619,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 3.502,
+          "corridor_m": 20.0,
+          "cross_sight_m": 3.502,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 19,
+          "recovery": 6
+        },
+        "inherited_target_frames": 19,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1539,
+        "last": 1563
+      },
+      "slow": {
+        "frames": 25,
+        "seconds": 2.5,
+        "median": {
+          "ego_kmh": 13.619,
+          "request_kmh": 13.007,
+          "inherited_kmh": 13.007,
+          "sight_m": 3.502,
+          "corridor_m": 20.0,
+          "cross_sight_m": 3.502,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 19,
+          "recovery": 6
+        },
+        "inherited_target_frames": 19,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1539,
+        "last": 1563
+      }
+    },
+    {
+      "from_m": 704.655,
+      "to_m": 735.35,
+      "all": {
+        "frames": 89,
+        "seconds": 8.9,
+        "median": {
+          "ego_kmh": 13.532,
+          "request_kmh": 12.977,
+          "inherited_kmh": 12.977,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 79,
+          "recovery": 10
+        },
+        "inherited_target_frames": 79,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1622,
+        "last": 1710
+      },
+      "slow": {
+        "frames": 89,
+        "seconds": 8.9,
+        "median": {
+          "ego_kmh": 13.532,
+          "request_kmh": 12.977,
+          "inherited_kmh": 12.977,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 79,
+          "recovery": 10
+        },
+        "inherited_target_frames": 79,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1622,
+        "last": 1710
+      }
+    },
+    {
+      "from_m": 790.485,
+      "to_m": 799.613,
+      "all": {
+        "frames": 25,
+        "seconds": 2.5,
+        "median": {
+          "ego_kmh": 13.586,
+          "request_kmh": 13.001,
+          "inherited_kmh": 13.001,
+          "sight_m": 3.837,
+          "corridor_m": 24.0,
+          "cross_sight_m": 3.837,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 19,
+          "recovery": 6
+        },
+        "inherited_target_frames": 19,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1806,
+        "last": 1830
+      },
+      "slow": {
+        "frames": 25,
+        "seconds": 2.5,
+        "median": {
+          "ego_kmh": 13.586,
+          "request_kmh": 13.001,
+          "inherited_kmh": 13.001,
+          "sight_m": 3.837,
+          "corridor_m": 24.0,
+          "cross_sight_m": 3.837,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 19,
+          "recovery": 6
+        },
+        "inherited_target_frames": 19,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1806,
+        "last": 1830
+      }
+    },
+    {
+      "from_m": 856.256,
+      "to_m": 874.491,
+      "all": {
+        "frames": 80,
+        "seconds": 8.0,
+        "median": {
+          "ego_kmh": 7.672,
+          "request_kmh": 5.641,
+          "inherited_kmh": 5.408,
+          "sight_m": 5.147,
+          "corridor_m": 24.0,
+          "cross_sight_m": 0.001,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 56,
+          "recovery": 24
+        },
+        "inherited_target_frames": 45,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1922,
+        "last": 2001
+      },
+      "slow": {
+        "frames": 80,
+        "seconds": 8.0,
+        "median": {
+          "ego_kmh": 7.672,
+          "request_kmh": 5.641,
+          "inherited_kmh": 5.408,
+          "sight_m": 5.147,
+          "corridor_m": 24.0,
+          "cross_sight_m": 0.001,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "sight_distance": 56,
+          "recovery": 24
+        },
+        "inherited_target_frames": 45,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 1922,
+        "last": 2001
+      }
+    },
+    {
+      "from_m": 968.328,
+      "to_m": 975.62,
+      "all": {
+        "frames": 33,
+        "seconds": 3.3,
+        "median": {
+          "ego_kmh": 7.931,
+          "request_kmh": 9.075,
+          "inherited_kmh": 9.075,
+          "sight_m": 5.933,
+          "corridor_m": 5.933,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "occupied_corridor": 29,
+          "unconfirmed": 4
+        },
+        "inherited_target_frames": 33,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2166,
+        "last": 2198
+      },
+      "slow": {
+        "frames": 33,
+        "seconds": 3.3,
+        "median": {
+          "ego_kmh": 7.931,
+          "request_kmh": 9.075,
+          "inherited_kmh": 9.075,
+          "sight_m": 5.933,
+          "corridor_m": 5.933,
+          "cross_sight_m": 24.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "occupied_corridor": 29,
+          "unconfirmed": 4
+        },
+        "inherited_target_frames": 33,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2166,
+        "last": 2198
+      }
+    },
+    {
+      "from_m": 1037.654,
+      "to_m": 1057.316,
+      "all": {
+        "frames": 98,
+        "seconds": 9.8,
+        "median": {
+          "ego_kmh": 8.262,
+          "request_kmh": 7.919,
+          "inherited_kmh": 8.398,
+          "sight_m": 20.0,
+          "corridor_m": 23.6,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "opposing_traffic": 21,
+          "crossing_yield": 56,
+          "recovery": 17,
+          "occupied_corridor": 4
+        },
+        "inherited_target_frames": 81,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2317,
+        "last": 2414
+      },
+      "slow": {
+        "frames": 98,
+        "seconds": 9.8,
+        "median": {
+          "ego_kmh": 8.262,
+          "request_kmh": 7.919,
+          "inherited_kmh": 8.398,
+          "sight_m": 20.0,
+          "corridor_m": 23.6,
+          "cross_sight_m": 20.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "opposing_traffic": 21,
+          "crossing_yield": 56,
+          "recovery": 17,
+          "occupied_corridor": 4
+        },
+        "inherited_target_frames": 81,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2317,
+        "last": 2414
+      }
+    },
+    {
+      "from_m": 1211.693,
+      "to_m": 1256.376,
+      "all": {
+        "frames": 133,
+        "seconds": 13.3,
+        "median": {
+          "ego_kmh": 12.265,
+          "request_kmh": 12.929,
+          "inherited_kmh": 12.929,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 93,
+          "signal_approach": 16,
+          "vulnerable_road_user": 12,
+          "sight_distance": 4,
+          "recovery": 8
+        },
+        "inherited_target_frames": 125,
+        "modeled_governing_lamp_frames": 55,
+        "sensor_red_range": [
+          0.0,
+          0.681
+        ],
+        "first": 2656,
+        "last": 2788
+      },
+      "slow": {
+        "frames": 133,
+        "seconds": 13.3,
+        "median": {
+          "ego_kmh": 12.265,
+          "request_kmh": 12.929,
+          "inherited_kmh": 12.929,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "unconfirmed": 93,
+          "signal_approach": 16,
+          "vulnerable_road_user": 12,
+          "sight_distance": 4,
+          "recovery": 8
+        },
+        "inherited_target_frames": 125,
+        "modeled_governing_lamp_frames": 55,
+        "sensor_red_range": [
+          0.0,
+          0.681
+        ],
+        "first": 2656,
+        "last": 2788
+      }
+    },
+    {
+      "from_m": 1267.145,
+      "to_m": 1274.345,
+      "all": {
+        "frames": 65,
+        "seconds": 6.5,
+        "median": {
+          "ego_kmh": 1.253,
+          "request_kmh": 1.998,
+          "inherited_kmh": 2.664,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "crossing_yield": 35,
+          "unconfirmed": 22,
+          "sight_distance": 8
+        },
+        "inherited_target_frames": 65,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2810,
+        "last": 2874
+      },
+      "slow": {
+        "frames": 65,
+        "seconds": 6.5,
+        "median": {
+          "ego_kmh": 1.253,
+          "request_kmh": 1.998,
+          "inherited_kmh": 2.664,
+          "sight_m": 0.0,
+          "corridor_m": 0.0,
+          "cross_sight_m": 0.0,
+          "blind_end_m": 0.0
+        },
+        "binding_counts": {
+          "crossing_yield": 35,
+          "unconfirmed": 22,
+          "sight_distance": 8
+        },
+        "inherited_target_frames": 65,
+        "modeled_governing_lamp_frames": 0,
+        "sensor_red_range": null,
+        "first": 2810,
+        "last": 2874
+      }
+    }
+  ]
+}

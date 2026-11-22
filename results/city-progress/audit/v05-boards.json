@@ -1,0 +1,865 @@
+{
+  "note": "Forward lead bumper and board longitudinal footprint overlap in the ego heading frame; measured road is nearly straight at the boards. Polygons use native actor-rotation and box offsets. Rounded ego yaw/position and nominal centered ego half-length/width permit centimeter-scale differences from native world vertices.",
+  "points": {
+    "first_lead_within_35m": {
+      "frame": 1266,
+      "time_s": 120.2,
+      "station_m": 536.881,
+      "speed_kmh": 6.588,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 34.921,
+      "lead": {
+        "forward_edge_gap_m": 34.9,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -2.86,
+          "rear_edge_gap_m": 2.41,
+          "lateral_side_gap_m": 1.07,
+          "alongside": true
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 3.97,
+          "rear_edge_gap_m": 9.58,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {}
+    },
+    "first_lead_within_25m": {
+      "frame": 1314,
+      "time_s": 125.0,
+      "station_m": 547.12,
+      "speed_kmh": 15.556,
+      "request_kmh": 18.394,
+      "body_reference_gap_m": 24.682,
+      "lead": {
+        "forward_edge_gap_m": 24.66,
+        "lateral_side_gap_m": -1.95
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -13.1,
+          "rear_edge_gap_m": -7.83,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -6.27,
+          "rear_edge_gap_m": -0.66,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": true,
+      "alongside": false,
+      "phase": "lead: waiting",
+      "evidence": {}
+    },
+    "first_board_overlap": {
+      "frame": 1250,
+      "time_s": 118.6,
+      "station_m": 534.089,
+      "speed_kmh": 6.408,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 37.713,
+      "lead": {
+        "forward_edge_gap_m": 37.69,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -0.07,
+          "rear_edge_gap_m": 5.2,
+          "lateral_side_gap_m": 1.07,
+          "alongside": true
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 6.76,
+          "rear_edge_gap_m": 12.37,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {}
+    },
+    "both_boards_physically_behind": {
+      "frame": 1313,
+      "time_s": 124.9,
+      "station_m": 546.695,
+      "speed_kmh": 15.023,
+      "request_kmh": 18.394,
+      "body_reference_gap_m": 25.107,
+      "lead": {
+        "forward_edge_gap_m": 25.08,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -12.68,
+          "rear_edge_gap_m": -7.41,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -5.85,
+          "rear_edge_gap_m": -0.24,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": true,
+      "alongside": false,
+      "phase": "lead: waiting",
+      "evidence": {}
+    },
+    "first_curb_target": {
+      "frame": 1234,
+      "time_s": 117.0,
+      "station_m": 530.221,
+      "speed_kmh": 13.234,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 41.581,
+      "lead": {
+        "forward_edge_gap_m": 41.56,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": 3.8,
+          "rear_edge_gap_m": 9.07,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 10.63,
+          "rear_edge_gap_m": 16.24,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "barrier: approaching striped barricades",
+      "evidence": {}
+    }
+  },
+  "fixed_sections": [
+    {
+      "frames": 11,
+      "seconds": 1.1,
+      "first_frame": 1205,
+      "last_frame": 1215,
+      "from_s": 114.1,
+      "to_s": 115.1,
+      "from_m": 510.618,
+      "to_m": 519.427,
+      "median_kmh": 32.072,
+      "median_target_kmh": 24.992,
+      "minimum_lead_gap_m": 52.35,
+      "maximum_lead_gap_m": 61.1,
+      "guards": {
+        "unavailable": 11
+      },
+      "body_lidar_radar_clear_36_frames": 0
+    },
+    {
+      "frames": 8,
+      "seconds": 0.8,
+      "first_frame": 1216,
+      "last_frame": 1223,
+      "from_s": 115.2,
+      "to_s": 115.9,
+      "from_m": 520.19,
+      "to_m": 524.893,
+      "median_kmh": 24.16,
+      "median_target_kmh": 18.394,
+      "minimum_lead_gap_m": 46.89,
+      "maximum_lead_gap_m": 51.59,
+      "guards": {
+        "unavailable": 8
+      },
+      "body_lidar_radar_clear_36_frames": 0
+    },
+    {
+      "frames": 10,
+      "seconds": 1.0,
+      "first_frame": 1224,
+      "last_frame": 1233,
+      "from_s": 116.0,
+      "to_s": 116.9,
+      "from_m": 525.483,
+      "to_m": 529.843,
+      "median_kmh": 17.499,
+      "median_target_kmh": 11.232,
+      "minimum_lead_gap_m": 41.94,
+      "maximum_lead_gap_m": 46.3,
+      "guards": {
+        "unavailable": 10
+      },
+      "body_lidar_radar_clear_36_frames": 0
+    },
+    {
+      "frames": 22,
+      "seconds": 2.2,
+      "first_frame": 1234,
+      "last_frame": 1255,
+      "from_s": 117.0,
+      "to_s": 119.1,
+      "from_m": 530.221,
+      "to_m": 534.956,
+      "median_kmh": 7.327,
+      "median_target_kmh": 5.408,
+      "minimum_lead_gap_m": 36.82,
+      "maximum_lead_gap_m": 41.56,
+      "guards": {
+        "unavailable": 22
+      },
+      "body_lidar_radar_clear_36_frames": 0
+    },
+    {
+      "frames": 29,
+      "seconds": 2.9,
+      "first_frame": 1256,
+      "last_frame": 1284,
+      "from_s": 119.2,
+      "to_s": 122.0,
+      "from_m": 535.126,
+      "to_m": 539.973,
+      "median_kmh": 6.131,
+      "median_target_kmh": 5.408,
+      "minimum_lead_gap_m": 31.81,
+      "maximum_lead_gap_m": 36.65,
+      "guards": {
+        "unavailable": 29
+      },
+      "body_lidar_radar_clear_36_frames": 0
+    },
+    {
+      "frames": 24,
+      "seconds": 2.4,
+      "first_frame": 1285,
+      "last_frame": 1308,
+      "from_s": 122.1,
+      "to_s": 124.4,
+      "from_m": 540.143,
+      "to_m": 544.846,
+      "median_kmh": 6.375,
+      "median_target_kmh": 8.105,
+      "minimum_lead_gap_m": 26.93,
+      "maximum_lead_gap_m": 31.64,
+      "guards": {
+        "unavailable": 24
+      },
+      "body_lidar_radar_clear_36_frames": 0
+    },
+    {
+      "frames": 12,
+      "seconds": 1.2,
+      "first_frame": 1309,
+      "last_frame": 1320,
+      "from_s": 124.5,
+      "to_s": 125.6,
+      "from_m": 545.178,
+      "to_m": 549.879,
+      "median_kmh": 15.768,
+      "median_target_kmh": 18.394,
+      "minimum_lead_gap_m": 21.9,
+      "maximum_lead_gap_m": 26.6,
+      "guards": {
+        "unavailable": 12
+      },
+      "body_lidar_radar_clear_36_frames": 0
+    },
+    {
+      "frames": 19,
+      "seconds": 1.9,
+      "first_frame": 1321,
+      "last_frame": 1339,
+      "from_s": 125.7,
+      "to_s": 127.5,
+      "from_m": 550.361,
+      "to_m": 559.541,
+      "median_kmh": 18.428,
+      "median_target_kmh": 18.394,
+      "minimum_lead_gap_m": 12.24,
+      "maximum_lead_gap_m": 21.42,
+      "guards": {
+        "unavailable": 19
+      },
+      "body_lidar_radar_clear_36_frames": 0
+    },
+    {
+      "frames": 51,
+      "seconds": 5.1,
+      "first_frame": 1340,
+      "last_frame": 1390,
+      "from_s": 127.6,
+      "to_s": 132.6,
+      "from_m": 560.07,
+      "to_m": 569.936,
+      "median_kmh": 5.144,
+      "median_target_kmh": 6.66,
+      "minimum_lead_gap_m": 3.63,
+      "maximum_lead_gap_m": 12.85,
+      "guards": {
+        "unavailable": 51
+      },
+      "body_lidar_radar_clear_36_frames": 0
+    }
+  ],
+  "alongside": {
+    "frames": 53,
+    "seconds": 5.3,
+    "first_frame": 1250,
+    "last_frame": 1312,
+    "from_s": 118.6,
+    "to_s": 124.8,
+    "from_m": 534.089,
+    "to_m": 546.287,
+    "median_kmh": 6.3,
+    "median_target_kmh": 5.774,
+    "minimum_lead_gap_m": 25.49,
+    "maximum_lead_gap_m": 37.69,
+    "guards": {
+      "unavailable": 53
+    },
+    "body_lidar_radar_clear_36_frames": 0
+  },
+  "alongside_outside_lead_25m": {
+    "frames": 53,
+    "seconds": 5.3,
+    "first_frame": 1250,
+    "last_frame": 1312,
+    "from_s": 118.6,
+    "to_s": 124.8,
+    "from_m": 534.089,
+    "to_m": 546.287,
+    "median_kmh": 6.3,
+    "median_target_kmh": 5.774,
+    "minimum_lead_gap_m": 25.49,
+    "maximum_lead_gap_m": 37.69,
+    "guards": {
+      "unavailable": 53
+    },
+    "body_lidar_radar_clear_36_frames": 0
+  },
+  "after_both_boards_before_lead_within_25m": {
+    "frames": 1,
+    "seconds": 0.1,
+    "first_frame": 1313,
+    "last_frame": 1313,
+    "from_s": 124.9,
+    "to_s": 124.9,
+    "from_m": 546.695,
+    "to_m": 546.695,
+    "median_kmh": 15.023,
+    "median_target_kmh": 18.394,
+    "minimum_lead_gap_m": 25.08,
+    "maximum_lead_gap_m": 25.08,
+    "guards": {
+      "unavailable": 1
+    },
+    "body_lidar_radar_clear_36_frames": 0
+  },
+  "source_excerpt": [
+    {
+      "frame": 1207,
+      "time_s": 114.3,
+      "station_m": 512.514,
+      "speed_kmh": 34.222,
+      "request_kmh": 29.067,
+      "body_reference_gap_m": 59.288,
+      "lead": {
+        "forward_edge_gap_m": 59.25,
+        "lateral_side_gap_m": -1.15
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": 21.47,
+          "rear_edge_gap_m": 26.74,
+          "lateral_side_gap_m": 1.39,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 28.31,
+          "rear_edge_gap_m": 33.9,
+          "lateral_side_gap_m": 1.57,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "barrier: approaching striped barricades",
+      "evidence": {}
+    },
+    {
+      "frame": 1217,
+      "time_s": 115.3,
+      "station_m": 520.929,
+      "speed_kmh": 26.248,
+      "request_kmh": 18.394,
+      "body_reference_gap_m": 50.872,
+      "lead": {
+        "forward_edge_gap_m": 50.85,
+        "lateral_side_gap_m": -1.92
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": 13.09,
+          "rear_edge_gap_m": 18.36,
+          "lateral_side_gap_m": 1.06,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 19.92,
+          "rear_edge_gap_m": 25.53,
+          "lateral_side_gap_m": 1.15,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "barrier: approaching striped barricades",
+      "evidence": {}
+    },
+    {
+      "frame": 1227,
+      "time_s": 116.3,
+      "station_m": 527.128,
+      "speed_kmh": 18.666,
+      "request_kmh": 12.734,
+      "body_reference_gap_m": 44.673,
+      "lead": {
+        "forward_edge_gap_m": 44.65,
+        "lateral_side_gap_m": -1.95
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": 6.89,
+          "rear_edge_gap_m": 12.16,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 13.72,
+          "rear_edge_gap_m": 19.33,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "barrier: approaching striped barricades",
+      "evidence": {}
+    },
+    {
+      "frame": 1237,
+      "time_s": 117.3,
+      "station_m": 531.223,
+      "speed_kmh": 10.901,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 40.579,
+      "lead": {
+        "forward_edge_gap_m": 40.56,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": 2.8,
+          "rear_edge_gap_m": 8.07,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 9.63,
+          "rear_edge_gap_m": 15.24,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "barrier: approaching striped barricades",
+      "evidence": {}
+    },
+    {
+      "frame": 1247,
+      "time_s": 118.3,
+      "station_m": 533.541,
+      "speed_kmh": 6.79,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 38.261,
+      "lead": {
+        "forward_edge_gap_m": 38.24,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": 0.48,
+          "rear_edge_gap_m": 5.75,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 7.31,
+          "rear_edge_gap_m": 12.92,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "lead: waiting",
+      "evidence": {}
+    },
+    {
+      "frame": 1257,
+      "time_s": 119.3,
+      "station_m": 535.296,
+      "speed_kmh": 6.131,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 36.506,
+      "lead": {
+        "forward_edge_gap_m": 36.48,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -1.28,
+          "rear_edge_gap_m": 3.99,
+          "lateral_side_gap_m": 1.07,
+          "alongside": true
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 5.55,
+          "rear_edge_gap_m": 11.16,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {}
+    },
+    {
+      "frame": 1267,
+      "time_s": 120.3,
+      "station_m": 537.062,
+      "speed_kmh": 6.473,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 34.739,
+      "lead": {
+        "forward_edge_gap_m": 34.72,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -3.04,
+          "rear_edge_gap_m": 2.23,
+          "lateral_side_gap_m": 1.07,
+          "alongside": true
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 3.79,
+          "rear_edge_gap_m": 9.4,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {}
+    },
+    {
+      "frame": 1277,
+      "time_s": 121.3,
+      "station_m": 538.784,
+      "speed_kmh": 6.127,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 33.018,
+      "lead": {
+        "forward_edge_gap_m": 32.99,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -4.77,
+          "rear_edge_gap_m": 0.5,
+          "lateral_side_gap_m": 1.07,
+          "alongside": true
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 2.06,
+          "rear_edge_gap_m": 7.66,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {}
+    },
+    {
+      "frame": 1287,
+      "time_s": 122.3,
+      "station_m": 540.482,
+      "speed_kmh": 6.127,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 31.319,
+      "lead": {
+        "forward_edge_gap_m": 31.3,
+        "lateral_side_gap_m": -1.95
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -6.46,
+          "rear_edge_gap_m": -1.2,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 0.37,
+          "rear_edge_gap_m": 5.97,
+          "lateral_side_gap_m": 1.17,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "lead: waiting",
+      "evidence": {}
+    },
+    {
+      "frame": 1297,
+      "time_s": 123.3,
+      "station_m": 542.195,
+      "speed_kmh": 6.451,
+      "request_kmh": 8.438,
+      "body_reference_gap_m": 29.607,
+      "lead": {
+        "forward_edge_gap_m": 29.58,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -8.18,
+          "rear_edge_gap_m": -2.91,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -1.35,
+          "rear_edge_gap_m": 4.26,
+          "lateral_side_gap_m": 1.16,
+          "alongside": true
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {}
+    },
+    {
+      "frame": 1307,
+      "time_s": 124.3,
+      "station_m": 544.531,
+      "speed_kmh": 11.012,
+      "request_kmh": 15.098,
+      "body_reference_gap_m": 27.271,
+      "lead": {
+        "forward_edge_gap_m": 27.25,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -10.51,
+          "rear_edge_gap_m": -5.24,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -3.68,
+          "rear_edge_gap_m": 1.93,
+          "lateral_side_gap_m": 1.16,
+          "alongside": true
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {}
+    },
+    {
+      "frame": 1317,
+      "time_s": 125.3,
+      "station_m": 548.465,
+      "speed_kmh": 16.618,
+      "request_kmh": 18.394,
+      "body_reference_gap_m": 23.337,
+      "lead": {
+        "forward_edge_gap_m": 23.31,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -14.45,
+          "rear_edge_gap_m": -9.18,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -7.62,
+          "rear_edge_gap_m": -2.01,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": true,
+      "alongside": false,
+      "phase": "lead: waiting",
+      "evidence": {}
+    },
+    {
+      "frame": 1327,
+      "time_s": 126.3,
+      "station_m": 553.332,
+      "speed_kmh": 18.166,
+      "request_kmh": 18.394,
+      "body_reference_gap_m": 18.469,
+      "lead": {
+        "forward_edge_gap_m": 18.45,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -19.31,
+          "rear_edge_gap_m": -14.04,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -12.48,
+          "rear_edge_gap_m": -6.87,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": true,
+      "alongside": false,
+      "phase": "lead: stopped",
+      "evidence": {}
+    },
+    {
+      "frame": 1337,
+      "time_s": 127.3,
+      "station_m": 558.488,
+      "speed_kmh": 18.893,
+      "request_kmh": 18.304,
+      "body_reference_gap_m": 13.313,
+      "lead": {
+        "forward_edge_gap_m": 13.29,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -24.47,
+          "rear_edge_gap_m": -19.2,
+          "lateral_side_gap_m": 1.06,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -17.64,
+          "rear_edge_gap_m": -12.03,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": true,
+      "alongside": false,
+      "phase": "lead: stopped",
+      "evidence": {}
+    },
+    {
+      "frame": 1347,
+      "time_s": 128.3,
+      "station_m": 563.665,
+      "speed_kmh": 17.428,
+      "request_kmh": 13.895,
+      "body_reference_gap_m": 8.137,
+      "lead": {
+        "forward_edge_gap_m": 8.11,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -29.65,
+          "rear_edge_gap_m": -24.38,
+          "lateral_side_gap_m": 1.06,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -22.82,
+          "rear_edge_gap_m": -17.21,
+          "lateral_side_gap_m": 1.15,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": true,
+      "alongside": false,
+      "phase": "lead: stopped",
+      "evidence": {}
+    }
+  ]
+}

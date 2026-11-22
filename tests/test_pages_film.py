@@ -159,6 +159,79 @@ class PagesFilmTests(unittest.TestCase):
             self.assertEqual(manifest["camera_videos"]["chase"], self.master_info)
             self.assertIn(f"/{'1' * 40}/", manifest["archive_chase"]["url"])
 
+    def test_city_progress_stages_all_three_native_resolution_chase_films(self):
+        releases = []
+        for tag in ("v0.4.0", "v0.5.0", "v0.6.0"):
+            self.fixture(tag)
+            releases.append((self.chase, self.url))
+        with patch.object(pages, "urlopen", side_effect=lambda *_args, **_options: BytesIO(self.master)) as request:
+            self.assertTrue(pages.prepare(self.web, archive_revision="1" * 40))
+        self.assertEqual([call.args[0] for call in request.call_args_list], [url for _, url in releases])
+        for chase, _ in releases:
+            self.assertEqual(chase.read_bytes(), self.master)
+            manifest = json.loads(chase.with_name("manifest.json").read_bytes())
+            self.assertEqual(manifest["camera_videos"]["chase"], self.master_info)
+
+    def test_cached_release_encode_is_verified_and_recovers_from_damage(self):
+        self.fixture("v0.6.0")
+        cache = self.web.parent / "playback-cache"
+        capture = self.manifest.read_bytes()
+        encoded = b"verified encoded data" * 20
+        budget = len(encoded) + 100
+
+        def encode(source, target, master, _budget):
+            self.assertEqual(source.read_bytes(), self.master)
+            self.assertEqual(master["sha256"], self.master_sha)
+            target.write_bytes(encoded)
+            return self.master_info
+
+        with patch.object(pages, "encode_for_site", side_effect=encode) as encoding, \
+                patch.object(pages, "verify_encode", return_value=self.master_info) as verification, \
+                patch.object(pages, "urlopen", side_effect=lambda *_args, **_options: BytesIO(self.master)) as request:
+            for _ in range(2):
+                self.chase.write_bytes(self.compact)
+                self.manifest.write_bytes(capture)
+                self.assertTrue(pages.stage_chase(self.web, {"showcases": []}, "v0.6.0", budget=budget,
+                                                  require_1080=True, cache_dir=cache))
+                self.assertEqual(self.chase.read_bytes(), encoded)
+            request.assert_called_once()
+            encoding.assert_called_once()
+            cached = cache / self.master_sha / f"{budget}.mp4"
+            verification.assert_called_once_with(cached, dict(self.master_info, file_bytes=len(self.master),
+                                                               sha256=self.master_sha))
+            cached.write_bytes(b"damaged")
+            self.chase.write_bytes(self.compact)
+            self.manifest.write_bytes(capture)
+            pages.stage_chase(self.web, {"showcases": []}, "v0.6.0", budget=budget,
+                              require_1080=True, cache_dir=cache)
+            self.assertEqual(request.call_count, 2)
+            self.assertEqual(cached.read_bytes(), encoded)
+
+    def test_gzip_archive_moves_only_with_a_verified_range_and_keeps_replay_pack(self):
+        self.fixture("v0.6.0")
+        replay = self.folder / "replay.json.gz"
+        pack = self.folder / "replay-pack.json.gz"
+        replay.write_bytes(b"original compressed replay" * 100)
+        pack.write_bytes(b"local compressed replay")
+        manifest = json.loads(self.manifest.read_bytes())
+        manifest["replay"] = replay.name
+        manifest["sha256"].update({path.name: pages.sha256(path) for path in (replay, pack)})
+        pages.write_json(self.manifest, manifest)
+        catalog = self.web / "media/viewer-catalog.json"
+        pages.write_json(catalog, [{"path": "city-progress", "replay_pack_url": f"./media/city-progress/{pack.name}",
+                                    "replay_pack_sha256": pages.sha256(pack)}])
+        build = json.loads(self.build.read_bytes())
+        revision = "a" * 40
+        limit = pages.site_size(self.web) - 500
+        with patch.object(pages, "verify_archive_url") as verify:
+            pages.fit_archive_data(self.web, build, revision, limit=limit, directories=("city-progress",),
+                                   verify_remote=True)
+        url = pages.archive_revision_url(revision, "city-progress", replay.name)
+        verify.assert_called_once_with(url, replay)
+        self.assertFalse(replay.exists())
+        self.assertTrue(pack.exists())
+        self.assertEqual(json.loads(catalog.read_bytes())[0]["replay_url"], url)
+
     def test_historical_camera_is_only_relocated_after_a_verified_seekable_url(self):
         self.fixture("v0.4.0")
         front = self.folder / "front.mp4"

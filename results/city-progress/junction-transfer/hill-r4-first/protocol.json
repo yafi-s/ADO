@@ -1,0 +1,34 @@
+{
+  "map": "Town03_Opt",
+  "cases": [
+    "clear",
+    "parked"
+  ],
+  "weather": "ClearNoon",
+  "hill_road": 75,
+  "lane": 1,
+  "foot_xodr_s": 46.0,
+  "park_xodr_s": 21.0,
+  "policy_checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+  "execution_source_sha256": "743c36fd81f3d168001ac8e3602d8ea97e3506d72c003f9e6638497028eefabb",
+  "windows_m": [
+    [
+      0.0,
+      10.0
+    ],
+    [
+      10.0,
+      25.0
+    ],
+    [
+      25.0,
+      40.0
+    ],
+    [
+      0.0,
+      40.0
+    ]
+  ],
+  "stop_requirements": "Complete 30 consecutive frames below 0.20 m/s, body clearance 1\u201310 m, no contact or lane departure; parked car drift <0.4 m.",
+  "marks": "Confirm clear-speed improvement and a smaller target-speed drop under matched conditions. A clear-speed gain cannot compensate for failing the parked car."
+}

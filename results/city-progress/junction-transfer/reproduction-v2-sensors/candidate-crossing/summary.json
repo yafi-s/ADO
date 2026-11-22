@@ -1,0 +1,196 @@
+{
+  "scenario": "journey",
+  "seed": 881,
+  "policy": "ado-city-progress-v1",
+  "weather": "ClearNoon",
+  "road_id": 17,
+  "lane_id": -1,
+  "start_xy": [
+    136.17,
+    -135.36
+  ],
+  "outcome": "collision",
+  "frames": 114,
+  "duration_s": 11.4,
+  "progress_m": 48.111,
+  "route_length_m": 80.0,
+  "contacts": [
+    "vehicle.mini.cooper"
+  ],
+  "collision_events": 1,
+  "max_lateral_error_m": 0.043,
+  "spawn_lateral_m": 0.0,
+  "spawn_yaw_deg": 0.0,
+  "min_hazard_gap_m": 0.0,
+  "moving_within_1m_frames": 5,
+  "turn_direction": null,
+  "district": null,
+  "destination": "straight",
+  "crossing_delay_s": 0.0,
+  "camera_rendering": {
+    "requested": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "cameras": {
+      "front": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "false",
+          "dlss_screen_percentage": "100.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "false",
+          "dlss_screen_percentage": "100.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "left": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "right": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      }
+    }
+  },
+  "ego_blueprint": "vehicle.lincoln.mkz",
+  "background_actors": {
+    "walkers": 0,
+    "vehicles": 0
+  },
+  "sensor_configuration": "three-camera-lidar-radar",
+  "route_id": "356-through",
+  "road_ids": [
+    17,
+    384,
+    18
+  ],
+  "junction_ids": [
+    356
+  ],
+  "event_triggered": true,
+  "event_cleared": false,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "stopped_for_hazard": false,
+  "closest_in_path_speed_mps": 2.032,
+  "wall_seconds": 9.495,
+  "stations": {
+    "-20.0": {
+      "ego_station_m": -20.115255276277477,
+      "frame": 130,
+      "sim_time": 6.9,
+      "speed_mps": 5.27,
+      "speed_request_mps": 5.11305
+    },
+    "-12.0": {
+      "ego_station_m": -11.907449083799944,
+      "frame": 148,
+      "sim_time": 8.7,
+      "speed_mps": 3.81,
+      "speed_request_mps": 3.60963
+    },
+    "-8.0": {
+      "ego_station_m": -8.102464835696908,
+      "frame": 158,
+      "sim_time": 9.7,
+      "speed_mps": 3.792,
+      "speed_request_mps": 3.61315
+    },
+    "-4.0": {
+      "ego_station_m": -4.016225184071419,
+      "frame": 169,
+      "sim_time": 10.8,
+      "speed_mps": 3.258,
+      "speed_request_mps": 1.50209
+    }
+  },
+  "model_sha256": "fc736a368ac3b6d6360c4964b6308f84c56896a1d42c798f6c8c849b05a500b9",
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town03_Opt"
+  },
+  "center_xy": [
+    85.28835557746568,
+    -136.4452052887094
+  ],
+  "axes": [
+    [
+      -0.9997706022524652,
+      -0.021418283585361488
+    ],
+    [
+      0.035320334558250725,
+      -0.9993760423217546
+    ]
+  ],
+  "green_heads": [
+    "2003"
+  ],
+  "market_junctions": [
+    82,
+    103,
+    238,
+    730,
+    861,
+    1038,
+    1352,
+    1669,
+    1820,
+    1901,
+    1932
+  ],
+  "departure_step": 53,
+  "cross_speed_requested_mps": 3.0
+}

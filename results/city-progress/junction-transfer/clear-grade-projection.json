@@ -1,0 +1,170 @@
+{
+  "arm": "transfer-r3-first/candidate-clear",
+  "checkpoint_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+  "raw_sensor_sha256": "49bb4ba4ce57faa61206052f2b9fef74387f95ae2d28a53d7fe5b23355209784",
+  "native_xodr_sha256": "abf177bcd9b66cfefb7ac4919f6456815f1384f4229f1343c8a6a90bbb7713c9",
+  "method": "Rebuild original navigation and range cues from timestamped 360 lidar, front radar, sensor mounts and world-from-ego transforms; assert camera-independent raw range outputs equal archived feature values within 0.00004 m. For points in the nearest supporting cluster (<=0.45 m after the first accepted gap), compare world z against the projected native driving lane elevation corrected for lateral banking.",
+  "road_ground_fit": "Local near-road plane fitted once per scan, with body returns required to lie more than 0.28 m above that plane. Lidar requires two samples within 0.45 m; radar requires one.",
+  "before": {
+    "frame": 519,
+    "time_s": 11.4,
+    "binding": "sight_distance",
+    "target_kmh": 29.07022,
+    "lidar_gap_m": 25.62611,
+    "radar_gap_m": 24.1009,
+    "memory_gap_m": {
+      "lidar": 28.21719,
+      "radar": 26.42613
+    }
+  },
+  "at_trigger": {
+    "frame": 520,
+    "time_s": 11.5,
+    "binding": "occupied_corridor",
+    "target_kmh": 13.00734,
+    "actual_kmh": 26.136,
+    "memory_gap_m": {
+      "lidar": 27.81342,
+      "radar": 25.91447
+    },
+    "local_ground_plane_z_eq_ax_plus_by_plus_c": [
+      0.01181,
+      0.00105,
+      -0.09046
+    ],
+    "lidar": {
+      "gap_m": 25.14734,
+      "nearest": {
+        "gap_m": 25.14734,
+        "height_above_fitted_plane_m": 0.39895,
+        "world_xyz": [
+          25.88158,
+          -135.25102,
+          0.55102
+        ],
+        "native_road": {
+          "road": 18,
+          "lane": 1,
+          "s": 44.91542,
+          "z_m": 0.54814,
+          "side_m": -1.03371,
+          "pitch_deg": 5.42209
+        },
+        "above_native_road_m": 0.00288
+      },
+      "nearby_support_returns": 4,
+      "max_abs_native_vertical_error_m": 0.00288,
+      "min_plane_relative_height_m": 0.39703,
+      "max_plane_relative_height_m": 0.39895
+    },
+    "radar": {
+      "gap_m": 23.83518,
+      "nearest": {
+        "gap_m": 23.83518,
+        "height_above_fitted_plane_m": 0.28966,
+        "world_xyz": [
+          24.55563,
+          -134.63905,
+          0.43102
+        ],
+        "native_road": {
+          "road": 18,
+          "lane": 1,
+          "s": 46.22796,
+          "z_m": 0.43097,
+          "side_m": -0.39349,
+          "pitch_deg": 4.80774
+        },
+        "above_native_road_m": 5e-05,
+        "ego_compensated_radial_mps": 0.04197
+      },
+      "nearby_support_returns": 10,
+      "max_abs_native_vertical_error_m": 0.00154,
+      "min_plane_relative_height_m": 0.28966,
+      "max_plane_relative_height_m": 0.32224
+    },
+    "extra_speed_withheld_below_m": 24
+  },
+  "frame_520_native_lane_elevation_profile": [
+    {
+      "bumper_ahead_m": 0,
+      "road_z_m": 0.0,
+      "pitch_deg": 0.0
+    },
+    {
+      "bumper_ahead_m": 10,
+      "road_z_m": 0.0,
+      "pitch_deg": 0.0
+    },
+    {
+      "bumper_ahead_m": 15,
+      "road_z_m": 0.00481,
+      "pitch_deg": 1.20755
+    },
+    {
+      "bumper_ahead_m": 20,
+      "road_z_m": 0.16915,
+      "pitch_deg": 3.01199
+    },
+    {
+      "bumper_ahead_m": 23.835,
+      "road_z_m": 0.43082,
+      "pitch_deg": 4.80692
+    },
+    {
+      "bumper_ahead_m": 25,
+      "road_z_m": 0.5341,
+      "pitch_deg": 5.3522
+    },
+    {
+      "bumper_ahead_m": 25.147,
+      "road_z_m": 0.54792,
+      "pitch_deg": 5.42099
+    },
+    {
+      "bumper_ahead_m": 30,
+      "road_z_m": 1.10328,
+      "pitch_deg": 7.69238
+    }
+  ],
+  "contiguous_occupied_corridor": {
+    "first_frame": 520,
+    "last_frame": 556,
+    "first_s": 11.5,
+    "last_s": 15.1,
+    "frames": 37,
+    "nearest_returns": {
+      "lidar": {
+        "nearest_cluster_hits": 178,
+        "max_abs_native_vertical_error_m": 0.00857,
+        "mapped_road_lanes": [
+          [
+            18,
+            1
+          ]
+        ]
+      },
+      "radar": {
+        "nearest_cluster_hits": 744,
+        "max_abs_native_vertical_error_m": 0.00187,
+        "mapped_road_lanes": [
+          [
+            18,
+            1
+          ]
+        ]
+      }
+    }
+  },
+  "steepest_actual_half_second": {
+    "frame_start": 520,
+    "frame_end": 525,
+    "time_start_s": 11.5,
+    "time_end_s": 12.0,
+    "start_kmh": 26.13441,
+    "end_kmh": 21.28799,
+    "average_acceleration_mps2": -2.69246,
+    "trace_rounded_mps2": -2.693
+  },
+  "scope": "This geometry and clear exposure support a road-grade false obstacle. They do not measure the frequency of such errors elsewhere or supply per-return semantic labels."
+}

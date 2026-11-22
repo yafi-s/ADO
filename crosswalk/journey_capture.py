@@ -17,7 +17,7 @@ from . import city_map
 import cv2
 
 from .drive import episode
-from .experiment import PROJECT, fingerprint, read_json, write_json
+from .experiment import PROJECT, fingerprint, read_json, save_arrays, write_json
 from .runtime import MAP_NAME, producer_info, simulator
 from .showcase import (ARTIFACTS, DT, FPS, FRONT_SIZE, ChaseCapture, ObservedWorld,
                        PerceptionCapture, encode_and_check, install_staged, policy_profile, write_replay)
@@ -77,7 +77,7 @@ class JourneyWorld(ObservedWorld):
 
 
 PERIMETER_VIEWS = ("left", "right", "rear_left", "rear_right")
-PACE_SCHEMAS = ("ado-city-pace-v1", "ado-city-clearance-v1")
+PACE_SCHEMAS = ("ado-city-pace-v1", "ado-city-clearance-v1", "ado-city-progress-v1")
 SURROUND_SCHEMAS = ("ado-city-cruise-v1", *PACE_SCHEMAS)
 
 
@@ -265,7 +265,7 @@ def _load_inputs(model_path):
 
     path = Path(model_path).resolve(strict=True)
     saved_sha = fingerprint(path)
-    model, _, schema = load_driver(path)
+    model, feature_names, schema = load_driver(path)
     if fingerprint(path) != saved_sha:
         raise ValueError("The driving checkpoint changed while it was loading")
     fit_path = PROJECT / "models" / "fit.json"
@@ -290,11 +290,17 @@ def _load_inputs(model_path):
             policy["code_sha256"][source.name] = fingerprint(source)
         policy["barrier_sha256"] = fingerprint(barrier.MODEL)
         policy["barrier_post_appearance_sha256"] = fingerprint(barrier_posts.MODEL)
-    if schema == "ado-city-clearance-v1":
+    if schema in ("ado-city-clearance-v1", "ado-city-progress-v1"):
         from . import city_clearance, city_drive, city_pace
         for module in (city_clearance, city_drive, city_pace):
             source = Path(module.__file__)
             policy["code_sha256"][source.name] = fingerprint(source)
+    if schema == "ado-city-progress-v1":
+        # Include transitive imports and evaluation code as well as the direct model and rig.
+        policy["code_sha256"] = {p.name: fingerprint(p) for p in sorted(Path(__file__).parent.glob("*.py"))}
+        policy["control_feature_names"] = list(feature_names)
+        from .city_drive import LoggedDriver
+        model = LoggedDriver(model)
     return model, JourneyScenario, model.new_observer, policy
 
 
@@ -326,7 +332,7 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
     town = read_json(raw / MAP_ASSET)
     if town["producer"] != producer or not town["roads"]:
         raise ValueError("Viewer road geometry must come from the recording world")
-    trial_id = output.name if output.name in (NAME, "surround-city", "urban-pace", "city-life") else f"city-{seed}-{policy['sha256'][:8]}"
+    trial_id = output.name if output.name in (NAME, "surround-city", "urban-pace", "city-life", "city-progress") else f"city-{seed}-{policy['sha256'][:8]}"
     with ((raw / "chase.mjpeg").open("wb") as chase, (raw / "front.mjpeg").open("wb") as front,
           (raw / "perception.jsonl").open("w", encoding="utf-8", newline="\n") as rows,
           policy_profile(policy["camera_profile"]), ExitStack() as extras):
@@ -364,6 +370,15 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
                   map_asset=MAP_ASSET, required_event_kinds=list(expected_events), summary=summary,
                   **_result(summary, expected_events))
     source["perimeter_views"] = list(views)
+    if policy.get("schema") == "ado-city-progress-v1":
+        names = policy["control_feature_names"]
+        if len(model.observations) != len(trace) or any(len(row) != len(names) for row in model.observations):
+            raise ValueError("The replay and native policy feature tape have different lengths")
+        tape = stage / "policy-observations.npz"
+        save_arrays(tape, frame=[row["frame"] for row in trace], features=model.observations,
+                    feature_names=names, speed_request_mps=model.requested_speed,
+                    posted_limit_kmh=model.posted_limits)
+        source["policy_observations_sha256"] = fingerprint(tape)
     if population_profile != "standard":
         source["population_profile"] = population_profile
         reference = stage / "population-reference.jsonl.gz"
@@ -451,7 +466,7 @@ def finalize_staged(stage, *, include_attempt=False):
     if (source["passed"] or include_attempt) and directory is not None:
         title = "Urban pace and barriers" if source["policy"].get("schema") in PACE_SCHEMAS else ("Surround city drive" if views else "Long city drive")
         if source.get("population_profile") == "city-life":
-            title = "City life"
+            title = "City progress" if source["trial_id"] == "city-progress" else "City life"
         label = title if source["passed"] else f'City development drive · {source["summary"]["outcome"]}'
         catalog = dict(label=label, path=directory, cameras=["chase", "front", *views], trial_id=source["trial_id"],
                        manifest=f"./media/{directory}/manifest.json", **disclosure)

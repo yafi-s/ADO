@@ -147,8 +147,11 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
         pace = getattr(model, "policy", model)
         if tactical:
             from .overtake import TacticalPass
-            tactical_pass = (TacticalPass.from_scene_map(scene, measured_hold=True) if hasattr(pace, "tactical_speed_limit")
-                             else TacticalPass.from_scene_map(scene))
+            if getattr(pace, "confirmed_tactical_release", False):
+                tactical_pass = TacticalPass.from_scene_map(scene, measured_hold=True, confirmed_release=True)
+            else:
+                tactical_pass = (TacticalPass.from_scene_map(scene, measured_hold=True) if hasattr(pace, "tactical_speed_limit")
+                                 else TacticalPass.from_scene_map(scene))
         include_aux = live is not None or recording is not None and not getattr(recording, "primary_rig_only", False)
         rig_options = {"surround": True} if surround else {}
         rig = Rig(world, scene.ego, visuals=include_aux, range_only=range_only, **rig_options)
@@ -250,6 +253,12 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                     x = features(obs["front"], obs["lidar"], obs["radar"], speed, detections,
                                  navigation=local_route, side_views=(obs["left"], obs["right"]))
                 elif not hasattr(observer, "observe_and_predict"):
+                    if getattr(observer, "uses_conflict_profile", False):
+                        obs["progress_frame"] = frame
+                        pose = scene.ego.get_transform()
+                        obs["progress_ego_pose"] = (pose.location.x, pose.location.y, pose.rotation.yaw)
+                        obs["progress_camera_age_s"] = (step % 2) * DT
+                        obs["progress_tactical"] = tactical_pass.info if tactical_pass is not None else {}
                     junction_gap = next((start - navigation.progress - 2.25
                                          for start, end in scene._junction_ranges if end >= navigation.progress), 60.)
                     x = observer.observe(obs, detections, local_route, speed,
@@ -257,6 +266,9 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
             if sensor_lamp is not None:
                 signal = route_lamps.observe(scene.ego, obs)
                 light = (sensor_lamp.red_probability(signal[1]), signal[0]) if signal is not None else (0., 60.)
+                if signal is None and getattr(observer, "uses_conflict_profile", False) and route_lamps.governing_gap is not None:
+                    # A mapped controlling head without an RGB crop cannot authorize extra progress.
+                    light = (0., route_lamps.governing_gap)
                 x = np.asarray([*x, *light], dtype=np.float32)
             if teacher is not None:
                 applied = scene.ego.get_control()
@@ -318,6 +330,9 @@ def episode(world, kind, seed, policy, model=None, *, teacher=None, live=None,
                 speed_request = getattr(model, "last_speed_request", None)
                 if speed_request is not None:
                     row["speed_request_mps"] = round(float(speed_request), 5)
+                progress_evidence = getattr(pace, "progress_evidence", None)
+                if teacher is None and progress_evidence:
+                    row["progress_evidence"] = dict(progress_evidence)
             if teacher is not None:
                 row["instructor_speed_mps"] = teacher_speed
             if "events" in state:

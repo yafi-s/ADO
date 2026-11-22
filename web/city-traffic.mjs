@@ -35,6 +35,15 @@ export async function loadTrafficStudy() {
     marker.setAttribute('x1', x); marker.setAttribute('x2', x);
     byId('traffic-watch').href = `./?run=${encodeURIComponent(run.trial)}&at=${t}`;
     byId('traffic-frame').href = `./inspect.html?run=${encodeURIComponent(run.trial)}&frame=${frame}&camera=front`;
+    const comparison = byId('traffic-comparison');
+    const match = run.comparison?.frames[i];
+    comparison.hidden = !match;
+    if (match) {
+      const [otherFrame, otherStation, otherSpeed] = match;
+      comparison.href = `./?run=${encodeURIComponent(run.comparison.trial)}&frame=${otherFrame}&camera=front`;
+      comparison.textContent = `${run.comparison.label} at this location · ${Math.round(otherSpeed)} km/h`;
+      comparison.title = `Current position ${progress.toFixed(1)} m. Comparison position ${otherStation.toFixed(1)} m. Traffic can differ between recordings.`;
+    }
   }
   function draw(reset = true) {
     run = drives[selector.selectedIndex];

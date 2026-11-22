@@ -1,0 +1,239 @@
+{
+  "passed": true,
+  "model_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+  "seed": 213,
+  "crossing_delay_s": 0.75,
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town03_Opt"
+  },
+  "population": {
+    "vehicles": 22,
+    "walkers": 30
+  },
+  "duration_s": 312.2,
+  "progress_m": 1416.204,
+  "route_length_m": 1416.438,
+  "frames": 3122,
+  "outcome": "complete",
+  "encounters": {
+    "pedestrian": {
+      "handled": true,
+      "passed": true,
+      "exposed": true,
+      "violation": false,
+      "minimum_gap_m": 4.67
+    },
+    "occluded": {
+      "handled": true,
+      "passed": true,
+      "exposed": true,
+      "violation": false,
+      "minimum_gap_m": 4.52
+    },
+    "signal": {
+      "handled": true,
+      "passed": true,
+      "exposed": true,
+      "violation": false,
+      "minimum_gap_m": 3.75
+    },
+    "roadworks": {
+      "handled": true,
+      "passed": true,
+      "exposed": true,
+      "violation": false,
+      "minimum_gap_m": 60.0
+    },
+    "barrier": {
+      "handled": true,
+      "passed": true,
+      "exposed": true,
+      "violation": false,
+      "minimum_gap_m": 60.0
+    },
+    "lead": {
+      "handled": true,
+      "passed": true,
+      "exposed": true,
+      "violation": false,
+      "minimum_gap_m": 3.7
+    },
+    "bus": {
+      "handled": true,
+      "passed": true,
+      "exposed": true,
+      "violation": false,
+      "minimum_gap_m": 60.0
+    },
+    "braking": {
+      "handled": true,
+      "passed": true,
+      "exposed": true,
+      "violation": false,
+      "minimum_gap_m": 4.2
+    },
+    "left": {
+      "handled": true,
+      "passed": true,
+      "exposed": true,
+      "violation": false,
+      "minimum_gap_m": 0.07
+    },
+    "cyclist": {
+      "handled": true,
+      "passed": true,
+      "exposed": true,
+      "violation": false,
+      "minimum_gap_m": 5.82
+    },
+    "pedestrian-delayed": {
+      "handled": true,
+      "passed": true,
+      "exposed": true,
+      "violation": false,
+      "minimum_gap_m": 4.83
+    }
+  },
+  "junctions": [
+    {
+      "id": 103,
+      "direction": "straight",
+      "completed": true
+    },
+    {
+      "id": 1038,
+      "direction": "right",
+      "completed": true
+    },
+    {
+      "id": 1352,
+      "direction": "right",
+      "completed": true
+    },
+    {
+      "id": 82,
+      "direction": "straight",
+      "completed": true
+    },
+    {
+      "id": 1932,
+      "direction": "straight",
+      "completed": true
+    },
+    {
+      "id": 238,
+      "direction": "straight",
+      "completed": true
+    },
+    {
+      "id": 861,
+      "direction": "straight",
+      "completed": true
+    },
+    {
+      "id": 730,
+      "direction": "left",
+      "completed": true
+    },
+    {
+      "id": 1820,
+      "direction": "straight",
+      "completed": true
+    },
+    {
+      "id": 1901,
+      "direction": "straight",
+      "completed": true
+    },
+    {
+      "id": 1669,
+      "direction": "straight",
+      "completed": true
+    }
+  ],
+  "standstills_below_015_mps": [
+    {
+      "seconds": 3.4,
+      "first_frame": 128,
+      "station_m": 22.538,
+      "phases": {
+        "pedestrian: dwell": 11,
+        "pedestrian: leaving": 23
+      },
+      "constraints": {
+        "crossing_yield": 28,
+        "unconfirmed": 6
+      }
+    },
+    {
+      "seconds": 3.4,
+      "first_frame": 421,
+      "station_m": 140.675,
+      "phases": {
+        "occluded: dwell": 10,
+        "occluded: leaving": 24
+      },
+      "constraints": {
+        "crossing_yield": 28,
+        "unconfirmed": 6
+      }
+    },
+    {
+      "seconds": 4.0,
+      "first_frame": 787,
+      "station_m": 308.412,
+      "phases": {
+        "signal: red": 30,
+        "signal: green": 10
+      },
+      "constraints": {
+        "signal_approach": 40
+      }
+    },
+    {
+      "seconds": 1.4,
+      "first_frame": 1475,
+      "station_m": 569.15,
+      "phases": {
+        "lead: stopped": 3,
+        "lead: departing": 11
+      },
+      "constraints": {
+        "occupied_corridor": 14
+      }
+    },
+    {
+      "seconds": 1.7,
+      "first_frame": 2453,
+      "station_m": 1041.653,
+      "phases": {
+        "left: yield to oncoming": 17
+      },
+      "constraints": {
+        "opposing_traffic": 7,
+        "crossing_yield": 10
+      }
+    },
+    {
+      "seconds": 3.6,
+      "first_frame": 2905,
+      "station_m": 1270.033,
+      "phases": {
+        "pedestrian-delayed: dwell": 11,
+        "pedestrian-delayed: leaving": 25
+      },
+      "constraints": {
+        "crossing_yield": 30,
+        "unconfirmed": 6
+      }
+    }
+  ],
+  "participant_contacts": [],
+  "collisions": 0,
+  "missed_yields": 0,
+  "red_violations": 0,
+  "trace_sha256": "57f5cdd440e7893df14eb9a798ec1f2d9fe2714dd3ec6c491cb3d64108f5d72a",
+  "features_sha256": "2772c482aacd90a1eef553d7622747f64da303e01b0285c9c92f06350009b799"
+}

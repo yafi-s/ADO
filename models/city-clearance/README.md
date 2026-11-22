@@ -1,6 +1,6 @@
 # Clearance-aware city driver
 
-The Windows Town03 launcher uses this checkpoint and the populated City Life profile. Pass `--population-profile standard` to drive the earlier population layout.
+The v0.5 Windows Town03 launcher used this checkpoint and the populated City Life profile. Select it explicitly with `--model models/city-clearance/candidate.npz` in the current launcher. Pass `--population-profile standard` to drive the earlier population layout.
 
 This checkpoint retains the City Pace cruise forest and pedal controller. It adds a fitted stopping-distance response for passing a row of stationary roadside objects. The input contains measured LiDAR shape, spacing and pavement visibility along the navigation path. A half-second of motion-compatible returns distinguishes a persistent roadside surface from a single scan. A pedestrian detection, a body-corridor return, a tall occluder, missing pavement evidence or an unconfirmed close return restores the original cautious approach.
 

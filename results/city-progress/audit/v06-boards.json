@@ -1,0 +1,1234 @@
+{
+  "note": "Forward lead bumper and board longitudinal footprint overlap in the ego heading frame; measured road is nearly straight at the boards. Polygons use native actor-rotation and box offsets. Rounded ego yaw/position and nominal centered ego half-length/width permit centimeter-scale differences from native world vertices.",
+  "points": {
+    "first_lead_within_35m": {
+      "frame": 1250,
+      "time_s": 115.3,
+      "station_m": 536.822,
+      "speed_kmh": 6.826,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 34.98,
+      "lead": {
+        "forward_edge_gap_m": 34.96,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -2.8,
+          "rear_edge_gap_m": 2.47,
+          "lateral_side_gap_m": 1.07,
+          "alongside": true
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 4.03,
+          "rear_edge_gap_m": 9.64,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {
+        "binding": "opposing_traffic",
+        "base_request_mps": 1.5020923614501953,
+        "proposal_mps": 1.5020923614501953,
+        "sight_m": 4.254238128662109,
+        "corridor_m": 20.0,
+        "cross_sight_m": 4.254238128662109,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 1.3321525216269947e-07,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 35.18525314331055,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 36.0,
+        "raw_radar_gap_m": 35.18525314331055,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    "first_lead_within_25m": {
+      "frame": 1296,
+      "time_s": 119.9,
+      "station_m": 546.814,
+      "speed_kmh": 17.017,
+      "request_kmh": 21.989,
+      "body_reference_gap_m": 24.988,
+      "lead": {
+        "forward_edge_gap_m": 24.97,
+        "lateral_side_gap_m": -1.95
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -12.79,
+          "rear_edge_gap_m": -7.52,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -5.96,
+          "rear_edge_gap_m": -0.35,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": true,
+      "alongside": false,
+      "phase": "lead: waiting",
+      "evidence": {
+        "binding": "recovery",
+        "base_request_mps": 5.109411239624023,
+        "proposal_mps": 7.733499277656916,
+        "sight_m": 20.0,
+        "corridor_m": 20.0,
+        "cross_sight_m": 20.0,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 8.11402998124322e-08,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 25.189903259277344,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 25.189903259277344,
+        "raw_radar_gap_m": 25.190954208374023,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    "first_board_overlap": {
+      "frame": 1235,
+      "time_s": 113.8,
+      "station_m": 534.148,
+      "speed_kmh": 6.332,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 37.654,
+      "lead": {
+        "forward_edge_gap_m": 37.63,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -0.13,
+          "rear_edge_gap_m": 5.14,
+          "lateral_side_gap_m": 1.07,
+          "alongside": true
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 6.7,
+          "rear_edge_gap_m": 12.31,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {
+        "binding": "sight_distance",
+        "base_request_mps": 1.5020923614501953,
+        "proposal_mps": 0.0,
+        "sight_m": 0.06985776126384735,
+        "corridor_m": 20.0,
+        "cross_sight_m": 0.06985776126384735,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 2.5411748083570274e-07,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 36.0,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 36.0,
+        "raw_radar_gap_m": 36.0,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    "both_boards_physically_behind": {
+      "frame": 1296,
+      "time_s": 119.9,
+      "station_m": 546.814,
+      "speed_kmh": 17.017,
+      "request_kmh": 21.989,
+      "body_reference_gap_m": 24.988,
+      "lead": {
+        "forward_edge_gap_m": 24.97,
+        "lateral_side_gap_m": -1.95
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -12.79,
+          "rear_edge_gap_m": -7.52,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -5.96,
+          "rear_edge_gap_m": -0.35,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": true,
+      "alongside": false,
+      "phase": "lead: waiting",
+      "evidence": {
+        "binding": "recovery",
+        "base_request_mps": 5.109411239624023,
+        "proposal_mps": 7.733499277656916,
+        "sight_m": 20.0,
+        "corridor_m": 20.0,
+        "cross_sight_m": 20.0,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 8.11402998124322e-08,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 25.189903259277344,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 25.189903259277344,
+        "raw_radar_gap_m": 25.190954208374023,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    "first_curb_target": {
+      "frame": 1218,
+      "time_s": 112.1,
+      "station_m": 530.084,
+      "speed_kmh": 13.313,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 41.718,
+      "lead": {
+        "forward_edge_gap_m": 41.7,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": 3.94,
+          "rear_edge_gap_m": 9.21,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 10.77,
+          "rear_edge_gap_m": 16.38,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "barrier: approaching striped barricades",
+      "evidence": {
+        "binding": "unconfirmed",
+        "base_request_mps": 1.5020923614501953,
+        "proposal_mps": 1.5020923614501953,
+        "sight_m": 0.0,
+        "corridor_m": 0.0,
+        "cross_sight_m": 0.0,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 6.68816326765409e-08,
+        "supported_scans": 0,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 36.0,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 36.0,
+        "raw_radar_gap_m": 36.0,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    }
+  },
+  "fixed_sections": [
+    {
+      "frames": 11,
+      "seconds": 1.1,
+      "first_frame": 1189,
+      "last_frame": 1199,
+      "from_s": 109.2,
+      "to_s": 110.2,
+      "from_m": 510.617,
+      "to_m": 519.342,
+      "median_kmh": 31.842,
+      "median_target_kmh": 24.664,
+      "minimum_lead_gap_m": 52.44,
+      "maximum_lead_gap_m": 61.1,
+      "guards": {
+        "unconfirmed": 6,
+        "sight_distance": 5
+      },
+      "body_lidar_radar_clear_36_frames": 11
+    },
+    {
+      "frames": 8,
+      "seconds": 0.8,
+      "first_frame": 1200,
+      "last_frame": 1207,
+      "from_s": 110.3,
+      "to_s": 111.0,
+      "from_m": 520.096,
+      "to_m": 524.748,
+      "median_kmh": 23.875,
+      "median_target_kmh": 18.394,
+      "minimum_lead_gap_m": 47.03,
+      "maximum_lead_gap_m": 51.68,
+      "guards": {
+        "recovery": 1,
+        "sight_distance": 7
+      },
+      "body_lidar_radar_clear_36_frames": 8
+    },
+    {
+      "frames": 10,
+      "seconds": 1.0,
+      "first_frame": 1208,
+      "last_frame": 1217,
+      "from_s": 111.1,
+      "to_s": 112.0,
+      "from_m": 525.335,
+      "to_m": 529.704,
+      "median_kmh": 17.565,
+      "median_target_kmh": 11.583,
+      "minimum_lead_gap_m": 42.07,
+      "maximum_lead_gap_m": 46.44,
+      "guards": {
+        "sight_distance": 9,
+        "unconfirmed": 1
+      },
+      "body_lidar_radar_clear_36_frames": 10
+    },
+    {
+      "frames": 22,
+      "seconds": 2.2,
+      "first_frame": 1218,
+      "last_frame": 1239,
+      "from_s": 112.1,
+      "to_s": 114.2,
+      "from_m": 530.084,
+      "to_m": 534.839,
+      "median_kmh": 7.355,
+      "median_target_kmh": 5.408,
+      "minimum_lead_gap_m": 36.94,
+      "maximum_lead_gap_m": 41.7,
+      "guards": {
+        "unconfirmed": 3,
+        "sight_distance": 18,
+        "recovery": 1
+      },
+      "body_lidar_radar_clear_36_frames": 22
+    },
+    {
+      "frames": 29,
+      "seconds": 2.9,
+      "first_frame": 1240,
+      "last_frame": 1268,
+      "from_s": 114.3,
+      "to_s": 117.1,
+      "from_m": 535.01,
+      "to_m": 539.941,
+      "median_kmh": 6.253,
+      "median_target_kmh": 5.408,
+      "minimum_lead_gap_m": 31.84,
+      "maximum_lead_gap_m": 36.77,
+      "guards": {
+        "sight_distance": 8,
+        "unconfirmed": 4,
+        "opposing_traffic": 17
+      },
+      "body_lidar_radar_clear_36_frames": 6
+    },
+    {
+      "frames": 23,
+      "seconds": 2.3,
+      "first_frame": 1269,
+      "last_frame": 1291,
+      "from_s": 117.2,
+      "to_s": 119.4,
+      "from_m": 540.111,
+      "to_m": 544.75,
+      "median_kmh": 6.296,
+      "median_target_kmh": 8.134,
+      "minimum_lead_gap_m": 27.03,
+      "maximum_lead_gap_m": 31.67,
+      "guards": {
+        "sight_distance": 11,
+        "recovery": 8,
+        "unconfirmed": 4
+      },
+      "body_lidar_radar_clear_36_frames": 0
+    },
+    {
+      "frames": 11,
+      "seconds": 1.1,
+      "first_frame": 1292,
+      "last_frame": 1302,
+      "from_s": 119.5,
+      "to_s": 120.5,
+      "from_m": 545.115,
+      "to_m": 549.951,
+      "median_kmh": 17.87,
+      "median_target_kmh": 19.191,
+      "minimum_lead_gap_m": 21.83,
+      "maximum_lead_gap_m": 26.66,
+      "guards": {
+        "recovery": 7,
+        "occupied_corridor": 4
+      },
+      "body_lidar_radar_clear_36_frames": 0
+    },
+    {
+      "frames": 18,
+      "seconds": 1.8,
+      "first_frame": 1303,
+      "last_frame": 1320,
+      "from_s": 120.6,
+      "to_s": 122.3,
+      "from_m": 550.483,
+      "to_m": 559.507,
+      "median_kmh": 19.098,
+      "median_target_kmh": 18.394,
+      "minimum_lead_gap_m": 12.27,
+      "maximum_lead_gap_m": 21.3,
+      "guards": {
+        "occupied_corridor": 18
+      },
+      "body_lidar_radar_clear_36_frames": 0
+    },
+    {
+      "frames": 51,
+      "seconds": 5.1,
+      "first_frame": 1321,
+      "last_frame": 1371,
+      "from_s": 122.4,
+      "to_s": 127.4,
+      "from_m": 560.036,
+      "to_m": 569.938,
+      "median_kmh": 5.144,
+      "median_target_kmh": 6.66,
+      "minimum_lead_gap_m": 3.62,
+      "maximum_lead_gap_m": 12.85,
+      "guards": {
+        "occupied_corridor": 46,
+        "unconfirmed": 5
+      },
+      "body_lidar_radar_clear_36_frames": 0
+    }
+  ],
+  "alongside": {
+    "frames": 52,
+    "seconds": 5.2,
+    "first_frame": 1235,
+    "last_frame": 1295,
+    "from_s": 113.8,
+    "to_s": 119.8,
+    "from_m": 534.148,
+    "to_m": 546.352,
+    "median_kmh": 6.338,
+    "median_target_kmh": 6.265,
+    "minimum_lead_gap_m": 25.43,
+    "maximum_lead_gap_m": 37.63,
+    "guards": {
+      "sight_distance": 14,
+      "recovery": 13,
+      "unconfirmed": 8,
+      "opposing_traffic": 17
+    },
+    "body_lidar_radar_clear_36_frames": 11
+  },
+  "alongside_outside_lead_25m": {
+    "frames": 52,
+    "seconds": 5.2,
+    "first_frame": 1235,
+    "last_frame": 1295,
+    "from_s": 113.8,
+    "to_s": 119.8,
+    "from_m": 534.148,
+    "to_m": 546.352,
+    "median_kmh": 6.338,
+    "median_target_kmh": 6.265,
+    "minimum_lead_gap_m": 25.43,
+    "maximum_lead_gap_m": 37.63,
+    "guards": {
+      "sight_distance": 14,
+      "recovery": 13,
+      "unconfirmed": 8,
+      "opposing_traffic": 17
+    },
+    "body_lidar_radar_clear_36_frames": 11
+  },
+  "after_both_boards_before_lead_within_25m": {
+    "frames": 0
+  },
+  "source_excerpt": [
+    {
+      "frame": 1191,
+      "time_s": 109.4,
+      "station_m": 512.478,
+      "speed_kmh": 33.462,
+      "request_kmh": 33.597,
+      "body_reference_gap_m": 59.324,
+      "lead": {
+        "forward_edge_gap_m": 59.28,
+        "lateral_side_gap_m": -1.13
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": 21.5,
+          "rear_edge_gap_m": 26.77,
+          "lateral_side_gap_m": 1.4,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 28.34,
+          "rear_edge_gap_m": 33.93,
+          "lateral_side_gap_m": 1.58,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "barrier: approaching striped barricades",
+      "evidence": {
+        "binding": "unconfirmed",
+        "base_request_mps": 9.332607194457745,
+        "proposal_mps": 9.332607194457745,
+        "sight_m": 0.0,
+        "corridor_m": 0.0,
+        "cross_sight_m": 0.0,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 4.2141883227486687e-07,
+        "supported_scans": 0,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 36.0,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 36.0,
+        "raw_radar_gap_m": 36.0,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    {
+      "frame": 1201,
+      "time_s": 110.4,
+      "station_m": 520.826,
+      "speed_kmh": 25.906,
+      "request_kmh": 20.185,
+      "body_reference_gap_m": 50.976,
+      "lead": {
+        "forward_edge_gap_m": 50.95,
+        "lateral_side_gap_m": -1.91
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": 13.19,
+          "rear_edge_gap_m": 18.46,
+          "lateral_side_gap_m": 1.06,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 20.02,
+          "rear_edge_gap_m": 25.63,
+          "lateral_side_gap_m": 1.14,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "barrier: approaching striped barricades",
+      "evidence": {
+        "binding": "sight_distance",
+        "base_request_mps": 5.109411239624023,
+        "proposal_mps": 5.606830475932925,
+        "sight_m": 13.463384628295898,
+        "corridor_m": 24.0,
+        "cross_sight_m": 13.463384628295898,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 1.2099913249130623e-07,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 36.0,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 36.0,
+        "raw_radar_gap_m": 36.0,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    {
+      "frame": 1211,
+      "time_s": 111.4,
+      "station_m": 526.978,
+      "speed_kmh": 18.684,
+      "request_kmh": 13.045,
+      "body_reference_gap_m": 44.824,
+      "lead": {
+        "forward_edge_gap_m": 44.8,
+        "lateral_side_gap_m": -1.95
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": 7.04,
+          "rear_edge_gap_m": 12.31,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 13.87,
+          "rear_edge_gap_m": 19.48,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "barrier: approaching striped barricades",
+      "evidence": {
+        "binding": "sight_distance",
+        "base_request_mps": 3.62359356880188,
+        "proposal_mps": 2.6881881201588356,
+        "sight_m": 7.227942943572998,
+        "corridor_m": 24.0,
+        "cross_sight_m": 7.227942943572998,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 7.154253722774229e-08,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 36.0,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 36.0,
+        "raw_radar_gap_m": 36.0,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    {
+      "frame": 1221,
+      "time_s": 112.4,
+      "station_m": 531.092,
+      "speed_kmh": 10.976,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 40.709,
+      "lead": {
+        "forward_edge_gap_m": 40.69,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": 2.93,
+          "rear_edge_gap_m": 8.2,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 9.76,
+          "rear_edge_gap_m": 15.37,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "barrier: approaching striped barricades",
+      "evidence": {
+        "binding": "sight_distance",
+        "base_request_mps": 1.5020923614501953,
+        "proposal_mps": 0.0,
+        "sight_m": 3.1223692893981934,
+        "corridor_m": 24.0,
+        "cross_sight_m": 3.1223692893981934,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 2.2545557953890238e-07,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 36.0,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 36.0,
+        "raw_radar_gap_m": 36.0,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    {
+      "frame": 1231,
+      "time_s": 113.4,
+      "station_m": 533.422,
+      "speed_kmh": 6.808,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 38.38,
+      "lead": {
+        "forward_edge_gap_m": 38.36,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": 0.6,
+          "rear_edge_gap_m": 5.87,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 7.43,
+          "rear_edge_gap_m": 13.04,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "lead: waiting",
+      "evidence": {
+        "binding": "sight_distance",
+        "base_request_mps": 1.5020923614501953,
+        "proposal_mps": 0.0,
+        "sight_m": 0.7818650007247925,
+        "corridor_m": 20.0,
+        "cross_sight_m": 0.7818650007247925,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 3.931243952592922e-07,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 36.0,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 36.0,
+        "raw_radar_gap_m": 36.0,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    {
+      "frame": 1241,
+      "time_s": 114.4,
+      "station_m": 535.183,
+      "speed_kmh": 6.253,
+      "request_kmh": 6.191,
+      "body_reference_gap_m": 36.619,
+      "lead": {
+        "forward_edge_gap_m": 36.6,
+        "lateral_side_gap_m": -1.95
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -1.16,
+          "rear_edge_gap_m": 4.11,
+          "lateral_side_gap_m": 1.07,
+          "alongside": true
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 5.67,
+          "rear_edge_gap_m": 11.28,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {
+        "binding": "sight_distance",
+        "base_request_mps": 1.5020923614501953,
+        "proposal_mps": 1.7196748246998836,
+        "sight_m": 5.8581390380859375,
+        "corridor_m": 20.0,
+        "cross_sight_m": 5.8581390380859375,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 2.726787613482884e-07,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 36.0,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 36.0,
+        "raw_radar_gap_m": 36.0,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    {
+      "frame": 1251,
+      "time_s": 115.4,
+      "station_m": 537.009,
+      "speed_kmh": 6.667,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 34.793,
+      "lead": {
+        "forward_edge_gap_m": 34.77,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -2.99,
+          "rear_edge_gap_m": 2.28,
+          "lateral_side_gap_m": 1.07,
+          "alongside": true
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 3.84,
+          "rear_edge_gap_m": 9.45,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {
+        "binding": "opposing_traffic",
+        "base_request_mps": 1.5020923614501953,
+        "proposal_mps": 1.5020923614501953,
+        "sight_m": 4.138150691986084,
+        "corridor_m": 20.0,
+        "cross_sight_m": 4.138150691986084,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 2.7589342721512367e-07,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 34.99652862548828,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 36.0,
+        "raw_radar_gap_m": 34.99652862548828,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    {
+      "frame": 1261,
+      "time_s": 116.4,
+      "station_m": 538.751,
+      "speed_kmh": 6.113,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 33.051,
+      "lead": {
+        "forward_edge_gap_m": 33.03,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -4.73,
+          "rear_edge_gap_m": 0.54,
+          "lateral_side_gap_m": 1.07,
+          "alongside": true
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 2.1,
+          "rear_edge_gap_m": 7.71,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {
+        "binding": "opposing_traffic",
+        "base_request_mps": 1.5020923614501953,
+        "proposal_mps": 1.5020923614501953,
+        "sight_m": 2.3223378658294678,
+        "corridor_m": 20.0,
+        "cross_sight_m": 2.3223378658294678,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 1.2126649551191804e-07,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 33.244110107421875,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 33.244110107421875,
+        "raw_radar_gap_m": 33.25779342651367,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    {
+      "frame": 1271,
+      "time_s": 117.4,
+      "station_m": 540.451,
+      "speed_kmh": 6.106,
+      "request_kmh": 5.408,
+      "body_reference_gap_m": 31.351,
+      "lead": {
+        "forward_edge_gap_m": 31.33,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -6.43,
+          "rear_edge_gap_m": -1.16,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": 0.4,
+          "rear_edge_gap_m": 6.01,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": false,
+      "phase": "lead: waiting",
+      "evidence": {
+        "binding": "sight_distance",
+        "base_request_mps": 1.5020923614501953,
+        "proposal_mps": 0.0,
+        "sight_m": 0.6376344561576843,
+        "corridor_m": 20.0,
+        "cross_sight_m": 0.6376344561576843,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 1.49483724953825e-07,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 31.550323486328125,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 31.607879638671875,
+        "raw_radar_gap_m": 31.550323486328125,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    {
+      "frame": 1281,
+      "time_s": 118.4,
+      "station_m": 542.163,
+      "speed_kmh": 6.494,
+      "request_kmh": 9.067,
+      "body_reference_gap_m": 29.639,
+      "lead": {
+        "forward_edge_gap_m": 29.62,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -8.14,
+          "rear_edge_gap_m": -2.87,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -1.31,
+          "rear_edge_gap_m": 4.3,
+          "lateral_side_gap_m": 1.16,
+          "alongside": true
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {
+        "binding": "recovery",
+        "base_request_mps": 2.4444938468933106,
+        "proposal_mps": 7.733499277656916,
+        "sight_m": 20.0,
+        "corridor_m": 20.0,
+        "cross_sight_m": 24.0,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 1.2145829941800912e-07,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 29.8425350189209,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 29.94925880432129,
+        "raw_radar_gap_m": 29.8425350189209,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    {
+      "frame": 1291,
+      "time_s": 119.4,
+      "station_m": 544.75,
+      "speed_kmh": 12.704,
+      "request_kmh": 17.326,
+      "body_reference_gap_m": 27.051,
+      "lead": {
+        "forward_edge_gap_m": 27.03,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -10.73,
+          "rear_edge_gap_m": -5.46,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -3.9,
+          "rear_edge_gap_m": 1.71,
+          "lateral_side_gap_m": 1.16,
+          "alongside": true
+        }
+      ],
+      "both_boards_behind": false,
+      "alongside": true,
+      "phase": "lead: waiting",
+      "evidence": {
+        "binding": "recovery",
+        "base_request_mps": 4.738804073333738,
+        "proposal_mps": 7.733499277656916,
+        "sight_m": 20.0,
+        "corridor_m": 20.0,
+        "cross_sight_m": 20.0,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 9.611854068225512e-08,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 27.25249671936035,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 27.32032012939453,
+        "raw_radar_gap_m": 27.25249671936035,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    {
+      "frame": 1301,
+      "time_s": 120.4,
+      "station_m": 549.416,
+      "speed_kmh": 19.296,
+      "request_kmh": 18.394,
+      "body_reference_gap_m": 22.385,
+      "lead": {
+        "forward_edge_gap_m": 22.36,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -15.4,
+          "rear_edge_gap_m": -10.13,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -8.57,
+          "rear_edge_gap_m": -2.96,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": true,
+      "alongside": false,
+      "phase": "lead: waiting",
+      "evidence": {
+        "binding": "occupied_corridor",
+        "base_request_mps": 5.109411239624023,
+        "proposal_mps": 5.109411239624023,
+        "sight_m": 20.0,
+        "corridor_m": 20.0,
+        "cross_sight_m": 24.0,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 7.342114116681842e-08,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 22.574831008911133,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 22.574831008911133,
+        "raw_radar_gap_m": 22.591577529907227,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    {
+      "frame": 1311,
+      "time_s": 121.4,
+      "station_m": 554.732,
+      "speed_kmh": 19.152,
+      "request_kmh": 18.394,
+      "body_reference_gap_m": 17.07,
+      "lead": {
+        "forward_edge_gap_m": 17.05,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -20.71,
+          "rear_edge_gap_m": -15.44,
+          "lateral_side_gap_m": 1.07,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -13.88,
+          "rear_edge_gap_m": -8.27,
+          "lateral_side_gap_m": 1.16,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": true,
+      "alongside": false,
+      "phase": "lead: stopped",
+      "evidence": {
+        "binding": "occupied_corridor",
+        "base_request_mps": 5.109411239624023,
+        "proposal_mps": 5.109411239624023,
+        "sight_m": 17.305908203125,
+        "corridor_m": 17.305908203125,
+        "cross_sight_m": 18.871543884277344,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 4.660246872845164e-07,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 17.267351150512695,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 17.305908203125,
+        "raw_radar_gap_m": 17.267351150512695,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    },
+    {
+      "frame": 1321,
+      "time_s": 122.4,
+      "station_m": 560.036,
+      "speed_kmh": 19.019,
+      "request_kmh": 18.304,
+      "body_reference_gap_m": 11.766,
+      "lead": {
+        "forward_edge_gap_m": 11.74,
+        "lateral_side_gap_m": -1.96
+      },
+      "boards": [
+        {
+          "id": 127,
+          "forward_edge_gap_m": -26.02,
+          "rear_edge_gap_m": -20.75,
+          "lateral_side_gap_m": 1.06,
+          "alongside": false
+        },
+        {
+          "id": 128,
+          "forward_edge_gap_m": -19.19,
+          "rear_edge_gap_m": -13.58,
+          "lateral_side_gap_m": 1.15,
+          "alongside": false
+        }
+      ],
+      "both_boards_behind": true,
+      "alongside": false,
+      "phase": "lead: stopped",
+      "evidence": {
+        "binding": "occupied_corridor",
+        "base_request_mps": 5.084584833524122,
+        "proposal_mps": 5.084584833524122,
+        "sight_m": 11.997928619384766,
+        "corridor_m": 11.997928619384766,
+        "cross_sight_m": 14.506117820739746,
+        "blind_end_m": 0.0,
+        "adjacent_margin_m": 0.0,
+        "curvature_per_m": 1.2108654345865943e-07,
+        "supported_scans": 3,
+        "crossing_gap_m": 60.0,
+        "crossing_entry_s": 6.0,
+        "crossing_inward_mps": 0.0,
+        "crossing_age_s": 0.0,
+        "raw_body_memory_gap_m": 11.959275245666504,
+        "grade_added_request_mps": 0.0,
+        "raw_lidar_gap_m": 11.997928619384766,
+        "raw_radar_gap_m": 11.959275245666504,
+        "grade_extent_m": 0.0,
+        "confirmed_grade_extent_m": 0.0
+      }
+    }
+  ]
+}

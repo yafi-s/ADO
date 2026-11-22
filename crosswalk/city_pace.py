@@ -41,6 +41,9 @@ class CityPaceModel(UrbanCruiseModel):
     def _edge_speed(self):
         return self.side_speed
 
+    def _actuation_distance(self, x):
+        return clearance(x, self.radar_weight)
+
     def _plan(self, x):
         baseline = CityModel._plan(self, x)
         starts, splits, thresholds, left, right, values = self.cruise_forest
@@ -74,6 +77,9 @@ class CityPaceModel(UrbanCruiseModel):
             requested = min(requested, self.signed_speed_limit)
         if self.tactical_speed_limit is not None:
             requested = min(requested, self.tactical_speed_limit)
+        return self._finish_request(x, baseline, requested)
+
+    def _finish_request(self, x, baseline, requested):
         # A briefly clear frame must not cause an immediate surge after a slowdown.
         if self.last_speed_request is not None:
             requested = min(requested, self.last_speed_request + .185)
@@ -91,7 +97,7 @@ class CityPaceModel(UrbanCruiseModel):
         error = request - speed
         accel = np.clip(1.4 * error, -2.35, 1.85)
         hold, accelerate, brake = (np.interp(speed, SPEED_KNOTS, c) for c in self.actuator.T)
-        distance = clearance(x, self.radar_weight)
+        distance = self._actuation_distance(x)
         if distance < 36. and error < 0.:
             # Reserve the demonstrated stand-off in the measured corridor. This
             # bound retains braking as speed falls and the residual gap shortens.

@@ -85,7 +85,7 @@ class CityPaceTests(unittest.TestCase):
                 patch.object(city_drive, "simulator", side_effect=BeforeServerLaunch):
             with self.assertRaises(BeforeServerLaunch):
                 city_drive.main()
-        load.assert_called_once_with(ROOT/"models/city-clearance/candidate.npz")
+        load.assert_called_once_with(ROOT/"models/city-progress/candidate.npz")
 
 
 if __name__ == "__main__":

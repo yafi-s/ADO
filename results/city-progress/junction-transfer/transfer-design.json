@@ -1,0 +1,43 @@
+{
+  "original": {
+    "junction": 356,
+    "ego_connector": [
+      384,
+      -1
+    ],
+    "traffic_connector": [
+      434,
+      1
+    ],
+    "in_market_route": false,
+    "crossing_angle_deg": 90.79685600887672,
+    "traffic_spawn_right_of_ego_m": -16.947068850317578,
+    "npc_requested_mps": 3.0
+  },
+  "transfer": {
+    "junction": 1221,
+    "ego_connector": [
+      1229,
+      1
+    ],
+    "traffic_connector": [
+      1334,
+      -2
+    ],
+    "in_market_route": false,
+    "crossing_angle_deg": 89.81371987105463,
+    "traffic_spawn_right_of_ego_m": 18.828583463820394,
+    "npc_requested_mps": 3.6
+  },
+  "model_sha256": "62db5184c31e257b99788ae9968f6e0a1cf254f2aec2333c9c0074de44242755",
+  "crossing_observer_sha256": "8ce100e763d08d0531a66e258a383832915ac70c0dca905d1c17caa5e2cce076",
+  "native_road_graph_sha256": "abf177bcd9b66cfefb7ac4919f6456815f1384f4229f1343c8a6a90bbb7713c9",
+  "marks": {
+    "minimum_clearance_m": 1.0,
+    "minimum_post_encroachment_s": 1.0,
+    "positive": "Clear ego would overlap the measured crossing vehicle; actual ego yields and completes.",
+    "negative": "Car drives toward the junction entrance and brakes outside the ego corridor. Ego completes with no stops within -12 to +8 m of center and no contact."
+  },
+  "fresh_transfer_timing": "Depart so Mini center arrival coincides with candidate clear center arrival using independent empty-run calibration. Apply identical schedule across baseline/candidate.",
+  "evaluator_sha256": "1f85c4572b9eaa5b3cf4e43b82958d9f1ffbe99e39084cea73effa91a5e6f32b"
+}

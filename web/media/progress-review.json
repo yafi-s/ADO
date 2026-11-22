@@ -1,0 +1,123 @@
+{
+  "checks": [
+    {
+      "test": "Populated route",
+      "result": "1.42 km in 298.7 s, previously 332.0 s. 11/11 encounters handled. 0 ego contacts, 0 red-light violations and 0 missed yields.",
+      "evidence": [
+        {
+          "label": "Watch the drive",
+          "url": "./?run=city-progress"
+        },
+        {
+          "label": "All measurements",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.6.0/results/city-progress/audit/V06.md"
+        }
+      ]
+    },
+    {
+      "test": "Different pedestrian timing",
+      "result": "With seed 213 and a 0.75 s departure delay, the same route took 347.5 s with the earlier driver and 312.2 s with the revised driver. Both completed the route and passed the encounter checks.",
+      "evidence": [
+        {
+          "label": "Both independent runs",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.6.0/results/city-progress/generalization/comparison.json"
+        }
+      ]
+    },
+    {
+      "test": "Straight junctions",
+      "result": "Across the same 6 nearly straight junctions, measured median speed was 13.1 km/h before and 17.5 km/h after. Total time inside them was 55.0 s before and 39.5 s after.",
+      "evidence": [
+        {
+          "label": "Every junction",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.6.0/results/city-progress/audit/V06.md"
+        },
+        {
+          "label": "Test protocol",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.6.0/results/city-progress/audit/PROTOCOL.md"
+        }
+      ]
+    },
+    {
+      "test": "Cross traffic on a different road",
+      "result": "On the empty approach, speed 12 m before the conflict rose from 13.3 to 24.7 km/h. When a Mini crossed, ADO yielded, leaving 4.81 m minimum clearance. When the Mini stopped short, ADO continued at a minimum of 15.5 km/h near the crossing.",
+      "evidence": [
+        {
+          "label": "Matched camera evidence",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.6.0/results/city-progress/junction-transfer/README.md"
+        },
+        {
+          "label": "Native grades",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.6.0/results/city-progress/junction-transfer/j1221-r4-first/audit.json"
+        }
+      ]
+    },
+    {
+      "test": "Beside the bus",
+      "result": "At 858–872 m along the route, the car drove at a median 6.1 km/h before and 7.2 km/h after. Elapsed time was 7.7 s before and 6.7 s after.",
+      "evidence": [
+        {
+          "label": "Earlier recording",
+          "url": "./?run=city-life&frame=2064&camera=chase"
+        },
+        {
+          "label": "Revised recording",
+          "url": "./?run=city-progress&frame=1960&camera=chase"
+        }
+      ]
+    },
+    {
+      "test": "Past the bus",
+      "result": "At 872–882 m along the route, the car drove at a median 15.4 km/h before and 17.7 km/h after. Elapsed time was 2.5 s before and 2.1 s after. In the next 10 m, median speed rose from 15.1 to 25.9 km/h.",
+      "evidence": [
+        {
+          "label": "Earlier recording",
+          "url": "./?run=city-life&frame=2115&camera=front"
+        },
+        {
+          "label": "Revised recording",
+          "url": "./?run=city-progress&frame=2004&camera=front"
+        }
+      ]
+    },
+    {
+      "test": "When the path is occupied",
+      "result": "12/12 matched cases passed. When a pedestrian emerged from behind the stopped bus, the revised driver stopped and kept 2.56 m minimum body clearance.",
+      "evidence": [
+        {
+          "label": "Watch the paired driving tests",
+          "url": "./media/city-progress-tests/comparison.mp4"
+        },
+        {
+          "label": "Controls and failures",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.6.0/results/city-progress/trials/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Slow sections across town",
+      "result": "Time below 15 km/h across the full trip changed from 202.0 to 124.3 s. Time below 10 km/h changed from 51.8 to 51.8 s. Both include required stops.",
+      "evidence": [
+        {
+          "label": "All 25 m sections",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.6.0/results/city-progress/audit/v06.json"
+        },
+        {
+          "label": "Driving analysis",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.6.0/results/city-progress/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Braking and speed limits",
+      "result": "Strongest half-second deceleration was 4.43 m/s² before and 4.70 m/s² after. The revised car spent 0.0 s more than 1 km/h above the posted limit.",
+      "evidence": [
+        {
+          "label": "Controls and limitations",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.6.0/results/city-progress/audit/V06.md"
+        }
+      ]
+    }
+  ],
+  "scope": "The two drivers ran the same populated route. Arriving at a different time can change which people and vehicles occupy a junction. Matched open and occupied trials supplement the route comparison."
+}
