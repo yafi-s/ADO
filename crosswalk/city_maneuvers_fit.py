@@ -1,5 +1,6 @@
 """Fit near and upcoming body curvature using a previous native city drive."""
 import argparse
+import gzip
 import hashlib
 import json
 from pathlib import Path
@@ -75,6 +76,21 @@ def main():
         margin=trial.get("guarded_margin_m")
         if margin is not None and margin<0.:
             raise ValueError("Native guarded stopping distance is too short")
+    overlap=[]
+    for trial in braking["trials"]:
+        if trial["split"] not in ("fit","held_out","grip_stress"):
+            continue
+        path=args.stops.parent/trial["trace"]
+        if digest(path)!=trial["trace_sha256"]:
+            raise ValueError("Native braking trace differs from its calibration record")
+        with gzip.open(path,"rt",encoding="utf8") as stream:
+            rows=[json.loads(line) for line in stream]
+        final=rows[-1]["progress_m"]
+        margins=[stopping[1]*r["speed_mps"]**2+stopping[2]-(final-r["progress_m"])
+                 for r in rows if r["phase"]=="brake" and 7.75<=r["speed_mps"]<=11.5]
+        if len(margins)<5 or min(margins)<0.:
+            raise ValueError("Native residual stopping distances do not support urban handback")
+        overlap.append(dict(trial=trial["name"],frames=len(margins),min_remaining_margin_m=min(margins)))
     model=ManeuverModel(args.base.read_bytes(),curve,stopping)
     args.output.mkdir(parents=True,exist_ok=True)
     path=args.output/"candidate.npz"
@@ -90,7 +106,7 @@ def main():
                 holdout_median_absolute_error_per_m=np.median(abs(error),axis=0).tolist(),
                 holdout_coverage=(error>=0.).mean(axis=0).tolist(), coefficients=curve.tolist(),
                 urban_request_ceiling_kmh=39.6,max_operating_request_kmh=3.6*min(stopping[-1],60./3.6),
-                high_speed_stopping=stopping,
+                high_speed_stopping=stopping,urban_handback_validation=overlap,
                 stopping_calibration_tested_to_mps=model.stopping[-1])
     (args.output/"fit.json").write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(report))
