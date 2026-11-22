@@ -61,6 +61,37 @@ with a minimum of 10.67 m and zero sampled overlaps.
 [Physical gap and sensor chronology](timing-variation-rejoin-gap.json) ·
 [Held-out native grade](timing-variation-registered01.json)
 
+## The first High film also stopped after the moving-lead pass
+
+High capture `long-city-drive-9h8jac5g` used source `ef514ca2`.
+It timed out after 182.4 seconds at 584.550 m, with zero ego or
+traffic contacts, red-light violations or missed yields. The cone
+bypass returned completely to the source lane at frame 1197.
+The car passed the moving lead with 1.657 m of sampled clearance
+and remained in the alternate until the cutoff. All 44 moving
+divider-straddle samples exceeded 1 m. This capture is a failed
+completion test.
+[Exact High grade](high01-failed.json)
+
+At about 540 m the High car was traveling 39.52 km/h, against
+22.19 km/h in the successful qualification. Its front bumper room
+was about 32 m in both runs. The High run's closing speed required
+about 55 m at that exposure. In the closest later sample the actual
+front gap was 14.69 m against 22.92 m required. Both sides of the
+source lane had measured pavement returns, and the passed car was
+tracked. None of 60 recorded post-pass samples through 570 m met
+both guards. At the final stop, the source sedan was only 3.15 m
+behind the ego bumper and the alternate car was 3.63 m ahead.
+[Exact pose, range, and gap comparison](high01-rejoin-gap.json)
+
+The recorded cameras, perception journal, policy inputs and raw
+range sweeps match all 1,824 scored exposures. The six original
+camera stream digests match the capture, as do the 48 retained
+lidar and five-radar witnesses. Actual speed and requested speed
+stayed below 40 km/h throughout the observed High waits and
+straddles. Its posted-90 peak was 39.70 km/h.
+[Native frame and checksum verification](high01-raw-verification.json)
+
 ## Passing and waiting
 
 On Road 67 the source lane is −2 and the legal same-direction passing

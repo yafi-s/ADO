@@ -1,0 +1,43 @@
+{
+  "capture_id": "long-city-drive-9h8jac5g",
+  "published_as_primary": false,
+  "outcome": "timeout",
+  "failure_reasons": [
+    "route_incomplete",
+    "planned_encounters_incomplete",
+    "separate_physical_maneuvers_unconfirmed"
+  ],
+  "end_station_m": 584.55,
+  "complete_route_m": 1416.438,
+  "capture_frames": 1824,
+  "first_carla_frame": 75,
+  "last_carla_frame": 1898,
+  "first_clip_frame": 1307,
+  "last_clip_frame": 1482,
+  "clip_start_s": 123.2,
+  "clip_end_s": 140.7,
+  "initial_hold_frame": 1453,
+  "initial_hold_s": 137.8,
+  "clip_frames": 176,
+  "clip_sha256": "249ccf05cf3985b66e265274872b2be2653037e51a98144139f6b185b3e5e68c",
+  "clip_video": {
+    "width": 1280,
+    "height": 446,
+    "r_frame_rate": "10/1",
+    "nb_read_frames": "176"
+  },
+  "reference_sha256": "517e28f390c3e4b7b91c43019b6c2402137673027bed0774c5ff70a0bf723cda",
+  "scored_trace_sha256": "b2eae82abaed8783d382b8c2e466aaee382d5aea1c962c4d80f9cf46cd657cbc",
+  "capture_json_sha256": "e871b72fcf5f3b1b1b93e49539c8ed2ace5a0baf744714d12bba3c708109cc51",
+  "native_stream_sha256": {
+    "front.mjpeg": "0d8989e5ab5442c6e7ea0a8034c9191657436f026850ed63d7de3962428a7bc6",
+    "chase.mjpeg": "4f0491cede7b1e5d71cb2f75703539ba0cc5bb12269cc0d82fd3aa2d90c0244b"
+  },
+  "physical_maneuver_sequence": {
+    "passed": false,
+    "obstruction_rejoin_precedes_occupied_wait": true,
+    "actual_wait_policy_frames": 26,
+    "first_actual_wait_frame": 1224,
+    "last_actual_wait_frame": 1249
+  }
+}

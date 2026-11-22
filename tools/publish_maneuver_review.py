@@ -90,6 +90,17 @@ def create():
         f'The trial timed out after {variant_run["duration_s"]:.1f} s with {variant_run["collision_events"]} recorded ego contacts.',
         ("Native grade and events", TAG + "qualification/timing-variation/grade.json"),
         ("Stopped position and controls", TAG + "qualification/timing-variation/summary.json"))
+    early = read(STUDY / "audit/high01-failed.json")
+    registration = read(STUDY / "qualification/spaced-registration.json")
+    if events["lead"].get("stopped_lead_layout") == "junction-approach":
+        add("Why the second layout differs",
+            f'In the first High recording ADO passed the slow car, then stopped in the passing lane at '
+            f'{early["grade"]["progress_m"]:.1f} m with no viable return gap on the measured trajectory. '
+            f'The featured course places the next stopped sedan {registration["revised_course"]["held_sedan_shift_m"]:.0f} m farther '
+            f'down the same lane. It makes the two encounters distinct. The original course remains a failed test.',
+            ("Watch the failed return", TAG.replace("/blob/", "/raw/") + "attempts/high01/incomplete-return.mp4"),
+            ("First High recording audit", TAG + "audit/high01-failed.json"),
+            ("Registered scene change", TAG + "qualification/spaced-registration.json"))
     before, after = old["posted_90"], new["posted_90"]
     add("90 km/h posted section",
         f'On the featured drive, actual speed on this section peaked at {after["kmh_p10_p50_p95_max"][3]:.1f} km/h '
@@ -128,6 +139,23 @@ def create():
         f'{100*a["two_each"]/a["scored"]:.1f}% on the earlier drive. Counts include occluded actors.',
         ("Native proof and controls", TAG + "README.md"),
         ("Explore the traffic timeline", "./benchmarks.html#traffic-study"))
+    screen = read(STUDY / "display.json")
+    if not screen["capture_passed"] or screen["telemetry_sha256"] != new["source"]["telemetry_sha256"]:
+        raise ValueError("Rider display audit must use the featured camera recording")
+    links = []
+    for key, label in (("obstruction_right", "Cone in the side camera"),
+                       ("yielding_to_adjacent_rear", "Approaching car while ADO yields")):
+        witness = screen["publication_witnesses"].get(key)
+        if witness:
+            links.append((label, exposure(witness["frame"], witness["view"])))
+    lead_display = screen["roles"]["slow-traffic"]
+    cone_display = screen["roles"]["in-lane-obstruction"]
+    add("What the rider display actually saw",
+        f'Within 35 m the display placed the slow vehicle within 3 m of its native body on '
+        f'{lead_display["matched_drawings"]}/{lead_display["nearby_actor_frames"]} exposures. '
+        f'For the three staged cones, {cone_display["matched_drawings"]}/{cone_display["nearby_actor_frames"]} '
+        f'individual cone observations had a symbol within 0.65 m. Counts include occluded bodies and remembered symbols.',
+        *links, ("Camera and range checks", TAG + "display.md"))
     return {"checks": checks, "scope": "The native cameras and vehicle bodies establish the order and clearance of each tested pass. "
             "The posted limit, fitted operating ceiling, requested speed and measured speed are separate quantities."}
 

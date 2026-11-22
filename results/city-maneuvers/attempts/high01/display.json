@@ -1,0 +1,2644 @@
+{
+  "trial": "city-maneuvers",
+  "frames": 1824,
+  "first_frame": 75,
+  "last_frame": 1898,
+  "capture_passed": false,
+  "journal_sha256": "81da043b86b1d2c3ea9ba78d57979d7db3efb3676c6221689f3db0d2e6e89965",
+  "telemetry_sha256": "11560634c7ad0eb9d3e0211aecd3113cb3b3ed54b89996b4268c411afb2a57b8",
+  "camera_views": [
+    "chase",
+    "front",
+    "left",
+    "right",
+    "rear_left",
+    "rear_right"
+  ],
+  "method": "Use the public replay join, camera-box helpers, inline reviewers and symbol memory. Match same-class symbols of at least 0.5 memory opacity to native bodies within 35 m, closest admissible pair first, one drawing per actor per frame. Gates are 0.65 m for props and 3 m for vehicles. A fresh contributing source has a current linked rectangle in a recorded view and at least one lidar hit. To corroborate attribution, require normalized rectangle IoU of at least 0.15 with the projected native 3D body and either no competing body reaching 0.15 or a margin of at least 0.05. Record the best competing vehicle or prop overlap. Chase has no detector overlay. Counts include occluded bodies and symbols outside the current Follow viewport.",
+  "roles": {
+    "in-lane-obstruction": {
+      "nearby_actor_frames": 363,
+      "matched_drawings": 160,
+      "fresh_camera_and_range": 129,
+      "camera_geometry_confirmed": 91,
+      "actors": {
+        "129": {
+          "class": "traffic_cone",
+          "reference_frames": 805,
+          "nearby_frames": 122,
+          "matched_frames": 75,
+          "confirmed_frames": 57,
+          "first_by_camera": {
+            "front": {
+              "frame": 1036,
+              "seconds": 96.1,
+              "actor_id": 129,
+              "role": "in-lane-obstruction",
+              "source_id": "C7",
+              "symbol_id": "C7",
+              "class": "traffic_cone",
+              "center_error_m": 0.029,
+              "range_m": 30.434,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "front"
+              ],
+              "attribution": [
+                {
+                  "view": "front",
+                  "track_id": "C7",
+                  "image_id": null,
+                  "class": "traffic_cone",
+                  "box": [
+                    0.503125,
+                    0.505556,
+                    0.514062,
+                    0.547222
+                  ],
+                  "lidar_hits": 2,
+                  "native_box": [
+                    0.496438710258071,
+                    0.5075860231432581,
+                    0.5195835735561634,
+                    0.546756157206643
+                  ],
+                  "body_iou": 0.459,
+                  "other_actor_id": 131,
+                  "other_body_iou": 0.067,
+                  "corroborated": true
+                }
+              ]
+            },
+            "rear_right": {
+              "frame": 1104,
+              "seconds": 102.9,
+              "actor_id": 129,
+              "role": "in-lane-obstruction",
+              "source_id": "C7",
+              "symbol_id": "C7",
+              "class": "traffic_cone",
+              "center_error_m": 0.046,
+              "range_m": 4.221,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "rear_right"
+              ],
+              "attribution": [
+                {
+                  "view": "rear_right",
+                  "track_id": "C7",
+                  "image_id": null,
+                  "class": "traffic_cone",
+                  "box": [
+                    0.296875,
+                    0.633333,
+                    0.41875,
+                    1
+                  ],
+                  "lidar_hits": 61,
+                  "native_box": [
+                    0.2628236152588064,
+                    0.617731040396085,
+                    0.47349100511858827,
+                    1
+                  ],
+                  "body_iou": 0.555,
+                  "other_actor_id": null,
+                  "other_body_iou": 0,
+                  "corroborated": true
+                }
+              ]
+            }
+          },
+          "closest": {
+            "frame": 1100,
+            "seconds": 102.5,
+            "range_m": 2.970690155502606
+          },
+          "first": {
+            "frame": 1036,
+            "seconds": 96.1,
+            "actor_id": 129,
+            "role": "in-lane-obstruction",
+            "source_id": "C7",
+            "symbol_id": "C7",
+            "class": "traffic_cone",
+            "center_error_m": 0.029,
+            "range_m": 30.434,
+            "opacity": 1,
+            "held": false,
+            "fresh_camera_and_range": true,
+            "cameras": [
+              "front"
+            ],
+            "attribution": [
+              {
+                "view": "front",
+                "track_id": "C7",
+                "image_id": null,
+                "class": "traffic_cone",
+                "box": [
+                  0.503125,
+                  0.505556,
+                  0.514062,
+                  0.547222
+                ],
+                "lidar_hits": 2,
+                "native_box": [
+                  0.496438710258071,
+                  0.5075860231432581,
+                  0.5195835735561634,
+                  0.546756157206643
+                ],
+                "body_iou": 0.459,
+                "other_actor_id": 131,
+                "other_body_iou": 0.067,
+                "corroborated": true
+              }
+            ]
+          },
+          "first_fresh": {
+            "frame": 1036,
+            "seconds": 96.1,
+            "actor_id": 129,
+            "role": "in-lane-obstruction",
+            "source_id": "C7",
+            "symbol_id": "C7",
+            "class": "traffic_cone",
+            "center_error_m": 0.029,
+            "range_m": 30.434,
+            "opacity": 1,
+            "held": false,
+            "fresh_camera_and_range": true,
+            "cameras": [
+              "front"
+            ],
+            "attribution": [
+              {
+                "view": "front",
+                "track_id": "C7",
+                "image_id": null,
+                "class": "traffic_cone",
+                "box": [
+                  0.503125,
+                  0.505556,
+                  0.514062,
+                  0.547222
+                ],
+                "lidar_hits": 2,
+                "native_box": [
+                  0.496438710258071,
+                  0.5075860231432581,
+                  0.5195835735561634,
+                  0.546756157206643
+                ],
+                "body_iou": 0.459,
+                "other_actor_id": 131,
+                "other_body_iou": 0.067,
+                "corroborated": true
+              }
+            ]
+          }
+        },
+        "130": {
+          "class": "traffic_cone",
+          "reference_frames": 807,
+          "nearby_frames": 122,
+          "matched_frames": 55,
+          "confirmed_frames": 26,
+          "first_by_camera": {
+            "front": {
+              "frame": 1064,
+              "seconds": 98.9,
+              "actor_id": 130,
+              "role": "in-lane-obstruction",
+              "source_id": "C8",
+              "symbol_id": "C8",
+              "class": "traffic_cone",
+              "center_error_m": 0.15,
+              "range_m": 22.128,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "front"
+              ],
+              "attribution": [
+                {
+                  "view": "front",
+                  "track_id": "C8",
+                  "image_id": null,
+                  "class": "traffic_cone",
+                  "box": [
+                    0.525,
+                    0.5,
+                    0.548438,
+                    0.569444
+                  ],
+                  "lidar_hits": 2,
+                  "native_box": [
+                    0.5232419634929488,
+                    0.5116520091550862,
+                    0.5557270327575748,
+                    0.5670531492431978
+                  ],
+                  "body_iou": 0.61,
+                  "other_actor_id": 131,
+                  "other_body_iou": 0.538,
+                  "corroborated": true
+                }
+              ]
+            },
+            "right": {
+              "frame": 1083,
+              "seconds": 100.8,
+              "actor_id": 130,
+              "role": "in-lane-obstruction",
+              "source_id": "C8",
+              "symbol_id": "C8",
+              "class": "traffic_cone",
+              "center_error_m": 0.11,
+              "range_m": 12.136,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "right"
+              ],
+              "attribution": [
+                {
+                  "view": "right",
+                  "track_id": "C8",
+                  "image_id": null,
+                  "class": "traffic_cone",
+                  "box": [
+                    0,
+                    0.511111,
+                    0.0375,
+                    0.677778
+                  ],
+                  "lidar_hits": 8,
+                  "native_box": [
+                    0,
+                    0.5246397274648573,
+                    0.06169312750863093,
+                    0.6924719160372229
+                  ],
+                  "body_iou": 0.529,
+                  "other_actor_id": 131,
+                  "other_body_iou": 0.346,
+                  "corroborated": true
+                }
+              ]
+            },
+            "rear_right": {
+              "frame": 1104,
+              "seconds": 102.9,
+              "actor_id": 130,
+              "role": "in-lane-obstruction",
+              "source_id": "C8",
+              "symbol_id": "C8",
+              "class": "traffic_cone",
+              "center_error_m": 0.037,
+              "range_m": 4.515,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "rear_right"
+              ],
+              "attribution": [
+                {
+                  "view": "rear_right",
+                  "track_id": "C8",
+                  "image_id": null,
+                  "class": "traffic_cone",
+                  "box": [
+                    0.046875,
+                    0.644444,
+                    0.175,
+                    1
+                  ],
+                  "lidar_hits": 47,
+                  "native_box": [
+                    0.024841759018951526,
+                    0.6237581981218882,
+                    0.20823704424631662,
+                    1
+                  ],
+                  "body_iou": 0.66,
+                  "other_actor_id": null,
+                  "other_body_iou": 0,
+                  "corroborated": true
+                }
+              ]
+            }
+          },
+          "closest": {
+            "frame": 1101,
+            "seconds": 102.6,
+            "range_m": 4.012144065210019
+          },
+          "first": {
+            "frame": 1038,
+            "seconds": 96.3,
+            "actor_id": 130,
+            "role": "in-lane-obstruction",
+            "source_id": "C8",
+            "symbol_id": "C8",
+            "class": "traffic_cone",
+            "center_error_m": 0.171,
+            "range_m": 30.353,
+            "opacity": 1,
+            "held": false,
+            "fresh_camera_and_range": true,
+            "cameras": [],
+            "attribution": [
+              {
+                "view": "front",
+                "track_id": "C8",
+                "image_id": null,
+                "class": "traffic_cone",
+                "box": [
+                  0.520312,
+                  0.505556,
+                  0.534375,
+                  0.547222
+                ],
+                "lidar_hits": 1,
+                "native_box": [
+                  0.5166730508985544,
+                  0.507686533786776,
+                  0.5399558978114627,
+                  0.5469620127646969
+                ],
+                "body_iou": 0.583,
+                "other_actor_id": 131,
+                "other_body_iou": 0.582,
+                "corroborated": false
+              }
+            ]
+          },
+          "first_fresh": {
+            "frame": 1038,
+            "seconds": 96.3,
+            "actor_id": 130,
+            "role": "in-lane-obstruction",
+            "source_id": "C8",
+            "symbol_id": "C8",
+            "class": "traffic_cone",
+            "center_error_m": 0.171,
+            "range_m": 30.353,
+            "opacity": 1,
+            "held": false,
+            "fresh_camera_and_range": true,
+            "cameras": [],
+            "attribution": [
+              {
+                "view": "front",
+                "track_id": "C8",
+                "image_id": null,
+                "class": "traffic_cone",
+                "box": [
+                  0.520312,
+                  0.505556,
+                  0.534375,
+                  0.547222
+                ],
+                "lidar_hits": 1,
+                "native_box": [
+                  0.5166730508985544,
+                  0.507686533786776,
+                  0.5399558978114627,
+                  0.5469620127646969
+                ],
+                "body_iou": 0.583,
+                "other_actor_id": 131,
+                "other_body_iou": 0.582,
+                "corroborated": false
+              }
+            ]
+          }
+        },
+        "131": {
+          "class": "traffic_cone",
+          "reference_frames": 787,
+          "nearby_frames": 119,
+          "matched_frames": 30,
+          "confirmed_frames": 8,
+          "first_by_camera": {
+            "front": {
+              "frame": 1090,
+              "seconds": 101.5,
+              "actor_id": 131,
+              "role": "in-lane-obstruction",
+              "source_id": "C9",
+              "symbol_id": "C9",
+              "class": "traffic_cone",
+              "center_error_m": 0.177,
+              "range_m": 10.237,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "front"
+              ],
+              "attribution": [
+                {
+                  "view": "front",
+                  "track_id": "C9",
+                  "image_id": null,
+                  "class": "traffic_cone",
+                  "box": [
+                    0.975,
+                    0.558333,
+                    1,
+                    0.725
+                  ],
+                  "lidar_hits": 1,
+                  "native_box": [
+                    0.9433089740487958,
+                    0.5519786270667122,
+                    1,
+                    0.7495519892372666
+                  ],
+                  "body_iou": 0.372,
+                  "other_actor_id": 129,
+                  "other_body_iou": 0.275,
+                  "corroborated": true
+                }
+              ]
+            },
+            "right": {
+              "frame": 1096,
+              "seconds": 102.1,
+              "actor_id": 131,
+              "role": "in-lane-obstruction",
+              "source_id": "C9",
+              "symbol_id": "C9",
+              "class": "traffic_cone",
+              "center_error_m": 0.148,
+              "range_m": 6.775,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "right"
+              ],
+              "attribution": [
+                {
+                  "view": "right",
+                  "track_id": "C9",
+                  "image_id": null,
+                  "class": "traffic_cone",
+                  "box": [
+                    0.2375,
+                    0.555556,
+                    0.309375,
+                    0.822222
+                  ],
+                  "lidar_hits": 28,
+                  "native_box": [
+                    0.19902750919518541,
+                    0.5696264573181247,
+                    0.3447587750741581,
+                    0.8514345763235844
+                  ],
+                  "body_iou": 0.431,
+                  "other_actor_id": null,
+                  "other_body_iou": 0,
+                  "corroborated": true
+                }
+              ]
+            },
+            "rear_right": {
+              "frame": 1109,
+              "seconds": 103.4,
+              "actor_id": 131,
+              "role": "in-lane-obstruction",
+              "source_id": "C9",
+              "symbol_id": "C9",
+              "class": "traffic_cone",
+              "center_error_m": 0.024,
+              "range_m": 5.883,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "rear_right"
+              ],
+              "attribution": [
+                {
+                  "view": "rear_right",
+                  "track_id": "C9",
+                  "image_id": null,
+                  "class": "traffic_cone",
+                  "box": [
+                    0.440625,
+                    0.555556,
+                    0.53125,
+                    0.861111
+                  ],
+                  "lidar_hits": 37,
+                  "native_box": [
+                    0.41164096455915594,
+                    0.5809910739613172,
+                    0.548308180782652,
+                    0.891735697652362
+                  ],
+                  "body_iou": 0.567,
+                  "other_actor_id": 130,
+                  "other_body_iou": 0.472,
+                  "corroborated": true
+                }
+              ]
+            }
+          },
+          "closest": {
+            "frame": 1104,
+            "seconds": 102.9,
+            "range_m": 3.3908700948281574
+          },
+          "first": {
+            "frame": 1051,
+            "seconds": 97.6,
+            "actor_id": 131,
+            "role": "in-lane-obstruction",
+            "source_id": "C9",
+            "symbol_id": "C9",
+            "class": "traffic_cone",
+            "center_error_m": 0.254,
+            "range_m": 28.3,
+            "opacity": 1,
+            "held": false,
+            "fresh_camera_and_range": true,
+            "cameras": [],
+            "attribution": [
+              {
+                "view": "front",
+                "track_id": "C9",
+                "image_id": null,
+                "class": "traffic_cone",
+                "box": [
+                  0.520312,
+                  0.502778,
+                  0.540625,
+                  0.552778
+                ],
+                "lidar_hits": 1,
+                "native_box": [
+                  0.5139364580512803,
+                  0.5064675366656242,
+                  0.5391371996481441,
+                  0.5488030534360092
+                ],
+                "body_iou": 0.62,
+                "other_actor_id": 130,
+                "other_body_iou": 0.704,
+                "corroborated": false
+              }
+            ]
+          },
+          "first_fresh": {
+            "frame": 1051,
+            "seconds": 97.6,
+            "actor_id": 131,
+            "role": "in-lane-obstruction",
+            "source_id": "C9",
+            "symbol_id": "C9",
+            "class": "traffic_cone",
+            "center_error_m": 0.254,
+            "range_m": 28.3,
+            "opacity": 1,
+            "held": false,
+            "fresh_camera_and_range": true,
+            "cameras": [],
+            "attribution": [
+              {
+                "view": "front",
+                "track_id": "C9",
+                "image_id": null,
+                "class": "traffic_cone",
+                "box": [
+                  0.520312,
+                  0.502778,
+                  0.540625,
+                  0.552778
+                ],
+                "lidar_hits": 1,
+                "native_box": [
+                  0.5139364580512803,
+                  0.5064675366656242,
+                  0.5391371996481441,
+                  0.5488030534360092
+                ],
+                "body_iou": 0.62,
+                "other_actor_id": 130,
+                "other_body_iou": 0.704,
+                "corroborated": false
+              }
+            ]
+          }
+        }
+      }
+    },
+    "slow-traffic": {
+      "nearby_actor_frames": 648,
+      "matched_drawings": 646,
+      "fresh_camera_and_range": 279,
+      "camera_geometry_confirmed": 279,
+      "actors": {
+        "132": {
+          "class": "car",
+          "reference_frames": 1023,
+          "nearby_frames": 648,
+          "matched_frames": 646,
+          "confirmed_frames": 279,
+          "first_by_camera": {
+            "front": {
+              "frame": 1149,
+              "seconds": 107.4,
+              "actor_id": 132,
+              "role": "slow-traffic",
+              "source_id": 159,
+              "symbol_id": 112,
+              "class": "car",
+              "center_error_m": 0.518,
+              "range_m": 34.183,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "front"
+              ],
+              "attribution": [
+                {
+                  "view": "front",
+                  "track_id": 159,
+                  "image_id": 514,
+                  "class": "car",
+                  "box": [
+                    0.6359307289123535,
+                    0.5017901526557075,
+                    0.6728090286254883,
+                    0.5478141360812717
+                  ],
+                  "lidar_hits": 5,
+                  "native_box": [
+                    0.6363288061599491,
+                    0.5006274364527349,
+                    0.6727544264496328,
+                    0.5474666155241187
+                  ],
+                  "body_iou": 0.956,
+                  "other_actor_id": 133,
+                  "other_body_iou": 0.364,
+                  "corroborated": true
+                }
+              ]
+            },
+            "right": {
+              "frame": 1326,
+              "seconds": 125.1,
+              "actor_id": 132,
+              "role": "slow-traffic",
+              "source_id": 159,
+              "symbol_id": 112,
+              "class": "car",
+              "center_error_m": 0.261,
+              "range_m": 15.302,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "right"
+              ],
+              "attribution": [
+                {
+                  "view": "right",
+                  "track_id": 159,
+                  "image_id": 565,
+                  "class": "car",
+                  "box": [
+                    0,
+                    0.4136866978236607,
+                    0.08526901517595564,
+                    0.6334719703311011
+                  ],
+                  "lidar_hits": 15,
+                  "native_box": [
+                    0,
+                    0.5063408190636303,
+                    0.10022122177977194,
+                    0.6876769548172227
+                  ],
+                  "body_iou": 0.416,
+                  "other_actor_id": 127,
+                  "other_body_iou": 0.079,
+                  "corroborated": true
+                }
+              ]
+            },
+            "rear_right": {
+              "frame": 1348,
+              "seconds": 127.3,
+              "actor_id": 132,
+              "role": "slow-traffic",
+              "source_id": 170,
+              "symbol_id": 112,
+              "class": "car",
+              "center_error_m": 0.044,
+              "range_m": 3.571,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "right",
+                "rear_right"
+              ],
+              "attribution": [
+                {
+                  "view": "right",
+                  "track_id": 170,
+                  "image_id": 565,
+                  "class": "car",
+                  "box": [
+                    0.5946165357317243,
+                    0.5957439604259672,
+                    0.9990171160016741,
+                    0.9909138997395833
+                  ],
+                  "lidar_hits": 148,
+                  "native_box": [
+                    0.5494617125872078,
+                    0.5310682055771894,
+                    1,
+                    1
+                  ],
+                  "body_iou": 0.756,
+                  "other_actor_id": null,
+                  "other_body_iou": 0,
+                  "corroborated": true
+                },
+                {
+                  "view": "rear_right",
+                  "track_id": 172,
+                  "image_id": 591,
+                  "class": "car",
+                  "box": [
+                    0,
+                    0.6074524894593254,
+                    0.3785697664533343,
+                    0.9925951760912698
+                  ],
+                  "lidar_hits": 133,
+                  "native_box": [
+                    0,
+                    0.5453642361197375,
+                    0.4271260520461039,
+                    1
+                  ],
+                  "body_iou": 0.751,
+                  "other_actor_id": null,
+                  "other_body_iou": 0,
+                  "corroborated": true
+                }
+              ]
+            }
+          },
+          "closest": {
+            "frame": 1347,
+            "seconds": 127.2,
+            "range_m": 3.5173551693010054
+          },
+          "first": {
+            "frame": 1146,
+            "seconds": 107.1,
+            "actor_id": 132,
+            "role": "slow-traffic",
+            "source_id": 159,
+            "symbol_id": 112,
+            "class": "car",
+            "center_error_m": 0.588,
+            "range_m": 34.89,
+            "opacity": 1,
+            "held": false,
+            "fresh_camera_and_range": false,
+            "cameras": [],
+            "attribution": []
+          },
+          "first_fresh": {
+            "frame": 1149,
+            "seconds": 107.4,
+            "actor_id": 132,
+            "role": "slow-traffic",
+            "source_id": 159,
+            "symbol_id": 112,
+            "class": "car",
+            "center_error_m": 0.518,
+            "range_m": 34.183,
+            "opacity": 1,
+            "held": false,
+            "fresh_camera_and_range": true,
+            "cameras": [
+              "front"
+            ],
+            "attribution": [
+              {
+                "view": "front",
+                "track_id": 159,
+                "image_id": 514,
+                "class": "car",
+                "box": [
+                  0.6359307289123535,
+                  0.5017901526557075,
+                  0.6728090286254883,
+                  0.5478141360812717
+                ],
+                "lidar_hits": 5,
+                "native_box": [
+                  0.6363288061599491,
+                  0.5006274364527349,
+                  0.6727544264496328,
+                  0.5474666155241187
+                ],
+                "body_iou": 0.956,
+                "other_actor_id": 133,
+                "other_body_iou": 0.364,
+                "corroborated": true
+              }
+            ]
+          }
+        }
+      }
+    },
+    "adjacent-front": {
+      "nearby_actor_frames": 0,
+      "matched_drawings": 0,
+      "fresh_camera_and_range": 0,
+      "camera_geometry_confirmed": 0,
+      "actors": {
+        "133": {
+          "class": "car",
+          "reference_frames": 898,
+          "nearby_frames": 0,
+          "matched_frames": 0,
+          "confirmed_frames": 0,
+          "first_by_camera": {},
+          "closest": {
+            "frame": 1453,
+            "seconds": 137.8,
+            "range_m": 45.79543284734118
+          }
+        }
+      }
+    },
+    "adjacent-rear": {
+      "nearby_actor_frames": 785,
+      "matched_drawings": 747,
+      "fresh_camera_and_range": 356,
+      "camera_geometry_confirmed": 356,
+      "actors": {
+        "134": {
+          "class": "car",
+          "reference_frames": 1340,
+          "nearby_frames": 785,
+          "matched_frames": 747,
+          "confirmed_frames": 356,
+          "first_by_camera": {
+            "front": {
+              "frame": 885,
+              "seconds": 81,
+              "actor_id": 134,
+              "role": "adjacent-rear",
+              "source_id": 122,
+              "symbol_id": 88,
+              "class": "car",
+              "center_error_m": 0.172,
+              "range_m": 32.548,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "front"
+              ],
+              "attribution": [
+                {
+                  "view": "front",
+                  "track_id": 122,
+                  "image_id": 431,
+                  "class": "car",
+                  "box": [
+                    0.9290895462036133,
+                    0.5067847781711154,
+                    0.9984777450561524,
+                    0.567190678914388
+                  ],
+                  "lidar_hits": 6,
+                  "native_box": [
+                    0.9213960076574657,
+                    0.5067754232924185,
+                    1,
+                    0.5716199531490828
+                  ],
+                  "body_iou": 0.822,
+                  "other_actor_id": null,
+                  "other_body_iou": 0,
+                  "corroborated": true
+                }
+              ]
+            },
+            "left": {
+              "frame": 941,
+              "seconds": 86.6,
+              "actor_id": 134,
+              "role": "adjacent-rear",
+              "source_id": 122,
+              "symbol_id": 88,
+              "class": "car",
+              "center_error_m": 0.158,
+              "range_m": 10.206,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "front",
+                "left"
+              ],
+              "attribution": [
+                {
+                  "view": "front",
+                  "track_id": 122,
+                  "image_id": 444,
+                  "class": "car",
+                  "box": [
+                    0.15587273836135865,
+                    0.516856214735243,
+                    0.373351526260376,
+                    0.7139592488606771
+                  ],
+                  "lidar_hits": 83,
+                  "native_box": [
+                    0.11763860477388743,
+                    0.5131192416754217,
+                    0.38462186758475275,
+                    0.7440087228540011
+                  ],
+                  "body_iou": 0.695,
+                  "other_actor_id": null,
+                  "other_body_iou": 0,
+                  "corroborated": true
+                },
+                {
+                  "view": "left",
+                  "track_id": 122,
+                  "image_id": 456,
+                  "class": "car",
+                  "box": [
+                    0.9288139343261719,
+                    0.5214203849671379,
+                    0.9997280665806362,
+                    0.7690842885819692
+                  ],
+                  "lidar_hits": 83,
+                  "native_box": [
+                    0.8828067770378967,
+                    0.5197520218551563,
+                    1,
+                    0.8985703137262431
+                  ],
+                  "body_iou": 0.396,
+                  "other_actor_id": null,
+                  "other_body_iou": 0,
+                  "corroborated": true
+                }
+              ]
+            },
+            "rear_left": {
+              "frame": 967,
+              "seconds": 89.2,
+              "actor_id": 134,
+              "role": "adjacent-rear",
+              "source_id": 122,
+              "symbol_id": 88,
+              "class": "car",
+              "center_error_m": 0.098,
+              "range_m": 3.518,
+              "opacity": 1,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "left",
+                "rear_left"
+              ],
+              "attribution": [
+                {
+                  "view": "left",
+                  "track_id": 122,
+                  "image_id": 456,
+                  "class": "car",
+                  "box": [
+                    0.0001331056867327009,
+                    0.5890657455202133,
+                    0.4558323451450893,
+                    0.9914810422867063
+                  ],
+                  "lidar_hits": 146,
+                  "native_box": [
+                    0,
+                    0.5462835537960041,
+                    0.5043746455728355,
+                    1
+                  ],
+                  "body_iou": 0.801,
+                  "other_actor_id": null,
+                  "other_body_iou": 0,
+                  "corroborated": true
+                },
+                {
+                  "view": "rear_left",
+                  "track_id": 132,
+                  "image_id": 461,
+                  "class": "car",
+                  "box": [
+                    0.6825028555733818,
+                    0.6901762462797619,
+                    1,
+                    0.9910532149057539
+                  ],
+                  "lidar_hits": 84,
+                  "native_box": [
+                    0.6016383682575023,
+                    0.5733902663792753,
+                    1,
+                    1
+                  ],
+                  "body_iou": 0.562,
+                  "other_actor_id": null,
+                  "other_body_iou": 0,
+                  "corroborated": true
+                }
+              ]
+            },
+            "rear_right": {
+              "frame": 1222,
+              "seconds": 114.7,
+              "actor_id": 134,
+              "role": "adjacent-rear",
+              "source_id": 162,
+              "symbol_id": 115,
+              "class": "car",
+              "center_error_m": 0.851,
+              "range_m": 19.129,
+              "opacity": 0.667,
+              "held": false,
+              "fresh_camera_and_range": true,
+              "cameras": [
+                "rear_right"
+              ],
+              "attribution": [
+                {
+                  "view": "rear_right",
+                  "track_id": 162,
+                  "image_id": 537,
+                  "class": "car",
+                  "box": [
+                    0.894184330531529,
+                    0.4958432152157738,
+                    1,
+                    0.6367286318824404
+                  ],
+                  "lidar_hits": 12,
+                  "native_box": [
+                    0.887509693050831,
+                    0.5208216667554786,
+                    1,
+                    0.6493816825015075
+                  ],
+                  "body_iou": 0.717,
+                  "other_actor_id": null,
+                  "other_body_iou": 0,
+                  "corroborated": true
+                }
+              ]
+            }
+          },
+          "closest": {
+            "frame": 965,
+            "seconds": 89,
+            "range_m": 3.4929758946363734
+          },
+          "first": {
+            "frame": 885,
+            "seconds": 81,
+            "actor_id": 134,
+            "role": "adjacent-rear",
+            "source_id": 122,
+            "symbol_id": 88,
+            "class": "car",
+            "center_error_m": 0.172,
+            "range_m": 32.548,
+            "opacity": 1,
+            "held": false,
+            "fresh_camera_and_range": true,
+            "cameras": [
+              "front"
+            ],
+            "attribution": [
+              {
+                "view": "front",
+                "track_id": 122,
+                "image_id": 431,
+                "class": "car",
+                "box": [
+                  0.9290895462036133,
+                  0.5067847781711154,
+                  0.9984777450561524,
+                  0.567190678914388
+                ],
+                "lidar_hits": 6,
+                "native_box": [
+                  0.9213960076574657,
+                  0.5067754232924185,
+                  1,
+                  0.5716199531490828
+                ],
+                "body_iou": 0.822,
+                "other_actor_id": null,
+                "other_body_iou": 0,
+                "corroborated": true
+              }
+            ]
+          },
+          "first_fresh": {
+            "frame": 885,
+            "seconds": 81,
+            "actor_id": 134,
+            "role": "adjacent-rear",
+            "source_id": 122,
+            "symbol_id": 88,
+            "class": "car",
+            "center_error_m": 0.172,
+            "range_m": 32.548,
+            "opacity": 1,
+            "held": false,
+            "fresh_camera_and_range": true,
+            "cameras": [
+              "front"
+            ],
+            "attribution": [
+              {
+                "view": "front",
+                "track_id": 122,
+                "image_id": 431,
+                "class": "car",
+                "box": [
+                  0.9290895462036133,
+                  0.5067847781711154,
+                  0.9984777450561524,
+                  0.567190678914388
+                ],
+                "lidar_hits": 6,
+                "native_box": [
+                  0.9213960076574657,
+                  0.5067754232924185,
+                  1,
+                  0.5716199531490828
+                ],
+                "body_iou": 0.822,
+                "other_actor_id": null,
+                "other_body_iou": 0,
+                "corroborated": true
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "highlights": {
+    "in-lane-obstruction/exposed_s": {
+      "frame": 1027,
+      "view": "front",
+      "seconds": 95.2,
+      "planner": null,
+      "objects": [
+        {
+          "frame": 1027,
+          "seconds": 95.2,
+          "actor_id": 134,
+          "role": "adjacent-rear",
+          "source_id": 132,
+          "symbol_id": 88,
+          "class": "car",
+          "center_error_m": 0.078,
+          "range_m": 18.268,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": true,
+          "cameras": [
+            "rear_left"
+          ],
+          "attribution": [
+            {
+              "view": "rear_left",
+              "track_id": 132,
+              "image_id": 461,
+              "class": "car",
+              "box": [
+                0.21686671120779855,
+                0.5051354786706349,
+                0.30913775307791574,
+                0.6153595455109127
+              ],
+              "lidar_hits": 27,
+              "native_box": [
+                0.21392401380242,
+                0.5157685632901091,
+                0.3166546322333205,
+                0.6215367516080339
+              ],
+              "body_iou": 0.776,
+              "other_actor_id": 111,
+              "other_body_iou": 0.005,
+              "corroborated": true
+            }
+          ],
+          "in_camera_geometry": [
+            "rear_left",
+            "rear_right"
+          ],
+          "selected_camera_linked": false
+        }
+      ],
+      "unmatched": [
+        {
+          "actor_id": 129,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 33.014,
+          "in_camera_geometry": [
+            "front"
+          ]
+        },
+        {
+          "actor_id": 130,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 33.66,
+          "in_camera_geometry": [
+            "front"
+          ]
+        },
+        {
+          "actor_id": 131,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 35.434,
+          "in_camera_geometry": [
+            "front"
+          ]
+        },
+        {
+          "actor_id": 132,
+          "role": "slow-traffic",
+          "class": "car",
+          "range_m": 91.578,
+          "in_camera_geometry": [
+            "front",
+            "right"
+          ]
+        }
+      ]
+    },
+    "in-lane-obstruction/alternate_alongside_s": {
+      "frame": 1097,
+      "view": "chase",
+      "seconds": 102.2,
+      "planner": {
+        "state": "passing",
+        "label": "Passing a stationary object",
+        "planner": true
+      },
+      "objects": [
+        {
+          "frame": 1097,
+          "seconds": 102.2,
+          "actor_id": 129,
+          "role": "in-lane-obstruction",
+          "source_id": "C7",
+          "symbol_id": "C7",
+          "class": "traffic_cone",
+          "center_error_m": 0.05,
+          "range_m": 3.886,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": false,
+          "cameras": [],
+          "attribution": [],
+          "in_camera_geometry": [
+            "right"
+          ],
+          "selected_camera_linked": false
+        },
+        {
+          "frame": 1097,
+          "seconds": 102.2,
+          "actor_id": 131,
+          "role": "in-lane-obstruction",
+          "source_id": "C9",
+          "symbol_id": "C9",
+          "class": "traffic_cone",
+          "center_error_m": 0.123,
+          "range_m": 6.173,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": true,
+          "cameras": [
+            "right"
+          ],
+          "attribution": [
+            {
+              "view": "right",
+              "track_id": "C9",
+              "image_id": null,
+              "class": "traffic_cone",
+              "box": [
+                0.25625,
+                0.566667,
+                0.33125,
+                0.861111
+              ],
+              "lidar_hits": 31,
+              "native_box": [
+                0.2112032631270444,
+                0.5734031597369951,
+                0.3738511522293407,
+                0.8939186415893396
+              ],
+              "body_iou": 0.41,
+              "other_actor_id": null,
+              "other_body_iou": 0,
+              "corroborated": true
+            }
+          ],
+          "in_camera_geometry": [
+            "right"
+          ],
+          "selected_camera_linked": false
+        }
+      ],
+      "unmatched": [
+        {
+          "actor_id": 130,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 5.206,
+          "in_camera_geometry": [
+            "right"
+          ]
+        },
+        {
+          "actor_id": 132,
+          "role": "slow-traffic",
+          "class": "car",
+          "range_m": 70.079,
+          "in_camera_geometry": [
+            "right"
+          ]
+        },
+        {
+          "actor_id": 133,
+          "role": "adjacent-front",
+          "class": "car",
+          "range_m": 85.655,
+          "in_camera_geometry": [
+            "right"
+          ]
+        },
+        {
+          "actor_id": 134,
+          "role": "adjacent-rear",
+          "class": "car",
+          "range_m": 48.846,
+          "in_camera_geometry": [
+            "rear_left",
+            "rear_right"
+          ]
+        }
+      ]
+    },
+    "in-lane-obstruction/returned_to_route_s": {
+      "frame": 1197,
+      "view": "rear_right",
+      "seconds": 112.2,
+      "planner": {
+        "state": "passing",
+        "label": "Returning to the travel lane",
+        "planner": true
+      },
+      "objects": [
+        {
+          "frame": 1197,
+          "seconds": 112.2,
+          "actor_id": 132,
+          "role": "slow-traffic",
+          "source_id": 159,
+          "symbol_id": 112,
+          "class": "car",
+          "center_error_m": 0.146,
+          "range_m": 26.814,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": true,
+          "cameras": [
+            "front"
+          ],
+          "attribution": [
+            {
+              "view": "front",
+              "track_id": 159,
+              "image_id": 514,
+              "class": "car",
+              "box": [
+                0.4472968578338623,
+                0.5117921193440755,
+                0.4923436641693115,
+                0.5694707658555772
+              ],
+              "lidar_hits": 7,
+              "native_box": [
+                0.4463422142678839,
+                0.5094073391754832,
+                0.4942065803043143,
+                0.5684007345176492
+              ],
+              "body_iou": 0.888,
+              "other_actor_id": null,
+              "other_body_iou": 0,
+              "corroborated": true
+            }
+          ],
+          "in_camera_geometry": [
+            "front"
+          ],
+          "selected_camera_linked": false
+        }
+      ],
+      "unmatched": [
+        {
+          "actor_id": 129,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 49.125,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 130,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 47.897,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 131,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 46.694,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 133,
+          "role": "adjacent-front",
+          "class": "car",
+          "range_m": 63.51,
+          "in_camera_geometry": [
+            "front"
+          ]
+        },
+        {
+          "actor_id": 134,
+          "role": "adjacent-rear",
+          "class": "car",
+          "range_m": 33.802,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        }
+      ]
+    },
+    "slow-traffic/occupied_gap_wait_s": {
+      "frame": 1224,
+      "view": "rear_left",
+      "seconds": 114.9,
+      "planner": {
+        "state": "waiting",
+        "label": "Yielding before passing",
+        "planner": true
+      },
+      "objects": [
+        {
+          "frame": 1224,
+          "seconds": 114.9,
+          "actor_id": 132,
+          "role": "slow-traffic",
+          "source_id": 159,
+          "symbol_id": 112,
+          "class": "car",
+          "center_error_m": 0.301,
+          "range_m": 24.284,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": false,
+          "cameras": [],
+          "attribution": [],
+          "in_camera_geometry": [
+            "front"
+          ],
+          "selected_camera_linked": false
+        }
+      ],
+      "unmatched": [
+        {
+          "actor_id": 129,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 55.165,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 130,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 53.91,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 131,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 52.788,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 133,
+          "role": "adjacent-front",
+          "class": "car",
+          "range_m": 75.465,
+          "in_camera_geometry": [
+            "front"
+          ]
+        },
+        {
+          "actor_id": 134,
+          "role": "adjacent-rear",
+          "class": "car",
+          "range_m": 17.295,
+          "in_camera_geometry": [
+            "rear_left",
+            "rear_right"
+          ]
+        }
+      ]
+    },
+    "slow-traffic/moving_alongside_s": {
+      "frame": 1342,
+      "view": "chase",
+      "seconds": 126.7,
+      "planner": {
+        "state": "passing",
+        "label": "Passing",
+        "planner": true
+      },
+      "objects": [
+        {
+          "frame": 1342,
+          "seconds": 126.7,
+          "actor_id": 132,
+          "role": "slow-traffic",
+          "source_id": 159,
+          "symbol_id": 112,
+          "class": "car",
+          "center_error_m": 0.288,
+          "range_m": 5.769,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": true,
+          "cameras": [
+            "right"
+          ],
+          "attribution": [
+            {
+              "view": "right",
+              "track_id": 159,
+              "image_id": 565,
+              "class": "car",
+              "box": [
+                0,
+                0.5230953640407986,
+                0.5518345969063895,
+                0.9915831550719246
+              ],
+              "lidar_hits": 335,
+              "native_box": [
+                0,
+                0.5213916400070148,
+                0.5703103141899916,
+                1
+              ],
+              "body_iou": 0.947,
+              "other_actor_id": 141,
+              "other_body_iou": 0.002,
+              "corroborated": true
+            }
+          ],
+          "in_camera_geometry": [
+            "front",
+            "right"
+          ],
+          "selected_camera_linked": false
+        }
+      ],
+      "unmatched": [
+        {
+          "actor_id": 129,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 91.725,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 130,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 90.408,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 131,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 89.622,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 134,
+          "role": "adjacent-rear",
+          "class": "car",
+          "range_m": 65.95,
+          "in_camera_geometry": [
+            "front"
+          ]
+        }
+      ]
+    },
+    "slow-traffic/first_actual_wait_frame": {
+      "frame": 1224,
+      "view": "rear_left",
+      "seconds": 114.9,
+      "planner": {
+        "state": "waiting",
+        "label": "Yielding before passing",
+        "planner": true
+      },
+      "objects": [
+        {
+          "frame": 1224,
+          "seconds": 114.9,
+          "actor_id": 132,
+          "role": "slow-traffic",
+          "source_id": 159,
+          "symbol_id": 112,
+          "class": "car",
+          "center_error_m": 0.301,
+          "range_m": 24.284,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": false,
+          "cameras": [],
+          "attribution": [],
+          "in_camera_geometry": [
+            "front"
+          ],
+          "selected_camera_linked": false
+        }
+      ],
+      "unmatched": [
+        {
+          "actor_id": 129,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 55.165,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 130,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 53.91,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 131,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 52.788,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 133,
+          "role": "adjacent-front",
+          "class": "car",
+          "range_m": 75.465,
+          "in_camera_geometry": [
+            "front"
+          ]
+        },
+        {
+          "actor_id": 134,
+          "role": "adjacent-rear",
+          "class": "car",
+          "range_m": 17.295,
+          "in_camera_geometry": [
+            "rear_left",
+            "rear_right"
+          ]
+        }
+      ]
+    },
+    "witness/1099:right": {
+      "frame": 1099,
+      "view": "right",
+      "seconds": 102.4,
+      "planner": {
+        "state": "passing",
+        "label": "Passing a stationary object",
+        "planner": true
+      },
+      "objects": [
+        {
+          "frame": 1099,
+          "seconds": 102.4,
+          "actor_id": 129,
+          "role": "in-lane-obstruction",
+          "source_id": "C7",
+          "symbol_id": "C7",
+          "class": "traffic_cone",
+          "center_error_m": 0.05,
+          "range_m": 3.132,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": false,
+          "cameras": [],
+          "attribution": [],
+          "in_camera_geometry": [
+            "right"
+          ],
+          "selected_camera_linked": false
+        },
+        {
+          "frame": 1099,
+          "seconds": 102.4,
+          "actor_id": 130,
+          "role": "in-lane-obstruction",
+          "source_id": "C8",
+          "symbol_id": "C8",
+          "class": "traffic_cone",
+          "center_error_m": 0.079,
+          "range_m": 4.412,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": true,
+          "cameras": [
+            "right"
+          ],
+          "attribution": [
+            {
+              "view": "right",
+              "track_id": "C8",
+              "image_id": null,
+              "class": "traffic_cone",
+              "box": [
+                0.596875,
+                0.611111,
+                0.690625,
+                0.988889
+              ],
+              "lidar_hits": 38,
+              "native_box": [
+                0.5543988156412496,
+                0.5931264001921434,
+                0.7305632167322111,
+                1
+              ],
+              "body_iou": 0.494,
+              "other_actor_id": 129,
+              "other_body_iou": 0.038,
+              "corroborated": true
+            }
+          ],
+          "in_camera_geometry": [
+            "right"
+          ],
+          "selected_camera_linked": true
+        },
+        {
+          "frame": 1099,
+          "seconds": 102.4,
+          "actor_id": 131,
+          "role": "in-lane-obstruction",
+          "source_id": "C9",
+          "symbol_id": "C9",
+          "class": "traffic_cone",
+          "center_error_m": 0.084,
+          "range_m": 4.993,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": true,
+          "cameras": [
+            "right"
+          ],
+          "attribution": [
+            {
+              "view": "right",
+              "track_id": "C9",
+              "image_id": null,
+              "class": "traffic_cone",
+              "box": [
+                0.3375,
+                0.594444,
+                0.43125,
+                0.955556
+              ],
+              "lidar_hits": 49,
+              "native_box": [
+                0.2821090666865199,
+                0.5856994377362155,
+                0.47766794028994464,
+                1
+              ],
+              "body_iou": 0.418,
+              "other_actor_id": null,
+              "other_body_iou": 0,
+              "corroborated": true
+            }
+          ],
+          "in_camera_geometry": [
+            "right"
+          ],
+          "selected_camera_linked": true
+        }
+      ],
+      "unmatched": [
+        {
+          "actor_id": 132,
+          "role": "slow-traffic",
+          "class": "car",
+          "range_m": 68.928,
+          "in_camera_geometry": [
+            "front",
+            "right"
+          ]
+        },
+        {
+          "actor_id": 133,
+          "role": "adjacent-front",
+          "class": "car",
+          "range_m": 84.568,
+          "in_camera_geometry": [
+            "right"
+          ]
+        },
+        {
+          "actor_id": 134,
+          "role": "adjacent-rear",
+          "class": "car",
+          "range_m": 50.423,
+          "in_camera_geometry": [
+            "rear_left",
+            "rear_right"
+          ]
+        }
+      ]
+    },
+    "witness/1100:right": {
+      "frame": 1100,
+      "view": "right",
+      "seconds": 102.5,
+      "planner": {
+        "state": "passing",
+        "label": "Passing a stationary object",
+        "planner": true
+      },
+      "objects": [
+        {
+          "frame": 1100,
+          "seconds": 102.5,
+          "actor_id": 129,
+          "role": "in-lane-obstruction",
+          "source_id": "C7",
+          "symbol_id": "C7",
+          "class": "traffic_cone",
+          "center_error_m": 0.05,
+          "range_m": 2.971,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": false,
+          "cameras": [],
+          "attribution": [],
+          "in_camera_geometry": [
+            "right"
+          ],
+          "selected_camera_linked": false
+        },
+        {
+          "frame": 1100,
+          "seconds": 102.5,
+          "actor_id": 130,
+          "role": "in-lane-obstruction",
+          "source_id": "C8",
+          "symbol_id": "C8",
+          "class": "traffic_cone",
+          "center_error_m": 0.06,
+          "range_m": 4.146,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": true,
+          "cameras": [
+            "right"
+          ],
+          "attribution": [
+            {
+              "view": "right",
+              "track_id": "C8",
+              "image_id": null,
+              "class": "traffic_cone",
+              "box": [
+                0.7,
+                0.622222,
+                0.825,
+                1
+              ],
+              "lidar_hits": 66,
+              "native_box": [
+                0.6706895118859405,
+                0.5998662964687508,
+                0.8416070071809743,
+                1
+              ],
+              "body_iou": 0.69,
+              "other_actor_id": null,
+              "other_body_iou": 0,
+              "corroborated": true
+            }
+          ],
+          "in_camera_geometry": [
+            "right"
+          ],
+          "selected_camera_linked": true
+        },
+        {
+          "frame": 1100,
+          "seconds": 102.5,
+          "actor_id": 131,
+          "role": "in-lane-obstruction",
+          "source_id": "C9",
+          "symbol_id": "C9",
+          "class": "traffic_cone",
+          "center_error_m": 0.072,
+          "range_m": 4.454,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": true,
+          "cameras": [
+            "right"
+          ],
+          "attribution": [
+            {
+              "view": "right",
+              "track_id": "C9",
+              "image_id": null,
+              "class": "traffic_cone",
+              "box": [
+                0.4125,
+                0.611111,
+                0.509375,
+                1
+              ],
+              "lidar_hits": 65,
+              "native_box": [
+                0.3523686498176323,
+                0.5926737878612627,
+                0.5603030334873293,
+                1
+              ],
+              "body_iou": 0.445,
+              "other_actor_id": null,
+              "other_body_iou": 0,
+              "corroborated": true
+            }
+          ],
+          "in_camera_geometry": [
+            "right"
+          ],
+          "selected_camera_linked": true
+        }
+      ],
+      "unmatched": [
+        {
+          "actor_id": 132,
+          "role": "slow-traffic",
+          "class": "car",
+          "range_m": 68.318,
+          "in_camera_geometry": [
+            "front",
+            "right"
+          ]
+        },
+        {
+          "actor_id": 133,
+          "role": "adjacent-front",
+          "class": "car",
+          "range_m": 83.989,
+          "in_camera_geometry": [
+            "right"
+          ]
+        },
+        {
+          "actor_id": 134,
+          "role": "adjacent-rear",
+          "class": "car",
+          "range_m": 51.229,
+          "in_camera_geometry": [
+            "rear_left",
+            "rear_right"
+          ]
+        }
+      ]
+    },
+    "witness/1223:rear_left": {
+      "frame": 1223,
+      "view": "rear_left",
+      "seconds": 114.8,
+      "planner": {
+        "state": "waiting",
+        "label": "Yielding before passing",
+        "planner": true
+      },
+      "objects": [
+        {
+          "frame": 1223,
+          "seconds": 114.8,
+          "actor_id": 132,
+          "role": "slow-traffic",
+          "source_id": 159,
+          "symbol_id": 112,
+          "class": "car",
+          "center_error_m": 0.301,
+          "range_m": 24.283,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": true,
+          "cameras": [
+            "front"
+          ],
+          "attribution": [
+            {
+              "view": "front",
+              "track_id": 159,
+              "image_id": 514,
+              "class": "car",
+              "box": [
+                0.539479923248291,
+                0.5165220048692492,
+                0.5898665428161621,
+                0.584046130710178
+              ],
+              "lidar_hits": 5,
+              "native_box": [
+                0.537938179287986,
+                0.5164597038783925,
+                0.5902890123939162,
+                0.5834118438555794
+              ],
+              "body_iou": 0.953,
+              "other_actor_id": null,
+              "other_body_iou": 0,
+              "corroborated": true
+            }
+          ],
+          "in_camera_geometry": [
+            "front"
+          ],
+          "selected_camera_linked": false
+        },
+        {
+          "frame": 1223,
+          "seconds": 114.8,
+          "actor_id": 134,
+          "role": "adjacent-rear",
+          "source_id": 162,
+          "symbol_id": 115,
+          "class": "car",
+          "center_error_m": 1.924,
+          "range_m": 18.224,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": false,
+          "cameras": [],
+          "attribution": [],
+          "in_camera_geometry": [
+            "rear_left",
+            "rear_right"
+          ],
+          "selected_camera_linked": false
+        }
+      ],
+      "unmatched": [
+        {
+          "actor_id": 129,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 55.016,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 130,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 53.761,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 131,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 52.638,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 133,
+          "role": "adjacent-front",
+          "class": "car",
+          "range_m": 74.928,
+          "in_camera_geometry": [
+            "front"
+          ]
+        }
+      ]
+    },
+    "witness/1225:rear_left": {
+      "frame": 1225,
+      "view": "rear_left",
+      "seconds": 115,
+      "planner": {
+        "state": "waiting",
+        "label": "Yielding before passing",
+        "planner": true
+      },
+      "objects": [
+        {
+          "frame": 1225,
+          "seconds": 115,
+          "actor_id": 132,
+          "role": "slow-traffic",
+          "source_id": 159,
+          "symbol_id": 112,
+          "class": "car",
+          "center_error_m": 0.317,
+          "range_m": 24.278,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": true,
+          "cameras": [
+            "front"
+          ],
+          "attribution": [
+            {
+              "view": "front",
+              "track_id": 159,
+              "image_id": 514,
+              "class": "car",
+              "box": [
+                0.5410077571868896,
+                0.5177013821072048,
+                0.5909523487091064,
+                0.5851667616102431
+              ],
+              "lidar_hits": 9,
+              "native_box": [
+                0.539451370052145,
+                0.5169886882539515,
+                0.5918072489943832,
+                0.5839999761182956
+              ],
+              "body_iou": 0.928,
+              "other_actor_id": null,
+              "other_body_iou": 0,
+              "corroborated": true
+            }
+          ],
+          "in_camera_geometry": [
+            "front"
+          ],
+          "selected_camera_linked": false
+        }
+      ],
+      "unmatched": [
+        {
+          "actor_id": 129,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 55.314,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 130,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 54.059,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 131,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 52.939,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 133,
+          "role": "adjacent-front",
+          "class": "car",
+          "range_m": 75.994,
+          "in_camera_geometry": [
+            "front"
+          ]
+        },
+        {
+          "actor_id": 134,
+          "role": "adjacent-rear",
+          "class": "car",
+          "range_m": 16.386,
+          "in_camera_geometry": [
+            "rear_left",
+            "rear_right"
+          ]
+        }
+      ]
+    },
+    "witness/1227:rear_left": {
+      "frame": 1227,
+      "view": "rear_left",
+      "seconds": 115.2,
+      "planner": {
+        "state": "waiting",
+        "label": "Yielding before passing",
+        "planner": true
+      },
+      "objects": [
+        {
+          "frame": 1227,
+          "seconds": 115.2,
+          "actor_id": 132,
+          "role": "slow-traffic",
+          "source_id": 159,
+          "symbol_id": 112,
+          "class": "car",
+          "center_error_m": 0.319,
+          "range_m": 24.288,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": true,
+          "cameras": [
+            "front"
+          ],
+          "attribution": [
+            {
+              "view": "front",
+              "track_id": 159,
+              "image_id": 514,
+              "class": "car",
+              "box": [
+                0.542051124572754,
+                0.5179222106933594,
+                0.5923529624938965,
+                0.5853323194715712
+              ],
+              "lidar_hits": 6,
+              "native_box": [
+                0.5410057861631744,
+                0.5177012537827714,
+                0.5933293372236967,
+                0.5847095446693837
+              ],
+              "body_iou": 0.95,
+              "other_actor_id": null,
+              "other_body_iou": 0,
+              "corroborated": true
+            }
+          ],
+          "in_camera_geometry": [
+            "front"
+          ],
+          "selected_camera_linked": false
+        },
+        {
+          "frame": 1227,
+          "seconds": 115.2,
+          "actor_id": 134,
+          "role": "adjacent-rear",
+          "source_id": 163,
+          "symbol_id": 116,
+          "class": "car",
+          "center_error_m": 1.727,
+          "range_m": 14.545,
+          "opacity": 0.667,
+          "held": false,
+          "fresh_camera_and_range": false,
+          "cameras": [],
+          "attribution": [],
+          "in_camera_geometry": [
+            "rear_left",
+            "rear_right"
+          ],
+          "selected_camera_linked": false
+        }
+      ],
+      "unmatched": [
+        {
+          "actor_id": 129,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 55.613,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 130,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 54.357,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 131,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 53.24,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 133,
+          "role": "adjacent-front",
+          "class": "car",
+          "range_m": 77.07,
+          "in_camera_geometry": [
+            "front"
+          ]
+        }
+      ]
+    },
+    "witness/1229:rear_left": {
+      "frame": 1229,
+      "view": "rear_left",
+      "seconds": 115.4,
+      "planner": {
+        "state": "waiting",
+        "label": "Yielding before passing",
+        "planner": true
+      },
+      "objects": [
+        {
+          "frame": 1229,
+          "seconds": 115.4,
+          "actor_id": 132,
+          "role": "slow-traffic",
+          "source_id": 159,
+          "symbol_id": 112,
+          "class": "car",
+          "center_error_m": 0.204,
+          "range_m": 24.29,
+          "opacity": 1,
+          "held": false,
+          "fresh_camera_and_range": true,
+          "cameras": [
+            "front"
+          ],
+          "attribution": [
+            {
+              "view": "front",
+              "track_id": 159,
+              "image_id": 514,
+              "class": "car",
+              "box": [
+                0.5428887367248535,
+                0.5169395446777344,
+                0.5935748100280762,
+                0.5853692796495226
+              ],
+              "lidar_hits": 5,
+              "native_box": [
+                0.5422916661207541,
+                0.5174945550514981,
+                0.5946263243580894,
+                0.5845705263709372
+              ],
+              "body_iou": 0.95,
+              "other_actor_id": null,
+              "other_body_iou": 0,
+              "corroborated": true
+            }
+          ],
+          "in_camera_geometry": [
+            "front"
+          ],
+          "selected_camera_linked": false
+        }
+      ],
+      "unmatched": [
+        {
+          "actor_id": 129,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 55.905,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 130,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 54.648,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 131,
+          "role": "in-lane-obstruction",
+          "class": "traffic_cone",
+          "range_m": 53.534,
+          "in_camera_geometry": [
+            "rear_right"
+          ]
+        },
+        {
+          "actor_id": 133,
+          "role": "adjacent-front",
+          "class": "car",
+          "range_m": 78.129,
+          "in_camera_geometry": [
+            "front"
+          ]
+        },
+        {
+          "actor_id": 134,
+          "role": "adjacent-rear",
+          "class": "car",
+          "range_m": 12.709,
+          "in_camera_geometry": [
+            "rear_left",
+            "rear_right"
+          ]
+        }
+      ]
+    }
+  },
+  "publication_witnesses": {
+    "obstruction_right": {
+      "frame": 1097,
+      "seconds": 102.2,
+      "actor_id": 131,
+      "role": "in-lane-obstruction",
+      "source_id": "C9",
+      "symbol_id": "C9",
+      "class": "traffic_cone",
+      "center_error_m": 0.123,
+      "range_m": 6.173,
+      "opacity": 1,
+      "held": false,
+      "fresh_camera_and_range": true,
+      "cameras": [
+        "right"
+      ],
+      "attribution": [
+        {
+          "view": "right",
+          "track_id": "C9",
+          "image_id": null,
+          "class": "traffic_cone",
+          "box": [
+            0.25625,
+            0.566667,
+            0.33125,
+            0.861111
+          ],
+          "lidar_hits": 31,
+          "native_box": [
+            0.2112032631270444,
+            0.5734031597369951,
+            0.3738511522293407,
+            0.8939186415893396
+          ],
+          "body_iou": 0.41,
+          "other_actor_id": null,
+          "other_body_iou": 0,
+          "corroborated": true
+        }
+      ],
+      "view": "right",
+      "track_id": "C9"
+    },
+    "yielding_to_adjacent_rear": {
+      "frame": 1231,
+      "seconds": 115.6,
+      "actor_id": 134,
+      "role": "adjacent-rear",
+      "source_id": 164,
+      "symbol_id": 117,
+      "class": "car",
+      "center_error_m": 0.536,
+      "range_m": 10.886,
+      "opacity": 1,
+      "held": false,
+      "fresh_camera_and_range": true,
+      "cameras": [
+        "rear_left"
+      ],
+      "attribution": [
+        {
+          "view": "rear_left",
+          "track_id": 164,
+          "image_id": 539,
+          "class": "car",
+          "box": [
+            0.2353579384940011,
+            0.5307486397879464,
+            0.4144429888044085,
+            0.7147168356274801
+          ],
+          "lidar_hits": 67,
+          "native_box": [
+            0.22150272233921448,
+            0.5273150230462057,
+            0.4364777267134229,
+            0.7379174158178445
+          ],
+          "body_iou": 0.728,
+          "other_actor_id": null,
+          "other_body_iou": 0,
+          "corroborated": true
+        }
+      ],
+      "view": "rear_left",
+      "track_id": 164
+    }
+  }
+}
