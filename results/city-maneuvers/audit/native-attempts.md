@@ -178,3 +178,53 @@ at −0.1255, zero throttle and 0.7879 brake. The first cone was still
 violations. This is a failed blocked-then-open control on the
 shared prefix. [Exact native prefix](market-loop-prefix-failed.json) ·
 [Blocked and open frame evidence](market-loop-prefix-blocked-open.json)
+
+The corrected traffic release cleared the cone pass and restored the
+source lane at 473.370 m. The driver then began a discretionary pass
+around the original stopped sedan. The sedan physically departed
+along its scripted exit, but the ego stayed in the alternate.
+Before 625 m the measured source gaps were too short for a return
+with the observed closing speeds. The gaps opened after 640.7 m,
+when fewer than 9 m of legal roadway remained. The ego stopped at
+641.502 m and timed out. The run records zero contacts and zero
+red-light or yield violations.
+[Corrected-flow prefix](market-loop-flow-prefix-failed.json) ·
+[Observed source gaps and remaining roadway](market-loop-flow-return-gap.json)
+
+## The first Loop tail passed the moving car without the registered rear wait
+
+The focused nominal tail traveled from 1,300 m to the surveyed Loop
+endpoint. The ego physically passed a moving vehicle on Road 67
+using lane +2 and restored its whole body to lane +3 at 1,700.435 m.
+The alongside body gap was 1.662 m. All 32 moving-vehicle divider
+samples cleared 1 m. The grade remains negative for the required
+occupied-gap wait.
+
+The fast rear fixture became a real forward car on this approach.
+The ego first moved ahead of the parked fixture. The car accelerated
+and passed the ego on connector 101. Its whole body was ahead by
+frame 8715, before the first logged yield at frame 8718. Thirty of
+the 86 logged yield phases coincided with a measured target surface
+and the actual close forward car. The other 56 lacked sufficient
+confirmed target pavement and had no supported target surface.
+There were zero measured rear-approach yields in the declared
+window. [Native tail grade](market-loop-tail-continuous.json) ·
+[Actual actor positions and sensor chronology](market-loop-tail-continuous-wait.json)
+
+The separate later-gap tail did show the required wait. The fast
+adjacent car was moving about 11.12 m/s and occupied lane +2 for 12
+scored yield exposures while the ego continued rolling in lane +3.
+The ego then passed and returned fully to lane +3 at 1,696.779 m.
+Its sampled clearance alongside the moving lead was 1.657 m.
+All 36 moving-vehicle straddle comparisons met 1 m. The tail reached
+the Loop endpoint with zero contacts, missed yields or red-light
+violations. [Later-gap tail audit](market-loop-tail-later-gap.json)
+
+With the independently driven rear car starting farther upstream,
+the new nominal tail recorded 25 qualifying occupied-gap waits.
+The ego continued rolling in its original lane and later passed,
+restoring its full body to lane +3 at 1,695.791 m. It cleared the
+moving lead by 1.656 m alongside and met the 1 m threshold in
+all 34 moving straddle samples. The tail completed its route
+with zero contacts or traffic violations.
+[Upstream-feeder nominal tail audit](market-loop-upstream-tail-continuous.json)

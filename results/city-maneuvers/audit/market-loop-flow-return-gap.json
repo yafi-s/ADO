@@ -1,0 +1,276 @@
+{
+  "scope": "Corrected parallel-flow Loop prefix. The independent gate only estimates actual longitudinal room, with roadway availability and sensor approval separate.",
+  "sources": {
+    "protocol": {
+      "pin": "914560faaa57f6592ffdd3e881715b06104344cf",
+      "phase": "prefix",
+      "case": "continuous",
+      "seed": 212,
+      "start_m": 0.0,
+      "end_m": 715.0,
+      "model_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+      "source_sha256": "3540b03ebeaae04569a16777b8a5258ad662a585227feae0d08a1b858e0d8fdf",
+      "map": "Town03_Opt",
+      "weather": "ClearNoon",
+      "step_s": 0.1,
+      "sensor_configuration": "Stock five-camera surround body and rig, 1280x720 native front optical image, exact control crop of native 100 m lidar and all five native radar sensors; normal episode policy.",
+      "omitted": "Chase movie and the rider-only YOLOX/SurroundPerception pass. RGB NanoDet, map/route, lamp, LiDAR and radar control paths are unmodified."
+    },
+    "trace_sha256": "2db8df77d2e392ee2894ef49008cfae7c67f027be70701f9d63c2fcb272f3f9e",
+    "native_pose_and_actor_sha256": "7244b0522bc858f1c6f3df699ca87238c8a8e7cdb96d301d2190f606aeccf62d",
+    "route_sha256": "f73c2afaa46d66e5d94b90b9df525074f3e60ab2d76aa77b8a96789f03145f14"
+  },
+  "original_held_sedan": {
+    "kind": "lead",
+    "station_m": 576.65,
+    "phase": "departing",
+    "triggered": true,
+    "cleared": true,
+    "exposed": true,
+    "passed": false,
+    "handled": false,
+    "violation": false,
+    "stopped_for_event": false,
+    "minimum_gap_m": 19.96,
+    "native_road": 67,
+    "native_lane": -2,
+    "native_road_s": 237.58,
+    "stopped_lead_layout": "original",
+    "triggered_s": 118.7,
+    "target_speed_at_exposure_mps": 0.0,
+    "exposed_s": 118.7,
+    "release_command_s": 122.8,
+    "restarted_s": 124.3,
+    "clearance_at_exit_m": 9.956,
+    "left_route_s": 139.1,
+    "cleared_s": 139.1
+  },
+  "maneuver_wait_seconds": 59.3,
+  "all_wait_samples_with_room_and_leaving_24m": 0,
+  "all_wait_samples_with_approved_measured_gap": 0,
+  "final_exposure": {
+    "frame": 12946,
+    "time_s": 182.5,
+    "station_m": 641.502,
+    "actual_kmh": 0.0,
+    "target_kmh": 0.0,
+    "source_front": null,
+    "source_rear": null,
+    "source_longitudinal_overlaps": [],
+    "front_room_m": 60.0,
+    "rear_room_m": 60.0,
+    "required_front_m": 15.0,
+    "required_rear_m": 12.0,
+    "enough_longitudinal_room_without_sight": true,
+    "legal_road_remaining_m": 7.435,
+    "sensor_source_pavement_m": [
+      7.44,
+      48.29
+    ],
+    "sensor_approved_return": false,
+    "reported_phase": "wait_rejoin",
+    "depart_confirmed": false,
+    "passed_landmark": null,
+    "whole_ego_alternate": true
+  },
+  "wait_phases": [
+    {
+      "physical_room": false,
+      "at_least24m_legal_road": true,
+      "approved_by_sensor": false,
+      "samples": 81,
+      "first": {
+        "frame": 12354,
+        "time_s": 123.3,
+        "station_m": 582.427,
+        "actual_kmh": 16.218,
+        "target_kmh": 18.862,
+        "source_front": null,
+        "source_rear": {
+          "id": 1781,
+          "role": "lead",
+          "observed_mps": 1.28,
+          "longitudinal_front_room_m": -10.02,
+          "longitudinal_rear_room_m": 0.377
+        },
+        "source_longitudinal_overlaps": [],
+        "front_room_m": 60.0,
+        "rear_room_m": 0.377,
+        "required_front_m": 22.525,
+        "required_rear_m": 12.0,
+        "enough_longitudinal_room_without_sight": false,
+        "legal_road_remaining_m": 66.51,
+        "sensor_source_pavement_m": [
+          49.36,
+          40.13
+        ],
+        "sensor_approved_return": false,
+        "reported_phase": "wait_rejoin",
+        "depart_confirmed": false,
+        "passed_landmark": null,
+        "whole_ego_alternate": true
+      },
+      "last": {
+        "frame": 12434,
+        "time_s": 131.3,
+        "station_m": 624.78,
+        "actual_kmh": 18.108,
+        "target_kmh": 21.534,
+        "source_front": {
+          "id": 1781,
+          "role": "lead",
+          "observed_mps": 8.42,
+          "longitudinal_front_room_m": 9.983,
+          "longitudinal_rear_room_m": -19.588
+        },
+        "source_rear": null,
+        "source_longitudinal_overlaps": [],
+        "front_room_m": 9.983,
+        "rear_room_m": 60.0,
+        "required_front_m": 15.0,
+        "required_rear_m": 12.0,
+        "enough_longitudinal_room_without_sight": false,
+        "legal_road_remaining_m": 24.157,
+        "sensor_source_pavement_m": [
+          24.16,
+          50.92
+        ],
+        "sensor_approved_return": false,
+        "reported_phase": "wait_rejoin",
+        "depart_confirmed": false,
+        "passed_landmark": null,
+        "whole_ego_alternate": true
+      }
+    },
+    {
+      "physical_room": false,
+      "at_least24m_legal_road": false,
+      "approved_by_sensor": false,
+      "samples": 50,
+      "first": {
+        "frame": 12435,
+        "time_s": 131.4,
+        "station_m": 625.291,
+        "actual_kmh": 18.594,
+        "target_kmh": 22.038,
+        "source_front": {
+          "id": 1781,
+          "role": "lead",
+          "observed_mps": 8.4,
+          "longitudinal_front_room_m": 10.304,
+          "longitudinal_rear_room_m": -19.908
+        },
+        "source_rear": null,
+        "source_longitudinal_overlaps": [],
+        "front_room_m": 10.304,
+        "rear_room_m": 60.0,
+        "required_front_m": 15.0,
+        "required_rear_m": 12.0,
+        "enough_longitudinal_room_without_sight": false,
+        "legal_road_remaining_m": 23.647,
+        "sensor_source_pavement_m": [
+          23.65,
+          50.11
+        ],
+        "sensor_approved_return": false,
+        "reported_phase": "wait_rejoin",
+        "depart_confirmed": false,
+        "passed_landmark": null,
+        "whole_ego_alternate": true
+      },
+      "last": {
+        "frame": 12484,
+        "time_s": 136.3,
+        "station_m": 640.658,
+        "actual_kmh": 3.107,
+        "target_kmh": 2.626,
+        "source_front": {
+          "id": 1781,
+          "role": "lead",
+          "observed_mps": 1.276,
+          "longitudinal_front_room_m": 14.958,
+          "longitudinal_rear_room_m": -24.832
+        },
+        "source_rear": null,
+        "source_longitudinal_overlaps": [],
+        "front_room_m": 14.958,
+        "rear_room_m": 60.0,
+        "required_front_m": 15.0,
+        "required_rear_m": 12.0,
+        "enough_longitudinal_room_without_sight": false,
+        "legal_road_remaining_m": 8.279,
+        "sensor_source_pavement_m": [
+          8.28,
+          47.78
+        ],
+        "sensor_approved_return": false,
+        "reported_phase": "wait_rejoin",
+        "depart_confirmed": false,
+        "passed_landmark": null,
+        "whole_ego_alternate": true
+      }
+    },
+    {
+      "physical_room": true,
+      "at_least24m_legal_road": false,
+      "approved_by_sensor": false,
+      "samples": 462,
+      "first": {
+        "frame": 12485,
+        "time_s": 136.4,
+        "station_m": 640.741,
+        "actual_kmh": 2.884,
+        "target_kmh": 2.53,
+        "source_front": {
+          "id": 1781,
+          "role": "lead",
+          "observed_mps": 1.256,
+          "longitudinal_front_room_m": 15.021,
+          "longitudinal_rear_room_m": -24.847
+        },
+        "source_rear": null,
+        "source_longitudinal_overlaps": [],
+        "front_room_m": 15.021,
+        "rear_room_m": 60.0,
+        "required_front_m": 15.0,
+        "required_rear_m": 12.0,
+        "enough_longitudinal_room_without_sight": true,
+        "legal_road_remaining_m": 8.196,
+        "sensor_source_pavement_m": [
+          8.2,
+          47.6
+        ],
+        "sensor_approved_return": false,
+        "reported_phase": "wait_rejoin",
+        "depart_confirmed": false,
+        "passed_landmark": null,
+        "whole_ego_alternate": true
+      },
+      "last": {
+        "frame": 12946,
+        "time_s": 182.5,
+        "station_m": 641.502,
+        "actual_kmh": 0.0,
+        "target_kmh": 0.0,
+        "source_front": null,
+        "source_rear": null,
+        "source_longitudinal_overlaps": [],
+        "front_room_m": 60.0,
+        "rear_room_m": 60.0,
+        "required_front_m": 15.0,
+        "required_rear_m": 12.0,
+        "enough_longitudinal_room_without_sight": true,
+        "legal_road_remaining_m": 7.435,
+        "sensor_source_pavement_m": [
+          7.44,
+          48.29
+        ],
+        "sensor_approved_return": false,
+        "reported_phase": "wait_rejoin",
+        "depart_confirmed": false,
+        "passed_landmark": null,
+        "whole_ego_alternate": true
+      }
+    }
+  ]
+}
