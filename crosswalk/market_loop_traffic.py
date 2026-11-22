@@ -80,12 +80,21 @@ class LoopPopulation(ManeuverPopulation):
             for w in lamp.get_stop_waypoints():
                 if w and (w.road_id,w.lane_id)==(183,4) and w.transform.location.distance(self.parallel.path[-1])<11.:
                     self.parking_light,self.parking_stop=lamp,w
-        if self.parking_light is None or self.parking_light.get_state()!=carla.TrafficLightState.Red:
-            raise RuntimeError("Independent side approach must have its native red signal and stop waypoint")
+        if self.parking_light is None:
+            raise RuntimeError("Independent side approach is missing its native signal and stop waypoint")
+        # Signal commands issued by journey setup become visible in the next
+        # native snapshot. A pre-tick cached state cannot attest the side light.
+        self.parking_setup_frame = scene.world.get_snapshot().frame
+        self.parking_verified_frame = None
         if len([v for v in self._cars if v.road==69 and v.lane in (2,3)]) != 2:
             raise ValueError("Both original opposing cars must continue physically ahead of the return trip")
 
     def _move_cars(self):
+        frame = self._scene.world.get_snapshot().frame
+        if self.parking_verified_frame is None and frame > self.parking_setup_frame:
+            if self.parking_light.get_state() != carla.TrafficLightState.Red:
+                raise RuntimeError("Native side-street signal was not red after its setup command settled")
+            self.parking_verified_frame = frame
         # This genuine red-to-green cycle releases the parallel flow whether
         # or not the ego gets past the Market stop line or attempts a merge.
         if not self.parallel.active and self.parallel_signal.state=="green" and self._scene.signal.get_state()==carla.TrafficLightState.Green:
@@ -106,7 +115,7 @@ class LoopPopulation(ManeuverPopulation):
             spawn_native=[67,-1,77.],release=self.parallel_release,target_speed_mps=car.speed,
             traversed_m=round(car.traveled,3),maximum_speed_mps=round(car.peak_speed,3),left_corridor=car.departed_lane,
             exit_connectors=[[89,-1],[33,4],[32,4],[1030,4],[31,4]],terminal_stop_native=[183,4,round(self.parking_stop.s,3)],
-            terminal_light_id=self.parking_light.id,terminal_light_state=str(self.parking_light.get_state()),
+            terminal_light_id=self.parking_light.id,terminal_signal_verified_frame=self.parking_verified_frame,terminal_light_state=str(self.parking_light.get_state()),
             terminal_arrival=car.actor.get_location().distance(car.path[-1])<3.,
             terminal_front_to_stop_line_m=round(front_margin,3),actual_speed_mps=round(car.actor.get_velocity().length(),3))
         return report
