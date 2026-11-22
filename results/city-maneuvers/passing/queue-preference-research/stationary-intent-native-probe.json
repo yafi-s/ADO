@@ -1,0 +1,123 @@
+{
+  "schema": "ado-stationary-intent-native-probe-v1",
+  "checkpoint_sha256": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+  "inference_source_sha256": "96f0a316b43d358b6807f84e5b2a85dc14db0042c03b6896ad07fae1cef41e39",
+  "method": "Frame-level, retrospective counterfactual. Build the eight features from the archived source lane range/motion/gain history only, compute the intent action, then select fresh origin-lane measurements that match the withheld physical source actor within 2m. Camera/Doppler identity gate assumed for the matched subset. The historic actions did not use this head. Moving above 5m/s is not a departure label. The two queues share seed 316, the slow-traffic trials share seed 212, and road65 controls share seed 7401.",
+  "exclusions": "No 9145 evaluation exposure was read by this evaluation script or used in fitting. No chronological actor observations became synthetic training samples.",
+  "captures": [
+    {
+      "folder": "results/city-maneuvers/speed/final-primary-queue",
+      "seed": 316,
+      "sha256": "8c676df04ece7121e0c9f9912fd1f444929d6040f4520c317d399dfc4b9b47b0",
+      "reference_sha256": null,
+      "frames": 215,
+      "responses": {
+        "stationary": {
+          "follow": 69
+        },
+        "settled_close": {
+          "follow": 21
+        }
+      }
+    },
+    {
+      "folder": "results/city-maneuvers/speed/final-long-queue",
+      "seed": 316,
+      "sha256": "1d0a6b29219cdd2fa060f3e2151678b359b270195038007ee747946fae0d4c7e",
+      "reference_sha256": null,
+      "frames": 429,
+      "responses": {
+        "stationary": {
+          "follow": 82
+        },
+        "settled_close": {
+          "follow": 21
+        }
+      }
+    },
+    {
+      "folder": "results/city-maneuvers/trials/candidate/departing",
+      "seed": 212,
+      "sha256": "46e9d34f60be3afc50132a3b703756eb3d28d2b9c7b5f849ce6e3c664101fda8",
+      "reference_sha256": "60d7b831b83e6fcd2e1af42cb891d244dcfd4b33fc2fdd4456fae55facc02090",
+      "frames": 130,
+      "responses": {
+        "moving_slow": {
+          "follow": 25
+        },
+        "moving_above_5mps": {
+          "follow": 7
+        }
+      }
+    },
+    {
+      "folder": "results/city-maneuvers/trials/candidate/slow",
+      "seed": 212,
+      "sha256": "5569e1f599e3b7acd42a41b813b401fd24af6932dfa8156858c4bf9c5b20caf7",
+      "reference_sha256": "412074365993901f0876a166ba9629942fca1693194debf46f9c52aaf4ad3401",
+      "frames": 330,
+      "responses": {
+        "moving_slow": {
+          "follow": 51,
+          "defer_to_existing_choice": 22
+        }
+      }
+    },
+    {
+      "folder": "results/city-maneuvers/trials/candidate/blocked",
+      "seed": 212,
+      "sha256": "1f7a63eada4be3243ae2aa4be2d9ed364fd759495e11cdb739173ed2516fbb95",
+      "reference_sha256": "4fc743789757c3fd45011965faeec6c2c5bc836aa125a9b98f6cfee07ecf4c13",
+      "frames": 611,
+      "responses": {
+        "stationary": {
+          "follow": 9
+        },
+        "moving_slow": {
+          "follow": 572
+        }
+      }
+    },
+    {
+      "folder": "results/city-maneuvers/passing/road65-pinned-r2/clear",
+      "seed": 7401,
+      "sha256": "070f05f9226e089d2337e7c462056d2483fb197cc2969dea630f0e4b7eb9d10b",
+      "reference_sha256": null,
+      "frames": 175,
+      "responses": {
+        "moving_slow": {
+          "defer_to_existing_choice": 13,
+          "follow": 8
+        }
+      }
+    },
+    {
+      "folder": "results/city-maneuvers/passing/road65-pinned-r2/occupied",
+      "seed": 7401,
+      "sha256": "f120e582dfbcf01cbaa955179073c7e5597708b308777b82b0082207a72647b8",
+      "reference_sha256": null,
+      "frames": 346,
+      "responses": {
+        "moving_slow": {
+          "follow": 76,
+          "defer_to_existing_choice": 45
+        }
+      }
+    },
+    {
+      "folder": "results/city-maneuvers/passing/road65-pinned-r2/rebrake",
+      "seed": 7401,
+      "sha256": "18ee0220007b5f0bd3dc3e70d52562e786223663d1bf2f534c1716b56da07d4f",
+      "reference_sha256": null,
+      "frames": 91,
+      "responses": {
+        "moving_slow": {
+          "follow": 53
+        },
+        "stationary": {
+          "follow": 27
+        }
+      }
+    }
+  ]
+}
