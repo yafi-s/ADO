@@ -597,6 +597,11 @@ def departures(rows, physical):
         rejoin = hi < len(rows) and locations[hi] and locations[hi]["body_in_source"]
         first_unknown = next((stamp(rows[i]) for i in range(lo, hi)
                               if rows[i].get("passing_footprint_in_legal_lanes") is False), None)
+        lane_keys = ("body_in_source", "center_in_alternate", "body_in_alternate", "body_within_legal_union")
+        lane_exposures = [
+            {"frame": rows[i]["frame"], **{k: locations[i][k] for k in lane_keys}}
+            for i in range(lo, hi + int(bool(rejoin)))
+        ]
         moves.append(dict(
             road=first["road"], source_lane=first["source_lane"], alternate_lane=first["alternate_lane"],
             side=first["side"], footprint_departs=stamp(rows[lo]), center_crosses=stamp(rows[center]),
@@ -605,6 +610,7 @@ def departures(rows, physical):
             shoulder_or_departure_samples=len(illegal), first_outside_legal_union=next(iter(illegal), None),
             first_native_legality_failure=first_unknown, alongside=alongside, ahead_with_sampled_clearance=ahead,
             moving_vehicle_clearance=moving_separation(rows, physical, lo, hi),
+            lane_exposures=lane_exposures,
         ))
     return moves
 

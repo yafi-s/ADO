@@ -22,10 +22,10 @@ def waypoint(point):
     )
 
 
-def export(source, seed):
+def export(source, seed, destination="market"):
     raw = source.read_bytes()
     road_map = carla.Map("Town03_Opt", raw.decode("utf-8"))
-    route = urban_route(road_map, seed, "market")
+    route = urban_route(road_map, seed, destination)
     station, samples = 0., []
     for point in route.points:
         sample = waypoint(point)
@@ -39,7 +39,7 @@ def export(source, seed):
         for side, other in (("left", point.get_left_lane()), ("right", point.get_right_lane())):
             sample[side] = waypoint(other) if other else None
         samples.append(sample)
-    return dict(
+    survey = dict(
         map=road_map.name, seed=seed, opendrive_sha256=hashlib.sha256(raw).hexdigest(),
         route_id=f"town03_opt-journey:{route.points[0].id}:{route.points[-1].id}",
         route_length_m=station,
@@ -48,6 +48,13 @@ def export(source, seed):
         ],
         samples=samples,
     )
+    if destination == "market-loop":
+        survey.update(
+            destination=destination,
+            shared_market_prefix_count=route.market_prefix_count,
+            shared_market_prefix_to_m=samples[route.market_prefix_count - 1]["station_m"],
+        )
+    return survey
 
 
 if __name__ == "__main__":
@@ -55,5 +62,7 @@ if __name__ == "__main__":
     cli.add_argument("source", type=Path)
     cli.add_argument("output", type=Path)
     cli.add_argument("--seed", type=int, default=212)
+    cli.add_argument("--destination", choices=("market", "market-loop"), default="market")
     args = cli.parse_args()
-    args.output.write_text(json.dumps(export(args.source, args.seed), separators=(",", ":")) + "\n", encoding="utf-8")
+    args.output.write_text(json.dumps(export(args.source, args.seed, args.destination), separators=(",", ":")) + "\n",
+                           encoding="utf-8")

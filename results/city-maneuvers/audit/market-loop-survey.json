@@ -1,0 +1,143 @@
+{
+  "status": "proposed_route_survey",
+  "basis": "Offline waypoint reconstruction with the native CARLA 1.0 map API",
+  "policy_registration_pin": "727f097d8760248e23431021ace61ff2c48b6d5e",
+  "route_construction_source_sha256": "aef55240c839b0ebe77631fcf4eeded258dbc0397e87e7a110a41eb1e9435c51",
+  "map_open_drive_sha256": "abf177bcd9b66cfefb7ac4919f6456815f1384f4229f1343c8a6a90bbb7713c9",
+  "seed": 212,
+  "proposed_survey": {
+    "file": "route-market-loop-212.json",
+    "sha256": "f73c2afaa46d66e5d94b90b9df525074f3e60ab2d76aa77b8a96789f03145f14",
+    "destination": "market-loop",
+    "route_id": "town03_opt-journey:12700144526702247834:7094828061944679902",
+    "route_length_m": 1719.890348411398,
+    "samples": 1737,
+    "junction_traversals": 14,
+    "unique_junction_ids": [
+      82,
+      103,
+      238,
+      730,
+      861,
+      1038,
+      1352,
+      1669,
+      1820,
+      1901,
+      1932
+    ]
+  },
+  "identical_original_prefix": {
+    "file": "route-212.json",
+    "sha256": "9e0628e15f6a27b8d8ed0d3cb06bcc144a97860556028f0f04bda8015ffb9847",
+    "route_id": "town03_opt-journey:12700144526702247834:16941401333379896773",
+    "cutoff_m": 1416.437782177174,
+    "samples": 1439,
+    "junction_traversals": 11,
+    "every_sample_and_lane_marking_identical": true
+  },
+  "extension": {
+    "added_length_m": 303.4525662342239,
+    "additional_junction_traversals": [
+      {
+        "junction_id": 238,
+        "connector_road": 332,
+        "surveyed_entry_m": 1421.4377811032646,
+        "surveyed_last_sample_m": 1437.6517301159306
+      },
+      {
+        "junction_id": 1932,
+        "connector_road": 1960,
+        "surveyed_entry_m": 1494.2171627411115,
+        "surveyed_last_sample_m": 1533.8903453939508
+      },
+      {
+        "junction_id": 82,
+        "connector_road": 101,
+        "surveyed_entry_m": 1546.8903457776014,
+        "surveyed_last_sample_m": 1583.8903446333056
+      }
+    ],
+    "ordered_segments": [
+      {
+        "road": 23,
+        "lane": -1,
+        "samples": 4,
+        "first_route_m": 1417.4377788423353,
+        "last_route_m": 1420.4377844381033,
+        "native_s_first": 55.85991920361825,
+        "native_s_last": 58.85991920361825,
+        "junction_id": null
+      },
+      {
+        "road": 332,
+        "lane": -1,
+        "samples": 20,
+        "first_route_m": 1421.4377811032646,
+        "last_route_m": 1437.6517301159306,
+        "native_s_first": 0.049919203618321806,
+        "native_s_last": 19.04991920361828,
+        "junction_id": 238
+      },
+      {
+        "road": 69,
+        "lane": 3,
+        "samples": 51,
+        "first_route_m": 1438.651721703171,
+        "last_route_m": 1493.0837706972686,
+        "native_s_first": 50.01291226623408,
+        "native_s_last": 0.012912266234168968,
+        "junction_id": null
+      },
+      {
+        "road": 1960,
+        "lane": 3,
+        "samples": 37,
+        "first_route_m": 1494.2171627411115,
+        "last_route_m": 1533.8903453939508,
+        "native_s_first": 36.10004268612227,
+        "native_s_last": 0.10004268612235911,
+        "junction_id": 1932
+      },
+      {
+        "road": 68,
+        "lane": 3,
+        "samples": 12,
+        "first_route_m": 1534.8903484869847,
+        "last_route_m": 1545.8903484065956,
+        "native_s_first": 11.862912266234122,
+        "native_s_last": 0.8629122662341437,
+        "junction_id": null
+      },
+      {
+        "road": 101,
+        "lane": 3,
+        "samples": 38,
+        "first_route_m": 1546.8903457776014,
+        "last_route_m": 1583.8903446333056,
+        "native_s_first": 37.37291226623422,
+        "native_s_last": 0.3729122662343105,
+        "junction_id": 82
+      },
+      {
+        "road": 67,
+        "lane": 3,
+        "samples": 136,
+        "first_route_m": 1584.890332505666,
+        "last_route_m": 1719.890348411398,
+        "native_s_first": 309.9229122662343,
+        "native_s_last": 174.92291226623428,
+        "junction_id": null
+      }
+    ],
+    "final_pass_corridor": {
+      "road": 67,
+      "source_lane": 3,
+      "legal_alternative": 2,
+      "verified_left_change_samples": 136,
+      "first_progress_m": 1584.890332505666,
+      "last_progress_m": 1719.890348411398,
+      "native_s_direction": "decreasing"
+    }
+  }
+}
