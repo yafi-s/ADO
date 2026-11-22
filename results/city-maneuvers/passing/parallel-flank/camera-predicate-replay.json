@@ -1,0 +1,149 @@
+{
+  "scope": "Fixed native features of the rejected parallel-flank drive, including original recorded lateral decisions and all recorded caps. This comparison admits only previously denied finite geometric off-path boxes with BOTH scalar person summaries zero. Existing recent unattributed legacy evidence is conservatively withheld. No steering, physical translation, or native release is established.",
+  "max_stock_replay_error_mps": 5e-06,
+  "source_trace_sha256": "a6a15e8c14cd4f59f833c0c75243ca0497a77e297dd01f913d38805b8c4542f9",
+  "source_approach_sha256": "94ce39e5f3b4136b2301a1104b454af4d2ce4f0268592d5a55f5ce5e703f504f",
+  "held_window": {
+    "frames": 492,
+    "positive_before": 49,
+    "positive_literal": 337,
+    "positive_after": 307,
+    "positive_throttle_before": 36,
+    "positive_throttle_after": 300,
+    "longest_zero_before": {
+      "frames": 203,
+      "first_frame": 4970,
+      "last_frame": 5172
+    },
+    "longest_zero_literal": {
+      "frames": 89,
+      "first_frame": 5272,
+      "last_frame": 5360
+    },
+    "longest_zero_after": {
+      "frames": 93,
+      "first_frame": 5272,
+      "last_frame": 5364
+    },
+    "changed_gate_frames": 288,
+    "changed_quantiles": [
+      0.25905,
+      0.7385,
+      1.41989
+    ],
+    "zero_reason_counts": {
+      "lane_or_flank": 24,
+      "near_or_unobserved": 1,
+      "perception_hold": 11,
+      "zero_optical_horizon": 117,
+      "unresolved_legacy_history": 32
+    },
+    "last": {
+      "frame": 5418,
+      "station": 583.831,
+      "speed": 0.0,
+      "admitted": true,
+      "reason": "geometry_only_off_path",
+      "old_request": 0.0,
+      "literal_request": 1.419894814491272,
+      "new_request": 1.419894814491272,
+      "old_throttle": 0.0,
+      "new_throttle": 0.6457583299568906,
+      "old_cap": 0.0,
+      "new_cap": 1.419894814491272
+    }
+  },
+  "last_fifteen_seconds": {
+    "frames": 150,
+    "positive_before": 14,
+    "positive_literal": 54,
+    "positive_after": 40,
+    "positive_throttle_before": 12,
+    "positive_throttle_after": 38,
+    "longest_zero_before": {
+      "frames": 90,
+      "first_frame": 5271,
+      "last_frame": 5360
+    },
+    "longest_zero_literal": {
+      "frames": 90,
+      "first_frame": 5271,
+      "last_frame": 5360
+    },
+    "longest_zero_after": {
+      "frames": 98,
+      "first_frame": 5269,
+      "last_frame": 5366
+    },
+    "changed_gate_frames": 40,
+    "changed_quantiles": [
+      0.25905,
+      1.0727,
+      1.41989
+    ],
+    "zero_reason_counts": {
+      "unresolved_legacy_history": 14,
+      "zero_optical_horizon": 96
+    },
+    "last": {
+      "frame": 5418,
+      "station": 583.831,
+      "speed": 0.0,
+      "admitted": true,
+      "reason": "geometry_only_off_path",
+      "old_request": 0.0,
+      "literal_request": 1.419894814491272,
+      "new_request": 1.419894814491272,
+      "old_throttle": 0.0,
+      "new_throttle": 0.6457583299568906,
+      "old_cap": 0.0,
+      "new_cap": 1.419894814491272
+    }
+  },
+  "controls": {
+    "finite_offpath_zero_legacy": {
+      "cap": 0.8509607315063477,
+      "reason": "verified_source"
+    },
+    "missing_box": {
+      "cap": 0.0,
+      "reason": "perception_hold"
+    },
+    "zero_horizon": {
+      "cap": 0.0,
+      "reason": "perception_hold"
+    },
+    "recent_uncategorized": {
+      "cap": 0.0,
+      "reason": "perception_hold"
+    },
+    "crossing": {
+      "cap": 0.0,
+      "reason": "perception_hold"
+    },
+    "red": {
+      "cap": 0.0,
+      "reason": "perception_hold"
+    },
+    "near_body": {
+      "cap": 0.0,
+      "reason": "near_or_unobserved"
+    },
+    "straddling": {
+      "cap": 0.0,
+      "reason": "lane_or_flank"
+    },
+    "flank_intrusion": {
+      "cap": 0.0,
+      "reason": "lane_or_flank"
+    },
+    "stale_geometry": {
+      "cap": 0.0,
+      "reason": "perception_hold"
+    },
+    "no_source_pavement": {
+      "cap": 0.0,
+      "reason": "perception_hold"
+    }
+  }
+}

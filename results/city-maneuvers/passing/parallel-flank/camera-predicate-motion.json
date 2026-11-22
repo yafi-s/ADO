@@ -1,0 +1,108 @@
+{
+  "scope": "CPU longitudinal response only, matched held-out native controls for validation. Changing speeds and acceleration feed the unmodified parent controller each tick. Camera, occupancy and other driver positions do not re-render or react to a new pose. A possible crossing of the 20m station is not a physical encounter. The debit arm consumes extra travel from the recorded road, optical, body and flank view; the unadjusted arm repeatedly receives observations made at the actual mostly stationary pose.",
+  "fit": {
+    "native_transitions": 3533,
+    "uncensored_brake_gain_p10_p50_p90": [
+      6.910250860722873,
+      7.37975890970835,
+      8.00786007257176
+    ],
+    "input_files": [
+      "results\\city-maneuvers\\passing\\road65-pinned-r2\\clear\\trace.jsonl.gz",
+      "results\\city-maneuvers\\passing\\road65-pinned-r2\\no-lead\\trace.jsonl.gz",
+      "results\\city-maneuvers\\passing\\road65-pinned-r2\\occupied\\trace.jsonl.gz",
+      "results\\city-maneuvers\\passing\\road65-pinned-r2\\rebrake\\trace.jsonl.gz",
+      "results\\city-maneuvers\\qualification\\full-market\\trace.jsonl.gz",
+      "results\\city-maneuvers\\pace\\native-v07-boulevard\\boulevard\\trace.jsonl.gz",
+      "results\\city-maneuvers\\pace\\native-v06-boulevard\\boulevard\\trace.jsonl.gz"
+    ],
+    "method": "12 nearest speed, acceleration and three consecutive pedal states; weighted mean measured next acceleration, 10 Hz trapezoidal odometry; jerk from consecutive accelerations. Training excludes this trial."
+  },
+  "runs": {
+    "unchanged_held_out": {
+      "start_frame": 4877,
+      "frames": 541,
+      "start_station_m": 581.502,
+      "end_station_m": 584.027,
+      "travel_m": 2.525,
+      "actual_travel_m": 2.329,
+      "terminal_extra_vs_recorded_m": 0.196,
+      "first_possible_20m_projection_s": null,
+      "peak_mps": 1.156,
+      "median_mps": 0.0,
+      "longest_stationary_s": 23.7,
+      "peak_accel_mps2": 2.246,
+      "peak_brake_mps2": -4.655,
+      "p95_abs_jerk_mps3": 6.997,
+      "mean_abs_recorded_speed_difference_mps": 0.004
+    },
+    "anchored_unchanged_check": {
+      "start_frame": 4877,
+      "frames": 541,
+      "start_station_m": 581.502,
+      "end_station_m": 583.89,
+      "travel_m": 2.388,
+      "actual_travel_m": 2.329,
+      "terminal_extra_vs_recorded_m": 0.059,
+      "first_possible_20m_projection_s": null,
+      "peak_mps": 1.089,
+      "median_mps": 0.0,
+      "longest_stationary_s": 23.7,
+      "peak_accel_mps2": 2.25,
+      "peak_brake_mps2": -4.308,
+      "p95_abs_jerk_mps3": 7.0,
+      "mean_abs_recorded_speed_difference_mps": 0.0
+    },
+    "corrected_optimistic": {
+      "start_frame": 4877,
+      "frames": 541,
+      "start_station_m": 581.502,
+      "end_station_m": 602.621,
+      "travel_m": 21.119,
+      "actual_travel_m": 2.329,
+      "terminal_extra_vs_recorded_m": 18.79,
+      "first_possible_20m_projection_s": 16.4,
+      "peak_mps": 1.156,
+      "median_mps": 0.364,
+      "longest_stationary_s": 10.9,
+      "peak_accel_mps2": 2.246,
+      "peak_brake_mps2": -5.421,
+      "p95_abs_jerk_mps3": 7.765,
+      "mean_abs_recorded_speed_difference_mps": 0.361
+    },
+    "corrected_debited": {
+      "start_frame": 4877,
+      "frames": 541,
+      "start_station_m": 581.502,
+      "end_station_m": 585.573,
+      "travel_m": 4.071,
+      "actual_travel_m": 2.329,
+      "terminal_extra_vs_recorded_m": 1.742,
+      "first_possible_20m_projection_s": null,
+      "peak_mps": 1.156,
+      "median_mps": 0.0,
+      "longest_stationary_s": 16.8,
+      "peak_accel_mps2": 2.246,
+      "peak_brake_mps2": -4.655,
+      "p95_abs_jerk_mps3": 7.8,
+      "mean_abs_recorded_speed_difference_mps": 0.046
+    },
+    "corrected_debited_anchored": {
+      "start_frame": 4877,
+      "frames": 541,
+      "start_station_m": 581.502,
+      "end_station_m": 585.575,
+      "travel_m": 4.073,
+      "actual_travel_m": 2.329,
+      "terminal_extra_vs_recorded_m": 1.744,
+      "first_possible_20m_projection_s": null,
+      "peak_mps": 1.089,
+      "median_mps": 0.0,
+      "longest_stationary_s": 16.8,
+      "peak_accel_mps2": 2.25,
+      "peak_brake_mps2": -4.237,
+      "p95_abs_jerk_mps3": 8.314,
+      "mean_abs_recorded_speed_difference_mps": 0.044
+    }
+  }
+}

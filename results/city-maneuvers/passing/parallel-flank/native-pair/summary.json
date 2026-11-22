@@ -1,0 +1,1263 @@
+{
+  "scenario": "journey",
+  "seed": 212,
+  "policy": "ado-city-maneuvers-v1",
+  "weather": "ClearNoon",
+  "road_id": 24,
+  "lane_id": -1,
+  "start_xy": [
+    -58.82,
+    135.3
+  ],
+  "outcome": "timeout",
+  "frames": 1176,
+  "duration_s": 117.6,
+  "progress_m": 583.831,
+  "route_length_m": 1416.438,
+  "contacts": [],
+  "collision_events": 0,
+  "max_lateral_error_m": 3.508,
+  "spawn_lateral_m": 0.0,
+  "spawn_yaw_deg": 0.0,
+  "min_hazard_gap_m": 3.675,
+  "moving_within_1m_frames": 0,
+  "turn_direction": null,
+  "district": "townwide",
+  "destination": "market",
+  "crossing_delay_s": 0.5,
+  "camera_rendering": {
+    "requested": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "cameras": {
+      "front": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "false",
+          "dlss_screen_percentage": "100.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "false",
+          "dlss_screen_percentage": "100.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "left": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "right": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "rear_left": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "rear_right": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      }
+    },
+    "surround": {
+      "coordinates": "ego metres, +x forward, +y right, +z up; level mounts, yaw in degrees",
+      "camera_mounts": {
+        "front": {
+          "x": 1.3,
+          "y": 0.0,
+          "z": 1.65,
+          "yaw": 0.0,
+          "width": 640,
+          "height": 360,
+          "hfov": 90.0
+        },
+        "left": {
+          "x": 1.3,
+          "y": -0.75,
+          "z": 1.65,
+          "yaw": -70.0,
+          "width": 320,
+          "height": 180,
+          "hfov": 90.0
+        },
+        "right": {
+          "x": 1.3,
+          "y": 0.75,
+          "z": 1.65,
+          "yaw": 70.0,
+          "width": 320,
+          "height": 180,
+          "hfov": 90.0
+        },
+        "rear_left": {
+          "x": -1.1,
+          "y": -0.7,
+          "z": 1.72,
+          "yaw": -145.0,
+          "width": 320,
+          "height": 180,
+          "hfov": 90.0
+        },
+        "rear_right": {
+          "x": -1.1,
+          "y": 0.7,
+          "z": 1.72,
+          "yaw": 145.0,
+          "width": 320,
+          "height": 180,
+          "hfov": 90.0
+        }
+      },
+      "front_acquisition_px": [
+        1280,
+        720
+      ],
+      "front_control_and_video_px": [
+        640,
+        360
+      ],
+      "lidar_mount_xyz": [
+        0.0,
+        0.0,
+        2.3
+      ],
+      "lidar_horizontal_fov_deg": 360.0,
+      "lidar_rotation_hz": 10.0,
+      "lidar_range_m": 100.0,
+      "radar_horizontal_fov_deg": 36,
+      "radar_facing": "front",
+      "corner_radars": {
+        "radar_front_left": {
+          "x": 1.85,
+          "y": -0.85,
+          "z": 0.82,
+          "yaw": -45.0,
+          "range": 40,
+          "horizontal_fov": 100,
+          "vertical_fov": 12,
+          "points_per_second": 4500,
+          "sensor_tick": 0,
+          "noise_seed": 33
+        },
+        "radar_front_right": {
+          "x": 1.85,
+          "y": 0.85,
+          "z": 0.82,
+          "yaw": 45.0,
+          "range": 40,
+          "horizontal_fov": 100,
+          "vertical_fov": 12,
+          "points_per_second": 4500,
+          "sensor_tick": 0,
+          "noise_seed": 34
+        },
+        "radar_rear_left": {
+          "x": -2.05,
+          "y": -0.85,
+          "z": 0.82,
+          "yaw": -135.0,
+          "range": 40,
+          "horizontal_fov": 100,
+          "vertical_fov": 12,
+          "points_per_second": 4500,
+          "sensor_tick": 0,
+          "noise_seed": 35
+        },
+        "radar_rear_right": {
+          "x": -2.05,
+          "y": 0.85,
+          "z": 0.82,
+          "yaw": 135.0,
+          "range": 40,
+          "horizontal_fov": 100,
+          "vertical_fov": 12,
+          "points_per_second": 4500,
+          "sensor_tick": 0,
+          "noise_seed": 36
+        }
+      },
+      "mount_readback": {
+        "frame": 4235,
+        "sensors": {
+          "front": {
+            "xyz_m": [
+              1.3,
+              0.0,
+              1.65
+            ],
+            "translation_error_m": 3.1052985485303705e-06,
+            "rotation_error_deg": 0.010962332150705205
+          },
+          "left": {
+            "xyz_m": [
+              1.3,
+              -0.75,
+              1.65
+            ],
+            "translation_error_m": 4.1318364222771316e-06,
+            "rotation_error_deg": 0.0
+          },
+          "right": {
+            "xyz_m": [
+              1.3,
+              0.75001,
+              1.65
+            ],
+            "translation_error_m": 5.642035648953734e-06,
+            "rotation_error_deg": 0.0
+          },
+          "rear_left": {
+            "xyz_m": [
+              -1.1,
+              -0.69999,
+              1.72
+            ],
+            "translation_error_m": 9.451725725717653e-06,
+            "rotation_error_deg": 0.0
+          },
+          "rear_right": {
+            "xyz_m": [
+              -1.1,
+              0.7,
+              1.72
+            ],
+            "translation_error_m": 4.986559247942265e-06,
+            "rotation_error_deg": 0.017022370475590555
+          },
+          "lidar": {
+            "xyz_m": [
+              -0.0,
+              0.0,
+              2.3
+            ],
+            "translation_error_m": 4.4925224329691275e-06,
+            "rotation_error_deg": 0.010962332150705205
+          },
+          "radar": {
+            "xyz_m": [
+              2.0,
+              1e-05,
+              0.9
+            ],
+            "translation_error_m": 9.076297054520851e-06,
+            "rotation_error_deg": 0.010962332150705205
+          },
+          "radar_front_left": {
+            "xyz_m": [
+              1.85001,
+              -0.84999,
+              0.82
+            ],
+            "translation_error_m": 1.1009292851157879e-05,
+            "rotation_error_deg": 0.012234494034939548
+          },
+          "radar_front_right": {
+            "xyz_m": [
+              1.85,
+              0.85,
+              0.82
+            ],
+            "translation_error_m": 2.8424509430634486e-06,
+            "rotation_error_deg": 0.006086635380431092
+          },
+          "radar_rear_left": {
+            "xyz_m": [
+              -2.04999,
+              -0.84999,
+              0.82
+            ],
+            "translation_error_m": 1.1252564013472326e-05,
+            "rotation_error_deg": 0.0
+          },
+          "radar_rear_right": {
+            "xyz_m": [
+              -2.05,
+              0.85,
+              0.82
+            ],
+            "translation_error_m": 1.9910626919644776e-06,
+            "rotation_error_deg": 0.009663653126515487
+          }
+        }
+      }
+    }
+  },
+  "ego_blueprint": "vehicle.lincoln.mkz",
+  "background_actors": {
+    "vehicles": 27,
+    "walkers": 32
+  },
+  "sensor_configuration": "five-camera-360-lidar-five-radar",
+  "route_id": "town03_opt-journey:12700144526702247834:16941401333379896773",
+  "road_ids": [
+    24,
+    76,
+    78,
+    79,
+    80,
+    47,
+    67,
+    68,
+    69,
+    4,
+    3,
+    20,
+    21,
+    22,
+    23
+  ],
+  "junction_ids": [
+    103,
+    1038,
+    1352,
+    82,
+    1932,
+    238,
+    861,
+    730,
+    1820,
+    1901,
+    1669
+  ],
+  "event_triggered": true,
+  "event_cleared": false,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "stopped_for_hazard": true,
+  "closest_in_path_speed_mps": 0.004,
+  "wall_seconds": 1042.519,
+  "events": [
+    {
+      "kind": "pedestrian",
+      "station_m": 29.0,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "curb_origin_lateral_m": 6.635
+    },
+    {
+      "kind": "occluded",
+      "station_m": 146.99,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "curb_origin_lateral_m": 6.135
+    },
+    {
+      "kind": "signal",
+      "station_m": 323.08,
+      "phase": "green",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": true,
+      "violation": false,
+      "stopped_for_event": true,
+      "minimum_gap_m": 3.74,
+      "queue_exposed_s": 3.1,
+      "triggered_s": 4.8,
+      "exposed_s": 4.8,
+      "cleared_s": 12.0,
+      "queue_departed_green_s": 13.5,
+      "crossed_green_s": 17.6,
+      "passed_s": 19.8
+    },
+    {
+      "kind": "roadworks",
+      "station_m": 375.16,
+      "phase": "cone taper cleared",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": true,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "cone_count": 6,
+      "blueprint": "static.prop.trafficcone01",
+      "triggered_s": 23.6,
+      "max_cone_displacement_m": 0.0,
+      "exposed_s": 24.6,
+      "cones_alongside": 6,
+      "minimum_cone_clearance_m": 0.269,
+      "all_cones_passed_s": 38.1,
+      "cleared_s": 38.1,
+      "passed_s": 38.1
+    },
+    {
+      "kind": "in-lane-obstruction",
+      "station_m": 420.41,
+      "phase": "rear clear of target",
+      "triggered": true,
+      "cleared": false,
+      "exposed": true,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 8.97,
+      "blueprint": "static.prop.trafficcone01",
+      "target_count": 3,
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 29.0,
+      "before_target_s": 29.0,
+      "moving_neighbor_search_radius_m": 65.0,
+      "minimum_moving_participant_gap_m": 1.707,
+      "nearest_moving_participant": {
+        "frame": 4775,
+        "actor_id": 679,
+        "role": "slow-traffic",
+        "blueprint": "vehicle.lincoln.mkz",
+        "speed_mps": 1.619,
+        "ego_speed_mps": 10.669
+      },
+      "minimum_body_clearance_m": 1.682,
+      "maximum_target_displacement_m": 0.0,
+      "exposed_s": 35.6,
+      "alternate_alongside_s": 40.8,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.682,
+      "rear_cleared_target_s": 41.8,
+      "minimum_moving_passing_lane_car_gap_m": 22.8012
+    },
+    {
+      "kind": "slow-traffic",
+      "station_m": 489.69,
+      "phase": "back in route lane",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "blueprint": "vehicle.lincoln.mkz",
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 41.6,
+      "before_target_s": 41.6,
+      "moving_neighbor_search_radius_m": 65.0,
+      "minimum_moving_participant_gap_m": 1.707,
+      "nearest_moving_participant": {
+        "frame": 4775,
+        "actor_id": 679,
+        "role": "slow-traffic",
+        "blueprint": "vehicle.lincoln.mkz",
+        "speed_mps": 1.619,
+        "ego_speed_mps": 10.669
+      },
+      "minimum_body_clearance_m": 1.707,
+      "target_traveled_m": 19.902,
+      "target_maximum_step_m": 0.165,
+      "adjacent_front_minimum_gap_m": 35.473,
+      "adjacent_rear_minimum_gap_m": 21.975,
+      "minimum_moving_passing_lane_car_gap_m": 21.9753,
+      "exposed_s": 44.6,
+      "moving_target_s": 44.7,
+      "alternate_alongside_s": 52.3,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.707,
+      "moving_alongside_s": 52.3,
+      "alongside_target_mps": 1.575,
+      "rear_cleared_target_s": 53.6,
+      "returned_to_route_s": 58.1,
+      "cleared_s": 58.1,
+      "rejoin_station_m": 548.673,
+      "rejoin_rear_clear_m": 33.423,
+      "passed_s": 58.1
+    },
+    {
+      "kind": "barrier",
+      "station_m": 536.65,
+      "phase": "striped barricades cleared",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": true,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "barrier_count": 2,
+      "blueprint": "static.prop.streetbarrier",
+      "triggered_s": 53.2,
+      "max_barrier_displacement_m": 0.0,
+      "barriers_alongside": 2,
+      "exposed_s": 53.7,
+      "minimum_barrier_clearance_m": 1.504,
+      "overtake_board_minimum_body_gap_m": 2.897,
+      "roadside_pass_during_legal_overtake": true,
+      "all_barriers_passed_s": 58.1,
+      "cleared_s": 58.1,
+      "passed_s": 58.1
+    },
+    {
+      "kind": "lead",
+      "station_m": 613.65,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 25.02,
+      "native_road": 67,
+      "native_lane": -2,
+      "native_road_s": 274.58,
+      "stopped_lead_layout": "junction-approach"
+    },
+    {
+      "kind": "bus",
+      "station_m": 811.91,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "blueprint": "vehicle.fuso.mitsubishi",
+      "source_lane": [
+        4,
+        3
+      ],
+      "target_lane": [
+        4,
+        2
+      ]
+    },
+    {
+      "kind": "braking",
+      "station_m": 977.17,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "peak_lead_deceleration_mps2": 0.0
+    },
+    {
+      "kind": "left",
+      "station_m": 1044.17,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0
+    },
+    {
+      "kind": "cyclist",
+      "station_m": 1200.65,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "blueprint": "vehicle.bh.crossbike"
+    },
+    {
+      "kind": "pedestrian-delayed",
+      "station_m": 1276.65,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "curb_origin_lateral_m": 6.635
+    }
+  ],
+  "turn_counts": {
+    "left": 1,
+    "right": 2,
+    "straight": 8
+  },
+  "junction_traversals": [
+    {
+      "junction_id": 103,
+      "direction": "straight",
+      "entry_m": 40.0,
+      "exit_m": 80.99
+    },
+    {
+      "junction_id": 1038,
+      "direction": "right",
+      "entry_m": 266.71,
+      "exit_m": 293.96,
+      "entered_s": 0.0,
+      "completed_s": 5.2
+    },
+    {
+      "junction_id": 1352,
+      "direction": "right",
+      "entry_m": 318.96,
+      "exit_m": 353.16,
+      "entered_s": 17.2,
+      "completed_s": 25.7
+    },
+    {
+      "junction_id": 82,
+      "direction": "straight",
+      "entry_m": 649.65,
+      "exit_m": 687.65
+    },
+    {
+      "junction_id": 1932,
+      "direction": "straight",
+      "entry_m": 700.65,
+      "exit_m": 731.16
+    },
+    {
+      "junction_id": 238,
+      "direction": "straight",
+      "entry_m": 773.91,
+      "exit_m": 799.91
+    },
+    {
+      "junction_id": 861,
+      "direction": "straight",
+      "entry_m": 892.17,
+      "exit_m": 931.17
+    },
+    {
+      "junction_id": 730,
+      "direction": "left",
+      "entry_m": 1046.17,
+      "exit_m": 1076.87
+    },
+    {
+      "junction_id": 1820,
+      "direction": "straight",
+      "entry_m": 1235.65,
+      "exit_m": 1253.65
+    },
+    {
+      "junction_id": 1901,
+      "direction": "straight",
+      "entry_m": 1284.65,
+      "exit_m": 1324.65
+    },
+    {
+      "junction_id": 1669,
+      "direction": "straight",
+      "entry_m": 1338.65,
+      "exit_m": 1360.04
+    }
+  ],
+  "turns_completed": {
+    "left": 0,
+    "right": 2,
+    "straight": 0
+  },
+  "clear_road_m": 36.03,
+  "sidewalk_activity": {
+    "spawned": 32,
+    "moved_on_approach": 11,
+    "motion_on_approach_m": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      27.24,
+      26.64,
+      14.0,
+      6.58,
+      8.65,
+      8.43,
+      10.7,
+      64.59,
+      17.43,
+      17.06,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      6.16,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "total_walked_m": [
+      137.36,
+      136.58,
+      118.68,
+      135.72,
+      136.59,
+      136.06,
+      96.63,
+      111.6,
+      123.65,
+      125.68,
+      104.46,
+      109.69,
+      119.31,
+      119.31,
+      124.73,
+      133.46,
+      104.28,
+      104.28,
+      112.76,
+      33.12,
+      131.05,
+      128.38,
+      122.05,
+      107.67,
+      107.17,
+      125.47,
+      103.84,
+      107.55,
+      103.03,
+      120.51,
+      125.39,
+      127.2
+    ],
+    "actor_ids": [
+      709,
+      710,
+      711,
+      712,
+      713,
+      714,
+      715,
+      716,
+      717,
+      718,
+      719,
+      720,
+      721,
+      722,
+      723,
+      724,
+      725,
+      726,
+      727,
+      728,
+      729,
+      730,
+      731,
+      732,
+      733,
+      734,
+      735,
+      736,
+      737,
+      738,
+      739,
+      740
+    ],
+    "missing_pedestrians": 0
+  },
+  "background_traffic_activity": {
+    "spawned": 27,
+    "moving_near_ego": 6,
+    "vehicles": [
+      {
+        "blueprint": "vehicle.mini.cooper",
+        "movement": "opposing",
+        "road": 24,
+        "lane": 1,
+        "traveled_m": 12.8,
+        "peak_speed_mps": 4.72,
+        "closest_while_moving_m": 222.75,
+        "left_corridor": false,
+        "actor_id": 682,
+        "activation_station_m": 0
+      },
+      {
+        "blueprint": "vehicle.lincoln.mkz",
+        "movement": "side street",
+        "road": 30,
+        "lane": -1,
+        "traveled_m": 46.84,
+        "peak_speed_mps": 5.58,
+        "closest_while_moving_m": 178.55,
+        "left_corridor": false,
+        "actor_id": 683,
+        "activation_station_m": 9
+      },
+      {
+        "blueprint": "vehicle.tesla.model3",
+        "movement": "side street",
+        "road": 30,
+        "lane": -2,
+        "traveled_m": 31.51,
+        "peak_speed_mps": 5.52,
+        "closest_while_moving_m": 182.1,
+        "left_corridor": false,
+        "actor_id": 684,
+        "activation_station_m": 12
+      },
+      {
+        "blueprint": "vehicle.mini.cooper",
+        "movement": "opposing",
+        "road": 76,
+        "lane": 1,
+        "traveled_m": 39.75,
+        "peak_speed_mps": 4.57,
+        "closest_while_moving_m": 119.92,
+        "left_corridor": false,
+        "actor_id": 685,
+        "activation_station_m": 76
+      },
+      {
+        "blueprint": "vehicle.lincoln.mkz",
+        "movement": "opposing",
+        "road": 76,
+        "lane": 1,
+        "traveled_m": 39.95,
+        "peak_speed_mps": 4.6,
+        "closest_while_moving_m": 109.81,
+        "left_corridor": false,
+        "actor_id": 686,
+        "activation_station_m": 78
+      },
+      {
+        "blueprint": "vehicle.mini.cooper",
+        "movement": "opposing",
+        "road": 76,
+        "lane": 1,
+        "traveled_m": 59.04,
+        "peak_speed_mps": 4.74,
+        "closest_while_moving_m": 49.85,
+        "left_corridor": false,
+        "actor_id": 687,
+        "activation_station_m": 160
+      },
+      {
+        "blueprint": "vehicle.mini.cooper",
+        "movement": "opposing",
+        "road": 76,
+        "lane": 1,
+        "traveled_m": 66.03,
+        "peak_speed_mps": 4.7,
+        "closest_while_moving_m": 31.28,
+        "left_corridor": false,
+        "actor_id": 688,
+        "activation_station_m": 163
+      },
+      {
+        "blueprint": "vehicle.lincoln.mkz",
+        "movement": "opposing",
+        "road": 67,
+        "lane": 2,
+        "traveled_m": 85.95,
+        "peak_speed_mps": 5.81,
+        "closest_while_moving_m": 10.51,
+        "left_corridor": false,
+        "actor_id": 689,
+        "activation_station_m": 335
+      },
+      {
+        "blueprint": "vehicle.lincoln.mkz",
+        "movement": "opposing",
+        "road": 67,
+        "lane": 3,
+        "traveled_m": 95.99,
+        "peak_speed_mps": 5.81,
+        "closest_while_moving_m": 14.0,
+        "left_corridor": false,
+        "actor_id": 690,
+        "activation_station_m": 340
+      },
+      {
+        "blueprint": "vehicle.tesla.model3",
+        "movement": "opposing",
+        "road": 67,
+        "lane": 2,
+        "traveled_m": 141.31,
+        "peak_speed_mps": 5.73,
+        "closest_while_moving_m": 10.51,
+        "left_corridor": false,
+        "actor_id": 691,
+        "activation_station_m": 499
+      },
+      {
+        "blueprint": "vehicle.lincoln.mkz",
+        "movement": "opposing",
+        "road": 67,
+        "lane": 3,
+        "traveled_m": 126.23,
+        "peak_speed_mps": 5.77,
+        "closest_while_moving_m": 14.01,
+        "left_corridor": false,
+        "actor_id": 692,
+        "activation_station_m": 494
+      },
+      {
+        "blueprint": "vehicle.mini.cooper",
+        "movement": "opposing",
+        "road": 69,
+        "lane": 2,
+        "traveled_m": 0.0,
+        "peak_speed_mps": 0.0,
+        "closest_while_moving_m": null,
+        "left_corridor": false,
+        "actor_id": 693,
+        "activation_station_m": 705
+      },
+      {
+        "blueprint": "vehicle.tesla.model3",
+        "movement": "opposing",
+        "road": 69,
+        "lane": 3,
+        "traveled_m": 0.0,
+        "peak_speed_mps": 0.0,
+        "closest_while_moving_m": null,
+        "left_corridor": false,
+        "actor_id": 694,
+        "activation_station_m": 707
+      },
+      {
+        "blueprint": "vehicle.tesla.model3",
+        "movement": "opposing",
+        "road": 4,
+        "lane": -1,
+        "traveled_m": 0.0,
+        "peak_speed_mps": 0.0,
+        "closest_while_moving_m": null,
+        "left_corridor": false,
+        "actor_id": 695,
+        "activation_station_m": 807
+      },
+      {
+        "blueprint": "vehicle.lincoln.mkz",
+        "movement": "opposing",
+        "road": 4,
+        "lane": -2,
+        "traveled_m": 0.0,
+        "peak_speed_mps": 0.0,
+        "closest_while_moving_m": null,
+        "left_corridor": false,
+        "actor_id": 696,
+        "activation_station_m": 810
+      },
+      {
+        "blueprint": "vehicle.lincoln.mkz",
+        "movement": "opposing",
+        "road": 3,
+        "lane": -2,
+        "traveled_m": 0.0,
+        "peak_speed_mps": 0.0,
+        "closest_while_moving_m": null,
+        "left_corridor": false,
+        "actor_id": 697,
+        "activation_station_m": 909
+      },
+      {
+        "blueprint": "vehicle.lincoln.mkz",
+        "movement": "side street",
+        "road": 19,
+        "lane": -1,
+        "traveled_m": 0.0,
+        "peak_speed_mps": 0.0,
+        "closest_while_moving_m": null,
+        "left_corridor": false,
+        "actor_id": 698,
+        "activation_station_m": 1000
+      },
+      {
+        "blueprint": "vehicle.lincoln.mkz",
+        "movement": "opposing",
+        "road": 20,
+        "lane": 1,
+        "traveled_m": 0.0,
+        "peak_speed_mps": 0.0,
+        "closest_while_moving_m": null,
+        "left_corridor": false,
+        "actor_id": 699,
+        "activation_station_m": 1073
+      },
+      {
+        "blueprint": "vehicle.tesla.model3",
+        "movement": "opposing",
+        "road": 20,
+        "lane": 1,
+        "traveled_m": 0.0,
+        "peak_speed_mps": 0.0,
+        "closest_while_moving_m": null,
+        "left_corridor": false,
+        "actor_id": 700,
+        "activation_station_m": 1076
+      },
+      {
+        "blueprint": "vehicle.lincoln.mkz",
+        "movement": "side street",
+        "road": 62,
+        "lane": -1,
+        "traveled_m": 0.0,
+        "peak_speed_mps": 0.0,
+        "closest_while_moving_m": null,
+        "left_corridor": false,
+        "actor_id": 701,
+        "activation_station_m": 1223
+      },
+      {
+        "blueprint": "vehicle.mini.cooper",
+        "movement": "opposing",
+        "road": 23,
+        "lane": 1,
+        "traveled_m": 0.0,
+        "peak_speed_mps": 0.0,
+        "closest_while_moving_m": null,
+        "left_corridor": false,
+        "actor_id": 702,
+        "activation_station_m": 1348
+      },
+      {
+        "blueprint": "vehicle.mini.cooper",
+        "movement": "opposing",
+        "road": 24,
+        "lane": 1,
+        "traveled_m": 21.89,
+        "peak_speed_mps": 5.4,
+        "closest_while_moving_m": 205.46,
+        "left_corridor": false,
+        "actor_id": 703,
+        "activation_station_m": 1
+      },
+      {
+        "blueprint": "vehicle.mini.cooper",
+        "movement": "opposing",
+        "road": 76,
+        "lane": 1,
+        "traveled_m": 41.89,
+        "peak_speed_mps": 4.64,
+        "closest_while_moving_m": 96.22,
+        "left_corridor": false,
+        "actor_id": 704,
+        "activation_station_m": 80
+      },
+      {
+        "blueprint": "vehicle.mini.cooper",
+        "movement": "opposing",
+        "road": 67,
+        "lane": 2,
+        "traveled_m": 88.4,
+        "peak_speed_mps": 5.81,
+        "closest_while_moving_m": 10.5,
+        "left_corridor": false,
+        "actor_id": 705,
+        "activation_station_m": 343
+      },
+      {
+        "blueprint": "vehicle.tesla.model3",
+        "movement": "opposing",
+        "road": 67,
+        "lane": 3,
+        "traveled_m": 128.52,
+        "peak_speed_mps": 5.33,
+        "closest_while_moving_m": 14.01,
+        "left_corridor": false,
+        "actor_id": 706,
+        "activation_station_m": 498
+      },
+      {
+        "blueprint": "vehicle.mini.cooper",
+        "movement": "opposing",
+        "road": 3,
+        "lane": -1,
+        "traveled_m": 0.0,
+        "peak_speed_mps": 0.0,
+        "closest_while_moving_m": null,
+        "left_corridor": false,
+        "actor_id": 707,
+        "activation_station_m": 916
+      },
+      {
+        "blueprint": "vehicle.lincoln.mkz",
+        "movement": "opposing",
+        "road": 20,
+        "lane": 1,
+        "traveled_m": 0.0,
+        "peak_speed_mps": 0.0,
+        "closest_while_moving_m": null,
+        "left_corridor": false,
+        "actor_id": 708,
+        "activation_station_m": 1081
+      }
+    ],
+    "participant_contacts": [],
+    "maneuver_vehicles": [
+      {
+        "role": "slow-traffic",
+        "actor_id": 679,
+        "blueprint": "vehicle.lincoln.mkz",
+        "traveled_m": 75.462,
+        "maximum_step_m": 0.165,
+        "maximum_lane_center_error_m": 0.498
+      },
+      {
+        "role": "adjacent-front",
+        "actor_id": 680,
+        "blueprint": "vehicle.mini.cooper",
+        "traveled_m": 124.946,
+        "maximum_step_m": 0.701,
+        "maximum_lane_center_error_m": 0.495
+      },
+      {
+        "role": "adjacent-rear",
+        "actor_id": 681,
+        "blueprint": "vehicle.tesla.model3",
+        "traveled_m": 229.217,
+        "maximum_step_m": 1.16,
+        "maximum_lane_center_error_m": 0.495
+      }
+    ]
+  },
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town03_Opt"
+  },
+  "case": "continuous",
+  "model_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+  "source_sha256": "c5b9dd4ab536b94eb777598de4111f46e5069b7537b89f2cbc4ce52e82c677e4"
+}
