@@ -1,0 +1,398 @@
+{
+  "scope": "Fresh native Duo07 diagnostic on the same staged corridor after the pass-association fix",
+  "trace_sha256": "4da1deb044bb641a34c07c3d6c424efa29e58e236a05e5fd508c9f18bdc1b4dc",
+  "summary_sha256": "b9b60283d6be9ac6d7aa631fc78456e2def2792cb44092d56826d37696224085",
+  "route_sha256": "9e0628e15f6a27b8d8ed0d3cb06bcc144a97860556028f0f04bda8015ffb9847",
+  "outcome": "restarted",
+  "method": "Distances start at the ego origin. Projecting native lidar with the recorded ego pose and surveyed legal corridor reproduces the pavement and nearest-surface checks. The shortened probe stores raw lidar every second exposure. Corresponding hashes are included.",
+  "abort_diagnoses": {
+    "7251": "All six spatial occupancy bins pass. The rear pavement has only 23.660 m of measured reach against the 24 m minimum.",
+    "7263": "Both available pavement horizons and all position bins pass. The measured source-rear surface switches from 24.889 to 26.958 to 25.079 m on three consecutive exposures. That shifts the rearward world-range reference by about -1.73 then +2.22 m with only 0.34 m of ego travel per exposure. This is evidence of range association uncertainty. The trace omits the direct source-rear velocity estimate.",
+    "7281": "Both available pavement horizons and all position bins pass. The source-front body range less the 2.5 m ego allowance gives 19.787 m. With the ego traveling at 4.039 m/s toward a stopped lead, the available 4.90 s TTC is under the five-second requirement."
+  },
+  "source_pavement_requirement": {
+    "minimum_returns_in_each_bin": 2,
+    "bins_m": [
+      [
+        4,
+        11
+      ],
+      [
+        11,
+        19
+      ],
+      [
+        19,
+        31
+      ]
+    ],
+    "forward_reach_min_m": 24.0,
+    "rear_reach_min_m": 24.0
+  },
+  "final_station_m": 571.967,
+  "phase_changes": {
+    "7240": {
+      "time_s": 29.8,
+      "station_m": 534.797,
+      "speed_mps": 7.384,
+      "reported_phase": "signal_right",
+      "from_phase": "wait_rejoin",
+      "source_front_m": 39.95,
+      "source_rear_m": 17.763,
+      "ego_lateral_m": -3.5,
+      "gap_accepted": true,
+      "source_pavement_reach_m": [
+        45.88,
+        31.8
+      ],
+      "passed_surface_station_m": 164.0375877907195,
+      "return_clear_scans": 1
+    },
+    "7244": {
+      "time_s": 30.2,
+      "station_m": 537.487,
+      "speed_mps": 6.152,
+      "reported_phase": "change_right",
+      "from_phase": "signal_right",
+      "source_front_m": 36.892,
+      "source_rear_m": 19.858,
+      "ego_lateral_m": -3.5,
+      "gap_accepted": true,
+      "source_pavement_reach_m": [
+        47.96,
+        46.66
+      ],
+      "passed_surface_station_m": 164.63139001375853,
+      "return_clear_scans": 5
+    },
+    "7251": {
+      "time_s": 30.9,
+      "station_m": 541.235,
+      "speed_mps": 4.782,
+      "reported_phase": "wait_rejoin",
+      "from_phase": "change_right",
+      "source_front_m": 33.192,
+      "source_rear_m": 22.382,
+      "ego_lateral_m": -3.241,
+      "gap_accepted": false,
+      "source_pavement_reach_m": [
+        49.84,
+        23.66
+      ],
+      "passed_surface_station_m": 164.63139001375853,
+      "return_clear_scans": 0,
+      "reconstructed_raw_coverage": {
+        "front": {
+          "points_in_required_pavement_bins": [
+            154,
+            31,
+            8
+          ],
+          "reach_m": 49.843,
+          "raw_nearest_above_road_m": 33.192
+        },
+        "rear": {
+          "points_in_required_pavement_bins": [
+            179,
+            23,
+            5
+          ],
+          "reach_m": 23.66,
+          "raw_nearest_above_road_m": 22.382
+        }
+      },
+      "raw_sweep_sha256": "9397cedf000b4529f482cba5cbcf089f960bd23ab95d7527cce68bf19d99e2da"
+    },
+    "7252": {
+      "time_s": 31.0,
+      "station_m": 541.702,
+      "speed_mps": 4.617,
+      "reported_phase": "signal_right",
+      "from_phase": "wait_rejoin",
+      "source_front_m": 32.719,
+      "source_rear_m": 23.142,
+      "ego_lateral_m": -3.227,
+      "gap_accepted": false,
+      "source_pavement_reach_m": [
+        33.9,
+        22.9
+      ],
+      "passed_surface_station_m": 165.56265868898615,
+      "return_clear_scans": 0
+    },
+    "7261": {
+      "time_s": 31.9,
+      "station_m": 545.228,
+      "speed_mps": 3.468,
+      "reported_phase": "change_right",
+      "from_phase": "signal_right",
+      "source_front_m": 29.142,
+      "source_rear_m": 24.889,
+      "ego_lateral_m": -3.37,
+      "gap_accepted": true,
+      "source_pavement_reach_m": [
+        34.56,
+        41.47
+      ],
+      "passed_surface_station_m": 167.34192797075448,
+      "return_clear_scans": 5,
+      "reconstructed_raw_coverage": {
+        "front": {
+          "points_in_required_pavement_bins": [
+            180,
+            29,
+            8
+          ],
+          "reach_m": 34.562,
+          "raw_nearest_above_road_m": 29.142
+        },
+        "rear": {
+          "points_in_required_pavement_bins": [
+            157,
+            29,
+            7
+          ],
+          "reach_m": 41.471,
+          "raw_nearest_above_road_m": 24.889
+        }
+      },
+      "raw_sweep_sha256": "255379d5f7e8b2784edd2743deab00883c1ae74661e93bed76f11d4d9dfdcbe4"
+    },
+    "7263": {
+      "time_s": 32.1,
+      "station_m": 545.911,
+      "speed_mps": 3.394,
+      "reported_phase": "wait_rejoin",
+      "from_phase": "change_right",
+      "source_front_m": 28.413,
+      "source_rear_m": 25.079,
+      "ego_lateral_m": -3.377,
+      "gap_accepted": false,
+      "source_pavement_reach_m": [
+        51.77,
+        41.19
+      ],
+      "passed_surface_station_m": 167.34192797075448,
+      "return_clear_scans": 0,
+      "reconstructed_raw_coverage": {
+        "front": {
+          "points_in_required_pavement_bins": [
+            173,
+            35,
+            5
+          ],
+          "reach_m": 51.77,
+          "raw_nearest_above_road_m": 28.413
+        },
+        "rear": {
+          "points_in_required_pavement_bins": [
+            161,
+            25,
+            6
+          ],
+          "reach_m": 41.194,
+          "raw_nearest_above_road_m": 25.079
+        }
+      },
+      "raw_sweep_sha256": "b08d4c1234e7d4486045e9156818881915d5b0668ab2de83dc710f33575c4765"
+    },
+    "7264": {
+      "time_s": 32.2,
+      "station_m": 546.251,
+      "speed_mps": 3.408,
+      "reported_phase": "signal_right",
+      "from_phase": "wait_rejoin",
+      "source_front_m": 28.106,
+      "source_rear_m": 25.331,
+      "ego_lateral_m": -3.388,
+      "gap_accepted": false,
+      "source_pavement_reach_m": [
+        51.9,
+        40.72
+      ],
+      "passed_surface_station_m": 167.92340376848074,
+      "return_clear_scans": 0
+    },
+    "7270": {
+      "time_s": 32.8,
+      "station_m": 548.229,
+      "speed_mps": 3.229,
+      "reported_phase": "change_right",
+      "from_phase": "signal_right",
+      "source_front_m": 26.287,
+      "source_rear_m": 26.247,
+      "ego_lateral_m": -3.443,
+      "gap_accepted": true,
+      "source_pavement_reach_m": [
+        51.88,
+        29.75
+      ],
+      "passed_surface_station_m": 168.9848061821129,
+      "return_clear_scans": 5
+    },
+    "7281": {
+      "time_s": 33.9,
+      "station_m": 552.035,
+      "speed_mps": 4.039,
+      "reported_phase": "wait_rejoin",
+      "from_phase": "change_right",
+      "source_front_m": 22.287,
+      "source_rear_m": 28.247,
+      "ego_lateral_m": -3.215,
+      "gap_accepted": false,
+      "source_pavement_reach_m": [
+        54.44,
+        39.89
+      ],
+      "passed_surface_station_m": 168.9848061821129,
+      "return_clear_scans": 0,
+      "reconstructed_raw_coverage": {
+        "front": {
+          "points_in_required_pavement_bins": [
+            164,
+            25,
+            6
+          ],
+          "reach_m": 54.437,
+          "raw_nearest_above_road_m": 22.287
+        },
+        "rear": {
+          "points_in_required_pavement_bins": [
+            179,
+            30,
+            11
+          ],
+          "reach_m": 39.888,
+          "raw_nearest_above_road_m": 28.247
+        }
+      },
+      "raw_sweep_sha256": "21a4cc1b2feca18e5faa9479fd28808e2ca3088dc3a4bee268b5e39162c97420"
+    },
+    "7282": {
+      "time_s": 34.0,
+      "station_m": 552.437,
+      "speed_mps": 4.066,
+      "reported_phase": "signal_right",
+      "from_phase": "wait_rejoin",
+      "source_front_m": 21.888,
+      "source_rear_m": 28.491,
+      "ego_lateral_m": -3.209,
+      "gap_accepted": false,
+      "source_pavement_reach_m": [
+        52.98,
+        28.39
+      ],
+      "passed_surface_station_m": 170.94840578341615,
+      "return_clear_scans": 0
+    }
+  },
+  "selected_events": [
+    {
+      "kind": "in-lane-obstruction",
+      "station_m": 420.41,
+      "phase": "back in route lane",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": true,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 15.03,
+      "blueprint": "static.prop.trafficcone01",
+      "target_count": 3,
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 0.0,
+      "before_target_s": 0.0,
+      "minimum_body_clearance_m": 1.674,
+      "maximum_target_displacement_m": 0.0,
+      "exposed_s": 2.3,
+      "alternate_alongside_s": 8.7,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.674,
+      "rear_cleared_target_s": 10.0,
+      "returned_to_route_s": 15.0,
+      "cleared_s": 15.0,
+      "rejoin_station_m": 460.781,
+      "rejoin_rear_clear_m": 31.262,
+      "passed_s": 15.0
+    },
+    {
+      "kind": "slow-traffic",
+      "station_m": 489.69,
+      "phase": "rear clear of target",
+      "triggered": true,
+      "cleared": false,
+      "exposed": true,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 12.86,
+      "blueprint": "vehicle.lincoln.mkz",
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 9.7,
+      "before_target_s": 9.7,
+      "minimum_body_clearance_m": 1.703,
+      "target_traveled_m": 38.368,
+      "target_maximum_step_m": 0.165,
+      "adjacent_front_minimum_gap_m": 37.451,
+      "adjacent_rear_minimum_gap_m": 1.552,
+      "moving_target_s": 13.8,
+      "exposed_s": 14.0,
+      "occupied_gap_wait_s": 16.6,
+      "occupied_gap_frames": 30,
+      "minimum_ego_while_occupied_mps": 1.442,
+      "stopped_while_occupied_s": 0.0,
+      "adjacent_gap_witness": {
+        "rear_relative_m": -17.78,
+        "front_relative_m": 42.69,
+        "rear_mps": 11.41,
+        "front_mps": 6.35,
+        "source_bumper_gap_m": 17.3,
+        "moving_lead_mps": 1.36,
+        "ego_mps": 3.82
+      },
+      "adjacent_traffic_cleared_s": 19.5,
+      "alternate_alongside_s": 26.2,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.703,
+      "moving_alongside_s": 26.2,
+      "alongside_target_mps": 1.657,
+      "rear_cleared_target_s": 27.9
+    },
+    {
+      "kind": "lead",
+      "station_m": 576.65,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0
+    }
+  ]
+}

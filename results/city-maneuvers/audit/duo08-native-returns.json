@@ -1,0 +1,470 @@
+{
+  "scope": "Fresh shortened native scene with two completed physical passes and returns",
+  "sources": {
+    "trace_sha256": "d2458be18963d7f54644e890fb6b835fd6df1b91dce3f48c13e0c6f9729ad311",
+    "summary_sha256": "f19363b4b175cc434cfa507459aa38db69f2ff68e77d39bb2631e365d903f108",
+    "route_sha256": "9e0628e15f6a27b8d8ed0d3cb06bcc144a97860556028f0f04bda8015ffb9847"
+  },
+  "measure": "Measure oriented vehicle footprint from every saved second native ego pose. Project all corners into the legal Road 67 source and alternate lane union. The native scene has independent actor-body scoring. This replay preserves no continuous actor journal.",
+  "pose_exposures": 187,
+  "sampled_outside_legal_union": 0,
+  "independent_lateral_transitions": [
+    {
+      "first": {
+        "frame": 7758,
+        "time_s": 5.9,
+        "station_m": 399.25,
+        "actual_kmh": 18.868,
+        "target_kmh": 23.39,
+        "phase": "change_left",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 396.66525342371625,
+          "ego_front_m": 401.79518852684873,
+          "center_in_alternate": false,
+          "body_in_alternate": false,
+          "body_in_source": false,
+          "body_within_legal_union": true
+        },
+        "sha256": "b5118a445520f3a6b411986d04b3122d4b6d21faef2aa6b37705a3111f2b9000"
+      },
+      "first_alternate_center": {
+        "frame": 7768,
+        "time_s": 6.9,
+        "station_m": 405.148,
+        "actual_kmh": 24.566,
+        "target_kmh": 30.0,
+        "phase": "change_left",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 402.51842909065573,
+          "ego_front_m": 407.73723061854497,
+          "center_in_alternate": true,
+          "body_in_alternate": false,
+          "body_in_source": false,
+          "body_within_legal_union": true
+        },
+        "sha256": "936c765321e80b055706284dc262042e6098e3a98d021ce73442142109f49002"
+      },
+      "first_whole_body_alternate": {
+        "frame": 7776,
+        "time_s": 7.7,
+        "station_m": 410.876,
+        "actual_kmh": 27.443,
+        "target_kmh": 30.0,
+        "phase": "passing",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 408.2859116201176,
+          "ego_front_m": 413.2970068895187,
+          "center_in_alternate": true,
+          "body_in_alternate": true,
+          "body_in_source": false,
+          "body_within_legal_union": true
+        },
+        "sha256": "6e1b32a33a599ea18193e7b478e840e233416af5ecee445fa7f3ae94475e4e36"
+      },
+      "last_departed_sample": {
+        "frame": 7866,
+        "time_s": 16.7,
+        "station_m": 461.491,
+        "actual_kmh": 10.915,
+        "target_kmh": 11.279,
+        "phase": "change_right",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 458.89121385108155,
+          "ego_front_m": 464.0240423358313,
+          "center_in_alternate": false,
+          "body_in_alternate": false,
+          "body_in_source": false,
+          "body_within_legal_union": true
+        },
+        "sha256": "28396174f2278a7923c9752391b6b937ba3847c333d546e74424cadb308b211f"
+      },
+      "first_observed_restoration": {
+        "frame": 7868,
+        "time_s": 16.9,
+        "station_m": 462.089,
+        "actual_kmh": 10.85,
+        "target_kmh": 11.279,
+        "phase": "change_right",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 459.49027981175544,
+          "ego_front_m": 464.61921551433403,
+          "center_in_alternate": false,
+          "body_in_alternate": false,
+          "body_in_source": true,
+          "body_within_legal_union": true
+        },
+        "sha256": "b6bbbdd77145090392f5a3ae7e743631dcebf1d1605dfee2d5cf2229e5758b3f"
+      },
+      "all_sampled_bodies_within_two_legal_lanes": true,
+      "captured_samples": 55
+    },
+    {
+      "first": {
+        "frame": 7926,
+        "time_s": 22.7,
+        "station_m": 476.558,
+        "actual_kmh": 22.201,
+        "target_kmh": 29.93,
+        "phase": "change_left",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 473.99118490188084,
+          "ego_front_m": 479.1111095716667,
+          "center_in_alternate": false,
+          "body_in_alternate": false,
+          "body_in_source": false,
+          "body_within_legal_union": true
+        },
+        "sha256": "730e729f2ecdc94bc0647c8640e1d399c272e270afe90a49f2bafa01d11f0195"
+      },
+      "first_alternate_center": {
+        "frame": 7934,
+        "time_s": 23.5,
+        "station_m": 481.761,
+        "actual_kmh": 26.402,
+        "target_kmh": 30.0,
+        "phase": "change_left",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 479.1975997064263,
+          "ego_front_m": 484.30655120413184,
+          "center_in_alternate": true,
+          "body_in_alternate": false,
+          "body_in_source": false,
+          "body_within_legal_union": true
+        },
+        "sha256": "95c4c6797a69f026053ccd6ad1d3718f388b2c9472ee9e5abfbe9a127275aaa9"
+      },
+      "first_whole_body_alternate": {
+        "frame": 7942,
+        "time_s": 24.3,
+        "station_m": 487.58,
+        "actual_kmh": 28.152,
+        "target_kmh": 30.0,
+        "phase": "passing",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 485.1026499235816,
+          "ego_front_m": 490.0659383757333,
+          "center_in_alternate": true,
+          "body_in_alternate": true,
+          "body_in_source": false,
+          "body_within_legal_union": true
+        },
+        "sha256": "16e72ad03589fad8d0617098807adc6bb97b49438d45d4ee1039c24c4f4d60d7"
+      },
+      "last_departed_sample": {
+        "frame": 8056,
+        "time_s": 35.7,
+        "station_m": 551.914,
+        "actual_kmh": 6.131,
+        "target_kmh": 5.4,
+        "phase": "change_right",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 549.3264667706845,
+          "ego_front_m": 554.5300114251853,
+          "center_in_alternate": false,
+          "body_in_alternate": false,
+          "body_in_source": false,
+          "body_within_legal_union": true
+        },
+        "sha256": "11f577da2188efd26912cd2df21a60311c0889dca863e7be578e667e1b3c5e0d"
+      },
+      "first_observed_restoration": {
+        "frame": 8058,
+        "time_s": 35.9,
+        "station_m": 552.249,
+        "actual_kmh": 6.127,
+        "target_kmh": 5.4,
+        "phase": "change_right",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 549.6665056027176,
+          "ego_front_m": 554.8609174148709,
+          "center_in_alternate": false,
+          "body_in_alternate": false,
+          "body_in_source": true,
+          "body_within_legal_union": true
+        },
+        "sha256": "5bcb1171fb81dcd581deb63e51682e7e82f5b992e903b5c0f5cdc5be2f77dc89"
+      },
+      "all_sampled_bodies_within_two_legal_lanes": true,
+      "captured_samples": 66
+    },
+    {
+      "first": {
+        "frame": 8104,
+        "time_s": 40.5,
+        "station_m": 561.788,
+        "actual_kmh": 16.175,
+        "target_kmh": 20.586,
+        "phase": "change_left",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 559.1993974228025,
+          "ego_front_m": 564.4013507771971,
+          "center_in_alternate": false,
+          "body_in_alternate": false,
+          "body_in_source": false,
+          "body_within_legal_union": true
+        },
+        "sha256": "1080649a89ed38e5d1bb017d730ed986004a287ed93824f9ad36af7316eb868a"
+      },
+      "first_alternate_center": {
+        "frame": 8112,
+        "time_s": 41.3,
+        "station_m": 565.776,
+        "actual_kmh": 21.647,
+        "target_kmh": 25.914,
+        "phase": "change_left",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 563.1580244180429,
+          "ego_front_m": 568.4183103321293,
+          "center_in_alternate": true,
+          "body_in_alternate": false,
+          "body_in_source": false,
+          "body_within_legal_union": true
+        },
+        "sha256": "680d12d21dedaf02a10879c7dc5a5c5bdf7178b2ba9c7c823c2716df457867cc"
+      },
+      "first_whole_body_alternate": {
+        "frame": 8120,
+        "time_s": 42.1,
+        "station_m": 570.479,
+        "actual_kmh": 20.552,
+        "target_kmh": 18.394,
+        "phase": "passing",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 567.9008829841962,
+          "ego_front_m": 573.0867460822425,
+          "center_in_alternate": true,
+          "body_in_alternate": true,
+          "body_in_source": false,
+          "body_within_legal_union": true
+        },
+        "sha256": "4a5e59428d33b3f0d573529f3d896f71974ec0b25630c132a01f52b0d71f04b0"
+      },
+      "last_departed_sample": {
+        "frame": 8122,
+        "time_s": 42.3,
+        "station_m": 571.598,
+        "actual_kmh": 19.994,
+        "target_kmh": 18.394,
+        "phase": "passing",
+        "independent_pose_geometry": {
+          "side": "left",
+          "road": 67,
+          "source_lane": -2,
+          "alternate_lane": -1,
+          "ego_rear_m": 569.048421381995,
+          "ego_front_m": 574.177394911,
+          "center_in_alternate": true,
+          "body_in_alternate": true,
+          "body_in_source": false,
+          "body_within_legal_union": true
+        },
+        "sha256": "f4ea5153bed49537c86672ff65341728929a13abb77b17cf1b59eca0cf1c93e1"
+      },
+      "first_observed_restoration": null,
+      "all_sampled_bodies_within_two_legal_lanes": true,
+      "captured_samples": 10
+    }
+  ],
+  "native_scores": {
+    "collision_events": 0,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "progress_m": 572.149,
+    "outcome": "restarted"
+  },
+  "relevant_scored_events": [
+    {
+      "kind": "in-lane-obstruction",
+      "station_m": 420.41,
+      "phase": "back in route lane",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": true,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 15.21,
+      "blueprint": "static.prop.trafficcone01",
+      "target_count": 3,
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 0.0,
+      "before_target_s": 0.0,
+      "minimum_body_clearance_m": 1.675,
+      "maximum_target_displacement_m": 0.0,
+      "exposed_s": 2.3,
+      "alternate_alongside_s": 8.7,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.675,
+      "rear_cleared_target_s": 10.1,
+      "returned_to_route_s": 16.9,
+      "cleared_s": 16.9,
+      "rejoin_station_m": 461.79,
+      "rejoin_rear_clear_m": 32.112,
+      "passed_s": 16.9
+    },
+    {
+      "kind": "slow-traffic",
+      "station_m": 489.69,
+      "phase": "back in route lane",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": true,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 18.84,
+      "blueprint": "vehicle.lincoln.mkz",
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 9.7,
+      "before_target_s": 9.7,
+      "minimum_body_clearance_m": 1.702,
+      "target_traveled_m": 34.414,
+      "target_maximum_step_m": 0.165,
+      "adjacent_front_minimum_gap_m": 44.467,
+      "adjacent_rear_minimum_gap_m": 1.046,
+      "moving_target_s": 13.9,
+      "exposed_s": 14.6,
+      "occupied_gap_wait_s": 16.9,
+      "occupied_gap_frames": 17,
+      "minimum_ego_while_occupied_mps": 0.006,
+      "stopped_while_occupied_s": 0.3,
+      "adjacent_gap_witness": {
+        "rear_relative_m": -6.07,
+        "front_relative_m": 50.02,
+        "rear_mps": 11.41,
+        "front_mps": 6.19,
+        "source_bumper_gap_m": 26.25,
+        "moving_lead_mps": 1.37,
+        "ego_mps": 3.02
+      },
+      "adjacent_traffic_cleared_s": 18.5,
+      "alternate_alongside_s": 26.5,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.702,
+      "moving_alongside_s": 26.5,
+      "alongside_target_mps": 1.645,
+      "rear_cleared_target_s": 28.2,
+      "returned_to_route_s": 36.1,
+      "cleared_s": 36.1,
+      "rejoin_station_m": 552.417,
+      "rejoin_rear_clear_m": 22.676,
+      "passed_s": 36.1
+    },
+    {
+      "kind": "barrier",
+      "station_m": 536.65,
+      "phase": "striped barricades cleared",
+      "triggered": true,
+      "cleared": true,
+      "exposed": true,
+      "passed": true,
+      "handled": true,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "barrier_count": 2,
+      "blueprint": "static.prop.streetbarrier",
+      "triggered_s": 26.6,
+      "max_barrier_displacement_m": 0.0,
+      "barriers_alongside": 2,
+      "exposed_s": 27.3,
+      "minimum_barrier_clearance_m": 2.349,
+      "overtake_board_minimum_body_gap_m": 3.74,
+      "roadside_pass_during_legal_overtake": true,
+      "all_barriers_passed_s": 34.1,
+      "cleared_s": 34.1,
+      "passed_s": 34.1
+    },
+    {
+      "kind": "lead",
+      "station_m": 576.65,
+      "phase": "departing",
+      "triggered": true,
+      "cleared": false,
+      "exposed": true,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 11.0,
+      "triggered_s": 35.8,
+      "exposed_s": 35.8,
+      "release_command_s": 39.8,
+      "restarted_s": 41.3
+    }
+  ]
+}

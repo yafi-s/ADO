@@ -14,7 +14,9 @@
       "map": "Town03_Opt"
     },
     "quality": "High",
-    "policy": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+    "policy_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+    "first_frame": 97,
+    "last_frame": 3083,
     "seed": 212,
     "crossing_delay_s": 0.5
   },
@@ -273,7 +275,9 @@
         "passed_s": 279.4
       }
     ],
-    "participant_contacts": []
+    "participant_contacts": [],
+    "ambient_vehicles_spawned": 22,
+    "ambient_vehicles_moving_near_ego": 18
   },
   "whole": {
     "frames": 2987,
@@ -319,6 +323,36 @@
     "seconds_from_section_entry_to_sustained_35": 100.5,
     "overspeed_by_more_than_1_kmh_seconds": 0.0,
     "over_40_kmh_seconds": 0.0,
+    "actual_over_posted_seconds": 4.2,
+    "actual_over_posted_percent": 1.406,
+    "maximum_overspeed_kmh": 0.28,
+    "maximum_request_above_posted_kmh": 0.0,
+    "higher_thresholds": {
+      "45": {
+        "actual_seconds": 0.0,
+        "requested_seconds": 0.0,
+        "first_sustained": null,
+        "time_from_section_entry_to_sustained_s": null
+      },
+      "50": {
+        "actual_seconds": 0.0,
+        "requested_seconds": 0.0,
+        "first_sustained": null,
+        "time_from_section_entry_to_sustained_s": null
+      },
+      "55": {
+        "actual_seconds": 0.0,
+        "requested_seconds": 0.0,
+        "first_sustained": null,
+        "time_from_section_entry_to_sustained_s": null
+      },
+      "60": {
+        "actual_seconds": 0.0,
+        "requested_seconds": 0.0,
+        "first_sustained": null,
+        "time_from_section_entry_to_sustained_s": null
+      }
+    },
     "binding_counts": {
       "unconfirmed": 807,
       "opposing_traffic": 154,
@@ -345,7 +379,7 @@
       "path/car/signal_queue/moving": 3.5,
       "beside_path/car/signal_queue/moving": 0.3,
       "beside_path/cone/roadworks/still": 12.2,
-      "beside_path/barrier/workzone_barrier/still": 9.6,
+      "beside_path/barrier/workzone_barrier/still": 9.7,
       "path/car/lead/still": 7.5,
       "path/car/lead/moving": 10.5,
       "beside_path/car/lead/moving": 0.9,
@@ -675,11 +709,51 @@
         ]
       }
     },
+    "moving_population_exposure": {
+      "35": {
+        "scored": 2982,
+        "moving_car_frames": 1295,
+        "moving_pedestrian_frames": 2351,
+        "both_frames": 1074,
+        "two_of_each_frames": 154,
+        "background_both_frames": 809
+      },
+      "50": {
+        "scored": 2982,
+        "moving_car_frames": 1661,
+        "moving_pedestrian_frames": 2799,
+        "both_frames": 1605,
+        "two_of_each_frames": 506,
+        "background_both_frames": 1190
+      },
+      "65": {
+        "scored": 2982,
+        "moving_car_frames": 1833,
+        "moving_pedestrian_frames": 2929,
+        "both_frames": 1819,
+        "two_of_each_frames": 895,
+        "background_both_frames": 1431
+      }
+    },
     "acceleration_peak_mps2": 2.472,
     "braking_peak_mps2": 4.696,
+    "braking_peak_location": {
+      "frame": 443,
+      "time_s": 34.6,
+      "station_m": 139.281,
+      "actual_kmh": 4.982,
+      "target_kmh": 0.523
+    },
     "braking_harder_than_3_seconds": 5.3,
     "lateral_p95_mps2": 1.709,
-    "lateral_peak_mps2": 3.099
+    "lateral_peak_mps2": 3.099,
+    "lateral_peak_location": {
+      "frame": 930,
+      "time_s": 83.3,
+      "station_m": 339.811,
+      "actual_kmh": 17.705,
+      "target_kmh": 16.236
+    }
   },
   "posted_90": {
     "frames": 394,
@@ -725,6 +799,36 @@
     "seconds_from_section_entry_to_sustained_35": 12.5,
     "overspeed_by_more_than_1_kmh_seconds": 0.0,
     "over_40_kmh_seconds": 0.0,
+    "actual_over_posted_seconds": 0.0,
+    "actual_over_posted_percent": 0.0,
+    "maximum_overspeed_kmh": 0.0,
+    "maximum_request_above_posted_kmh": 0.0,
+    "higher_thresholds": {
+      "45": {
+        "actual_seconds": 0.0,
+        "requested_seconds": 0.0,
+        "first_sustained": null,
+        "time_from_section_entry_to_sustained_s": null
+      },
+      "50": {
+        "actual_seconds": 0.0,
+        "requested_seconds": 0.0,
+        "first_sustained": null,
+        "time_from_section_entry_to_sustained_s": null
+      },
+      "55": {
+        "actual_seconds": 0.0,
+        "requested_seconds": 0.0,
+        "first_sustained": null,
+        "time_from_section_entry_to_sustained_s": null
+      },
+      "60": {
+        "actual_seconds": 0.0,
+        "requested_seconds": 0.0,
+        "first_sustained": null,
+        "time_from_section_entry_to_sustained_s": null
+      }
+    },
     "binding_counts": {
       "unconfirmed": 84,
       "vulnerable_road_user": 4,
@@ -737,7 +841,7 @@
       "beside_path/cone/roadworks/still": 7.9,
       "beside_path/car/background/still": 2.5,
       "beside_path/car/background/moving": 5.4,
-      "beside_path/barrier/workzone_barrier/still": 9.6,
+      "beside_path/barrier/workzone_barrier/still": 9.7,
       "path/car/lead/still": 7.5,
       "path/car/lead/moving": 2.0
     },
@@ -807,11 +911,51 @@
         ]
       }
     },
+    "moving_population_exposure": {
+      "35": {
+        "scored": 394,
+        "moving_car_frames": 340,
+        "moving_pedestrian_frames": 335,
+        "both_frames": 294,
+        "two_of_each_frames": 16,
+        "background_both_frames": 284
+      },
+      "50": {
+        "scored": 394,
+        "moving_car_frames": 376,
+        "moving_pedestrian_frames": 373,
+        "both_frames": 358,
+        "two_of_each_frames": 109,
+        "background_both_frames": 348
+      },
+      "65": {
+        "scored": 394,
+        "moving_car_frames": 394,
+        "moving_pedestrian_frames": 394,
+        "both_frames": 394,
+        "two_of_each_frames": 278,
+        "background_both_frames": 394
+      }
+    },
     "acceleration_peak_mps2": 2.43,
     "braking_peak_mps2": 4.432,
+    "braking_peak_location": {
+      "frame": 1340,
+      "time_s": 124.3,
+      "station_m": 567.855,
+      "actual_kmh": 4.784,
+      "target_kmh": 0.07
+    },
     "braking_harder_than_3_seconds": 0.7,
     "lateral_p95_mps2": 2.295,
-    "lateral_peak_mps2": 2.373
+    "lateral_peak_mps2": 2.373,
+    "lateral_peak_location": {
+      "frame": 1129,
+      "time_s": 103.2,
+      "station_m": 450.197,
+      "actual_kmh": 38.365,
+      "target_kmh": 37.815
+    }
   },
   "by_posted_kmh": {
     "30": {
@@ -852,6 +996,36 @@
       "seconds_from_section_entry_to_sustained_35": null,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 4.2,
+      "actual_over_posted_percent": 1.679,
+      "maximum_overspeed_kmh": 0.28,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "unconfirmed": 679,
         "opposing_traffic": 123,
@@ -1186,11 +1360,51 @@
           ]
         }
       },
+      "moving_population_exposure": {
+        "35": {
+          "scored": 2496,
+          "moving_car_frames": 895,
+          "moving_pedestrian_frames": 1924,
+          "both_frames": 720,
+          "two_of_each_frames": 138,
+          "background_both_frames": 525
+        },
+        "50": {
+          "scored": 2496,
+          "moving_car_frames": 1193,
+          "moving_pedestrian_frames": 2334,
+          "both_frames": 1155,
+          "two_of_each_frames": 397,
+          "background_both_frames": 842
+        },
+        "65": {
+          "scored": 2496,
+          "moving_car_frames": 1347,
+          "moving_pedestrian_frames": 2443,
+          "both_frames": 1333,
+          "two_of_each_frames": 614,
+          "background_both_frames": 1034
+        }
+      },
       "acceleration_peak_mps2": 2.472,
       "braking_peak_mps2": 4.696,
+      "braking_peak_location": {
+        "frame": 443,
+        "time_s": 34.6,
+        "station_m": 139.281,
+        "actual_kmh": 4.982,
+        "target_kmh": 0.523
+      },
       "braking_harder_than_3_seconds": 4.6,
       "lateral_p95_mps2": 1.705,
-      "lateral_peak_mps2": 3.099
+      "lateral_peak_mps2": 3.099,
+      "lateral_peak_location": {
+        "frame": 930,
+        "time_s": 83.3,
+        "station_m": 339.811,
+        "actual_kmh": 17.705,
+        "target_kmh": 16.236
+      }
     },
     "60": {
       "frames": 92,
@@ -1230,6 +1444,36 @@
       "seconds_from_section_entry_to_sustained_35": null,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 0.0,
+      "actual_over_posted_percent": 0.0,
+      "maximum_overspeed_kmh": 0.0,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "unconfirmed": 44,
         "occupied_corridor": 21,
@@ -1263,11 +1507,51 @@
           ]
         }
       },
+      "moving_population_exposure": {
+        "35": {
+          "scored": 92,
+          "moving_car_frames": 60,
+          "moving_pedestrian_frames": 92,
+          "both_frames": 60,
+          "two_of_each_frames": 0,
+          "background_both_frames": 0
+        },
+        "50": {
+          "scored": 92,
+          "moving_car_frames": 92,
+          "moving_pedestrian_frames": 92,
+          "both_frames": 92,
+          "two_of_each_frames": 0,
+          "background_both_frames": 0
+        },
+        "65": {
+          "scored": 92,
+          "moving_car_frames": 92,
+          "moving_pedestrian_frames": 92,
+          "both_frames": 92,
+          "two_of_each_frames": 3,
+          "background_both_frames": 3
+        }
+      },
       "acceleration_peak_mps2": 1.912,
       "braking_peak_mps2": 2.316,
+      "braking_peak_location": {
+        "frame": 1434,
+        "time_s": 133.7,
+        "station_m": 604.997,
+        "actual_kmh": 23.81,
+        "target_kmh": 18.414
+      },
       "braking_harder_than_3_seconds": 0.0,
       "lateral_p95_mps2": 0.001,
-      "lateral_peak_mps2": 0.001
+      "lateral_peak_mps2": 0.001,
+      "lateral_peak_location": {
+        "frame": 1418,
+        "time_s": 132.1,
+        "station_m": 593.238,
+        "actual_kmh": 25.337,
+        "target_kmh": 27.841
+      }
     },
     "90": {
       "frames": 394,
@@ -1313,6 +1597,36 @@
       "seconds_from_section_entry_to_sustained_35": 12.5,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 0.0,
+      "actual_over_posted_percent": 0.0,
+      "maximum_overspeed_kmh": 0.0,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "unconfirmed": 84,
         "vulnerable_road_user": 4,
@@ -1325,7 +1639,7 @@
         "beside_path/cone/roadworks/still": 7.9,
         "beside_path/car/background/still": 2.5,
         "beside_path/car/background/moving": 5.4,
-        "beside_path/barrier/workzone_barrier/still": 9.6,
+        "beside_path/barrier/workzone_barrier/still": 9.7,
         "path/car/lead/still": 7.5,
         "path/car/lead/moving": 2.0
       },
@@ -1395,11 +1709,51 @@
           ]
         }
       },
+      "moving_population_exposure": {
+        "35": {
+          "scored": 394,
+          "moving_car_frames": 340,
+          "moving_pedestrian_frames": 335,
+          "both_frames": 294,
+          "two_of_each_frames": 16,
+          "background_both_frames": 284
+        },
+        "50": {
+          "scored": 394,
+          "moving_car_frames": 376,
+          "moving_pedestrian_frames": 373,
+          "both_frames": 358,
+          "two_of_each_frames": 109,
+          "background_both_frames": 348
+        },
+        "65": {
+          "scored": 394,
+          "moving_car_frames": 394,
+          "moving_pedestrian_frames": 394,
+          "both_frames": 394,
+          "two_of_each_frames": 278,
+          "background_both_frames": 394
+        }
+      },
       "acceleration_peak_mps2": 2.43,
       "braking_peak_mps2": 4.432,
+      "braking_peak_location": {
+        "frame": 1340,
+        "time_s": 124.3,
+        "station_m": 567.855,
+        "actual_kmh": 4.784,
+        "target_kmh": 0.07
+      },
       "braking_harder_than_3_seconds": 0.7,
       "lateral_p95_mps2": 2.295,
-      "lateral_peak_mps2": 2.373
+      "lateral_peak_mps2": 2.373,
+      "lateral_peak_location": {
+        "frame": 1129,
+        "time_s": 103.2,
+        "station_m": 450.197,
+        "actual_kmh": 38.365,
+        "target_kmh": 37.815
+      }
     }
   },
   "sections": {
@@ -1461,6 +1815,36 @@
       "seconds_from_section_entry_to_sustained_35": null,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 0.0,
+      "actual_over_posted_percent": 0.0,
+      "maximum_overspeed_kmh": 0.0,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "unconfirmed": 12,
         "vulnerable_road_user": 2,
@@ -1486,11 +1870,51 @@
           ]
         }
       },
+      "moving_population_exposure": {
+        "35": {
+          "scored": 37,
+          "moving_car_frames": 7,
+          "moving_pedestrian_frames": 37,
+          "both_frames": 7,
+          "two_of_each_frames": 0,
+          "background_both_frames": 7
+        },
+        "50": {
+          "scored": 37,
+          "moving_car_frames": 22,
+          "moving_pedestrian_frames": 37,
+          "both_frames": 22,
+          "two_of_each_frames": 0,
+          "background_both_frames": 22
+        },
+        "65": {
+          "scored": 37,
+          "moving_car_frames": 37,
+          "moving_pedestrian_frames": 37,
+          "both_frames": 37,
+          "two_of_each_frames": 19,
+          "background_both_frames": 37
+        }
+      },
       "acceleration_peak_mps2": 0.722,
       "braking_peak_mps2": 1.096,
+      "braking_peak_location": {
+        "frame": 994,
+        "time_s": 89.7,
+        "station_m": 366.327,
+        "actual_kmh": 14.807,
+        "target_kmh": 14.144
+      },
       "braking_harder_than_3_seconds": 0.0,
       "lateral_p95_mps2": 0.013,
-      "lateral_peak_mps2": 0.016
+      "lateral_peak_mps2": 0.016,
+      "lateral_peak_location": {
+        "frame": 977,
+        "time_s": 88.0,
+        "station_m": 358.463,
+        "actual_kmh": 16.538,
+        "target_kmh": 18.394
+      }
     },
     "beside_cones": {
       "bounds_m": [
@@ -1550,6 +1974,36 @@
       "seconds_from_section_entry_to_sustained_35": null,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 0.0,
+      "actual_over_posted_percent": 0.0,
+      "maximum_overspeed_kmh": 0.0,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "opposing_traffic": 2,
         "sight_distance": 42,
@@ -1586,11 +2040,51 @@
           ]
         }
       },
+      "moving_population_exposure": {
+        "35": {
+          "scored": 56,
+          "moving_car_frames": 56,
+          "moving_pedestrian_frames": 56,
+          "both_frames": 56,
+          "two_of_each_frames": 16,
+          "background_both_frames": 56
+        },
+        "50": {
+          "scored": 56,
+          "moving_car_frames": 56,
+          "moving_pedestrian_frames": 56,
+          "both_frames": 56,
+          "two_of_each_frames": 45,
+          "background_both_frames": 56
+        },
+        "65": {
+          "scored": 56,
+          "moving_car_frames": 56,
+          "moving_pedestrian_frames": 56,
+          "both_frames": 56,
+          "two_of_each_frames": 56,
+          "background_both_frames": 56
+        }
+      },
       "acceleration_peak_mps2": 2.072,
       "braking_peak_mps2": 2.498,
+      "braking_peak_location": {
+        "frame": 1054,
+        "time_s": 95.7,
+        "station_m": 392.653,
+        "actual_kmh": 12.452,
+        "target_kmh": 8.738
+      },
       "braking_harder_than_3_seconds": 0.0,
       "lateral_p95_mps2": 0.0,
-      "lateral_peak_mps2": 0.001
+      "lateral_peak_mps2": 0.001,
+      "lateral_peak_location": {
+        "frame": 1051,
+        "time_s": 95.4,
+        "station_m": 391.514,
+        "actual_kmh": 15.044,
+        "target_kmh": 6.74
+      }
     },
     "open_curve_entrance": {
       "bounds_m": [
@@ -1650,6 +2144,36 @@
       "seconds_from_section_entry_to_sustained_35": null,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 0.0,
+      "actual_over_posted_percent": 0.0,
+      "maximum_overspeed_kmh": 0.0,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "unconfirmed": 21,
         "sight_distance": 7,
@@ -1681,11 +2205,51 @@
           ]
         }
       },
+      "moving_population_exposure": {
+        "35": {
+          "scored": 30,
+          "moving_car_frames": 30,
+          "moving_pedestrian_frames": 30,
+          "both_frames": 30,
+          "two_of_each_frames": 0,
+          "background_both_frames": 30
+        },
+        "50": {
+          "scored": 30,
+          "moving_car_frames": 30,
+          "moving_pedestrian_frames": 30,
+          "both_frames": 30,
+          "two_of_each_frames": 21,
+          "background_both_frames": 30
+        },
+        "65": {
+          "scored": 30,
+          "moving_car_frames": 30,
+          "moving_pedestrian_frames": 30,
+          "both_frames": 30,
+          "two_of_each_frames": 30,
+          "background_both_frames": 30
+        }
+      },
       "acceleration_peak_mps2": 2.1,
       "braking_peak_mps2": -1.474,
+      "braking_peak_location": {
+        "frame": 1093,
+        "time_s": 99.6,
+        "station_m": 413.744,
+        "actual_kmh": 30.301,
+        "target_kmh": 37.644
+      },
       "braking_harder_than_3_seconds": 0.0,
       "lateral_p95_mps2": 1.418,
-      "lateral_peak_mps2": 1.605
+      "lateral_peak_mps2": 1.605,
+      "lateral_peak_location": {
+        "frame": 1099,
+        "time_s": 100.2,
+        "station_m": 419.074,
+        "actual_kmh": 33.628,
+        "target_kmh": 39.294
+      }
     },
     "tighter_curve": {
       "bounds_m": [
@@ -1751,6 +2315,36 @@
       "seconds_from_section_entry_to_sustained_35": 0.2,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 0.0,
+      "actual_over_posted_percent": 0.0,
+      "maximum_overspeed_kmh": 0.0,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "sight_distance": 21,
         "unconfirmed": 14
@@ -1770,11 +2364,51 @@
           ]
         }
       },
+      "moving_population_exposure": {
+        "35": {
+          "scored": 35,
+          "moving_car_frames": 35,
+          "moving_pedestrian_frames": 35,
+          "both_frames": 35,
+          "two_of_each_frames": 0,
+          "background_both_frames": 35
+        },
+        "50": {
+          "scored": 35,
+          "moving_car_frames": 35,
+          "moving_pedestrian_frames": 35,
+          "both_frames": 35,
+          "two_of_each_frames": 0,
+          "background_both_frames": 35
+        },
+        "65": {
+          "scored": 35,
+          "moving_car_frames": 35,
+          "moving_pedestrian_frames": 35,
+          "both_frames": 35,
+          "two_of_each_frames": 10,
+          "background_both_frames": 35
+        }
+      },
       "acceleration_peak_mps2": 1.578,
       "braking_peak_mps2": 0.424,
+      "braking_peak_location": {
+        "frame": 1133,
+        "time_s": 103.6,
+        "station_m": 454.409,
+        "actual_kmh": 37.649,
+        "target_kmh": 38.769
+      },
       "braking_harder_than_3_seconds": 0.0,
       "lateral_p95_mps2": 2.37,
-      "lateral_peak_mps2": 2.373
+      "lateral_peak_mps2": 2.373,
+      "lateral_peak_location": {
+        "frame": 1129,
+        "time_s": 103.2,
+        "station_m": 450.197,
+        "actual_kmh": 38.365,
+        "target_kmh": 37.815
+      }
     },
     "easing_curve": {
       "bounds_m": [
@@ -1840,17 +2474,87 @@
       "seconds_from_section_entry_to_sustained_35": 0.0,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 0.0,
+      "actual_over_posted_percent": 0.0,
+      "maximum_overspeed_kmh": 0.0,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "sight_distance": 36,
         "unconfirmed": 8
       },
       "observed_path_actor_seconds": {},
       "observed_path_actor_first_example": {},
+      "moving_population_exposure": {
+        "35": {
+          "scored": 44,
+          "moving_car_frames": 44,
+          "moving_pedestrian_frames": 44,
+          "both_frames": 44,
+          "two_of_each_frames": 0,
+          "background_both_frames": 44
+        },
+        "50": {
+          "scored": 44,
+          "moving_car_frames": 44,
+          "moving_pedestrian_frames": 44,
+          "both_frames": 44,
+          "two_of_each_frames": 0,
+          "background_both_frames": 44
+        },
+        "65": {
+          "scored": 44,
+          "moving_car_frames": 44,
+          "moving_pedestrian_frames": 44,
+          "both_frames": 44,
+          "two_of_each_frames": 0,
+          "background_both_frames": 44
+        }
+      },
       "acceleration_peak_mps2": 1.282,
       "braking_peak_mps2": 2.224,
+      "braking_peak_location": {
+        "frame": 1150,
+        "time_s": 105.3,
+        "station_m": 472.121,
+        "actual_kmh": 34.42,
+        "target_kmh": 32.624
+      },
       "braking_harder_than_3_seconds": 0.0,
       "lateral_p95_mps2": 2.165,
-      "lateral_peak_mps2": 2.278
+      "lateral_peak_mps2": 2.278,
+      "lateral_peak_location": {
+        "frame": 1135,
+        "time_s": 103.8,
+        "station_m": 456.504,
+        "actual_kmh": 37.796,
+        "target_kmh": 39.294
+      }
     },
     "curve_exit_board_approach": {
       "bounds_m": [
@@ -1910,6 +2614,36 @@
       "seconds_from_section_entry_to_sustained_35": null,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 0.0,
+      "actual_over_posted_percent": 0.0,
+      "maximum_overspeed_kmh": 0.0,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "sight_distance": 16,
         "unconfirmed": 12,
@@ -1930,11 +2664,51 @@
           ]
         }
       },
+      "moving_population_exposure": {
+        "35": {
+          "scored": 29,
+          "moving_car_frames": 29,
+          "moving_pedestrian_frames": 29,
+          "both_frames": 29,
+          "two_of_each_frames": 0,
+          "background_both_frames": 29
+        },
+        "50": {
+          "scored": 29,
+          "moving_car_frames": 29,
+          "moving_pedestrian_frames": 29,
+          "both_frames": 29,
+          "two_of_each_frames": 0,
+          "background_both_frames": 29
+        },
+        "65": {
+          "scored": 29,
+          "moving_car_frames": 29,
+          "moving_pedestrian_frames": 29,
+          "both_frames": 29,
+          "two_of_each_frames": 10,
+          "background_both_frames": 29
+        }
+      },
       "acceleration_peak_mps2": -0.068,
       "braking_peak_mps2": 2.372,
+      "braking_peak_location": {
+        "frame": 1197,
+        "time_s": 110.0,
+        "station_m": 517.764,
+        "actual_kmh": 29.315,
+        "target_kmh": 20.549
+      },
       "braking_harder_than_3_seconds": 0.0,
       "lateral_p95_mps2": 1.124,
-      "lateral_peak_mps2": 1.143
+      "lateral_peak_mps2": 1.143,
+      "lateral_peak_location": {
+        "frame": 1179,
+        "time_s": 108.2,
+        "station_m": 500.584,
+        "actual_kmh": 37.289,
+        "target_kmh": 36.278
+      }
     },
     "beside_boards": {
       "bounds_m": [
@@ -1994,6 +2768,36 @@
       "seconds_from_section_entry_to_sustained_35": null,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 0.0,
+      "actual_over_posted_percent": 0.0,
+      "maximum_overspeed_kmh": 0.0,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "sight_distance": 46,
         "unconfirmed": 12,
@@ -2001,7 +2805,7 @@
         "opposing_traffic": 17
       },
       "observed_path_actor_seconds": {
-        "beside_path/barrier/workzone_barrier/still": 7.0,
+        "beside_path/barrier/workzone_barrier/still": 7.1,
         "path/car/lead/still": 2.1
       },
       "observed_path_actor_first_example": {
@@ -2027,11 +2831,51 @@
           ]
         }
       },
+      "moving_population_exposure": {
+        "35": {
+          "scored": 89,
+          "moving_car_frames": 89,
+          "moving_pedestrian_frames": 83,
+          "both_frames": 83,
+          "two_of_each_frames": 0,
+          "background_both_frames": 83
+        },
+        "50": {
+          "scored": 89,
+          "moving_car_frames": 89,
+          "moving_pedestrian_frames": 89,
+          "both_frames": 89,
+          "two_of_each_frames": 25,
+          "background_both_frames": 89
+        },
+        "65": {
+          "scored": 89,
+          "moving_car_frames": 89,
+          "moving_pedestrian_frames": 89,
+          "both_frames": 89,
+          "two_of_each_frames": 89,
+          "background_both_frames": 89
+        }
+      },
       "acceleration_peak_mps2": 2.396,
       "braking_peak_mps2": 2.156,
+      "braking_peak_location": {
+        "frame": 1221,
+        "time_s": 112.4,
+        "station_m": 531.092,
+        "actual_kmh": 10.976,
+        "target_kmh": 5.408
+      },
       "braking_harder_than_3_seconds": 0.0,
       "lateral_p95_mps2": 0.002,
-      "lateral_peak_mps2": 0.006
+      "lateral_peak_mps2": 0.006,
+      "lateral_peak_location": {
+        "frame": 1208,
+        "time_s": 111.1,
+        "station_m": 525.335,
+        "actual_kmh": 20.812,
+        "target_kmh": 15.646
+      }
     },
     "stopped_lead": {
       "bounds_m": [
@@ -2091,6 +2935,36 @@
       "seconds_from_section_entry_to_sustained_35": null,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 0.0,
+      "actual_over_posted_percent": 0.0,
+      "maximum_overspeed_kmh": 0.0,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "recovery": 2,
         "occupied_corridor": 68,
@@ -2122,11 +2996,51 @@
           ]
         }
       },
+      "moving_population_exposure": {
+        "35": {
+          "scored": 74,
+          "moving_car_frames": 50,
+          "moving_pedestrian_frames": 21,
+          "both_frames": 10,
+          "two_of_each_frames": 0,
+          "background_both_frames": 0
+        },
+        "50": {
+          "scored": 74,
+          "moving_car_frames": 71,
+          "moving_pedestrian_frames": 53,
+          "both_frames": 53,
+          "two_of_each_frames": 18,
+          "background_both_frames": 43
+        },
+        "65": {
+          "scored": 74,
+          "moving_car_frames": 74,
+          "moving_pedestrian_frames": 74,
+          "both_frames": 74,
+          "two_of_each_frames": 64,
+          "background_both_frames": 74
+        }
+      },
       "acceleration_peak_mps2": 2.43,
       "braking_peak_mps2": 4.432,
+      "braking_peak_location": {
+        "frame": 1340,
+        "time_s": 124.3,
+        "station_m": 567.855,
+        "actual_kmh": 4.784,
+        "target_kmh": 0.07
+      },
       "braking_harder_than_3_seconds": 0.7,
       "lateral_p95_mps2": 0.001,
-      "lateral_peak_mps2": 0.001
+      "lateral_peak_mps2": 0.001,
+      "lateral_peak_location": {
+        "frame": 1310,
+        "time_s": 121.3,
+        "station_m": 554.2,
+        "actual_kmh": 19.094,
+        "target_kmh": 18.394
+      }
     },
     "departing_lead": {
       "bounds_m": [
@@ -2186,6 +3100,36 @@
       "seconds_from_section_entry_to_sustained_35": null,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 0.0,
+      "actual_over_posted_percent": 0.0,
+      "maximum_overspeed_kmh": 0.0,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "unconfirmed": 72,
         "occupied_corridor": 23,
@@ -2219,11 +3163,51 @@
           ]
         }
       },
+      "moving_population_exposure": {
+        "35": {
+          "scored": 128,
+          "moving_car_frames": 91,
+          "moving_pedestrian_frames": 128,
+          "both_frames": 91,
+          "two_of_each_frames": 0,
+          "background_both_frames": 0
+        },
+        "50": {
+          "scored": 128,
+          "moving_car_frames": 128,
+          "moving_pedestrian_frames": 128,
+          "both_frames": 128,
+          "two_of_each_frames": 0,
+          "background_both_frames": 0
+        },
+        "65": {
+          "scored": 128,
+          "moving_car_frames": 128,
+          "moving_pedestrian_frames": 128,
+          "both_frames": 128,
+          "two_of_each_frames": 2,
+          "background_both_frames": 2
+        }
+      },
       "acceleration_peak_mps2": 1.912,
       "braking_peak_mps2": 2.316,
+      "braking_peak_location": {
+        "frame": 1434,
+        "time_s": 133.7,
+        "station_m": 604.997,
+        "actual_kmh": 23.81,
+        "target_kmh": 18.414
+      },
       "braking_harder_than_3_seconds": 0.0,
       "lateral_p95_mps2": 0.001,
-      "lateral_peak_mps2": 0.001
+      "lateral_peak_mps2": 0.001,
+      "lateral_peak_location": {
+        "frame": 1418,
+        "time_s": 132.1,
+        "station_m": 593.238,
+        "actual_kmh": 25.337,
+        "target_kmh": 27.841
+      }
     },
     "braking_lead": {
       "bounds_m": [
@@ -2283,6 +3267,36 @@
       "seconds_from_section_entry_to_sustained_35": null,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 0.0,
+      "actual_over_posted_percent": 0.0,
+      "maximum_overspeed_kmh": 0.0,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "occupied_corridor": 82,
         "opposing_traffic": 37,
@@ -2351,11 +3365,51 @@
           ]
         }
       },
+      "moving_population_exposure": {
+        "35": {
+          "scored": 241,
+          "moving_car_frames": 174,
+          "moving_pedestrian_frames": 173,
+          "both_frames": 108,
+          "two_of_each_frames": 0,
+          "background_both_frames": 60
+        },
+        "50": {
+          "scored": 241,
+          "moving_car_frames": 241,
+          "moving_pedestrian_frames": 222,
+          "both_frames": 222,
+          "two_of_each_frames": 93,
+          "background_both_frames": 142
+        },
+        "65": {
+          "scored": 241,
+          "moving_car_frames": 241,
+          "moving_pedestrian_frames": 241,
+          "both_frames": 241,
+          "two_of_each_frames": 138,
+          "background_both_frames": 178
+        }
+      },
       "acceleration_peak_mps2": 1.876,
       "braking_peak_mps2": 4.27,
+      "braking_peak_location": {
+        "frame": 2173,
+        "time_s": 207.6,
+        "station_m": 970.423,
+        "actual_kmh": 5.512,
+        "target_kmh": 3.049
+      },
       "braking_harder_than_3_seconds": 0.5,
       "lateral_p95_mps2": 0.001,
-      "lateral_peak_mps2": 0.021
+      "lateral_peak_mps2": 0.021,
+      "lateral_peak_location": {
+        "frame": 2373,
+        "time_s": 227.6,
+        "station_m": 1045.832,
+        "actual_kmh": 11.527,
+        "target_kmh": 12.989
+      }
     },
     "cyclist_approach": {
       "bounds_m": [
@@ -2415,6 +3469,36 @@
       "seconds_from_section_entry_to_sustained_35": null,
       "overspeed_by_more_than_1_kmh_seconds": 0.0,
       "over_40_kmh_seconds": 0.0,
+      "actual_over_posted_seconds": 0.0,
+      "actual_over_posted_percent": 0.0,
+      "maximum_overspeed_kmh": 0.0,
+      "maximum_request_above_posted_kmh": 0.0,
+      "higher_thresholds": {
+        "45": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "50": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "55": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        },
+        "60": {
+          "actual_seconds": 0.0,
+          "requested_seconds": 0.0,
+          "first_sustained": null,
+          "time_from_section_entry_to_sustained_s": null
+        }
+      },
       "binding_counts": {
         "occupied_corridor": 40,
         "unconfirmed": 86,
@@ -2447,11 +3531,51 @@
           ]
         }
       },
+      "moving_population_exposure": {
+        "35": {
+          "scored": 144,
+          "moving_car_frames": 3,
+          "moving_pedestrian_frames": 105,
+          "both_frames": 3,
+          "two_of_each_frames": 0,
+          "background_both_frames": 3
+        },
+        "50": {
+          "scored": 144,
+          "moving_car_frames": 30,
+          "moving_pedestrian_frames": 144,
+          "both_frames": 30,
+          "two_of_each_frames": 0,
+          "background_both_frames": 30
+        },
+        "65": {
+          "scored": 144,
+          "moving_car_frames": 50,
+          "moving_pedestrian_frames": 144,
+          "both_frames": 50,
+          "two_of_each_frames": 0,
+          "background_both_frames": 50
+        }
+      },
       "acceleration_peak_mps2": 0.428,
       "braking_peak_mps2": 1.37,
+      "braking_peak_location": {
+        "frame": 2585,
+        "time_s": 248.8,
+        "station_m": 1175.099,
+        "actual_kmh": 20.444,
+        "target_kmh": 18.414
+      },
       "braking_harder_than_3_seconds": 0.0,
       "lateral_p95_mps2": 0.001,
-      "lateral_peak_mps2": 0.002
+      "lateral_peak_mps2": 0.002,
+      "lateral_peak_location": {
+        "frame": 2688,
+        "time_s": 259.1,
+        "station_m": 1222.767,
+        "actual_kmh": 11.268,
+        "target_kmh": 10.64
+      }
     }
   },
   "independent_clearance": {
@@ -2470,7 +3594,8 @@
           "target_kmh": 6.074,
           "actor_id": 129,
           "motion_mps": 3.981,
-          "gap_m": 1.511
+          "gap_m": 1.511,
+          "box_method": "native_actor_box"
         },
         "132": {
           "frame": 371,
@@ -2480,7 +3605,8 @@
           "target_kmh": 5.408,
           "actor_id": 132,
           "motion_mps": 4.541,
-          "gap_m": 1.528
+          "gap_m": 1.528,
+          "box_method": "native_actor_box"
         },
         "133": {
           "frame": 392,
@@ -2490,7 +3616,8 @@
           "target_kmh": 17.396,
           "actor_id": 133,
           "motion_mps": 4.601,
-          "gap_m": 1.658
+          "gap_m": 1.658,
+          "box_method": "native_actor_box"
         },
         "134": {
           "frame": 605,
@@ -2500,7 +3627,8 @@
           "target_kmh": 30.0,
           "actor_id": 134,
           "motion_mps": 4.504,
-          "gap_m": 1.572
+          "gap_m": 1.572,
+          "box_method": "native_actor_box"
         },
         "135": {
           "frame": 622,
@@ -2510,7 +3638,8 @@
           "target_kmh": 30.0,
           "actor_id": 135,
           "motion_mps": 4.441,
-          "gap_m": 1.579
+          "gap_m": 1.579,
+          "box_method": "native_actor_box"
         },
         "138": {
           "frame": 1124,
@@ -2520,7 +3649,8 @@
           "target_kmh": 39.033,
           "actor_id": 138,
           "motion_mps": 5.289,
-          "gap_m": 1.455
+          "gap_m": 1.455,
+          "box_method": "native_actor_box"
         },
         "147": {
           "frame": 2514,
@@ -2530,7 +3660,8 @@
           "target_kmh": 6.74,
           "actor_id": 147,
           "motion_mps": 4.409,
-          "gap_m": 1.326
+          "gap_m": 1.326,
+          "box_method": "native_actor_box"
         },
         "148": {
           "frame": 2541,
@@ -2540,7 +3671,8 @@
           "target_kmh": 26.854,
           "actor_id": 148,
           "motion_mps": 4.422,
-          "gap_m": 1.642
+          "gap_m": 1.642,
+          "box_method": "native_actor_box"
         },
         "150": {
           "frame": 3037,
@@ -2550,7 +3682,8 @@
           "target_kmh": 16.128,
           "actor_id": 150,
           "motion_mps": 5.478,
-          "gap_m": 1.548
+          "gap_m": 1.548,
+          "box_method": "native_actor_box"
         }
       },
       "nearest": {
@@ -2561,7 +3694,8 @@
         "target_kmh": 6.74,
         "actor_id": 147,
         "motion_mps": 4.409,
-        "gap_m": 1.326
+        "gap_m": 1.326,
+        "box_method": "native_actor_box"
       },
       "nearest_moving": {
         "frame": 2514,
@@ -2571,7 +3705,8 @@
         "target_kmh": 6.74,
         "actor_id": 147,
         "motion_mps": 4.409,
-        "gap_m": 1.326
+        "gap_m": 1.326,
+        "box_method": "native_actor_box"
       }
     },
     "pedestrian/pedestrian": {
@@ -2589,7 +3724,8 @@
           "target_kmh": 14.066,
           "actor_id": 112,
           "motion_mps": 1.241,
-          "gap_m": 3.334
+          "gap_m": 3.334,
+          "box_method": "native_actor_box"
         }
       },
       "nearest": {
@@ -2600,7 +3736,8 @@
         "target_kmh": 14.066,
         "actor_id": 112,
         "motion_mps": 1.241,
-        "gap_m": 3.334
+        "gap_m": 3.334,
+        "box_method": "native_actor_box"
       },
       "nearest_moving": {
         "frame": 208,
@@ -2610,7 +3747,8 @@
         "target_kmh": 14.066,
         "actor_id": 112,
         "motion_mps": 1.241,
-        "gap_m": 3.334
+        "gap_m": 3.334,
+        "box_method": "native_actor_box"
       }
     },
     "van/occluder": {
@@ -2628,7 +3766,8 @@
           "target_kmh": 11.402,
           "actor_id": 116,
           "motion_mps": 0.0,
-          "gap_m": 1.594
+          "gap_m": 1.594,
+          "box_method": "native_actor_box"
         }
       },
       "nearest": {
@@ -2639,7 +3778,8 @@
         "target_kmh": 11.402,
         "actor_id": 116,
         "motion_mps": 0.0,
-        "gap_m": 1.594
+        "gap_m": 1.594,
+        "box_method": "native_actor_box"
       },
       "nearest_moving": {
         "frame": 517,
@@ -2649,7 +3789,8 @@
         "target_kmh": 11.402,
         "actor_id": 116,
         "motion_mps": 0.0,
-        "gap_m": 1.594
+        "gap_m": 1.594,
+        "box_method": "native_actor_box"
       }
     },
     "car/signal_queue": {
@@ -2667,7 +3808,8 @@
           "target_kmh": 0.0,
           "actor_id": 111,
           "motion_mps": 0.0,
-          "gap_m": 3.684
+          "gap_m": 3.684,
+          "box_method": "native_actor_box"
         }
       },
       "nearest": {
@@ -2678,15 +3820,16 @@
         "target_kmh": 0.0,
         "actor_id": 111,
         "motion_mps": 0.0,
-        "gap_m": 3.684
+        "gap_m": 3.684,
+        "box_method": "native_actor_box"
       }
     },
     "cone/roadworks": {
       "overlap_samples": 0,
       "below_half_m_samples": 61,
-      "below_1m_samples": 109,
-      "minimum_m": 0.264,
-      "minimum_moving_m": 0.264,
+      "below_1m_samples": 110,
+      "minimum_m": 0.322,
+      "minimum_moving_m": 0.322,
       "actors": {
         "119": {
           "frame": 1008,
@@ -2696,127 +3839,139 @@
           "target_kmh": 17.294,
           "actor_id": 119,
           "motion_mps": 0.0,
-          "gap_m": 0.57
+          "gap_m": 0.627,
+          "box_method": "native_world_aligned_prop_box"
         },
         "120": {
-          "frame": 1019,
-          "time_s": 92.2,
-          "station_m": 377.278,
-          "actual_kmh": 16.092,
-          "target_kmh": 16.616,
+          "frame": 1029,
+          "time_s": 93.2,
+          "station_m": 381.707,
+          "actual_kmh": 15.865,
+          "target_kmh": 16.238,
           "actor_id": 120,
           "motion_mps": 0.0,
-          "gap_m": 0.372
+          "gap_m": 0.43,
+          "box_method": "native_world_aligned_prop_box"
         },
         "121": {
-          "frame": 1036,
-          "time_s": 93.9,
-          "station_m": 384.766,
-          "actual_kmh": 15.563,
-          "target_kmh": 16.162,
+          "frame": 1026,
+          "time_s": 92.9,
+          "station_m": 380.385,
+          "actual_kmh": 15.869,
+          "target_kmh": 16.793,
           "actor_id": 121,
           "motion_mps": 0.0,
-          "gap_m": 0.264
+          "gap_m": 0.322,
+          "box_method": "native_world_aligned_prop_box"
         },
         "122": {
-          "frame": 1035,
-          "time_s": 93.8,
-          "station_m": 384.334,
-          "actual_kmh": 15.602,
-          "target_kmh": 16.061,
+          "frame": 1047,
+          "time_s": 95.0,
+          "station_m": 389.693,
+          "actual_kmh": 16.801,
+          "target_kmh": 18.414,
           "actor_id": 122,
           "motion_mps": 0.0,
-          "gap_m": 0.266
+          "gap_m": 0.325,
+          "box_method": "native_world_aligned_prop_box"
         },
         "123": {
-          "frame": 1055,
-          "time_s": 95.8,
-          "station_m": 392.989,
-          "actual_kmh": 11.851,
-          "target_kmh": 9.404,
+          "frame": 1053,
+          "time_s": 95.6,
+          "station_m": 392.297,
+          "actual_kmh": 13.241,
+          "target_kmh": 8.072,
           "actor_id": 123,
           "motion_mps": 0.0,
-          "gap_m": 0.369
+          "gap_m": 0.427,
+          "box_method": "native_world_aligned_prop_box"
         },
         "124": {
-          "frame": 1067,
-          "time_s": 97.0,
-          "station_m": 397.019,
-          "actual_kmh": 14.954,
-          "target_kmh": 20.061,
+          "frame": 1057,
+          "time_s": 96.0,
+          "station_m": 393.626,
+          "actual_kmh": 11.16,
+          "target_kmh": 10.736,
           "actor_id": 124,
           "motion_mps": 0.0,
-          "gap_m": 0.572
+          "gap_m": 0.63,
+          "box_method": "native_world_aligned_prop_box"
         }
       },
       "nearest": {
-        "frame": 1036,
-        "time_s": 93.9,
-        "station_m": 384.766,
-        "actual_kmh": 15.563,
-        "target_kmh": 16.162,
+        "frame": 1026,
+        "time_s": 92.9,
+        "station_m": 380.385,
+        "actual_kmh": 15.869,
+        "target_kmh": 16.793,
         "actor_id": 121,
         "motion_mps": 0.0,
-        "gap_m": 0.264
+        "gap_m": 0.322,
+        "box_method": "native_world_aligned_prop_box"
       },
       "nearest_moving": {
-        "frame": 1036,
-        "time_s": 93.9,
-        "station_m": 384.766,
-        "actual_kmh": 15.563,
-        "target_kmh": 16.162,
+        "frame": 1026,
+        "time_s": 92.9,
+        "station_m": 380.385,
+        "actual_kmh": 15.869,
+        "target_kmh": 16.793,
         "actor_id": 121,
         "motion_mps": 0.0,
-        "gap_m": 0.264
+        "gap_m": 0.322,
+        "box_method": "native_world_aligned_prop_box"
       }
     },
     "barrier/workzone_barrier": {
       "overlap_samples": 0,
       "below_half_m_samples": 0,
       "below_1m_samples": 0,
-      "minimum_m": 1.069,
-      "minimum_moving_m": 1.069,
+      "minimum_m": 1.494,
+      "minimum_moving_m": 1.494,
       "actors": {
         "127": {
-          "frame": 1257,
-          "time_s": 116.0,
-          "station_m": 538.069,
-          "actual_kmh": 6.174,
-          "target_kmh": 5.408,
+          "frame": 1241,
+          "time_s": 114.4,
+          "station_m": 535.183,
+          "actual_kmh": 6.253,
+          "target_kmh": 6.191,
           "actor_id": 127,
           "motion_mps": 0.0,
-          "gap_m": 1.069
+          "gap_m": 1.494,
+          "box_method": "native_world_aligned_prop_box"
         },
         "128": {
-          "frame": 1274,
-          "time_s": 117.7,
-          "station_m": 540.96,
-          "actual_kmh": 6.131,
-          "target_kmh": 5.408,
+          "frame": 1280,
+          "time_s": 118.3,
+          "station_m": 541.985,
+          "actual_kmh": 6.296,
+          "target_kmh": 8.134,
           "actor_id": 128,
           "motion_mps": 0.0,
-          "gap_m": 1.161
+          "gap_m": 1.501,
+          "box_method": "native_world_aligned_prop_box"
         }
       },
       "nearest": {
-        "frame": 1257,
-        "time_s": 116.0,
-        "station_m": 538.069,
-        "actual_kmh": 6.174,
-        "target_kmh": 5.408,
+        "frame": 1241,
+        "time_s": 114.4,
+        "station_m": 535.183,
+        "actual_kmh": 6.253,
+        "target_kmh": 6.191,
         "actor_id": 127,
         "motion_mps": 0.0,
-        "gap_m": 1.069
+        "gap_m": 1.494,
+        "box_method": "native_world_aligned_prop_box"
       },
       "nearest_moving": {
-        "frame": 1257,
-        "time_s": 116.0,
-        "station_m": 538.069,
-        "actual_kmh": 6.174,
-        "target_kmh": 5.408,
+        "frame": 1241,
+        "time_s": 114.4,
+        "station_m": 535.183,
+        "actual_kmh": 6.253,
+        "target_kmh": 6.191,
         "actor_id": 127,
         "motion_mps": 0.0,
-        "gap_m": 1.069
+        "gap_m": 1.494,
+        "box_method": "native_world_aligned_prop_box"
       }
     },
     "car/lead": {
@@ -2834,7 +3989,8 @@
           "target_kmh": 0.0,
           "actor_id": 114,
           "motion_mps": 0.0,
-          "gap_m": 3.586
+          "gap_m": 3.586,
+          "box_method": "native_actor_box"
         }
       },
       "nearest": {
@@ -2845,7 +4001,8 @@
         "target_kmh": 0.0,
         "actor_id": 114,
         "motion_mps": 0.0,
-        "gap_m": 3.586
+        "gap_m": 3.586,
+        "box_method": "native_actor_box"
       }
     },
     "bus/stopped_bus": {
@@ -2863,7 +4020,8 @@
           "target_kmh": 5.408,
           "actor_id": 126,
           "motion_mps": 0.0,
-          "gap_m": 0.923
+          "gap_m": 0.923,
+          "box_method": "native_actor_box"
         }
       },
       "nearest": {
@@ -2874,7 +4032,8 @@
         "target_kmh": 5.408,
         "actor_id": 126,
         "motion_mps": 0.0,
-        "gap_m": 0.923
+        "gap_m": 0.923,
+        "box_method": "native_actor_box"
       },
       "nearest_moving": {
         "frame": 1966,
@@ -2884,7 +4043,8 @@
         "target_kmh": 5.408,
         "actor_id": 126,
         "motion_mps": 0.0,
-        "gap_m": 0.923
+        "gap_m": 0.923,
+        "box_method": "native_actor_box"
       }
     }
   },
@@ -2954,6 +4114,7 @@
           "legal_run_end_m": 648.648,
           "front_gap_m": null,
           "rear_gap_m": 20.656,
+          "reasons": [],
           "nearby_target_actor_ids": []
         }
       },
@@ -2974,6 +4135,7 @@
           "legal_run_end_m": 648.648,
           "front_gap_m": null,
           "rear_gap_m": 33.947,
+          "reasons": [],
           "nearby_target_actor_ids": []
         }
       },
@@ -2994,6 +4156,7 @@
           "legal_run_end_m": 648.648,
           "front_gap_m": null,
           "rear_gap_m": 51.619,
+          "reasons": [],
           "nearby_target_actor_ids": []
         }
       }
@@ -3039,9 +4202,10 @@
           "legal_run_end_m": 648.648,
           "front_gap_m": null,
           "rear_gap_m": 51.621,
-          "nearby_target_actor_ids": [
-            138
-          ]
+          "reasons": [
+            "short_legal_return_or_route_branch"
+          ],
+          "nearby_target_actor_ids": []
         }
       },
       "mid": {
@@ -3061,6 +4225,9 @@
           "legal_run_end_m": 648.648,
           "front_gap_m": null,
           "rear_gap_m": null,
+          "reasons": [
+            "short_legal_return_or_route_branch"
+          ],
           "nearby_target_actor_ids": []
         }
       },
@@ -3081,6 +4248,9 @@
           "legal_run_end_m": 648.648,
           "front_gap_m": null,
           "rear_gap_m": null,
+          "reasons": [
+            "short_legal_return_or_route_branch"
+          ],
           "nearby_target_actor_ids": []
         }
       }
@@ -3193,6 +4363,7 @@
           "legal_run_end_m": 1045.167,
           "front_gap_m": null,
           "rear_gap_m": null,
+          "reasons": [],
           "nearby_target_actor_ids": []
         }
       },
@@ -3213,6 +4384,7 @@
           "legal_run_end_m": 1045.167,
           "front_gap_m": null,
           "rear_gap_m": null,
+          "reasons": [],
           "nearby_target_actor_ids": []
         }
       },
@@ -3233,6 +4405,7 @@
           "legal_run_end_m": 1045.167,
           "front_gap_m": null,
           "rear_gap_m": null,
+          "reasons": [],
           "nearby_target_actor_ids": []
         }
       }
@@ -3260,6 +4433,9 @@
           "legal_run_end_m": 1045.167,
           "front_gap_m": null,
           "rear_gap_m": null,
+          "reasons": [
+            "short_legal_return_or_route_branch"
+          ],
           "nearby_target_actor_ids": []
         }
       },
@@ -3280,6 +4456,9 @@
           "legal_run_end_m": 1045.167,
           "front_gap_m": null,
           "rear_gap_m": null,
+          "reasons": [
+            "short_legal_return_or_route_branch"
+          ],
           "nearby_target_actor_ids": []
         }
       },
@@ -3300,6 +4479,9 @@
           "legal_run_end_m": 1045.167,
           "front_gap_m": null,
           "rear_gap_m": null,
+          "reasons": [
+            "short_legal_return_or_route_branch"
+          ],
           "nearby_target_actor_ids": []
         }
       }
@@ -3438,5 +4620,520 @@
         "gap_checks": null
       }
     }
-  ]
+  ],
+  "actual_lateral_departures": [],
+  "registered_range_exposures": {
+    "1197": {
+      "frame": 1197,
+      "time_s": 110.0,
+      "station_m": 517.764,
+      "actual_kmh": 29.315,
+      "target_kmh": 20.549,
+      "sha256": "0757fef1935d096668f6f769870d56072ca93a15922da2d48ae4c4aa30062414",
+      "existing_policy_evidence": {
+        "binding": "sight_distance",
+        "raw_lidar_gap_m": 36.0,
+        "raw_radar_gap_m": 36.0,
+        "sight_m": 0.490824431180954,
+        "corridor_m": 24.0
+      },
+      "adjacent_lane_lidar": {
+        "left": {
+          "forward": {
+            "pavement_return_count_4_to_24m": 201,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              14,
+              16,
+              17,
+              20,
+              25,
+              33,
+              48
+            ],
+            "near_above_road_surface_m": null
+          },
+          "rear": {
+            "pavement_return_count_4_to_24m": 193,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              15,
+              16,
+              19,
+              24,
+              30,
+              33,
+              37
+            ],
+            "near_above_road_surface_m": 30.836
+          }
+        }
+      }
+    },
+    "1250": {
+      "frame": 1250,
+      "time_s": 115.3,
+      "station_m": 536.822,
+      "actual_kmh": 6.826,
+      "target_kmh": 5.408,
+      "sha256": "cf972aa8b7bd5e15f0f7da9765dbebc7064981c372defcd6e53b87d50c69d298",
+      "existing_policy_evidence": {
+        "binding": "opposing_traffic",
+        "raw_lidar_gap_m": 36.0,
+        "raw_radar_gap_m": 35.18525314331055,
+        "sight_m": 4.254238128662109,
+        "corridor_m": 20.0
+      },
+      "adjacent_lane_lidar": {
+        "left": {
+          "forward": {
+            "pavement_return_count_4_to_24m": 205,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              17,
+              20,
+              21,
+              26,
+              34,
+              35,
+              52
+            ],
+            "near_above_road_surface_m": null
+          },
+          "rear": {
+            "pavement_return_count_4_to_24m": 192,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              15,
+              18,
+              22,
+              23,
+              25,
+              29,
+              41
+            ],
+            "near_above_road_surface_m": 23.203
+          }
+        }
+      }
+    },
+    "1296": {
+      "frame": 1296,
+      "time_s": 119.9,
+      "station_m": 546.814,
+      "actual_kmh": 17.017,
+      "target_kmh": 21.989,
+      "sha256": "0d768d2da708e0cb1dffcedd11717431e12a42a72c93393414cb41451f3d66e5",
+      "existing_policy_evidence": {
+        "binding": "recovery",
+        "raw_lidar_gap_m": 25.189903259277344,
+        "raw_radar_gap_m": 25.190954208374023,
+        "sight_m": 20.0,
+        "corridor_m": 20.0
+      },
+      "adjacent_lane_lidar": {
+        "left": {
+          "forward": {
+            "pavement_return_count_4_to_24m": 197,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              17,
+              21,
+              27,
+              36,
+              56
+            ],
+            "near_above_road_surface_m": null
+          },
+          "rear": {
+            "pavement_return_count_4_to_24m": 215,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              15,
+              18,
+              22,
+              28,
+              32
+            ],
+            "near_above_road_surface_m": 33.958
+          }
+        }
+      }
+    },
+    "1325": {
+      "frame": 1325,
+      "time_s": 122.8,
+      "station_m": 562.136,
+      "actual_kmh": 18.583,
+      "target_kmh": 16.228,
+      "sha256": "fa0c4737536bd0b637a1d6cb8de336f8d3340e1cd6f5d55d382c8ad482ff1fb8",
+      "existing_policy_evidence": {
+        "binding": "occupied_corridor",
+        "raw_lidar_gap_m": 9.853477478027344,
+        "raw_radar_gap_m": 9.85993480682373,
+        "sight_m": 9.853477478027344,
+        "corridor_m": 9.853477478027344
+      },
+      "adjacent_lane_lidar": {
+        "left": {
+          "forward": {
+            "pavement_return_count_4_to_24m": 201,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              14,
+              16,
+              17,
+              20,
+              25,
+              26,
+              34,
+              50,
+              51
+            ],
+            "near_above_road_surface_m": null
+          },
+          "rear": {
+            "pavement_return_count_4_to_24m": 208,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              15,
+              16,
+              18,
+              19,
+              23,
+              29,
+              41
+            ],
+            "near_above_road_surface_m": 48.374
+          }
+        }
+      }
+    },
+    "1344": {
+      "frame": 1344,
+      "time_s": 124.7,
+      "station_m": 568.153,
+      "actual_kmh": 0.094,
+      "target_kmh": 0.0,
+      "sha256": "6a16cd82b592db7327b9d2211b649fdb674760cca083b334987cb536939a3234",
+      "existing_policy_evidence": {
+        "binding": "occupied_corridor",
+        "raw_lidar_gap_m": 3.842440128326416,
+        "raw_radar_gap_m": 3.8359410762786865,
+        "sight_m": 3.842440128326416,
+        "corridor_m": 3.842440128326416
+      },
+      "adjacent_lane_lidar": {
+        "left": {
+          "forward": {
+            "pavement_return_count_4_to_24m": 204,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              14,
+              16,
+              19,
+              20,
+              24,
+              32,
+              46
+            ],
+            "near_above_road_surface_m": null
+          },
+          "rear": {
+            "pavement_return_count_4_to_24m": 200,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              16,
+              19,
+              24,
+              31,
+              45
+            ],
+            "near_above_road_surface_m": null
+          }
+        }
+      }
+    },
+    "1363": {
+      "frame": 1363,
+      "time_s": 126.6,
+      "station_m": 568.492,
+      "actual_kmh": 3.82,
+      "target_kmh": 7.992,
+      "sha256": "9cded1a713e60f997223d9ccc384abb1e1133959eae50432c786622643cb13a1",
+      "existing_policy_evidence": {
+        "binding": "occupied_corridor",
+        "raw_lidar_gap_m": 8.547074317932129,
+        "raw_radar_gap_m": 8.55881404876709,
+        "sight_m": 5.071930408477783,
+        "corridor_m": 7.515955924987793
+      },
+      "adjacent_lane_lidar": {
+        "left": {
+          "forward": {
+            "pavement_return_count_4_to_24m": 201,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              17,
+              21,
+              26,
+              27,
+              36,
+              53
+            ],
+            "near_above_road_surface_m": null
+          },
+          "rear": {
+            "pavement_return_count_4_to_24m": 194,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              13,
+              15,
+              18,
+              22,
+              28,
+              54
+            ],
+            "near_above_road_surface_m": 56.794
+          }
+        }
+      }
+    },
+    "2122": {
+      "frame": 2122,
+      "time_s": 202.5,
+      "station_m": 942.478,
+      "actual_kmh": 24.239,
+      "target_kmh": 27.841,
+      "sha256": "4804a250c8f538d0363851a6ef8113dc90e1aeb13cc492048bda14bba77e7199",
+      "existing_policy_evidence": {
+        "binding": "sight_distance",
+        "raw_lidar_gap_m": 30.056838989257812,
+        "raw_radar_gap_m": 30.050498962402344,
+        "sight_m": 20.0,
+        "corridor_m": 24.0
+      },
+      "adjacent_lane_lidar": {
+        "right": {
+          "forward": {
+            "pavement_return_count_4_to_24m": 222,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              15,
+              17,
+              18,
+              22,
+              28,
+              38,
+              57
+            ],
+            "near_above_road_surface_m": null
+          },
+          "rear": {
+            "pavement_return_count_4_to_24m": 213,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              13,
+              15,
+              18,
+              22,
+              23,
+              30,
+              42
+            ],
+            "near_above_road_surface_m": null
+          }
+        }
+      }
+    },
+    "2180": {
+      "frame": 2180,
+      "time_s": 208.3,
+      "station_m": 971.236,
+      "actual_kmh": 4.223,
+      "target_kmh": 6.621,
+      "sha256": "12bf5cea59fa7628ce261667e9e271b95cadf057cbe5173cea763642b84444fe",
+      "existing_policy_evidence": {
+        "binding": "occupied_corridor",
+        "raw_lidar_gap_m": 5.352177619934082,
+        "raw_radar_gap_m": 5.331499099731445,
+        "sight_m": 4.8423967361450195,
+        "corridor_m": 4.8423967361450195
+      },
+      "adjacent_lane_lidar": {
+        "right": {
+          "forward": {
+            "pavement_return_count_4_to_24m": 192,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              17,
+              20,
+              25,
+              31,
+              32,
+              41,
+              56
+            ],
+            "near_above_road_surface_m": null
+          },
+          "rear": {
+            "pavement_return_count_4_to_24m": 201,
+            "pavement_observed_meter_bins": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              15,
+              18,
+              22,
+              29,
+              41
+            ],
+            "near_above_road_surface_m": null
+          }
+        }
+      }
+    }
+  }
 }

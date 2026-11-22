@@ -26,6 +26,7 @@ VEHICLES = {"car", "van", "bus", "truck", "cyclist", "bicycle", "motorcycle"}
 PROPS = {"barrier", "cone"}
 VULNERABLE = {"pedestrian", "cyclist", "bicycle", "motorcycle"}
 DT = .1
+RADII = (35, 50, 65)
 
 
 def read(path):
@@ -165,7 +166,7 @@ def project(points, corridor):
             remain[j, i, 1] * forward[i, 0] - remain[j, i, 0] * forward[i, 1])
 
 
-def clearance(actor, body, ego, row, motion, records):
+def clearance(actor, body, ego, row, motion, method, records):
     if (min(body.top, ego.top) < max(body.bottom, ego.bottom)
             or math.dist(ego.center[:2], body.center[:2]) - ego.radius - body.radius > 4.):
         return
@@ -181,7 +182,7 @@ def clearance(actor, body, ego, row, motion, records):
     entry["below_half_m_samples"] += gap < .5
     entry["below_1m_samples"] += gap < 1.
     detail = dict(**stamp(row), actor_id=actor["actor_id"], motion_mps=None if motion is None else rnd(motion),
-                  gap_m=rnd(gap))
+                  gap_m=rnd(gap), box_method=method)
     if gap <= entry["minimum_m"]:
         entry.update(minimum_m=rnd(gap), nearest=detail)
     if row["speed_mps"] >= 5. / 3.6 and (entry["minimum_moving_m"] is None or gap < entry["minimum_moving_m"]):
@@ -305,7 +306,7 @@ def measure_actors(rows, stream, geometry, ego_blueprint):
     width = ego_shape["dimensions_m"][2]
     history = defaultdict(lambda: deque(maxlen=6))
     cache, frames, records, unknown = {}, [], {}, Counter()
-    density = {str(r): Counter(scored=0, cars=0, pedestrians=0, both=0, two_each=0) for r in (35, 50, 65)}
+    density = {str(r): Counter(scored=0, cars=0, pedestrians=0, both=0, two_each=0) for r in RADII}
     for i, (row, reference) in enumerate(zip(rows, stream, strict=True)):
         pose = row["ego_pose"]
         x, y, z = (pose[k] for k in ("x", "y", "z"))
@@ -332,7 +333,7 @@ def measure_actors(rows, stream, geometry, ego_blueprint):
             if radius > 80.:
                 continue
             mark = (ax, ay, az, actor["yaw"], actor.get("pitch"), actor.get("roll"))
-            last_mark, body, _method = cache.get(aid, (None, None, None))
+            last_mark, body, method = cache.get(aid, (None, None, None))
             if mark != last_mark:
                 body, method = reference_body(actor, shapes)
                 if body is not None and len(body.polygon) < 2:
@@ -361,9 +362,11 @@ def measure_actors(rows, stream, geometry, ego_blueprint):
                 if travelled >= (.5 if category == "pedestrians" else 1.) * (time - points[0][0]) > 0.:
                     for distance, counts in density_frame.items():
                         counts[category] += radius <= int(distance)
+                        if role == "background":
+                            counts["background_" + category] += radius <= int(distance)
             if radius > 76.:
                 continue
-            clearance(actor, body, ego, row, motion, records)
+            clearance(actor, body, ego, row, motion, method, records)
             path = corridor["source"]
             if path is None:
                 continue
@@ -412,7 +415,7 @@ def measure_actors(rows, stream, geometry, ego_blueprint):
             for a, side, result, details in opportunities(geometry, idx, station, speed, nearby, sides, vru)
         ]
         frames.append(dict(classifications=classifications, opportunities=wants_pass,
-                           actual_maneuver=maneuver, lead_bodies=nearby))
+                           actual_maneuver=maneuver, lead_bodies=nearby, density=density_frame if i >= 5 else {}))
     return frames, records, dict(unknown), density
 
 
@@ -463,6 +466,27 @@ def departures(rows, physical):
             first_native_legality_failure=first_unknown, alongside=alongside, ahead_with_sampled_clearance=ahead,
         ))
     return moves
+
+
+def tactical_phases(rows):
+    """Keep brief invitations and withdrawals beside the physical pose score."""
+    phase_at = [r.get("tactical_pass", {}).get("maneuver_phase") for r in rows]
+    counts = Counter(p for p in phase_at if p is not None)
+    periods = []
+    for phase in counts:
+        if phase == "keep":
+            continue
+        for lo, hi in spans(np.asarray([p == phase for p in phase_at])):
+            first = rows[lo]["tactical_pass"]
+            periods.append(dict(
+                phase=phase, first=stamp(rows[lo]), last=stamp(rows[hi-1]), seconds=rnd((hi-lo)*DT),
+                road_source_lane=first.get("source_lane"), road_target_lane=first.get("target_lane"),
+                lead_kind=first.get("lead_kind"), source_gap_m=first.get("source_gap_m"),
+                target_front_m=first.get("target_front_m"), target_rear_m=first.get("target_rear_m"),
+                target_gap_accepted=first.get("target_gap_accepted"),
+                return_gap_accepted=first.get("return_gap_accepted"),
+            ))
+    return dict(frame_counts=dict(counts), non_keep_periods=sorted(periods, key=lambda p: p["first"]["frame"]))
 
 
 def inspect_range(rows, geometry, ranges, inventory, wanted):
@@ -523,16 +547,25 @@ def audit(folder, reference, route_path, ranges=None, inventory=None, range_fram
         raise ValueError("OpenDRIVE route differs from the capture")
     geometry = Geometry(route)
     time = np.asarray([r["sim_time"] for r in rows])
-    if len(rows) != summary["frames"] or not np.allclose(np.diff(time), DT, atol=.0001):
+    frames = np.asarray([r["frame"] for r in rows])
+    if (not len(rows) or len(rows) != summary["frames"] or not np.allclose(np.diff(time), DT, atol=.0001)
+            or not np.all(np.diff(frames) == 1)
+            or int(frames[0]) != manifest.get("first_frame", frames[0])
+            or int(frames[-1]) != manifest.get("last_frame", frames[-1])):
         raise ValueError("Inconsistent 10 Hz exposure clock")
+    if any(r.get("camera_frame", r["frame"]) != r["frame"] or r.get("video_index", i) != i
+           for i, r in enumerate(rows)):
+        raise ValueError("Camera exposures and telemetry clock disagree")
     station = np.asarray([r["progress_m"] for r in rows])
     posted = np.asarray([r["posted_limit_kmh"] for r in rows])
     speed = np.asarray([r["speed_mps"] for r in rows]) * 3.6
     target = np.asarray([r["speed_request_mps"] for r in rows]) * 3.6
     yaw = np.unwrap(np.deg2rad([r["ego_pose"]["yaw"] for r in rows]))
-    accel = np.r_[np.full(5, np.nan), (speed[5:] - speed[:-5]) / (5 * DT * 3.6)]
-    means = np.convolve(speed / 3.6, [.1, .2, .2, .2, .2, .1], mode="valid")
-    lateral = np.r_[np.full(5, np.nan), means * np.abs(yaw[5:] - yaw[:-5]) / (5 * DT)]
+    accel, lateral = np.full(len(rows), np.nan), np.full(len(rows), np.nan)
+    if len(rows) > 5:
+        accel[5:] = (speed[5:] - speed[:-5]) / (5 * DT * 3.6)
+        means = np.convolve(speed / 3.6, [.1, .2, .2, .2, .2, .1], mode="valid")
+        lateral[5:] = means * np.abs(yaw[5:] - yaw[:-5]) / (5 * DT)
     with gzip.open(reference, "rt", encoding="utf-8") as stream:
         physical, clearance_records, unresolved, density = measure_actors(
             rows, (json.loads(line) for line in stream), geometry, summary["ego_blueprint"])
@@ -551,6 +584,27 @@ def audit(folder, reference, route_path, ranges=None, inventory=None, range_fram
                 if bucket not in examples:
                     examples[bucket] = dict(**stamp(rows[i]), actor_ids=ids)
         duration = lambda eligible: rnd(np.sum(mask & eligible) * DT)
+        population = {}
+        for radius in RADII:
+            local = [physical[i]["density"][str(radius)] for i in samples if physical[i]["density"]]
+            population[str(radius)] = dict(
+                scored=len(local), moving_car_frames=sum(row["cars"] > 0 for row in local),
+                moving_pedestrian_frames=sum(row["pedestrians"] > 0 for row in local),
+                both_frames=sum(min(row["cars"], row["pedestrians"]) > 0 for row in local),
+                two_of_each_frames=sum(min(row["cars"], row["pedestrians"]) > 1 for row in local),
+                background_both_frames=sum(min(row["background_cars"], row["background_pedestrians"]) > 0
+                                           for row in local),
+            )
+        high_pace = {}
+        for level in (45, 50, 55, 60):
+            qualified = spans(mask & (speed >= level))
+            sustained = next((i for i, j in qualified if j-i >= 10), None)
+            high_pace[str(level)] = dict(
+                actual_seconds=duration(speed >= level), requested_seconds=duration(target >= level),
+                first_sustained=stamp(rows[sustained]) if sustained is not None else None,
+                time_from_section_entry_to_sustained_s=rnd(time[sustained]-time[samples[0]])
+                if sustained is not None else None,
+            )
         report = dict(
             frames=int(len(samples)), seconds=duration(mask), entry=stamp(rows[samples[0]]), exit=stamp(rows[samples[-1]]),
             kmh_p10_p50_p95_max=[rnd(a) for a in np.r_[np.quantile(speed[mask], [.1, .5, .95]), speed[mask].max()]],
@@ -566,31 +620,42 @@ def audit(folder, reference, route_path, ranges=None, inventory=None, range_fram
             actual_over_posted_percent=rnd(100. * np.sum(mask & (speed > posted)) / len(samples)),
             maximum_overspeed_kmh=rnd(max(0., (speed[mask] - posted[mask]).max())),
             maximum_request_above_posted_kmh=rnd(max(0., (target[mask] - posted[mask]).max())),
-            higher_threshold_seconds={str(level): {"actual": duration(speed >= level),
-                                                   "requested": duration(target >= level)}
-                                      for level in (45., 50., 55., 60.)},
+            higher_thresholds=high_pace,
             binding_counts=dict(Counter(rows[i].get("progress_evidence", {}).get("binding") for i in samples
                                         if rows[i].get("progress_evidence", {}).get("binding"))),
             observed_path_actor_seconds={bucket: rnd(count * DT) for bucket, count in buckets.items()},
-            observed_path_actor_first_example=examples,
+            observed_path_actor_first_example=examples, moving_population_exposure=population,
         )
         faster = spans(mask & (speed > 40.))
         if len(faster):
             a, b = max(faster, key=lambda limits: limits[1] - limits[0])
             after = rows[b] if b < len(rows) else None
+            end_actor_groups = dict(physical[b]["classifications"]) if after else {}
+            evidence = after.get("progress_evidence", {}) if after else {}
             report["longest_continuous_above_40"] = dict(
                 first=stamp(rows[a]), last=stamp(rows[b-1]), seconds=rnd((b-a)*DT),
                 next_exposure=stamp(after) if after else None,
-                next_binding=after.get("progress_evidence", {}).get("binding") if after else None,
+                next_binding=evidence.get("binding"),
+                next_maneuver_binding=evidence.get("maneuver_binding"),
+                next_speed_regime=evidence.get("speed_regime"),
                 next_phase=after["phase"] if after else None,
+                next_observed_actor_groups=end_actor_groups,
             )
+        regimes = Counter(rows[i].get("progress_evidence", {}).get("speed_regime") for i in samples)
+        regimes.pop(None, None)
+        if regimes:
+            report["speed_regime_frame_counts"] = dict(regimes)
         if motion_windows.any():
+            brake_spot = int(np.nanargmin(np.where(motion_windows, accel, np.nan)))
+            lateral_spot = int(np.nanargmax(np.where(motion_windows, lateral, np.nan)))
             report.update(
                 acceleration_peak_mps2=rnd(accel[motion_windows].max()),
                 braking_peak_mps2=rnd(-accel[motion_windows].min()),
+                braking_peak_location=stamp(rows[brake_spot]),
                 braking_harder_than_3_seconds=duration(accel < -3.),
                 lateral_p95_mps2=rnd(np.quantile(lateral[motion_windows], .95)),
                 lateral_peak_mps2=rnd(lateral[motion_windows].max()),
+                lateral_peak_location=stamp(rows[lateral_spot]),
             )
         return report
 
@@ -622,7 +687,10 @@ def audit(folder, reference, route_path, ranges=None, inventory=None, range_fram
             "yield_violations", "red_light_violations", "turns_completed")
     grade = {k: summary.get(k) for k in keys}
     grade["events"] = summary["events"]
-    grade["participant_contacts"] = summary.get("background_traffic_activity", {}).get("participant_contacts")
+    ambient = summary.get("background_traffic_activity", {})
+    grade["participant_contacts"] = ambient.get("participant_contacts")
+    grade["ambient_vehicles_spawned"] = ambient.get("spawned")
+    grade["ambient_vehicles_moving_near_ego"] = ambient.get("moving_near_ego")
     result = dict(
         schema="ado-city-maneuver-audit-v1",
         source=dict(**source, route_id=route["route_id"], map_sha256=route["opendrive_sha256"],
@@ -635,6 +703,9 @@ def audit(folder, reference, route_path, ranges=None, inventory=None, range_fram
         sections=sections, independent_clearance=clearance_records, unresolved_close_actor_samples=unresolved,
         moving_population_exposure=density, passing_screen=checks, actual_lateral_departures=departures(rows, physical),
     )
+    phases = tactical_phases(rows)
+    if phases["frame_counts"]:
+        result["tactical_decisions"] = phases
     if ranges is not None and inventory is not None:
         result["registered_range_exposures"] = inspect_range(rows, geometry, ranges, inventory, range_frames)
     return result
