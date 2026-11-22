@@ -25,7 +25,7 @@ def xyz(points):
 
 
 class NativeCorridor:
-    def __init__(self, source, target, begin, end, merge_at=None):
+    def __init__(self, source, target, begin, end, merge_at=None, target_from=None):
         self.source_key, self.target_key = key(source[begin]), key(target[begin])
         self.source = xyz([p.transform.location for p in source])
         self.target = xyz([p.transform.location for p in target])
@@ -35,7 +35,9 @@ class NativeCorridor:
         self.direction = np.vstack((delta/lengths[:,None], delta[-1]/lengths[-1]))
         self.begin, self.end = self.arc[begin], self.arc[end]
         self.merge_at = self.arc[merge_at] if merge_at is not None else None
+        self.navigation_target_from = self.arc[target_from] if target_from is not None else None
         self.source_width = np.asarray([wp.lane_width for wp in source])
+        self.target_width = np.asarray([wp.lane_width for wp in target])
         self.width = np.linalg.norm(self.target[:,:2]-self.source[:,:2], axis=1)
 
     def interpolate(self, stations, values):
@@ -77,6 +79,37 @@ class NativeCorridor:
         dst = self.interpolate(stations, self.target[:,:2])
         return src+(dst-src)*alpha[:,None]
 
+    def navigation_target_settled(self, station, lateral, heading, body_vertices):
+        """Release steering only where the remaining route follows the new lane."""
+        if self.navigation_target_from is None or station < self.navigation_target_from:
+            return False
+        width = np.interp(station,self.arc,self.width)
+        if abs(lateral+width) >= .45 or heading @ self.interpolate(station,self.direction) <= np.cos(np.deg2rad(7.)):
+            return False
+        corners = np.array([(p.x,p.y,p.z) for p in body_vertices])
+        rel, side, _, separation, inside = self.project_scan(corners,station)
+        lane_half = np.interp(station+rel,self.arc,self.target_width)/2.
+        return bool(np.all(inside & (abs(side+separation) < lane_half-.10)))
+
+
+def merge_approach_ceiling(corridor, station, lateral, features, covered, sight, source_path_seen):
+    """Approach the rear observation window in the source lane at walking speed."""
+    gap, _, front, rear, _, _, speed = features
+    # At a road entrance the surveyed pair simply does not extend 24 m behind
+    # the ego yet. Never extend it across the upstream junction or interpret
+    # unmapped space as an open lane. A few metres of source-lane travel can
+    # expose the missing area; the usual full scans still gate any crossing.
+    if (corridor.merge_at is None or abs(lateral) >= .35 or not source_path_seen or
+            not covered[0] or not covered[2] or sight[0] < 24. or
+            sight[2] <= max(24., 2.*speed+5.) or sight[3] < min(14., .75*station) or
+            min(front,rear) < 60.):
+        return 0.
+    # Allow some extra sight beyond the 24 m threshold for sparse sweeps.
+    # Leave space to complete the 23 m change before either the source
+    # obstruction or the end of the permitted lane pair.
+    advance = max(0., min(34.-station, gap-29., corridor.end-station-28.))
+    return min(2., advance/1.4)
+
 
 def _append_external(road_map, wp, delta, n):
     pairs = []
@@ -115,7 +148,7 @@ def discover(road_map, route):
             i += 1
             continue
         src_key, dst_key = key(first), key(adjacent)
-        samples, merge = [], None
+        samples, centered, merge = [], [], None
         sign = -1 if first.lane_id > 0 else 1
         while i < len(points):
             wp = points[i]
@@ -140,6 +173,8 @@ def discover(road_map, route):
                     i += 1
                     continue
             samples.append((src,dst))
+            target_pos = dst.transform.location
+            centered.append(np.linalg.norm(path[i,:2] - (target_pos.x,target_pos.y)) < .10)
             i += 1
         if len(samples) >= 38:
             prefix = _append_external(road_map,samples[0][0],-sign,55)[::-1]
@@ -148,6 +183,14 @@ def discover(road_map, route):
             if merge is not None and merge >= len(samples):
                 merge = None
             full = prefix+samples+suffix
-            found.append(NativeCorridor(*zip(*full),begin,end,None if merge is None else begin+merge))
+            target_from = None
+            if merge is not None:
+                # The route must remain at the new centerline for its full
+                # remaining surveyed segment. Merely crossing the stripe is
+                # insufficient: the navigation preview may still be turning.
+                first_centered = max((j+1 for j,matched in enumerate(centered) if not matched),default=0)
+                if first_centered+3 <= len(samples):
+                    target_from = begin+first_centered
+            found.append(NativeCorridor(*zip(*full),begin,end,None if merge is None else begin+merge,target_from))
         i = max(i,start+1)
     return found

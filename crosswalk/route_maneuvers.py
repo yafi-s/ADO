@@ -6,7 +6,8 @@ import carla
 import numpy as np
 
 from .maneuver_choice import FEATURES, ManeuverChoice
-from .maneuver_map import discover
+from .maneuver_map import discover, merge_approach_ceiling
+from .maneuver_traffic import rear_projection
 from .overtake import _nearest
 
 LOOK = (3., 7., 13., 18., 25., 32., 40.)
@@ -17,13 +18,14 @@ def blend(stations, start, length):
     return t**3*(10.+t*(-15.+6.*t))
 
 
-def usable_gap(front, rear, fc, rc, speed):
+def usable_gap(front, rear, fc, rc, speed, rear_speed=None):
     # Distances start at the ego origin and end on the adjoining surface.
     # Reserve the longitudinal body envelope, two seconds of headway to
     # traffic ahead, and at least five seconds before a closing encounter.
     front_room, rear_room = front-2.5, rear-2.5
+    following_speed = speed+rc if rear_speed is None else rear_speed
     return (front_room > max(15., 2.*speed, 5.*fc)
-            and rear_room > max(12., 2.*max(0., speed+rc), 5.*rc))
+            and rear_room > max(12., 2.*max(0.,following_speed), 5.*rc))
 
 
 def compare_progress(fitted, source, source_v, front, rear, front_v, sight):
@@ -94,6 +96,9 @@ class RouteManeuvers:
 
     def _reset(self):
         self.surfaces = [Surface() for _ in range(4)]
+        self.rear_motion = deque(maxlen=35)
+        self.merge_settled_votes = 0
+        self.merge_completed = False
         self.tick = self.pass_votes = self.return_votes = self.clear_votes = self.follow_votes = 0
         self.holding = False
         self.phase = "keep"
@@ -156,7 +161,7 @@ class RouteManeuvers:
         source_speed = max(0.,lead.speed) if lead.speed is not None else 20.
         x = (gap,source_speed,front,rear,fc,rc,speed)
         safe = (covered[2] and covered[3] and visibility[2] > max(24., 2.*speed+5.)
-                and visibility[3] > 24. and usable_gap(front,rear,fc,rc,speed))
+                and visibility[3] > 24. and usable_gap(front,rear,fc,rc,speed,behind.speed))
         # A far detected surface still limits sight. Use the surveyed lane
         # tangent and actual pavement ahead; the map alone never opens a gap.
         source_rear_v = self.surfaces[1].speed
@@ -177,7 +182,7 @@ class RouteManeuvers:
             seen = bool(bins and visibility[i]>=end-.75 and
                         all(np.count_nonzero((road>lo)&(road<hi))>=2 for lo,hi in bins))
             source_views.append(seen)
-        source_return_safe = all(source_views) and usable_gap(gap,srear,src_fc,src_rc,speed)
+        source_return_safe = all(source_views) and usable_gap(gap,srear,src_fc,src_rc,speed,source_rear_v)
         path_visible = all(np.count_nonzero((source_road>lo)&(source_road<hi)) >= 2
                            for lo,hi in ((3.,7.5),(7.,min(15.,gap-1.5))))
         return x, raw, covered, visibility, safe, source_return_safe, srear, path_visible
@@ -218,6 +223,18 @@ class RouteManeuvers:
             return defaults
         c, (s, lateral) = self.corridor, located
         self.tick += 1
+        if c.merge_at is not None:
+            established = c.navigation_target_settled(s,lateral,heading,ego.bounding_box.get_world_vertices(pose))
+            self.merge_settled_votes = self.merge_settled_votes+1 if established else 0
+            self.merge_completed |= established and (self.start is None or self.merge_settled_votes>=3)
+            if self.merge_completed:
+                self.start = self.return_start = self.speed_limit = None
+                self.holding = False
+                self.turn_signal = "off"
+                self.phase = "route_merge_complete"
+                self.info.update(maneuver_phase=self.phase,maneuver=self.phase,navigation_merge=True,
+                                 source_lane=list(c.source_key),target_lane=list(c.target_key))
+                return defaults
         self.body_half_width = float(ego.bounding_box.extent.y)
         x, raw, cover, sight, safe, rejoin_safe, source_rear, path_visible = self._measure(pose,lidar,s,speed,lateral)
         gap,lv,front,rear,_,rear_closing,_ = x
@@ -244,7 +261,59 @@ class RouteManeuvers:
         self.speed_limit = None
         self.turn_signal = "off"
         width = float(np.interp(s,c.arc,c.width))
-        rolling = self._following_ceiling(source,gap,speed,path_visible) if not required else 0.
+        rolling = (merge_approach_ceiling(c,s,lateral,x,cover,sight,path_visible)
+                   if required else self._following_ceiling(source,gap,speed,path_visible))
+        rear_surface = self.surfaces[3]
+        if rear_surface.age==0 and rear_surface.speed is not None:
+            self.rear_motion.append((self.tick,s-rear,max(0.,rear_surface.speed)))
+        rear_seen = rear<60.
+        rear_dist = rear
+        rear_speed = max(0.,rear_surface.speed if rear_surface.speed is not None else speed+rear_closing)
+        if self.rear_motion:
+            last, position, velocity = self.rear_motion[-1]
+            age = (self.tick-last)*.1
+            if rear_seen:
+                # Do not assume a trailing driver who briefly brakes beside us
+                # will stay slow throughout our turn out of its lane.
+                rear_speed = max([rear_speed]+[v-1.8*(self.tick-t)*.1 for t,_,v in self.rear_motion])
+            elif age<=3. and cover[3]:
+                # Retain a conservative distant rear witness briefly after it
+                # leaves the sensor. Observed empty pavement bounds its location.
+                rear_dist = max(sight[3]-2., s-position-velocity*age-1.8*age**2)
+                rear_speed = min(max(13.,velocity),velocity+3.6*age)
+                rear_seen = True
+        outbound_length = 23. if required else min(24.,max(12.,(gap-3.)*1.05))
+        inbound_length = float(np.clip(3.5+2.7*speed,14.,30.))
+        rear_forecast = None
+        if (self.start is None and recent and action=="pass" and not required) or (
+                self.start is not None and not route_merge):
+            entry = self.start is None
+            passing_lead = (not entry and self.return_start is None and not self.departing_ahead and
+                            self.passed_observed is None and self.lead_station is not None and
+                            s<self.lead_station+6.)
+            phase = "entry" if entry or passing_lead else "return"
+            transition = outbound_length if entry else inbound_length
+            if passing_lead:
+                transition = max(0.,self.start+self.travel_length-s)
+            forecast_gap = max(0.,self.lead_station-s) if passing_lead else gap
+            forecast_lead_v = self.lead_speed if passing_lead else lv
+            if self.return_start is not None:
+                phase = "ongoing"
+                # Use the slower of actual lateral motion and intended path
+                # progress to bound how long the trailing lane is occupied.
+                remaining_fraction = np.clip((-lateral-.36)/max(.5,width-.36),0.,1.)
+                transition = max(0.,.82*self.return_length+1.-(s-self.return_start),
+                                 remaining_fraction*.82*self.return_length)
+            rear_forecast = rear_projection(rear=rear_dist,rear_speed=rear_speed,speed=speed,gap=forecast_gap,
+                    lead_speed=forecast_lead_v,source_sight=sight[0],phase=phase,transition_length=transition,
+                    source_ahead=60. if phase=="entry" else gap,rear_seen=rear_seen,
+                    target_front=front,target_speed=front_v)
+        projected_clear = rear_forecast is None or rear_forecast["allowed"]
+        if self.start is None and not required and action=="pass" and not projected_clear:
+            # Maintain the source lane. A stationary car behind us can be
+            # given more space by safely approaching our own lead. For an
+            # actively closing rear car keep the usual bounded yield.
+            action = "yield" if rear_closing>1. or rear_speed>2.5 else "follow"
         if self.start is None:
             # Positive observations over the old source position release a
             # wait after occlusion. A dropped scan cannot start the car.
@@ -266,7 +335,7 @@ class RouteManeuvers:
                 self.departure_votes = 0
                 self.departing_ahead = False
                 self.return_reason = None
-                self.travel_length = min(24., max(12., (gap-3.)*1.05)) if not required else 23.
+                self.travel_length = outbound_length
                 self.lead_station = s+gap if fresh else None
                 self.lead_speed = lv if fresh else 0.
                 self.phase = "change_left"
@@ -304,13 +373,13 @@ class RouteManeuvers:
                 self.departing_ahead = False
                 self.departure_votes = 0
             self.turn_signal = "left"
-            if self.return_start is None and lateral > -.5 and (not safe or
+            if self.return_start is None and lateral > -.5 and (not safe or not projected_clear or
                     (fresh and not required and (kind in ("moving","departing") or
                      (action=="follow" and gain<8. and 10.<=front<60.)))):
                 self.start = None
                 self.pass_votes = 0
-                self.phase = "yield" if not safe else "follow"
-                self.holding = not safe
+                self.phase = "yield" if not safe or (not projected_clear and rear_closing>1.) else "follow"
+                self.holding = self.phase=="yield"
                 self.turn_signal = "off"
                 self.speed_limit = 0. if self.phase=="yield" else None
             elif self.return_start is not None:
@@ -329,8 +398,10 @@ class RouteManeuvers:
                 preview_s = s+np.array([1.,3.,6.])
                 planned = np.interp(preview_s,c.arc,c.width)*(1.-blend(preview_s,self.return_start,self.return_length))
                 planned_clear = np.all(planned+self.body_half_width+.16 < np.interp(preview_s,c.arc,c.source_width)/2.)
-                vacated_target = bool(body_inside and aligned and planned_clear and fraction>.65)
-                settled = vacated_target and abs(lateral)<.48
+                heading_side = heading@(-tangent[1],tangent[0])
+                straight_clearance = min(side+half) + min(0.,3.*heading_side)
+                vacated_target = bool(body_inside and planned_clear and straight_clearance>.10 and fraction>.65)
+                settled = vacated_target and aligned and abs(lateral)<.48
                 self.settled_votes = self.settled_votes+1 if settled else 0
                 if self.return_ceiling is not None:
                     if fresh and gap<55.:
@@ -338,6 +409,17 @@ class RouteManeuvers:
                         self.return_ceiling = min(self.return_ceiling, max(1.5,lv+(gap-15.)/6.),
                                                   math.sqrt(2.*1.7*stop_room))
                     self.speed_limit = self.return_ceiling
+                if not vacated_target and not projected_clear:
+                    # A new rear approach can make optional slowing for the
+                    # return unsafe. Continue the exit at most at the speed
+                    # supported by BOTH forward envelopes. Parent emergency
+                    # braking and direct swept intrusions still have priority.
+                    front_caps = [v+max(0.,d-5.)/5. for d,v in ((gap,lv),(front,max(0.,front_v))) if d<60.]
+                    hard_forward = min([speed+1.,*front_caps])
+                    if self.speed_limit is not None:
+                        self.speed_limit = min(hard_forward,max(self.speed_limit,speed))
+                    else:
+                        self.speed_limit = hard_forward
                 if lateral < -width+.50 and not rejoin_safe:
                     self.return_start = None
                     self.return_votes = 0
@@ -361,7 +443,7 @@ class RouteManeuvers:
                     # When approaching a second source-lane vehicle, make
                     # room to return behind it. Ease speed using its measured
                     # headway and motion; no speed request can open the gap.
-                    if (recent and self.lead_station is not None and s+gap > self.lead_station+12.
+                    if (projected_clear and recent and self.lead_station is not None and s+gap > self.lead_station+12.
                             and 20. < gap < 55. and s > self.lead_station+2.):
                         self.speed_limit = max(3., lv+max(0.,gap-20.)/6.)
                     past = self.lead_station is not None and s-self.lead_station>8.
@@ -373,7 +455,7 @@ class RouteManeuvers:
                         self.passed_observed = s-source_rear
                     passed = self.passed_observed is not None and s-self.passed_observed>9.
                     may_return = (past and passed) or self.departing_ahead
-                    self.return_votes = self.return_votes+1 if may_return and rejoin_safe else 0
+                    self.return_votes = self.return_votes+1 if may_return and rejoin_safe and projected_clear else 0
                     if past or self.departing_ahead:
                         # Maintain the physical indicator during sparse pavement
                         # scans. Fresh measured clearance still gates movement.
@@ -387,7 +469,7 @@ class RouteManeuvers:
                         self.return_reason = "passed_surface" if past and passed else "departing_lead"
                         self.return_start = s
                         self.settled_votes = 0
-                        self.return_length = float(np.clip(3.5+2.7*speed,14.,30.))
+                        self.return_length = inbound_length
                         self.return_ceiling = self.speed_limit
                     if room < 22. and self.return_start is None:
                         self.speed_limit = max(0., min(speed, (room-6.)*.32))
@@ -397,6 +479,7 @@ class RouteManeuvers:
                 self.speed_limit = 0.
         committed = self.start is not None
         self.info = dict(planner="route-maneuvers-v1", choice=action, fitted_choice=fitted, maneuver_phase=self.phase,
+                         rear_occupancy_forecast=rear_forecast,
                          projected_lane_gain_m=round(gain,3), target_front_speed_mps=round(front_v,3),
                          target_horizon_end_m=round(target_end,3), prediction_horizon_s=4.,
                          maneuver="passing" if committed else self.phase, committed=committed,

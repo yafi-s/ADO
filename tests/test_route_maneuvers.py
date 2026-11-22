@@ -7,6 +7,7 @@ import numpy as np
 
 from crosswalk.maneuver_choice import ManeuverChoice
 from crosswalk.route_maneuvers import RouteManeuvers, compare_progress
+from crosswalk.maneuver_traffic import rear_projection
 from tests.test_urban_map import MAP
 
 
@@ -20,6 +21,20 @@ class FittedManeuvers(unittest.TestCase):
         self.assertGreater(gain,15.)
         nearby,_,_=compare_progress("pass",22.,1.5,3.,5.,0.,51.)
         self.assertEqual(nearby,"yield")
+
+    def test_full_rear_envelope_rejects_new_yield_at_end_of_long_pass(self):
+        common = dict(speed=5.,gap=28.,lead_speed=1.5,source_sight=50.,phase="entry",transition_length=23.)
+        far_closer = rear_projection(rear=56.,rear_speed=12.,**common)
+        self.assertGreater(far_closer["time_to_vacate_s"],5.)
+        self.assertFalse(far_closer["allowed"])
+        # Once a follower has braked briefly, a ten-metre reading still
+        # cannot qualify a four-to-six-second return across its path.
+        held = rear_projection(rear=10.3,rear_speed=4.,speed=2.77,gap=20.5,lead_speed=0.,
+                               source_sight=35.,phase="return",transition_length=14.,source_ahead=20.5)
+        self.assertFalse(held["allowed"])
+        distant = rear_projection(rear=58.,rear_speed=1.,speed=7.5,gap=16.,lead_speed=0.,
+                                  source_sight=54.,phase="entry",transition_length=16.)
+        self.assertTrue(distant["allowed"])
 
     def test_independent_traffic_choices(self):
         model = ManeuverChoice()
@@ -219,7 +234,7 @@ class RouteManeuverTests(unittest.TestCase):
         self.assertEqual(info["maneuver_phase"],"yield")
         self.assertGreater(info["target_rear_closing_mps"],5.)
         self.assertEqual(self.driver.speed_limit,0.)
-        for _ in range(28):
+        for _ in range(42):
             info,_ = self.observe(s,lead=s+24.)
         self.assertTrue(info["committed"])
         info,_ = self.observe(s,lead=s+24.,rear=s-3.)

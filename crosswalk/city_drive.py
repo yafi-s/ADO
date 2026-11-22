@@ -115,9 +115,10 @@ def main():
     model_sha = fingerprint(args.model)
     driver, names, schema = load_driver(args.model)
     pace_schema = schema in ("ado-city-pace-v1", "ado-city-clearance-v1", "ado-city-progress-v1", "ado-city-maneuvers-v1")
-    live_cruise = args.serve and (pace_schema or schema == "ado-city-cruise-v1")
+    maneuver_driver = schema == "ado-city-maneuvers-v1"
+    default_rig_and_planner = maneuver_driver or (args.serve and (pace_schema or schema == "ado-city-cruise-v1"))
     options = {key: True for key, value in (("surround", args.surround), ("tactical", args.tactical))
-               if (live_cruise if value is None else value)}
+               if (default_rig_and_planner if value is None else value)}
     tactical_sha = None
     if options.get("tactical"):
         if schema == "ado-city-maneuvers-v1":
@@ -128,7 +129,8 @@ def main():
     model = LoggedDriver(driver)
     live_populations = {"ado-city-clearance-v1": "city-life", "ado-city-progress-v1": "city-life",
                         "ado-city-maneuvers-v1": "city-maneuvers"}
-    population_profile = args.population_profile or (live_populations.get(schema, "standard") if args.serve else "standard")
+    population_profile = args.population_profile or (
+        live_populations.get(schema, "standard") if args.serve or maneuver_driver else "standard")
     scene_factory = partial(JourneyScenario, population_profile=population_profile,
                             barriers=pace_schema)
     root = args.output or PROJECT / "out/city-drives"
