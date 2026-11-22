@@ -3,6 +3,7 @@
 // telemetry keep working if the 3D scene cannot start.
 
 import {recordedChapters} from './encounter-chapters.mjs';
+import {maneuverActivity} from './maneuver-status.mjs';
 import {VideoExposureClock, MEDIA_TIME_TOLERANCE, replayIndexAt} from './exposure-clock.mjs';
 import {loadReplay} from './replay-pack.mjs';
 import {barrierName,barrierReviewer} from './barrier-review.mjs';
@@ -18,6 +19,7 @@ const CAMERA_ORDER = Object.keys(CAMERA_LABELS);
 const LOCAL_CONSOLE = ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname);
 const POLICY_LABELS = {
   fusion: 'Learned multisensor', camera: 'Learned vision',
+  'ado-city-maneuvers-v1': 'ADO city maneuvers',
   'ado-city-progress-v1': 'ADO city progress', 'ado-city-clearance-v1': 'ADO city clearance', 'ado-city-pace-v1': 'ADO urban pace',
   'ado-city-cruise-v1': 'ADO urban cruise', 'ado-city-policy-v1': 'ADO city driver', 'ado-behavior-v2': 'ADO behavior v2',
   demonstrator: 'Training instructor', teacher: 'Training instructor'
@@ -323,7 +325,9 @@ function activityOf(frame) {
     return {state: 'idle', label: state.source === 'training' ? 'Training demonstration' : 'Standing by'};
   }
   const pass = frame.tactical_pass;
-  if (finite(pass?.corridor_station_m)) {
+  const maneuver = maneuverActivity(pass);
+  if (maneuver) return maneuver;
+  if (pass?.planner !== 'route-maneuvers-v1' && finite(pass?.corridor_station_m)) {
     if (pass.maneuver === 'yield' && pass.committed === false) return {state:'waiting', label:'Waiting for a gap'};
     if (pass.maneuver === 'passing' && pass.committed === true) {
       if (frame.physically_overtaken === true) return {state:'moving', label:'Pass complete'};
@@ -359,8 +363,8 @@ function renderActivity(frame) {
   // While time is running, a new activity must hold for two frames before it replaces the label.
   const running = state.source === 'live' || isPlaying();
   // A logged planner transition, including leaving its corridor, takes effect on its recorded frame.
-  const plannerState = next.state === 'waiting' || next.state === 'passing' || next.label === 'Pass complete' ||
-    /^(waiting|passing)\|/.test(shownActivity);
+  const plannerState = next.planner || next.state === 'waiting' || next.state === 'passing' || next.label === 'Pass complete' ||
+    /^(waiting|passing|following)\|/.test(shownActivity);
   if (running && frame && shownActivity && !plannerState && candidateActivity !== key) {
     candidateActivity = key;
     return;
@@ -723,6 +727,10 @@ function renderFrameFacts(frame) {
     progress: speedSelection,
     sight: progress?.supported_scans >= 3 && finite(progress.sight_m) && progress.sight_m > 0
       ? `${tenth.format(progress.sight_m)} m` : null,
+    ceiling: finite(progress?.cruise_ceiling_mps) && progress.cruise_ceiling_mps > 0
+      ? `${tenth.format(progress.cruise_ceiling_mps * 3.6)} km/h` : null,
+    indicator: frame?.tactical_pass?.turn_signal === 'left' ? 'Left'
+      : frame?.tactical_pass?.turn_signal === 'right' ? 'Right' : null,
     limit: finite(frame?.posted_limit_kmh) && frame.posted_limit_kmh>0 ? `${whole.format(frame.posted_limit_kmh)} km/h` : null,
     grip: finite(frame?.grip) ? percent.format(frame.grip) : null,
     delay: finite(frame?.crossing_delay) && frame.crossing_delay !== 0 ? `${frame.crossing_delay} s` : null,

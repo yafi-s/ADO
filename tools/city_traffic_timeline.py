@@ -126,13 +126,16 @@ def measure(folder, station_log=None):
 def compare_by_position(drives, logs):
     """Join actual camera frames by distance along the same mapped route."""
     by_id = {run["trial"]: run for run in drives}
-    pair = ("city-life", "city-progress")
-    if not all(name in logs for name in pair):
-        return
-    baseline, candidate = pair
-    if not logs[baseline]["route"] or logs[baseline]["route"] != logs[candidate]["route"]:
-        raise ValueError("Before/after camera comparison needs matching planned route geometry")
-    for current, other in (pair, pair[::-1]):
+    comparisons = (("city-life", "city-progress"), ("city-progress", "city-life"),
+                   ("city-maneuvers", "city-progress"))
+    for current, other in comparisons:
+        if current not in logs or other not in logs:
+            continue
+        if not logs[other]["route"] or logs[current]["route"] != logs[other]["route"]:
+            if current == "city-maneuvers":
+                # A bypass can change the planned centerline. Match only identical route coordinates.
+                continue
+            raise ValueError("Before/after camera comparison needs matching planned route geometry")
         frames = {}
         for station, frame, kmh in logs[other]["frames"]:
             frames.setdefault(station, (frame, round(station, 2), kmh))
@@ -150,7 +153,7 @@ def compare_by_position(drives, logs):
 def generate(recordings):
     drives, logs = [], {}
     for folder in recordings:
-        log = {} if folder.name in ("city-progress", "city-life") else None
+        log = {} if folder.name in ("city-progress", "city-life", "city-maneuvers") else None
         run = measure(folder, log)
         drives.append(run)
         if log is not None:
