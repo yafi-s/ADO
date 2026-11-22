@@ -8,15 +8,15 @@ from . import behavior_v2 as v2
 from .camera_geometry import CAMERAS
 from .city_clearance import BODY
 from .city_grade import GradeModel, GradeObserver, FEATURE_NAMES as PRIOR_NAMES, supported_grade
-from .city_open_road import long_sight
+from .city_open_road import PavementHistory, long_sight
 from .city_policy import INDEX
 from .city_progress import _profile
-from .policy import _returns, LIDAR_Z
+from .policy import _returns, BUMPER_X, LIDAR_Z, RADAR_X, RADAR_Z
 
 VERSION = "ado-city-maneuvers-v1"
 FIELDS = ("verified_forward_m", "verified_cross_sight_m", "supported_shoulder_m",
           "camera_stop_horizon_m", "off_path_camera_boxes", "geometry_scans", "verified_grade_m",
-          "long_sight_m", "long_body_gap_m")
+          "long_sight_m", "long_body_gap_m", "opposing_route_stop_m", "confirmed_post_sight_m")
 FEATURE_NAMES = (*PRIOR_NAMES[:-2], *FIELDS, *PRIOR_NAMES[-2:])
 BENDS = tuple(INDEX[n] for n in ("bend_7_13", "bend_13_25", "bend_25_40"))
 BEND_LENGTHS = np.array([5., 9., 14.])
@@ -55,6 +55,16 @@ def camera_horizon(detections, laser, path):
         sector = (u >= x1-.015) & (u <= x2+.015)
         foot_depth = cam.fy*(cam.z-.40)/(y2-.5+.035)
         lower = min(float(min(depth[hits]))-1., foot_depth)
+        # If rays actually traverse both halves of the detected torso at two
+        # heights, their first returns bound the range better than an assumed
+        # level-road foot pixel. Keep the closest hit anywhere in the padded
+        # box, including pavement. A sparse object or a partial box keeps the
+        # original conservative ground-intersection bound.
+        torso = ((u>=x1)&(u<=x2)&(v>=y1+.1*(y2-y1))&(v<y2-.08*(y2-y1))&(depth<55.))
+        if np.count_nonzero(torso)>=8:
+            quadrants=(u[torso]>.5*(x1+x2)).astype(int)*2+(v[torso]>.5*(y1+y2)).astype(int)
+            if min(np.bincount(quadrants,minlength=4))>=2:
+                lower=max(lower,float(min(depth[hits]))-1.5)
         # A nearer upright surface below the detector box may hide its feet.
         # Shorten the budget to that surface as well. Require positive ground
         # returns through the near sector; blank lidar is never a clearance.
@@ -119,6 +129,25 @@ def shoulder_scan(laser, path):
     return cells,sight
 
 
+def opposing_surface(laser, radar, path, speed):
+    """Measure the closest moving surface that generated the ego-axis opposing cue."""
+    plane=v2._ground_plane(laser[:,0],laser[:,1],laser[:,2]+LIDAR_Z)
+    velocity,az,alt,depth=_returns(radar).T
+    horizontal=depth*np.cos(alt)
+    x=horizontal*np.cos(az)+RADAR_X
+    y=horizontal*np.sin(az)
+    h=depth*np.sin(alt)+RADAR_Z-plane[0]*x-plane[1]*y-plane[2]
+    radial=velocity+speed*np.cos(az)*np.cos(alt)
+    select=((x>=BUMPER_X)&(x<BUMPER_X+36.)&(y<1.5)&(y> -12.)&(h>.28)&(h<2.5)&(radial< -1.6))
+    if not np.any(select):
+        return 60.,0.
+    s,d=v2._project(x[select],y[select],path)
+    # Several independently measured moving returns must ALL be outside
+    # two lane widths. A lone detection or a closer side cannot authorize pace.
+    if len(s)<3 or min(abs(d))<7. or min(d)*max(d)<=0.:
+        return 0.,0.
+    return max(0.,float(min(s))-1.),float(max(abs(radial[select])))
+
 class ManeuverObserver(GradeObserver):
     uses_long_sight = True
     def __init__(self):
@@ -127,6 +156,8 @@ class ManeuverObserver(GradeObserver):
         self.shoulders = deque(maxlen=4)
         self.grades = deque(maxlen=9)
         self.long_ranges = deque(maxlen=3)
+        self.opposing = deque(maxlen=9)
+        self.pavement_history = PavementHistory()
 
     def measure(self, obs, detections, path, speed, prior, *, valid_image, contiguous):
         if not contiguous:
@@ -134,16 +165,23 @@ class ManeuverObserver(GradeObserver):
             self.shoulders.clear()
             self.grades.clear()
             self.long_ranges.clear()
+            self.pavement_history.clear()
+            self.opposing.clear()
         laser = _returns(obs["lidar"])
         if not valid_image or len(laser) < 30 or not len(_returns(obs["radar"])):
             self.geometry.clear()
             self.shoulders.clear()
             self.grades.clear()
             self.long_ranges.clear()
-            return [0.,0.,0.,0.,0.,0.,0.,0.,0.]
+            self.pavement_history.clear()
+            self.opposing.clear()
+            return [0.]*len(FIELDS)
         camera, count = camera_horizon(detections, laser, path)
         # Lost or unresolved camera evidence withdraws the additional proposal.
-        corridor, cross, _, _ = _profile(obs["lidar"], path, {})
+        if self.recent:
+            corridor,cross=self.recent[-1][:2]
+        else:
+            corridor,cross,_,_=_profile(obs["lidar"],path,{})
         cells, sight = shoulder_scan(laser,path)
         settled = []
         for pos,side,margin in cells:
@@ -174,12 +212,31 @@ class ManeuverObserver(GradeObserver):
         if (camera==60. and not tactical.get("committed",False) and
                 prior[INDEX["junction_gap"]]>22. and distance>=30. and
                 min(prior[INDEX["left_edge_lidar"]],prior[INDEX["right_edge_lidar"]])>18.):
-            long,body=long_sight(obs.get("long_sight_lidar",obs["lidar"]),obs["radar"],extended,speed)
+            long,body=long_sight(obs.get("long_sight_lidar",obs["lidar"]),obs["radar"],extended,speed,
+                                 self.pavement_history,obs.get("progress_ego_pose"))
         else:
+            self.pavement_history.clear()
             long,body=0.,max(0.,float(distance))
-        self.long_ranges.append(long)
-        verified=min(self.long_ranges) if len(self.long_ranges)==3 else 0.
-        return [*profile,count,len(self.geometry),grade,verified,body]
+        remote=self.pavement_history.post_sight
+        self.long_ranges.append((long,max(cross,remote),remote>cross))
+        verified=post_sight=0.
+        if len(self.long_ranges)==3:
+            verified=min(r[0] for r in self.long_ranges)
+            if any(r[2] for r in self.long_ranges):
+                post_sight=min(r[1] for r in self.long_ranges)
+        current_opp=prior[INDEX["oncoming_gap"]]
+        if current_opp<36.:
+            gap,closing=opposing_surface(laser,obs["radar"],path,speed)
+        else:
+            gap,closing=60.,0.
+        self.opposing.append((gap,closing,self.travel))
+        observed=[(i,g,v,t) for i,(g,v,t) in enumerate(self.opposing) if g<60.]
+        road_gap=0.
+        if len(self.opposing)==9 and len(observed)>=2 and all(g>0. for _,g,_,_ in observed):
+            # Retain the most conservative intervening distance, accounting for
+            # ego motion and approaching velocity through any missed radar hit.
+            road_gap=max(0.,min(g-(self.travel-t)-(.1*(8-i))*(v+1.5) for i,g,v,t in observed))
+        return [*profile,count,len(self.geometry),grade,verified,body,road_gap,post_sight]
 
     def observe(self, obs, detections, local_route, speed, *, route_preview=None, stopline_gap=None):
         frame, previous = obs.get("progress_frame"),self.prior_frame
@@ -210,7 +267,7 @@ class ManeuverModel(GradeModel):
         if (self.high_stopping.shape != (4,) or not np.isfinite(self.high_stopping).all()
                 or np.any(self.high_stopping<=0.) or not 11. < self.high_stopping[3] < 25.):
             raise ValueError("Invalid native high-speed braking envelope")
-        self.signed_preview_ceiling_mps = float(self.high_stopping[3])
+        self.signed_preview_ceiling_mps = min(60./3.6, float(self.high_stopping[3]))
         self.allow_high_speed = True
         self.curve = np.asarray(curve, dtype=float)
         if self.curve.shape != (2,4) or not np.isfinite(self.curve).all() or np.any(self.curve<0.):
@@ -230,22 +287,31 @@ class ManeuverModel(GradeModel):
         delay,quadratic,guard,_=self.high_stopping
         # The stopping trials use a fixed 0.45 brake after a 0.5s coast.
         # Meet that actuation when a real obstruction consumes that envelope.
-        if speed>11. and self.extra[-1]<delay*speed+quadratic*speed**2+guard+self.standoff:
+        if speed>11. and self.extra[-3]<delay*speed+quadratic*speed**2+guard+self.standoff:
             return steer,0.,max(.45,brake)
         return steer,throttle,brake
 
     def _finish_request(self,x,baseline,requested):
         original=super()._finish_request(x,baseline,requested)
         evidence=self.progress_evidence
-        forward,cross,shoulder,camera,boxes,scans,grade,long_sight_m,long_body=map(float,self.extra)
+        forward,cross,shoulder,camera,boxes,scans,grade,long_sight_m,long_body,opposing_stop,post_sight=map(float,self.extra)
         evidence.update(maneuver_prior_request_mps=float(original), maneuver_added_mps=0.,
                         maneuver_binding="prior",camera_stop_horizon_m=camera,
                         off_path_camera_candidates=int(boxes), shoulder_sight_m=shoulder,
                         speed_regime="urban",cruise_ceiling_mps=11.,high_speed_sight_m=long_sight_m,
-                        long_body_gap_m=long_body)
+                        long_body_gap_m=long_body,confirmed_post_sight_m=post_sight)
+        # This right-hand-traffic driver has no independent detector that can
+        # establish an all-clear across the opposing lanes of a major left
+        # turn. Keep the validated yield approach throughout that maneuver.
+        # The signed route headings give this geometry before arriving.
+        left_turn=float(np.sum(x[list(BENDS)]))<-.60 and x[INDEX["junction_gap"]]<42.
+        if left_turn:
+            evidence["maneuver_binding"]="left_turn_yield"
+            return original
+        opposing_near=min(x[INDEX[n]] for n in ("oncoming_gap","oncoming_gap_recent","oncoming_near_gap_recent"))<34.
         if (scans<3 or camera<=0. or self.profile[5]<60. or x[INDEX["mapped_lamp_gap_m"]]<59.
                 or max(self.light_window,default=0.)>.25 or
-                min(x[INDEX[n]] for n in ("oncoming_gap","oncoming_gap_recent","oncoming_near_gap_recent"))<34.
+                (opposing_near and opposing_stop<=self.standoff)
                 or max(x[INDEX[n]] for n in ("rgb_person_height","rgb_person_height_recent"))>.055):
             return original
         raw=min(x[INDEX[n]] for n in ("path_body_lidar","path_body_radar","path_body_lidar_recent","path_body_radar_recent"))
@@ -254,7 +320,12 @@ class ManeuverModel(GradeModel):
         # An adjacent street needs opposing-side visibility. Roadside low
         # surfaces may supplement that sight only away from an intersection.
         use_shoulder=shoulder if x[INDEX["junction_gap"]]>18. else 0.
+        if long_sight_m>25. and x[INDEX["junction_gap"]]>35.:
+            cross=max(cross,post_sight)
         sight=min(forward,max(cross,use_shoulder),max(grade,raw),camera)
+        if opposing_near:
+            sight=min(sight,opposing_stop)
+            evidence["opposing_route_stop_m"]=opposing_stop
         if sight<=self.standoff:
             return original
         bends = np.abs(x[list(BENDS)])/BEND_LENGTHS
@@ -273,12 +344,16 @@ class ManeuverModel(GradeModel):
         budget=max(0.,free-self.standoff-guard)
         stop_speed=2.*budget/(delay+np.sqrt(delay*delay+4.*quadratic*budget))
         if (self.allow_high_speed and limits["posted"]>11. and camera==60. and
-                not boxes and cross>=12. and forward>=16. and raw>=30. and
-                self.tactical_speed_limit is None and stop_speed>11.):
-            ceiling=min(tested,limits["posted"])
+                not boxes and not opposing_near and cross>=12. and forward>=16. and raw>=30. and
+                self.tactical_speed_limit is None and stop_speed>self.stopping[3]):
+            # As the verified range contracts through the urban speed, track
+            # its continuous physical bound. The 29–41 km/h overlap is covered
+            # by the low-speed cued stops and residual native braking samples.
+            ceiling=min(60./3.6,tested,limits["posted"]) if stop_speed>11. else 11.
             limits["demonstrated_cruise"]=ceiling
             limits["maneuver_sight"]=stop_speed
-            evidence.update(speed_regime="verified_open_road",cruise_ceiling_mps=float(ceiling),
+            evidence.update(speed_regime="verified_open_road" if stop_speed>11. else "urban",
+                            cruise_ceiling_mps=float(ceiling),
                             high_speed_braking_cap_mps=float(stop_speed))
         if self.signed_speed_limit is not None:
             limits["signed_approach"]=self.signed_speed_limit
