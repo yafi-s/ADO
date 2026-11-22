@@ -6,7 +6,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
-from zipfile import ZipFile
+from zipfile import ZipFile, ZipInfo
 
 from tools import build_windows_release as release
 
@@ -26,6 +26,15 @@ def fixture_zip(members):
             archive.writestr(release.PREFIX + name, contents)
     stream.seek(0)
     return ZipFile(stream)
+
+
+def fixture_trial_sources(sources, second):
+    stream = BytesIO()
+    with ZipFile(stream, "w") as archive:
+        for name, payload in sources.items():
+            member = ZipInfo(name, (2026, 11, 21, 19, 5, second))
+            archive.writestr(member, payload)
+    return stream.getvalue()
 
 
 def city_film(complete, surround=False, pace=False):
@@ -389,42 +398,85 @@ class WindowsReleaseTests(unittest.TestCase):
                 release.maneuver_fit_sources(archive, fit, {"code_sha256": sources})
 
     @patch.object(release, "verify_video")
-    @patch.object(release, "MANEUVERS_TRIAL_CASES", {"slow"})
-    def test_maneuver_trials_verify_complete_recording_even_if_baseline_stops(self, verify_video):
+    @patch.object(release, "MANEUVERS_TRIAL_CASES", {"board", "slow", "blocked"})
+    def test_maneuver_trials_require_the_exact_registered_pair_and_keep_original_cases_pinned(self, verify_video):
         base_model, candidate_model = b"baseline weights", b"candidate weights"
         artifacts = {"trace.jsonl.gz": gzip.compress(b'{"frame": 21}\n'),
                      "reference.jsonl.gz": gzip.compress(b'{"frame": 21}\n'),
                      "observations.npz": b"inference features"}
+        source_path = "crosswalk/maneuver_trials.py"
+        pins = {release.TRIAL_EVALUATOR_PIN: {source_path: b"original evaluator\n"},
+                release.TRIAL_AMENDMENT_PIN: {source_path: b"registered amended evaluator\n"}}
         tactical = sha256(b"tactics")
         members = {"models/city-maneuvers/fit.json": json_bytes({"base_sha256": sha256(base_model)}),
                    f"{release.PROGRESS_MEDIA}/manifest.json": json_bytes({"policy": {"tactical_sha256": tactical}})}
+        windows = {"board": [67, -2, 48., 145.], "slow": [67, -2, 94., 231.], "blocked": [67, -2, 94., 231.]}
         for arm, schema, model in (("baseline", release.PROGRESS_SCHEMA, base_model),
                                    ("candidate", release.MANEUVERS_SCHEMA, candidate_model)):
             folder = f"{release.MANEUVERS_TRIALS}/{arm}"
-            trial = f"{folder}/slow"
-            common = dict(seed=212, policy_schema=schema, model_sha256=sha256(model),
-                          execution_source_sha256=sha256(b"source snapshot"))
-            protocol = dict(common, cases=["slow"], windows={"slow": [67, -2, 94., 215.]}, step_s=.1,
+            second = 2 if arm == "baseline" else 4
+            original = fixture_trial_sources(pins[release.TRIAL_EVALUATOR_PIN], second)
+            amended = fixture_trial_sources(pins[release.TRIAL_AMENDMENT_PIN], second)
+            common = dict(seed=212, policy_schema=schema, model_sha256=sha256(model))
+            protocol = dict(common, cases=list(windows), windows=windows, step_s=.1, launch_route_stations_m={},
                             requested_quality="High", map="Town03_Opt", weather="ClearNoon",
-                            tactical_model_sha256=tactical)
-            summary = dict(common, first_frame=21, last_frame=21, frames=1, case="slow", capture_complete=True,
-                           outcome="max_steps" if arm == "baseline" else "complete", producer=release.CITY_PRODUCER,
-                           geometry=dict(road_id=67, lane_id=-2, start_s=94., end_s=215.), front_sha256=sha256(b"camera"),
-                           artifact_sha256={name: sha256(data) for name, data in artifacts.items()})
-            members.update({f"{folder}/checkpoint.npz": model, f"{folder}/study-source.zip": b"source snapshot",
+                            tactical_model_sha256=tactical, execution_source_sha256=sha256(original))
+            amendment = dict(protocol, cases=list(release.AMENDED_TRIAL_CASES),
+                             windows={case: windows[case] for case in release.AMENDED_TRIAL_CASES},
+                             registration_pin=release.TRIAL_AMENDMENT_PIN, base_evaluator_pin=release.TRIAL_EVALUATOR_PIN,
+                             production_pin=release.TRIAL_PRODUCTION_PIN, execution_source_sha256=sha256(amended))
+            del amendment["launch_route_stations_m"]
+            qualification = dict(arm=arm, model_sha256=sha256(model), pin=release.TRIAL_PRODUCTION_PIN,
+                                 evaluator_pin=release.TRIAL_EVALUATOR_PIN, native_protocol_sha256=sha256(json_bytes(protocol)))
+            members.update({f"{folder}/checkpoint.npz": model, f"{folder}/study-source.zip": original,
                             f"{folder}/tactical-model.json": b"tactics", f"{folder}/protocol.json": json_bytes(protocol),
-                            f"{folder}/capture-status.json": json_bytes({"slow": True}), f"{trial}/front.mp4": b"camera",
-                            f"{trial}/summary.json": json_bytes(summary)})
-            members.update({f"{trial}/{name}": data for name, data in artifacts.items()})
+                            f"{folder}/qualification.json": json_bytes(qualification),
+                            f"{folder}/{release.TRIAL_AMENDMENT}.json": json_bytes(amendment),
+                            f"{folder}/{release.TRIAL_AMENDMENT}.zip": amended,
+                            f"{folder}/capture-status.json": json_bytes(dict.fromkeys(windows, True))})
+            for case, (road, lane, start, end) in windows.items():
+                trial = f"{folder}/{case}"
+                summary = dict(common, first_frame=21, last_frame=21, frames=1, case=case, capture_complete=True,
+                               outcome="max_steps" if arm == "baseline" else "complete", producer=release.CITY_PRODUCER,
+                               geometry=dict(road_id=road, lane_id=lane, start_s=start, end_s=end, route_start_m=200. + start),
+                               front_sha256=sha256(b"camera"),
+                               execution_source_sha256=sha256(amended if case in amendment["cases"] else original),
+                               artifact_sha256={name: sha256(data) for name, data in artifacts.items()})
+                members.update({f"{trial}/summary.json": json_bytes(summary), f"{trial}/front.mp4": b"camera"})
+                members.update({f"{trial}/{name}": data for name, data in artifacts.items()})
         capture = dict(policy={"sha256": sha256(candidate_model), "tactical_sha256": tactical},
                        quality_requested="High", frame_period_s=.1)
-        with fixture_zip(members) as archive:
-            release.verify_maneuver_trials(archive, capture, Path("unused"))
-        self.assertEqual(verify_video.call_count, 2)
-        protocol["windows"]["slow"][-1] = 214.
-        members[f"{folder}/protocol.json"] = json_bytes(protocol)
-        with fixture_zip(members) as archive, self.assertRaisesRegex(ValueError, "trial identity"):
-            release.verify_maneuver_trials(archive, capture, Path("unused"))
+        with patch.object(release, "pinned_trial_sources", side_effect=pins.__getitem__):
+            with fixture_zip(members) as archive:
+                release.verify_maneuver_trials(archive, capture, Path("unused"))
+            self.assertEqual(verify_video.call_count, 6)
+
+            amendment_path = f"{folder}/{release.TRIAL_AMENDMENT}.json"
+            board_path = f"{folder}/board/summary.json"
+            slow_path = f"{folder}/slow/summary.json"
+            board = json.loads(members[board_path])
+            slow = json.loads(members[slow_path])
+            wrong_window = dict(amendment, windows={**amendment["windows"], "slow": [67, -2, 94., 214.]})
+            wrong_geometry = dict(slow["geometry"], route_start_m=999.)
+            failures = (
+                (amendment_path, dict(amendment, cases=["slow", "board"]), "Wrong registered"),
+                (amendment_path, wrong_window, "Wrong registered"),
+                (amendment_path, dict(amendment, tactical_model_sha256="different choice"), "Wrong registered"),
+                (amendment_path, dict(amendment, registration_pin="unregistered"), "Wrong registered"),
+                (board_path, dict(board, execution_source_sha256=sha256(amended)), "Wrong native trial identity"),
+                (slow_path, dict(slow, execution_source_sha256=sha256(original)), "Wrong native trial identity"),
+                (slow_path, dict(slow, geometry=wrong_geometry), "different native fixture geometry"),
+            )
+            for path, payload, error in failures:
+                with self.subTest(path=path, error=error), fixture_zip({**members, path: json_bytes(payload)}) as archive:
+                    with self.assertRaisesRegex(ValueError, error):
+                        release.verify_maneuver_trials(archive, capture, Path("unused"))
+
+            source_blob = f"{folder}/{release.TRIAL_AMENDMENT}.zip"
+            edited = fixture_trial_sources({source_path: b"unregistered evaluator\n"}, 4)
+            replacement = {source_blob: edited, amendment_path: json_bytes(dict(amendment, execution_source_sha256=sha256(edited)))}
+            with fixture_zip({**members, **replacement}) as archive, self.assertRaisesRegex(ValueError, "Wrong pinned source"):
+                release.verify_maneuver_trials(archive, capture, Path("unused"))
 
     @patch.object(release, "verify_video")
     def test_pace_film_verifies_eleven_events_and_an_exact_replay_pack(self, verify_video):

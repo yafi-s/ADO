@@ -4,6 +4,7 @@ import argparse
 from collections import Counter, deque
 import gzip
 import hashlib
+from io import BytesIO
 import json
 from math import dist, isfinite
 from pathlib import Path, PurePosixPath
@@ -80,8 +81,14 @@ MANEUVERS_CHOICE = "models/route-maneuvers/choice.json"
 MANEUVERS_STOPPING = f"{MANEUVERS_RESULTS}/speed/stopping-envelope.json"
 MANEUVERS_TRIALS = f"{MANEUVERS_RESULTS}/trials"
 MANEUVERS_TRIAL_CASES = {"cones", "board", "slow", "blocked", "no-lead", "departing", "clear-bend", "inside-curb",
-                         "outside-curb", "person", "reopened"}
-TRIAL_RECEIPTS = ("protocol.json", "capture-status.json", "checkpoint.npz", "study-source.zip", "tactical-model.json")
+                         "outside-curb", "person", "reopened", "closing-rejoin", "uncooperative-rear"}
+AMENDED_TRIAL_CASES = ("slow", "blocked")
+TRIAL_PRODUCTION_PIN = "9bd6dafa0348d37e163a3acf8de553f642bebf45"
+TRIAL_EVALUATOR_PIN = "5510f55c2115f7600b4d56816ce66ffc31121775"
+TRIAL_AMENDMENT_PIN = "0e9fa722d117a1efce85bc3e2eeaeac6ffd62ccb"
+TRIAL_AMENDMENT = "isolated-fixture-amendment"
+TRIAL_RECEIPTS = ("protocol.json", "qualification.json", "capture-status.json", "checkpoint.npz", "study-source.zip",
+                  "tactical-model.json", f"{TRIAL_AMENDMENT}.json", f"{TRIAL_AMENDMENT}.zip")
 TRIAL_ARTIFACTS = ("trace.jsonl.gz", "reference.jsonl.gz", "observations.npz")
 # The published v0.6 Git tree retains the optional historical raw sweeps.
 PROGRESS_ARCHIVE_COMMIT = "51b1cbb25837eb43693b775ccb14e68bffc4084b"
@@ -745,18 +752,41 @@ def verify_maneuver_audit(archive, capture, telemetry):
     require(needed <= witnessed, "The independent audit does not show both actual passes in the legal alternate lane")
 
 
+def pinned_trial_sources(revision):
+    renderer = "tools/render_maneuver_trials.py"
+    contents = git("archive", "--format=zip", revision, "--", "crosswalk", renderer)
+    with ZipFile(BytesIO(contents)) as source:
+        return {name: source.read(name).replace(b"\r\n", b"\n") for name in source.namelist()
+                if name == renderer or re.fullmatch(r"crosswalk/[a-zA-Z0-9_]+\.py", name)}
+
+
+def verify_trial_sources(archive, name, digest, pinned):
+    verify_digest(archive, name, digest)
+    with archive.open(PREFIX + name) as blob, ZipFile(blob) as source:
+        names = source.namelist()
+        require(len(names) == len(pinned) and set(names) == pinned.keys(), f"Wrong pinned source inventory at {name}")
+        hashes = {}
+        for member in names:
+            data = source.read(member)
+            require(data.replace(b"\r\n", b"\n") == pinned[member], f"Wrong pinned source at {name}: {member}")
+            hashes[member] = hashlib.sha256(data).hexdigest()
+    return hashes
+
+
 def verify_maneuver_trials(archive, capture, scratch):
     fit = read_json(archive, "models/city-maneuvers/fit.json")
     baseline = read_json(archive, f"{PROGRESS_MEDIA}/manifest.json")["policy"]
     candidate = capture["policy"]
     arms = (("baseline", PROGRESS_SCHEMA, fit["base_sha256"], baseline["tactical_sha256"]),
             ("candidate", MANEUVERS_SCHEMA, candidate["sha256"], candidate["tactical_sha256"]))
-    protocols = {}
+    original_sources = pinned_trial_sources(TRIAL_EVALUATOR_PIN)
+    amended_sources = pinned_trial_sources(TRIAL_AMENDMENT_PIN)
+    matched = {}
     for arm, schema, checkpoint, tactical in arms:
         folder = f"{MANEUVERS_TRIALS}/{arm}"
-        protocol = read_json(archive, f"{folder}/protocol.json")
+        protocol_path = f"{folder}/protocol.json"
+        protocol = read_json(archive, protocol_path)
         statuses = read_json(archive, f"{folder}/capture-status.json")
-        protocols[arm] = protocol
         require(protocol["policy_schema"] == schema and protocol["model_sha256"] == checkpoint
                 and protocol["tactical_model_sha256"] == tactical
                 and len(protocol["cases"]) == len(MANEUVERS_TRIAL_CASES)
@@ -764,18 +794,45 @@ def verify_maneuver_trials(archive, capture, scratch):
                 and protocol["step_s"] == capture["frame_period_s"] and protocol["map"] == CITY_PRODUCER["map"]
                 and protocol["requested_quality"] == capture["quality_requested"],
                 f"Wrong City Maneuvers trial protocol for {arm}")
+        qualification = read_json(archive, f"{folder}/qualification.json")
+        require(qualification["pin"] == TRIAL_PRODUCTION_PIN and qualification["evaluator_pin"] == TRIAL_EVALUATOR_PIN
+                and qualification["arm"] == arm and qualification["model_sha256"] == checkpoint,
+                f"Wrong City Maneuvers trial qualification for {arm}")
+        verify_digest(archive, protocol_path, qualification["native_protocol_sha256"])
         verify_digest(archive, f"{folder}/checkpoint.npz", checkpoint)
-        verify_digest(archive, f"{folder}/study-source.zip", protocol["execution_source_sha256"])
         verify_digest(archive, f"{folder}/tactical-model.json", protocol["tactical_model_sha256"])
+        original = verify_trial_sources(archive, f"{folder}/study-source.zip", protocol["execution_source_sha256"],
+                                        original_sources)
+
+        amendment = read_json(archive, f"{folder}/{TRIAL_AMENDMENT}.json")
+        common_settings = ("seed", "weather", "map", "step_s", "requested_quality")
+        revised_windows = {case: [67, -2, 94., 231.] for case in AMENDED_TRIAL_CASES}
+        launch_stations = protocol["launch_route_stations_m"]
+        require(amendment["registration_pin"] == TRIAL_AMENDMENT_PIN
+                and amendment["base_evaluator_pin"] == TRIAL_EVALUATOR_PIN
+                and amendment["production_pin"] == TRIAL_PRODUCTION_PIN
+                and amendment["cases"] == list(AMENDED_TRIAL_CASES)
+                and amendment["seed"] == 212
+                and amendment["windows"] == revised_windows == {case: protocol["windows"][case] for case in revised_windows}
+                and amendment.get("launch_route_stations_m", {}) == {case: launch_stations[case] for case in revised_windows
+                                                                      if case in launch_stations}
+                and all(amendment[key] == protocol[key] for key in (*common_settings, "policy_schema", "model_sha256",
+                                                                    "tactical_model_sha256")),
+                f"Wrong registered isolated-fixture amendment for {arm}")
+        revised = verify_trial_sources(archive, f"{folder}/{TRIAL_AMENDMENT}.zip", amendment["execution_source_sha256"],
+                                       amended_sources)
+        trial_geometries = {}
         for case in protocol["cases"]:
             trial = f"{folder}/{case}"
             summary = read_json(archive, f"{trial}/summary.json")
             geometry = summary["geometry"]
+            trial_geometries[case] = geometry
+            trial_protocol = amendment if case in AMENDED_TRIAL_CASES else protocol
             require(statuses[case] is summary["capture_complete"] is True and summary["case"] == case
                     and summary["policy_schema"] == schema and summary["model_sha256"] == checkpoint
                     and summary["producer"] == CITY_PRODUCER and summary["seed"] == protocol["seed"]
-                    and summary["execution_source_sha256"] == protocol["execution_source_sha256"]
-                    and [geometry[key] for key in ("road_id", "lane_id", "start_s", "end_s")] == protocol["windows"][case]
+                    and summary["execution_source_sha256"] == trial_protocol["execution_source_sha256"]
+                    and [geometry[key] for key in ("road_id", "lane_id", "start_s", "end_s")] == trial_protocol["windows"][case]
                     and summary["last_frame"] - summary["first_frame"] + 1 == summary["frames"] > 0,
                     f"Wrong native trial identity or exposure interval at {trial}")
             for name in TRIAL_ARTIFACTS:
@@ -787,8 +844,9 @@ def verify_maneuver_trials(archive, capture, scratch):
                             f"Unsynchronized {name} exposures at {trial}")
             verify_digest(archive, f"{trial}/front.mp4", summary["front_sha256"])
             verify_video(archive, f"{trial}/front.mp4", summary["frames"], scratch)
-    require(all(protocols["baseline"][key] == protocols["candidate"][key] for key in ("windows", "seed", "weather")),
-            "City Maneuvers benchmarks used different roads, seeds or weather")
+        matched[arm] = (tuple(protocol[key] for key in common_settings), launch_stations, trial_geometries, original, revised)
+    require(matched["baseline"] == matched["candidate"],
+            "City Maneuvers benchmarks used different native fixture geometry, conditions or evaluator sources")
 
 
 def verify_city_life_score(capture, telemetry, replay):
