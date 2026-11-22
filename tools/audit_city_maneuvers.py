@@ -41,7 +41,7 @@ def spans(mask):
     return np.flatnonzero(np.diff(np.r_[False, mask, False])).reshape(-1, 2)
 
 
-def load_capture(folder, reference, position_journal, focused=False):
+def load_capture(folder, reference, position_journal, focused=False, native_sector=False):
     if (folder / "manifest.json").is_file():
         manifest = read(folder / "manifest.json")
         telemetry = folder / "telemetry.json"
@@ -108,6 +108,21 @@ def load_capture(folder, reference, position_journal, focused=False):
             verified_focused_trace_and_footprint=True,
             ego_pose_resolution="Native ego polygon in XY. Rounded pose and level pitch/roll for height support.",
         )
+    if native_sector:
+        protocol_path = folder / "protocol.json"
+        protocol = read(protocol_path)
+        archived_source = sha256(folder / "source.zip")
+        if (protocol["model_sha256"] != manifest["policy"]["sha256"]
+                or protocol["source_sha256"] != archived_source):
+            raise ValueError("Native sector and archived execution inputs disagree")
+        with gzip.open(reference, "rt", encoding="utf-8") as stream:
+            for row, sample in zip(rows, (json.loads(line) for line in stream), strict=True):
+                if any(row[key] != sample[key] for key in ("frame", "sim_time", "progress_m")):
+                    raise ValueError("Native sector position journal does not match its trace")
+                row["ego_pose"] = sample["ego_pose"]
+        source.update(source_pin=protocol["pin"], source_archive_sha256=archived_source,
+                      sector_protocol_sha256=sha256(protocol_path),
+                      ego_pose_resolution="Exact native six-axis ego poses from the sector witness")
     if position_journal is not None:
         if any("ego_pose" in row for row in rows):
             raise ValueError("The primary tape already has full native ego pose")
@@ -205,6 +220,22 @@ class Geometry:
             if len(points) > 1:
                 alternatives[side] = LineString(points)
         return dict(start=start, forward=forward, length=length, arc=arc, source=source, alternatives=alternatives)
+
+
+def shared_route_prefix(route, prefix_file):
+    prior = read(prefix_file)
+    count = len(prior["samples"])
+    if prior["opendrive_sha256"] != route["opendrive_sha256"] or count >= len(route["samples"]):
+        raise ValueError("The comparison requires a shorter surveyed route on the same OpenDRIVE map")
+    for original, current in zip(prior["samples"], route["samples"][:count], strict=True):
+        keys = ("road", "section", "lane", "junction")
+        if (any(original[key] != current[key] for key in keys)
+                or math.dist(original["xyz"], current["xyz"]) > .015
+                or abs(original["station_m"] - current["station_m"]) > .015):
+            raise ValueError("The recording does not share the original surveyed route prefix")
+    if abs(prior["route_length_m"] - prior["samples"][-1]["station_m"]) > .015:
+        raise ValueError("The prior route endpoint disagrees with its surveyed station")
+    return prior
 
 
 def project(points, corridor):
@@ -409,6 +440,8 @@ def measure_actors(rows, stream, geometry, ego_blueprint):
     cache, frames, records, unknown = {}, [], {}, Counter()
     density = {str(r): Counter(scored=0, cars=0, pedestrians=0, both=0, two_each=0) for r in RADII}
     for i, (row, reference) in enumerate(zip(rows, stream, strict=True)):
+        if "observer_map" in reference:
+            reference = {**reference, **reference["observer_map"]}
         pose = row["ego_pose"]
         x, y, z = (pose[k] for k in ("x", "y", "z"))
         if (row["frame"] != reference["frame"] or abs(row["sim_time"] - reference["sim_time"]) > .0001
@@ -772,12 +805,13 @@ def inspect_range(rows, geometry, ranges, inventory, wanted):
 
 
 def audit(folder, reference, route_path, ranges=None, inventory=None, range_frames=(), position_journal=None,
-          focused=False):
-    manifest, rows, source = load_capture(folder, reference, position_journal, focused)
+          focused=False, prefix_route=None, native_sector=False):
+    manifest, rows, source = load_capture(folder, reference, position_journal, focused, native_sector)
     summary = manifest["summary"]
     route = read(route_path)
     if route["route_id"] != summary["route_id"] or abs(route["route_length_m"] - summary["route_length_m"]) > .03:
         raise ValueError("OpenDRIVE route differs from the capture")
+    prefix = shared_route_prefix(route, prefix_route) if prefix_route is not None else None
     geometry = Geometry(route)
     time = np.asarray([r["sim_time"] for r in rows])
     frames = np.asarray([r["frame"] for r in rows])
@@ -941,6 +975,25 @@ def audit(folder, reference, route_path, ranges=None, inventory=None, range_fram
         straddling_moving_separation=moving_separation(rows, physical),
         maneuver_speed_consistency=maneuver_speed_consistency(rows, physical, summary),
     )
+    indices = np.arange(len(rows))
+    split = np.r_[0, np.flatnonzero(np.diff(posted)) + 1, len(rows)]
+    old_course = station <= prefix["route_length_m"] if prefix is not None else None
+    islands = []
+    for lo, hi in zip(split[:-1], split[1:], strict=True):
+        region = (indices >= lo) & (indices < hi)
+        island = dict(posted_kmh=float(posted[lo]), **stats(region))
+        if old_course is not None:
+            island.update(shared_prefix=stats(region & old_course), extension=stats(region & ~old_course))
+        islands.append(island)
+    result["signed_limit_islands"] = islands
+    if prefix is not None:
+        portions = {}
+        for key, mask in (("shared_prefix", old_course), ("extension", ~old_course)):
+            portions[key] = dict(whole=stats(mask), posted_90=stats(mask & (posted == 90.)))
+        result["route_comparison"] = dict(
+            original_route_id=prefix["route_id"], original_route_sha256=sha256(prefix_route),
+            shared_route_to_m=prefix["route_length_m"], **portions,
+        )
     phases = tactical_phases(rows)
     if phases["frame_counts"]:
         result["tactical_decisions"] = phases
@@ -958,13 +1011,17 @@ if __name__ == "__main__":
     cli.add_argument("--ranges", type=Path)
     cli.add_argument("--range-inventory", type=Path)
     cli.add_argument("--range-frames", type=int, nargs="+", default=[])
-    cli.add_argument("--position-journal", type=Path, help="Aligned rounded native poses for a rehearsal trace")
-    cli.add_argument("--focused", action="store_true", help="Use the exact ego polygon recorded by a focused trial")
+    poses = cli.add_mutually_exclusive_group()
+    poses.add_argument("--position-journal", type=Path, help="Aligned rounded native poses for a rehearsal trace")
+    poses.add_argument("--focused", action="store_true", help="Use the exact ego polygon recorded by a focused trial")
+    poses.add_argument("--native-sector", action="store_true", help="Use exact native poses from a sector trial")
+    cli.add_argument("--shared-prefix-route", type=Path,
+                     help="Survey of the original route to compare against an extended drive")
     args = cli.parse_args()
     if (args.ranges is None) != (args.range_inventory is None) or (args.ranges is None and args.range_frames):
         cli.error("Supply the range directory and sealed inventory together")
     result = audit(args.drive, args.reference, args.route, args.ranges, args.range_inventory,
-                   args.range_frames, args.position_journal, args.focused)
+                   args.range_frames, args.position_journal, args.focused, args.shared_prefix_route, args.native_sector)
     with args.output.open("x", encoding="utf-8", newline="\n") as stream:
         json.dump(result, stream, indent=2, allow_nan=False)
         stream.write("\n")

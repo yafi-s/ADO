@@ -1,4 +1,5 @@
 """Serverless native Town03 route checks, including the vehicle footprint during the pass."""
+from itertools import accumulate, groupby
 import math
 import os
 from pathlib import Path
@@ -25,6 +26,20 @@ def angle(degrees):
     return (degrees + 180.0) % 360.0 - 180.0
 
 
+def pose_values(transform):
+    p, r = transform.location, transform.rotation
+    return p.x, p.y, p.z, r.pitch, r.yaw, r.roll
+
+
+def waypoint_values(waypoint):
+    return waypoint.id, lane(waypoint), waypoint.s, waypoint.junction_id, pose_values(waypoint.transform)
+
+
+def junction_traversals(points):
+    return [junction for junction, _ in groupby(p.junction_id if p.is_junction else None for p in points)
+            if junction is not None]
+
+
 @unittest.skipUnless(MAP.is_file(), "Set CARLA_TOWN03_XODR or CARLA_ROOT for native Town03 checks")
 class UrbanMapTests(unittest.TestCase):
     @classmethod
@@ -49,6 +64,73 @@ class UrbanMapTests(unittest.TestCase):
         self.assertEqual(duplicate.sites, self.course.sites)
         with self.assertRaisesRegex(ValueError, "destination"):
             urban_route(self.map, destination="missing")
+
+    def test_market_loop_keeps_the_exact_market_prefix_and_encounter_anchors(self):
+        for seed in (0, 211, 212, 241):
+            with self.subTest(seed=seed):
+                original = urban_route(self.map, seed, "market")
+                extended = urban_route(self.map, seed, "market-loop")
+                self.assertEqual(extended.destination, "market-loop")
+                self.assertEqual(extended.market_prefix_count, len(original.points))
+                self.assertEqual([waypoint_values(p) for p in original.points],
+                                 [waypoint_values(p) for p in extended.points[:extended.market_prefix_count]])
+                self.assertEqual(extended.sites, original.sites)
+                for name, index in original.sites.items():
+                    self.assertEqual(waypoint_values(extended.points[extended.sites[name]]),
+                                     waypoint_values(original.points[index]))
+                self.assertEqual(extended.left_turn, original.left_turn)
+                self.assertEqual(tuple(map(waypoint_values, extended.oncoming)),
+                                 tuple(map(waypoint_values, original.oncoming)))
+                a, b = original.lane_change, extended.lane_change
+                self.assertEqual((b.start, b.end, b.bus, b.source_lane, b.target_lane, pose_values(b.bus_pose)),
+                                 (a.start, a.end, a.bus, a.source_lane, a.target_lane, pose_values(a.bus_pose)))
+
+    def test_market_loop_follows_native_return_connectors_and_measured_extents(self):
+        route = urban_route(self.map, 212, "market-loop")
+        points = route.points
+        market_end = route.market_prefix_count - 1
+        self.assertEqual((route.market_prefix_count, len(points)), (1439, 1737))
+        roads = [key for key, _ in groupby(points[:market_end + 1], key=lane)]
+        self.assertEqual(roads, [
+            (24, -1), (139, -1), (76, -1), (78, -1), (79, -1), (80, -1), (1059, -1), (47, 1),
+            (1363, 1), (67, -2), (100, -2), (68, -2), (1959, -2), (69, -2), (271, -1), (4, 3), (4, 2),
+            (874, 2), (3, 2), (831, 1), (20, -1), (1829, -1), (21, -1), (1909, -1), (22, -1),
+            (1679, -1), (23, -1),
+        ])
+        self.assertEqual([key for key, _ in groupby(points[market_end:], key=lane)], [
+            (23, -1), (332, -1), (69, 3), (1960, 3), (68, 3), (101, 3), (67, 3),
+        ])
+        self.assertEqual(junction_traversals(points),
+                         [103, 1038, 1352, 82, 1932, 238, 861, 730, 1820, 1901, 1669, 238, 1932, 82])
+        distances = []
+        for previous, following in zip(points, points[1:]):
+            a, b = previous.transform.location, following.transform.location
+            distances.append(math.hypot(b.x - a.x, b.y - a.y))
+        stations = list(accumulate(distances, initial=0.))
+        first_reverse = next(i for i, point in enumerate(points) if lane(point) == (67, 3))
+        self.assertAlmostEqual(stations[market_end], 1416.437782, delta=.002)
+        self.assertAlmostEqual(stations[first_reverse], 1584.890333, delta=.002)
+        self.assertAlmostEqual(stations[-1], 1719.890348, delta=.002)
+        self.assertGreater(min(distances[market_end:]), .73)
+        self.assertLess(max(distances[market_end:]), 1.24)
+        for previous, following in zip(points[market_end:], points[market_end + 1:]):
+            self.assertIn(waypoint_values(following), [waypoint_values(p) for p in previous.next(1.)])
+        reverse = points[first_reverse:]
+        self.assertAlmostEqual(reverse[0].s, 309.922912, places=5)
+        self.assertAlmostEqual(reverse[-1].s, 174.922912, places=5)
+        self.assertTrue(all(a.s > b.s for a, b in zip(reverse, reverse[1:])))
+        for source in reverse:
+            target = source.get_left_lane()
+            self.assertEqual(lane(source), (67, 3))
+            self.assertIsNotNone(target)
+            self.assertEqual(lane(target), (67, 2))
+            self.assertEqual(lane(target.get_right_lane()), (67, 3))
+            self.assertEqual(target.lane_type, carla.LaneType.Driving)
+            self.assertEqual(source.left_lane_marking.type, carla.LaneMarkingType.Broken)
+            self.assertIn(source.lane_change, (carla.LaneChange.Left, carla.LaneChange.Both))
+            self.assertGreaterEqual(min(source.lane_width, target.lane_width), 3.4)
+            self.assertLess(abs(angle(target.transform.rotation.yaw - source.transform.rotation.yaw)), .3)
+            self.assertAlmostEqual(source.transform.location.distance(target.transform.location), 3.5, places=3)
 
     def test_dashed_same_direction_pass_and_full_vehicle_envelope(self):
         c, points = self.course.lane_change, self.course.points
@@ -143,5 +225,9 @@ class UrbanMapTests(unittest.TestCase):
         opposite.get_affected_lane_waypoints.return_value = [r.oncoming[0]]
         index, actor, waypoint = r.signal_site([opposite, valid])
         self.assertEqual((index, actor, waypoint), (start - 5, valid, stop))
+        extended = urban_route(self.map, 17, "market-loop")
+        bound = extended.signal_site([opposite, valid])
+        self.assertEqual((bound[0], bound[1], waypoint_values(bound[2])),
+                         (index, actor, waypoint_values(waypoint)))
         with self.assertRaisesRegex(RuntimeError, "No native signal"):
             r.signal_site([opposite])

@@ -135,3 +135,28 @@ specified end and stayed in the source lane through all 167 occupied
 samples. Both completed with zero contacts and sampled overlaps.
 [Amended moving-lead audit](slow-amended-v07.json) ·
 [Amended blocked-control audit](blocked-amended-v07.json)
+
+## The spaced High sector combined the two passes
+
+Source `da8d343` moved the original stopped sedan to 613.65 m.
+Starting from the predeclared sector launch near 278 m, the driver
+passed both the cones and moving car during the same alternate-lane
+excursion. It entered that lane around 416 m and restored its whole
+body to source at 549.087 m. The required intermediate return and
+separate occupied-gap wait were absent. All 20 moving-vehicle divider
+observations cleared 1 m, and no collision, signal or yield violation
+was recorded.
+
+The sector then timed out at 581.841 m while stopped in source.
+The native staged sedan remained parked with 27.01 m of bumper room.
+Its scripted release requires approaching within 20 m. Adjacent
+occupancy blocked a pass, and the source-lane request stayed at zero.
+[Exact six-axis pose and sector score](spaced-continuous-failed.json)
+
+The corresponding later-gap sector also combined the two physical
+passes in a single alternate-lane excursion. It restored the source
+lane at 553.017 m and timed out at 582.523 m with the relocated
+sedan's bumper 26.33 m ahead. Its 18 moving divider comparisons
+all exceeded 1 m. Native contacts and signal and yield
+violations were all zero.
+[Later-gap six-axis sector score](spaced-later-gap-failed.json)
