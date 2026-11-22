@@ -78,6 +78,19 @@ def load_capture(folder, reference, position_journal, focused=False, native_sect
     source = {"telemetry_sha256": digest, "population_sha256": ref_hash,
               "capture_id": manifest.get("capture_id", folder.name),
               "seal_verified": expected is not None and expected_reference is not None}
+    policy = manifest.get("policy", {})
+    policy_files = {
+        "tactical_sha256": "tactical-model.json",
+        "stationary_intent_sha256": "stationary-intent.npz",
+        "driver_bundle_sha256": "stationary-driver.json",
+    }
+    for field, filename in policy_files.items():
+        if field not in policy:
+            continue
+        component = folder / filename
+        if component.is_file() and sha256(component) != policy[field]:
+            raise ValueError(f"Retained {filename} differs from the captured driver")
+        source[field] = policy[field]
     if isinstance(checkout := manifest.get("capture_checkout"), dict):
         source["source_pin"] = checkout.get("head_at_capture_start")
         source["source_archive_sha256"] = checkout.get("source_sha256")

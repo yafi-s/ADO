@@ -1,0 +1,89 @@
+{
+  "status": "interrupted_by_user_pause",
+  "qualified": false,
+  "process": {
+    "tool_session": 29023,
+    "stopped_by": "Ctrl-C",
+    "exit_code": 1,
+    "os_pid": null,
+    "match_after_exit": "No python.exe command matching maneuver_motor_queue_candidate.py or queue-intent-native01."
+  },
+  "native_directory": "C:\\Users\\Yafi\\AppData\\Local\\ADO\\city-maneuvers\\queue-intent-native01\\market-loop-flow-9145\\prefix-continuous",
+  "complete_readable_journal_rows": 405,
+  "last_complete_control": {
+    "frame": 16803,
+    "sim_time": 40.4,
+    "progress_m": 145.271,
+    "speed_mps": 3.592,
+    "maneuver_phase": "keep"
+  },
+  "complete_reference_rows": 405,
+  "last_complete_reference_frame": 16803,
+  "assets": {
+    "checkpoint.npz": {
+      "bytes": 130939,
+      "sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071"
+    },
+    "control-input-contract.json": {
+      "bytes": 865,
+      "sha256": "d35bd1b0d73f7788fb8164befe542822de6242f687e8cf399c774426c16593af"
+    },
+    "front.mjpeg": {
+      "bytes": 21651141,
+      "sha256": "1bd90db24aae4f551457a88b43208b5420ffb7d20fc81f5f2b57188605096fcb"
+    },
+    "live.jsonl": {
+      "bytes": 1845964,
+      "sha256": "59d166e4e611d246f5a30d445ec2076829da8bff447c07fec5f9fff1516bf449"
+    },
+    "protocol.json": {
+      "bytes": 766,
+      "sha256": "440dbeb27b116cf0a0c39dc2bf67a291f90a2f00acdfa0866a20426e04cba106"
+    },
+    "reference-native.jsonl": {
+      "bytes": 2586413,
+      "sha256": "0deb17ff9b349ef8fdaf5d91251fc810d327ec16f3a575359ea54116d60e7447"
+    },
+    "source.zip": {
+      "bytes": 459536,
+      "sha256": "2858f01bf11675b0d5b91aebb96462d5b5bd63915a1fe31803d63629d006c54e"
+    }
+  },
+  "sensor_witness_files": 0,
+  "run_source": {
+    "base_git": "914560faaa57f6592ffdd3e881715b06104344cf",
+    "phase": "prefix",
+    "pace_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+    "route_choice_sha256": "52e04b5ab64550e5f8116e51f8bd3e9614e9740bc8379e0b942b3f2378c6a624",
+    "stationary_intent_sha256": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+    "stationary_intent_inference_sha256": "96f0a316b43d358b6807f84e5b2a85dc14db0042c03b6896ad07fae1cef41e39",
+    "source_vehicle_association_sha256": "2f0001ecd8958ce7b2991c2cdde70e407977050d7fa7d38865530d13639d10f7",
+    "case": "continuous",
+    "files": {
+      "maneuver_motor_queue_candidate.py": "cb155dbcee52aa77915f5f526897d22487ad2d1623b8883e8b4001cee83f1f7b",
+      "maneuver_source_vehicle.py": "2f0001ecd8958ce7b2991c2cdde70e407977050d7fa7d38865530d13639d10f7",
+      "stationary_intent.py": "96f0a316b43d358b6807f84e5b2a85dc14db0042c03b6896ad07fae1cef41e39",
+      "stationary-intent.npz": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+      "market_loop_qualify.py": "855c00279e4020b4887bfc8a4c0aff3642ef2b1bee194078c41a8e38495bd7b4"
+    },
+    "policy_inputs": "Same control NanoDet boxes evaluated once on the original 5 Hz exposure cadence before tactical preview, synchronized lidar/radar and ego transform. Original pace controls, actors and route unchanged."
+  },
+  "registered_request": {
+    "pin": "914560faaa57f6592ffdd3e881715b06104344cf",
+    "phase": "prefix",
+    "case": "continuous",
+    "seed": 212,
+    "start_m": 0.0,
+    "end_m": 715.0,
+    "model_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+    "source_sha256": "2858f01bf11675b0d5b91aebb96462d5b5bd63915a1fe31803d63629d006c54e",
+    "map": "Town03_Opt",
+    "weather": "ClearNoon",
+    "step_s": 0.1,
+    "sensor_configuration": "Stock five-camera surround body and rig, 1280x720 native front optical image, exact control crop of native 100 m lidar and all five native radar sensors; normal episode policy.",
+    "omitted": "Chase movie and the rider-only YOLOX/SurroundPerception pass. RGB NanoDet, map/route, lamp, LiDAR and radar control paths are unmodified."
+  },
+  "limits": "Stopped before the scored stationary-vehicle encounter; no final trace, native grade, encoded movie or success claim. Available raw JPEG and JSONL files are partial retained records. The normal synchronous native episode is not resumable mid-physics state.",
+  "restart_precondition": "On explicit resume, reacquire one exclusive idle High Town03_Opt CARLA host on port 3818 from the host owner; compare all hashes in run_source. Rerun from initial scene into a new directory.",
+  "launcher": "$env:OPENBLAS_NUM_THREADS='1'; $env:OMP_NUM_THREADS='1'; $env:MKL_NUM_THREADS='1'\nSet-Location -LiteralPath 'C:/Users/Yafi/AppData/Local/ADO/city-maneuvers/pin-914560fa'\n& 'A:/Waymo FSD Omniverse/.venv-city/Scripts/python.exe' -u 'A:/Waymo FSD Omniverse/tools/maneuver_motor_queue_candidate.py' --registered-source 'C:/Users/Yafi/AppData/Local/ADO/city-maneuvers/market-loop-flow-9145/prefix-continuous/source.zip' --intent-source 'A:/Waymo FSD Omniverse/crosswalk/stationary_intent.py' --intent-model 'A:/Waymo FSD Omniverse/models/city-maneuvers/stationary-intent.npz' --output 'C:/Users/Yafi/AppData/Local/ADO/city-maneuvers/queue-intent-native02' --phase prefix --case continuous"
+}
