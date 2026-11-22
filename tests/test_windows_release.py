@@ -500,6 +500,114 @@ class WindowsReleaseTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "measured separation"):
                 release.verify_maneuver_audit(archive, capture, telemetry)
 
+    def test_market_loop_route_binds_exact_prefix_and_ordered_native_junctions(self):
+        ids = [*range(1, 12), 4, 6, 7]
+        samples = [dict(junction=None, heading_deg=0., station_m=0.)]
+        for junction in ids:
+            samples.extend((dict(junction=junction, heading_deg=0., station_m=float(len(samples))),
+                            dict(junction=None, heading_deg=0., station_m=float(len(samples) + 1))))
+        prefix = samples[:23]
+        original = dict(route_id="Market", seed=212, opendrive_sha256="Town03 geometry", samples=prefix,
+                        route_length_m=prefix[-1]["station_m"])
+        loop = dict(original, destination="market-loop", route_id="Market Loop", samples=samples,
+                    route_length_m=samples[-1]["station_m"], shared_market_prefix_count=len(prefix),
+                    shared_market_prefix_to_m=original["route_length_m"])
+        original_sha, loop_sha = sha256(json_bytes(original)), sha256(json_bytes(loop))
+        receipt = dict(
+            proposed_survey=dict(file="route-market-loop-212.json", sha256=loop_sha, route_id=loop["route_id"],
+                                 route_length_m=loop["route_length_m"], samples=len(samples), junction_traversals=14,
+                                 unique_junction_ids=sorted(set(ids))),
+            identical_original_prefix=dict(file="route-212.json", sha256=original_sha, route_id=original["route_id"],
+                                           samples=len(prefix), cutoff_m=original["route_length_m"], junction_traversals=11,
+                                           every_sample_and_lane_marking_identical=True))
+        source = dict(route_id=loop["route_id"], route_sha256=loop_sha, map_sha256=loop["opendrive_sha256"])
+        traversals = [dict(junction_id=j, direction="straight", entry_m=2 * i + 1, exit_m=2 * i + 2,
+                           entered_s=2 * i + 1, completed_s=2 * i + 2) for i, j in enumerate(ids)]
+        summary = dict(seed=212, route_length_m=loop["route_length_m"], duration_s=29., junction_traversals=traversals)
+        files = {release.MANEUVERS_ROUTE: json_bytes(original), release.MARKET_LOOP_ROUTE: json_bytes(loop),
+                 release.MARKET_LOOP_SURVEY: json_bytes(receipt)}
+        registration = dict(MARKET_ROUTE_SHA256=original_sha, MARKET_LOOP_ROUTE_SHA256=loop_sha,
+                            MARKET_PREFIX_SAMPLES=len(prefix), MARKET_LOOP_SAMPLES=len(samples))
+        with patch.multiple(release, **registration), fixture_zip(files) as archive:
+            self.assertEqual(release.verify_market_loop_route(archive, source, summary), (loop, original))
+            traversals[-1]["junction_id"] = 8
+            with self.assertRaisesRegex(ValueError, "junction sequence"):
+                release.verify_market_loop_route(archive, source, summary)
+            traversals[-1]["junction_id"] = 7
+        changed = dict(loop, samples=[dict(samples[0], heading_deg=7.), *samples[1:]])
+        changed_sha = sha256(json_bytes(changed))
+        files[release.MARKET_LOOP_ROUTE] = json_bytes(changed)
+        registration["MARKET_LOOP_ROUTE_SHA256"] = source["route_sha256"] = changed_sha
+        with patch.multiple(release, **registration), fixture_zip(files) as archive:
+            with self.assertRaisesRegex(ValueError, "exact surveyed Market route prefix"):
+                release.verify_market_loop_route(archive, source, summary)
+
+    def test_market_loop_timeline_keeps_both_native_sign_islands_and_sensor_regions(self):
+        telemetry = [dict(frame=40 + i, sim_time=round(i * .1, 1), progress_m=station, posted_limit_kmh=posted,
+                          speed_mps=speed, speed_request_mps=speed,
+                          tactical_pass={"maneuver_phase": phase})
+                     for i, (station, posted, speed, phase) in enumerate((
+                         (399., 30, 4., "yield"), (400., 90, 5., "yield"), (401., 90, 7., "yield"),
+                         (1450., 30, 4., None), (1584.890, 90, 15., "left"), (1650., 90, 11., "passing"),
+                         (1719.890, 30, 4., "rejoined")))]
+
+        def stats(rows):
+            def stamp(row):
+                return dict(frame=row["frame"], time_s=row["sim_time"], station_m=row["progress_m"],
+                            actual_kmh=round(row["speed_mps"] * 3.6, 3), target_kmh=round(row["speed_request_mps"] * 3.6, 3))
+
+            if not rows:
+                return {"frames": 0}
+            speeds = [row["speed_mps"] * 3.6 for row in rows]
+            tiers = {str(level): dict.fromkeys(("actual_seconds", "requested_seconds"), round(
+                .1 * sum(speed >= level for speed in speeds), 3)) for level in (45, 50, 55, 60)}
+            return dict(frames=len(rows), seconds=round(.1 * len(rows), 3), entry=stamp(rows[0]), exit=stamp(rows[-1]),
+                        kmh_p10_p50_p95_max=[round(max(speeds), 3)], higher_thresholds=tiers,
+                        over_40_kmh_seconds=round(.1 * sum(speed > 40 for speed in speeds), 3))
+
+        islands = [dict(stats(telemetry[a:b]), posted_kmh=telemetry[a]["posted_limit_kmh"],
+                        shared_prefix=stats(telemetry[a:b] if b <= 3 else []),
+                        extension=stats(telemetry[a:b] if a >= 3 else []))
+                   for a, b in ((0, 1), (1, 3), (3, 4), (4, 6), (6, 7))]
+        original = dict(route_id="Market", route_length_m=1416.437782)
+        audit = dict(signed_limit_islands=islands,
+                     route_comparison=dict(original_route_id="Market", original_route_sha256=release.MARKET_ROUTE_SHA256,
+                                           shared_route_to_m=original["route_length_m"],
+                                           shared_prefix=dict(whole=stats(telemetry[:3]), posted_90=stats(telemetry[1:3])),
+                                           extension=dict(whole=stats(telemetry[3:]), posted_90=stats(telemetry[4:6]))))
+        release.verify_market_loop_timeline(audit, telemetry, original, .1)
+        islands[3]["higher_thresholds"]["45"]["requested_seconds"] = .5
+        with self.assertRaisesRegex(ValueError, "requested speed durations"):
+            release.verify_market_loop_timeline(audit, telemetry, original, .1)
+
+        route = dict(samples=[dict(road=67, lane=3, station_m=station) for station in (1584.890, 1719.890)],
+                     route_length_m=1719.890)
+        frames = {40, 41, 44, 45, 46}
+        capture = dict(maneuver_sweep_windows_m=[[399., 548.], [1584.890, 1719.890 + .001]],
+                       maneuver_sweeps={f"frame-{frame}.npz": "pinned native sweep" for frame in frames})
+        self.assertEqual(release.verify_market_loop_sweep_coverage(capture, telemetry, route), frames)
+        del capture["maneuver_sweeps"]["frame-44.npz"]
+        with self.assertRaisesRegex(ValueError, "occupied station and maneuver bin"):
+            release.verify_market_loop_sweep_coverage(capture, telemetry, route)
+
+    def test_market_loop_lane_move_checks_every_physical_frame_and_its_signed_lane_pair(self):
+        exposures = [dict(frame=i, body_in_source=i == 14, center_in_alternate=i in (12, 13), body_in_alternate=i == 13,
+                          body_within_legal_union=True) for i in range(11, 15)]
+        move = dict(road=67, source_lane=3, alternate_lane=2, side="left", footprint_departs={"frame": 11},
+                    center_crosses={"frame": 12}, whole_body_in_alternate={"frame": 13}, last_alternate_sample={"frame": 13},
+                    restored_source={"frame": 14}, lane_exposures=exposures)
+        event = dict(kind="slow-traffic", source_lane=[67, 3], passing_lane=[67, 2])
+        choice = dict(committed=True, source_lane=[67, 3], target_lane=[67, 2])
+        rows = {frame: dict(tactical_pass=dict(choice), passing_footprint_in_legal_lanes=True) for frame in range(11, 15)}
+        release.verify_market_loop_lane_move(move, event, rows, {12})
+        with self.assertRaisesRegex(ValueError, "contiguous legal lane and native sensor"):
+            release.verify_market_loop_lane_move(dict(move, lane_exposures=exposures[1:]), event, rows, {12})
+        with self.assertRaisesRegex(ValueError, "contiguous legal lane and native sensor"):
+            release.verify_market_loop_lane_move(move, event, rows, {20})
+        rows[12]["tactical_pass"]["source_lane"] = [67, -2]
+        with self.assertRaisesRegex(ValueError, "different lane pair or footprint"):
+            release.verify_market_loop_lane_move(move, event, rows, {12})
+
     def test_maneuver_sequence_matches_the_witnessed_wait_to_actual_controls(self):
         capture = dict(events=[dict(kind="in-lane-obstruction", returned_to_route_s=1.),
                                dict(kind="slow-traffic", occupied_gap_wait_s=2.)],

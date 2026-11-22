@@ -6,6 +6,7 @@ from contextlib import ExitStack, contextmanager
 import gzip
 import hashlib
 from io import BytesIO
+from itertools import groupby
 import json
 from math import dist, isfinite
 from pathlib import Path, PurePosixPath
@@ -78,6 +79,13 @@ MANEUVERS_RESULTS = "results/city-maneuvers"
 MANEUVERS_CAPTURE = f"{MANEUVERS_RESULTS}/capture"
 MANEUVERS_AUDIT = f"{MANEUVERS_RESULTS}/audit/v07.json"
 MANEUVERS_ROUTE = f"{MANEUVERS_RESULTS}/audit/route-212.json"
+MARKET_ROUTE_SHA256 = "9e0628e15f6a27b8d8ed0d3cb06bcc144a97860556028f0f04bda8015ffb9847"
+MARKET_LOOP_ROUTE = f"{MANEUVERS_RESULTS}/audit/route-market-loop-212.json"
+MARKET_LOOP_ROUTE_SHA256 = "f73c2afaa46d66e5d94b90b9df525074f3e60ab2d76aa77b8a96789f03145f14"
+MARKET_LOOP_SURVEY = f"{MANEUVERS_RESULTS}/audit/market-loop-survey.json"
+MARKET_PREFIX_SAMPLES = 1439
+MARKET_LOOP_SAMPLES = 1737
+MARKET_LOOP_LANES = {"in-lane-obstruction": ([67, -2], [67, -1]), "slow-traffic": ([67, 3], [67, 2])}
 MANEUVERS_CHOICE = "models/route-maneuvers/choice.json"
 MANEUVERS_STOPPING = f"{MANEUVERS_RESULTS}/speed/stopping-envelope.json"
 MANEUVERS_TRIALS = f"{MANEUVERS_RESULTS}/trials"
@@ -669,11 +677,13 @@ def verify_maneuver_sequence(capture, telemetry):
 
 def verify_maneuver_capture(archive, capture):
     source = read_json(archive, f"{MANEUVERS_CAPTURE}/capture.json")
-    require(all(source[key] == capture[key] for key in (
+    fields = (
         "capture_id", "trial_id", "producer", "policy", "summary", "passed", "raw_sha256", "first_frame", "last_frame",
         "population_reference_sha256", "population_score_sha256", "capture_source_sha256", "policy_observations_sha256",
-        "maneuver_sweeps", "maneuver_sequence", "capture_checkout")),
-        "City Maneuvers does not match the sealed native capture")
+        "maneuver_sweeps", "maneuver_sequence", "capture_checkout")
+    if capture["summary"].get("destination") == "market-loop":
+        fields += ("maneuver_sweep_windows_m",)
+    require(all(source[key] == capture[key] for key in fields), "City Maneuvers does not match the sealed native capture")
     require(source["raw_sha256"]["telemetry.json"] == capture["sha256"]["telemetry.json"],
             "City Maneuvers telemetry differs from the sealed capture")
     checkout = read_json(archive, f"{MANEUVERS_CAPTURE}/source-checkout.json")
@@ -696,6 +706,163 @@ def verify_maneuver_capture(archive, capture):
         verify_digest(archive, f"{prefix}{name}", digest)
 
 
+def verify_market_loop_route(archive, source, summary):
+    require(source["route_sha256"] == MARKET_LOOP_ROUTE_SHA256, "Market Loop audit uses a different registered route")
+    verify_digest(archive, MARKET_LOOP_ROUTE, MARKET_LOOP_ROUTE_SHA256)
+    verify_digest(archive, MANEUVERS_ROUTE, MARKET_ROUTE_SHA256)
+    route = read_json(archive, MARKET_LOOP_ROUTE)
+    original = read_json(archive, MANEUVERS_ROUTE)
+    prefix_end = original["route_length_m"]
+    samples = route["samples"]
+    require(route["destination"] == "market-loop" and route["route_id"] == source["route_id"]
+            and route["opendrive_sha256"] == original["opendrive_sha256"] == source["map_sha256"]
+            and route["seed"] == original["seed"] == summary["seed"] == 212
+            and len(original["samples"]) == route["shared_market_prefix_count"] == MARKET_PREFIX_SAMPLES
+            and len(samples) == MARKET_LOOP_SAMPLES and original["samples"] == samples[:MARKET_PREFIX_SAMPLES]
+            and route["shared_market_prefix_to_m"] == prefix_end == original["samples"][-1]["station_m"]
+            and abs(route["route_length_m"] - summary["route_length_m"]) <= .001,
+            "Market Loop does not contain the exact surveyed Market route prefix and registered continuation")
+
+    survey = read_json(archive, MARKET_LOOP_SURVEY)
+    extension, prefix = survey["proposed_survey"], survey["identical_original_prefix"]
+    require(extension["file"] == PurePosixPath(MARKET_LOOP_ROUTE).name and extension["sha256"] == MARKET_LOOP_ROUTE_SHA256
+            and extension["route_id"] == route["route_id"] and extension["route_length_m"] == route["route_length_m"]
+            and extension["samples"] == MARKET_LOOP_SAMPLES and extension["junction_traversals"] == 14
+            and prefix["file"] == PurePosixPath(MANEUVERS_ROUTE).name and prefix["sha256"] == MARKET_ROUTE_SHA256
+            and prefix["route_id"] == original["route_id"] and prefix["samples"] == MARKET_PREFIX_SAMPLES
+            and prefix["cutoff_m"] == prefix_end and prefix["junction_traversals"] == 11
+            and prefix["every_sample_and_lane_marking_identical"] is True,
+            "Market Loop survey receipt differs from the archived route and prefix")
+
+    starts, stops = [], []
+    for i, (left, right) in enumerate(zip(samples, samples[1:]), start=1):
+        if left["junction"] is None and right["junction"] is not None:
+            starts.append(i)
+        if left["junction"] is not None and right["junction"] is None:
+            stops.append(i)
+    traversals = summary["junction_traversals"]
+    ids = {samples[i]["junction"] for i in starts}
+    require(len(starts) == len(stops) == len(traversals) == 14 and len(ids) == 11
+            and sorted(ids) == extension["unique_junction_ids"],
+            "Market Loop must complete 14 registered traversals over 11 distinct native junctions")
+    previous_exit = 0.
+    for recorded, start, stop in zip(traversals, starts, stops, strict=True):
+        entry, exit = samples[start], samples[stop]
+        yaw = (exit["heading_deg"] - samples[start - 1]["heading_deg"] + 180.) % 360. - 180.
+        direction = "left" if yaw < -50. else "right" if yaw > 50. else "straight"
+        require(recorded["junction_id"] == entry["junction"] and recorded["direction"] == direction
+                and recorded["entry_m"] == round(entry["station_m"], 2) and recorded["exit_m"] == round(exit["station_m"], 2)
+                and 0 <= previous_exit <= recorded["entered_s"] < recorded["completed_s"] <= summary["duration_s"],
+                "Market Loop native junction sequence differs from the surveyed geometry or has incomplete traversal")
+        previous_exit = recorded["completed_s"]
+    return route, original
+
+
+def verify_market_loop_stats(statistics, rows, period):
+    require(statistics["frames"] == len(rows), "Market Loop statistics omit or duplicate native frames")
+    if not rows:
+        return
+    require(statistics["seconds"] == round(period * len(rows), 3),
+            "Market Loop statistics disagree with the native exposure duration")
+    for point, row in ((statistics["entry"], rows[0]), (statistics["exit"], rows[-1])):
+        require(point["frame"] == row["frame"] and point["time_s"] == row["sim_time"]
+                and point["station_m"] == row["progress_m"]
+                and point["actual_kmh"] == round(3.6 * row["speed_mps"], 3)
+                and point["target_kmh"] == round(3.6 * row["speed_request_mps"], 3),
+                "Market Loop speed island endpoints differ from the native time, station or speed")
+
+
+def verify_market_loop_timeline(audit, telemetry, original, period):
+    cutoff = original["route_length_m"]
+    comparison = audit["route_comparison"]
+    require(comparison["original_route_id"] == original["route_id"]
+            and comparison["original_route_sha256"] == MARKET_ROUTE_SHA256 and comparison["shared_route_to_m"] == cutoff,
+            "Market Loop audit comparison uses a different original route or prefix boundary")
+    portions = {name: [row for row in telemetry if (row["progress_m"] <= cutoff) == shared]
+                for name, shared in (("shared_prefix", True), ("extension", False))}
+    for name, rows in portions.items():
+        verify_market_loop_stats(comparison[name]["whole"], rows, period)
+        verify_market_loop_stats(comparison[name]["posted_90"], [row for row in rows if row["posted_limit_kmh"] == 90], period)
+
+    observed = [(posted, list(rows)) for posted, rows in groupby(telemetry, key=lambda row: row["posted_limit_kmh"])]
+    require(len(audit["signed_limit_islands"]) == len(observed), "Market Loop audit must preserve each native signed-limit island")
+    native_ninety = []
+    for report, (posted, rows) in zip(audit["signed_limit_islands"], observed, strict=True):
+        require(report["posted_kmh"] == posted, "Market Loop signed-limit island disagrees with native telemetry")
+        verify_market_loop_stats(report, rows, period)
+        shared = [row for row in rows if row["progress_m"] <= cutoff]
+        extension = [row for row in rows if row["progress_m"] > cutoff]
+        verify_market_loop_stats(report["shared_prefix"], shared, period)
+        verify_market_loop_stats(report["extension"], extension, period)
+        if posted == 90:
+            native_ninety.append((bool(shared), bool(extension)))
+            speeds = [row["speed_mps"] * 3.6 for row in rows]
+            require(report["kmh_p10_p50_p95_max"][-1] == round(max(speeds), 3)
+                    and report["over_40_kmh_seconds"] == round(period * sum(speed > 40 for speed in speeds), 3),
+                    "Market Loop 90 km/h island pace differs from native speed")
+            for level in (45, 50, 55, 60):
+                observed_level = report["higher_thresholds"][str(level)]
+                require(observed_level["actual_seconds"] == round(period * sum(speed >= level for speed in speeds), 3)
+                        and observed_level["requested_seconds"] == round(period * sum(
+                            row["speed_request_mps"] * 3.6 >= level for row in rows), 3),
+                        "Market Loop measured and requested speed durations differ from a native 90 km/h island")
+    require(native_ninety == [(True, False), (False, True)],
+            "Market Loop needs two distinct measured 90 km/h islands on the shared route and the extension")
+
+
+def verify_market_loop_sweep_coverage(capture, telemetry, route):
+    reverse = [sample["station_m"] for sample in route["samples"] if (sample["road"], sample["lane"]) == (67, 3)]
+    require(reverse and reverse[-1] == route["route_length_m"], "Wrong registered Market Loop boulevard extension")
+    windows = [[399., 548.], [round(reverse[0], 3), round(reverse[-1], 3) + .001]]
+    require(capture["maneuver_sweep_windows_m"] == windows, "Market Loop sensor witness windows differ from the route")
+    expected = {}
+    for start, end in windows:
+        window_count = len(expected)
+        for row in telemetry:
+            station = row["progress_m"]
+            if start <= station < end:
+                key = (int(station // 5), row.get("tactical_pass", {}).get("maneuver_phase"))
+                expected.setdefault(key, row["frame"])
+        require(len(expected) > window_count, "Market Loop capture is missing a native sensor witness region")
+    frames = set(expected.values())
+    require({f"frame-{frame}.npz" for frame in frames} == capture["maneuver_sweeps"].keys(),
+            "Market Loop sensor sweeps must cover the first native exposure of every occupied station and maneuver bin")
+    return frames
+
+
+def verify_market_loop_lane_move(move, event, native_rows, witness_frames):
+    source, target = MARKET_LOOP_LANES[event["kind"]]
+    require(event["source_lane"] == source and event["passing_lane"] == target
+            and [move["road"], move["source_lane"]] == source and [move["road"], move["alternate_lane"]] == target
+            and move["side"] == "left", "Market Loop pass used a different signed lane pair")
+    start, finish = move["footprint_departs"]["frame"], move["restored_source"]["frame"]
+    exposures = move["lane_exposures"]
+    states = ("body_in_source", "center_in_alternate", "body_in_alternate", "body_within_legal_union")
+    require(start < finish and [row["frame"] for row in exposures] == list(range(start, finish + 1))
+            and all(type(row[field]) is bool for row in exposures for field in states)
+            and all(row["body_within_legal_union"] for row in exposures)
+            and all(not row["body_in_source"] for row in exposures[:-1]) and exposures[-1]["body_in_source"]
+            and not exposures[-1]["center_in_alternate"]
+            and all(not row["body_in_alternate"] or row["center_in_alternate"] for row in exposures)
+            and move["last_alternate_sample"]["frame"] == finish - 1
+            and next((row["frame"] for row in exposures if row["center_in_alternate"]), None) == move["center_crosses"]["frame"]
+            and next((row["frame"] for row in exposures if row["body_in_alternate"]), None)
+            == move["whole_body_in_alternate"]["frame"]
+            and any(start <= frame <= finish for frame in witness_frames),
+            "Market Loop pass is missing contiguous legal lane and native sensor evidence through the return")
+    committed_frames = 0
+    for exposure in exposures:
+        row = native_rows[exposure["frame"]]
+        tactical = row.get("tactical_pass", {})
+        native_legal = row.get("passing_footprint_in_legal_lanes")
+        require(native_legal is not False, "Market Loop native lane telemetry contradicts the independent footprint audit")
+        if tactical.get("committed") is True:
+            require(tactical["source_lane"] == source and tactical["target_lane"] == target and native_legal is True,
+                    "Market Loop committed-action telemetry uses a different lane pair or footprint")
+            committed_frames += 1
+    require(committed_frames, "Market Loop pass is missing committed native controller frames")
+
+
 def verify_maneuver_audit(archive, capture, telemetry):
     audit = read_json(archive, MANEUVERS_AUDIT)
     source, whole, grade = (audit[key] for key in ("source", "whole", "grade"))
@@ -707,10 +874,17 @@ def verify_maneuver_audit(archive, capture, telemetry):
             and source["telemetry_sha256"] == capture["sha256"]["telemetry.json"]
             and source["population_sha256"] == capture["population_reference_sha256"],
             "City Maneuvers audit refers to a different recording")
-    verify_digest(archive, MANEUVERS_ROUTE, source["route_sha256"])
-    route = read_json(archive, MANEUVERS_ROUTE)
-    require(route["route_id"] == source["route_id"] and route["opendrive_sha256"] == source["map_sha256"],
-            "City Maneuvers audit uses different OpenDRIVE geometry")
+    loop = summary.get("destination") == "market-loop"
+    if loop:
+        route, original = verify_market_loop_route(archive, source, summary)
+        verify_market_loop_timeline(audit, telemetry, original, capture["frame_period_s"])
+        witness_frames = verify_market_loop_sweep_coverage(capture, telemetry, route)
+        native_rows = {row["frame"]: row for row in telemetry}
+    else:
+        verify_digest(archive, MANEUVERS_ROUTE, source["route_sha256"])
+        route = read_json(archive, MANEUVERS_ROUTE)
+        require(route["route_id"] == source["route_id"] and route["opendrive_sha256"] == source["map_sha256"],
+                "City Maneuvers audit uses different OpenDRIVE geometry")
     require(whole["entry"]["frame"] == capture["first_frame"] and whole["exit"]["frame"] == capture["last_frame"]
             and source["first_frame"] == capture["first_frame"] and source["last_frame"] == capture["last_frame"]
             and whole["frames"] == len(telemetry) and grade["participant_contacts"] == []
@@ -742,6 +916,8 @@ def verify_maneuver_audit(archive, capture, telemetry):
                                                                      for row in fast_rows), 3),
                 f"City Maneuvers timing above {level} km/h differs from the native track")
 
+    needed = {(event["kind"], tuple(event["alongside_ego_lane"])): event for event in summary["events"]
+              if event["kind"] in MANEUVER_EVENTS}
     witnessed = set()
     for move in audit["actual_lateral_departures"]:
         alternate = move["whole_body_in_alternate"]
@@ -757,10 +933,11 @@ def verify_maneuver_audit(archive, capture, telemetry):
             if (ahead and groups["nearest"]["body_clearance_m"] > 0
                     and capture["first_frame"] <= first["frame"] < ahead["frame"] <= restored["frame"]
                     <= capture["last_frame"]):
-                witnessed.add((first["role"], (move["road"], move["alternate_lane"])))
-    needed = {(event["kind"], tuple(event["alongside_ego_lane"])) for event in summary["events"]
-              if event["kind"] in MANEUVER_EVENTS}
-    require(needed <= witnessed, "The independent audit does not show both actual passes in the legal alternate lane")
+                key = (first["role"], (move["road"], move["alternate_lane"]))
+                if loop and key in needed and key not in witnessed:
+                    verify_market_loop_lane_move(move, needed[key], native_rows, witness_frames)
+                witnessed.add(key)
+    require(needed.keys() <= witnessed, "The independent audit does not show both actual passes in the legal alternate lane")
 
 
 def pinned_trial_sources(revision):
@@ -949,6 +1126,8 @@ def verify_population_sources(archive, capture, results, policy_source, progress
         fitted_sources.update(f"crosswalk/{name}" for name in (
             "city_drive.py", "drive.py", "journey.py", "journey_capture.py", "maneuver_choice.py", "maneuver_map.py",
             "maneuver_scene.py", "route_maneuvers.py", "city_population.py", "population_score.py"))
+        if capture.get("summary", {}).get("destination") == "market-loop":
+            fitted_sources.update(("crosswalk/urban_map.py", "crosswalk/market_loop_traffic.py"))
     required_sources = fitted_sources | {f"crosswalk/{policy_source}", "crosswalk/city_clearance.py",
                                          "crosswalk/city_population.py", "crosswalk/journey_capture.py",
                                          "crosswalk/population_score.py"}
