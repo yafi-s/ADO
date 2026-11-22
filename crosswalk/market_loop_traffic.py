@@ -121,6 +121,13 @@ class LoopPopulation(ManeuverPopulation):
 class LoopFixture(ManeuverFixture):
     """Existing outbound cone fixture plus an independent late, reverse-carriageway pass."""
 
+    def __init__(self, scene, case):
+        # The short feeder is retained as a distinct physical clear-lane
+        # control. The ordinary and later-gap schedules keep the same clocks.
+        self.short_rear_feeder = case in ("clear-feeder","clear-feeder-later-gap")
+        mode = {"clear-feeder":"continuous","clear-feeder-later-gap":"later-gap"}.get(case,case)
+        super().__init__(scene,mode)
+
     def _traffic(self, case):
         if case not in ("continuous","later-gap"):
             raise ValueError("Market Loop supports the commissioned continuous and later-gap traffic schedules")
@@ -134,10 +141,12 @@ class LoopFixture(ManeuverFixture):
         self.clock_index = next(i for i,w in enumerate(scene._points) if (w.road_id,w.lane_id)==(68,3))
         self.clock_start = self.spawn_frame = None
         self.last_occlusion_station = -100.
+        rear_road, rear_start = (68, 11) if self.short_rear_feeder else (69, 48)
+        self.lead_event.observed["adjacent_rear_feeder"] = [rear_road,2,rear_start]
         self.locations = {
             "slow-traffic": (67,3,292,166,0.,1.90 if case=="later-gap" else 1.65,"vehicle.lincoln.mkz"),
             "adjacent-front": (67,2,288,153,4.,5.8,"vehicle.mini.cooper"),
-            "adjacent-rear": (68,2,11,168,5.2 if case=="later-gap" else 4.5,11.5,"vehicle.tesla.model3"),
+            "adjacent-rear": (rear_road,2,rear_start,168,5.2 if case=="later-gap" else 4.5,11.5,"vehicle.tesla.model3"),
         }
 
     def _occlusion(self):
@@ -187,7 +196,7 @@ class LoopFixture(ManeuverFixture):
         if blocked_rays is None:
             return
         for role,(road_id,lane,start,end,release,speed,name) in self.locations.items():
-            points = (boulevard_run(scene._map,road_id,lane,float(start),float(end)) if road_id==68 else
+            points = (boulevard_run(scene._map,road_id,lane,float(start),float(end)) if road_id in (68,69) else
                       lane_segment(scene._map,road_id,lane,start,end,carla.LaneType.Driving))
             if not points:raise ValueError(f"Missing native Market Loop path for {role}")
             bp = scene._catalog.find(name)
