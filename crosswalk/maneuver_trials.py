@@ -168,7 +168,7 @@ class Witness:
         evaluate = evaluation_active(self.geometry, dict(row, native_s=reference["native_s"]))
         if self.case == "uncooperative-rear":
             reference.update(route_progress_m=row["progress_m"], corridor_evaluation_active=evaluate,
-                             road67_station_available=row["progress_m"] >= self.station_map[0][0])
+                             road67_station_available=bool(row["progress_m"] >= self.station_map[0][0]))
         if evaluate:
             reference["native_geometry"] = native_body(
                 self.road, reference, *WINDOWS[self.case][:2], self.case in ADJACENT_CASES)
