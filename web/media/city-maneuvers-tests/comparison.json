@@ -1,0 +1,97 @@
+{
+  "fps": 10,
+  "total_frames": 464,
+  "chapters": [
+    {
+      "case": "board",
+      "title": "Rigid board blocking the route lane",
+      "start_frame": 0,
+      "frames": 134,
+      "geometry": {
+        "road_id": 67,
+        "lane_id": -2,
+        "start_s": 48.0,
+        "end_s": 145.0,
+        "route_start_m": 400.5785427748031,
+        "route_end_m": 486.4062770082201
+      },
+      "arms": [
+        {
+          "label": "0.6 City Progress",
+          "outcome": "timeout",
+          "reached_end": false,
+          "capture_complete": true,
+          "source_frames": 450,
+          "first_native_frame": 28602,
+          "last_native_frame": 29051,
+          "first_s": 48.005,
+          "last_s": 62.087,
+          "source_film_sha256": "1e1e4b1c6b4e1dfd7c491147aa92c001cdd62e347f4f38ff399cfeda8f6d6cf3",
+          "model_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+          "execution_source_sha256": "40075040c22a4aa1d08343b2d68b65e45551343ea7657b05e22604ea4a469330"
+        },
+        {
+          "label": "0.7 City Maneuvers",
+          "outcome": "restarted",
+          "reached_end": true,
+          "capture_complete": true,
+          "source_frames": 134,
+          "first_native_frame": 18283,
+          "last_native_frame": 18416,
+          "first_s": 48.005,
+          "last_s": 145.552,
+          "source_film_sha256": "0dd2a9ad7aae7d3d49ba657c5d1b95cbdac85b7b819aad53c8b7e5b0add3cd9b",
+          "model_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+          "execution_source_sha256": "40075040c22a4aa1d08343b2d68b65e45551343ea7657b05e22604ea4a469330"
+        }
+      ]
+    },
+    {
+      "case": "slow",
+      "title": "Slow lead with a passing lane",
+      "start_frame": 134,
+      "frames": 330,
+      "geometry": {
+        "road_id": 67,
+        "lane_id": -2,
+        "start_s": 94.0,
+        "end_s": 231.0,
+        "route_start_m": 441.0611256546434,
+        "route_end_m": 570.0678759844498
+      },
+      "arms": [
+        {
+          "label": "0.6 City Progress",
+          "outcome": "timeout",
+          "reached_end": false,
+          "capture_complete": true,
+          "source_frames": 560,
+          "first_native_frame": 25556,
+          "last_native_frame": 26115,
+          "first_s": 94.008,
+          "last_s": 210.304,
+          "source_film_sha256": "cb34fc6aed1a42297aef520f226a4c1e1068dc127abddbd82b86f7749985d29a",
+          "model_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+          "execution_source_sha256": "1524d791b47aee90dfacf3e4ead9649dbfe83817dd9ec6e842937f23a7cb6418"
+        },
+        {
+          "label": "0.7 City Maneuvers",
+          "outcome": "restarted",
+          "reached_end": true,
+          "capture_complete": true,
+          "source_frames": 330,
+          "first_native_frame": 24592,
+          "last_native_frame": 24921,
+          "first_s": 94.008,
+          "last_s": 231.444,
+          "source_film_sha256": "56f6142d2583213c979c4960933f8f6b6ad8e2c5f744bdf16b5d5b731e346150",
+          "model_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+          "execution_source_sha256": "1524d791b47aee90dfacf3e4ead9649dbfe83817dd9ec6e842937f23a7cb6418"
+        }
+      ]
+    }
+  ],
+  "sha256": "d11aed7a3d57ce5de6b579577f15f54ed559af4dc43a1317d2bd1a449f47a616",
+  "renderer_sha256": "c48b7fdd6499a8d197c1daedf1402baf0ffe69768fc4648978ce6de2668f65dd",
+  "trimmed_to_candidate": true
+}

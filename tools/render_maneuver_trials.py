@@ -83,6 +83,22 @@ def text(image, value, at, size, color=(234, 232, 228)):
     cv2.putText(image, value, at, cv2.FONT_HERSHEY_SIMPLEX, size, color, 1, cv2.LINE_AA)
 
 
+def driving_caption(row, geometry):
+    lane = row.get("ego_native_lane") or {}
+    if lane.get("road_id") == geometry["road_id"] and lane.get("lane_id") == geometry["lane_id"]:
+        location = "Route lane"
+    elif lane.get("road_id") == geometry["road_id"] and lane.get("lane_id") == geometry["lane_id"] + 1:
+        location = "Passing lane"
+    else:
+        location = "Approach"
+    action = {"yield": "Yielding for a gap", "signal_left": "Signaling left",
+              "change_left": "Changing left", "passing": "Passing",
+              "wait_rejoin": "Checking the return gap", "signal_right": "Signaling right",
+              "change_right": "Returning right", "rejoined": "Back on route",
+              "resumed_following": "Following again"}.get(row.get("tactical_pass", {}).get("maneuver_phase"))
+    return f"{location} | {action}" if action else location
+
+
 def render_case(command, arms, case, start_frame, trim_tail):
     count = len(arms[1].rows) if trim_tail else max(len(arm.rows) for arm in arms)
     with ExitStack() as stack:
@@ -108,7 +124,7 @@ def render_case(command, arms, case, start_frame, trim_tail):
                     if row["collision_count"]:
                         status += f' | contacts {row["collision_count"]}'
                 text(screen, status, (x + 15, 453), .55)
-                text(screen, row.get("phase", "")[:81], (x + 15, 474), .48, (174, 183, 190))
+                text(screen, driving_caption(row, arm.summary["geometry"]), (x + 15, 474), .48, (174, 183, 190))
             command.write(screen.tobytes())
     return dict(case=case, title=TITLES[case], start_frame=start_frame, frames=count,
                 geometry=arms[0].summary["geometry"], arms=[arm.manifest() for arm in arms])
@@ -149,7 +165,8 @@ def render(baseline, candidate, output, cases, labels, trim_tail=False):
     if stream["r_frame_rate"] != f"{FPS}/1" or int(stream["nb_read_frames"]) != total:
         raise ValueError("Comparison film frame count differs from the matched traces")
     with metadata.open("x", encoding="utf-8") as stream:
-        json.dump(dict(fps=FPS, total_frames=total, chapters=chapters, sha256=sha256(output)), stream, indent=2)
+        json.dump(dict(fps=FPS, total_frames=total, chapters=chapters, sha256=sha256(output),
+                       renderer_sha256=sha256(Path(__file__)), trimmed_to_candidate=trim_tail), stream, indent=2)
         stream.write("\n")
 
 
