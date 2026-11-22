@@ -347,7 +347,7 @@ def _load_inputs(model_path):
 
 
 def _capture(world, stage, output, model, scene_factory, observer_factory, policy, seed, max_steps, destination,
-             map_name, crossing_delay=0., population_profile="standard"):
+             map_name, crossing_delay=0., population_profile="standard", traffic_schedule="continuous"):
     from .journey import required_event_kinds
 
     producer = producer_info(world)
@@ -356,6 +356,8 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
     with_barriers = policy.get("schema") in PACE_SCHEMAS
     expected_events = required_event_kinds(producer["map"], barriers=with_barriers,
                                           maneuvers=population_profile == "city-maneuvers")
+    if population_profile == "city-maneuvers":
+        scene_factory = partial(scene_factory, maneuver_case=traffic_schedule)
     if population_profile in ("city-life", "city-maneuvers"):
         from . import ambient, city_population, district, population_score, traffic_cones, vision
         from . import policy as base_policy, world as scene_world
@@ -423,6 +425,7 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
     source["perimeter_views"] = list(views)
     if population_profile == "city-maneuvers":
         from .maneuver_scene import score_sequence
+        source["traffic_schedule"] = traffic_schedule
         sequence = score_sequence(summary["events"], trace)
         source["maneuver_sequence"] = sequence
         if not sequence["passed"]:
@@ -575,7 +578,10 @@ def _prepare(output, model_path, seed, max_steps, quality, resolution, percentag
     return output, _load_inputs(model_path)
 
 
-def _record(world, output, inputs, seed, max_steps, destination, map_name, crossing_delay=0., population_profile="standard"):
+def _record(world, output, inputs, seed, max_steps, destination, map_name, crossing_delay=0.,
+            population_profile="standard", traffic_schedule="continuous"):
+    from .journey import validate_traffic_schedule
+    validate_traffic_schedule(traffic_schedule, destination, population_profile)
     if not math.isfinite(crossing_delay) or not 0. <= crossing_delay <= 5.:
         raise ValueError("Crossing delay must be between zero and five seconds")
     model, scene_factory, observer_factory, policy = inputs
@@ -585,11 +591,12 @@ def _record(world, output, inputs, seed, max_steps, destination, map_name, cross
     print(f"City drive capture checkpoint: {stage}", flush=True)
     write_json(stage / "request.json", dict(output=str(output), policy=policy, seed=seed, max_steps=max_steps,
                                              destination=destination, crossing_delay_s=crossing_delay, population_profile=population_profile,
+                                             traffic_schedule=traffic_schedule,
                                              quality=QUALITY, requested_map=map_name,
                                              chase_size=CHASE_SIZE, dlss_percentage=DLSS_PERCENTAGE))
     try:
         _capture(world, stage, output, model, scene_factory, observer_factory, policy, seed, max_steps, destination,
-                 map_name, crossing_delay, population_profile)
+                 map_name, crossing_delay, population_profile, traffic_schedule)
     except Exception as error:
         write_json(stage / "failure.json", dict(error_type=type(error).__name__, message=str(error)))
         raise
@@ -599,14 +606,15 @@ def _record(world, output, inputs, seed, max_steps, destination, map_name, cross
 
 def run(world, output=DEFAULT_OUTPUT, *, model_path, seed=SEED, max_steps=DEFAULT_MAX_STEPS,
         destination=None, map_name=None, quality=QUALITY, resolution="1920x1080", percentage=DLSS_PERCENTAGE,
-        crossing_delay=0., population_profile="standard"):
+        crossing_delay=0., population_profile="standard", traffic_schedule="continuous"):
     """Record once on a caller-owned CARLA world launched at High quality."""
     output, inputs = _prepare(output, model_path, seed, max_steps, quality, resolution, percentage)
     return finalize_staged(_record(world, output, inputs, seed, max_steps, destination, map_name, crossing_delay,
-                                   population_profile))
+                                   population_profile, traffic_schedule))
 
 
 def main():
+    from .journey import TRAFFIC_SCHEDULES, validate_traffic_schedule
     parser = argparse.ArgumentParser(description=__doc__)
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--model", type=Path, help="CARLA-trained driving policy checkpoint")
@@ -616,6 +624,7 @@ def main():
     parser.add_argument("--include-attempt", action="store_true", help="Also export an unsuccessful drive with its actual score")
     parser.add_argument("--seed", type=int, default=SEED)
     parser.add_argument("--population-profile", choices=("standard", "city-life", "city-maneuvers"), default="standard")
+    parser.add_argument("--traffic-schedule", choices=TRAFFIC_SCHEDULES, default="continuous")
     parser.add_argument("--crossing-delay", type=float, default=0., help="Additional pedestrian entry delay in simulated seconds")
     parser.add_argument("--max-steps", type=int, default=DEFAULT_MAX_STEPS)
     parser.add_argument("--map", dest="map_name", choices=CAPTURE_MAPS, default=URBAN_MAP)
@@ -631,6 +640,7 @@ def main():
     elif args.finalize_staged:
         manifest = finalize_staged(args.finalize_staged, include_attempt=args.include_attempt)
     else:
+        validate_traffic_schedule(args.traffic_schedule, args.destination, args.population_profile)
         if not 1 <= args.port <= 65533:
             parser.error("Choose a port between 1 and 65533")
         if not args.model.is_file():
@@ -644,7 +654,7 @@ def main():
             parser.error(f"Destination {args.destination!r} is unavailable on {args.map_name}")
         with simulator(args.port, attach=args.attach, quality=args.quality, map_name=args.map_name) as world:
             stage = _record(world, output, inputs, args.seed, args.max_steps, args.destination, args.map_name,
-                            args.crossing_delay, args.population_profile)
+                            args.crossing_delay, args.population_profile, args.traffic_schedule)
         manifest = finalize_staged(stage, include_attempt=args.include_attempt)
     status = "passed" if manifest["passed"] else "review required"
     print(f"{NAME}: {status}, {manifest['outcome']}, {manifest['summary']['frames']} frames", flush=True)

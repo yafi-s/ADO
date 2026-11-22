@@ -12,7 +12,7 @@ from .behavior_v2 import BehaviorModel, FEATURE_NAMES
 from .city_map import geometry
 from .drive import episode
 from .experiment import PROJECT, fingerprint, save_arrays, write_json, write_trace
-from .journey import JourneyScenario
+from .journey import JourneyScenario, TRAFFIC_SCHEDULES, validate_traffic_schedule
 from .runtime import producer_info, simulator
 from .viewio import Live
 
@@ -91,6 +91,8 @@ def main():
     parser.add_argument("--model", type=Path, default=PROJECT / "models/city-maneuvers/candidate.npz")
     parser.add_argument("--destination", choices=("market", "market-loop"),
                         help="Choose the original Market route or continue through the return boulevard")
+    parser.add_argument("--traffic-schedule", choices=TRAFFIC_SCHEDULES, default="continuous",
+                        help="Choose the registered timing and approach of the crossing traffic")
     parser.add_argument("--seed", type=int, default=211)
     parser.add_argument("--crossing-delay", type=float, default=0., help="Additional pedestrian departure delay in simulated seconds")
     parser.add_argument("--max-steps", type=int, default=9000)
@@ -139,8 +141,9 @@ def main():
         live_populations.get(schema, "standard") if args.serve or maneuver_driver else "standard")
     destination = args.destination or ("market-loop" if maneuver_driver and population_profile == "city-maneuvers"
                                        else "market")
+    validate_traffic_schedule(args.traffic_schedule, destination, population_profile)
     scene_factory = partial(JourneyScenario, population_profile=population_profile,
-                            barriers=pace_schema)
+                            barriers=pace_schema, maneuver_case=args.traffic_schedule)
     root = args.output or PROJECT / "out/city-drives"
     root.mkdir(parents=True, exist_ok=True)
     folder = Path(mkdtemp(prefix=f"city-{args.seed}-", dir=root))
@@ -168,6 +171,7 @@ def main():
                    tactical_model_sha256=tactical_sha)
     if schema == "ado-city-maneuvers-v1":
         summary["open_road_cruise_enabled"] = bool(driver.allow_high_speed)
+        summary["traffic_schedule"] = args.traffic_schedule
     write_json(folder / "summary.json", summary)
     passed = sum(event["handled"] for event in summary["events"])
     print(f'{summary["outcome"]}: {summary["progress_m"]:.1f}/{summary["route_length_m"]:.1f} m, '

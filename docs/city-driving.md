@@ -43,6 +43,8 @@ Double-click **Watch-City.cmd** on Windows to install or verify CARLA 1.0 and op
 
 Add `--urban-cap` to keep the 39.6 km/h ceiling throughout a live drive. With the usual settings, the controller can request more speed on a higher-posted road when the vehicle can observe enough clear pavement to stop. The screen distinguishes the road sign, the controller's ceiling, its request and the measured speed. [Measured cruising and stopping distances](../results/city-maneuvers/speed/README.md)
 
+Both live driving and film capture accept `--traffic-schedule`. On Market Loop, `continuous` uses the long feeder and `later-gap` changes the lead's pace and the rear vehicle's release time. `clear-feeder` and `clear-feeder-later-gap` use the earlier, shorter feeder. The same driving model handles each schedule. The sealed film manifest records the selected schedule. [Registered traffic geometry](../results/city-maneuvers/qualification/market-loop-upstream-feeder-registration.json)
+
 Each attempt writes its own summary and compressed frame log under `out/city-drives`. The lower-cost live profile is the default. To record five onboard views and a 1080p chase camera at High quality, run the film command with a fresh output path. This captures one ego car over one continuous simulation.
 
 ```powershell

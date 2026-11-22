@@ -14,12 +14,13 @@ class CityManeuverLauncherTests(unittest.TestCase):
 
         model = Path(__file__).resolve().parents[1] / "models/city-maneuvers/candidate.npz"
         cases = [
-            ([], "city-maneuvers", True, "market-loop"),
-            (["--destination", "market"], "city-maneuvers", True, "market"),
-            (["--urban-cap", "--no-tactical", "--no-surround", "--population-profile", "standard"], "standard", False, "market"),
+            ([], "city-maneuvers", True, "market-loop", "continuous"),
+            (["--traffic-schedule", "clear-feeder-later-gap"], "city-maneuvers", True, "market-loop", "clear-feeder-later-gap"),
+            (["--destination", "market"], "city-maneuvers", True, "market", "continuous"),
+            (["--urban-cap", "--no-tactical", "--no-surround", "--population-profile", "standard"], "standard", False, "market", "continuous"),
         ]
         with TemporaryDirectory() as output:
-            for flags, profile, enabled, destination in cases:
+            for flags, profile, enabled, destination, schedule in cases:
                 argv = ["city-drive", "--model", str(model), "--output", output, *flags]
                 with (
                     self.subTest(flags=flags),
@@ -37,3 +38,9 @@ class CityManeuverLauncherTests(unittest.TestCase):
                     self.assertEqual(bool(kwargs.get("tactical")), enabled)
                     self.assertEqual(kwargs["scene_factory"].keywords["population_profile"], profile)
                     self.assertEqual(kwargs["destination"], destination)
+                    self.assertEqual(kwargs["scene_factory"].keywords["maneuver_case"], schedule)
+
+    def test_short_feeder_is_only_valid_on_return_carriageway(self):
+        for route, population in (("market", "city-maneuvers"), ("market-loop", "city-life")):
+            with self.subTest(route=route, population=population), self.assertRaises(ValueError):
+                city_drive.validate_traffic_schedule("clear-feeder-later-gap", route, population)

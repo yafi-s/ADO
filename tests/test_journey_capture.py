@@ -93,6 +93,15 @@ def fake_world():
 
 
 class JourneyCaptureTests(unittest.TestCase):
+    def test_requested_traffic_schedule_is_recorded_and_reaches_native_capture(self):
+        with TemporaryDirectory() as directory, patch.dict("os.environ", {"ADO_JOURNEY_CAPTURE_ROOT": directory}), \
+                patch.object(capture, "_capture") as recorder:
+            selected = "clear-feeder-later-gap"
+            stage = capture._record(object(), Path(directory)/"output", (None, None, None, {}),
+                                    212, 9000, "market-loop", capture.URBAN_MAP, .5, "city-maneuvers", selected)
+            self.assertEqual(json.loads((stage/"request.json").read_bytes())["traffic_schedule"], selected)
+            self.assertEqual(recorder.call_args.args[-1], selected)
+
     def test_outcome_requires_full_planned_encounters_and_clean_termination(self):
         required = required_event_kinds(capture.URBAN_MAP)
         self.assertTrue(capture._result(summary(duration_s=590), required)["passed"])

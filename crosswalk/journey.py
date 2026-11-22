@@ -222,6 +222,25 @@ class Encounter:
                        if self.kind=="braking" else {}))
 
 
+TRAFFIC_SCHEDULES = ("continuous", "later-gap", "clear-feeder", "clear-feeder-later-gap",
+                     "original-continuous", "original-later-gap")
+
+
+def validate_traffic_schedule(schedule, destination, population_profile):
+    if schedule not in TRAFFIC_SCHEDULES:
+        raise ValueError(f"Unknown traffic schedule {schedule}")
+    if schedule == "continuous":
+        return
+    if population_profile != "city-maneuvers":
+        raise ValueError("Alternative traffic schedules require the city-maneuvers population")
+    if destination not in ("market", "market-loop"):
+        raise ValueError("Alternative traffic schedules require a Market or Market Loop destination")
+    if schedule.startswith("clear-feeder") and destination != "market-loop":
+        raise ValueError("The short return feeder belongs to Market Loop")
+    if schedule.startswith("original-") and destination != "market":
+        raise ValueError("The original close-spaced encounters belong to Market")
+
+
 class JourneyScenario(Scenario):
     """All movement commands target NPCs. The caller drives and samples the single ego."""
     def __init__(self, world, kind, seed, perturb=False, district=None, crossing_delay=0., destination=None, *,
