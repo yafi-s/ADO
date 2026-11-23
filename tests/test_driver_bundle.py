@@ -15,7 +15,8 @@ import numpy as np
 from crosswalk import drive
 from crosswalk.city_drive import load_driver
 from crosswalk.maneuver_choice import ManeuverChoice
-from crosswalk.motor_queue import FollowHold, MotorQueue, VehicleQueuePlanner
+from crosswalk.motor_queue import (STATIONARY_RADAR_FACE, FollowHold, MotorQueue, VehicleQueuePlanner,
+                                   radar_face, small_radar_face)
 from crosswalk.stationary_intent import StationaryIntent
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -131,7 +132,7 @@ class CanonicalQueueTests(unittest.TestCase):
             for bound in (False, True):
                 canonical = VehicleQueuePlanner.from_route(road, route, intent=head, choice=ManeuverChoice(),
                                                            defer_confirm_frames=1, follow_hold_frames=0,
-                                                           stationary_witness=False)
+                                                           stationary_witness=False, radar_face_min=0)
                 research = research_type.from_route(road, route)
                 for i in range(22):
                     camera = dict(frame=121 + i, boxes=boxes, box_frame=121 + i - i % 2, box_pose=pose, radar=data["radar"])
@@ -274,9 +275,11 @@ class FollowHoldTests(unittest.TestCase):
         sweep = np.vstack((data["lidar"], ground))
         choices = {}
         for hold in ((1, 0), (30, 30)):
+            # The synthetic surface's sparse radar grid is below the radar face limit,
+            # which RadarFaceTests covers; this test isolates the hold.
             planner = VehicleQueuePlanner.from_route(road, route, intent=head, choice=ManeuverChoice(),
                                                      defer_confirm_frames=hold[0], follow_hold_frames=hold[1],
-                                                     stationary_witness=hold != (1, 0))
+                                                     stationary_witness=hold != (1, 0), radar_face_min=0)
             rows = []
             for i in range(22):
                 planner.bind_camera(dict(frame=121 + i, boxes=data["detections"], box_frame=121 + i - i % 2,
@@ -290,6 +293,106 @@ class FollowHoldTests(unittest.TestCase):
         for i in associated:
             self.assertEqual(choices[30, 30][i][1:], ("follow", 0))
         self.assertEqual(planner.info["source_motor_vehicle"]["consecutive_head_deferrals"], len(associated))
+
+
+# High02 frames 6213-6226 (capture at ddcde43): the planner's measured source-lane
+# surface and the camera sightings NanoDet matched there as a "car" over the in-lane
+# cone group: frame, ego station, gap, raw gap, source speed, source age, ego speed
+# and (box frame, in-box radar returns, range, radial ground speed).
+_CONE_FRAMES = (
+    (6213, 36.576, 31.370, 31.370, 20.0, 0, 3.505, None),
+    (6214, 36.934, 30.203, 30.203, 20.0, 0, 3.643, None),
+    (6215, 37.307, 29.830, 60.000, 20.0, 1, 3.795, None),
+    (6216, 37.672, 29.442, 29.442, 0.0, 0, 3.550, None),
+    (6217, 38.012, 28.824, 60.000, 0.0, 1, 3.305, (6217, 80, 28.824, -.125)),
+    (6218, 38.329, 28.836, 28.836, 0.0, 0, 3.060, (6217, 49, 28.836, -.114)),
+    (6219, 38.623, 28.386, 60.000, 0.0, 1, 2.831, (6219, 76, 28.386, -.101)),
+    (6220, 38.896, 28.477, 28.477, 0.0, 0, 2.655, (6219, 74, 28.477, -.074)),
+    (6221, 39.155, 28.212, 28.212, .2, 0, 2.527, (6221, 95, 28.212, -.053)),
+    (6222, 39.403, 27.981, 27.981, .319, 0, 2.446, (6221, 85, 27.981, -.032)),
+    (6223, 39.646, 27.493, 27.493, .037, 0, 2.416, (6223, 89, 27.493, -.010)),
+    (6224, 39.888, 27.463, 27.463, .037, 0, 2.407, (6223, 95, 27.463, -.002)),
+    (6225, 40.128, 27.203, 27.203, .02, 0, 2.409, None),
+    (6226, 40.370, 26.884, 26.884, .141, 0, 2.428, None),
+)
+
+
+def _radar_sighting(box_frame, hits, distance, radial, stationary=True):
+    return dict(box_frame=box_frame, label="car", confidence=.4, radar_hits=hits, source_range_m=distance,
+                radial_ground_speed_mps=radial, stationary_doppler=stationary)
+
+
+def _replay_cones(minimum):
+    queue, hold, witnessed, anchored, small = MotorQueue(), FollowHold(), [], [], []
+    for frame, station, gap, raw, source_v, age, ego_v, seen in _CONE_FRAMES:
+        sighting = seen and _radar_sighting(*seen)
+        if small_radar_face(sighting, minimum):
+            small.append(frame)
+            sighting = None
+        queue.update(frame, station, gap, raw, source_v, age, ego_v, sighting)
+        if hold.witness(frame, sighting):
+            witnessed.append(frame)
+        if queue.anchor is not None:
+            anchored.append(frame)
+    return witnessed, anchored, small
+
+
+class RadarFaceTests(unittest.TestCase):
+    def test_cone_group_box_never_confirms_or_holds(self):
+        # Without the limit the logged inputs hold from 6219, as High02 did, and confirm
+        # the cones as a stopped car (High02 confirmed at 6221; its log clips the
+        # surface speed at zero, so this replay can confirm a little earlier).
+        witnessed, anchored, small = _replay_cones(0.)
+        self.assertEqual(witnessed[0], 6219)
+        self.assertLessEqual(anchored[0], 6221)
+        self.assertFalse(small)
+        witnessed, anchored, small = _replay_cones(STATIONARY_RADAR_FACE)
+        self.assertEqual((witnessed, anchored), ([], []))
+        self.assertEqual(small, list(range(6217, 6225)))
+
+    def test_logged_sedan_faces_are_kept(self):
+        # The smallest logged faces of the held sedan (native03 frame 6249 between
+        # exposures, native02 frame 1304 on an exposure) and the largest cone face.
+        self.assertFalse(small_radar_face(_radar_sighting(6248, 117, 40.21, -.05)))
+        self.assertFalse(small_radar_face(_radar_sighting(1304, 153, 33.54, -.02)))
+        self.assertTrue(small_radar_face(_radar_sighting(6221, 95, 28.21, -.05)))
+        self.assertAlmostEqual(radar_face(_radar_sighting(6221, 95, 28.21, -.05)), 2680., delta=1.)
+        # A moving vehicle and an empty frame are left as they are.
+        self.assertFalse(small_radar_face(_radar_sighting(9, 10, 20., 6., stationary=False)))
+        self.assertFalse(small_radar_face(None))
+        with self.assertRaises(ValueError):
+            VehicleQueuePlanner([], intent=StationaryIntent(), choice=ManeuverChoice(), radar_face_min=-1.)
+
+    def test_planner_leaves_a_small_radar_face_to_the_route_planner(self):
+        from tests.test_maneuver_source_vehicle import surface
+        from tests.test_urban_map import MAP
+        if not MAP.is_file():
+            self.skipTest("Native map unavailable")
+        road = carla.Map("Town03_Opt", MAP.read_text())
+        route = [road.get_waypoint_xodr(67, -2, k).transform.location for k in range(173, 286)]
+        pose = road.get_waypoint_xodr(67, -2, 205.).transform
+        ego = Mock()
+        ego.get_transform.return_value = pose
+        ego.bounding_box = carla.BoundingBox(carla.Location(z=.76), carla.Vector3D(2.45, .92, .76))
+        data = surface()
+        ground = np.asarray([(v, -3.5, -2.30, .5) for v in np.arange(-37., 40., .30)])
+        sweep = np.vstack((data["lidar"], ground))
+        outcome = {}
+        # 88 returns at 30 m is a cone-group face; three times as many is a car's.
+        for copies in (1, 3):
+            planner = VehicleQueuePlanner.from_route(road, route, intent=StationaryIntent(), choice=ManeuverChoice())
+            held = []
+            for i in range(8):
+                planner.bind_camera(dict(frame=121 + i, boxes=data["detections"], box_frame=121 + i - i % 2,
+                                         box_pose=pose, radar=np.vstack([data["radar"]] * copies)))
+                planner.preview(ego, sweep, np.zeros(14), 2.)
+                held.append(planner.defer_source)
+            outcome[copies] = (planner.queue.anchor is not None, any(held),
+                               planner.info["source_motor_vehicle"]["small_radar_face"])
+        anchored, held, small = outcome[1]
+        self.assertFalse(anchored or held)
+        self.assertAlmostEqual(small["radar_face"], 2640., delta=1.)
+        self.assertEqual(outcome[3], (True, True, None))
 
 
 class EpisodeBindingTests(unittest.TestCase):

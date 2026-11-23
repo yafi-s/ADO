@@ -20,6 +20,24 @@ from .source_vehicle import source_surface_vehicle
 DEFER_CONFIRM_FRAMES = 30
 FOLLOW_HOLD_FRAMES = 30
 WITNESS_WINDOW_FRAMES = 9
+# A stationary sighting must also show a car-sized radar face: the radar
+# returns inside the camera box times their range. Every sighting of the held
+# sedan in six logged approaches measured 4,704-6,879 from 3 to 60 m; the
+# low-confidence "car" box NanoDet drew over the in-lane cone group measured
+# 1,413-2,680 (High02, native02, prefix-hold-03). The limit is the geometric
+# midpoint. A smaller face is left to the route planner: it neither confirms
+# the track nor holds following. Also fixed, not fitted.
+STATIONARY_RADAR_FACE = 3550.
+
+
+def radar_face(sighting):
+    """Return the in-box radar returns of one camera sighting times their range."""
+    return sighting["radar_hits"] * sighting["source_range_m"]
+
+
+def small_radar_face(sighting, minimum=STATIONARY_RADAR_FACE):
+    """Return whether radar reports a camera sighting as stationary but too small to be a car."""
+    return bool(sighting and sighting.get("stationary_doppler") and radar_face(sighting) < minimum)
 
 
 class MotorQueue:
@@ -200,10 +218,15 @@ class VehicleQueuePlanner(RouteManeuvers):
     """Apply the selected stationary-intent head before a discretionary lane change."""
 
     def __init__(self, corridors, *, intent, choice, defer_confirm_frames=DEFER_CONFIRM_FRAMES,
-                 follow_hold_frames=FOLLOW_HOLD_FRAMES, stationary_witness=True):
+                 follow_hold_frames=FOLLOW_HOLD_FRAMES, stationary_witness=True,
+                 radar_face_min=STATIONARY_RADAR_FACE):
         if intent is None or choice is None:
             raise ValueError("The queue planner requires a loaded intent head and route-choice model")
+        if not radar_face_min >= 0.:
+            raise ValueError("The stationary radar face limit cannot be negative")
+        # (1, 0, False, 0) reproduces the natively qualified research harness exactly.
         self.hold = FollowHold(defer_confirm_frames, follow_hold_frames, stationary_witness)
+        self.radar_face_min = float(radar_face_min)
         self.intent = intent
         self.stationary_intent_checkpoint = intent.checkpoint_path
         self.stationary_intent_sha256 = intent.sha256
@@ -220,6 +243,7 @@ class VehicleQueuePlanner(RouteManeuvers):
         self.queue = MotorQueue()
         self.evaluating_source = False
         self.defer_source = False
+        self.small_face = None
         self.hold.reset()
 
     def _measure(self, pose, scan, station, speed, lateral=0.):
@@ -231,6 +255,7 @@ class VehicleQueuePlanner(RouteManeuvers):
             and self.phase == "change_left" and lateral > -.35
         )
         self.defer_source = False
+        self.small_face = None
         self.evaluating_source = (data is not None and self.corridor.merge_at is None
                                   and (self.start is None or early_outbound))
         if not self.evaluating_source:
@@ -241,6 +266,8 @@ class VehicleQueuePlanner(RouteManeuvers):
             data["boxes"], scan, data["radar"], pose, data["box_pose"],
             self.corridor, station, gap, speed, data["frame"], data["box_frame"],
         )
+        if small_radar_face(witness, self.radar_face_min):
+            self.small_face, witness = witness, None
         source = self.surfaces[0]
         self.queue.update(data["frame"], station, gap, raw[0], source.speed, source.age, speed, witness)
         front_speed = self.surfaces[2].speed or 0.
@@ -283,4 +310,10 @@ class VehicleQueuePlanner(RouteManeuvers):
                 self.info["source_motor_vehicle"].update(
                     consecutive_head_deferrals=self.hold.deferrals, follow_hold_until_frame=self.hold.until,
                     pass_votes=self.pass_votes)
+            if self.radar_face_min:
+                small = self.small_face
+                self.info["source_motor_vehicle"]["small_radar_face"] = small and dict(
+                    box_frame=small["box_frame"], label=small["label"], confidence=small["confidence"],
+                    radar_hits=small["radar_hits"], source_range_m=small["source_range_m"],
+                    radar_face=radar_face(small))
         return points
