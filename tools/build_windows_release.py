@@ -472,8 +472,12 @@ def progress_fit_sources(fit):
 def fit_time_source(archive, name, digest):
     """Return the exact bytes the City Maneuvers fit recorded for one source, from the archived snapshot."""
     recorded = b""
-    if PREFIX + MANEUVERS_FIT_SNAPSHOT in archive.namelist():
-        with archive.open(PREFIX + MANEUVERS_FIT_SNAPSHOT) as item, ZipFile(item) as snapshot:
+    try:
+        item = archive.open(PREFIX + MANEUVERS_FIT_SNAPSHOT)
+    except KeyError:
+        item = None
+    if item is not None:
+        with item, ZipFile(item) as snapshot:
             if name in snapshot.namelist():
                 recorded = snapshot.read(name)
     require(hashlib.sha256(recorded).hexdigest() == digest,
