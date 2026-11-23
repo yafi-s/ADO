@@ -1,0 +1,97 @@
+{
+  "decision": "reject_and_retain_production_controller",
+  "scene": "Spaced continuous Market, native High surround, 278 to 735 m, same seed/registration/ranges as frozen control",
+  "source_runway_sha256": "94ce39e5f3b4136b2301a1104b454af4d2ce4f0268592d5a55f5ce5e703f504f",
+  "flank_sha256": "97abcd12f7d612e98168efb642507ac774c0540bcaafb1f89c0a78c7657142d1",
+  "control": {
+    "frames": 1146,
+    "duration_s": 114.6,
+    "progress_m": 581.841,
+    "outcome": "timeout",
+    "collision_events": 0,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "original_stopped_minimum_body_gap_m": 26.898923429461668,
+    "source_sedan_restarted_and_exited": false,
+    "lead_event_handled": false,
+    "original_stopped_exposure_frames": 0,
+    "target_handled": {
+      "signal": true,
+      "roadworks": true,
+      "in-lane-obstruction": false,
+      "slow-traffic": false,
+      "barrier": true,
+      "lead": false
+    },
+    "sequence": {
+      "passed": false,
+      "obstruction_rejoin_precedes_occupied_wait": false,
+      "actual_wait_policy_frames": 0,
+      "first_actual_wait_frame": null,
+      "last_actual_wait_frame": null
+    },
+    "trace_sha256": "391493c9eb216ed8e0e2a85f69cc03528741dafc29fd0d2586c163b1709c2388"
+  },
+  "candidate": {
+    "frames": 1176,
+    "duration_s": 117.6,
+    "progress_m": 583.831,
+    "outcome": "timeout",
+    "collision_events": 0,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "original_stopped_minimum_body_gap_m": 24.913894456895115,
+    "source_sedan_restarted_and_exited": false,
+    "lead_event_handled": false,
+    "original_stopped_exposure_frames": 0,
+    "target_handled": {
+      "signal": true,
+      "roadworks": true,
+      "in-lane-obstruction": false,
+      "slow-traffic": false,
+      "barrier": true,
+      "lead": false
+    },
+    "sequence": {
+      "passed": false,
+      "obstruction_rejoin_precedes_occupied_wait": false,
+      "actual_wait_policy_frames": 0,
+      "first_actual_wait_frame": null,
+      "last_actual_wait_frame": null
+    },
+    "trace_sha256": "a6a15e8c14cd4f59f833c0c75243ca0497a77e297dd01f913d38805b8c4542f9"
+  },
+  "source_window": "All candidate rows with progress >=581.5m and speed <0.1m/s",
+  "candidate_gate_counts": {
+    "lane_or_flank": 24,
+    "near_or_unobserved": 1,
+    "verified_source": 49,
+    "perception_hold": 418
+  },
+  "perception_hold_counts": {
+    "other_optical_or_unconfirmed_scans": 13,
+    "finite_horizon_without_prior_model_person": 288,
+    "unresolved_zero_camera_horizon": 117
+  },
+  "final_optics": {
+    "geometry_scans": 3.0,
+    "confirmed_scans": 0.0,
+    "verified_forward_m": 24.0,
+    "camera_stop_horizon_m": 7.807348728179932,
+    "off_path_camera_boxes": 1.0,
+    "rgb_person_height": 0.0,
+    "rgb_person_height_recent": 0.0,
+    "path_body_radar": 25.16767692565918,
+    "crossing_stop_gap_m": 60.0
+  },
+  "files_sha256": {
+    "grade.json": "059068b0172d85e238b539ee1da518f9caa91f6404019c877a7fc2807565acc4",
+    "summary.json": "06ae6bea21311e07577df02a67279af907bbe2f278c75efb3b99c98445058cdb",
+    "observations.npz": "3432296d2eb1f41de957a0d610eb42818109ce6586660e6c841408c445dc83f9",
+    "trace.jsonl.gz": "a6a15e8c14cd4f59f833c0c75243ca0497a77e297dd01f913d38805b8c4542f9",
+    "reference.jsonl.gz": "4a7e821d9b6990e4f08d6e035cbd639e62ba64a491ba48822442cea2c1cb8c1c",
+    "front.mp4": "9d10f000f48762198bb2858a5363720de5f618b64916d553ce463f835e7a7b81",
+    "protocol.json": "f6f5f7f164698b0e9ec358631190c6ddbff43858dafed0c5cc8ec404a952d770"
+  },
+  "raw_local": "C:\\Users\\Yafi\\AppData\\Local\\ADO\\city-maneuvers\\source-runway-native01\\spaced-sectors\\continuous"
+}

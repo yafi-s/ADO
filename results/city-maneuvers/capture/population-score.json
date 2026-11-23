@@ -1,0 +1,793 @@
+{
+  "schema": "ado-city-population-score-v1",
+  "first_frame": 118,
+  "last_frame": 3787,
+  "speed_threshold_mps": {
+    "car": 1.0,
+    "pedestrian": 0.5
+  },
+  "motion_window_s": 0.5,
+  "capture_frames": 3670,
+  "source": "native actor centre displacement across six consecutive 10 Hz frames",
+  "includes": "staged and background road users; cyclists excluded",
+  "radii_m": {
+    "35": {
+      "scored_frames": 3665,
+      "moving_car_frames": 1601,
+      "moving_pedestrian_frames": 2660,
+      "both_frames": 1395,
+      "two_of_each_frames": 372,
+      "peak": {
+        "cars": 3,
+        "pedestrians": 4,
+        "simultaneous_frame": 2179,
+        "simultaneous_cars": 3,
+        "simultaneous_pedestrians": 4
+      }
+    },
+    "50": {
+      "scored_frames": 3665,
+      "moving_car_frames": 2064,
+      "moving_pedestrian_frames": 3212,
+      "both_frames": 1915,
+      "two_of_each_frames": 769,
+      "peak": {
+        "cars": 3,
+        "pedestrians": 5,
+        "simultaneous_frame": 427,
+        "simultaneous_cars": 3,
+        "simultaneous_pedestrians": 4
+      }
+    },
+    "65": {
+      "scored_frames": 3665,
+      "moving_car_frames": 2298,
+      "moving_pedestrian_frames": 3463,
+      "both_frames": 2198,
+      "two_of_each_frames": 1258,
+      "peak": {
+        "cars": 4,
+        "pedestrians": 8,
+        "simultaneous_frame": 1337,
+        "simultaneous_cars": 4,
+        "simultaneous_pedestrians": 4
+      }
+    },
+    "100": {
+      "scored_frames": 3665,
+      "moving_car_frames": 2488,
+      "moving_pedestrian_frames": 3665,
+      "both_frames": 2488,
+      "two_of_each_frames": 1689,
+      "peak": {
+        "cars": 4,
+        "pedestrians": 11,
+        "simultaneous_frame": 1323,
+        "simultaneous_cars": 4,
+        "simultaneous_pedestrians": 7
+      }
+    }
+  },
+  "actors": [
+    {
+      "actor_id": 111,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "signal_queue",
+      "frames": 464,
+      "moving_frames": 106,
+      "observed_distance_m": 68.612,
+      "max_step_m": 0.73
+    },
+    {
+      "actor_id": 112,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0051",
+      "role": "pedestrian",
+      "frames": 1314,
+      "moving_frames": 145,
+      "observed_distance_m": 17.656,
+      "max_step_m": 0.13
+    },
+    {
+      "actor_id": 113,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0029",
+      "role": "pedestrian-delayed",
+      "frames": 699,
+      "moving_frames": 138,
+      "observed_distance_m": 16.77,
+      "max_step_m": 0.13
+    },
+    {
+      "actor_id": 114,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "lead",
+      "frames": 1572,
+      "moving_frames": 200,
+      "observed_distance_m": 117.637,
+      "max_step_m": 0.85
+    },
+    {
+      "actor_id": 115,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "braking",
+      "frames": 498,
+      "moving_frames": 179,
+      "observed_distance_m": 116.276,
+      "max_step_m": 0.821
+    },
+    {
+      "actor_id": 116,
+      "kind": "car",
+      "blueprint": "vehicle.sprinter.mercedes",
+      "role": "occluder",
+      "frames": 1127,
+      "moving_frames": 0,
+      "observed_distance_m": 0.0,
+      "max_step_m": 0.0
+    },
+    {
+      "actor_id": 117,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0045",
+      "role": "occluded",
+      "frames": 991,
+      "moving_frames": 137,
+      "observed_distance_m": 16.649,
+      "max_step_m": 0.13
+    },
+    {
+      "actor_id": 118,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "oncoming",
+      "frames": 448,
+      "moving_frames": 123,
+      "observed_distance_m": 63.57,
+      "max_step_m": 0.58
+    },
+    {
+      "actor_id": 126,
+      "kind": "car",
+      "blueprint": "vehicle.fuso.mitsubishi",
+      "role": "stopped_bus",
+      "frames": 1010,
+      "moving_frames": 0,
+      "observed_distance_m": 0.04,
+      "max_step_m": 0.01
+    },
+    {
+      "actor_id": 132,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "background",
+      "frames": 1239,
+      "moving_frames": 36,
+      "observed_distance_m": 12.804,
+      "max_step_m": 0.48
+    },
+    {
+      "actor_id": 133,
+      "kind": "car",
+      "blueprint": "vehicle.lincoln.mkz",
+      "role": "background",
+      "frames": 1131,
+      "moving_frames": 96,
+      "observed_distance_m": 46.843,
+      "max_step_m": 0.56
+    },
+    {
+      "actor_id": 134,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "background",
+      "frames": 1080,
+      "moving_frames": 68,
+      "observed_distance_m": 31.526,
+      "max_step_m": 0.56
+    },
+    {
+      "actor_id": 135,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "background",
+      "frames": 1064,
+      "moving_frames": 97,
+      "observed_distance_m": 39.757,
+      "max_step_m": 0.46
+    },
+    {
+      "actor_id": 136,
+      "kind": "car",
+      "blueprint": "vehicle.lincoln.mkz",
+      "role": "background",
+      "frames": 1039,
+      "moving_frames": 96,
+      "observed_distance_m": 39.957,
+      "max_step_m": 0.46
+    },
+    {
+      "actor_id": 137,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "background",
+      "frames": 799,
+      "moving_frames": 138,
+      "observed_distance_m": 59.049,
+      "max_step_m": 0.48
+    },
+    {
+      "actor_id": 138,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "background",
+      "frames": 753,
+      "moving_frames": 155,
+      "observed_distance_m": 66.043,
+      "max_step_m": 0.471
+    },
+    {
+      "actor_id": 139,
+      "kind": "car",
+      "blueprint": "vehicle.lincoln.mkz",
+      "role": "background",
+      "frames": 291,
+      "moving_frames": 147,
+      "observed_distance_m": 82.134,
+      "max_step_m": 0.585
+    },
+    {
+      "actor_id": 140,
+      "kind": "car",
+      "blueprint": "vehicle.lincoln.mkz",
+      "role": "background",
+      "frames": 265,
+      "moving_frames": 155,
+      "observed_distance_m": 87.504,
+      "max_step_m": 0.587
+    },
+    {
+      "actor_id": 141,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "background",
+      "frames": 1301,
+      "moving_frames": 20,
+      "observed_distance_m": 12.07,
+      "max_step_m": 0.56
+    },
+    {
+      "actor_id": 142,
+      "kind": "car",
+      "blueprint": "vehicle.lincoln.mkz",
+      "role": "background",
+      "frames": 586,
+      "moving_frames": 207,
+      "observed_distance_m": 110.513,
+      "max_step_m": 0.547
+    },
+    {
+      "actor_id": 143,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "background",
+      "frames": 567,
+      "moving_frames": 199,
+      "observed_distance_m": 103.38,
+      "max_step_m": 0.555
+    },
+    {
+      "actor_id": 144,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "background",
+      "frames": 549,
+      "moving_frames": 186,
+      "observed_distance_m": 101.158,
+      "max_step_m": 0.562
+    },
+    {
+      "actor_id": 145,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "background",
+      "frames": 558,
+      "moving_frames": 177,
+      "observed_distance_m": 96.177,
+      "max_step_m": 0.562
+    },
+    {
+      "actor_id": 146,
+      "kind": "car",
+      "blueprint": "vehicle.lincoln.mkz",
+      "role": "background",
+      "frames": 709,
+      "moving_frames": 144,
+      "observed_distance_m": 73.802,
+      "max_step_m": 0.58
+    },
+    {
+      "actor_id": 147,
+      "kind": "car",
+      "blueprint": "vehicle.lincoln.mkz",
+      "role": "background",
+      "frames": 796,
+      "moving_frames": 128,
+      "observed_distance_m": 64.982,
+      "max_step_m": 0.59
+    },
+    {
+      "actor_id": 148,
+      "kind": "car",
+      "blueprint": "vehicle.lincoln.mkz",
+      "role": "background",
+      "frames": 620,
+      "moving_frames": 155,
+      "observed_distance_m": 84.412,
+      "max_step_m": 0.58
+    },
+    {
+      "actor_id": 149,
+      "kind": "car",
+      "blueprint": "vehicle.lincoln.mkz",
+      "role": "background",
+      "frames": 326,
+      "moving_frames": 85,
+      "observed_distance_m": 40.792,
+      "max_step_m": 0.56
+    },
+    {
+      "actor_id": 150,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "background",
+      "frames": 530,
+      "moving_frames": 161,
+      "observed_distance_m": 69.196,
+      "max_step_m": 0.488
+    },
+    {
+      "actor_id": 151,
+      "kind": "car",
+      "blueprint": "vehicle.lincoln.mkz",
+      "role": "background",
+      "frames": 574,
+      "moving_frames": 180,
+      "observed_distance_m": 76.797,
+      "max_step_m": 0.47
+    },
+    {
+      "actor_id": 152,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "background",
+      "frames": 839,
+      "moving_frames": 58,
+      "observed_distance_m": 24.792,
+      "max_step_m": 0.55
+    },
+    {
+      "actor_id": 153,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "background",
+      "frames": 957,
+      "moving_frames": 83,
+      "observed_distance_m": 38.452,
+      "max_step_m": 0.558
+    },
+    {
+      "actor_id": 154,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "background",
+      "frames": 1262,
+      "moving_frames": 53,
+      "observed_distance_m": 21.898,
+      "max_step_m": 0.54
+    },
+    {
+      "actor_id": 155,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "background",
+      "frames": 1041,
+      "moving_frames": 101,
+      "observed_distance_m": 41.897,
+      "max_step_m": 0.47
+    },
+    {
+      "actor_id": 156,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "background",
+      "frames": 291,
+      "moving_frames": 136,
+      "observed_distance_m": 76.146,
+      "max_step_m": 0.588
+    },
+    {
+      "actor_id": 157,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "background",
+      "frames": 605,
+      "moving_frames": 207,
+      "observed_distance_m": 111.573,
+      "max_step_m": 0.54
+    },
+    {
+      "actor_id": 158,
+      "kind": "car",
+      "blueprint": "vehicle.lincoln.mkz",
+      "role": "background",
+      "frames": 670,
+      "moving_frames": 140,
+      "observed_distance_m": 74.482,
+      "max_step_m": 0.58
+    },
+    {
+      "actor_id": 159,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "background",
+      "frames": 514,
+      "moving_frames": 171,
+      "observed_distance_m": 75.052,
+      "max_step_m": 0.451
+    },
+    {
+      "actor_id": 160,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0027",
+      "role": "background",
+      "frames": 1273,
+      "moving_frames": 1098,
+      "observed_distance_m": 104.085,
+      "max_step_m": 0.1
+    },
+    {
+      "actor_id": 161,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0041",
+      "role": "background",
+      "frames": 1275,
+      "moving_frames": 1105,
+      "observed_distance_m": 104.747,
+      "max_step_m": 0.1
+    },
+    {
+      "actor_id": 162,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0016",
+      "role": "background",
+      "frames": 1248,
+      "moving_frames": 986,
+      "observed_distance_m": 116.931,
+      "max_step_m": 0.12
+    },
+    {
+      "actor_id": 163,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0037",
+      "role": "background",
+      "frames": 790,
+      "moving_frames": 696,
+      "observed_distance_m": 69.183,
+      "max_step_m": 0.1
+    },
+    {
+      "actor_id": 164,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0047",
+      "role": "background",
+      "frames": 1148,
+      "moving_frames": 1027,
+      "observed_distance_m": 105.104,
+      "max_step_m": 0.11
+    },
+    {
+      "actor_id": 165,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0023",
+      "role": "background",
+      "frames": 1126,
+      "moving_frames": 1003,
+      "observed_distance_m": 101.603,
+      "max_step_m": 0.11
+    },
+    {
+      "actor_id": 166,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0042",
+      "role": "background",
+      "frames": 1005,
+      "moving_frames": 711,
+      "observed_distance_m": 83.223,
+      "max_step_m": 0.124
+    },
+    {
+      "actor_id": 167,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0035",
+      "role": "background",
+      "frames": 1040,
+      "moving_frames": 944,
+      "observed_distance_m": 97.78,
+      "max_step_m": 0.114
+    },
+    {
+      "actor_id": 168,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0051",
+      "role": "background",
+      "frames": 505,
+      "moving_frames": 448,
+      "observed_distance_m": 53.137,
+      "max_step_m": 0.13
+    },
+    {
+      "actor_id": 169,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0019",
+      "role": "background",
+      "frames": 501,
+      "moving_frames": 434,
+      "observed_distance_m": 52.316,
+      "max_step_m": 0.13
+    },
+    {
+      "actor_id": 170,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0049",
+      "role": "background",
+      "frames": 559,
+      "moving_frames": 508,
+      "observed_distance_m": 49.422,
+      "max_step_m": 0.1
+    },
+    {
+      "actor_id": 171,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0050",
+      "role": "background",
+      "frames": 699,
+      "moving_frames": 626,
+      "observed_distance_m": 65.052,
+      "max_step_m": 0.112
+    },
+    {
+      "actor_id": 172,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0051",
+      "role": "background",
+      "frames": 383,
+      "moving_frames": 350,
+      "observed_distance_m": 39.177,
+      "max_step_m": 0.117
+    },
+    {
+      "actor_id": 173,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0041",
+      "role": "background",
+      "frames": 377,
+      "moving_frames": 344,
+      "observed_distance_m": 38.443,
+      "max_step_m": 0.117
+    },
+    {
+      "actor_id": 174,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0021",
+      "role": "background",
+      "frames": 695,
+      "moving_frames": 592,
+      "observed_distance_m": 70.661,
+      "max_step_m": 0.122
+    },
+    {
+      "actor_id": 175,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0033",
+      "role": "background",
+      "frames": 1087,
+      "moving_frames": 947,
+      "observed_distance_m": 120.281,
+      "max_step_m": 0.13
+    },
+    {
+      "actor_id": 176,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0043",
+      "role": "background",
+      "frames": 1304,
+      "moving_frames": 1233,
+      "observed_distance_m": 115.995,
+      "max_step_m": 0.1
+    },
+    {
+      "actor_id": 177,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0028",
+      "role": "background",
+      "frames": 1307,
+      "moving_frames": 1236,
+      "observed_distance_m": 116.295,
+      "max_step_m": 0.1
+    },
+    {
+      "actor_id": 178,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0026",
+      "role": "background",
+      "frames": 1154,
+      "moving_frames": 987,
+      "observed_distance_m": 110.204,
+      "max_step_m": 0.122
+    },
+    {
+      "actor_id": 179,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0015",
+      "role": "background",
+      "frames": 606,
+      "moving_frames": 0,
+      "observed_distance_m": 4.8,
+      "max_step_m": 0.13
+    },
+    {
+      "actor_id": 180,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0022",
+      "role": "background",
+      "frames": 687,
+      "moving_frames": 615,
+      "observed_distance_m": 74.608,
+      "max_step_m": 0.13
+    },
+    {
+      "actor_id": 181,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0016",
+      "role": "background",
+      "frames": 777,
+      "moving_frames": 667,
+      "observed_distance_m": 83.099,
+      "max_step_m": 0.132
+    },
+    {
+      "actor_id": 182,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0032",
+      "role": "background",
+      "frames": 337,
+      "moving_frames": 283,
+      "observed_distance_m": 33.27,
+      "max_step_m": 0.12
+    },
+    {
+      "actor_id": 183,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0052",
+      "role": "background",
+      "frames": 598,
+      "moving_frames": 562,
+      "observed_distance_m": 54.78,
+      "max_step_m": 0.108
+    },
+    {
+      "actor_id": 184,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0045",
+      "role": "background",
+      "frames": 592,
+      "moving_frames": 548,
+      "observed_distance_m": 53.413,
+      "max_step_m": 0.108
+    },
+    {
+      "actor_id": 185,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0045",
+      "role": "background",
+      "frames": 720,
+      "moving_frames": 609,
+      "observed_distance_m": 76.922,
+      "max_step_m": 0.13
+    },
+    {
+      "actor_id": 186,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0046",
+      "role": "background",
+      "frames": 811,
+      "moving_frames": 745,
+      "observed_distance_m": 71.05,
+      "max_step_m": 0.1
+    },
+    {
+      "actor_id": 187,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0039",
+      "role": "background",
+      "frames": 787,
+      "moving_frames": 698,
+      "observed_distance_m": 70.483,
+      "max_step_m": 0.108
+    },
+    {
+      "actor_id": 188,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0023",
+      "role": "background",
+      "frames": 520,
+      "moving_frames": 457,
+      "observed_distance_m": 44.86,
+      "max_step_m": 0.104
+    },
+    {
+      "actor_id": 189,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0043",
+      "role": "background",
+      "frames": 877,
+      "moving_frames": 816,
+      "observed_distance_m": 91.27,
+      "max_step_m": 0.122
+    },
+    {
+      "actor_id": 190,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0029",
+      "role": "background",
+      "frames": 933,
+      "moving_frames": 835,
+      "observed_distance_m": 98.917,
+      "max_step_m": 0.124
+    },
+    {
+      "actor_id": 191,
+      "kind": "pedestrian",
+      "blueprint": "walker.pedestrian.0027",
+      "role": "background",
+      "frames": 882,
+      "moving_frames": 787,
+      "observed_distance_m": 94.23,
+      "max_step_m": 0.12
+    },
+    {
+      "actor_id": 289,
+      "kind": "car",
+      "blueprint": "vehicle.lincoln.mkz",
+      "role": "slow-traffic",
+      "frames": 544,
+      "moving_frames": 463,
+      "observed_distance_m": 63.356,
+      "max_step_m": 0.14
+    },
+    {
+      "actor_id": 291,
+      "kind": "car",
+      "blueprint": "vehicle.mini.cooper",
+      "role": "adjacent-front",
+      "frames": 403,
+      "moving_frames": 189,
+      "observed_distance_m": 97.942,
+      "max_step_m": 0.54
+    },
+    {
+      "actor_id": 293,
+      "kind": "car",
+      "blueprint": "vehicle.tesla.model3",
+      "role": "adjacent-rear",
+      "frames": 831,
+      "moving_frames": 243,
+      "observed_distance_m": 259.481,
+      "max_step_m": 1.12
+    }
+  ]
+}

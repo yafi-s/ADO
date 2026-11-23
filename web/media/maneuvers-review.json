@@ -1,71 +1,215 @@
 {
   "checks": [
     {
-      "test": "Barrier in the lane",
-      "result": "On the same approach, City Progress stopped behind the striped barricade. The new driver passed it in the adjacent lane, cleared it by 1.96 m and returned. The side-by-side film then compares both drivers behind a moving car.",
+      "test": "Full populated drive",
+      "result": "1.72 km, 3,670 native exposures and 13/13 encounters handled. 0 ego contacts, 0 red-light violations and 0 missed yields.",
       "evidence": [
         {
-          "label": "Watch the 46-second comparison",
-          "url": "https://raw.githubusercontent.com/yafi-s/ADO/7ae49838fbfe9c725d226bc33883f15ac2376143/web/media/city-maneuvers-tests/comparison.mp4"
+          "label": "Watch from the beginning",
+          "url": "./?run=city-maneuvers"
         },
         {
-          "label": "All 26 matched trials",
-          "url": "https://github.com/yafi-s/ADO/blob/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/trials/README.md"
+          "label": "Original grade",
+          "url": "./media/city-maneuvers/manifest.json"
+        }
+      ]
+    },
+    {
+      "test": "Obstruction in the lane",
+      "result": "ADO passed 3 physical props in the neighboring lane, with 1.69 m minimum body clearance while alongside. It then returned to the original lane, 34.3 m clear of the obstruction.",
+      "evidence": [
+        {
+          "label": "See the obstruction",
+          "url": "./?run=city-maneuvers&frame=1045&camera=front"
+        },
+        {
+          "label": "Alongside",
+          "url": "./?run=city-maneuvers&frame=1101&camera=chase"
+        },
+        {
+          "label": "Passenger-side camera",
+          "url": "./?run=city-maneuvers&frame=1101&camera=right"
+        },
+        {
+          "label": "Back in lane",
+          "url": "./?run=city-maneuvers&frame=1151&camera=rear_right"
         }
       ]
     },
     {
       "test": "Yield and overtake",
-      "result": "ADO yielded for 1.2 s while a real adjacent vehicle occupied the gap. It overtook a lead moving at 5.7 km/h, with 1.66 m minimum clearance alongside, then returned 34.3 m ahead.",
+      "result": "The vehicle ahead was moving at 4.8 km/h at first measured moving overlap. For 2.5 s of native exposures ADO selected yield while adjacent traffic occupied the gap. It then passed the lead and returned 34.2 m ahead, measured between the two bodies.",
       "evidence": [
         {
-          "label": "Native forward camera",
-          "url": "https://raw.githubusercontent.com/yafi-s/ADO/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/qualification/market-loop/tail-later-gap/front.mp4"
+          "label": "Yield to adjacent traffic",
+          "url": "./?run=city-maneuvers&frame=3497&camera=rear_left"
         },
         {
-          "label": "Physical outcome",
-          "url": "https://github.com/yafi-s/ADO/blob/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/qualification/market-loop/tail-later-gap/grade.json"
+          "label": "Pass the moving car",
+          "url": "./?run=city-maneuvers&frame=3695&camera=chase"
+        },
+        {
+          "label": "Passenger-side camera",
+          "url": "./?run=city-maneuvers&frame=3695&camera=right"
+        },
+        {
+          "label": "Return",
+          "url": "./?run=city-maneuvers&frame=3755&camera=rear_right"
         }
       ]
     },
     {
-      "test": "Bend and roadside objects",
-      "result": "The 40° bend median rose from 15.42 to 22.26 km/h on matched runs. The original six tight roadside drums stayed at 15.69 km/h. At two roadside boards the new driver slowed more, from 6.62 to 5.32 km/h across 25 m.",
+      "test": "Stopped car in the lane",
+      "result": "The front camera, forward radar and lidar identified the stopped car 42.5 m ahead. ADO stayed in its lane, came to rest with a minimum recorded gap of 3.69 m, and followed the car once it moved off. Between 500 and 700 m it entered no lane-change phase and cast 0 pass votes.",
       "evidence": [
         {
-          "label": "Measured pace and safety controls",
-          "url": "https://github.com/yafi-s/ADO/blob/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/pace/README.md"
+          "label": "Stopped car identified",
+          "url": "./?run=city-maneuvers&frame=1228&camera=front"
+        },
+        {
+          "label": "Waiting behind it",
+          "url": "./?run=city-maneuvers&frame=1328&camera=front"
+        },
+        {
+          "label": "Following it out",
+          "url": "./?run=city-maneuvers&frame=1346&camera=front"
+        },
+        {
+          "label": "Lane and vote check",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/audit/stopped-sedan-gate.json"
         }
       ]
     },
     {
-      "test": "Higher speeds and a stopped queue",
-      "result": "The open straight in a 90 km/h zone increased from 38.49 to 40.95 km/h median. The higher-ceiling configuration peaked at 43.92 km/h on that run. With a queue ahead it briefly reached 50.37 km/h and stopped 4.09 m behind the lead.",
+      "test": "Cones mistaken for a car",
+      "result": "The second High recording timed out at 414.0 m. A low-confidence camera \"car\" box over the in-lane cones matched stationary radar and lidar, and ADO stopped behind them. The featured drive leaves to the route planner any stationary sighting whose in-box radar return is too small for a car. That return measured 1,413–2,680 on the cones and at least 4,704 on the stopped car. No false cone box appeared in the featured drive, so the check never acted at the cones. It set aside 12 sightings of a stationary background car near the route end, where ADO kept its lane.",
       "evidence": [
         {
-          "label": "Watch the measured queue approach",
-          "url": "https://raw.githubusercontent.com/yafi-s/ADO/7ae49838fbfe9c725d226bc33883f15ac2376143/web/media/city-maneuvers-tests/boulevard.mp4"
+          "label": "What happened and the fix",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/attempts/high02/README.md"
         },
         {
-          "label": "Speeds, braking distances and signs",
-          "url": "https://github.com/yafi-s/ADO/blob/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/speed/README.md"
+          "label": "Second recording grade",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/attempts/high02/manifest.json"
         }
       ]
     },
     {
-      "test": "Failed return on the original course",
-      "result": "In the first six-camera High run, ADO passed three in-lane drums, yielded to adjacent traffic and overtook the moving sedan. It ran out of room to return on that trajectory and stopped in the passing lane. The run timed out at 584.55 m with 0 recorded ego contacts.",
+      "test": "Later gap and faster lead",
+      "result": "When the adjacent gap opened later and the lead traveled at 6.8 km/h, ADO yielded and overtook, then stopped in the passing lane. The second return failed. The trial timed out after 125.4 s with 0 recorded ego contacts.",
       "evidence": [
         {
-          "label": "Watch the gap close",
-          "url": "https://raw.githubusercontent.com/yafi-s/ADO/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/attempts/high01/incomplete-return.mp4"
+          "label": "Native grade and events",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/qualification/timing-variation/grade.json"
         },
         {
-          "label": "Camera and control evidence",
-          "url": "https://github.com/yafi-s/ADO/blob/7ae49838fbfe9c725d226bc33883f15ac2376143/results/city-maneuvers/attempts/high01/README.md"
+          "label": "Stopped position and controls",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/qualification/timing-variation/summary.json"
+        }
+      ]
+    },
+    {
+      "test": "Original 90 km/h posted section",
+      "result": "On the shared stretch, actual speed in the featured drive peaked at 41.1 km/h and spent 0.7 s above 40 km/h. The previous drive peaked at 38.4 km/h. The two recordings have different traffic and obstructions.",
+      "evidence": [
+        {
+          "label": "Matched road sections",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/audit/README.md"
+        },
+        {
+          "label": "Stopping and higher-speed tests",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/speed/README.md"
+        }
+      ]
+    },
+    {
+      "test": "Why the passes are on separate blocks",
+      "result": "The first High drive on the shorter layout timed out at 584.5 m after overtaking the slow sedan. The featured route retains the original streets and continues 303 m farther. The moving lead and its adjacent traffic are on the return carriageway. The in-lane drums remain on the outbound road.",
+      "evidence": [
+        {
+          "label": "Watch the failed return",
+          "url": "https://github.com/yafi-s/ADO/raw/v0.7.0/results/city-maneuvers/attempts/high01/incomplete-return.mp4"
+        },
+        {
+          "label": "Original and extended geometry",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/audit/market-loop-survey.json"
+        }
+      ]
+    },
+    {
+      "test": "Return boulevard",
+      "result": "The extension starts beyond the earlier film at 1416 m. In its own 90 km/h zone, the car spent 58.1 s, reached 37.6 km/h and drove above 40 km/h for 0.0 s.",
+      "evidence": [
+        {
+          "label": "Every posted limit and speed interval",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/audit/v07.json"
+        }
+      ]
+    },
+    {
+      "test": "Original bend and roadside objects",
+      "result": "In paired runs, median speed on the bend changed from 15.4 to 22.3 km/h. At the roadside boards it changed from 6.6 to 5.3 km/h. The six roadside drums measured 15.7 and 15.7 km/h respectively.",
+      "evidence": [
+        {
+          "label": "Paired tests and explanations",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/pace/README.md"
+        },
+        {
+          "label": "Native speed and clearance",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/pace/comparison.json"
+        }
+      ]
+    },
+    {
+      "test": "Higher-speed control",
+      "result": "On a separate open boulevard, the matched straight-section median changed from 38.5 to 41.0 km/h. The faster configuration peaked at 43.9 km/h and held above 40 for 5.5 consecutive seconds in the 90 zone. With a queue ahead it peaked at 50.4 km/h, spent 0.2 s above 50 and stopped 4.09 m behind the queue.",
+      "evidence": [
+        {
+          "label": "Native higher-speed footage",
+          "url": "./media/city-maneuvers-tests/boulevard.mp4"
+        },
+        {
+          "label": "Cruise, lower limits and braking",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/speed/README.md"
+        },
+        {
+          "label": "Full matched measurements",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/speed/comparison.json"
+        }
+      ]
+    },
+    {
+      "test": "Moving city traffic",
+      "result": "The simulator spawned 28 background vehicles, compared with 22 previously. On the shared streets, at least two moving vehicles and two moving pedestrians were within 50 m for 21.7% of eligible frames, compared with 17.0% on the earlier drive. Counts include occluded actors.",
+      "evidence": [
+        {
+          "label": "Native proof and controls",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/README.md"
+        },
+        {
+          "label": "Explore the traffic timeline",
+          "url": "./benchmarks.html#traffic-study"
+        }
+      ]
+    },
+    {
+      "test": "What the rider display actually saw",
+      "result": "Within 35 m the display placed the slow vehicle within 3 m of its native body on 348/348 exposures. For the three staged cones, 124/299 individual cone observations had a symbol within 0.65 m. Counts include occluded bodies and remembered symbols.",
+      "evidence": [
+        {
+          "label": "Cone in the side camera",
+          "url": "./?run=city-maneuvers&frame=1101&camera=right"
+        },
+        {
+          "label": "Approaching car while ADO yields",
+          "url": "./?run=city-maneuvers&frame=3498&camera=rear_left"
+        },
+        {
+          "label": "Camera and range checks",
+          "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/display.md"
         }
       ]
     }
   ],
-  "scope": "These are measured CARLA development trials. Each row links its own recording or assessment. City Progress is the current featured full drive."
+  "scope": "The native cameras and vehicle bodies establish the order and clearance of each tested pass. The posted limit, fitted operating ceiling, requested speed and measured speed are separate quantities."
 }

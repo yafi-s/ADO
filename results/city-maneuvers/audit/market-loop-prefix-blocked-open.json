@@ -1,0 +1,734 @@
+{
+  "scope": "Held-out blocked-then-open cone behavior on the proposed Market Loop original prefix.",
+  "sources": {
+    "protocol": {
+      "pin": "727f097d8760248e23431021ace61ff2c48b6d5e",
+      "phase": "prefix",
+      "case": "continuous",
+      "seed": 212,
+      "start_m": 0.0,
+      "end_m": 715.0,
+      "model_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+      "source_sha256": "3fa3dde35ca5b515eb6b704aba2a9f080bcf976e2c29d81573d9374a33c55c82",
+      "map": "Town03_Opt",
+      "weather": "ClearNoon",
+      "step_s": 0.1,
+      "sensor_configuration": "Stock five-camera surround body and rig, 1280x720 native front optical image, exact control crop of native 100 m lidar and all five native radar sensors; normal episode policy.",
+      "omitted": "Chase movie and the rider-only YOLOX/SurroundPerception pass. RGB NanoDet, map/route, lamp, LiDAR and radar control paths are unmodified."
+    },
+    "trace_sha256": "4b46d01e6ca718f05be4b909b523210cfde5b1c8715849bcedbe0a9d192ed60e",
+    "native_pose_sha256": "1578b56f67fbbcdb05142f49cd96efe2a93b5595c6e70d1742181027e346da01",
+    "survey_sha256": "f73c2afaa46d66e5d94b90b9df525074f3e60ab2d76aa77b8a96789f03145f14"
+  },
+  "method": "Full native ego and actor footprints projected onto the native Road 67 source and alternate lanes. The perception intervals use the actual logged measurements, acceptance, and next-tick controls. A range of 60 m means absence of a supported surface to that limit.",
+  "outcome": "timeout",
+  "completed_route_m": 414.27,
+  "native_contact_events": 0,
+  "confirmed_positive_alternate_scan_periods": [
+    {
+      "first": {
+        "frame": 7095,
+        "time_s": 106.8,
+        "station_m": 413.81,
+        "actual_kmh": 0.0,
+        "target_kmh": 0.0
+      },
+      "last": {
+        "frame": 7106,
+        "time_s": 107.9,
+        "station_m": 413.835,
+        "actual_kmh": 0.727,
+        "target_kmh": 4.662
+      },
+      "exposures": 12,
+      "sampled_seconds": 1.2,
+      "near_stationary_frames": 10,
+      "near_stationary_steer_command_range": [
+        -0.12941,
+        0.04438
+      ],
+      "peak_ego_speed_kmh": 0.727
+    },
+    {
+      "first": {
+        "frame": 7116,
+        "time_s": 108.9,
+        "station_m": 413.875,
+        "actual_kmh": 0.0,
+        "target_kmh": 0.0
+      },
+      "last": {
+        "frame": 7584,
+        "time_s": 155.7,
+        "station_m": 414.27,
+        "actual_kmh": 0.0,
+        "target_kmh": 0.0
+      },
+      "exposures": 469,
+      "sampled_seconds": 46.9,
+      "near_stationary_frames": 461,
+      "near_stationary_steer_command_range": [
+        -0.1255,
+        0.05153
+      ],
+      "peak_ego_speed_kmh": 3.013
+    }
+  ],
+  "recorded_evidence": [
+    {
+      "frame": 6990,
+      "time_s": 96.3,
+      "station_m": 391.009,
+      "actual_kmh": 12.866,
+      "target_kmh": 17.396,
+      "event": "stationary restored alternate Tesla",
+      "actual_source_ego": {
+        "side": "left",
+        "road": 67,
+        "source_lane": -2,
+        "alternate_lane": -1,
+        "ego_rear_m": 388.52941516661434,
+        "ego_front_m": 393.44880346396644,
+        "center_in_alternate": false,
+        "body_in_alternate": false,
+        "body_in_source": true,
+        "body_within_legal_union": true
+      },
+      "source_front_to_nearest_cone_m": 26.382,
+      "actual_adjacent_tesla": {
+        "actor_id": 986,
+        "longitudinal_bumper_room_m": 30.926,
+        "lateral_m": -3.557,
+        "native_world_speed_mps": 0.0
+      },
+      "commanded_control": {
+        "steer": 2e-05,
+        "throttle": 0.5755,
+        "brake": 0.0
+      },
+      "lane_plan": {
+        "maneuver_phase": "keep",
+        "source_lateral_m": 0.0,
+        "target_gap_accepted": true,
+        "adjacent_pavement_seen": [
+          true,
+          true
+        ],
+        "target_front_m": 33.551,
+        "target_rear_m": 60.0,
+        "source_gap_m": 29.155,
+        "rear_occupancy_forecast": null
+      },
+      "pace": {
+        "binding": "sight_distance",
+        "base_request_mps": 4.8320923614501945,
+        "raw_lidar_gap_m": 27.7703857421875,
+        "speed_regime": "urban"
+      }
+    },
+    {
+      "frame": 7004,
+      "time_s": 97.7,
+      "station_m": 397.18,
+      "actual_kmh": 17.881,
+      "target_kmh": 21.459,
+      "event": "adjacent instantaneous gap first denied",
+      "actual_source_ego": {
+        "side": "left",
+        "road": 67,
+        "source_lane": -2,
+        "alternate_lane": -1,
+        "ego_rear_m": 394.70147433509754,
+        "ego_front_m": 399.6195803039871,
+        "center_in_alternate": false,
+        "body_in_alternate": false,
+        "body_in_source": true,
+        "body_within_legal_union": true
+      },
+      "source_front_to_nearest_cone_m": 20.211,
+      "actual_adjacent_tesla": {
+        "actor_id": 986,
+        "longitudinal_bumper_room_m": 24.756,
+        "lateral_m": -3.557,
+        "native_world_speed_mps": 0.0
+      },
+      "commanded_control": {
+        "steer": 0.00017,
+        "throttle": 0.40883,
+        "brake": 0.0
+      },
+      "lane_plan": {
+        "maneuver_phase": "follow",
+        "source_lateral_m": -0.0,
+        "target_gap_accepted": false,
+        "adjacent_pavement_seen": [
+          true,
+          true
+        ],
+        "target_front_m": 27.267,
+        "target_rear_m": 60.0,
+        "source_gap_m": 23.019,
+        "rear_occupancy_forecast": null
+      },
+      "pace": {
+        "binding": "occupied_corridor",
+        "base_request_mps": 5.960732158694957,
+        "raw_lidar_gap_m": 20.79738998413086,
+        "speed_regime": "urban"
+      }
+    },
+    {
+      "frame": 7008,
+      "time_s": 98.1,
+      "station_m": 399.27,
+      "actual_kmh": 19.768,
+      "target_kmh": 23.895,
+      "event": "ego reaches old activation station",
+      "actual_source_ego": {
+        "side": "left",
+        "road": 67,
+        "source_lane": -2,
+        "alternate_lane": -1,
+        "ego_rear_m": 396.79040129457337,
+        "ego_front_m": 401.7093524110802,
+        "center_in_alternate": false,
+        "body_in_alternate": false,
+        "body_in_source": true,
+        "body_within_legal_union": true
+      },
+      "source_front_to_nearest_cone_m": 18.121,
+      "actual_adjacent_tesla": {
+        "actor_id": 986,
+        "longitudinal_bumper_room_m": 22.666,
+        "lateral_m": -3.557,
+        "native_world_speed_mps": 0.0
+      },
+      "commanded_control": {
+        "steer": 0.00016,
+        "throttle": 0.42351,
+        "brake": 0.0
+      },
+      "lane_plan": {
+        "maneuver_phase": "follow",
+        "source_lateral_m": -0.0,
+        "target_gap_accepted": false,
+        "adjacent_pavement_seen": [
+          true,
+          true
+        ],
+        "target_front_m": 25.169,
+        "target_rear_m": 60.0,
+        "source_gap_m": 21.691,
+        "rear_occupancy_forecast": null
+      },
+      "pace": {
+        "binding": "occupied_corridor",
+        "base_request_mps": 6.637398835693095,
+        "raw_lidar_gap_m": 19.441051483154297,
+        "speed_regime": "urban"
+      }
+    },
+    {
+      "frame": 7015,
+      "time_s": 98.8,
+      "station_m": 403.346,
+      "actual_kmh": 21.352,
+      "target_kmh": 0.0,
+      "event": "real target moving below clearance",
+      "actual_source_ego": {
+        "side": "left",
+        "road": 67,
+        "source_lane": -2,
+        "alternate_lane": -1,
+        "ego_rear_m": 400.869366955275,
+        "ego_front_m": 405.7853191140218,
+        "center_in_alternate": false,
+        "body_in_alternate": false,
+        "body_in_source": true,
+        "body_within_legal_union": true
+      },
+      "source_front_to_nearest_cone_m": 14.045,
+      "actual_adjacent_tesla": {
+        "actor_id": 986,
+        "longitudinal_bumper_room_m": 19.427,
+        "lateral_m": -3.548,
+        "native_world_speed_mps": 1.671
+      },
+      "commanded_control": {
+        "steer": 4e-05,
+        "throttle": 0.0,
+        "brake": 0.60484
+      },
+      "lane_plan": {
+        "maneuver_phase": "yield",
+        "source_lateral_m": -0.0,
+        "target_gap_accepted": false,
+        "adjacent_pavement_seen": [
+          true,
+          true
+        ],
+        "target_front_m": 22.021,
+        "target_rear_m": 60.0,
+        "source_gap_m": 16.784,
+        "rear_occupancy_forecast": null
+      },
+      "pace": {
+        "binding": "unconfirmed",
+        "base_request_mps": 0.0,
+        "raw_lidar_gap_m": 14.552529335021973,
+        "speed_regime": "urban"
+      }
+    },
+    {
+      "frame": 7047,
+      "time_s": 102.0,
+      "station_m": 410.896,
+      "actual_kmh": 9.184,
+      "target_kmh": 0.0,
+      "event": "forecast still denies with instantaneous acceptance",
+      "actual_source_ego": {
+        "side": "left",
+        "road": 67,
+        "source_lane": -2,
+        "alternate_lane": -1,
+        "ego_rear_m": 408.40502859242923,
+        "ego_front_m": 413.37136658818883,
+        "center_in_alternate": false,
+        "body_in_alternate": false,
+        "body_in_source": true,
+        "body_within_legal_union": true
+      },
+      "source_front_to_nearest_cone_m": 6.459,
+      "actual_adjacent_tesla": {
+        "actor_id": 986,
+        "longitudinal_bumper_room_m": 26.433,
+        "lateral_m": -3.607,
+        "native_world_speed_mps": 5.268
+      },
+      "commanded_control": {
+        "steer": 0.02264,
+        "throttle": 0.0,
+        "brake": 0.31775
+      },
+      "lane_plan": {
+        "maneuver_phase": "yield",
+        "source_lateral_m": 0.027,
+        "target_gap_accepted": true,
+        "adjacent_pavement_seen": [
+          true,
+          true
+        ],
+        "target_front_m": 29.059,
+        "target_rear_m": 60.0,
+        "source_gap_m": 9.229,
+        "rear_occupancy_forecast": {
+          "time_to_vacate_s": 7.75,
+          "projected_rear_bumper_gap_m": null,
+          "rear_margin_m": null,
+          "target_front_margin_m": -25.021891176234114,
+          "allowed": false
+        }
+      },
+      "pace": {
+        "binding": "occupied_corridor",
+        "base_request_mps": 0.0,
+        "raw_lidar_gap_m": 6.959333896636963,
+        "speed_regime": "urban"
+      }
+    },
+    {
+      "frame": 7070,
+      "time_s": 104.3,
+      "station_m": 413.808,
+      "actual_kmh": 0.014,
+      "target_kmh": 0.0,
+      "event": "first source stop near cones",
+      "actual_source_ego": {
+        "side": "left",
+        "road": 67,
+        "source_lane": -2,
+        "alternate_lane": -1,
+        "ego_rear_m": 411.303780051506,
+        "ego_front_m": 416.3145127833029,
+        "center_in_alternate": false,
+        "body_in_alternate": false,
+        "body_in_source": true,
+        "body_within_legal_union": true
+      },
+      "source_front_to_nearest_cone_m": 3.516,
+      "actual_adjacent_tesla": {
+        "actor_id": 986,
+        "longitudinal_bumper_room_m": 34.792,
+        "lateral_m": -3.61,
+        "native_world_speed_mps": 5.301
+      },
+      "commanded_control": {
+        "steer": 0.04434,
+        "throttle": 0.0,
+        "brake": 0.79307
+      },
+      "lane_plan": {
+        "maneuver_phase": "follow",
+        "source_lateral_m": 0.056,
+        "target_gap_accepted": true,
+        "adjacent_pavement_seen": [
+          true,
+          true
+        ],
+        "target_front_m": 37.768,
+        "target_rear_m": 60.0,
+        "source_gap_m": 6.281,
+        "rear_occupancy_forecast": {
+          "time_to_vacate_s": 8.75,
+          "projected_rear_bumper_gap_m": null,
+          "rear_margin_m": null,
+          "target_front_margin_m": -12.660306468446874,
+          "allowed": false
+        }
+      },
+      "pace": {
+        "binding": "occupied_corridor",
+        "base_request_mps": 0.0,
+        "raw_lidar_gap_m": 4.037685871124268,
+        "speed_regime": "urban"
+      }
+    },
+    {
+      "frame": 7082,
+      "time_s": 105.5,
+      "station_m": 413.81,
+      "actual_kmh": 0.0,
+      "target_kmh": 0.0,
+      "event": "first briefly approved signal",
+      "actual_source_ego": {
+        "side": "left",
+        "road": 67,
+        "source_lane": -2,
+        "alternate_lane": -1,
+        "ego_rear_m": 411.2975616645608,
+        "ego_front_m": 416.31642822362244,
+        "center_in_alternate": false,
+        "body_in_alternate": false,
+        "body_in_source": true,
+        "body_within_legal_union": true
+      },
+      "source_front_to_nearest_cone_m": 3.514,
+      "actual_adjacent_tesla": {
+        "actor_id": 986,
+        "longitudinal_bumper_room_m": 40.716,
+        "lateral_m": -3.603,
+        "native_world_speed_mps": 5.298
+      },
+      "commanded_control": {
+        "steer": 0.04438,
+        "throttle": 0.0,
+        "brake": 0.7879
+      },
+      "lane_plan": {
+        "maneuver_phase": "signal_left",
+        "source_lateral_m": 0.056,
+        "target_gap_accepted": true,
+        "adjacent_pavement_seen": [
+          true,
+          true
+        ],
+        "target_front_m": 43.6,
+        "target_rear_m": 60.0,
+        "source_gap_m": 6.296,
+        "rear_occupancy_forecast": {
+          "time_to_vacate_s": 8.375,
+          "projected_rear_bumper_gap_m": null,
+          "rear_margin_m": null,
+          "target_front_margin_m": 1.7521960408855133,
+          "allowed": true
+        }
+      },
+      "pace": {
+        "binding": "occupied_corridor",
+        "base_request_mps": 0.0,
+        "raw_lidar_gap_m": 4.069886684417725,
+        "speed_regime": "urban"
+      }
+    },
+    {
+      "frame": 7095,
+      "time_s": 106.8,
+      "station_m": 413.81,
+      "actual_kmh": 0.0,
+      "target_kmh": 0.0,
+      "event": "first empty-surface target indication after ego stopped",
+      "actual_source_ego": {
+        "side": "left",
+        "road": 67,
+        "source_lane": -2,
+        "alternate_lane": -1,
+        "ego_rear_m": 411.2975616645608,
+        "ego_front_m": 416.31642822362244,
+        "center_in_alternate": false,
+        "body_in_alternate": false,
+        "body_in_source": true,
+        "body_within_legal_union": true
+      },
+      "source_front_to_nearest_cone_m": 3.514,
+      "actual_adjacent_tesla": {
+        "actor_id": 986,
+        "longitudinal_bumper_room_m": 47.344,
+        "lateral_m": -3.576,
+        "native_world_speed_mps": 5.324
+      },
+      "commanded_control": {
+        "steer": 0.04438,
+        "throttle": 0.0,
+        "brake": 0.7879
+      },
+      "lane_plan": {
+        "maneuver_phase": "signal_left",
+        "source_lateral_m": 0.056,
+        "target_gap_accepted": true,
+        "adjacent_pavement_seen": [
+          true,
+          true
+        ],
+        "target_front_m": 60.0,
+        "target_rear_m": 60.0,
+        "source_gap_m": 6.297,
+        "rear_occupancy_forecast": {
+          "time_to_vacate_s": 8.375,
+          "projected_rear_bumper_gap_m": null,
+          "rear_margin_m": null,
+          "target_front_margin_m": null,
+          "allowed": true
+        }
+      },
+      "pace": {
+        "binding": "occupied_corridor",
+        "base_request_mps": 0.0,
+        "raw_lidar_gap_m": 4.038128852844238,
+        "speed_regime": "urban"
+      }
+    },
+    {
+      "frame": 7100,
+      "time_s": 107.3,
+      "station_m": 413.81,
+      "actual_kmh": 0.0,
+      "target_kmh": 0.666,
+      "event": "first committed left command",
+      "actual_source_ego": {
+        "side": "left",
+        "road": 67,
+        "source_lane": -2,
+        "alternate_lane": -1,
+        "ego_rear_m": 411.2975616645608,
+        "ego_front_m": 416.31642822362244,
+        "center_in_alternate": false,
+        "body_in_alternate": false,
+        "body_in_source": true,
+        "body_within_legal_union": true
+      },
+      "source_front_to_nearest_cone_m": 3.514,
+      "actual_adjacent_tesla": {
+        "actor_id": 986,
+        "longitudinal_bumper_room_m": 49.903,
+        "lateral_m": -3.56,
+        "native_world_speed_mps": 5.313
+      },
+      "commanded_control": {
+        "steer": -0.12941,
+        "throttle": 0.0,
+        "brake": 0.58669
+      },
+      "lane_plan": {
+        "maneuver_phase": "change_left",
+        "source_lateral_m": 0.056,
+        "target_gap_accepted": true,
+        "adjacent_pavement_seen": [
+          true,
+          true
+        ],
+        "target_front_m": 60.0,
+        "target_rear_m": 60.0,
+        "source_gap_m": 6.314,
+        "rear_occupancy_forecast": {
+          "time_to_vacate_s": 8.75,
+          "projected_rear_bumper_gap_m": null,
+          "rear_margin_m": null,
+          "target_front_margin_m": null,
+          "allowed": true
+        }
+      },
+      "pace": {
+        "binding": "occupied_corridor",
+        "base_request_mps": 0.185,
+        "raw_lidar_gap_m": 36.0,
+        "speed_regime": "urban"
+      }
+    },
+    {
+      "frame": 7107,
+      "time_s": 108.0,
+      "station_m": 413.863,
+      "actual_kmh": 1.253,
+      "target_kmh": 0.0,
+      "event": "abort on temporarily reacquired target surface",
+      "actual_source_ego": {
+        "side": "left",
+        "road": 67,
+        "source_lane": -2,
+        "alternate_lane": -1,
+        "ego_rear_m": 411.35057966280357,
+        "ego_front_m": 416.3706632173048,
+        "center_in_alternate": false,
+        "body_in_alternate": false,
+        "body_in_source": true,
+        "body_within_legal_union": true
+      },
+      "source_front_to_nearest_cone_m": 3.46,
+      "actual_adjacent_tesla": {
+        "actor_id": 986,
+        "longitudinal_bumper_room_m": 53.431,
+        "lateral_m": -3.555,
+        "native_world_speed_mps": 5.317
+      },
+      "commanded_control": {
+        "steer": 0.05106,
+        "throttle": 0.0,
+        "brake": 0.95404
+      },
+      "lane_plan": {
+        "maneuver_phase": "follow",
+        "source_lateral_m": 0.051,
+        "target_gap_accepted": true,
+        "adjacent_pavement_seen": [
+          true,
+          true
+        ],
+        "target_front_m": 56.131,
+        "target_rear_m": 60.0,
+        "source_gap_m": 6.267,
+        "rear_occupancy_forecast": {
+          "time_to_vacate_s": 8.5,
+          "projected_rear_bumper_gap_m": null,
+          "rear_margin_m": null,
+          "target_front_margin_m": -2.2072386788161094,
+          "allowed": false
+        }
+      },
+      "pace": {
+        "binding": "occupied_corridor",
+        "base_request_mps": 0.0,
+        "raw_lidar_gap_m": 4.020195960998535,
+        "speed_regime": "urban"
+      }
+    },
+    {
+      "frame": 7121,
+      "time_s": 109.4,
+      "station_m": 413.875,
+      "actual_kmh": 0.0,
+      "target_kmh": 0.666,
+      "event": "second persistent left command",
+      "actual_source_ego": {
+        "side": "left",
+        "road": 67,
+        "source_lane": -2,
+        "alternate_lane": -1,
+        "ego_rear_m": 411.3674789068863,
+        "ego_front_m": 416.38314284067025,
+        "center_in_alternate": false,
+        "body_in_alternate": false,
+        "body_in_source": true,
+        "body_within_legal_union": true
+      },
+      "source_front_to_nearest_cone_m": 3.447,
+      "actual_adjacent_tesla": {
+        "actor_id": 986,
+        "longitudinal_bumper_room_m": 60.594,
+        "lateral_m": -3.541,
+        "native_world_speed_mps": 5.309
+      },
+      "commanded_control": {
+        "steer": -0.12212,
+        "throttle": 0.0,
+        "brake": 0.58669
+      },
+      "lane_plan": {
+        "maneuver_phase": "change_left",
+        "source_lateral_m": 0.05,
+        "target_gap_accepted": true,
+        "adjacent_pavement_seen": [
+          true,
+          true
+        ],
+        "target_front_m": 60.0,
+        "target_rear_m": 60.0,
+        "source_gap_m": 6.225,
+        "rear_occupancy_forecast": {
+          "time_to_vacate_s": 8.75,
+          "projected_rear_bumper_gap_m": null,
+          "rear_margin_m": null,
+          "target_front_margin_m": null,
+          "allowed": true
+        }
+      },
+      "pace": {
+        "binding": "unconfirmed",
+        "base_request_mps": 0.185,
+        "raw_lidar_gap_m": 36.0,
+        "speed_regime": "urban"
+      }
+    },
+    {
+      "frame": 7584,
+      "time_s": 155.7,
+      "station_m": 414.27,
+      "actual_kmh": 0.0,
+      "target_kmh": 0.0,
+      "event": "timeout",
+      "actual_source_ego": {
+        "side": "left",
+        "road": 67,
+        "source_lane": -2,
+        "alternate_lane": -1,
+        "ego_rear_m": 411.7792246584068,
+        "ego_front_m": 416.7879241610394,
+        "center_in_alternate": false,
+        "body_in_alternate": false,
+        "body_in_source": true,
+        "body_within_legal_union": true
+      },
+      "source_front_to_nearest_cone_m": 3.043,
+      "actual_adjacent_tesla": null,
+      "commanded_control": {
+        "steer": -0.1255,
+        "throttle": 0.0,
+        "brake": 0.7879
+      },
+      "lane_plan": {
+        "maneuver_phase": "change_left",
+        "source_lateral_m": 0.01,
+        "target_gap_accepted": true,
+        "adjacent_pavement_seen": [
+          true,
+          true
+        ],
+        "target_front_m": 60.0,
+        "target_rear_m": 60.0,
+        "source_gap_m": 5.852,
+        "rear_occupancy_forecast": {
+          "time_to_vacate_s": 8.75,
+          "projected_rear_bumper_gap_m": null,
+          "rear_margin_m": null,
+          "target_front_margin_m": null,
+          "allowed": true
+        }
+      },
+      "pace": {
+        "binding": "unconfirmed",
+        "base_request_mps": 0.0,
+        "raw_lidar_gap_m": 3.612515926361084,
+        "speed_regime": "urban"
+      }
+    }
+  ]
+}

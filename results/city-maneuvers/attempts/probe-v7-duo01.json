@@ -1,0 +1,434 @@
+{
+  "development_run": "probe-v7-duo01",
+  "description": "City Maneuvers candidate, cones at native s83 and moving sedan starting s147. The initially parked adjacent rear vehicle at s120 blocked the first return.",
+  "seed": 212,
+  "policy_schema": "ado-city-maneuvers-v1",
+  "outcome": "timeout",
+  "frames": 340,
+  "first_frame": 605,
+  "last_frame": 944,
+  "start_m": 400.164,
+  "finish_m": 455.198,
+  "collision_events": 0,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "source_note": "Development run before source pin. Exact full trace and sensor windows retained in local scratch.",
+  "source_trace_sha256": "332462100ef0ce94473117d4c05d56eea29bef1b79892342fc07b43e6e006443",
+  "maneuver_stages": [
+    {
+      "frame": 605,
+      "sim_time": 0.0,
+      "progress_m": 400.164,
+      "speed_mps": 0.059,
+      "phase": "keep"
+    },
+    {
+      "frame": 613,
+      "sim_time": 0.8,
+      "progress_m": 400.862,
+      "speed_mps": 1.729,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 614,
+      "sim_time": 0.9,
+      "progress_m": 401.046,
+      "speed_mps": 1.942,
+      "phase": "keep"
+    },
+    {
+      "frame": 615,
+      "sim_time": 1.0,
+      "progress_m": 401.252,
+      "speed_mps": 2.153,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 619,
+      "sim_time": 1.4,
+      "progress_m": 402.279,
+      "speed_mps": 2.953,
+      "phase": "keep"
+    },
+    {
+      "frame": 620,
+      "sim_time": 1.5,
+      "progress_m": 402.585,
+      "speed_mps": 3.141,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 622,
+      "sim_time": 1.7,
+      "progress_m": 403.252,
+      "speed_mps": 3.516,
+      "phase": "keep"
+    },
+    {
+      "frame": 623,
+      "sim_time": 1.8,
+      "progress_m": 403.614,
+      "speed_mps": 3.712,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 628,
+      "sim_time": 2.3,
+      "progress_m": 405.733,
+      "speed_mps": 4.745,
+      "phase": "change_left"
+    },
+    {
+      "frame": 653,
+      "sim_time": 4.8,
+      "progress_m": 421.763,
+      "speed_mps": 7.776,
+      "phase": "passing"
+    },
+    {
+      "frame": 677,
+      "sim_time": 7.2,
+      "progress_m": 439.511,
+      "speed_mps": 7.95,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 683,
+      "sim_time": 7.8,
+      "progress_m": 443.758,
+      "speed_mps": 7.183,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 687,
+      "sim_time": 8.2,
+      "progress_m": 446.315,
+      "speed_mps": 6.525,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 690,
+      "sim_time": 8.5,
+      "progress_m": 448.066,
+      "speed_mps": 5.984,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 691,
+      "sim_time": 8.6,
+      "progress_m": 448.594,
+      "speed_mps": 5.814,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 692,
+      "sim_time": 8.7,
+      "progress_m": 449.162,
+      "speed_mps": 5.646,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 695,
+      "sim_time": 9.0,
+      "progress_m": 450.659,
+      "speed_mps": 5.134,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 698,
+      "sim_time": 9.3,
+      "progress_m": 451.996,
+      "speed_mps": 4.589,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 702,
+      "sim_time": 9.7,
+      "progress_m": 453.542,
+      "speed_mps": 3.737,
+      "phase": "change_right"
+    },
+    {
+      "frame": 708,
+      "sim_time": 10.3,
+      "progress_m": 454.971,
+      "speed_mps": 1.271,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 709,
+      "sim_time": 10.4,
+      "progress_m": 455.082,
+      "speed_mps": 1.056,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 711,
+      "sim_time": 10.6,
+      "progress_m": 455.18,
+      "speed_mps": 0.458,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 713,
+      "sim_time": 10.8,
+      "progress_m": 455.197,
+      "speed_mps": 0.006,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 716,
+      "sim_time": 11.1,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 717,
+      "sim_time": 11.2,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 720,
+      "sim_time": 11.5,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 723,
+      "sim_time": 11.8,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 725,
+      "sim_time": 12.0,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 726,
+      "sim_time": 12.1,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 727,
+      "sim_time": 12.2,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 728,
+      "sim_time": 12.3,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 730,
+      "sim_time": 12.5,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 731,
+      "sim_time": 12.6,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 733,
+      "sim_time": 12.8,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 734,
+      "sim_time": 12.9,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 737,
+      "sim_time": 13.2,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 739,
+      "sim_time": 13.4,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 741,
+      "sim_time": 13.6,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 742,
+      "sim_time": 13.7,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 743,
+      "sim_time": 13.8,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 744,
+      "sim_time": 13.9,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 745,
+      "sim_time": 14.0,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 746,
+      "sim_time": 14.1,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 748,
+      "sim_time": 14.3,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 749,
+      "sim_time": 14.4,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 751,
+      "sim_time": 14.6,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 753,
+      "sim_time": 14.8,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 756,
+      "sim_time": 15.1,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 757,
+      "sim_time": 15.2,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 761,
+      "sim_time": 15.6,
+      "progress_m": 455.198,
+      "speed_mps": 0.0,
+      "phase": "change_right"
+    }
+  ],
+  "events": [
+    {
+      "kind": "in-lane-obstruction",
+      "station_m": 431.4,
+      "phase": "waiting",
+      "triggered": true,
+      "cleared": false,
+      "exposed": true,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 12.62,
+      "blueprint": "static.prop.trafficcone01",
+      "target_count": 3,
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 0.0,
+      "before_target_s": 0.0,
+      "exposed_s": 0.0,
+      "minimum_body_clearance_m": 1.81,
+      "maximum_target_displacement_m": 0.0,
+      "alternate_alongside_s": 5.8,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.81,
+      "rear_cleared_target_s": 7.2
+    },
+    {
+      "kind": "slow-traffic",
+      "station_m": 487.86,
+      "phase": "waiting",
+      "triggered": true,
+      "cleared": false,
+      "exposed": true,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "blueprint": "vehicle.lincoln.mkz",
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 7.5,
+      "before_target_s": 7.5,
+      "minimum_body_clearance_m": 28.579,
+      "target_traveled_m": 0.001,
+      "target_maximum_step_m": 0.0,
+      "exposed_s": 9.4
+    }
+  ]
+}

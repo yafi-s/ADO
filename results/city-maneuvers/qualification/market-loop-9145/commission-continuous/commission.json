@@ -1,0 +1,76 @@
+{
+  "native_actor_warmup_s": 58.2,
+  "ego_drift_xy_m": 0.0007148156401574081,
+  "convoy_paths": [
+    {
+      "actor_id": 1695,
+      "departure_road": 69,
+      "lane": 2,
+      "traveled_m": 308.789,
+      "terminal_error_m": 1.515,
+      "actual_road": 67,
+      "actual_lane": 2
+    },
+    {
+      "actor_id": 1696,
+      "departure_road": 69,
+      "lane": 3,
+      "traveled_m": 290.711,
+      "terminal_error_m": 1.437,
+      "actual_road": 67,
+      "actual_lane": 3
+    }
+  ],
+  "arrivals": {
+    "blueprint": "vehicle.lincoln.mkz",
+    "source_lane": [
+      67,
+      3
+    ],
+    "passing_lane": [
+      67,
+      2
+    ],
+    "adjacent_rear_feeder": [
+      69,
+      2,
+      48
+    ],
+    "arrival_world_frame": 10876,
+    "arrival_ego_station_m": 1209.997,
+    "building_occluded_rays": {
+      "slow-traffic": 30,
+      "adjacent-front": 30,
+      "adjacent-rear": 30
+    },
+    "actual_convoy_before_arrival": [
+      {
+        "road": 67,
+        "lane": 2,
+        "native_s": 259.56
+      },
+      {
+        "road": 67,
+        "lane": 3,
+        "native_s": 257.12
+      }
+    ],
+    "arrival_distances_to_ego_m": {
+      "slow-traffic": 305.262,
+      "adjacent-front": 304.928,
+      "adjacent-rear": 195.315
+    },
+    "corridor_clock_station_m": 1534.89,
+    "first_native_arrival_check": {
+      "slow-traffic": 0.0002,
+      "adjacent-front": 0.0,
+      "adjacent-rear": 0.0
+    },
+    "minimum_arrival_body_gap_m": 1.534
+  },
+  "participant_contacts": [],
+  "population": {
+    "vehicles": 28,
+    "walkers": 32
+  }
+}

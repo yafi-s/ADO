@@ -9,6 +9,8 @@ import carla
 # Every fork names the junction connector reached by Waypoint.next, including
 # the straight-through movements. The unlisted short roads have one successor.
 _FORKS = {24: 139, 80: 1059, 47: 1363, 67: 100, 69: 271, 4: 874, 3: 831, 20: 1829}
+_MARKET_LOOP_LANES = ((23, -1), (332, -1), (69, 3), (1960, 3), (68, 3), (101, 3), (67, 3))
+_MARKET_LOOP_END_S = 175.
 # Road, lane, OpenDRIVE s. All walkers start beside a parking lane, and all
 # three moving vehicles can turn off the route at the next physical junction.
 _SITES = {
@@ -97,6 +99,7 @@ class UrbanRoute:
     left_turn: tuple
     oncoming: tuple
     destination: str = "market"
+    market_prefix_count: int | None = None
 
     def signal_site(self, signals):
         """Bind an actor's actual stop waypoint AND affected lane to the driven approach."""
@@ -109,14 +112,15 @@ class UrbanRoute:
         # Prefer the signalled junction where the residential street joins the boulevard.
         preference = {1352: 0, 1038: 1, 238: 2, 103: 3}
         occupied = [*self.sites.values(), self.lane_change.start, self.lane_change.bus, self.left_turn[0]]
-        for start in range(20, len(self.points) - 2):
+        point_count = self.market_prefix_count or len(self.points)
+        for start in range(20, point_count - 2):
             if self.points[start - 1].is_junction or not self.points[start].is_junction:
                 continue
             jid = self.points[start].junction_id
             if jid not in preference:
                 continue
             end = start
-            while end < len(self.points) and self.points[end].junction_id == jid:
+            while end < point_count and self.points[end].junction_id == jid:
                 end += 1
             lanes = {_lane(p) for p in self.points[start - 4:end]}
             for signal, stop, affected in stops:
@@ -136,10 +140,30 @@ class UrbanRoute:
         return index, signal, stop
 
 
+def _extend_market_loop(points):
+    native = points[-1]
+    if _lane(native) != _MARKET_LOOP_LANES[0]:
+        raise RuntimeError("Market Loop requires the original Market endpoint on road 23")
+    segment = 0
+    for _ in range(400):
+        permitted = _MARKET_LOOP_LANES[segment:segment + 2]
+        choices = [point for point in native.next(1.) if _lane(point) in permitted]
+        if len(choices) != 1:
+            raise RuntimeError(f"Market Loop disconnected at road {native.road_id}, lane {native.lane_id}")
+        successor = choices[0]
+        if _lane(successor) != _lane(native):
+            segment += 1
+        points.append(successor)
+        native = successor
+        if segment == len(_MARKET_LOOP_LANES) - 1 and native.s <= _MARKET_LOOP_END_S:
+            return
+    raise RuntimeError("Market Loop endpoint unreachable")
+
+
 def urban_route(road_map, seed=0, destination=None):
     """Follow a reproducible native city itinerary with one legal left-lane bus pass."""
-    if destination not in (None, "market", "east"):
-        raise ValueError("Town03 city journey destination is market")
+    if destination not in (None, "market", "east", "market-loop"):
+        raise ValueError("Town03 city journey destination must be market or market-loop")
     if road_map.name.split("/")[-1] not in ("Town03", "Town03_Opt"):
         raise ValueError("Urban journey requires Town03_Opt")
     origin = random.Random(int(seed)).uniform(1.0, 4.0)
@@ -187,5 +211,10 @@ def urban_route(road_map, seed=0, destination=None):
     near = road_map.get_waypoint_xodr(3, -1, 22.0)
     if near is None or far is None:
         raise RuntimeError("Missing native opposing through movement")
-    return UrbanRoute(points, sites, LaneChange(start, end, bus, (4, 3), (4, 2), bus_wp.transform),
-                     (left_start, left_end), (near, far))
+    route = UrbanRoute(points, sites, LaneChange(start, end, bus, (4, 3), (4, 2), bus_wp.transform),
+                       (left_start, left_end), (near, far))
+    if destination == "market-loop":
+        route.market_prefix_count = len(points)
+        route.destination = destination
+        _extend_market_loop(points)
+    return route

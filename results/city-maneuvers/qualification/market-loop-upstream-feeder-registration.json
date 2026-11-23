@@ -1,0 +1,91 @@
+{
+  "prior_pins": {
+    "original_loop": "727f097d8760248e23431021ace61ff2c48b6d5e",
+    "parallel_flow": "74e0a87ad5e68c702ac491cd10a84362f97b8612"
+  },
+  "scope": "The rear adjacent vehicle starts farther upstream. All driver inputs, weights, source and front vehicle starts, speeds, shared traffic clock, and legal +3 to +2 target are unchanged.",
+  "original_clear_lane_control": {
+    "native_start": [
+      68,
+      2,
+      11
+    ],
+    "physical_path_m": 192.1,
+    "available_as": [
+      "clear-feeder",
+      "clear-feeder-later-gap"
+    ]
+  },
+  "new_independent_feeder": {
+    "native_start": [
+      69,
+      2,
+      48
+    ],
+    "native_route": [
+      [
+        69,
+        2
+      ],
+      [
+        1960,
+        2
+      ],
+      [
+        68,
+        2
+      ],
+      [
+        101,
+        2
+      ],
+      [
+        67,
+        2
+      ]
+    ],
+    "terminal_s": 168,
+    "physical_path_m": 280.834,
+    "extra_physical_runup_m": 88.734,
+    "normal_release_after_clock_s": 4.5,
+    "variant_release_after_clock_s": 5.2,
+    "target_speed_mps": 11.5
+  },
+  "source_and_front": {
+    "slow_native": [
+      67,
+      3,
+      292
+    ],
+    "slow_normal_mps": 1.65,
+    "slow_later_mps": 1.9,
+    "slow_delay_s": 0.0,
+    "front_native": [
+      67,
+      2,
+      288
+    ],
+    "front_mps": 5.8,
+    "front_delay_s": 4.0
+  },
+  "qualification": {
+    "tail_launch_route_m": 1210.0,
+    "tail_finish_m": 1719.890348,
+    "full_route_origin_prefix": true,
+    "original_held_sedan_native_s": 237.58,
+    "normal_and_later_case_frozen_before_native_capture": true,
+    "do_not_regrade_early_passing_rear": "In the prior clear case the moving rear was already 35.279m beyond the ego when the whole ego footprint reached road67/+3. The new test still requires a physical target-lane occupation while the moving lead is ahead and same-frame applied yield.",
+    "offscreen_precheck": {
+      "ego_launch_distances_m": [
+        305.26,
+        304.926,
+        195.313
+      ],
+      "native_building_occlusion_rays": [
+        30,
+        30,
+        30
+      ]
+    }
+  }
+}

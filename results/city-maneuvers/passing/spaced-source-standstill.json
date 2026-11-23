@@ -1,0 +1,249 @@
+{
+  "evidence": "Same-clock fixed recorded observations, motion and measurements. Changing the ceiling in this replay does not predict real traffic motion.",
+  "source_trace_sha256": "391493c9eb216ed8e0e2a85f69cc03528741dafc29fd0d2586c163b1709c2388",
+  "first_return_window": [
+    {
+      "frame": 2355,
+      "speed_mps": 10.676,
+      "station": 446.824,
+      "phase": "signal_right",
+      "source_gap_m": 60.0,
+      "source_speed_mps": 20.0,
+      "source_pavement_reach_m": 36.7,
+      "right_gap": true,
+      "source_offset_m": -3.473
+    },
+    {
+      "frame": 2356,
+      "speed_mps": 10.683,
+      "station": 447.83,
+      "phase": "signal_right",
+      "source_gap_m": 60.0,
+      "source_speed_mps": 20.0,
+      "source_pavement_reach_m": 36.64,
+      "right_gap": true,
+      "source_offset_m": -3.474
+    },
+    {
+      "frame": 2357,
+      "speed_mps": 10.69,
+      "station": 448.837,
+      "phase": "signal_right",
+      "source_gap_m": 60.0,
+      "source_speed_mps": 20.0,
+      "source_pavement_reach_m": 36.86,
+      "right_gap": true,
+      "source_offset_m": -3.472
+    },
+    {
+      "frame": 2358,
+      "speed_mps": 10.679,
+      "station": 449.843,
+      "phase": "signal_right",
+      "source_gap_m": 60.0,
+      "source_speed_mps": 20.0,
+      "source_pavement_reach_m": 36.65,
+      "right_gap": true,
+      "source_offset_m": -3.473
+    },
+    {
+      "frame": 2359,
+      "speed_mps": 10.667,
+      "station": 450.849,
+      "phase": "change_right",
+      "source_gap_m": 60.0,
+      "source_speed_mps": 20.0,
+      "source_pavement_reach_m": 37.44,
+      "right_gap": true,
+      "source_offset_m": -3.473
+    },
+    {
+      "frame": 2360,
+      "speed_mps": 10.67,
+      "station": 451.793,
+      "phase": "change_right",
+      "source_gap_m": 35.878,
+      "source_speed_mps": 20.0,
+      "source_pavement_reach_m": 38.68,
+      "right_gap": true,
+      "source_offset_m": -3.466
+    },
+    {
+      "frame": 2361,
+      "speed_mps": 10.55,
+      "station": 452.791,
+      "phase": "change_right",
+      "source_gap_m": 34.91,
+      "source_speed_mps": 20.0,
+      "source_pavement_reach_m": 39.35,
+      "right_gap": true,
+      "source_offset_m": -3.451
+    },
+    {
+      "frame": 2362,
+      "speed_mps": 10.37,
+      "station": 453.774,
+      "phase": "change_right",
+      "source_gap_m": 33.985,
+      "source_speed_mps": 20.0,
+      "source_pavement_reach_m": 38.32,
+      "right_gap": true,
+      "source_offset_m": -3.422
+    },
+    {
+      "frame": 2363,
+      "speed_mps": 10.198,
+      "station": 454.74,
+      "phase": "wait_rejoin",
+      "source_gap_m": 33.102,
+      "source_speed_mps": 0.442,
+      "source_pavement_reach_m": 37.69,
+      "right_gap": false,
+      "source_offset_m": -3.383
+    },
+    {
+      "frame": 2364,
+      "speed_mps": 10.087,
+      "station": 455.694,
+      "phase": "signal_right",
+      "source_gap_m": 32.236,
+      "source_speed_mps": 0.53,
+      "source_pavement_reach_m": 35.34,
+      "right_gap": false,
+      "source_offset_m": -3.374
+    }
+  ],
+  "final_source_decision": {
+    "maneuver_phase": "yield",
+    "committed": false,
+    "turn_signal": "off",
+    "source_lateral_m": 0.0,
+    "source_gap_m": 29.514,
+    "target_front_m": 9.042,
+    "projected_lane_gain_m": -20.42,
+    "source_approach_pavement": true,
+    "tactical_speed_limit_mps": 0.0
+  },
+  "held_frames": 447,
+  "held_station_m": 581.841,
+  "measured_min_median_max": {
+    "camera_stop_horizon_m": [
+      0.0,
+      6.8433,
+      7.6775
+    ],
+    "off_path_camera_boxes": [
+      1.0,
+      2.0,
+      4.0
+    ],
+    "geometry_scans": [
+      3.0,
+      3.0,
+      3.0
+    ],
+    "verified_forward_m": [
+      16.0,
+      24.0,
+      24.0
+    ],
+    "verified_cross_sight_m": [
+      6.7139,
+      6.7335,
+      6.756
+    ],
+    "path_body_lidar": [
+      27.1347,
+      27.211,
+      36.0
+    ],
+    "path_body_radar": [
+      27.1543,
+      27.1586,
+      27.1668
+    ],
+    "crossing_stop_gap_m": [
+      60.0,
+      60.0,
+      60.0
+    ]
+  },
+  "causal_ceiling_ablations": {
+    "original_zero": {
+      "minimum_median_maximum_request_throttle_brake": [
+        [
+          0.0,
+          0.0,
+          0.7879
+        ],
+        [
+          0.0,
+          0.0,
+          0.7879
+        ],
+        [
+          0.0,
+          0.0,
+          0.79692
+        ]
+      ]
+    },
+    "normal_without_tactical_cap": {
+      "minimum_median_maximum_request_throttle_brake": [
+        [
+          5.10941,
+          0.64574,
+          0.0
+        ],
+        [
+          5.10941,
+          0.64576,
+          0.0
+        ],
+        [
+          5.10941,
+          0.64576,
+          0.0
+        ]
+      ]
+    },
+    "ceiling_1_mps": {
+      "minimum_median_maximum_request_throttle_brake": [
+        [
+          1.0,
+          0.40105,
+          0.0
+        ],
+        [
+          1.0,
+          0.403,
+          0.0
+        ],
+        [
+          1.0,
+          0.403,
+          0.0
+        ]
+      ]
+    },
+    "ceiling_2_mps": {
+      "minimum_median_maximum_request_throttle_brake": [
+        [
+          2.0,
+          0.64574,
+          0.0
+        ],
+        [
+          2.0,
+          0.64576,
+          0.0
+        ],
+        [
+          2.0,
+          0.64576,
+          0.0
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,218 @@
+{
+  "schema": "ado-city-maneuvers-baseline-inputs-v1",
+  "stage": "long-city-drive-9fs22_82",
+  "model_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+  "tape_sha256": "bb78a969cd4be91f3edbc17fecda1c37457930e876fcd75a2ecbf9aec88d2b99",
+  "posted_regions": [
+    {
+      "posted_kmh": 30.0,
+      "start_frame": 97,
+      "start_m": 0.0,
+      "entry_ego_kmh": 0.212,
+      "end_m": 358.006
+    },
+    {
+      "posted_kmh": 90.0,
+      "start_frame": 977,
+      "start_m": 358.463,
+      "entry_ego_kmh": 16.538,
+      "end_m": 569.693
+    },
+    {
+      "posted_kmh": 60.0,
+      "start_frame": 1371,
+      "start_m": 569.938,
+      "entry_ego_kmh": 9.13,
+      "end_m": 620.436
+    },
+    {
+      "posted_kmh": 30.0,
+      "start_frame": 1463,
+      "start_m": 620.951,
+      "entry_ego_kmh": 18.544,
+      "end_m": 1416.438
+    }
+  ],
+  "windows": {
+    "bend": {
+      "station_m": [
+        704.7,
+        735.4
+      ],
+      "frames": 88,
+      "median_ego_kmh": 13.531,
+      "median_request_kmh": 12.978,
+      "bindings": {
+        "unconfirmed": 78,
+        "recovery": 10
+      },
+      "median_features": {
+        "junction_gap": -2.0,
+        "bend_7_13": 0.1629,
+        "bend_13_25": 0.3133,
+        "bend_25_40": 0.367,
+        "path_body_lidar": 36.0,
+        "path_body_radar": 36.0,
+        "right_edge_lidar": 36.0,
+        "observed_corridor_m": 0.0,
+        "observed_conflict_m": 0.0,
+        "confirmed_scans": 0.0
+      }
+    },
+    "boards": {
+      "station_m": [
+        525,
+        550
+      ],
+      "frames": 95,
+      "median_ego_kmh": 6.808,
+      "median_request_kmh": 5.408,
+      "bindings": {
+        "sight_distance": 46,
+        "unconfirmed": 12,
+        "recovery": 16,
+        "opposing_traffic": 17,
+        "occupied_corridor": 4
+      },
+      "median_features": {
+        "junction_gap": 60.0,
+        "bend_7_13": 0.0,
+        "bend_13_25": -0.0,
+        "bend_25_40": 0.0,
+        "path_body_lidar": 36.0,
+        "path_body_radar": 34.2777,
+        "right_edge_lidar": 4.5095,
+        "observed_corridor_m": 20.0,
+        "observed_conflict_m": 2.5614,
+        "confirmed_scans": 3.0
+      }
+    },
+    "drums": {
+      "station_m": [
+        375,
+        395
+      ],
+      "frames": 48,
+      "median_ego_kmh": 15.878,
+      "median_request_kmh": 16.423,
+      "bindings": {
+        "opposing_traffic": 2,
+        "sight_distance": 42,
+        "recovery": 4
+      },
+      "median_features": {
+        "junction_gap": 60.0,
+        "bend_7_13": -0.0,
+        "bend_13_25": 0.0,
+        "bend_25_40": 0.2207,
+        "path_body_lidar": 36.0,
+        "path_body_radar": 36.0,
+        "right_edge_lidar": 1.5752,
+        "observed_corridor_m": 20.0,
+        "observed_conflict_m": 0.6968,
+        "confirmed_scans": 3.0
+      }
+    },
+    "boulevard": {
+      "station_m": [
+        420,
+        500
+      ],
+      "frames": 79,
+      "median_ego_kmh": 37.649,
+      "median_request_kmh": 39.294,
+      "bindings": {
+        "sight_distance": 57,
+        "unconfirmed": 22
+      },
+      "median_features": {
+        "junction_gap": 60.0,
+        "bend_7_13": 0.0518,
+        "bend_13_25": 0.1185,
+        "bend_25_40": 0.1493,
+        "path_body_lidar": 36.0,
+        "path_body_radar": 36.0,
+        "right_edge_lidar": 36.0,
+        "observed_corridor_m": 20.0,
+        "observed_conflict_m": 5.1084,
+        "confirmed_scans": 3.0
+      }
+    },
+    "after_bus": {
+      "station_m": [
+        882,
+        909
+      ],
+      "frames": 51,
+      "median_ego_kmh": 17.294,
+      "median_request_kmh": 15.805,
+      "bindings": {
+        "sight_distance": 6,
+        "unconfirmed": 16,
+        "recovery": 29
+      },
+      "median_features": {
+        "junction_gap": -2.0,
+        "bend_7_13": 0.0,
+        "bend_13_25": -0.0,
+        "bend_25_40": -0.0,
+        "path_body_lidar": 36.0,
+        "path_body_radar": 36.0,
+        "right_edge_lidar": 36.0,
+        "observed_corridor_m": 20.0,
+        "observed_conflict_m": 24.0,
+        "confirmed_scans": 3.0
+      }
+    }
+  },
+  "alongside_boards_with_lead_still_over_25m": {
+    "frames": 52,
+    "seconds": 5.2,
+    "first_frame": 1235,
+    "last_frame": 1295,
+    "from_s": 113.8,
+    "to_s": 119.8,
+    "from_m": 534.148,
+    "to_m": 546.352,
+    "median_kmh": 6.338,
+    "median_target_kmh": 6.265,
+    "minimum_lead_gap_m": 25.43,
+    "maximum_lead_gap_m": 37.63,
+    "guards": {
+      "sight_distance": 14,
+      "recovery": 13,
+      "unconfirmed": 8,
+      "opposing_traffic": 17
+    },
+    "body_lidar_radar_clear_36_frames": 11
+  },
+  "withdrawal_after_bus": {
+    "frame": 2021,
+    "detector_frame": 2021,
+    "station_m": 887.012,
+    "time_s": 192.4,
+    "delta_kmh": 16.071,
+    "history_scans": 0,
+    "valid_radar_returns": 567,
+    "finite_ego_pose": true,
+    "jpeg_brightness_q75": 125.0,
+    "jpeg_contrast_sd": 44.949,
+    "jpeg_camera_quality_pass": true,
+    "jpeg_detector_vulnerable": [
+      {
+        "label": "person",
+        "confidence": 0.369,
+        "normalized_height": 0.1325,
+        "normalized_box": [
+          0.89,
+          0.458,
+          0.939,
+          0.591
+        ],
+        "native_box_candidates": []
+      }
+    ]
+  },
+  "canonical_audit": "results/city-progress/audit/V06.md",
+  "note": "World geometry and actor metadata are evaluation-only; they do not enter model inference."
+}

@@ -12,12 +12,16 @@ from .behavior_v2 import BehaviorModel, FEATURE_NAMES
 from .city_map import geometry
 from .drive import episode
 from .experiment import PROJECT, fingerprint, save_arrays, write_json, write_trace
-from .journey import JourneyScenario
+from .journey import JourneyScenario, TRAFFIC_SCHEDULES, validate_traffic_schedule
 from .runtime import producer_info, simulator
 from .viewio import Live
 
 
 def load_driver(path):
+    if Path(path).suffix.lower() == ".json":
+        # A hash-pinned set of pace, maneuver choice and stationary-intent weights.
+        from .driver_bundle import load_bundle
+        return load_bundle(path)
     with np.load(path, allow_pickle=False) as data:
         version = str(data["version"].item())
         revision = int(data["revision"].item()) if "revision" in data else None
@@ -35,6 +39,9 @@ def load_driver(path):
     if version == "ado-city-clearance-v1":
         from .city_clearance import ClearanceModel, FEATURE_NAMES as clearance_names
         return ClearanceModel.load(path), clearance_names, version
+    if version == "ado-city-maneuvers-v1":
+        from .city_maneuvers import ManeuverModel, FEATURE_NAMES as maneuver_names
+        return ManeuverModel.load(path), maneuver_names, version
     if version == "ado-city-progress-v1":
         if revision == 4:
             from .city_grade import GradeModel, FEATURE_NAMES as grade_names
@@ -85,7 +92,12 @@ class LoggedDriver:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", type=Path, default=PROJECT / "models/city-progress/candidate.npz")
+    parser.add_argument("--model", type=Path, default=PROJECT / "models/city-maneuvers/stationary-driver.json",
+                        help="Driver bundle or checkpoint (default: the City Maneuvers stationary-vehicle driver bundle)")
+    parser.add_argument("--destination", choices=("market", "market-loop"),
+                        help="Choose the original Market route or continue through the return boulevard")
+    parser.add_argument("--traffic-schedule", choices=TRAFFIC_SCHEDULES, default="continuous",
+                        help="Choose the registered timing and approach of the crossing traffic")
     parser.add_argument("--seed", type=int, default=211)
     parser.add_argument("--crossing-delay", type=float, default=0., help="Additional pedestrian departure delay in simulated seconds")
     parser.add_argument("--max-steps", type=int, default=9000)
@@ -94,8 +106,10 @@ def main():
     parser.add_argument("--port", type=int, default=2468)
     parser.add_argument("--attach", action="store_true", help="Use an idle Town03_Opt server")
     parser.add_argument("--serve", action="store_true", help="Stream the live cameras and measured controls")
-    parser.add_argument("--population-profile", choices=("standard", "city-life"),
-                        help="Street population (the live city-clearance driver defaults to City Life)")
+    parser.add_argument("--population-profile", choices=("standard", "city-life", "city-maneuvers"),
+                        help="Street population and staged encounters for this drive")
+    parser.add_argument("--urban-cap", action="store_true",
+                        help="Keep the City Maneuvers driver at its urban cruise ceiling on high-posted roads")
     parser.add_argument("--surround", action=argparse.BooleanOptionalAction, default=None,
                         help="Run the five-camera perception rig (on by default for the live urban cruise driver)")
     parser.add_argument("--tactical", action=argparse.BooleanOptionalAction, default=None,
@@ -109,21 +123,37 @@ def main():
         parser.error("Choose a positive step limit and a seed in [0, 2147483647]")
     if not np.isfinite(args.crossing_delay) or args.crossing_delay < 0.:
         parser.error("Crossing delay must be finite and nonnegative")
-    model_sha = fingerprint(args.model)
+    selection_sha = fingerprint(args.model)
     driver, names, schema = load_driver(args.model)
-    pace_schema = schema in ("ado-city-pace-v1", "ado-city-clearance-v1", "ado-city-progress-v1")
-    live_cruise = args.serve and (pace_schema or schema == "ado-city-cruise-v1")
+    model_sha = getattr(driver, "pace_sha256", selection_sha)
+    bundle_sha = getattr(driver, "driver_bundle_sha256", None)
+    if bundle_sha is not None and bundle_sha != selection_sha:
+        raise ValueError("Driver bundle changed while loading")
+    if args.urban_cap and hasattr(driver, "allow_high_speed"):
+        driver.allow_high_speed = False
+    pace_schema = schema in ("ado-city-pace-v1", "ado-city-clearance-v1", "ado-city-progress-v1", "ado-city-maneuvers-v1")
+    maneuver_driver = schema == "ado-city-maneuvers-v1"
+    default_rig_and_planner = maneuver_driver or (args.serve and (pace_schema or schema == "ado-city-cruise-v1"))
     options = {key: True for key, value in (("surround", args.surround), ("tactical", args.tactical))
-               if (live_cruise if value is None else value)}
+               if (default_rig_and_planner if value is None else value)}
     tactical_sha = None
     if options.get("tactical"):
-        from .overtake import MODEL as tactical_checkpoint
+        if schema == "ado-city-maneuvers-v1":
+            from .maneuver_choice import MODEL as tactical_checkpoint
+            tactical_checkpoint = getattr(driver, "maneuver_choice_checkpoint", tactical_checkpoint)
+        else:
+            from .overtake import MODEL as tactical_checkpoint
         tactical_sha = fingerprint(tactical_checkpoint)
     model = LoggedDriver(driver)
+    live_populations = {"ado-city-clearance-v1": "city-life", "ado-city-progress-v1": "city-life",
+                        "ado-city-maneuvers-v1": "city-maneuvers"}
     population_profile = args.population_profile or (
-        "city-life" if args.serve and schema in ("ado-city-clearance-v1", "ado-city-progress-v1") else "standard")
+        live_populations.get(schema, "standard") if args.serve or maneuver_driver else "standard")
+    destination = args.destination or ("market-loop" if maneuver_driver and population_profile == "city-maneuvers"
+                                       else "market")
+    validate_traffic_schedule(args.traffic_schedule, destination, population_profile)
     scene_factory = partial(JourneyScenario, population_profile=population_profile,
-                            barriers=pace_schema)
+                            barriers=pace_schema, maneuver_case=args.traffic_schedule)
     root = args.output or PROJECT / "out/city-drives"
     root.mkdir(parents=True, exist_ok=True)
     folder = Path(mkdtemp(prefix=f"city-{args.seed}-", dir=root))
@@ -137,7 +167,7 @@ def main():
                 if args.open_browser:
                     webbrowser.open(url)
             summary, trace, _, _ = episode(world, "journey", args.seed, schema, model,
-                live=live, realtime=bool(live), max_steps=args.max_steps, destination="market", run_id=folder.name,
+                live=live, realtime=bool(live), max_steps=args.max_steps, destination=destination, run_id=folder.name,
                 scene_factory=scene_factory, crossing_delay=args.crossing_delay, **options)
     write_trace(folder / "trace.jsonl.gz", trace)
     if len(model.observations) != len(trace):
@@ -149,6 +179,14 @@ def main():
     summary.update(producer=producer, model_sha256=model_sha, policy_schema=schema, population_profile=population_profile,
                    surround=bool(options.get("surround")), tactical=bool(options.get("tactical")),
                    tactical_model_sha256=tactical_sha)
+    if schema == "ado-city-maneuvers-v1":
+        summary["open_road_cruise_enabled"] = bool(driver.allow_high_speed)
+        summary["traffic_schedule"] = args.traffic_schedule
+        if bundle_sha is not None:
+            summary["selected_driver_bundle_sha256"] = bundle_sha
+            if options.get("tactical") and (summary.get("driver_bundle_sha256") != bundle_sha or
+                    summary.get("stationary_intent_sha256") != driver.stationary_intent_sha256):
+                raise ValueError("The live planner used different weights from the selected driver bundle")
     write_json(folder / "summary.json", summary)
     passed = sum(event["handled"] for event in summary["events"])
     print(f'{summary["outcome"]}: {summary["progress_m"]:.1f}/{summary["route_length_m"]:.1f} m, '

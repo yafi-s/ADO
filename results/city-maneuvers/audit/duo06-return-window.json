@@ -1,0 +1,537 @@
+{
+  "scope": "Native shortened development probe with parked original lead. This is an observed gap and a hypothetical return, plus a controller-association diagnosis.",
+  "sources": {
+    "native_attempt": "probe-v7-duo06",
+    "trace_sha256": "bf36f3d22622e5824fcda7dbf22f1effcf203e90b6261ce580d7e2d0a3d72521",
+    "summary_sha256": "1b9eec0258ba4878497f897703000aa654b2c64e70e8639f3eb513970b0eb53d",
+    "sealed_original_lead_reference_sha256": "e332db3cb542181ea92083005e3de722dd7e77ca70fb77ef4a52961e3563c41a",
+    "route_sha256": "9e0628e15f6a27b8d8ed0d3cb06bcc144a97860556028f0f04bda8015ffb9847"
+  },
+  "method": {
+    "native_continuous": "Trace at 10 Hz. Sensor-to-bumper checks subtract the planner 2.5 m ego buffer.",
+    "independent": "Every second native scan retained; XY points transformed with measured ego pose and 2.30 m lidar mount, projected to the native route, heights 0.38\u20132.65 m, lateral within 1.15 m, point cluster span \u22640.8 m. Bumper estimate uses measured ego hull and the sealed original stopped-lead location; moving target estimated from measured cumulative travel and registered body extent. The probe retains snapshots rather than a full actor tape, so those two truth positions are estimates.",
+    "interpretation": "Observed gap acceptance can overlap a missed pass association. A later loss of physical forward room does not account for an earlier missed window. Candidate control or safety confidence requires another native drive."
+  },
+  "rear_cleared_native_s": 30.4,
+  "registered_source_stop_event_m": 576.65,
+  "estimated_stopped_forward_body_rear_m": 574.227,
+  "contiguous_accepted_gap_windows": [
+    {
+      "first": {
+        "frame": 5775,
+        "time_s": 32.1,
+        "station_m": 536.09,
+        "actual_kmh": 23.26,
+        "target_kmh": 10.936
+      },
+      "last": {
+        "frame": 5800,
+        "time_s": 34.6,
+        "station_m": 546.681,
+        "actual_kmh": 11.588,
+        "target_kmh": 10.8
+      },
+      "samples_10hz": 26,
+      "observed_accepted_seconds": 2.6,
+      "minimum_reported_origin_minus_ego_buffer_m": {
+        "ahead": 25.118,
+        "rear": 12.969
+      },
+      "minimum_measured_stopped_lead_ttc_s": 5.529,
+      "minimum_reported_source_pavement_reach_m": {
+        "ahead": 25.99,
+        "rear": 29.79
+      },
+      "fresh_front_surface_samples": 20,
+      "confirmed_pass_landmark_samples": 0,
+      "max_return_vote_count": 0,
+      "observed_phases": {
+        "wait_rejoin": 26
+      },
+      "minimum_reconstructed_bumpers_m": {
+        "front": 25.387,
+        "rear": 13.521
+      },
+      "raw_samples": [
+        {
+          "frame": 5775,
+          "time_s": 32.1,
+          "station_m": 536.09,
+          "actual_kmh": 23.26,
+          "target_kmh": 10.936,
+          "sha256": "19635d56767b65e1fe50a27a8e729d0ba02f65b9f83131b6e14029c5b9e50e75",
+          "sampled_lidar_front_from_ego_origin_m": 38.226,
+          "sampled_lidar_rear_from_ego_origin_m": 15.469,
+          "source_front_bumper_estimate_m": 35.65,
+          "source_rear_bumper_estimate_m": 13.521,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5777,
+          "time_s": 32.3,
+          "station_m": 537.327,
+          "actual_kmh": 21.424,
+          "target_kmh": 10.8,
+          "sha256": "7c17bf0d8f360bc6e1f37a1bfd9b556e0011650b08a4290f47fc478b78cd0eb4",
+          "sampled_lidar_front_from_ego_origin_m": null,
+          "sampled_lidar_rear_from_ego_origin_m": 16.403,
+          "source_front_bumper_estimate_m": 34.414,
+          "source_rear_bumper_estimate_m": 14.429,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5779,
+          "time_s": 32.5,
+          "station_m": 538.47,
+          "actual_kmh": 19.814,
+          "target_kmh": 10.8,
+          "sha256": "d747c60aad51d1cced1f3618707e49bb3852e474dfbda4018c8d8146bd90815c",
+          "sampled_lidar_front_from_ego_origin_m": null,
+          "sampled_lidar_rear_from_ego_origin_m": 17.145,
+          "source_front_bumper_estimate_m": 33.272,
+          "source_rear_bumper_estimate_m": 15.242,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5781,
+          "time_s": 32.7,
+          "station_m": 539.524,
+          "actual_kmh": 18.227,
+          "target_kmh": 10.8,
+          "sha256": "ebc5fbe18afe5bbb0d363456f928af168967855d64d54e29a36e05c1b32a23b6",
+          "sampled_lidar_front_from_ego_origin_m": null,
+          "sampled_lidar_rear_from_ego_origin_m": 17.853,
+          "source_front_bumper_estimate_m": 32.218,
+          "source_rear_bumper_estimate_m": 15.967,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5783,
+          "time_s": 32.9,
+          "station_m": 540.491,
+          "actual_kmh": 16.661,
+          "target_kmh": 10.8,
+          "sha256": "641a232df8b5796141922d65f234a83e1d4e2d3cc49bc12c8bd3f4ce8ebbe013",
+          "sampled_lidar_front_from_ego_origin_m": 33.86,
+          "sampled_lidar_rear_from_ego_origin_m": 18.548,
+          "source_front_bumper_estimate_m": 31.251,
+          "source_rear_bumper_estimate_m": 16.604,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5785,
+          "time_s": 33.1,
+          "station_m": 541.374,
+          "actual_kmh": 15.246,
+          "target_kmh": 10.8,
+          "sha256": "bb8a7e5e6c5a2b5f772f219e916ace6e1358261ded5a44b6f0631a6731bbd6dc",
+          "sampled_lidar_front_from_ego_origin_m": 32.952,
+          "sampled_lidar_rear_from_ego_origin_m": 19.064,
+          "source_front_bumper_estimate_m": 30.369,
+          "source_rear_bumper_estimate_m": 17.157,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5787,
+          "time_s": 33.3,
+          "station_m": 542.188,
+          "actual_kmh": 14.162,
+          "target_kmh": 10.8,
+          "sha256": "8254469b16a7495991f8b97157b59efa79d41cdaf159974afcc49a5a7e61e7e6",
+          "sampled_lidar_front_from_ego_origin_m": null,
+          "sampled_lidar_rear_from_ego_origin_m": 19.699,
+          "source_front_bumper_estimate_m": 29.555,
+          "source_rear_bumper_estimate_m": 17.642,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5789,
+          "time_s": 33.5,
+          "station_m": 542.952,
+          "actual_kmh": 13.428,
+          "target_kmh": 10.8,
+          "sha256": "b4f8a657ec5836669186d1031af6c86345aa5922ee9d9ca642913010f066365b",
+          "sampled_lidar_front_from_ego_origin_m": 31.43,
+          "sampled_lidar_rear_from_ego_origin_m": 20.023,
+          "source_front_bumper_estimate_m": 28.793,
+          "source_rear_bumper_estimate_m": 18.076,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5791,
+          "time_s": 33.7,
+          "station_m": 543.678,
+          "actual_kmh": 12.791,
+          "target_kmh": 10.8,
+          "sha256": "eb33236474977cd263ec0e43dfdd4757b256111b6e8df8e17dff522fcf93e95e",
+          "sampled_lidar_front_from_ego_origin_m": null,
+          "sampled_lidar_rear_from_ego_origin_m": 20.414,
+          "source_front_bumper_estimate_m": 28.066,
+          "source_rear_bumper_estimate_m": 18.473,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5793,
+          "time_s": 33.9,
+          "station_m": 544.375,
+          "actual_kmh": 12.323,
+          "target_kmh": 10.8,
+          "sha256": "2c60178eda8d556cb54c00e72e0a22563568b19a566573df1d02519021a98aa9",
+          "sampled_lidar_front_from_ego_origin_m": 30.052,
+          "sampled_lidar_rear_from_ego_origin_m": 21.099,
+          "source_front_bumper_estimate_m": 27.371,
+          "source_rear_bumper_estimate_m": 18.839,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5795,
+          "time_s": 34.1,
+          "station_m": 545.049,
+          "actual_kmh": 11.995,
+          "target_kmh": 10.8,
+          "sha256": "26e96241849a51e09876d0c253e22208d8c5dd7d9801750187d79a738f95cdf3",
+          "sampled_lidar_front_from_ego_origin_m": null,
+          "sampled_lidar_rear_from_ego_origin_m": 21.097,
+          "source_front_bumper_estimate_m": 26.696,
+          "source_rear_bumper_estimate_m": 19.185,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5797,
+          "time_s": 34.3,
+          "station_m": 545.709,
+          "actual_kmh": 11.776,
+          "target_kmh": 10.8,
+          "sha256": "8ffadb509780d8d4cc33835b775a050f2dfb0b01ef434445baf279d1b216bd4f",
+          "sampled_lidar_front_from_ego_origin_m": 28.62,
+          "sampled_lidar_rear_from_ego_origin_m": 21.498,
+          "source_front_bumper_estimate_m": 26.037,
+          "source_rear_bumper_estimate_m": 19.515,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5799,
+          "time_s": 34.5,
+          "station_m": 546.359,
+          "actual_kmh": 11.635,
+          "target_kmh": 10.8,
+          "sha256": "60183c1f354c5bfcb348a341ec0a39c125b03dca831e40cd75cd941fbf1c6e33",
+          "sampled_lidar_front_from_ego_origin_m": 28.041,
+          "sampled_lidar_rear_from_ego_origin_m": 22.7,
+          "source_front_bumper_estimate_m": 25.387,
+          "source_rear_bumper_estimate_m": 19.836,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        }
+      ]
+    },
+    {
+      "first": {
+        "frame": 5802,
+        "time_s": 34.8,
+        "station_m": 547.323,
+        "actual_kmh": 11.52,
+        "target_kmh": 10.8
+      },
+      "last": {
+        "frame": 5806,
+        "time_s": 35.2,
+        "station_m": 548.604,
+        "actual_kmh": 11.552,
+        "target_kmh": 10.8
+      },
+      "samples_10hz": 5,
+      "observed_accepted_seconds": 0.5,
+      "minimum_reported_origin_minus_ego_buffer_m": {
+        "ahead": 23.248,
+        "rear": 19.724
+      },
+      "minimum_measured_stopped_lead_ttc_s": 7.245,
+      "minimum_reported_source_pavement_reach_m": {
+        "ahead": 26.3,
+        "rear": 40.75
+      },
+      "fresh_front_surface_samples": 5,
+      "confirmed_pass_landmark_samples": 0,
+      "max_return_vote_count": 0,
+      "observed_phases": {
+        "wait_rejoin": 5
+      },
+      "minimum_reconstructed_bumpers_m": {
+        "front": 23.463,
+        "rear": 20.461
+      },
+      "raw_samples": [
+        {
+          "frame": 5803,
+          "time_s": 34.9,
+          "station_m": 547.643,
+          "actual_kmh": 11.563,
+          "target_kmh": 10.8,
+          "sha256": "73a5add938fb24e75f7ea7facf2dc17ae0c79063cdd2af19edc39f338e9e90ea",
+          "sampled_lidar_front_from_ego_origin_m": 26.728,
+          "sampled_lidar_rear_from_ego_origin_m": 22.386,
+          "source_front_bumper_estimate_m": 24.103,
+          "source_rear_bumper_estimate_m": 20.461,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5805,
+          "time_s": 35.1,
+          "station_m": 548.284,
+          "actual_kmh": 11.506,
+          "target_kmh": 10.8,
+          "sha256": "788672a6379bbf5ebe6c7ae979e5ef3aac3d2f3f780ba03cd11f013d973c80d1",
+          "sampled_lidar_front_from_ego_origin_m": 26.018,
+          "sampled_lidar_rear_from_ego_origin_m": 22.671,
+          "source_front_bumper_estimate_m": 23.463,
+          "source_rear_bumper_estimate_m": 20.772,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        }
+      ]
+    },
+    {
+      "first": {
+        "frame": 5808,
+        "time_s": 35.4,
+        "station_m": 549.245,
+        "actual_kmh": 11.567,
+        "target_kmh": 10.8
+      },
+      "last": {
+        "frame": 5823,
+        "time_s": 36.9,
+        "station_m": 554.049,
+        "actual_kmh": 11.509,
+        "target_kmh": 10.8
+      },
+      "samples_10hz": 16,
+      "observed_accepted_seconds": 1.6,
+      "minimum_reported_origin_minus_ego_buffer_m": {
+        "ahead": 17.749,
+        "rear": 20.646
+      },
+      "minimum_measured_stopped_lead_ttc_s": 5.552,
+      "minimum_reported_source_pavement_reach_m": {
+        "ahead": 51.99,
+        "rear": 29.57
+      },
+      "fresh_front_surface_samples": 16,
+      "confirmed_pass_landmark_samples": 0,
+      "max_return_vote_count": 0,
+      "observed_phases": {
+        "wait_rejoin": 16
+      },
+      "minimum_reconstructed_bumpers_m": {
+        "front": 17.698,
+        "rear": 21.395
+      },
+      "raw_samples": [
+        {
+          "frame": 5809,
+          "time_s": 35.5,
+          "station_m": 549.566,
+          "actual_kmh": 11.534,
+          "target_kmh": 10.8,
+          "sha256": "15666b71167381ff19d6e71257cbfea167b7d38e7066ab27f3a6d5155cce441c",
+          "sampled_lidar_front_from_ego_origin_m": 24.852,
+          "sampled_lidar_rear_from_ego_origin_m": 23.389,
+          "source_front_bumper_estimate_m": 22.181,
+          "source_rear_bumper_estimate_m": 21.395,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5811,
+          "time_s": 35.7,
+          "station_m": 550.206,
+          "actual_kmh": 11.552,
+          "target_kmh": 10.8,
+          "sha256": "307f8c57fb3da8225d503643d9ddcff6926014b1a74ebcd058787763ed36a277",
+          "sampled_lidar_front_from_ego_origin_m": 24.135,
+          "sampled_lidar_rear_from_ego_origin_m": 23.615,
+          "source_front_bumper_estimate_m": 21.541,
+          "source_rear_bumper_estimate_m": 21.705,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5813,
+          "time_s": 35.9,
+          "station_m": 550.846,
+          "actual_kmh": 11.502,
+          "target_kmh": 10.8,
+          "sha256": "95ede8d2fc55d40ae3501bfb5f71c104efb49f8dc939c06520ff5280f69dd0d3",
+          "sampled_lidar_front_from_ego_origin_m": 23.525,
+          "sampled_lidar_rear_from_ego_origin_m": 24.161,
+          "source_front_bumper_estimate_m": 20.901,
+          "source_rear_bumper_estimate_m": 22.016,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5815,
+          "time_s": 36.1,
+          "station_m": 551.486,
+          "actual_kmh": 11.516,
+          "target_kmh": 10.8,
+          "sha256": "e02ed0d199bdcc3bfac44ba95db65c4b643aa4b758b89683837bd6b53daabe7a",
+          "sampled_lidar_front_from_ego_origin_m": 22.928,
+          "sampled_lidar_rear_from_ego_origin_m": 24.272,
+          "source_front_bumper_estimate_m": 20.26,
+          "source_rear_bumper_estimate_m": 22.326,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5817,
+          "time_s": 36.3,
+          "station_m": 552.127,
+          "actual_kmh": 11.531,
+          "target_kmh": 10.8,
+          "sha256": "217f08d48b68960e6208c39bca01898f4d603abd47b367c00d9053e0a47e7237",
+          "sampled_lidar_front_from_ego_origin_m": 22.182,
+          "sampled_lidar_rear_from_ego_origin_m": null,
+          "source_front_bumper_estimate_m": 19.619,
+          "source_rear_bumper_estimate_m": 22.638,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5819,
+          "time_s": 36.5,
+          "station_m": 552.767,
+          "actual_kmh": 11.549,
+          "target_kmh": 10.8,
+          "sha256": "e4830399f5f3783f34d5cf226012429edff21e38bfdd37a32821876636336c73",
+          "sampled_lidar_front_from_ego_origin_m": 21.561,
+          "sampled_lidar_rear_from_ego_origin_m": 25.156,
+          "source_front_bumper_estimate_m": 18.979,
+          "source_rear_bumper_estimate_m": 22.948,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5821,
+          "time_s": 36.7,
+          "station_m": 553.408,
+          "actual_kmh": 11.563,
+          "target_kmh": 10.8,
+          "sha256": "0bc1435bbe463404ed5cf442c0fba707fa66026d39ed5c2196c3beda335f1f3b",
+          "sampled_lidar_front_from_ego_origin_m": 20.908,
+          "sampled_lidar_rear_from_ego_origin_m": 25.43,
+          "source_front_bumper_estimate_m": 18.338,
+          "source_rear_bumper_estimate_m": 23.26,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5823,
+          "time_s": 36.9,
+          "station_m": 554.049,
+          "actual_kmh": 11.509,
+          "target_kmh": 10.8,
+          "sha256": "462a18484ddd57a317e608e9431b39d2f388e49a2bd648f55e508bcb9d7c63f4",
+          "sampled_lidar_front_from_ego_origin_m": 20.249,
+          "sampled_lidar_rear_from_ego_origin_m": 25.71,
+          "source_front_bumper_estimate_m": 17.698,
+          "source_rear_bumper_estimate_m": 23.571,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        }
+      ]
+    },
+    {
+      "first": {
+        "frame": 5825,
+        "time_s": 37.1,
+        "station_m": 554.691,
+        "actual_kmh": 11.606,
+        "target_kmh": 12.132
+      },
+      "last": {
+        "frame": 5827,
+        "time_s": 37.3,
+        "station_m": 555.341,
+        "actual_kmh": 11.833,
+        "target_kmh": 13.464
+      },
+      "samples_10hz": 3,
+      "observed_accepted_seconds": 0.3,
+      "minimum_reported_origin_minus_ego_buffer_m": {
+        "ahead": 16.438,
+        "rear": 23.4
+      },
+      "minimum_measured_stopped_lead_ttc_s": 5.001,
+      "minimum_reported_source_pavement_reach_m": {
+        "ahead": 52.31,
+        "rear": 29.55
+      },
+      "fresh_front_surface_samples": 3,
+      "confirmed_pass_landmark_samples": 0,
+      "max_return_vote_count": 0,
+      "observed_phases": {
+        "wait_rejoin": 3
+      },
+      "minimum_reconstructed_bumpers_m": {
+        "front": 16.406,
+        "rear": 23.884
+      },
+      "raw_samples": [
+        {
+          "frame": 5825,
+          "time_s": 37.1,
+          "station_m": 554.691,
+          "actual_kmh": 11.606,
+          "target_kmh": 12.132,
+          "sha256": "41b392ae6232a2b494231a0e6c7fc6dcac8dda854787c16dd387ba41feaaa278",
+          "sampled_lidar_front_from_ego_origin_m": 19.627,
+          "sampled_lidar_rear_from_ego_origin_m": 26.006,
+          "source_front_bumper_estimate_m": 17.056,
+          "source_rear_bumper_estimate_m": 23.884,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        },
+        {
+          "frame": 5827,
+          "time_s": 37.3,
+          "station_m": 555.341,
+          "actual_kmh": 11.833,
+          "target_kmh": 13.464,
+          "sha256": "e06cf928d8443e56a106d897fc0cf15a0bca41e9bdb01f037acfeddcd5ff2507",
+          "sampled_lidar_front_from_ego_origin_m": 18.938,
+          "sampled_lidar_rear_from_ego_origin_m": 26.253,
+          "source_front_bumper_estimate_m": 16.406,
+          "source_rear_bumper_estimate_m": 24.204,
+          "ego_whole_in_alternate": true,
+          "ego_within_permitted_lanes": true
+        }
+      ]
+    }
+  ],
+  "probe_cutoff": {
+    "frame": 5862,
+    "time_s": 40.8,
+    "station_m": 571.932,
+    "actual_kmh": 19.152,
+    "target_kmh": 18.394,
+    "source_forward_measured_m": 2.335,
+    "source_rear_measured_m": 37.634,
+    "return_gap_accepted": false,
+    "outcome": "restarted"
+  }
+}

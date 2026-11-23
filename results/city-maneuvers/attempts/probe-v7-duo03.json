@@ -1,0 +1,159 @@
+{
+  "development_run": "probe-v7-duo03",
+  "description": "Older return rule with cones s83, moving car s147. One sustained lane change passed both targets without an intervening return; not accepted as two passes.",
+  "seed": 212,
+  "policy_schema": "ado-city-maneuvers-v1",
+  "outcome": "lane_departure",
+  "frames": 230,
+  "first_frame": 2951,
+  "last_frame": 3180,
+  "start_m": 400.164,
+  "finish_m": 542.548,
+  "collision_events": 0,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "source_note": "Development run before source pin. Exact full trace and sensor windows retained in local scratch.",
+  "source_trace_sha256": "aed824d1beebb18d91099a993ab2b9eb1e5d8cd9626dee5cda7699912a1361d2",
+  "maneuver_stages": [
+    {
+      "frame": 2951,
+      "sim_time": 0.0,
+      "progress_m": 400.164,
+      "speed_mps": 0.059,
+      "phase": "keep"
+    },
+    {
+      "frame": 2960,
+      "sim_time": 0.9,
+      "progress_m": 401.046,
+      "speed_mps": 1.942,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 2965,
+      "sim_time": 1.4,
+      "progress_m": 402.279,
+      "speed_mps": 2.953,
+      "phase": "change_left"
+    },
+    {
+      "frame": 2995,
+      "sim_time": 4.4,
+      "progress_m": 418.719,
+      "speed_mps": 7.642,
+      "phase": "passing"
+    },
+    {
+      "frame": 3023,
+      "sim_time": 7.2,
+      "progress_m": 439.384,
+      "speed_mps": 8.024,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 3046,
+      "sim_time": 9.5,
+      "progress_m": 456.654,
+      "speed_mps": 8.052,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 3067,
+      "sim_time": 11.6,
+      "progress_m": 472.856,
+      "speed_mps": 7.868,
+      "phase": "wait_rejoin"
+    },
+    {
+      "frame": 3128,
+      "sim_time": 17.7,
+      "progress_m": 514.605,
+      "speed_mps": 5.374,
+      "phase": "signal_right"
+    },
+    {
+      "frame": 3163,
+      "sim_time": 21.2,
+      "progress_m": 533.218,
+      "speed_mps": 5.328,
+      "phase": "change_right"
+    }
+  ],
+  "events": [
+    {
+      "kind": "in-lane-obstruction",
+      "station_m": 431.4,
+      "phase": "waiting",
+      "triggered": true,
+      "cleared": false,
+      "exposed": true,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 15.25,
+      "blueprint": "static.prop.trafficcone01",
+      "target_count": 3,
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 0.0,
+      "before_target_s": 0.0,
+      "exposed_s": 0.0,
+      "minimum_body_clearance_m": 1.814,
+      "maximum_target_displacement_m": 0.0,
+      "alternate_alongside_s": 5.9,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.814,
+      "rear_cleared_target_s": 7.2
+    },
+    {
+      "kind": "slow-traffic",
+      "station_m": 487.86,
+      "phase": "waiting",
+      "triggered": true,
+      "cleared": false,
+      "exposed": true,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "blueprint": "vehicle.lincoln.mkz",
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 7.5,
+      "before_target_s": 7.5,
+      "minimum_body_clearance_m": 1.674,
+      "target_traveled_m": 17.551,
+      "target_maximum_step_m": 0.165,
+      "adjacent_front_minimum_gap_m": 18.151,
+      "adjacent_rear_minimum_gap_m": 6.959,
+      "exposed_s": 9.0,
+      "moving_target_s": 10.9,
+      "alternate_alongside_s": 13.6,
+      "alongside_ego_lane": [
+        67,
+        -1
+      ],
+      "alongside_minimum_body_gap_m": 1.674,
+      "moving_alongside_s": 13.6,
+      "alongside_target_mps": 1.343,
+      "rear_cleared_target_s": 15.5
+    }
+  ]
+}

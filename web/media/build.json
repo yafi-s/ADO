@@ -1,16 +1,16 @@
 {
   "status": "evaluated",
-  "title": "City Progress driving evaluation",
+  "title": "City Maneuvers driving and traffic evaluation",
   "simulator": {
     "server_version": "1.0",
     "client_version": "1.0",
     "map": "Town01_Opt"
   },
   "release": {
-    "label": "v0.6.0",
-    "url": "https://github.com/yafi-s/ADO/releases/tag/v0.6.0",
-    "zip_url": "https://github.com/yafi-s/ADO/releases/download/v0.6.0/ADO-v0.6.0-Windows.zip",
-    "sha256_url": "https://github.com/yafi-s/ADO/releases/download/v0.6.0/SHA256SUMS.txt"
+    "label": "v0.7.0",
+    "url": "https://github.com/yafi-s/ADO/releases/tag/v0.7.0",
+    "zip_url": "https://github.com/yafi-s/ADO/releases/download/v0.7.0/ADO-v0.7.0-Windows.zip",
+    "sha256_url": "https://github.com/yafi-s/ADO/releases/download/v0.7.0/SHA256SUMS.txt"
   },
   "checkpoints": {
     "fusion": {
@@ -56,9 +56,49 @@
     "city-progress": {
       "sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
       "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.6.0/models/city-progress/candidate.npz"
+    },
+    "city-maneuvers": {
+      "sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+      "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.7.0/models/city-maneuvers/candidate.npz"
+    },
+    "route-maneuvers": {
+      "sha256": "52e04b5ab64550e5f8116e51f8bd3e9614e9740bc8379e0b942b3f2378c6a624",
+      "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.7.0/models/route-maneuvers/choice.json"
+    },
+    "stationary-vehicle-intent": {
+      "sha256": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+      "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.7.0/models/city-maneuvers/stationary-intent.npz"
+    },
+    "city-driver-bundle": {
+      "sha256": "ced80586af17c1e1b40a38d6ba8f8b67634c8016de493b24a7bc1fcc44aba630",
+      "url": "https://raw.githubusercontent.com/yafi-s/ADO/v0.7.0/models/city-maneuvers/stationary-driver.json"
     }
   },
   "evidence": [
+    {
+      "label": "Original 1080p City Maneuvers drive",
+      "url": "https://github.com/yafi-s/ADO/releases/download/v0.7.0/ADO-City-Maneuvers-1080p.mp4"
+    },
+    {
+      "label": "Individual native trial films and research evidence (ZIP)",
+      "url": "https://github.com/yafi-s/ADO/releases/download/v0.7.0/ADO-v0.7.0-Maneuver-Evidence.zip"
+    },
+    {
+      "label": "Full-drive maneuver evidence and limits",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/README.md"
+    },
+    {
+      "label": "Paired native pass and work-zone footage",
+      "url": "./media/city-maneuvers-tests/comparison.mp4"
+    },
+    {
+      "label": "High-speed calibration, stopping and sign transitions",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/speed/README.md"
+    },
+    {
+      "label": "Native boulevard and traffic audit",
+      "url": "https://github.com/yafi-s/ADO/blob/v0.7.0/results/city-maneuvers/audit/README.md"
+    },
     {
       "label": "Original 1080p City Progress drive",
       "url": "https://github.com/yafi-s/ADO/releases/download/v0.6.0/ADO-City-Progress-1080p.mp4"
@@ -1850,6 +1890,53 @@
     }
   ],
   "showcases": [
+    {
+      "scenario": "journey",
+      "policy": "ado-city-maneuvers-v1",
+      "seed": 212,
+      "destination": "market-loop",
+      "district": "townwide",
+      "outcome": "complete",
+      "frames": 3670,
+      "duration_s": 367.0,
+      "route_length_m": 1719.89,
+      "progress_m": 1719.591,
+      "collision_events": 0,
+      "red_light_violations": 0,
+      "yield_violations": 0,
+      "label": "City Maneuvers",
+      "trial_id": "city-maneuvers",
+      "case_id": "journey",
+      "recording_path": "city-maneuvers",
+      "model_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+      "benchmark_member": false,
+      "selection_note": "One continuous populated Town03 drive. Native camera, sensor and control records accompany the slow-vehicle and obstruction trials.",
+      "cohort": "showcase",
+      "quality_requested": "High",
+      "map": "Town03_Opt",
+      "map_url": "./media/city-maneuvers/town.json",
+      "width": 1920,
+      "height": 1080,
+      "manifest_url": "./media/city-maneuvers/manifest.json",
+      "log_url": "./media/city-maneuvers/telemetry.json",
+      "video_url": "./media/city-maneuvers/chase.mp4",
+      "cameras": [
+        "chase",
+        "front",
+        "left",
+        "right",
+        "rear_left",
+        "rear_right"
+      ],
+      "replay_url": "./media/city-maneuvers/replay.json.gz",
+      "encounters_handled": 13,
+      "encounters_planned": 13,
+      "source": {
+        "commit": "a6cad567e9282a957114199b6b80f677e8e34500",
+        "url": "https://github.com/yafi-s/ADO/tree/a6cad567e9282a957114199b6b80f677e8e34500"
+      },
+      "replay_pack_url": "./media/city-maneuvers/replay-pack.json.gz"
+    },
     {
       "scenario": "journey",
       "policy": "ado-city-progress-v1",

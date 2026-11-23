@@ -1,0 +1,92 @@
+{
+  "development_run": "probe-v7-duo02",
+  "description": "Revised adjacent-rear vehicle starts s17. A native lane-membership test rejected a roof corner above the dashed lane divider.",
+  "seed": 212,
+  "policy_schema": "ado-city-maneuvers-v1",
+  "outcome": "lane_departure",
+  "frames": 36,
+  "first_frame": 2903,
+  "last_frame": 2938,
+  "start_m": 400.164,
+  "finish_m": 412.594,
+  "collision_events": 0,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "source_note": "Development run before source pin. Exact full trace and sensor windows retained in local scratch.",
+  "source_trace_sha256": "c69d898b0d8fb86d0293da10640ed65a7f8fdb70e693bcb4cdd109f1af313b7e",
+  "maneuver_stages": [
+    {
+      "frame": 2903,
+      "sim_time": 0.0,
+      "progress_m": 400.164,
+      "speed_mps": 0.059,
+      "phase": "keep"
+    },
+    {
+      "frame": 2911,
+      "sim_time": 0.8,
+      "progress_m": 400.862,
+      "speed_mps": 1.729,
+      "phase": "signal_left"
+    },
+    {
+      "frame": 2916,
+      "sim_time": 1.3,
+      "progress_m": 401.992,
+      "speed_mps": 2.76,
+      "phase": "change_left"
+    }
+  ],
+  "events": [
+    {
+      "kind": "in-lane-obstruction",
+      "station_m": 431.4,
+      "phase": "waiting",
+      "triggered": true,
+      "cleared": false,
+      "exposed": true,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 15.85,
+      "blueprint": "static.prop.trafficcone01",
+      "target_count": 3,
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ],
+      "triggered_s": 0.0,
+      "before_target_s": 0.0,
+      "exposed_s": 0.0,
+      "minimum_body_clearance_m": 15.816,
+      "maximum_target_displacement_m": 0.0
+    },
+    {
+      "kind": "slow-traffic",
+      "station_m": 487.86,
+      "phase": "waiting",
+      "triggered": false,
+      "cleared": false,
+      "exposed": false,
+      "passed": false,
+      "handled": false,
+      "violation": false,
+      "stopped_for_event": false,
+      "minimum_gap_m": 60.0,
+      "blueprint": "vehicle.lincoln.mkz",
+      "source_lane": [
+        67,
+        -2
+      ],
+      "passing_lane": [
+        67,
+        -1
+      ]
+    }
+  ]
+}

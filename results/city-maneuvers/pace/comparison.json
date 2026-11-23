@@ -1,0 +1,575 @@
+{
+  "schema": "ado-city-maneuvers-native-pace-comparison-v1",
+  "case_count": 5,
+  "pending_native_pairs": [],
+  "negative_controls": [
+    {
+      "case": "hidden",
+      "seed": 623,
+      "v06": {
+        "passed": true,
+        "exposed": true,
+        "handled": true,
+        "stopped_for_event": true,
+        "event_minimum_gap_m": 3.65,
+        "minimum_sampled_target_body_gap_m": 3.766,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+        "evidence": "results/city-progress/trials/matched-candidate-v4/occluded/summary.json"
+      },
+      "v07": {
+        "passed": true,
+        "exposed": true,
+        "handled": true,
+        "stopped_for_event": true,
+        "event_minimum_gap_m": 3.43,
+        "minimum_sampled_target_body_gap_m": 3.541,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "checkpoint_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+        "evidence": "results/city-maneuvers/pace/native-v07-safety/hidden/summary.json"
+      }
+    },
+    {
+      "case": "left",
+      "seed": 624,
+      "v06": {
+        "passed": true,
+        "exposed": true,
+        "handled": true,
+        "stopped_for_event": true,
+        "event_minimum_gap_m": 0.36,
+        "minimum_sampled_target_body_gap_m": 4.645,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+        "evidence": "results/city-progress/trials/matched-candidate-v4/left/summary.json"
+      },
+      "v07": {
+        "passed": true,
+        "exposed": true,
+        "handled": true,
+        "stopped_for_event": true,
+        "event_minimum_gap_m": 0.19,
+        "minimum_sampled_target_body_gap_m": 4.642,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "checkpoint_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+        "evidence": "results/city-maneuvers/pace/native-v07-safety/left/summary.json"
+      }
+    },
+    {
+      "case": "red",
+      "seed": 625,
+      "v06": {
+        "passed": true,
+        "exposed": true,
+        "handled": true,
+        "stopped_for_event": true,
+        "event_minimum_gap_m": 3.72,
+        "minimum_sampled_target_body_gap_m": 3.642,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+        "evidence": "results/city-progress/trials/matched-candidate-v4/signal/summary.json"
+      },
+      "v07": {
+        "passed": true,
+        "exposed": true,
+        "handled": true,
+        "stopped_for_event": true,
+        "event_minimum_gap_m": 3.74,
+        "minimum_sampled_target_body_gap_m": 3.662,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "checkpoint_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+        "evidence": "results/city-maneuvers/pace/native-v07-safety/red/summary.json"
+      }
+    }
+  ],
+  "method": "Original City Life seed 212, identical geometry, actors, approach and rig within each pair. Bend uses primary driving cameras and lidar; boulevard runs use the five-camera rig. Props use the native event scorer. Pedestrian gaps use 10Hz sampled physical footprints with a level ego reconstruction. Whole-arm violations exposed per window.",
+  "cases": [
+    {
+      "name": "J1932 bend",
+      "station_m": [
+        704.7,
+        735.4
+      ],
+      "v06": {
+        "median_kmh": 15.42,
+        "peak_kmh": 23.04,
+        "median_request_kmh": 14.61,
+        "seconds": 6.8,
+        "seconds_below_15": 2.7,
+        "seconds_below_10": 0.0,
+        "target_drops_over_5_kmh": 2,
+        "worst_half_second_decel_mps2": 2.46,
+        "p95_half_second_lateral_mps2": 1.276,
+        "peak_half_second_lateral_mps2": 1.319,
+        "minimum_sampled_pedestrian_gap_m": 20.411,
+        "sampled_nearby_pedestrians": 1,
+        "minimum_prop_clearance_m": null,
+        "physical_props_passed": null,
+        "minimum_lead_event_gap_m": null,
+        "stopped_for_lead": null,
+        "native_segment_pass": true,
+        "tactical_zero_cap_s": 0.0,
+        "standing_wait": null,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "evidence": "results/city-maneuvers/pace/native-v06-bend/bend/summary.json",
+        "camera": "results/city-maneuvers/pace/native-v06-bend/bend/front.mp4",
+        "checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0"
+      },
+      "v07": {
+        "median_kmh": 22.26,
+        "peak_kmh": 24.85,
+        "median_request_kmh": 19.02,
+        "seconds": 5.8,
+        "seconds_below_15": 2.0,
+        "seconds_below_10": 0.0,
+        "target_drops_over_5_kmh": 2,
+        "worst_half_second_decel_mps2": 2.42,
+        "p95_half_second_lateral_mps2": 1.541,
+        "peak_half_second_lateral_mps2": 1.569,
+        "minimum_sampled_pedestrian_gap_m": 20.763,
+        "sampled_nearby_pedestrians": 1,
+        "minimum_prop_clearance_m": null,
+        "physical_props_passed": null,
+        "minimum_lead_event_gap_m": null,
+        "stopped_for_lead": null,
+        "native_segment_pass": true,
+        "tactical_zero_cap_s": 0.0,
+        "standing_wait": null,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "evidence": "results/city-maneuvers/pace/native-v07-bend/bend/summary.json",
+        "camera": "results/city-maneuvers/pace/native-v07-bend/bend/front.mp4",
+        "checkpoint_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071"
+      },
+      "median_delta_kmh": 6.84,
+      "time_delta_s": -1.0
+    },
+    {
+      "name": "Original roadside drums",
+      "station_m": [
+        375.0,
+        395.0
+      ],
+      "v06": {
+        "median_kmh": 15.69,
+        "peak_kmh": 17.66,
+        "median_request_kmh": 16.21,
+        "seconds": 5.0,
+        "seconds_below_15": 2.1,
+        "seconds_below_10": 0.0,
+        "target_drops_over_5_kmh": 1,
+        "worst_half_second_decel_mps2": 2.31,
+        "p95_half_second_lateral_mps2": 0.001,
+        "peak_half_second_lateral_mps2": 0.001,
+        "minimum_sampled_pedestrian_gap_m": 18.692,
+        "sampled_nearby_pedestrians": 1,
+        "minimum_prop_clearance_m": 0.269,
+        "physical_props_passed": 6,
+        "minimum_lead_event_gap_m": null,
+        "stopped_for_lead": null,
+        "native_segment_pass": true,
+        "tactical_zero_cap_s": 0.0,
+        "standing_wait": null,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "evidence": "results/city-maneuvers/pace/native-v06-boulevard/boulevard/summary.json",
+        "camera": "results/city-maneuvers/pace/native-v06-boulevard/boulevard/front.mp4",
+        "checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0"
+      },
+      "v07": {
+        "median_kmh": 15.69,
+        "peak_kmh": 17.66,
+        "median_request_kmh": 16.21,
+        "seconds": 5.0,
+        "seconds_below_15": 2.1,
+        "seconds_below_10": 0.0,
+        "target_drops_over_5_kmh": 1,
+        "worst_half_second_decel_mps2": 2.31,
+        "p95_half_second_lateral_mps2": 0.001,
+        "peak_half_second_lateral_mps2": 0.001,
+        "minimum_sampled_pedestrian_gap_m": 18.692,
+        "sampled_nearby_pedestrians": 1,
+        "minimum_prop_clearance_m": 0.269,
+        "physical_props_passed": 6,
+        "minimum_lead_event_gap_m": null,
+        "stopped_for_lead": null,
+        "native_segment_pass": false,
+        "tactical_zero_cap_s": 0.0,
+        "standing_wait": null,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "evidence": "results/city-maneuvers/pace/native-v07-boulevard/boulevard/summary.json",
+        "camera": "results/city-maneuvers/pace/native-v07-boulevard/boulevard/front.mp4",
+        "checkpoint_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071"
+      },
+      "median_delta_kmh": 0.0,
+      "time_delta_s": 0.0
+    },
+    {
+      "name": "Original roadside boards",
+      "station_m": [
+        525.0,
+        550.0
+      ],
+      "v06": {
+        "median_kmh": 6.62,
+        "peak_kmh": 21.66,
+        "median_request_kmh": 5.41,
+        "seconds": 9.3,
+        "seconds_below_15": 7.6,
+        "seconds_below_10": 6.3,
+        "target_drops_over_5_kmh": 1,
+        "worst_half_second_decel_mps2": 2.21,
+        "p95_half_second_lateral_mps2": 0.002,
+        "peak_half_second_lateral_mps2": 0.002,
+        "minimum_sampled_pedestrian_gap_m": 5.639,
+        "sampled_nearby_pedestrians": 1,
+        "minimum_prop_clearance_m": 1.046,
+        "physical_props_passed": 2,
+        "minimum_lead_event_gap_m": null,
+        "stopped_for_lead": null,
+        "native_segment_pass": true,
+        "tactical_zero_cap_s": 0.0,
+        "standing_wait": null,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "evidence": "results/city-maneuvers/pace/native-v06-boulevard/boulevard/summary.json",
+        "camera": "results/city-maneuvers/pace/native-v06-boulevard/boulevard/front.mp4",
+        "checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0"
+      },
+      "v07": {
+        "median_kmh": 5.32,
+        "peak_kmh": 27.56,
+        "median_request_kmh": 3.26,
+        "seconds": 11.2,
+        "seconds_below_15": 8.0,
+        "seconds_below_10": 6.7,
+        "target_drops_over_5_kmh": 3,
+        "worst_half_second_decel_mps2": 2.73,
+        "p95_half_second_lateral_mps2": 0.002,
+        "peak_half_second_lateral_mps2": 0.064,
+        "minimum_sampled_pedestrian_gap_m": 5.237,
+        "sampled_nearby_pedestrians": 1,
+        "minimum_prop_clearance_m": 1.046,
+        "physical_props_passed": 2,
+        "minimum_lead_event_gap_m": null,
+        "stopped_for_lead": null,
+        "native_segment_pass": false,
+        "tactical_zero_cap_s": 5.3,
+        "standing_wait": {
+          "frame": 15354,
+          "station_m": 537.631,
+          "phase": "yield",
+          "source_lead_m": 36.691,
+          "target_rear_m": 30.944,
+          "target_rear_closing_mps": 4.885
+        },
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "evidence": "results/city-maneuvers/pace/native-v07-boulevard/boulevard/summary.json",
+        "camera": "results/city-maneuvers/pace/native-v07-boulevard/boulevard/front.mp4",
+        "checkpoint_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071"
+      },
+      "median_delta_kmh": -1.3,
+      "time_delta_s": 1.9,
+      "station_components": [
+        {
+          "station_m": [
+            525,
+            530
+          ],
+          "v06": {
+            "median_kmh": 18.07,
+            "seconds": 1.0,
+            "requested_median_kmh": 11.46,
+            "tactical_zero_cap_s": 0.0
+          },
+          "v07": {
+            "median_kmh": 24.27,
+            "seconds": 0.8,
+            "requested_median_kmh": 12.08,
+            "tactical_zero_cap_s": 0.0
+          }
+        },
+        {
+          "station_m": [
+            530,
+            535
+          ],
+          "v06": {
+            "median_kmh": 7.67,
+            "seconds": 2.1,
+            "requested_median_kmh": 5.41,
+            "tactical_zero_cap_s": 0.0
+          },
+          "v07": {
+            "median_kmh": 16.51,
+            "seconds": 1.1,
+            "requested_median_kmh": 10.71,
+            "tactical_zero_cap_s": 0.0
+          }
+        },
+        {
+          "station_m": [
+            535,
+            538
+          ],
+          "v06": {
+            "median_kmh": 6.26,
+            "seconds": 1.7,
+            "requested_median_kmh": 5.41,
+            "tactical_zero_cap_s": 0.0
+          },
+          "v07": {
+            "median_kmh": 0.0,
+            "seconds": 6.4,
+            "requested_median_kmh": 0.0,
+            "tactical_zero_cap_s": 5.3
+          }
+        },
+        {
+          "station_m": [
+            538,
+            545
+          ],
+          "v06": {
+            "median_kmh": 6.13,
+            "seconds": 3.5,
+            "requested_median_kmh": 5.41,
+            "tactical_zero_cap_s": 0.0
+          },
+          "v07": {
+            "median_kmh": 12.75,
+            "seconds": 2.0,
+            "requested_median_kmh": 16.98,
+            "tactical_zero_cap_s": 0.0
+          }
+        },
+        {
+          "station_m": [
+            545,
+            550
+          ],
+          "v06": {
+            "median_kmh": 17.71,
+            "seconds": 1.0,
+            "requested_median_kmh": 20.61,
+            "tactical_zero_cap_s": 0.0
+          },
+          "v07": {
+            "median_kmh": 20.71,
+            "seconds": 0.9,
+            "requested_median_kmh": 22.78,
+            "tactical_zero_cap_s": 0.0
+          }
+        }
+      ],
+      "components_method": "Post-hoc fixed-station decomposition of the primary 525\u2013550m window. All native frames included in each arm; primary result includes all tactical waiting."
+    },
+    {
+      "name": "Open boulevard",
+      "station_m": [
+        420.0,
+        500.0
+      ],
+      "v06": {
+        "median_kmh": 37.93,
+        "peak_kmh": 38.76,
+        "median_request_kmh": 39.29,
+        "seconds": 7.8,
+        "seconds_below_15": 0.0,
+        "seconds_below_10": 0.0,
+        "target_drops_over_5_kmh": 1,
+        "worst_half_second_decel_mps2": 2.32,
+        "p95_half_second_lateral_mps2": 2.373,
+        "peak_half_second_lateral_mps2": 2.382,
+        "minimum_sampled_pedestrian_gap_m": 4.605,
+        "sampled_nearby_pedestrians": 4,
+        "minimum_prop_clearance_m": null,
+        "physical_props_passed": null,
+        "minimum_lead_event_gap_m": null,
+        "stopped_for_lead": null,
+        "native_segment_pass": true,
+        "tactical_zero_cap_s": 0.0,
+        "standing_wait": null,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "evidence": "results/city-maneuvers/pace/native-v06-boulevard/boulevard/summary.json",
+        "camera": "results/city-maneuvers/pace/native-v06-boulevard/boulevard/front.mp4",
+        "checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0"
+      },
+      "v07": {
+        "median_kmh": 37.95,
+        "peak_kmh": 40.45,
+        "median_request_kmh": 39.29,
+        "seconds": 7.8,
+        "seconds_below_15": 0.0,
+        "seconds_below_10": 0.0,
+        "target_drops_over_5_kmh": 1,
+        "worst_half_second_decel_mps2": 2.32,
+        "p95_half_second_lateral_mps2": 2.373,
+        "peak_half_second_lateral_mps2": 2.382,
+        "minimum_sampled_pedestrian_gap_m": 4.605,
+        "sampled_nearby_pedestrians": 4,
+        "minimum_prop_clearance_m": null,
+        "physical_props_passed": null,
+        "minimum_lead_event_gap_m": null,
+        "stopped_for_lead": null,
+        "native_segment_pass": false,
+        "tactical_zero_cap_s": 0.0,
+        "standing_wait": null,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "evidence": "results/city-maneuvers/pace/native-v07-boulevard/boulevard/summary.json",
+        "camera": "results/city-maneuvers/pace/native-v07-boulevard/boulevard/front.mp4",
+        "checkpoint_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071"
+      },
+      "median_delta_kmh": 0.02,
+      "time_delta_s": 0.0
+    },
+    {
+      "name": "Stopped lead approach",
+      "station_m": [
+        550.0,
+        583.0
+      ],
+      "v06": {
+        "median_kmh": 15.73,
+        "peak_kmh": 19.34,
+        "median_request_kmh": 16.03,
+        "seconds": 9.8,
+        "seconds_below_15": 4.6,
+        "seconds_below_10": 3.5,
+        "target_drops_over_5_kmh": 0,
+        "worst_half_second_decel_mps2": 4.44,
+        "p95_half_second_lateral_mps2": 0.002,
+        "peak_half_second_lateral_mps2": 0.002,
+        "minimum_sampled_pedestrian_gap_m": 18.648,
+        "sampled_nearby_pedestrians": 1,
+        "minimum_prop_clearance_m": null,
+        "physical_props_passed": null,
+        "minimum_lead_event_gap_m": 3.71,
+        "stopped_for_lead": true,
+        "native_segment_pass": true,
+        "tactical_zero_cap_s": 0.0,
+        "standing_wait": null,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "evidence": "results/city-maneuvers/pace/native-v06-boulevard/boulevard/summary.json",
+        "camera": "results/city-maneuvers/pace/native-v06-boulevard/boulevard/front.mp4",
+        "checkpoint_sha256": "bfd49efe5525f9672ed34cb68c7d2e51c0a338acc33579fe536ae18cb437e5f0",
+        "physical_lead": {
+          "close_reference_frames": 260,
+          "minimum_sampled_lead_body_gap_m": 3.638,
+          "adjacent_longitudinal_overlap_frames": 0,
+          "physical_rear_clear_observed": false,
+          "legal_out_and_return_observed": false,
+          "legal_lane_changes": null,
+          "all_observed_center_lane_changes": []
+        }
+      },
+      "v07": {
+        "median_kmh": 30.94,
+        "peak_kmh": 38.39,
+        "median_request_kmh": 35.51,
+        "seconds": 4.0,
+        "seconds_below_15": 0.0,
+        "seconds_below_10": 0.0,
+        "target_drops_over_5_kmh": 0,
+        "worst_half_second_decel_mps2": 0.0,
+        "p95_half_second_lateral_mps2": 2.59,
+        "peak_half_second_lateral_mps2": 2.689,
+        "minimum_sampled_pedestrian_gap_m": 15.085,
+        "sampled_nearby_pedestrians": 1,
+        "minimum_prop_clearance_m": null,
+        "physical_props_passed": null,
+        "minimum_lead_event_gap_m": 11.11,
+        "stopped_for_lead": false,
+        "native_segment_pass": false,
+        "tactical_zero_cap_s": 0.0,
+        "standing_wait": null,
+        "contacts": 0,
+        "red_violations": 0,
+        "yield_violations": 0,
+        "evidence": "results/city-maneuvers/pace/native-v07-boulevard/boulevard/summary.json",
+        "camera": "results/city-maneuvers/pace/native-v07-boulevard/boulevard/front.mp4",
+        "checkpoint_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+        "physical_lead": {
+          "close_reference_frames": 199,
+          "minimum_sampled_lead_body_gap_m": 1.537,
+          "adjacent_longitudinal_overlap_frames": 9,
+          "physical_rear_clear_observed": true,
+          "legal_out_and_return_observed": true,
+          "legal_lane_changes": [
+            {
+              "frame": 15449,
+              "station_m": 560.742,
+              "direction": "left",
+              "from_lane": -2,
+              "to_lane": -1,
+              "road": 67,
+              "same_direction": true,
+              "marking_allowed": true
+            },
+            {
+              "frame": 15506,
+              "station_m": 611.975,
+              "direction": "right",
+              "from_lane": -1,
+              "to_lane": -2,
+              "road": 67,
+              "same_direction": true,
+              "marking_allowed": true
+            }
+          ],
+          "all_observed_center_lane_changes": [
+            {
+              "frame": 15449,
+              "station_m": 560.742,
+              "direction": "left",
+              "from_lane": -2,
+              "to_lane": -1,
+              "road": 67,
+              "same_direction": true,
+              "marking_allowed": true
+            },
+            {
+              "frame": 15506,
+              "station_m": 611.975,
+              "direction": "right",
+              "from_lane": -1,
+              "to_lane": -2,
+              "road": 67,
+              "same_direction": true,
+              "marking_allowed": true
+            }
+          ]
+        }
+      },
+      "median_delta_kmh": 15.21,
+      "time_delta_s": -5.8
+    }
+  ]
+}

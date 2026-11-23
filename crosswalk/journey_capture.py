@@ -77,17 +77,45 @@ class JourneyWorld(ObservedWorld):
 
 
 PERIMETER_VIEWS = ("left", "right", "rear_left", "rear_right")
-PACE_SCHEMAS = ("ado-city-pace-v1", "ado-city-clearance-v1", "ado-city-progress-v1")
+PACE_SCHEMAS = ("ado-city-pace-v1", "ado-city-clearance-v1", "ado-city-progress-v1", "ado-city-maneuvers-v1")
 SURROUND_SCHEMAS = ("ado-city-cruise-v1", *PACE_SCHEMAS)
 
 
 class PerimeterCapture(PerceptionCapture):
-    def __init__(self, camera, front, rows, streams):
+    def __init__(self, camera, front, rows, streams, witness=None):
         super().__init__(camera, front, rows)
         self.streams = streams
+        self.witness = witness
+        self.witness_samples = {}
+        self.witness_windows = ((399., 548.),)
+        if witness:
+            witness.mkdir()
+
+    def include_reverse_boulevard(self, scene):
+        stations = [station for station, wp in zip(scene._station, scene._points, strict=True)
+                    if (wp.road_id, wp.lane_id) == (67, 3)]
+        if not stations or stations[-1] != scene._station[-1]:
+            raise ValueError("Market Loop sweep capture requires the reverse road 67 runout")
+        # Telemetry carries route progress to millimetres. Include the final sample.
+        self.witness_windows += ((round(stations[0], 3), round(stations[-1], 3) + .001),)
 
     def append(self, telemetry, observations):
         super().append(telemetry, observations)
+        phase = telemetry.get("tactical_pass", {}).get("maneuver_phase")
+        if self.witness is not None and any(
+                start <= telemetry["progress_m"] < end for start, end in self.witness_windows):
+            key = (int(telemetry["progress_m"] // 5), phase)
+            if key not in self.witness_samples:
+                # One complete control lidar/radar exposure per maneuver phase and five-metre bin.
+                from .radar_geometry import RADARS
+                filename = f"frame-{telemetry['frame']}.npz"
+                pose = self.observer.ego.get_transform()
+                save_arrays(self.witness / filename, frame=telemetry["frame"], lidar=observations["lidar"],
+                            ego_xyz=[pose.location.x, pose.location.y, pose.location.z],
+                            ego_xy_yaw=[pose.location.x, pose.location.y, pose.rotation.yaw],
+                            pitch_yaw_roll=[pose.rotation.pitch, pose.rotation.yaw, pose.rotation.roll],
+                            **{r: observations[r] for r in RADARS})
+                self.witness_samples[key] = filename
         for name, stream in self.streams.items():
             rgb = observations[name]
             if rgb.shape != (180, 320, 3) or rgb.dtype.name != "uint8":
@@ -133,11 +161,16 @@ def _snapshot(stage, policy):
                note="Archive hashes identify the exact execution sources, including working tree edits."))
 
 
-def _new_scene(scene_factory, observed_world, *args, **kwargs):
+def _new_scene(scene_factory, observed_world, *args, route_witness=None, **kwargs):
     scene = scene_factory(observed_world, *args, **kwargs)
-    if observed_world.ego is None or scene.ego.id != observed_world.ego.id:
+    try:
+        if observed_world.ego is None or scene.ego.id != observed_world.ego.id:
+            raise ValueError("The journey scene must own the captured hero")
+        if route_witness is not None:
+            route_witness.include_reverse_boulevard(scene)
+    except BaseException:
         scene.close()
-        raise ValueError("The journey scene must own the captured hero")
+        raise
     return scene
 
 
@@ -264,13 +297,15 @@ def _load_inputs(model_path):
     from .journey import JourneyScenario
 
     path = Path(model_path).resolve(strict=True)
-    saved_sha = fingerprint(path)
+    selection_sha = fingerprint(path)
     model, feature_names, schema = load_driver(path)
-    if fingerprint(path) != saved_sha:
+    if fingerprint(path) != selection_sha:
         raise ValueError("The driving checkpoint changed while it was loading")
+    pace_path = getattr(model, "pace_checkpoint", path)
+    saved_sha = getattr(model, "pace_sha256", selection_sha)
     fit_path = PROJECT / "models" / "fit.json"
     fit = read_json(fit_path)
-    policy = dict(path=path.name, sha256=saved_sha, schema=schema,
+    policy = dict(path=pace_path.name, sha256=saved_sha, schema=schema,
                   camera_profile=fit["render_profile"], camera_profile_source_sha256=fingerprint(fit_path),
                   code_sha256=_source_checksums(JourneyScenario, type(model)))
     if schema in SURROUND_SCHEMAS:
@@ -295,25 +330,55 @@ def _load_inputs(model_path):
         for module in (city_clearance, city_drive, city_pace):
             source = Path(module.__file__)
             policy["code_sha256"][source.name] = fingerprint(source)
-    if schema == "ado-city-progress-v1":
+    if schema in ("ado-city-progress-v1", "ado-city-maneuvers-v1"):
         # Include transitive imports and evaluation code as well as the direct model and rig.
         policy["code_sha256"] = {p.name: fingerprint(p) for p in sorted(Path(__file__).parent.glob("*.py"))}
         policy["control_feature_names"] = list(feature_names)
         from .city_drive import LoggedDriver
         model = LoggedDriver(model)
+    if schema == "ado-city-maneuvers-v1":
+        from .maneuver_choice import MODEL as maneuver_model
+        driver = model.policy
+        parts = [
+            ("capture_checkpoint", "sha256", pace_path, saved_sha),
+            ("capture_maneuver_choice", "maneuver_choice_sha256", getattr(driver, "maneuver_choice_checkpoint", maneuver_model),
+             getattr(driver, "maneuver_choice_sha256", None)),
+        ]
+        bundle_path = getattr(driver, "driver_bundle_checkpoint", None)
+        if bundle_path is not None:
+            policy["driver_bundle_path"] = bundle_path.name
+            parts.extend([
+                ("capture_driver_bundle", "driver_bundle_sha256", bundle_path, driver.driver_bundle_sha256),
+                ("capture_stationary_intent", "stationary_intent_sha256", driver.stationary_intent_checkpoint,
+                 driver.stationary_intent_sha256),
+            ])
+        for attribute, field, component, expected in parts:
+            data = component.read_bytes()
+            digest = hashlib.sha256(data).hexdigest()
+            if expected is not None and expected != digest:
+                raise RuntimeError(f"Selected checkpoint changed before capture: {component.name}")
+            setattr(model, attribute, data)
+            policy[field] = digest
+        policy["tactical_sha256"] = policy["maneuver_choice_sha256"]
+        policy["control_inputs"] += " Discretionary lane changes use the surveyed adjacent lane and ego-motion-compensated lidar returns."
+        if bundle_path is not None:
+            policy["control_inputs"] += " The fitted stationary-vehicle head also uses motor-vehicle boxes matched to lidar and forward radar."
     return model, JourneyScenario, model.new_observer, policy
 
 
 def _capture(world, stage, output, model, scene_factory, observer_factory, policy, seed, max_steps, destination,
-             map_name, crossing_delay=0., population_profile="standard"):
+             map_name, crossing_delay=0., population_profile="standard", traffic_schedule="continuous"):
     from .journey import required_event_kinds
 
     producer = producer_info(world)
     if producer["map"] not in CAPTURE_MAPS or (map_name and producer["map"] != map_name):
         raise ValueError(f"Unexpected CARLA map for the city drive: {producer['map']!r}")
     with_barriers = policy.get("schema") in PACE_SCHEMAS
-    expected_events = required_event_kinds(producer["map"], barriers=with_barriers)
-    if population_profile == "city-life":
+    expected_events = required_event_kinds(producer["map"], barriers=with_barriers,
+                                          maneuvers=population_profile == "city-maneuvers")
+    if population_profile == "city-maneuvers":
+        scene_factory = partial(scene_factory, maneuver_case=traffic_schedule)
+    if population_profile in ("city-life", "city-maneuvers"):
         from . import ambient, city_population, district, population_score, traffic_cones, vision
         from . import policy as base_policy, world as scene_world
         if not with_barriers or producer["map"] != URBAN_MAP:
@@ -323,6 +388,14 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
             path = Path(module.__file__)
             policy["code_sha256"][path.name] = fingerprint(path)
         _snapshot(stage, policy)
+        if population_profile == "city-maneuvers":
+            if policy["schema"] != "ado-city-maneuvers-v1":
+                raise ValueError("The featured maneuver scene requires its declared driver checkpoint")
+            (stage / "checkpoint.npz").write_bytes(model.capture_checkpoint)
+            (stage / "tactical-model.json").write_bytes(model.capture_maneuver_choice)
+    if "stationary_intent_sha256" in policy:
+        (stage / "stationary-intent.npz").write_bytes(model.capture_stationary_intent)
+        (stage / "stationary-driver.json").write_bytes(model.capture_driver_bundle)
     if with_barriers:
         scene_factory = partial(scene_factory, barriers=True)
     settings = _observed_settings(world)
@@ -332,7 +405,7 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
     town = read_json(raw / MAP_ASSET)
     if town["producer"] != producer or not town["roads"]:
         raise ValueError("Viewer road geometry must come from the recording world")
-    trial_id = output.name if output.name in (NAME, "surround-city", "urban-pace", "city-life", "city-progress") else f"city-{seed}-{policy['sha256'][:8]}"
+    trial_id = output.name if output.name in (NAME, "surround-city", "urban-pace", "city-life", "city-progress", "city-maneuvers") else f"city-{seed}-{policy['sha256'][:8]}"
     with ((raw / "chase.mjpeg").open("wb") as chase, (raw / "front.mjpeg").open("wb") as front,
           (raw / "perception.jsonl").open("w", encoding="utf-8", newline="\n") as rows,
           policy_profile(policy["camera_profile"]), ExitStack() as extras):
@@ -340,14 +413,17 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
         surround = policy.get("schema") in SURROUND_SCHEMAS
         views = PERIMETER_VIEWS if surround else ()
         streams = {name: extras.enter_context((raw / f"{name}.mjpeg").open("wb")) for name in views}
-        perception = PerimeterCapture(camera, front, rows, streams) if surround else PerceptionCapture(camera, front, rows)
+        witness = stage / "maneuver-sweeps" if population_profile == "city-maneuvers" else None
+        perception = PerimeterCapture(camera, front, rows, streams, witness) if surround else PerceptionCapture(camera, front, rows)
         episode_options = dict(surround=True, tactical=True, evidence_dir=stage / "surround-evidence") if surround else {}
+        route_witness = perception if destination == "market-loop" and surround and witness is not None else None
         observed = JourneyWorld(world, camera)
         try:
             summary, trace, *_ = episode(
                 observed, KIND, seed, policy.get("schema", "ado-behavior-v2"), model, weather="ClearNoon", district="townwide",
                 recording=perception, run_id=trial_id, max_steps=max_steps, destination=destination, crossing_delay=crossing_delay,
-                scene_factory=partial(_new_scene, scene_factory), observation_factory=observer_factory, **episode_options,
+                scene_factory=partial(_new_scene, scene_factory, route_witness=route_witness),
+                observation_factory=observer_factory, **episode_options,
             )
         finally:
             camera.close()
@@ -370,7 +446,21 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
                   map_asset=MAP_ASSET, required_event_kinds=list(expected_events), summary=summary,
                   **_result(summary, expected_events))
     source["perimeter_views"] = list(views)
-    if policy.get("schema") == "ado-city-progress-v1":
+    for field in ("driver_bundle_sha256", "stationary_intent_sha256"):
+        if summary.get(field) != policy.get(field):
+            raise ValueError(f"The vehicle and the recorded setup differ on {field}")
+    if population_profile == "city-maneuvers":
+        from .maneuver_scene import score_sequence
+        source["traffic_schedule"] = traffic_schedule
+        sequence = score_sequence(summary["events"], trace)
+        source["maneuver_sequence"] = sequence
+        if not sequence["passed"]:
+            source["failure_reasons"].append("separate_physical_maneuvers_unconfirmed")
+        source["maneuver_sweeps"] = {name: fingerprint(stage / "maneuver-sweeps" / name)
+                                     for name in perception.witness_samples.values()}
+        if route_witness is not None:
+            source["maneuver_sweep_windows_m"] = perception.witness_windows
+    if policy.get("schema") in ("ado-city-progress-v1", "ado-city-maneuvers-v1"):
         names = policy["control_feature_names"]
         if len(model.observations) != len(trace) or any(len(row) != len(names) for row in model.observations):
             raise ValueError("The replay and native policy feature tape have different lengths")
@@ -391,6 +481,15 @@ def _capture(world, stage, output, model, scene_factory, observer_factory, polic
         source["capture_checkout"] = read_json(stage / "source-checkout.json")
         if summary["background_traffic_activity"]["participant_contacts"]:
             source["failure_reasons"].append("background_participant_contact")
+        if population_profile == "city-maneuvers":
+            traffic = summary["background_traffic_activity"]
+            if any(v["left_corridor"] for v in traffic["vehicles"]):
+                source["failure_reasons"].append("background_vehicle_outside_corridor")
+            if any(v["maximum_step_m"] > 3. or v["maximum_lane_center_error_m"] > 1.75
+                   for v in traffic["maneuver_vehicles"]):
+                source["failure_reasons"].append("maneuver_vehicle_discontinuous_or_outside_corridor")
+            if summary["sidewalk_activity"]["missing_pedestrians"]:
+                source["failure_reasons"].append("background_walker_missing")
         if not score["radii_m"]["35"]["two_of_each_frames"]:
             source["failure_reasons"].append("no_close_simultaneous_population")
         source["passed"] = not source["failure_reasons"]
@@ -432,13 +531,13 @@ def finalize_staged(stage, *, include_attempt=False):
         masters[name] = dict(path=f"master/{name}.mp4", sha256=fingerprint(path), file_bytes=path.stat().st_size,
                              **info)
         video[name] = _web_video(path, info, final / f"{name}.mp4", count,
-                                 keep_resolution=source.get("population_profile") == "city-life")
+                                 keep_resolution=source.get("population_profile") in ("city-life", "city-maneuvers"))
     views = source.get("perimeter_views", [])
     for name in views:
         video[name] = encode_and_check(raw / f"{name}.mjpeg", final / f"{name}.mp4", (320, 180), 0, count)
     copied = ("poster.jpg", "front.jpg", "telemetry.json")
     replay = "replay.json"
-    if source.get("population_profile") == "city-life" and (raw / replay).stat().st_size >= 100 * 1024**2:
+    if source.get("population_profile") in ("city-life", "city-maneuvers") and (raw / replay).stat().st_size >= 100 * 1024**2:
         replay = "replay.json.gz"
         with (raw / "replay.json").open("rb") as original, (final / replay).open("xb") as target:
             with gzip.GzipFile(fileobj=target, mode="wb", compresslevel=5, mtime=0) as compressed:
@@ -467,6 +566,8 @@ def finalize_staged(stage, *, include_attempt=False):
         title = "Urban pace and barriers" if source["policy"].get("schema") in PACE_SCHEMAS else ("Surround city drive" if views else "Long city drive")
         if source.get("population_profile") == "city-life":
             title = "City progress" if source["trial_id"] == "city-progress" else "City life"
+        if source.get("population_profile") == "city-maneuvers":
+            title = "City maneuvers"
         label = title if source["passed"] else f'City development drive · {source["summary"]["outcome"]}'
         catalog = dict(label=label, path=directory, cameras=["chase", "front", *views], trial_id=source["trial_id"],
                        manifest=f"./media/{directory}/manifest.json", **disclosure)
@@ -503,21 +604,25 @@ def _prepare(output, model_path, seed, max_steps, quality, resolution, percentag
     return output, _load_inputs(model_path)
 
 
-def _record(world, output, inputs, seed, max_steps, destination, map_name, crossing_delay=0., population_profile="standard"):
+def _record(world, output, inputs, seed, max_steps, destination, map_name, crossing_delay=0.,
+            population_profile="standard", traffic_schedule="continuous"):
+    from .journey import validate_traffic_schedule
+    validate_traffic_schedule(traffic_schedule, destination, population_profile)
     if not math.isfinite(crossing_delay) or not 0. <= crossing_delay <= 5.:
         raise ValueError("Crossing delay must be between zero and five seconds")
     model, scene_factory, observer_factory, policy = inputs
-    checkpoint_root = PROJECT / "out" / "journey-captures"
+    checkpoint_root = Path(os.environ.get("ADO_JOURNEY_CAPTURE_ROOT") or PROJECT / "out" / "journey-captures")
     checkpoint_root.mkdir(parents=True, exist_ok=True)
     stage = Path(mkdtemp(prefix=f"{NAME}-", dir=checkpoint_root))
     print(f"City drive capture checkpoint: {stage}", flush=True)
     write_json(stage / "request.json", dict(output=str(output), policy=policy, seed=seed, max_steps=max_steps,
                                              destination=destination, crossing_delay_s=crossing_delay, population_profile=population_profile,
+                                             traffic_schedule=traffic_schedule,
                                              quality=QUALITY, requested_map=map_name,
                                              chase_size=CHASE_SIZE, dlss_percentage=DLSS_PERCENTAGE))
     try:
         _capture(world, stage, output, model, scene_factory, observer_factory, policy, seed, max_steps, destination,
-                 map_name, crossing_delay, population_profile)
+                 map_name, crossing_delay, population_profile, traffic_schedule)
     except Exception as error:
         write_json(stage / "failure.json", dict(error_type=type(error).__name__, message=str(error)))
         raise
@@ -527,14 +632,15 @@ def _record(world, output, inputs, seed, max_steps, destination, map_name, cross
 
 def run(world, output=DEFAULT_OUTPUT, *, model_path, seed=SEED, max_steps=DEFAULT_MAX_STEPS,
         destination=None, map_name=None, quality=QUALITY, resolution="1920x1080", percentage=DLSS_PERCENTAGE,
-        crossing_delay=0., population_profile="standard"):
+        crossing_delay=0., population_profile="standard", traffic_schedule="continuous"):
     """Record once on a caller-owned CARLA world launched at High quality."""
     output, inputs = _prepare(output, model_path, seed, max_steps, quality, resolution, percentage)
     return finalize_staged(_record(world, output, inputs, seed, max_steps, destination, map_name, crossing_delay,
-                                   population_profile))
+                                   population_profile, traffic_schedule))
 
 
 def main():
+    from .journey import TRAFFIC_SCHEDULES, validate_traffic_schedule
     parser = argparse.ArgumentParser(description=__doc__)
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--model", type=Path, help="CARLA-trained driving policy checkpoint")
@@ -543,12 +649,14 @@ def main():
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--include-attempt", action="store_true", help="Also export an unsuccessful drive with its actual score")
     parser.add_argument("--seed", type=int, default=SEED)
-    parser.add_argument("--population-profile", choices=("standard", "city-life"), default="standard")
+    parser.add_argument("--population-profile", choices=("standard", "city-life", "city-maneuvers"), default="standard")
+    parser.add_argument("--traffic-schedule", choices=TRAFFIC_SCHEDULES, default="continuous")
     parser.add_argument("--crossing-delay", type=float, default=0., help="Additional pedestrian entry delay in simulated seconds")
     parser.add_argument("--max-steps", type=int, default=DEFAULT_MAX_STEPS)
     parser.add_argument("--map", dest="map_name", choices=CAPTURE_MAPS, default=URBAN_MAP)
-    parser.add_argument("--destination", choices=("east", "south", "market"))
+    parser.add_argument("--destination", choices=("east", "south", "market", "market-loop"))
     parser.add_argument("--port", type=int, default=2668)
+    parser.add_argument("--attach", action="store_true", help="Record using an already commissioned idle High-quality Town03 server")
     parser.add_argument("--quality", choices=(QUALITY,), default=QUALITY)
     parser.add_argument("--resolution", choices=("1920x1080",), default="1920x1080")
     parser.add_argument("--dlss-percentage", type=int, choices=(DLSS_PERCENTAGE,), default=DLSS_PERCENTAGE)
@@ -558,6 +666,7 @@ def main():
     elif args.finalize_staged:
         manifest = finalize_staged(args.finalize_staged, include_attempt=args.include_attempt)
     else:
+        validate_traffic_schedule(args.traffic_schedule, args.destination, args.population_profile)
         if not 1 <= args.port <= 65533:
             parser.error("Choose a port between 1 and 65533")
         if not args.model.is_file():
@@ -566,12 +675,12 @@ def main():
             parser.error(f"A recording already exists at {args.output}")
         output, inputs = _prepare(args.output, args.model, args.seed, args.max_steps, args.quality,
                                   args.resolution, args.dlss_percentage)
-        options = {URBAN_MAP: (None, "east", "market"), MAP_NAME: (None, "east", "south")}
+        options = {URBAN_MAP: (None, "east", "market", "market-loop"), MAP_NAME: (None, "east", "south")}
         if args.destination not in options[args.map_name]:
             parser.error(f"Destination {args.destination!r} is unavailable on {args.map_name}")
-        with simulator(args.port, attach=False, quality=args.quality, map_name=args.map_name) as world:
+        with simulator(args.port, attach=args.attach, quality=args.quality, map_name=args.map_name) as world:
             stage = _record(world, output, inputs, args.seed, args.max_steps, args.destination, args.map_name,
-                            args.crossing_delay, args.population_profile)
+                            args.crossing_delay, args.population_profile, args.traffic_schedule)
         manifest = finalize_staged(stage, include_attempt=args.include_attempt)
     status = "passed" if manifest["passed"] else "review required"
     print(f"{NAME}: {status}, {manifest['outcome']}, {manifest['summary']['frames']} frames", flush=True)

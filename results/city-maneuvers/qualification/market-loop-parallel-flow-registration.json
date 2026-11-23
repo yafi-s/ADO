@@ -1,0 +1,54 @@
+{
+  "base_route_pin": "727f097d8760248e23431021ace61ff2c48b6d5e",
+  "scope": "Market Loop original parallel vehicle only",
+  "reason": "The earlier restored vehicle waited for ego station 399 before driving, causing the ego to arrive 3.11 m from the persistent cones before the passing lane opened.",
+  "unchanged": {
+    "native_spawn": [
+      67,
+      -1,
+      77.0
+    ],
+    "target_mps": 5.8,
+    "traffic_class": "same real seeded background actor"
+  },
+  "release": {
+    "trigger": "Physical red-to-green cycle of the original scored Market signal",
+    "ego_progress_activation_removed": true
+  },
+  "native_continuation": [
+    [
+      67,
+      -1
+    ],
+    [
+      89,
+      -1
+    ],
+    [
+      33,
+      4
+    ],
+    [
+      32,
+      4
+    ],
+    [
+      1030,
+      4
+    ],
+    [
+      31,
+      4
+    ]
+  ],
+  "path_points": 293,
+  "path_length_m": 282.88119,
+  "terminal_native_s": 4.57518,
+  "terminal_red_stop_lane": [
+    183,
+    4
+  ],
+  "old_terminal_native_s": 174.0,
+  "policy_and_checkpoint_unchanged": true,
+  "validation": "Check actual signal release, off-boulevard physical movement, no contacts or lane departure. Commission the original stopped sedan, outbound cone and reverse traffic independently before the complete drive."
+}

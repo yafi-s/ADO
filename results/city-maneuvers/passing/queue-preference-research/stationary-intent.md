@@ -1,0 +1,23 @@
+# Stationary source-vehicle intent
+
+When the ordinary maneuver planner is considering a discretionary pass and the sensors support a motor vehicle ahead, this head chooses whether to keep following or let the existing planner decide. A follow preference can still move the ego forward under ordinary source-lane longitudinal control. A deferral gives no permission to cross a lane. Swept-body clearance, adjacent traffic, rear closing motion, visibility, signing and the active route remain the responsibilities of the existing controller.
+
+The fitted tree has 60 leaves. It uses eight causal measurements: source gap, ego speed, recent and earlier source speed, source acceleration, time actually spent stopped near this source, source observation duration, and projected lane progress gain. Its splits and mean relative action values were learned from 50,000 independent simulated encounters. A separate 30,000 encounters calibrated the leaf values and reported follow fractions. Vehicle-type recognition and track stability are external eligibility checks. The head never receives a scenario class, actor identity, route station or future motion.
+
+## What the fit rewards
+
+Each pair shares a simulated traffic future. One alternative attempts a complete left change, physical overtake and return. The alternatives behind the source either keep following or wait 3.5 seconds and reevaluate using the source speed then. The training target gives following the better of those two attainable trajectories in hindsight. The objective charges for lane-change effort, occupation of the neighboring lane, unfinished returns and forcing a restarted source vehicle to give up return headway. Giving priority to a stationary source that restarts during an opportunistic pass is an explicit training preference. The traffic frequency mix and waiting-time distributions are design assumptions. They are not estimates of public-road behavior. A progress-only preliminary objective recommended passing almost every newly observed stationary car and was rejected.
+
+An untouched 32,000-encounter evaluation gave 83.86% agreement with the hindsight action and mean regret of 5.004 equivalent metres, versus 11.297 for always following and 16.356 for always deferring. All 11,415 newly observed stationary exposures favored following, even though hindsight preferred passing in about 31%. All 728 extended-wait exposures deferred to the existing choice. The head also deferred on 82.3% of sustained slow movers and followed on 99.9% of accelerating observations. The report includes scores for a changed traffic mixture and two fixed follow alternatives that remove the most favorable hindsight choice. [Fit assumptions, example inputs, conditional errors and held-out results](../../../../models/city-maneuvers/stationary-intent-fit.json)
+
+The stationary/follow relationship is fitted rather than a fixed runtime dwell timer. In one example with a 7 m source gap it chose follow after two seconds of measured close waiting and deferred after 22 seconds. With equal 18 m gaps it deferred for a steady 1.7 m/s source and followed a source accelerating through 2 m/s. Other measurements can alter these responses.
+
+## What the native archives show
+
+The retrospective test computed the action from historic sensor and control channels before selecting each matched vehicle with withheld physical references. Across two related seed-316 queues it chose follow on all 151 stationary frames, including 42 close-settled frames. On the departing vehicle it followed on all 32 corresponding frames. It deferred on 22 of 73 physically slow samples in the original clear slow-car recording, and 13 of 21 on the independent Road 65 clear recording. These are repeated exposures from a small number of actors. The queues ended shortly after settling and cannot validate a long wait behind a parked vehicle. The archived test assumes positive vehicle association, as the source recordings predate the new type gate. The 9145 incident did not enter fitting or this native motion audit. [Per-capture probes and source hashes](stationary-intent-native-probe.json) · [Independent source-motion inventory](native-motion-controls.json)
+
+The simulator must qualify the full driver with camera/range association, ordinary source-lane controls, an occupied adjacent lane and a possible restart. No counterfactual or shadow result establishes that the vehicle executed a stop or pass.
+
+    .venv-city/Scripts/python.exe -m crosswalk.stationary_intent_fit --output out/reproduced-intent/stationary-intent.npz
+    .venv-city/Scripts/python.exe -m tools.audit_stationary_intent
+    .venv-city/Scripts/python.exe -m unittest discover -s tests -p test_stationary_intent.py

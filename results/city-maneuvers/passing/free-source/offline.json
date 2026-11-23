@@ -1,0 +1,240 @@
+{
+  "scope": "Fixed original ego motion and synchronized sensor evidence. No native candidate trajectory.",
+  "candidate_sha256": "94ce39e5f3b4136b2301a1104b454af4d2ce4f0268592d5a55f5ce5e703f504f",
+  "checkpoint_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+  "frozen_tactical_sha256": "18c7543ed01beb2fce9b94abd9aac0db426df72dbf3877702e106741da059ada",
+  "spaced_control": {
+    "frames": 1146,
+    "max_stock_replay_abs_error_mps": 4.993574395761868e-06,
+    "held_frames": 447,
+    "frame_range": [
+      2610,
+      3056
+    ],
+    "positive_requests": 373,
+    "positive_throttle": 363,
+    "originally_exactly_stopped": 445,
+    "positive_throttle_while_stopped": 361,
+    "longest_preserved_zero_request_frames": 50,
+    "cap_mps": {
+      "min": 0.0,
+      "median": 1.0342670679092407,
+      "max": 1.3679437637329102
+    },
+    "request_mps": {
+      "min": 0.0,
+      "median": 1.032305121421814,
+      "max": 1.3679437637329102
+    },
+    "case_frames": [
+      {
+        "frame": 2610,
+        "station": 581.84,
+        "speed": 0.006,
+        "recorded": 0.0,
+        "stock": 0.0,
+        "request": 0.74,
+        "throttle": 0.2417336451724369,
+        "brake": 0.0,
+        "original_cap_mps": 0.0,
+        "cap_mps": 1.0399028062820435,
+        "reason": "verified_source",
+        "composed_request_mps": 0.74
+      },
+      {
+        "frame": 2833,
+        "station": 581.841,
+        "speed": 0.0,
+        "recorded": 0.0,
+        "stock": 0.0,
+        "request": 1.0648208856582642,
+        "throttle": 0.4430988045377997,
+        "brake": 0.0,
+        "original_cap_mps": 0.0,
+        "cap_mps": 1.0648208856582642,
+        "reason": "verified_source",
+        "composed_request_mps": 1.0648208856582642
+      },
+      {
+        "frame": 3056,
+        "station": 581.841,
+        "speed": 0.0,
+        "recorded": 0.0,
+        "stock": 0.0,
+        "request": 1.0431663990020752,
+        "throttle": 0.4295481268028005,
+        "brake": 0.0,
+        "original_cap_mps": 0.0,
+        "cap_mps": 1.0431663990020752,
+        "reason": "verified_source",
+        "composed_request_mps": 1.0431663990020752
+      }
+    ],
+    "source_sha256": {
+      "trace.jsonl.gz": "391493c9eb216ed8e0e2a85f69cc03528741dafc29fd0d2586c163b1709c2388",
+      "observations.npz": "f6c67cd1b3e3ae5ab35da39eb69dfbcecff65b8809f6d49235d5244de1f98eca"
+    }
+  },
+  "spaced_sensors": {
+    "matched_raw_frames": 224,
+    "map_sha256": "abf177bcd9b66cfefb7ac4919f6456815f1384f4229f1343c8a6a90bbb7713c9",
+    "current_swept_runway_m": {
+      "min": 16.0,
+      "median": 24.0,
+      "max": 24.0
+    },
+    "current_flank_sight_m": {
+      "min": 6.713923185012666,
+      "median": 6.743492841388073,
+      "max": 6.781657596871542
+    },
+    "half_a_runway_m": {
+      "min": 12.0,
+      "median": 20.0,
+      "max": 24.0
+    },
+    "half_b_runway_m": {
+      "min": 12.0,
+      "median": 20.0,
+      "max": 24.0
+    },
+    "raw_lidar_gap_m": {
+      "min": 27.1532622232701,
+      "median": 27.212402426883607,
+      "max": 27.41093096913048
+    },
+    "raw_radar_gap_m": {
+      "min": 27.154402151566785,
+      "median": 27.15838688769855,
+      "max": 27.166529348194096
+    },
+    "lidar_tape_abs_error_m": {
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+    },
+    "radar_tape_abs_error_m": {
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+    },
+    "navigation_abs_error_m": {
+      "min": 3.210000620867959e-07,
+      "median": 3.2573830388571423e-07,
+      "max": 3.2573830388571423e-07
+    },
+    "camera_stop_horizon_m": {
+      "min": 0.0,
+      "median": 6.8432793617248535,
+      "max": 7.677471160888672
+    },
+    "off_path_boxes": {
+      "min": 1.0,
+      "median": 2.0,
+      "max": 4.0
+    },
+    "crossing_gap_m": {
+      "min": 60.0,
+      "median": 60.0,
+      "max": 60.0
+    }
+  },
+  "original_board": {
+    "frames": 461,
+    "max_stock_replay_abs_error_mps": 3.0000000000640625e-05,
+    "held_frames": 53,
+    "frame_range": [
+      15341,
+      15393
+    ],
+    "positive_requests": 32,
+    "positive_throttle": 21,
+    "originally_exactly_stopped": 38,
+    "positive_throttle_while_stopped": 16,
+    "longest_preserved_zero_request_frames": 21,
+    "cap_mps": {
+      "min": 0.0,
+      "median": 0.9359928369522095,
+      "max": 1.797377347946167
+    },
+    "request_mps": {
+      "min": 0.0,
+      "median": 0.9336404800415039,
+      "max": 1.5020923614501953
+    },
+    "case_frames": [
+      {
+        "frame": 15354,
+        "station": 537.631,
+        "speed": 0.006,
+        "recorded": 0.0,
+        "stock": 0.0,
+        "request": 0.9490152597427368,
+        "throttle": 0.370501340240689,
+        "brake": 0.0,
+        "original_cap_mps": 0.0,
+        "cap_mps": 0.9490152597427368,
+        "reason": "verified_source",
+        "composed_request_mps": 0.9490152597427368
+      }
+    ],
+    "source_sha256": {
+      "trace.jsonl.gz": "c0e418976f9610a2dbcd90919ca6e5a923ff849b0d3aa39d667b962b73dcb865",
+      "observations.npz": "ad392c2a9acf852f72fe63214b8d1b6d0fcaed48c86f136acfae3f4cd8ca071a"
+    }
+  },
+  "matched_near_returns_on_otherwise_eligible_board": [
+    {
+      "native_case": "roadworks-pace/blocked",
+      "frame": 7292,
+      "recorded_request_mps": 0.0,
+      "board_substitution": {
+        "path_body_lidar": 3.902782678604126,
+        "path_body_radar": 3.95780611038208,
+        "path_body_lidar_recent": 3.9030826091766357,
+        "path_body_radar_recent": 3.958588123321533
+      },
+      "cap_mps": 0.0,
+      "reason": "near_or_unobserved"
+    },
+    {
+      "native_case": "city-maneuvers/speed/stationary-queue",
+      "frame": 5432,
+      "recorded_request_mps": 0.0,
+      "board_substitution": {
+        "path_body_lidar": 3.8091251850128174,
+        "path_body_radar": 3.8155272006988525,
+        "path_body_lidar_recent": 3.8126161098480225,
+        "path_body_radar_recent": 3.8157968521118164
+      },
+      "cap_mps": 0.0,
+      "reason": "near_or_unobserved"
+    },
+    {
+      "native_case": "city-maneuvers/attempts/rehearsal02",
+      "frame": 8956,
+      "recorded_request_mps": 0.0,
+      "board_substitution": {
+        "path_body_lidar": 4.011473178863525,
+        "path_body_radar": 3.999114513397217,
+        "path_body_lidar_recent": 4.064052104949951,
+        "path_body_radar_recent": 4.00104284286499
+      },
+      "cap_mps": 0.0,
+      "reason": "near_or_unobserved"
+    },
+    {
+      "native_case": "city-maneuvers/pace/native-v06-boulevard/boulevard",
+      "frame": 4368,
+      "recorded_request_mps": 0.0,
+      "board_substitution": {
+        "path_body_lidar": 3.8933370113372803,
+        "path_body_radar": 3.912189483642578,
+        "path_body_lidar_recent": 3.899651527404785,
+        "path_body_radar_recent": 3.91251802444458
+      },
+      "cap_mps": 0.0,
+      "reason": "near_or_unobserved"
+    }
+  ]
+}

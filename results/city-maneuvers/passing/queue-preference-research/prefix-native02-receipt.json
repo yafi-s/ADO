@@ -1,0 +1,288 @@
+{
+  "status": "completed",
+  "qualified": true,
+  "claim": "One fresh native realization of the registered 9145 Market Loop prefix with the fitted stationary-vehicle intent head active through the research harness. Not yet integrated in the normal driver, the capture path or a full recording.",
+  "native_directory": "C:\\Users\\Yafi\\AppData\\Local\\ADO\\city-maneuvers\\queue-intent-native02\\market-loop-flow-9145\\prefix-continuous",
+  "host": {
+    "port": 3818,
+    "quality": "High",
+    "map": "Town03_Opt",
+    "fresh_launch": true,
+    "first_frame": 124,
+    "last_frame": 1661
+  },
+  "run_source": {
+    "base_git": "914560faaa57f6592ffdd3e881715b06104344cf",
+    "phase": "prefix",
+    "pace_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+    "route_choice_sha256": "52e04b5ab64550e5f8116e51f8bd3e9614e9740bc8379e0b942b3f2378c6a624",
+    "stationary_intent_sha256": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+    "stationary_intent_inference_sha256": "96f0a316b43d358b6807f84e5b2a85dc14db0042c03b6896ad07fae1cef41e39",
+    "source_vehicle_association_sha256": "2f0001ecd8958ce7b2991c2cdde70e407977050d7fa7d38865530d13639d10f7",
+    "case": "continuous",
+    "files": {
+      "maneuver_motor_queue_candidate.py": "cb155dbcee52aa77915f5f526897d22487ad2d1623b8883e8b4001cee83f1f7b",
+      "maneuver_source_vehicle.py": "2f0001ecd8958ce7b2991c2cdde70e407977050d7fa7d38865530d13639d10f7",
+      "stationary_intent.py": "96f0a316b43d358b6807f84e5b2a85dc14db0042c03b6896ad07fae1cef41e39",
+      "stationary-intent.npz": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+      "market_loop_qualify.py": "855c00279e4020b4887bfc8a4c0aff3642ef2b1bee194078c41a8e38495bd7b4"
+    },
+    "policy_inputs": "Same control NanoDet boxes evaluated once on the original 5 Hz exposure cadence before tactical preview, synchronized lidar/radar and ego transform. Original pace controls, actors and route unchanged."
+  },
+  "rebuilt_registered_source_sha256": "20ec3aa27d789a8d94d7f6968378ae4fcd3b7adb27411fccdccf725dc4d58aef",
+  "grade": {
+    "passed": true,
+    "phase": "prefix",
+    "case": "continuous",
+    "scored_target_status": {
+      "pedestrian": true,
+      "occluded": true,
+      "signal": true,
+      "roadworks": true,
+      "in-lane-obstruction": true,
+      "barrier": true,
+      "lead": true
+    },
+    "minimum_moving_passing_lane_gap_m": null,
+    "safety": true,
+    "true_wait_frames": 0,
+    "original_stationary_frames": 41,
+    "ego_minimum_while_original_stopped_mps": 0.003,
+    "closest_original_gap_m": 3.578531127402158,
+    "first_frame": 124,
+    "last_frame": 1661,
+    "reached_end_m": 715.517
+  },
+  "outcome": {
+    "progress_m": 715.517,
+    "duration_s": 153.8,
+    "collisions": 0,
+    "red_light_violations": 0,
+    "yield_violations": 0,
+    "participant_contacts": [],
+    "max_lateral_error_m": 3.476
+  },
+  "stationary_sedan": {
+    "native_road": 67,
+    "native_lane": -2,
+    "native_road_s": 237.58,
+    "triggered_s": 121.2,
+    "release_command_s": 125.3,
+    "restarted_s": 126.8,
+    "left_route_s": 141.6,
+    "passed_s": 150.2,
+    "minimum_gap_m": 3.69,
+    "clearance_at_exit_m": 9.956,
+    "stopped_for_event": true,
+    "ego_stopped_frames": 14,
+    "ego_stopped_from_s": 124.9,
+    "ego_stopped_to_s": 126.2,
+    "lateral_phases_116_to_152_s": [
+      "signal_left"
+    ],
+    "head_evaluated_frames": 193,
+    "head_follow_frames": 189,
+    "head_preference_changes": [
+      {
+        "frame": 1263,
+        "sim_time": 113.9,
+        "progress_m": 532.29,
+        "speed_mps": 2.435,
+        "preference": "follow",
+        "probability_follow": 0.7995337995337995,
+        "observed_dwell_s": 0.0,
+        "source_gap_m": 42.08978969096245
+      },
+      {
+        "frame": 1292,
+        "sim_time": 116.8,
+        "progress_m": 538.326,
+        "speed_mps": 2.225,
+        "preference": "defer_to_existing_choice",
+        "probability_follow": 0.34375,
+        "observed_dwell_s": 0.0,
+        "source_gap_m": 36.04227785592619
+      },
+      {
+        "frame": 1296,
+        "sim_time": 117.2,
+        "progress_m": 539.224,
+        "speed_mps": 2.09,
+        "preference": "follow",
+        "probability_follow": 0.676033441709243,
+        "observed_dwell_s": 0.0,
+        "source_gap_m": 35.576425563985396
+      },
+      {
+        "frame": 1456,
+        "sim_time": 133.2,
+        "progress_m": 598.11,
+        "speed_mps": 7.293,
+        "preference": null,
+        "probability_follow": null,
+        "observed_dwell_s": 0.0,
+        "source_gap_m": null
+      }
+    ],
+    "brief_deferral": {
+      "frames": [
+        1292,
+        1295
+      ],
+      "sim_time_s": [
+        116.8,
+        117.1
+      ],
+      "planner_phase": "signal_left (no lateral ingress; cancelled at 117.2 s)",
+      "leaf": 38,
+      "probability_follow": 0.34375,
+      "cause": "previous_source_speed_mps rose to 2.24-3.63 m/s from the earlier half of the tracked source-station history while the sedan's current speed stayed 0.0-0.08 m/s, giving -1.5 to -2.5 m/s2 apparent deceleration. The sedan was physically stationary; the spike is station-history noise.",
+      "margin": {
+        "rule": "route_maneuvers.py lines 329-343: a discretionary pass commits when pass_votes reaches 6 and the source return is fresh (age 0); votes 1-5 show as signal_left; a source return older than 2 scans resets the count. After commit, a returned follow preference aborts while lateral > -0.35 m (motor queue early_outbound guard).",
+        "native02": "4 consecutive votes (frames 1292-1295); ended when the head returned to follow.",
+        "native03": "Reached 6 votes (frames 6266-6271). Commit was blocked only because the source return was 2 scans old on the 6th vote; the next frame was 3 scans old and reset the count. The head stayed on defer until frame 6274. Near miss: a fresh return at 6271 would have started a lane change.",
+        "integrated_loop_01": "5 votes (frames 7777-7781) while the sedan track was unassociated (head inactive); ended by the frozen planner's compare_progress downgrade of pass to follow. One vote short.",
+        "ground_truth": "Lead speed was 0.0 m/s on every deferral frame in native02 and native03 (reference-native.jsonl).",
+        "assessment": "The head did not by itself reliably hold the car behind the stationary sedan in the 31-38 m window; outcomes there partly depended on scan timing and the base planner. Treat as an open defect before a featured capture."
+      }
+    }
+  },
+  "cone_bypass": {
+    "minimum_body_clearance_m": 1.686,
+    "returned_to_route_s": 105.6,
+    "rejoin_station_m": 464.361,
+    "rejoin_rear_clear_m": 34.366,
+    "minimum_moving_participant_gap_m": 8.1953,
+    "baseline_failed_prefix": {
+      "source": "C:\\Users\\Yafi\\AppData\\Local\\ADO\\city-maneuvers\\market-loop-flow-9145\\prefix-continuous\\summary.json",
+      "minimum_body_clearance_m": 1.688,
+      "returned_to_route_s": 104.9,
+      "rejoin_station_m": 473.37,
+      "rejoin_rear_clear_m": 41.862,
+      "lead": {
+        "handled": false,
+        "triggered_s": 118.7,
+        "restarted_s": 124.3,
+        "left_route_s": 139.1,
+        "clearance_at_exit_m": 9.956
+      },
+      "outcome": "timeout",
+      "progress_m": 641.502
+    }
+  },
+  "parallel_flow": {
+    "actor_id": 141,
+    "spawn_native": [
+      67,
+      -1,
+      77.0
+    ],
+    "release": {
+      "frame": 837,
+      "time_s": 71.4,
+      "green_signal_id": 77
+    },
+    "target_speed_mps": 5.8,
+    "traversed_m": 281.59,
+    "maximum_speed_mps": 5.815,
+    "left_corridor": false,
+    "exit_connectors": [
+      [
+        89,
+        -1
+      ],
+      [
+        33,
+        4
+      ],
+      [
+        32,
+        4
+      ],
+      [
+        1030,
+        4
+      ],
+      [
+        31,
+        4
+      ]
+    ],
+    "terminal_stop_native": [
+      183,
+      4,
+      30.811
+    ],
+    "terminal_light_id": 72,
+    "terminal_signal_verified_frame": 123,
+    "terminal_light_state": "Red",
+    "terminal_arrival": true,
+    "terminal_front_to_stop_line_m": 3.876,
+    "actual_speed_mps": 0.0
+  },
+  "comparison_to_baseline": "Not frame-matched. Identical to the failed baseline through 10.8 s; camera detections then differed (off-path candidates 3 vs 1 at 15.7 s), giving a 5 m station lag by 42.9 s before the head first engaged at 113.9 s. The interrupted native01 attempt diverged the same way at 9.3 s. Treat as an independent realization of the same registered schedule. The registered schedule reproduced (same lead release pattern and 9.956 m exit clearance), and the per-frame decision record supports attributing the sedan outcome to the head. One realization.",
+  "assets": {
+    "checkpoint.npz": {
+      "bytes": 130939,
+      "sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071"
+    },
+    "control-input-contract.json": {
+      "bytes": 863,
+      "sha256": "eaf1f3153000e936ea7cb984e4b7c551707928c13a88667c90a805b5c16cecfc"
+    },
+    "front.mjpeg": {
+      "bytes": 73767049,
+      "sha256": "5dc578cfd8779d7da4fabf93f36a9f163f1b52cf236edd67742dbd2c7a87075c"
+    },
+    "front.mp4": {
+      "bytes": 28917987,
+      "sha256": "56b91f63c4bf86e06811fe4cf15f01efcb79d13b49eb4d3dec84f5f290db7195"
+    },
+    "grade.json": {
+      "bytes": 576,
+      "sha256": "0156f5e305af8c683ace0831fe89949cc21992f18fe644c466ae3011db6e7a9e"
+    },
+    "live.jsonl": {
+      "bytes": 8982227,
+      "sha256": "2320a6744c2b22f99b10cda7e635db23becc45229846e9fd805479db813dac71"
+    },
+    "observations.npz": {
+      "bytes": 115402,
+      "sha256": "ac9926a1cb122e99ce63459c8ca5f3479fd2eb6b116489cc48c5e5905d19b75d"
+    },
+    "parallel-flow.json": {
+      "bytes": 757,
+      "sha256": "8e875143c74ea4329fd272fd2c709e2fed65cab3085869d09123d6aa0c957da7"
+    },
+    "posted-speeds.json": {
+      "bytes": 513,
+      "sha256": "3fc6877a0840673ea2502844511000a4cfa11e254061abddd09bf34a27f5a466"
+    },
+    "protocol.json": {
+      "bytes": 766,
+      "sha256": "9ee966f54fe92212b16244b3240e5a4de91de6a8651ba3204050200930fcbec3"
+    },
+    "reference-native.jsonl": {
+      "bytes": 9969422,
+      "sha256": "ff2683134778c5cd7be0bec652cb295d0704165d325a1be23673bdeec994125d"
+    },
+    "reference.jsonl.gz": {
+      "bytes": 505685,
+      "sha256": "07d5a9bec118b409f4ed3290d5a8e146a1c41d2e844678562daaaee2e81661d7"
+    },
+    "source.zip": {
+      "bytes": 459536,
+      "sha256": "20ec3aa27d789a8d94d7f6968378ae4fcd3b7adb27411fccdccf725dc4d58aef"
+    },
+    "summary.json": {
+      "bytes": 33208,
+      "sha256": "77064eb60328f75573dfe5fbcccc52791ec1db3a9e50f2bf5f3a04888f755ee6"
+    },
+    "trace.jsonl.gz": {
+      "bytes": 282135,
+      "sha256": "58e5939412ddae6f8e38aa4daed59fece219cbc994ab169f6870145f7b412cdb"
+    }
+  },
+  "sensor_witness_files": 57,
+  "limits": "Single realization. Tail phases (moving lead and closing rear) not yet rerun with the head. The normal city_drive/journey_capture path cannot load the head (no bundle loader or planner integration), so no full six-camera recording uses it yet."
+}

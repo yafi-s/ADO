@@ -1,0 +1,121 @@
+{
+  "destination": "market-loop",
+  "proposal": "distinct unselected Town03 itinerary extending the unmodified Market destination",
+  "original_prefix": {
+    "seed": 212,
+    "points": 1439,
+    "station_m": 1416.437782,
+    "legacy_encounters": 11,
+    "stopped_sedan_road": 67,
+    "stopped_sedan_lane": -2,
+    "stopped_sedan_native_s": 237.58
+  },
+  "proposed_route": {
+    "points": 1737,
+    "station_m": 1719.890348,
+    "junctions": 14,
+    "tail_graph": [
+      [
+        332,
+        -1
+      ],
+      [
+        69,
+        3
+      ],
+      [
+        1960,
+        3
+      ],
+      [
+        68,
+        3
+      ],
+      [
+        101,
+        3
+      ],
+      [
+        67,
+        3
+      ]
+    ],
+    "final_carriageway_entry_m": 1584.89,
+    "final_native_end_s": 174.923,
+    "source_lane": [
+      67,
+      3
+    ],
+    "passing_lane": [
+      67,
+      2
+    ],
+    "lane_widths_m": [
+      3.5,
+      3.5
+    ],
+    "discretionary_forward_room_m": 135.0,
+    "markings": "broken in both crossing directions"
+  },
+  "actor_continuity": {
+    "original_parallel_corridor_restored": true,
+    "old_road69_pair": "Keep both original physical vehicles, their launch poses and activation stations; extend +2 to road67/+2 s139 and +3 to road67/+3 s155 via 1960,68,101. Existing extra +3 road67 traffic s281 finishes at s140, 12m past its previous endpoint.",
+    "distant_arrivals": "Three future actors are created on unobstructed native driving lanes once the original road69 convoy has physically passed road67 s260. Every new site is >180 m from the ego, with five surveyed vehicle-body rays from each of the six native viewing origins blocked by actual buildings. First subsequent snapshot checks center positions; no actor is teleported or deleted to open the driving gap.",
+    "clock": "Single independent traffic clock starts when the ego first reaches surveyed road68/+3 at route station 1534.890. Actor releases depend on elapsed physical time thereafter, not on the driving decision, pass completion, or obstruction status.",
+    "slow": {
+      "start": [
+        67,
+        3,
+        292.0
+      ],
+      "end_s": 166.0,
+      "release_s": 0.0,
+      "target_mps": 1.65
+    },
+    "adjacent_front": {
+      "start": [
+        67,
+        2,
+        288.0
+      ],
+      "end_s": 153.0,
+      "release_s": 4.0,
+      "target_mps": 5.8
+    },
+    "adjacent_rear": {
+      "start": [
+        68,
+        2,
+        11.0
+      ],
+      "through": [
+        [
+          101,
+          2
+        ],
+        [
+          67,
+          2
+        ]
+      ],
+      "end_s": 168.0,
+      "release_s": 4.5,
+      "target_mps": 11.5
+    }
+  },
+  "transfer": {
+    "mode": "later-gap",
+    "rear_release_s": 5.2,
+    "slow_target_mps": 1.9,
+    "other_geometry_and_traffic_unchanged": true
+  },
+  "qualification": {
+    "physical_commission": "Confirm distant placements and continued native trajectories for the original background convoy before attempting passing.",
+    "prefix": "From native route origin through at least 700m, require observed separate in-lane cone bypass and return, and actual stopped-sedan exposure/restart/diverging exit. Retain any alternate legitimate encounter response separately.",
+    "tail": "Two prospective normal/late arrival probes from original route station 1300 to the loop endpoint, fixed High production control inputs, exact native polygons, no actor contacts. Actual moving lead with front and rear traffic, policy yield on occupied exposures and complete lawful rejoin; minimum moving passing-lane clearance 1m. Measure all route signs and actual speed.",
+    "whole": "Only a complete continuous High route can qualify the featured film. No failed/combined maneuver counts as two."
+  },
+  "based_on_control_pin": "ef514ca2d1922234266bbc0659c15b45579bd744",
+  "model_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+  "choice_sha256": "52e04b5ab64550e5f8116e51f8bd3e9614e9740bc8379e0b942b3f2378c6a624"
+}

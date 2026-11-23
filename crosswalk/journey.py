@@ -13,7 +13,7 @@ WALKERS = {"pedestrian", "pedestrian-delayed", "occluded"}
 LEADS = {"lead", "braking"}
 
 
-def required_event_kinds(map_name, *, barriers=False):
+def required_event_kinds(map_name, *, barriers=False, maneuvers=False):
     """Immutable encounter contract for each supported continuous journey course."""
     town = map_name.rsplit("/",1)[-1].lower()
     base = ("pedestrian","pedestrian-delayed","occluded","lead","braking",
@@ -21,7 +21,8 @@ def required_event_kinds(map_name, *, barriers=False):
     if town in ("town01","town01_opt"):
         return base
     if town in ("town03","town03_opt"):
-        return (*base,"bus","barrier") if barriers else (*base,"bus")
+        fixed = (*base,"bus","barrier") if barriers else (*base,"bus")
+        return (*fixed, "in-lane-obstruction", "slow-traffic") if maneuvers else fixed
     raise ValueError(f"No commissioned journey layout for {map_name}")
 
 
@@ -193,14 +194,27 @@ class Encounter:
                 evidence.append("lead_stopped_s")
         elif self.kind == "cyclist":
             evidence.extend(("moving_ahead_s", "left_route_s"))
+        elif self.kind in ("in-lane-obstruction", "slow-traffic"):
+            evidence.extend(("before_target_s", "alternate_alongside_s", "rear_cleared_target_s", "returned_to_route_s"))
+            if self.kind == "slow-traffic":
+                evidence.extend(("moving_target_s", "moving_alongside_s", "occupied_gap_wait_s", "adjacent_traffic_cleared_s"))
         elif self.kind == "barrier":
             evidence.append("all_barriers_passed_s")
         elif self.kind == "roadworks":
             evidence.append("all_cones_passed_s")
+        physically_ordered = True
+        if self.kind in ("in-lane-obstruction", "slow-traffic"):
+            phases = ["before_target_s"]
+            if self.kind == "slow-traffic":
+                phases.extend(("occupied_gap_wait_s", "adjacent_traffic_cleared_s"))
+                physically_ordered = o.get("occupied_gap_frames", 0) >= 3
+            phases.extend(("alternate_alongside_s", "rear_cleared_target_s", "returned_to_route_s"))
+            physically_ordered = physically_ordered and all(key in o for key in phases) and all(
+                o[a] < o[b] for a, b in zip(phases, phases[1:]))
         return dict(kind=self.kind, station_m=round(self.s, 2), phase=self.state,
                     triggered="triggered_s" in o, cleared="cleared_s" in o,
                     exposed="exposed_s" in o, passed="passed_s" in o,
-                    handled=all(k in o for k in evidence)
+                    handled=physically_ordered and all(k in o for k in evidence)
                             and not self.violation and "runout_reentered_s" not in o,
                     violation=self.violation, stopped_for_event=self.stopped,
                     minimum_gap_m=round(self.min_gap, 2), **o,
@@ -208,13 +222,41 @@ class Encounter:
                        if self.kind=="braking" else {}))
 
 
+TRAFFIC_SCHEDULES = ("continuous", "later-gap", "clear-feeder", "clear-feeder-later-gap",
+                     "original-continuous", "original-later-gap")
+
+
+def validate_traffic_schedule(schedule, destination, population_profile):
+    if schedule not in TRAFFIC_SCHEDULES:
+        raise ValueError(f"Unknown traffic schedule {schedule}")
+    if schedule == "continuous":
+        return
+    if population_profile != "city-maneuvers":
+        raise ValueError("Alternative traffic schedules require the city-maneuvers population")
+    if destination not in ("market", "market-loop"):
+        raise ValueError("Alternative traffic schedules require a Market or Market Loop destination")
+    if schedule.startswith("clear-feeder") and destination != "market-loop":
+        raise ValueError("The short return feeder belongs to Market Loop")
+    if schedule.startswith("original-") and destination != "market":
+        raise ValueError("The original close-spaced encounters belong to Market")
+
+
 class JourneyScenario(Scenario):
     """All movement commands target NPCs. The caller drives and samples the single ego."""
     def __init__(self, world, kind, seed, perturb=False, district=None, crossing_delay=0., destination=None, *,
-                 barriers=False, population_profile="standard"):
-        if population_profile not in ("standard", "city-life"):
+                 barriers=False, population_profile="standard", maneuver_case="continuous"):
+        if population_profile not in ("standard", "city-life", "city-maneuvers"):
             raise ValueError(f"Unknown journey population profile: {population_profile}")
         self.population_profile = population_profile
+        # The original crowded registration remains selectable for exact-geometry
+        # stress comparisons. The normal Market course retains the downstream
+        # stopped-sedan encounter at an independently fixed native site.
+        original_spacing = maneuver_case in ("original-continuous", "original-later-gap")
+        if original_spacing:
+            maneuver_case = maneuver_case.removeprefix("original-")
+        spaced_market = (population_profile == "city-maneuvers" and destination != "market-loop" and
+                         maneuver_case in ("continuous", "later-gap") and not original_spacing)
+        self.maneuver_fixture = None
         if kind != "journey":
             raise ValueError("JourneyScenario expects kind='journey'")
         self.kind = self.name = kind
@@ -255,6 +297,12 @@ class JourneyScenario(Scenario):
                 self._urban = urban_route(self._map, self.seed, destination)
                 self.destination = getattr(self._urban, "destination", None) or destination or "urban"
                 wp = self._points = self._urban.points
+                if spaced_market:
+                    from .urban_map import _station_index
+                    # Road 67 ends at its next junction at OpenDRIVE s310.4.
+                    # Keep the held Tesla about 35 m upstream of that junction
+                    # and retain its original native turn-off and release logic.
+                    self._urban.sites["lead"] = _station_index(wp, 67, -2, 275.)
             else:
                 wp = self._points = journey_points(self._map, self.seed, self.destination)
             self._set_route([w.transform.location for w in wp])
@@ -302,6 +350,10 @@ class JourneyScenario(Scenario):
                 idx = (self._urban.sites[k] if self._urban else
                        next(i for i,w in enumerate(wp) if w.road_id == street) + offset)
                 event = self._event(k, idx)
+                if k == "lead" and population_profile == "city-maneuvers":
+                    event.observed.update(native_road=wp[idx].road_id, native_lane=wp[idx].lane_id,
+                                          native_road_s=round(wp[idx].s, 3),
+                                          stopped_lead_layout="junction-approach" if spaced_market else "original")
                 if k in WALKERS:
                     self._spawn_walker(event, rng)
                 else:
@@ -337,10 +389,25 @@ class JourneyScenario(Scenario):
                 if barriers:
                     from .barrier_scene import spawn_barriers
                     spawn_barriers(self)
+            if population_profile == "city-maneuvers":
+                from .maneuver_scene import ManeuverFixture
+                if self.destination == "market-loop":
+                    from .market_loop_traffic import LoopFixture
+                    self.maneuver_fixture = LoopFixture(self, maneuver_case)
+                else:
+                    self.maneuver_fixture = ManeuverFixture(self, maneuver_case)
+                required = (*required, *self.maneuver_fixture.event_names)
             self.events.sort(key=lambda e:e.s)
             if sorted(e.kind for e in self.events) != sorted(required):
                 raise RuntimeError("Journey setup does not match the course encounter contract")
-            if population_profile == "city-life":
+            if population_profile == "city-maneuvers":
+                from .maneuver_scene import ManeuverPopulation
+                if self.destination == "market-loop":
+                    from .market_loop_traffic import LoopPopulation
+                    self.ambient = LoopPopulation(self)
+                else:
+                    self.ambient = ManeuverPopulation(self)
+            elif population_profile == "city-life":
                 from .city_population import CityPopulation
                 self.ambient = CityPopulation(self)
             else:
@@ -753,6 +820,8 @@ class JourneyScenario(Scenario):
         if (e.kind=="lead" and e.state=="waiting" and moving < .25 and gap < 20.
             or e.kind=="braking" and e.state=="cruising" and moving >= 1.6 and gap < 22.):
             e.mark("triggered_s",self._time)
+            if e.kind == "lead" and getattr(self, "population_profile", None) == "city-maneuvers":
+                e.observed["target_speed_at_exposure_mps"] = round(moving, 3)
             e.state = "braking" if e.kind=="braking" else "stopped"
             if e.state=="stopped":
                 e.next_action = self._time+4.
@@ -880,11 +949,13 @@ class JourneyScenario(Scenario):
         for e in self.events:
             distance = e.s-progress
             trailing_lead = e.kind in LEADS and e.state=="departing" and "passed_s" not in e.observed
-            if not trailing_lead and not (-140 if e.kind in ("bus","cyclist") else -65) < distance < 65:
+            if e.kind not in ("in-lane-obstruction", "slow-traffic") and not trailing_lead and not (-140 if e.kind in ("bus","cyclist") else -65) < distance < 65:
                 continue
             if "passed_s" in e.observed:
                 continue
-            if e.kind in WALKERS:
+            if e.kind in ("in-lane-obstruction", "slow-traffic"):
+                gap = self.maneuver_fixture.observe(e, progress)
+            elif e.kind in WALKERS:
                 gap = self._walker_gap(e, distance, lateral, nose)
             elif e.kind in LEADS:
                 gap = self._lead_gap(e, distance, progress, lateral, nose)
@@ -971,6 +1042,8 @@ class JourneyScenario(Scenario):
     def before_tick(self):
         self._observe()
         self.ambient.before_tick()
+        if self.maneuver_fixture is not None:
+            self.maneuver_fixture.before_tick()
         for e in self.events:
             if e.kind in WALKERS:
                 if e.state == "leaving":
@@ -1002,7 +1075,11 @@ class JourneyScenario(Scenario):
     def observer_positions(self, radius=100.):
         """Nearby ground-truth actors for the spectator map only."""
         actors = [(self.occluder, "van", "occluder")]
+        if self.maneuver_fixture is not None:
+            actors.extend(self.maneuver_fixture.spectator_actors())
         for event in self.events:
+            if event.kind in ("in-lane-obstruction", "slow-traffic"):
+                continue
             if event.kind == "roadworks":
                 actors.extend((cone,"cone","roadworks") for cone in event.cones)
             elif event.kind == "barrier":
@@ -1032,7 +1109,7 @@ class JourneyScenario(Scenario):
                                       dimensions_m=[round(2*box.x, 2), round(2*box.z, 2), round(2*box.y, 2)],
                                       x=round(p.x,2),y=round(p.y,2),z=round(p.z,2),
                                       yaw=round(pose.rotation.yaw,2)))
-                if getattr(self, "population_profile", None) == "city-life":
+                if getattr(self, "population_profile", None) in ("city-life", "city-maneuvers"):
                     box_center = bounds.location
                     local = bounds.rotation
                     positions[-1].update(bbox_offset_m=[round(v, 3) for v in (box_center.x, box_center.y, box_center.z)],

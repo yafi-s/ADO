@@ -1,0 +1,17 @@
+# Return space on the original close-spaced road
+
+The original stationary Tesla and the moving sedan created a shrinking gap on road 67. At almost the same ego route station (496–497 m), the moving sedan was 12.41 m ahead in the successful qualification, 17.67 m ahead in the failed High capture, and 26.68 m ahead in the failed held-out timing run. The downstream Tesla remained stationary. This participant-relative difference existed before the second lane change.
+
+In the High run the car reached 10.95 m/s while it still measured 36.1 m to the stopped sedan and 11.0 m to the moving sedan behind. There was not yet sufficient rear clearance. Several missing source returns made the new front surface's speed unconfirmed, so the planner only began its 3 m/s approach cap once it was already near 11 m/s. By the time the car slowed, the front clearance and five-second closing requirement ruled out the return. The particular High outcome is close to a kinematic boundary and should not be generalized into an impossibility result.
+
+## Bounded trajectory comparison
+
+The [594-profile screen](original-return-space.json) varied when slowing began relative to the passed car's rear bumper, the target passing speed (3–8.25 m/s), and the allowable deceleration (1.9, 2.69 or 3.2 m/s²). Each counterfactual began at the original moving-pass commitment. It maintained the original 15 m/12 m bumper floors, two-second headways, and five-second closing threshold for five new 10 Hz observations and through the crossing. The lateral occupancy estimate was 82% of the existing speed-dependent 14–30 m return blend plus 1 m. All 594 policies were screened against the same-time native participant boxes. There were 134 admissible complete nominal returns, 71 possible right-turn starts but no complete High return, and no held-out profile that sustained the entry requirements.
+
+A separate [optimistic trajectory bound](original-return-upper-bound.json) allowed arbitrary velocity over time rather than one fixed approach speed or onset. It knew the actors' future native motion, used acceleration limits of +2.59 and −2.69 m/s², and preserved all return margins throughout the lateral occupancy estimate. The best minimum surplus was **+2.249 m** for the nominal run, **−0.188 m** for High, and **−5.003 m** for the held-out run. The sampled timing search included a 0.1 s local refinement. Sub-meter differences are sensitive to trajectory representation and vehicle heading. The held-out deficit is substantially larger.
+
+These are fixed-traffic comparisons. They do not simulate lateral steering or a new sensor history. They cannot certify a real maneuver, assume that the affected cars cooperate, or prove that every possible earlier lane choice fails. They provide no basis for promoting a common velocity change under the original spacing.
+
+## Fixture consequence
+
+The original stopped sedan begins its four-second release timer only after the ego comes within 20 m bumper gap in the same lane. Waiting alongside cannot release it. A timer that starts earlier independently could relieve the traffic but could also send away that sedan before the separately required stationary-lead encounter takes place. Moving that participant farther downstream is a distinct fixture change that increases available road. Its effects belong to that geometry and must be verified in its own matched native runs. The failed close-spaced High and timing tests remain part of the evidence.

@@ -8,6 +8,8 @@ const labels = {
   signal: 'Traffic signal',
   cyclist: 'Cyclist',
   roadworks: 'Roadworks',
+  'in-lane-obstruction': 'Obstruction in lane',
+  'slow-traffic': 'Slow-moving traffic',
   barrier: 'Roadside barriers',
   bus: 'Stopped bus'
 };

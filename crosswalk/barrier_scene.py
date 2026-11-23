@@ -67,7 +67,12 @@ def barrier_gap(scene, event, progress):
             event.observed["minimum_barrier_clearance_m"] = round(min(
                 gap, event.observed.get("minimum_barrier_clearance_m", math.inf)), 3)
             lane = scene._map.get_waypoint(ego_pose.location, project_to_road=False, lane_type=carla.LaneType.Driving)
-            if gap < .25 or not lane or (lane.road_id, lane.lane_id) != (67, -2):
+            legal = lane and (lane.road_id, lane.lane_id) == (67, -2)
+            fixture = getattr(scene, "maneuver_fixture", None)
+            if not legal and fixture and fixture.legal_roadside_pass(event):
+                legal = True
+                event.observed["roadside_pass_during_legal_overtake"] = True
+            if gap < .25 or not legal:
                 event.violation = True
             event.state = "passing striped barricades"
     event.observed["barriers_alongside"] = len(event.encountered_barriers)

@@ -1,0 +1,376 @@
+{
+  "scenario": "boulevard",
+  "seed": 316,
+  "policy": "ado-city-maneuvers-v1",
+  "weather": "ClearNoon",
+  "road_id": 67,
+  "lane_id": -2,
+  "start_xy": [
+    229.63,
+    81.57
+  ],
+  "outcome": "restarted",
+  "frames": 215,
+  "duration_s": 21.5,
+  "progress_m": 156.626,
+  "route_length_m": 285.489,
+  "contacts": [],
+  "collision_events": 0,
+  "max_lateral_error_m": 0.026,
+  "spawn_lateral_m": 0.0,
+  "spawn_yaw_deg": 0.0,
+  "min_hazard_gap_m": 3.883,
+  "moving_within_1m_frames": 0,
+  "turn_direction": null,
+  "district": null,
+  "destination": "Boulevard end",
+  "crossing_delay_s": 0.0,
+  "camera_rendering": {
+    "requested": {
+      "rgb": "mixed",
+      "rgb_screen_percentage": 50.0,
+      "camera_ray_tracing": false,
+      "ground_truth": "native"
+    },
+    "cameras": {
+      "front": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "false",
+          "dlss_screen_percentage": "100.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "false",
+          "dlss_screen_percentage": "100.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "left": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      },
+      "right": {
+        "requested_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "available_attributes": [
+          "dlss_screen_percentage",
+          "enable_dlss",
+          "enable_postprocess_effects",
+          "use_ray_tracing"
+        ],
+        "actor_attributes": {
+          "use_ray_tracing": "false",
+          "enable_dlss": "true",
+          "dlss_screen_percentage": "50.0",
+          "enable_postprocess_effects": "true"
+        },
+        "attributes_match_request": true,
+        "dlss_gpu_active": null
+      }
+    }
+  },
+  "ego_blueprint": "vehicle.lincoln.mkz",
+  "background_actors": {
+    "walkers": 0,
+    "vehicles": 0
+  },
+  "sensor_configuration": "three-camera-lidar-radar",
+  "route_id": "Town03 road 67 lane -2, OpenDRIVE s=1..300",
+  "road_ids": [
+    67
+  ],
+  "junction_ids": [],
+  "event_triggered": false,
+  "event_cleared": false,
+  "red_light_violations": 0,
+  "yield_violations": 0,
+  "stopped_for_hazard": true,
+  "closest_in_path_speed_mps": 0.022,
+  "wall_seconds": 18.853,
+  "case": "stationary-queue",
+  "model_sha256": "12257634d76f30bdcdfb7a61b34c1cddecbc5713ee88720631bc9bb7b8af1071",
+  "implementation": {
+    "boulevard_speed_trials.py": "54e607f8ac4eac0c8d71a49b75e335013cea0ac19f787039d5b38c26565028ce",
+    "city_maneuvers.py": "2637a4fb4244ea1462981b330262e2b12b51f1cd1afd55ba8a862568c214b3e3",
+    "city_open_road.py": "04a707dd3030f57533241eb3b0c14f7c5a34a141575e0c44eef756317b528574",
+    "drive.py": "4a57f7e3d3c1561533a38b2c7429410eb7c1a35cfa68edbd2a5a21c076264e7b",
+    "route_maneuvers.py": "f2599f4ace73d751c202bedbbb420ff529e9fc32eebe33ecb8c7d82b2ffc650a",
+    "speed_signs.py": "1ecbe3461e27a32f45994a7ac4bcbfc708f5cc2242fe3fb46cf7ad9c9dfff763"
+  },
+  "maneuver_choice_sha256": "52e04b5ab64550e5f8116e51f8bd3e9614e9740bc8379e0b942b3f2378c6a624",
+  "source_sha256": "54e607f8ac4eac0c8d71a49b75e335013cea0ac19f787039d5b38c26565028ce",
+  "longer_corridor": false,
+  "grade": {
+    "frames": 215,
+    "outcome": "restarted",
+    "collisions": 0,
+    "max_abs_lateral_m": 0.026,
+    "over_posted_tolerance_s": 0.0,
+    "maximum_posted_excess_kmh": 0.0,
+    "peak_kmh": 43.3872,
+    "fixed_section": {
+      "start_m": 45.0,
+      "end_m": 165.0,
+      "frames": 146,
+      "median_kmh": 33.3468,
+      "peak_kmh": 41.9652,
+      "actual_median_kmh": 33.3468,
+      "actual_p10_kmh": 0.0,
+      "actual_p90_kmh": 38.455200000000005,
+      "max_half_second_braking_mps2": 3.902,
+      "target_drops_5_kmh_one_tick": [
+        {
+          "at_m": 112.344,
+          "time_s": 13.2,
+          "from_kmh": 39.293639999999996,
+          "to_kmh": 33.312384
+        },
+        {
+          "at_m": 153.142,
+          "time_s": 18.1,
+          "from_kmh": 13.633884,
+          "to_kmh": 0.0
+        }
+      ]
+    },
+    "lower_sign_entries": [],
+    "native_90_zone_comfort": {
+      "actual_median_kmh": 33.1452,
+      "actual_p10_kmh": 0.5760000000000012,
+      "actual_p90_kmh": 38.7486,
+      "max_half_second_braking_mps2": 3.902,
+      "target_drops_5_kmh_one_tick": [
+        {
+          "at_m": 40.851,
+          "time_s": 6.5,
+          "from_kmh": 53.350812000000005,
+          "to_kmh": 47.874744
+        },
+        {
+          "at_m": 112.344,
+          "time_s": 13.2,
+          "from_kmh": 39.293639999999996,
+          "to_kmh": 33.312384
+        },
+        {
+          "at_m": 153.142,
+          "time_s": 18.1,
+          "from_kmh": 13.633884,
+          "to_kmh": 0.0
+        }
+      ]
+    },
+    "matched_station_bins": [
+      {
+        "start_m": 45.0,
+        "end_m": 55.0,
+        "sample_count": 9,
+        "actual_median_kmh": 39.348,
+        "actual_p10_kmh": 38.85552,
+        "actual_p90_kmh": 41.262480000000004,
+        "max_half_second_braking_mps2": 1.6360000000000003,
+        "target_drops_5_kmh_one_tick": []
+      },
+      {
+        "start_m": 55.0,
+        "end_m": 65.0,
+        "sample_count": 9,
+        "actual_median_kmh": 38.5416,
+        "actual_p10_kmh": 38.363040000000005,
+        "actual_p90_kmh": 38.7216,
+        "max_half_second_braking_mps2": 0.15999999999999817,
+        "target_drops_5_kmh_one_tick": []
+      },
+      {
+        "start_m": 65.0,
+        "end_m": 75.0,
+        "sample_count": 10,
+        "actual_median_kmh": 38.1168,
+        "actual_p10_kmh": 38.02068,
+        "actual_p90_kmh": 38.24316,
+        "max_half_second_braking_mps2": 0.0979999999999966,
+        "target_drops_5_kmh_one_tick": []
+      },
+      {
+        "start_m": 75.0,
+        "end_m": 85.0,
+        "sample_count": 9,
+        "actual_median_kmh": 37.8972,
+        "actual_p10_kmh": 37.854,
+        "actual_p90_kmh": 37.95912,
+        "max_half_second_braking_mps2": 0.05199999999999723,
+        "target_drops_5_kmh_one_tick": []
+      },
+      {
+        "start_m": 85.0,
+        "end_m": 95.0,
+        "sample_count": 10,
+        "actual_median_kmh": 37.782,
+        "actual_p10_kmh": 37.73484,
+        "actual_p90_kmh": 37.818720000000006,
+        "max_half_second_braking_mps2": 0.03600000000000294,
+        "target_drops_5_kmh_one_tick": []
+      },
+      {
+        "start_m": 95.0,
+        "end_m": 105.0,
+        "sample_count": 9,
+        "actual_median_kmh": 37.364399999999996,
+        "actual_p10_kmh": 37.31256,
+        "actual_p90_kmh": 37.68768,
+        "max_half_second_braking_mps2": 0.23000000000000081,
+        "target_drops_5_kmh_one_tick": []
+      },
+      {
+        "start_m": 105.0,
+        "end_m": 115.0,
+        "sample_count": 10,
+        "actual_median_kmh": 37.467,
+        "actual_p10_kmh": 36.73728,
+        "actual_p90_kmh": 37.5534,
+        "max_half_second_braking_mps2": 0.8239999999999981,
+        "target_drops_5_kmh_one_tick": [
+          {
+            "at_m": 112.344,
+            "time_s": 13.2,
+            "from_kmh": 39.293639999999996,
+            "to_kmh": 33.312384
+          }
+        ]
+      },
+      {
+        "start_m": 115.0,
+        "end_m": 125.0,
+        "sample_count": 11,
+        "actual_median_kmh": 33.066,
+        "actual_p10_kmh": 32.814,
+        "actual_p90_kmh": 34.7004,
+        "max_half_second_braking_mps2": 1.2479999999999967,
+        "target_drops_5_kmh_one_tick": []
+      },
+      {
+        "start_m": 125.0,
+        "end_m": 135.0,
+        "sample_count": 11,
+        "actual_median_kmh": 33.2784,
+        "actual_p10_kmh": 32.9292,
+        "actual_p90_kmh": 33.3612,
+        "max_half_second_braking_mps2": 0.2740000000000009,
+        "target_drops_5_kmh_one_tick": []
+      },
+      {
+        "start_m": 135.0,
+        "end_m": 145.0,
+        "sample_count": 12,
+        "actual_median_kmh": 30.1806,
+        "actual_p10_kmh": 27.788400000000003,
+        "actual_p90_kmh": 32.082840000000004,
+        "max_half_second_braking_mps2": 1.5480000000000003,
+        "target_drops_5_kmh_one_tick": []
+      },
+      {
+        "start_m": 145.0,
+        "end_m": 155.0,
+        "sample_count": 17,
+        "actual_median_kmh": 21.3372,
+        "actual_p10_kmh": 15.027840000000001,
+        "actual_p90_kmh": 25.52976,
+        "max_half_second_braking_mps2": 3.5759999999999996,
+        "target_drops_5_kmh_one_tick": [
+          {
+            "at_m": 153.142,
+            "time_s": 18.1,
+            "from_kmh": 13.633884,
+            "to_kmh": 0.0
+          }
+        ]
+      },
+      {
+        "start_m": 155.0,
+        "end_m": 165.0,
+        "sample_count": 29,
+        "actual_median_kmh": 0.0,
+        "actual_p10_kmh": 0.0,
+        "actual_p90_kmh": 7.804079999999999,
+        "max_half_second_braking_mps2": 3.7700000000000005,
+        "target_drops_5_kmh_one_tick": []
+      }
+    ],
+    "above_40_kmh_in_90_zone": {
+      "seconds": 1.1,
+      "longest_s": 1.1,
+      "entry_m": 36.221,
+      "exit_m": 47.907,
+      "entry_s": 6.1,
+      "last_sample_s": 7.1,
+      "median_kmh": 41.9652,
+      "p10_kmh": 40.392
+    },
+    "above_45_kmh_in_90_zone": {
+      "seconds": 0.0,
+      "longest_s": 0.0
+    },
+    "above_50_kmh_in_90_zone": {
+      "seconds": 0.0,
+      "longest_s": 0.0
+    },
+    "above_55_kmh_in_90_zone": {
+      "seconds": 0.0,
+      "longest_s": 0.0
+    },
+    "above_60_kmh_in_90_zone": {
+      "seconds": 0.0,
+      "longest_s": 0.0
+    },
+    "queue": {
+      "whole_body_min_gap_m": 3.8833,
+      "adjacent_min_gap_m": 4.257,
+      "final_gap_m": 3.8885,
+      "full_stop_held_2s": true,
+      "peak_reference_lead_speed_mps": 0.0019,
+      "ever_committed_lane_change": false,
+      "final_lateral_from_source_m": 0.019,
+      "final_longitudinal_source_bumper_gap_m": 3.8871,
+      "final_longitudinal_adjacent_bumper_gap_m": 3.9248,
+      "speed_at_first_under_50m_kmh": 37.53,
+      "speed_at_first_under_35m_kmh": 32.9292
+    }
+  },
+  "producer": {
+    "server_version": "1.0",
+    "client_version": "1.0",
+    "map": "Town03_Opt"
+  }
+}

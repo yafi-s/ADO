@@ -119,6 +119,9 @@ class Pedestrian:
 class CityPopulation(JourneyAmbient):
     """Populate the whole route once. NPC controls never write ego observations."""
 
+    traffic_corridors = CARS
+    walking_corridors = WALKS
+
     def __init__(self, scene):
         if not scene._urban:
             raise ValueError("The city-life population requires Town03")
@@ -167,7 +170,7 @@ class CityPopulation(JourneyAmbient):
             for point in light.get_stop_waypoints():
                 if point:
                     stops.setdefault((point.road_id, point.lane_id), []).append(point.s)
-        for road, lane, start, end, activation, movement in CARS:
+        for road, lane, start, end, activation, movement in self.traffic_corridors:
             points = lane_segment(scene._map, road, lane, start, end, carla.LaneType.Driving)
             # Keep the front bumper behind each native stop line throughout
             # the runout, including a line located inside an OpenDRIVE road.
@@ -197,7 +200,7 @@ class CityPopulation(JourneyAmbient):
 
     def _pedestrians(self, scene, rng):
         models = sorted(scene._catalog.filter("walker.pedestrian.*"), key=lambda bp: bp.id)
-        for site, (road, side, start, end) in enumerate(WALKS):
+        for site, (road, side, start, end) in enumerate(self.walking_corridors):
             points = sidewalk_segment(scene._map, road, side, start, end)
             if not points:
                 continue

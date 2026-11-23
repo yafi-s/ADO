@@ -26,7 +26,7 @@ concurrency:
 jobs:
   publish-from-main:
     # The Pages environment permits deployments from main. A release event runs on a tag.
-    if: github.repository == 'yafi-s/ADO' && github.event_name == 'release' && contains(fromJSON('["v0.3.0", "v0.4.0", "v0.5.0", "v0.6.0"]'), github.event.release.tag_name)
+    if: github.repository == 'yafi-s/ADO' && github.event_name == 'release' && contains(fromJSON('["v0.3.0", "v0.4.0", "v0.5.0", "v0.6.0", "v0.7.0"]'), github.event.release.tag_name)
     runs-on: ubuntu-latest
     permissions:
       actions: write
@@ -72,7 +72,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: .local/pages-film
-          key: pages-film-v1-${{ hashFiles('web/media/urban-pace/manifest.json', 'web/media/city-life/manifest.json', 'web/media/city-progress/manifest.json') }}
+          key: pages-film-v1-${{ hashFiles('web/media/urban-pace/manifest.json', 'web/media/city-life/manifest.json', 'web/media/city-progress/manifest.json', 'web/media/city-maneuvers/manifest.json') }}
           restore-keys: pages-film-v1-
       - name: Fit the verified city recordings within the Pages budget
         id: films

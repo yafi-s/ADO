@@ -1,0 +1,204 @@
+{
+  "scope": "Counterfactual scalar ego integration at 0.1s, same-time recorded actor boxes. Not a controller or a physical validation. Missing visibility/unknown actor actions can further restrict feasibility.",
+  "configs": 594,
+  "counts": {
+    "high": {
+      "eligible": 71,
+      "fully_returnable": 0
+    },
+    "nominal": {
+      "eligible": 229,
+      "fully_returnable": 134
+    },
+    "heldout": {
+      "eligible": 0,
+      "fully_returnable": 0
+    }
+  },
+  "common_profiles": 0,
+  "best_common": [],
+  "best_per_scene": {
+    "high": {
+      "onset_before_lead_bumper_m": -5.0,
+      "sustained_cap_mps": 3.25,
+      "maximum_decel_mps2": 2.69,
+      "runs": {
+        "high": {
+          "start_frame": 1316,
+          "first_right": 1377,
+          "end_frame": 1452,
+          "front_at_end": 13.94,
+          "rear_at_end": 12.978,
+          "all_straddling_gap_margin_m": -1.06,
+          "hit_target": false,
+          "can_fully_return": false,
+          "eligible_samples": true,
+          "best": 1.747,
+          "allowed_start_slack_m": 0.806,
+          "best_at": [
+            1397,
+            1.65,
+            22.232,
+            13.747
+          ]
+        },
+        "nominal": {
+          "start_frame": 22664,
+          "first_right": 22749,
+          "end_frame": 22817,
+          "front_at_end": 16.788,
+          "rear_at_end": 13.981,
+          "all_straddling_gap_margin_m": 0.685,
+          "hit_target": false,
+          "can_fully_return": true,
+          "eligible_samples": true,
+          "best": 2.475,
+          "allowed_start_slack_m": 0.685,
+          "best_at": [
+            22781,
+            1.638,
+            22.164,
+            14.475
+          ]
+        },
+        "heldout": {
+          "can_fully_return": false,
+          "eligible_samples": false,
+          "best": -0.26,
+          "best_at": [
+            28068,
+            3.25,
+            15.99,
+            11.879
+          ],
+          "first_right": null,
+          "hit_target": false
+        }
+      }
+    },
+    "nominal": {
+      "onset_before_lead_bumper_m": 10.0,
+      "sustained_cap_mps": 4.0,
+      "maximum_decel_mps2": 3.2,
+      "runs": {
+        "high": {
+          "can_fully_return": false,
+          "eligible_samples": false,
+          "best": -1.183,
+          "best_at": [
+            1434,
+            4.0,
+            19.062,
+            10.817
+          ],
+          "first_right": null,
+          "hit_target": false
+        },
+        "nominal": {
+          "start_frame": 22664,
+          "first_right": 22849,
+          "end_frame": 22888,
+          "front_at_end": 41.843,
+          "rear_at_end": 29.175,
+          "all_straddling_gap_margin_m": 2.059,
+          "hit_target": false,
+          "can_fully_return": true,
+          "eligible_samples": true,
+          "best": 17.175,
+          "allowed_start_slack_m": 2.059,
+          "best_at": [
+            22888,
+            4.0,
+            41.843,
+            29.175
+          ]
+        },
+        "heldout": {
+          "can_fully_return": false,
+          "eligible_samples": false,
+          "best": -6.209,
+          "best_at": [
+            28110,
+            4.0,
+            14.088,
+            5.791
+          ],
+          "first_right": null,
+          "hit_target": false
+        }
+      }
+    },
+    "heldout": {
+      "onset_before_lead_bumper_m": -5.0,
+      "sustained_cap_mps": 3.0,
+      "maximum_decel_mps2": 2.69,
+      "runs": {
+        "high": {
+          "start_frame": 1316,
+          "first_right": 1377,
+          "end_frame": 1453,
+          "front_at_end": 13.907,
+          "rear_at_end": 12.842,
+          "all_straddling_gap_margin_m": -1.093,
+          "hit_target": false,
+          "can_fully_return": false,
+          "eligible_samples": true,
+          "best": 1.618,
+          "allowed_start_slack_m": 0.755,
+          "best_at": [
+            1397,
+            1.672,
+            22.361,
+            13.618
+          ]
+        },
+        "nominal": {
+          "start_frame": 22664,
+          "first_right": 22751,
+          "end_frame": 22820,
+          "front_at_end": 16.955,
+          "rear_at_end": 13.703,
+          "all_straddling_gap_margin_m": 0.55,
+          "hit_target": false,
+          "can_fully_return": true,
+          "eligible_samples": true,
+          "best": 2.223,
+          "allowed_start_slack_m": 0.55,
+          "best_at": [
+            22783,
+            1.625,
+            22.085,
+            14.223
+          ]
+        },
+        "heldout": {
+          "can_fully_return": false,
+          "eligible_samples": false,
+          "best": 0.098,
+          "best_at": [
+            28070,
+            3.0,
+            15.39,
+            12.098
+          ],
+          "first_right": null,
+          "hit_target": false
+        }
+      }
+    }
+  },
+  "limits": {
+    "source_front_floor_m": 15,
+    "source_rear_floor_m": 12,
+    "headway_s": 2,
+    "closing_ttc_s": 5,
+    "clear_distance": "0.82 times the native 14\u201330m comfort blend plus 1m; full interval must maintain both original thresholds",
+    "candidate_acceleration_mps2": 2.59,
+    "deceleration_mps2": [
+      1.9,
+      2.69,
+      3.2
+    ],
+    "bumper_extent_m": 2.5
+  }
+}

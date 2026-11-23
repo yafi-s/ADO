@@ -1,0 +1,265 @@
+{
+  "schema": "ado-stationary-vehicle-intent-v1",
+  "checkpoint_sha256": "997f3f8774fff55790f163249dae6e6d50efb26a85e55712e8c5b965eee560b3",
+  "fit_rows": 50000,
+  "fit_seed": 41387,
+  "calibration_rows": 30000,
+  "calibration_seed": 219109,
+  "leaves": 60,
+  "minimum_calibration_support": 71,
+  "scope": "Synthetic longitudinal counterfactual action values conditional on sensor-confirmed source motor vehicle. No native tape, route, staged actor, fixture seed, runtime label or target incident enters the fit. The separate geometric planner owns permission.",
+  "actions": [
+    "follow",
+    "defer_to_existing_choice"
+  ],
+  "features": [
+    "source_gap_m",
+    "ego_speed_mps",
+    "source_speed_mps",
+    "previous_source_speed_mps",
+    "source_acceleration_mps2",
+    "observed_stopped_wait_s",
+    "source_observed_s",
+    "projected_lane_gain_m"
+  ],
+  "decision": "Defer if empirical mean counterfactual pass gain exceeds zero; otherwise stay in source lane.",
+  "probability": "Independent calibration-leaf fraction of rollouts with lower/equal cost for following. A cost-sensitive decision need not have a majority probability.",
+  "assumptions": {
+    "horizon_s": 12.0,
+    "time_step_s": 0.25,
+    "pass_effort_m": 3.5,
+    "other_lane_cost_m_per_s": 0.4,
+    "unfinished_pass_m": 12.0,
+    "hidden_modes": [
+      "temporary_stop",
+      "long_stop",
+      "sustained_slow",
+      "departing"
+    ],
+    "default_mode_probabilities": [
+      0.55,
+      0.13,
+      0.21,
+      0.11
+    ],
+    "default_median_short_dwell_s": 3.2,
+    "provenance": "Traffic-mode weights, mixture fractions, driver preferences and speed distributions are simulation design assumptions; they are not measured population frequencies. Retained native instructor seed 75 exhibits a stop followed by restart, and the repository journey fixture schedules short holds. Neither its telemetry nor any native capture is a fit input.",
+    "temporary_hold_distributions": "Default lognormal median 3.2s sigma 0.55. Stress median 5s sigma 0.76. 38% have a clock independent of our approach; the rest vary their residual wait with queue arrival.",
+    "stress_mode_probabilities": [
+      0.63,
+      0.08,
+      0.17,
+      0.12
+    ],
+    "measured_alignment": "Ego speed, source gap/speed, earlier speed and accel, stationary close wait, association age and projected lane gain are all causal. A separate camera/lidar/radar typed identity gate is required before querying the head.",
+    "counterfactual": "Exit at bounded speed, rejoin only with physical lead clearance + speed-dependent headway, pay for unfinished exposure and post-return headway deficit. A source motor vehicle restarting before completion is treated as a queue-priority abort; the maximum retained progress is the source-following position. This is a chosen behavioral preference, not a crash measurement.",
+    "alternatives": "Follow labels have the hindsight upper bound of two actual simulated alternatives: stay for the horizon, or wait 3.5s and reevaluate using the source velocity then. Report alternate fixed-policy regret separately.",
+    "continued_front_bound": "Passing simulations conservatively keep the tracked target-front bound even after our return during the finite horizon.",
+    "regret_units": "Equivalent metres, including 3x post-return headway deficit in metres and fixed effort, exposure and abort terms."
+  },
+  "input_source_sha256": {
+    "crosswalk/stationary_intent_fit.py": "ae954594ac0051745bc655012c4f158b71e8e6e2f3597c199c5dcb8b183c1d75",
+    "crosswalk/stationary_intent.py": "96f0a316b43d358b6807f84e5b2a85dc14db0042c03b6896ad07fae1cef41e39"
+  },
+  "development_evaluations": {
+    "718813": {
+      "stress": false,
+      "all": {
+        "rows": 16000,
+        "defer_fraction": 0.2203,
+        "oracle_choice_accuracy": 0.8399,
+        "mean_regret_m": 5.044
+      },
+      "baseline_always_defer_regret_m": 16.227,
+      "baseline_always_follow_regret_m": 11.45,
+      "brier": 0.1117,
+      "newly_observed_stationary": {
+        "rows": 5707,
+        "defer_fraction": 0.0,
+        "oracle_choice_accuracy": 0.6974,
+        "mean_regret_m": 10.704
+      },
+      "extended_wait": {
+        "rows": 349,
+        "defer_fraction": 1.0,
+        "oracle_choice_accuracy": 0.9542,
+        "mean_regret_m": 1.007
+      },
+      "sustained_slow": {
+        "rows": 3254,
+        "defer_fraction": 0.8196,
+        "oracle_choice_accuracy": 0.8878,
+        "mean_regret_m": 2.055
+      },
+      "departing": {
+        "rows": 2776,
+        "defer_fraction": 0.0025,
+        "oracle_choice_accuracy": 0.9651,
+        "mean_regret_m": 0.925
+      }
+    },
+    "983239": {
+      "stress": true,
+      "all": {
+        "rows": 16000,
+        "defer_fraction": 0.1777,
+        "oracle_choice_accuracy": 0.7906,
+        "mean_regret_m": 7.14
+      },
+      "baseline_always_defer_regret_m": 16.22,
+      "baseline_always_follow_regret_m": 11.845,
+      "brier": 0.1368,
+      "newly_observed_stationary": {
+        "rows": 6614,
+        "defer_fraction": 0.0,
+        "oracle_choice_accuracy": 0.6275,
+        "mean_regret_m": 13.966
+      },
+      "extended_wait": {
+        "rows": 260,
+        "defer_fraction": 1.0,
+        "oracle_choice_accuracy": 0.8808,
+        "mean_regret_m": 2.582
+      },
+      "sustained_slow": {
+        "rows": 2547,
+        "defer_fraction": 0.8135,
+        "oracle_choice_accuracy": 0.8783,
+        "mean_regret_m": 2.305
+      },
+      "departing": {
+        "rows": 2588,
+        "defer_fraction": 0.0012,
+        "oracle_choice_accuracy": 0.9741,
+        "mean_regret_m": 0.721
+      }
+    }
+  },
+  "untouched_final_evaluation": {
+    "seed": 62739539,
+    "rows": 32000,
+    "all": {
+      "rows": 32000,
+      "defer_fraction": 0.2213,
+      "oracle_choice_accuracy": 0.8386,
+      "mean_regret_m": 5.004
+    },
+    "baseline_always_defer_regret_m": 16.356,
+    "baseline_always_follow_regret_m": 11.297,
+    "brier": 0.1129,
+    "newly_observed_stationary": {
+      "rows": 11415,
+      "defer_fraction": 0.0,
+      "oracle_choice_accuracy": 0.694,
+      "mean_regret_m": 10.693
+    },
+    "extended_wait": {
+      "rows": 728,
+      "defer_fraction": 1.0,
+      "oracle_choice_accuracy": 0.9437,
+      "mean_regret_m": 1.241
+    },
+    "sustained_slow": {
+      "rows": 6446,
+      "defer_fraction": 0.8228,
+      "oracle_choice_accuracy": 0.8804,
+      "mean_regret_m": 2.166
+    },
+    "departing": {
+      "rows": 5438,
+      "defer_fraction": 0.0013,
+      "oracle_choice_accuracy": 0.9667,
+      "mean_regret_m": 0.858
+    }
+  },
+  "fixed_alternative_sensitivity": {
+    "delay_then_causal_reevaluation": {
+      "mean_regret_m": 5.553058129627616,
+      "always_follow_regret_m": 14.073645834899756,
+      "always_defer_regret_m": 10.115418444665774
+    },
+    "stay_entire_horizon": {
+      "mean_regret_m": 8.190709835507308,
+      "always_follow_regret_m": 17.22584510704109,
+      "always_defer_regret_m": 16.350943037146358
+    }
+  },
+  "illustrative_feature_probes": {
+    "fresh_stationary_far": {
+      "inputs": [
+        35.0,
+        8.0,
+        0.08,
+        0.05,
+        0.05,
+        0.0,
+        1.0,
+        30.0
+      ],
+      "decision": "follow",
+      "follow_fraction": 0.676033441709243,
+      "estimated_pass_gain_equivalent_m": -5.790339095411737
+    },
+    "short_wait_near": {
+      "inputs": [
+        7.0,
+        0.1,
+        0.0,
+        0.1,
+        -0.1,
+        2.0,
+        9.0,
+        30.0
+      ],
+      "decision": "follow",
+      "follow_fraction": 0.7008547008547008,
+      "estimated_pass_gain_equivalent_m": -19.54108381224902
+    },
+    "persistent_stationary_near": {
+      "inputs": [
+        7.0,
+        0.1,
+        0.0,
+        0.1,
+        -0.1,
+        22.0,
+        29.0,
+        30.0
+      ],
+      "decision": "defer_to_existing_choice",
+      "follow_fraction": 0.15126050420168066,
+      "estimated_pass_gain_equivalent_m": 20.071266077651977
+    },
+    "sustained_slow": {
+      "inputs": [
+        18.0,
+        6.0,
+        1.7,
+        1.7,
+        0.0,
+        0.0,
+        4.0,
+        30.0
+      ],
+      "decision": "defer_to_existing_choice",
+      "follow_fraction": 0.029904306220095694,
+      "estimated_pass_gain_equivalent_m": 35.247290834611746
+    },
+    "source_accelerating": {
+      "inputs": [
+        18.0,
+        6.0,
+        2.0,
+        0.8,
+        2.0,
+        0.0,
+        2.0,
+        30.0
+      ],
+      "decision": "follow",
+      "follow_fraction": 0.9540581929555896,
+      "estimated_pass_gain_equivalent_m": -19.164103429390135
+    }
+  },
+  "rejected_objective": "The initial terminal-distance-only comparison repeatedly recommended passing a new stationary car. Aggregate synthetic accuracy did not address the instructor preference for queued traffic. It was not promoted."
+}

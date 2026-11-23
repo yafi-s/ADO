@@ -51,7 +51,7 @@ class SignedRouteLimits:
                     zones.add((round(float(station), 3), limit))
         return cls(zones, nose_m)
 
-    def approach(self, progress, speed, posted):
+    def approach(self, progress, speed, posted, *, cruise_ceiling_mps=CRUISE_MAX):
         """Return an active approach cap and diagnostics; the actual sign remains authoritative."""
         best = None
         if not math.isfinite(posted) or posted <= 0.:
@@ -62,9 +62,12 @@ class SignedRouteLimits:
                 continue
             # Anticipate a comfortable 1.5 m/s² transition. Allow the tracking
             # actuator 1.2 s to settle before the front bumper enters the zone.
-            terminal = max(0., kmh / 3.6 - .2)
-            room = max(0., distance - self.nose_m - 1.2 * max(speed, terminal))
+            # Native higher-speed sign entries retained up to 0.26 km/h of tracking error.
+            faster = cruise_ceiling_mps > CRUISE_MAX
+            terminal = max(0., kmh / 3.6 - (.35 if faster else .2))
+            settle = 1.7 if faster else 1.2
+            room = max(0., distance - self.nose_m - settle * max(speed, terminal))
             cap = math.sqrt(terminal*terminal + 3.*room)
-            if cap < min(posted/3.6, CRUISE_MAX) and (best is None or cap < best[0]):
+            if cap < min(posted/3.6, cruise_ceiling_mps) and (best is None or cap < best[0]):
                 best = (cap, kmh, distance)
         return best

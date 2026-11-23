@@ -1,0 +1,34 @@
+{
+  "status": "rejected",
+  "reason": "Earlier confirmation drew a second symbol during the older symbol's coast.",
+  "baseline_memory_sha256": "045444bf8700509d9658dafb1c8c6736ebda6e2f7b5c7c33ad03243ff4b57274",
+  "temporary_candidate_sha256": "0e54b9e7240f41bb21f98270299e026c81300f57789076b12066bd51565b05d1",
+  "minimum_counted_symbol_opacity": 0.5,
+  "admission_evidence": {
+    "nearby_rear_camera_and_range": true,
+    "object_range_m": [15, 22],
+    "minimum_rgb_confidence": 0.68,
+    "minimum_lidar_hits": 18,
+    "minimum_retained_lidar_xyz": 8,
+    "minimum_same_view_radar_hits": 3,
+    "minimum_closing_doppler_mps": 3,
+    "compact_depth_surface_checks": true
+  },
+  "first_high_attempt": {
+    "journal_sha256": "81da043b86b1d2c3ea9ba78d57979d7db3efb3676c6221689f3db0d2e6e89965",
+    "compared_frames": 1824,
+    "added_car_symbol_frames": 2,
+    "added_unmatched_car_symbol_frames": 0,
+    "added_duplicate_car_symbol_frames": 2,
+    "first_corroborated_yield_symbol_s": {
+      "baseline": 115.6,
+      "candidate": 115.0
+    },
+    "older_symbol_center_error_m_at_both_added_drawings": [4.17, 5.30]
+  },
+  "historical_city_life": {
+    "replay_sha256": "e1823a4929368d12e49240981edcf0b42c7364a9be11937def768b8ae340c2ef",
+    "compared_frames": 3320,
+    "added_car_symbol_frames": 0
+  }
+}

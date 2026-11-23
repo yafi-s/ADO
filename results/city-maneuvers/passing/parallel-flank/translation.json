@@ -1,0 +1,139 @@
+{
+  "scope": "Frozen geometry translated along the native source. No new optical view, actual future sweep or vehicle motion.",
+  "focal_frame": 2777,
+  "raw_focal_saved": false,
+  "bracketing_raw": [
+    2776,
+    2778
+  ],
+  "history_raw_sha256": {
+    "2764": "f72e721da38e604d85065fb417c27647fd50bfacd732117bc7aaa88dd3a9b202",
+    "2766": "7890184ab932da0477efa53cbb7edbe25861cd4aad9f993c73aa323ccc2e02f5",
+    "2768": "b77d47515613b48139db7491360b4e17ef4d32f2af292fd4b992c203866c8cd0",
+    "2770": "9dd84c3dcc66dd68073d3173ba823ea544a8ec7b1b69f816eab774bf413bf092",
+    "2772": "29bc87b1c016fb0f547584e68bc70dddf4ef52eaebf1b4000eb62ec973536566",
+    "2774": "b012182b063f12ea2e004e666f30423f417dfb6c1b77c5c17475940a9d84e0b0",
+    "2776": "b62ee47a41824793d3a1ba13bc2aca14f68e9d56f09ff7166804b7d8757a1dbb",
+    "2778": "82aa557374a752439dcd939667a9c96ac8d08cbef763f88cafd3317f9d78ac50"
+  },
+  "inputs": {
+    "trace.jsonl.gz": "391493c9eb216ed8e0e2a85f69cc03528741dafc29fd0d2586c163b1709c2388",
+    "observations.npz": "f6c67cd1b3e3ae5ab35da39eb69dfbcecff65b8809f6d49235d5244de1f98eca"
+  },
+  "candidate_sha256": "97abcd12f7d612e98168efb642507ac774c0540bcaafb1f89c0a78c7657142d1",
+  "parent_sha256": "94ce39e5f3b4136b2301a1104b454af4d2ce4f0268592d5a55f5ce5e703f504f",
+  "measured_camera_station_m": 6.922904968261719,
+  "source_surface_m": 29.51,
+  "target_front_m": 9.023,
+  "bounds": "Camera range decreases with translation. Separate final column substitutes a hypothetical fresh 8 m camera bound; it is never used by the driver.",
+  "sweep": [
+    {
+      "translation_m": 0,
+      "bracket_min_body_to_return_m": 6.918581008911133,
+      "bracket_min_lateral_margin_m": 1.6263015270233154,
+      "five_sweep_flank_supported": true,
+      "translated_camera_station_m": 6.922904968261719,
+      "frozen_source_cap_mps": 1.066117286682129,
+      "alternate_cap_mps": 1.066117286682129,
+      "reason": "verified_source",
+      "hypothetical_refreshed_camera_at_8m_cap_mps": 1.4969552755355835,
+      "hypothetical_reason": "verified_source"
+    },
+    {
+      "translation_m": 1,
+      "bracket_min_body_to_return_m": 5.975295543670654,
+      "bracket_min_lateral_margin_m": 1.6263015270233154,
+      "five_sweep_flank_supported": true,
+      "translated_camera_station_m": 5.922904968261719,
+      "frozen_source_cap_mps": 0.6661173105239868,
+      "alternate_cap_mps": 0.6661173105239868,
+      "reason": "verified_source",
+      "hypothetical_refreshed_camera_at_8m_cap_mps": 1.4969552755355835,
+      "hypothetical_reason": "verified_source"
+    },
+    {
+      "translation_m": 2,
+      "bracket_min_body_to_return_m": 5.044985771179199,
+      "bracket_min_lateral_margin_m": 1.6263015270233154,
+      "five_sweep_flank_supported": true,
+      "translated_camera_station_m": 4.922904968261719,
+      "frozen_source_cap_mps": 0.0,
+      "alternate_cap_mps": 0.0,
+      "reason": "perception_hold",
+      "hypothetical_refreshed_camera_at_8m_cap_mps": 1.457005262374878,
+      "hypothetical_reason": "verified_source"
+    },
+    {
+      "translation_m": 3,
+      "bracket_min_body_to_return_m": 4.136784553527832,
+      "bracket_min_lateral_margin_m": 1.6263015270233154,
+      "five_sweep_flank_supported": true,
+      "translated_camera_station_m": 3.9229049682617188,
+      "frozen_source_cap_mps": 0.0,
+      "alternate_cap_mps": 0.0,
+      "reason": "perception_hold",
+      "hypothetical_refreshed_camera_at_8m_cap_mps": 1.3969552993774415,
+      "hypothetical_reason": "measured_parallel_flank"
+    },
+    {
+      "translation_m": 4,
+      "bracket_min_body_to_return_m": 3.2678756713867188,
+      "bracket_min_lateral_margin_m": 1.6263015270233154,
+      "five_sweep_flank_supported": false,
+      "translated_camera_station_m": 2.9229049682617188,
+      "frozen_source_cap_mps": 0.0,
+      "alternate_cap_mps": 0.0,
+      "reason": "perception_hold",
+      "hypothetical_refreshed_camera_at_8m_cap_mps": 0.0,
+      "hypothetical_reason": "near_or_unobserved"
+    },
+    {
+      "translation_m": 5,
+      "bracket_min_body_to_return_m": 2.495238780975342,
+      "bracket_min_lateral_margin_m": 1.6263015270233154,
+      "five_sweep_flank_supported": false,
+      "translated_camera_station_m": 1.9229049682617188,
+      "frozen_source_cap_mps": 0.0,
+      "alternate_cap_mps": 0.0,
+      "reason": "lane_or_flank",
+      "hypothetical_refreshed_camera_at_8m_cap_mps": 0.0,
+      "hypothetical_reason": "lane_or_flank"
+    },
+    {
+      "translation_m": 6,
+      "bracket_min_body_to_return_m": 1.942529559135437,
+      "bracket_min_lateral_margin_m": 1.6263015270233154,
+      "five_sweep_flank_supported": false,
+      "translated_camera_station_m": 0.9229049682617188,
+      "frozen_source_cap_mps": 0.0,
+      "alternate_cap_mps": 0.0,
+      "reason": "lane_or_flank",
+      "hypothetical_refreshed_camera_at_8m_cap_mps": 0.0,
+      "hypothetical_reason": "lane_or_flank"
+    },
+    {
+      "translation_m": 7,
+      "bracket_min_body_to_return_m": 1.6592025756835938,
+      "bracket_min_lateral_margin_m": 1.6263015270233154,
+      "five_sweep_flank_supported": false,
+      "translated_camera_station_m": 0.0,
+      "frozen_source_cap_mps": 0.0,
+      "alternate_cap_mps": 0.0,
+      "reason": "lane_or_flank",
+      "hypothetical_refreshed_camera_at_8m_cap_mps": 0.0,
+      "hypothetical_reason": "lane_or_flank"
+    },
+    {
+      "translation_m": 8,
+      "bracket_min_body_to_return_m": 1.6263015270233154,
+      "bracket_min_lateral_margin_m": 1.6263015270233154,
+      "five_sweep_flank_supported": false,
+      "translated_camera_station_m": 0.0,
+      "frozen_source_cap_mps": 0.0,
+      "alternate_cap_mps": 0.0,
+      "reason": "lane_or_flank",
+      "hypothetical_refreshed_camera_at_8m_cap_mps": 0.0,
+      "hypothetical_reason": "lane_or_flank"
+    }
+  ]
+}
