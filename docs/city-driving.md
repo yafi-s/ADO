@@ -1,6 +1,6 @@
 # City driving in ADO
 
-City Maneuvers adds an in-lane obstruction and a moving lead with adjacent traffic. Market Loop follows the original 1.42 km Market route, then continues 303 m onto the opposite carriageway. The three in-lane drums are on the outbound road. The moving pass uses the return carriageway, where the source and passing lane run in the opposite direction. The bus on the original road still has a separate navigation-planned lane change. The logs identify the turn signal, lane choice and body clearance through each attempt. [How the maneuvers are scored](../results/city-maneuvers/README.md) · [Surveyed route and original waypoints](../results/city-maneuvers/audit/market-loop-survey.json)
+City Maneuvers adds an in-lane obstruction and a moving lead with adjacent traffic. Market Loop follows the original 1.42 km Market route, then continues 303 m onto the opposite carriageway. The three in-lane cones are on the outbound road. The moving pass uses the return carriageway, where the source and passing lane run in the opposite direction. The bus on the original road still has a separate navigation-planned lane change. The logs identify the turn signal, lane choice and body clearance through each attempt. [How the maneuvers are scored](../results/city-maneuvers/README.md) · [Surveyed route and original waypoints](../results/city-maneuvers/audit/market-loop-survey.json)
 
 For the previous City Progress driver use `Watch-City.cmd --model models/city-progress/candidate.npz --population-profile city-life`. For City Life use `Watch-City.cmd --model models/city-clearance/candidate.npz --population-profile city-life`. Both recordings include five onboard cameras and a chase view. [Watch City Progress](https://yafi-s.github.io/ADO/?run=city-progress) · [Watch City Life](https://yafi-s.github.io/ADO/?run=city-life)
 
@@ -38,17 +38,17 @@ For each encounter, the log distinguishes the planned location, actual exposure,
 Double-click **Watch-City.cmd** on Windows to install or verify CARLA 1.0 and open the local perception display. After setup, the equivalent command from the project root is below.
 
 ```powershell
-.\.venv-city\Scripts\python.exe -m ado city-drive --serve --open-browser --model models/city-maneuvers/candidate.npz --population-profile city-maneuvers --destination market-loop --seed 212 --crossing-delay 0.5
+.\.venv-city\Scripts\python.exe -m ado city-drive --serve --open-browser --model models/city-maneuvers/stationary-driver.json --population-profile city-maneuvers --destination market-loop --seed 212 --crossing-delay 0.5
 ```
 
-Add `--urban-cap` to keep the 39.6 km/h ceiling throughout a live drive. With the usual settings, the controller can request more speed on a higher-posted road when the vehicle can observe enough clear pavement to stop. The screen distinguishes the road sign, the controller's ceiling, its request and the measured speed. [Measured cruising and stopping distances](../results/city-maneuvers/speed/README.md)
+`stationary-driver.json` is the default driver bundle. It adds the stationary-vehicle head to the City Maneuvers speed model and lane-choice tree, so a car stopped in the lane is followed rather than passed. Pass `--model models/city-maneuvers/candidate.npz` for the earlier driver without that head. Add `--urban-cap` to keep the 39.6 km/h ceiling throughout a live drive. With the usual settings, the controller can request more speed on a higher-posted road when the vehicle can observe enough clear pavement to stop. The screen distinguishes the road sign, the controller's ceiling, its request and the measured speed. [Measured cruising and stopping distances](../results/city-maneuvers/speed/README.md)
 
 Both live driving and film capture accept `--traffic-schedule`. On Market Loop, `continuous` uses the long feeder and `later-gap` changes the lead's pace and the rear vehicle's release time. `clear-feeder` and `clear-feeder-later-gap` use the earlier, shorter feeder. The same driving model handles each schedule. The sealed film manifest records the selected schedule. [Registered traffic geometry](../results/city-maneuvers/qualification/market-loop-upstream-feeder-registration.json)
 
 Each attempt writes its own summary and compressed frame log under `out/city-drives`. The lower-cost live profile is the default. To record five onboard views and a 1080p chase camera at High quality, run the film command with a fresh output path. This captures one ego car over one continuous simulation.
 
 ```powershell
-.\.venv-city\Scripts\python.exe -m ado city-film --model models/city-maneuvers/candidate.npz --population-profile city-maneuvers --map Town03_Opt --destination market-loop --seed 212 --crossing-delay 0.5 --output out/my-city-film
+.\.venv-city\Scripts\python.exe -m ado city-film --model models/city-maneuvers/stationary-driver.json --population-profile city-maneuvers --map Town03_Opt --destination market-loop --seed 212 --crossing-delay 0.5 --output out/my-city-film
 ```
 
 ## Training and evaluation

@@ -24,7 +24,7 @@ The v0.7 Windows ZIP includes City Maneuvers, its driving checkpoint, six synchr
 To run City Maneuvers live, open PowerShell in the extracted `ADO` folder and run this command.
 
 ```powershell
-.\Watch-City.cmd --model models/city-maneuvers/candidate.npz --population-profile city-maneuvers
+.\Watch-City.cmd
 ```
 
 The v0.6 Windows ZIP includes City Progress, its driving checkpoint, six synchronized camera tracks, and the frame-aligned population reference and execution sources. `ADO-City-Progress-1080p.mp4` is its native chase master. [v0.6 release](https://github.com/yafi-s/ADO/releases/tag/v0.6.0) · [City Progress replay](https://yafi-s.github.io/ADO/?run=city-progress)

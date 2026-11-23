@@ -99,7 +99,10 @@ def create():
         f'The second High recording timed out at {failed["summary"]["progress_m"]:.1f} m. A low-confidence camera '
         f'"car" box over the in-lane cones matched stationary radar and lidar, and ADO stopped behind them. '
         f'The featured drive leaves to the route planner any stationary sighting whose in-box radar return is too small '
-        f'for a car. That return measured 1,413–2,680 on the cones and at least 4,704 on the stopped car.',
+        f'for a car. That return measured 1,413–2,680 on the cones and at least 4,704 on the stopped car. '
+        f'No false cone box appeared in the featured drive, so the check never acted at the cones. It set aside '
+        f'{len(gate["small_radar_face_exposures"])} sightings of a stationary background car near the route end, '
+        f'where ADO kept its lane.',
         ("What happened and the fix", TAG + "attempts/high02/README.md"),
         ("Second recording grade", TAG + "attempts/high02/manifest.json"))
     variant = read(STUDY / "qualification/timing-variation/grade.json")

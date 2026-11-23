@@ -736,6 +736,39 @@ class WindowsReleaseTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "different execution source"):
                 release.maneuver_fit_sources(archive, fit, {"code_sha256": sources})
 
+    def test_maneuvers_fit_accepts_only_line_endings_from_its_archived_snapshot(self):
+        base = "models/city-progress/candidate.npz"
+        raw_base = b"City Progress checkpoint"
+        fitted = b"def pace():\n    return 1\r\n"
+        released = b"def pace():\n    return 1\n"
+        name = "crosswalk/city_open_road.py"
+        fit = dict(base_sha256=sha256(raw_base), inputs={
+            base: sha256(raw_base), "crosswalk/city_maneuvers.py": "model", "crosswalk/city_maneuvers_fit.py": "trainer",
+            name: sha256(fitted)})
+        sources = {"city_maneuvers.py": "model", "city_maneuvers_fit.py": "trainer",
+                   "city_open_road.py": sha256(released.replace(b"\n", b"\r\n"))}
+        parent = dict(revision=4, checkpoint_sha256=sha256(raw_base), source_sha256="historical LF",
+                      crossing_source_sha256="crossing", grade_source_sha256="grade")
+        members = {base: raw_base, "models/city-progress/fit.json": json_bytes(parent), name: released}
+        for snapshot_bytes, accepted in ((fitted, True), (b"def pace():\n    return 2\r\n", False)):
+            stream = BytesIO()
+            with ZipFile(stream, "w") as snapshot:
+                snapshot.writestr(name, snapshot_bytes)
+            with fixture_zip({**members, release.MANEUVERS_FIT_SNAPSHOT: stream.getvalue()}) as archive:
+                if accepted:
+                    self.assertIn("city_open_road.py", release.maneuver_fit_sources(archive, fit, {"code_sha256": sources}))
+                else:
+                    with self.assertRaisesRegex(ValueError, "different execution source"):
+                        release.maneuver_fit_sources(archive, fit, {"code_sha256": sources})
+        # A released source that differs in content is refused even when the fitted bytes are archived.
+        stream = BytesIO()
+        with ZipFile(stream, "w") as snapshot:
+            snapshot.writestr(name, fitted)
+        with fixture_zip({**members, name: b"def pace():\n    return 3\n",
+                          release.MANEUVERS_FIT_SNAPSHOT: stream.getvalue()}) as archive:
+            with self.assertRaisesRegex(ValueError, "different execution source"):
+                release.maneuver_fit_sources(archive, fit, {"code_sha256": sources})
+
     @patch.object(release, "verify_video")
     @patch.object(release, "MANEUVERS_TRIAL_CASES", {"board", "slow", "blocked", "inside-curb", "outside-curb"})
     def test_maneuver_trials_require_registered_amendments_and_actual_curb_placement(self, verify_video):

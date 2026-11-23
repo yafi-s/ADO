@@ -101,6 +101,9 @@ DRIVER_BUNDLE_FORMAT = "ado-city-driver-bundle-v1"
 DRIVER_BUNDLE_FIELD = "driver_bundle_sha256"
 DRIVER_BUNDLE_CATALOG_KEY = "city-driver-bundle"
 MANEUVERS_TRIALS = f"{MANEUVERS_RESULTS}/trials"
+# The City Maneuvers fit ran from a working tree with mixed line endings. The native bend
+# trial archived those exact source bytes.
+MANEUVERS_FIT_SNAPSHOT = f"{MANEUVERS_RESULTS}/pace/native-v07-bend/source.zip"
 MANEUVERS_TRIAL_CASES = {"cones", "board", "slow", "blocked", "no-lead", "departing", "clear-bend", "inside-curb",
                          "outside-curb", "person", "reopened", "closing-rejoin", "uncooperative-rear"}
 AMENDED_TRIAL_CASES = ("slow", "blocked")
@@ -466,6 +469,18 @@ def progress_fit_sources(fit):
     return sources
 
 
+def fit_time_source(archive, name, digest):
+    """Return the exact bytes the City Maneuvers fit recorded for one source, from the archived snapshot."""
+    recorded = b""
+    if PREFIX + MANEUVERS_FIT_SNAPSHOT in archive.namelist():
+        with archive.open(PREFIX + MANEUVERS_FIT_SNAPSHOT) as item, ZipFile(item) as snapshot:
+            if name in snapshot.namelist():
+                recorded = snapshot.read(name)
+    require(hashlib.sha256(recorded).hexdigest() == digest,
+            f"The recorded City Maneuvers fit used a different execution source: {name}")
+    return recorded
+
+
 def maneuver_fit_sources(archive, fit, policy):
     base = "models/city-progress/candidate.npz"
     inputs = fit["inputs"]
@@ -481,8 +496,12 @@ def maneuver_fit_sources(archive, fit, policy):
         require(re.fullmatch(r"[a-zA-Z0-9_-]+(?:/[a-zA-Z0-9_.-]+)+", name) and not {".", ".."}.intersection(path.parts),
                 f"Invalid City Maneuvers fit input: {name}")
         if path.parent == PurePosixPath("crosswalk") and path.suffix == ".py":
-            require(policy["code_sha256"].get(path.name) == digest,
-                    f"The recorded City Maneuvers fit used a different execution source: {name}")
+            if policy["code_sha256"].get(path.name) != digest:
+                # Same code, different line endings: the fitted bytes must equal the released
+                # source after normalization. verify_population_sources ties the capture to it.
+                require(fit_time_source(archive, name, digest).replace(b"\r\n", b"\n")
+                        == archive.read(PREFIX + name).replace(b"\r\n", b"\n"),
+                        f"The recorded City Maneuvers fit used a different execution source: {name}")
             sources.add(path.name)
         else:
             verify_digest(archive, name, digest)
