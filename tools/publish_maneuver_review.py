@@ -79,6 +79,29 @@ def create():
         ("Pass the moving car", camera(lead, "moving_alongside_s", "chase")),
         ("Passenger-side camera", camera(lead, "moving_alongside_s", "right")),
         ("Return", camera(lead, "returned_to_route_s", "rear_right")))
+    held = events["lead"]
+    gate = read(STUDY / "audit/stopped-sedan-gate.json")
+    if gate["telemetry_sha256"] != manifest["sha256"]["telemetry.json"] or not gate["passed"]:
+        raise ValueError("The stopped-sedan gate must pass on the featured recording")
+    add("Stopped car in the lane",
+        f'The front camera, forward radar and lidar identified the stopped car {gate["identified_gap_m"]:.1f} m ahead. '
+        f'ADO stayed in its lane, came to rest with a minimum recorded gap of {held["minimum_gap_m"]:.2f} m, '
+        f'and followed the car once it moved off. Between 500 and 700 m it entered no lane-change phase '
+        f'and cast {gate["maximum_pass_votes"]} pass votes.',
+        ("Stopped car identified", exposure(gate["identified_frame"], "front")),
+        ("Waiting behind it", exposure(gate["stopped_frame"], "front")),
+        ("Following it out", camera(held, "restarted_s", "front")),
+        ("Lane and vote check", TAG + "audit/stopped-sedan-gate.json"))
+    failed = read(STUDY / "attempts/high02/manifest.json")
+    if failed["passed"]:
+        raise ValueError("The recorded second-attempt outcome changed")
+    add("Cones mistaken for a car",
+        f'The second High recording timed out at {failed["summary"]["progress_m"]:.1f} m. A low-confidence camera '
+        f'"car" box over the in-lane cones matched stationary radar and lidar, and ADO stopped behind them. '
+        f'The featured drive leaves to the route planner any stationary sighting whose in-box radar return is too small '
+        f'for a car. That return measured 1,413–2,680 on the cones and at least 4,704 on the stopped car.',
+        ("What happened and the fix", TAG + "attempts/high02/README.md"),
+        ("Second recording grade", TAG + "attempts/high02/manifest.json"))
     variant = read(STUDY / "qualification/timing-variation/grade.json")
     variant_run = read(STUDY / "qualification/timing-variation/summary.json")
     variant_lead = next(event for event in variant["events"] if event["kind"] == "slow-traffic")
